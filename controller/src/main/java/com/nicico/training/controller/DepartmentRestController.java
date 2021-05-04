@@ -127,6 +127,24 @@ public class DepartmentRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/getDepChartData")
+    public ResponseEntity<List<DepartmentDTO.DepChart>> getDepChartData() {
+        List<DepartmentDTO.DepChart> depChartRoots = departmentService.getDepChartData();
+        return new ResponseEntity<>(depChartRoots, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/getDepChartChildren/{category}/{parentTitle}")
+    public ResponseEntity<List<DepartmentDTO.DepChart>> getDepChartChildren(@PathVariable String category, @PathVariable String parentTitle, @RequestBody List<Long> childrenIds) {
+        List<DepartmentDTO.DepChart> depChartRoots = departmentService.getDepChartChildren(category, parentTitle, childrenIds);
+        return new ResponseEntity<>(depChartRoots, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/getSearchDepChartData/{value}")
+    public ResponseEntity<List<DepartmentDTO.DepChart>> getSearchDepChartData(@PathVariable String value) {
+        List<DepartmentDTO.DepChart> depChartRoots = departmentService.getSearchDepChartData(value);
+        return new ResponseEntity<>(depChartRoots, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/getDepartmentsRoot")
     public ResponseEntity<List<DepartmentDTO.TSociety>> getDepartmentsRoot() {
         List<DepartmentDTO.TSociety> roots = departmentService.getRoot();
