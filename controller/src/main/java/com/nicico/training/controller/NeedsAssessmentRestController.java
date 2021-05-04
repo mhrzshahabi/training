@@ -9,6 +9,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.mapper.needsassessment.NeedsAssessmentBeanMapper;
@@ -17,6 +18,7 @@ import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.NeedsAssessmentTempService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -63,6 +65,12 @@ public class NeedsAssessmentRestController {
     }
 
     @Loggable
+    @GetMapping("/verifiedNeedsAssessmentList/{objectType}/{objectId}")
+    public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> verifiedNeedsAssessmentList(@PathVariable String objectType, @PathVariable Long objectId) {
+        return new ResponseEntity<>(needsAssessmentService.verifiedNeedsAssessmentList(objectId, objectType), HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping("/workflowList/{objectType}/{objectId}")
     public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscWorkflowList(@PathVariable String objectType, @PathVariable Long objectId) {
         return new ResponseEntity<>(needsAssessmentService.workflowSearch(objectId, objectType), HttpStatus.OK);
@@ -100,13 +108,41 @@ public class NeedsAssessmentRestController {
     }
 
     @Loggable
+    @GetMapping("/getValuesForCopyNA/{typeCopyOf}/{idCopyOf}/{typeCopyTo}/{idCopyTo}")
+    public ResponseEntity<List<NeedsAssessmentDTO.Info>> getValuesForCopyNA(@PathVariable String typeCopyOf,
+                                                                            @PathVariable Long idCopyOf,
+                                                                            @RequestParam(value = "competenceId", required = false) Long competenceId,
+                                                                            @PathVariable String typeCopyTo,
+                                                                            @PathVariable Long idCopyTo) {
+        return new ResponseEntity<>(needsAssessmentTempService.getValuesForCopyNA(typeCopyOf, idCopyOf, competenceId, typeCopyTo, idCopyTo), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping
-    public ResponseEntity create(@RequestBody Object rq, HttpServletResponse resp) throws IOException {
+    public ResponseEntity create(@RequestBody Object rq) throws IOException {
         NeedsAssessmentDTO.Create create = modelMapper.map(rq, NeedsAssessmentDTO.Create.class);
-        needsAssessmentTempService.checkCategoryNotEquals(create, resp);
+        TrainingException exception = needsAssessmentTempService.checkCategoryNotEquals(create);
+        if (exception != null)
+            throw exception;
         if (!needsAssessmentTempService.isEditable(create.getObjectType(), create.getObjectId()))
             return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
         return new ResponseEntity<>(needsAssessmentTempService.create(create), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping("/createOrUpdateList")
+    public ResponseEntity<Boolean> createOrUpdateList(@RequestBody Object rq) {
+        List<NeedsAssessmentDTO.Create> createList = modelMapper.map(rq, new TypeToken<List<NeedsAssessmentDTO.Create>>() {
+        }.getType());
+        Boolean hasAlreadySentToWorkFlow = needsAssessmentTempService.createOrUpdateList(createList);
+        return new ResponseEntity<>(hasAlreadySentToWorkFlow, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping("/updateWorkFlowStatesToSent")
+    public ResponseEntity updateWorkFlowStatesToSent(@RequestParam String objectType, @RequestParam Long objectId) {
+        needsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 0, "ارسال به گردش کار اصلی");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable

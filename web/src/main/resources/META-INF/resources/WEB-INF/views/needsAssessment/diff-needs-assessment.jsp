@@ -1374,7 +1374,7 @@
         updateObjectIdLG_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment, objectType);
         clearAllGrid_Diff();
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/verifiedNeedsAssessmentList/" + objectType + "/" + objectId, "GET", null, function(resp){
             if (resp.httpResponseCode !== 200){
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 return;

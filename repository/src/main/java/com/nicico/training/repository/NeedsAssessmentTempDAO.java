@@ -15,6 +15,10 @@ public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Lon
     @Query(value = "delete from TBL_NEEDS_ASSESSMENT_TEMP where F_OBJECT = :objectId and C_OBJECT_TYPE = :objectType", nativeQuery = true)
     void deleteAllByObjectIdAndObjectType(Long objectId, String objectType);
 
+    @Modifying
+    @Query(value = "delete from TBL_NEEDS_ASSESSMENT_TEMP where F_OBJECT = :objectId and C_OBJECT_TYPE = :objectType and N_MAIN_WORKFLOW_STATUS_CODE is null", nativeQuery = true)
+    void deleteAllNotSentByObjectIdAndObjectType(Long objectId, String objectType);
+
     Optional<NeedsAssessmentTemp> findFirstByCompetenceId(Long competenceId);
 
     @Modifying
