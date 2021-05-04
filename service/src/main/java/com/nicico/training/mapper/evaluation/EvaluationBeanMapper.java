@@ -1173,4 +1173,21 @@ public abstract class EvaluationBeanMapper {
         request.setResults(resultDtoList);
         return request;
     }
+
+    public List<String> getUsersWithAnswer(List<ExamResultDto> answers, List<EvalTargetUser> newUsers) {
+        List<ExamResultDto> userListWithoutNotAnswered = answers.stream().filter(item-> !item.getResultStatus().equals("4")).collect(Collectors.toList());
+
+        List<String> userNames=new ArrayList<>();
+        for (ExamResultDto examResultDto:userListWithoutNotAnswered)
+        {
+            String nationalCode=examResultDto.getNationalCode();
+           boolean hasUser= newUsers.stream().anyMatch(item -> item.getNationalCode().equals(nationalCode));
+
+            if (hasUser)
+                userNames.add(examResultDto.getSurname() +" "+examResultDto.getLastName() );
+        }
+        return userNames;
+
+
+    }
 }

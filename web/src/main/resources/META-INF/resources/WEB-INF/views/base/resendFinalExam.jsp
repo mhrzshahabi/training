@@ -601,7 +601,7 @@
 
     function studentsToElsResendExam(record, users) {
 
-        var examData = {
+        let examData = {
             sourceExamId: record.id,
             duration: resendFinalExam_DynamicForm.getValue("duration"),
             time: resendFinalExam_DynamicForm.getValue("time"),
@@ -610,6 +610,29 @@
         };
 
         wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/checkForResendExamToEls", "POST", JSON.stringify(examData), function (resp) {
+            let respText = JSON.parse(resp.httpResponseText);
+            if (respText.status === 200) {
+                sendResendExam(examData)
+
+            } else {
+                 let Dialog_ask = createDialog("ask", respText.message,
+                                                "<spring:message code="verify.resend"/>");
+                Dialog_ask.addProperties({
+                                                buttonClick: function (button, index) {
+                                                    this.close();
+                                                    if (index === 0) {
+                                                      sendResendExam(examData)
+                                                    }
+                                                }
+                                            });
+
+            }
+            wait.close();
+        }));
+    }
+    function sendResendExam(examData) {
+             wait.show();
         isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/resendExamToEls", "POST", JSON.stringify(examData), function (resp) {
 
             resendFinalExam_DynamicForm.clearValues();
@@ -639,6 +662,7 @@
             }
             wait.close();
         }));
+
     }
 
 // </script>
