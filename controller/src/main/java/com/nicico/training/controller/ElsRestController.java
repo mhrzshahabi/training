@@ -46,6 +46,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -238,6 +239,32 @@ public class ElsRestController {
             response.setMessage("بروز خطا در سیستم");
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
 
+        }
+    }
+    @PostMapping("/checkForResendExamToEls")
+    public ResponseEntity checkForResendExamToEls(@RequestBody ResendExamImportedRequest object) {
+        BaseResponse response=new BaseResponse();
+        try {
+        ExamListResponse examListResponse = client.getExamResults(object.getSourceExamId());
+        List<String> userWithAnswer=evaluationBeanMapper.getUsersWithAnswer(examListResponse.getData(),object.getUsers());
+        if (userWithAnswer.isEmpty())
+        {
+            response.setStatus(200);
+            return new ResponseEntity<>(response, HttpStatus.OK);
+
+        }
+        else
+        {
+            String joinedNames = String.join(System.lineSeparator(), userWithAnswer);
+            response.setStatus(409);
+            response.setMessage("کاربران مقابل یک بار جواب این آزمون را داده اند. درصورتی که آزمون مجدد برایشان ارسال شود جواب قبلی آنها پاک خواهد شد:"+System.lineSeparator() +joinedNames);
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+
+        }
+
+        }catch (Exception e){
+            response.setMessage("خطا در ارتباط با آموزش آنلاین");
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
