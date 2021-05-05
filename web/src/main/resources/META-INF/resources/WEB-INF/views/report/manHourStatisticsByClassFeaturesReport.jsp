@@ -425,12 +425,12 @@
                 align: "center",
                 vAlign: "center",
                 members: [
-                    isc.ToolStripButtonExcel.create({
-                        margin: 5,
-                        click: function () {
-
-                        }
-                    })
+                    // isc.ToolStripButtonExcel.create({
+                    //     margin: 5,
+                    //     click: function () {
+                    //
+                    //     }
+                    // })
                 ]
             })
             , "header", "filterEditor", "body"],
