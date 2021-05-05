@@ -840,7 +840,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
                 let correctAnswer="<span class=\"correctAnswer\"></span>";
                 if (answers[i].examinerAnswer!==null && answers[i].examinerAnswer!==undefined)
-                  correctAnswer = "<div class=\"correctAnswer\" ><span>"+answers[i].examinerAnswer+"</span></div>";
+                  correctAnswer = "<div class=\"correctAnswer\" ><span>"+customSplit(answers[i].examinerAnswer, 150)+"</span></div>";
                 else
                 correctAnswer = "<span class=\"correctAnswer\">جوابی برای این سوال توسط استاد ثبت نشده</span>";
 
@@ -851,14 +851,14 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 mark = "<span class=\"mark\">( بارم ثبت نشده )</span>";
 
 
-                text_FormItem.title = (i+1)+"-"+answers[i].question +"   "+mark+ "\n"+
+                text_FormItem.title = (i+1)+"-"+ customSplit(answers[i].question, 150)  +"   "+mark+ "\n"+
                  " جواب استاد :"+ "\n"+ "  "+correctAnswer;
-                // correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
+
                 text_FormItem.value = answers[i].answer;
                 text_FormItem.name = answers[i].answer;
 
                 if(answers[i].type == "چند گزینه ای") {
-                    radio_FormItem.title = (i+1)+"-"+answers[i].question+"   "+mark+ "\n"+
+                    radio_FormItem.title = (i+1)+"-"+customSplit(answers[i].question, 150)+"   "+mark+ "\n"+
                      " جواب استاد :"+  "\n"+ "  "+correctAnswer;
                     radio_FormItem.name = i+"";
                     if(answers[i].options.length > 0) {
@@ -1683,4 +1683,12 @@ let inValidStudents = [];
             return false;
         return true;
         }
+
+       function customSplit(str, maxLength){
+    if(str.length <= maxLength)
+        return str;
+    var reg = new RegExp(".{1," + maxLength + "}","g");
+    var parts = str.match(reg);
+    return parts.join('\n');
+}
     //</script>
