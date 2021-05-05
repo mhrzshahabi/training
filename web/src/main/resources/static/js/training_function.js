@@ -105,7 +105,7 @@ function defineWindowsEditNeedsAssessment(grid = null) {
                                 dialog.close();
                                 switch (index) {
                                     case 0:
-                                        sendNeedsAssessmentToWorkflow();
+                                        sendNeedsAssessmentToWorkflow(true);
                                         break;
                                     case 1:
                                         CancelChange_JspENA.click();

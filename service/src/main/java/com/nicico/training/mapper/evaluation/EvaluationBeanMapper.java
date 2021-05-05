@@ -1,6 +1,7 @@
 package com.nicico.training.mapper.evaluation;
 
 
+import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
@@ -23,16 +24,15 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import request.evaluation.ElsEvalRequest;
-import request.exam.ElsExamRequest;
-import request.exam.ElsExtendedExamRequest;
-import request.exam.ExamImportedRequest;
-import request.exam.ResendExamImportedRequest;
+import request.exam.*;
+import response.BaseResponse;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
 import response.question.QuestionsDto;
 
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -127,7 +127,6 @@ public abstract class EvaluationBeanMapper {
 
         ImportedUser teacher = getTeacherData(teacherInfo);
 
-
         request.setUsers(classStudents.stream()
                 .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList()));
 
@@ -148,10 +147,10 @@ public abstract class EvaluationBeanMapper {
         request.setProtocol(courseProtocol);
 
         elsExamRequestResponse.setElsExamRequest(request);
-        if(examQuestionsObject.getStatus()!= 200){
+        if (examQuestionsObject.getStatus() != 200) {
             elsExamRequestResponse.setStatus(examQuestionsObject.getStatus());
             elsExamRequestResponse.setMessage(examQuestionsObject.getMessage());
-        }else
+        } else
             elsExamRequestResponse.setStatus(200);
         return elsExamRequestResponse;
     }
@@ -191,7 +190,7 @@ public abstract class EvaluationBeanMapper {
         request.setProtocol(courseProtocol);
 
         elsExamRequestResponse.setElsExamRequest(request);
-        if(examQuestionsObject.getStatus()!= 200) {
+        if (examQuestionsObject.getStatus() != 200) {
             elsExamRequestResponse.setStatus(examQuestionsObject.getStatus());
             elsExamRequestResponse.setMessage(examQuestionsObject.getMessage());
         } else
@@ -199,7 +198,7 @@ public abstract class EvaluationBeanMapper {
         return elsExamRequestResponse;
     }
 
-    public ElsResendExamRequestResponse toGetResendExamRequest( ResendExamImportedRequest object) {
+    public ElsResendExamRequestResponse toGetResendExamRequest(ResendExamImportedRequest object) {
         ElsExtendedExamRequest request = new ElsExtendedExamRequest();
         ElsResendExamRequestResponse elsResendExamRequestResponse = new ElsResendExamRequestResponse();
         int time = Math.toIntExact(object.getDuration());
@@ -219,16 +218,17 @@ public abstract class EvaluationBeanMapper {
         elsResendExamRequestResponse.setStatus(200);
         return elsResendExamRequestResponse;
     }
+
     private ImportedUser getTeacherData(PersonalInfo teacherInfo) {
         ImportedUser teacher = new ImportedUser();
-        if (null !=teacherInfo.getGender() && null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
+        if (/*null !=teacherInfo.getGender() && */ null != teacherInfo.getContactInfo() && null != teacherInfo.getContactInfo().getMobile()) {
 
             teacher.setCellNumber(teacherInfo.getContactInfo().getMobile());
             teacher.setNationalCode(teacherInfo.getNationalCode());
-            teacher.setGender(teacherInfo.getGender().getTitleFa());
+            teacher.setGender(teacher.getGender() != null ? teacherInfo.getGender().getTitleFa() : null);
             teacher.setLastName(teacherInfo.getLastNameFa());
             teacher.setSurname(teacherInfo.getFirstNameFa());
-     }
+        }
         return teacher;
     }
 
@@ -240,87 +240,86 @@ public abstract class EvaluationBeanMapper {
         if (object.getQuestions().size() > 0) {
 //            Double questionScore = (double) (20 / object.getQuestions().size());
 
-        for (QuestionData questionData : object.getQuestions()) {
-            ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
+            for (QuestionData questionData : object.getQuestions()) {
+                ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
 
-            ImportedQuestion question = new ImportedQuestion();
+                ImportedQuestion question = new ImportedQuestion();
 
-            question.setId(questionData.getQuestionBank().getId());
-            question.setTitle(questionData.getQuestionBank().getQuestion());
-            question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
-            QuestionBank questionBank = questionBankService.getById(questionData.getQuestionBank().getId());
+                question.setId(questionData.getQuestionBank().getId());
+                question.setTitle(questionData.getQuestionBank().getQuestion());
+                question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
+                QuestionBank questionBank = questionBankService.getById(questionData.getQuestionBank().getId());
 
-            if (question.getType().equals(MULTI_CHOICES)) {
-
-
-                List<ImportedQuestionOption> options = new ArrayList<>();
+                if (question.getType().equals(MULTI_CHOICES)) {
 
 
-                ImportedQuestionOption option1 = new ImportedQuestionOption();
-                ImportedQuestionOption option2 = new ImportedQuestionOption();
-                ImportedQuestionOption option3 = new ImportedQuestionOption();
-                ImportedQuestionOption option4 = new ImportedQuestionOption();
-                option1.setTitle(questionBank.getOption1());
-                option2.setTitle(questionBank.getOption2());
-                option3.setTitle(questionBank.getOption3());
-                option4.setTitle(questionBank.getOption4());
+                    List<ImportedQuestionOption> options = new ArrayList<>();
 
-                options.add(option1);
-                options.add(option2);
-                options.add(option3);
-                options.add(option4);
-                if(!findDuplicate) {
-                    String title = question.getTitle().toUpperCase().replaceAll("[\\s]","");
-                    findDuplicate = checkDuplicateQuestion(options, questionProtocols,title ,question.getType());
-                    if (findDuplicate) {
-                        examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
-                        examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+
+                    ImportedQuestionOption option1 = new ImportedQuestionOption();
+                    ImportedQuestionOption option2 = new ImportedQuestionOption();
+                    ImportedQuestionOption option3 = new ImportedQuestionOption();
+                    ImportedQuestionOption option4 = new ImportedQuestionOption();
+                    option1.setTitle(questionBank.getOption1());
+                    option2.setTitle(questionBank.getOption2());
+                    option3.setTitle(questionBank.getOption3());
+                    option4.setTitle(questionBank.getOption4());
+
+                    options.add(option1);
+                    options.add(option2);
+                    options.add(option3);
+                    options.add(option4);
+                    if (!findDuplicate) {
+                        String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                        findDuplicate = checkDuplicateQuestion(options, questionProtocols, title, question.getType());
+                        if (findDuplicate) {
+                            examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
+                            examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                        }
                     }
-                }
-                question.setQuestionOption(options);
-                questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
+                    question.setQuestionOption(options);
+                    questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
 
-            }else if(question.getType().equals(DESCRIPTIVE)){
-                if(!findDuplicate) {
-                    String title = question.getTitle().toUpperCase().replaceAll("[\\s]","");
-                    findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, title ,question.getType());
-                    if (findDuplicate) {
-                        examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
-                        examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                } else if (question.getType().equals(DESCRIPTIVE)) {
+                    if (!findDuplicate) {
+                        String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                        findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, title, question.getType());
+                        if (findDuplicate) {
+                            examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
+                            examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                        }
                     }
+                    questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
+
                 }
-                questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
+                if (object.getQuestionData() != null) {
+                    QuestionScores questionScore = object.getQuestionData().stream()
+                            .filter(x -> x.getId().equals(question.getId()))
+                            .findFirst()
+                            .get();
 
+                    questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
+                }
+
+                questionProtocol.setTime(timeQues);
+                questionProtocol.setQuestion(question);
+                questionProtocols.add(questionProtocol);
             }
-            if (object.getQuestionData()!=null)
-            {
-                QuestionScores questionScore = object.getQuestionData().stream()
-                        .filter(x -> x.getId().equals(question.getId()))
-                        .findFirst()
-                        .get();
-
-                questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
-            }
-
-            questionProtocol.setTime(timeQues);
-            questionProtocol.setQuestion(question);
-            questionProtocols.add(questionProtocol);
         }
-    }
         examQuestionsObject.setProtocols(questionProtocols);
-        if(!findDuplicate)
+        if (!findDuplicate)
             examQuestionsObject.setStatus(HttpStatus.OK.value());
         return examQuestionsObject;
         /*return questionProtocols;*/
-}
+    }
 
-    private Boolean checkDuplicateDescriptiveQuestions(List<ImportedQuestionProtocol> protocols, String title , EQuestionType type) {
-        if(protocols.size()>0) {
+    private Boolean checkDuplicateDescriptiveQuestions(List<ImportedQuestionProtocol> protocols, String title, EQuestionType type) {
+        if (protocols.size() > 0) {
             final List<ImportedQuestion> questions = protocols.stream().map(ImportedQuestionProtocol::getQuestion).collect(Collectors.toList());
-            List<String> questionsTitle = questions.stream().filter(t->t.getType().equals(type)).map(ImportedQuestion::getTitle)
+            List<String> questionsTitle = questions.stream().filter(t -> t.getType().equals(type)).map(ImportedQuestion::getTitle)
                     .map(str -> new String(str.toUpperCase().replaceAll("[\\s]", "")))
                     .collect(Collectors.toList());
-            final boolean matchedTitle = questionsTitle.stream().anyMatch(t -> t.equals(title) );
+            final boolean matchedTitle = questionsTitle.stream().anyMatch(t -> t.equals(title));
             if (matchedTitle) {
                 return hasDuplicateQuestion;
             }
@@ -330,13 +329,13 @@ public abstract class EvaluationBeanMapper {
     }
 
     private Boolean checkDuplicateQuestion(List<ImportedQuestionOption> newOptions, List<ImportedQuestionProtocol> protocols, String title, EQuestionType type) {
-        if(protocols.size()>0) {
+        if (protocols.size() > 0) {
             final List<String> newOptionsList = newOptions.stream().map(ImportedQuestionOption::getTitle)
                     .map(str -> new String(str.toUpperCase().replaceAll("[\\s]", "")))
                     .collect(Collectors.toList());
-            List<String> targetOptionsList =  new ArrayList<>();
+            List<String> targetOptionsList = new ArrayList<>();
             final List<ImportedQuestion> questions = protocols.stream().map(ImportedQuestionProtocol::getQuestion).collect(Collectors.toList());
-            List<String> questionsTitle =questions.stream().map(ImportedQuestion::getTitle)
+            List<String> questionsTitle = questions.stream().map(ImportedQuestion::getTitle)
                     .map(str -> new String(str.toUpperCase().replaceAll("[\\s]", "")))
                     .collect(Collectors.toList());
             final boolean matchedTitle = questionsTitle.stream().anyMatch(t -> t.equals(title));
@@ -412,24 +411,19 @@ public abstract class EvaluationBeanMapper {
 
         exam.setDuration(time);
 
-        if (tClass.getScoringMethod().equals("3"))
-        {
+        if (tClass.getScoringMethod().equals("3")) {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             exam.setScore(20D);
 
-        }
-        else if (tClass.getScoringMethod().equals("2"))
-        {
-            if (null!=tClass.getAcceptancelimit())
-            exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
+        } else if (tClass.getScoringMethod().equals("2")) {
+            if (null != tClass.getAcceptancelimit())
+                exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             else
                 exam.setMinimumAcceptScore(50D);
 
             exam.setScore(100D);
 
-        }
-        else
-        {
+        } else {
             exam.setMinimumAcceptScore(0D);
 
             exam.setScore(0D);
@@ -459,15 +453,13 @@ public abstract class EvaluationBeanMapper {
         if (tClass.getScoringMethod().equals("3")) {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             exam.setScore(20D);
-        }
-        else if (tClass.getScoringMethod().equals("2")) {
-            if (null!=tClass.getAcceptancelimit())
+        } else if (tClass.getScoringMethod().equals("2")) {
+            if (null != tClass.getAcceptancelimit())
                 exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             else
                 exam.setMinimumAcceptScore(50D);
             exam.setScore(100D);
-        }
-        else {
+        } else {
             exam.setMinimumAcceptScore(0D);
             exam.setScore(0D);
         }
@@ -915,7 +907,7 @@ public abstract class EvaluationBeanMapper {
     public ExamQuestionsObject toGetExamQuestions(ExamImportedRequest object) {
         ExamQuestionsDto examQuestionsDto = new ExamQuestionsDto();
         final ExamQuestionsObject examQuestionsObject = getQuestions(object, null);
-        if(examQuestionsObject.getStatus()== 200) {
+        if (examQuestionsObject.getStatus() == 200) {
             List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
             List<QuestionsDto> questionsDtos = new ArrayList<>();
             for (ImportedQuestionProtocol question : questionProtocols) {
@@ -942,7 +934,7 @@ public abstract class EvaluationBeanMapper {
 
             examQuestionsObject.setDto(examQuestionsDto);
             return examQuestionsObject;
-        }else {
+        } else {
 
             return examQuestionsObject;
         }
@@ -988,14 +980,16 @@ public abstract class EvaluationBeanMapper {
         request.getUsers().removeIf(user -> !validateTargetUser(user));
         return request;
     }
+
     public ElsExtendedExamRequest removeInvalidUsersForResendExam(ElsExtendedExamRequest request) {
         request.getUsers().removeIf(user -> !validateTargetUser(user));
         return request;
     }
 
     public boolean validateTeacherExam(ImportedUser teacher) {
+
         boolean isValid = true;
-        if (null == teacher.getNationalCode() || null == teacher.getCellNumber() || teacher.getGender() == null)
+        if (null == teacher.getNationalCode() || null == teacher.getCellNumber())
             isValid = false;
         else {
             if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
@@ -1012,9 +1006,7 @@ public abstract class EvaluationBeanMapper {
     public boolean validateTargetUser(EvalTargetUser teacher) {
 
         boolean isValid = true;
-
-
-        if (null == teacher.getNationalCode() || null == teacher.getCellNumber() || teacher.getGender() == null)
+        if (null == teacher.getNationalCode() || null == teacher.getCellNumber())
             isValid = false;
         else {
             if (teacher.getNationalCode().length() != 10 || !teacher.getNationalCode().matches("\\d+")) isValid = false;
@@ -1029,8 +1021,8 @@ public abstract class EvaluationBeanMapper {
     }
 
     public ExamListResponse toExamResult(ExamListResponse response) {
-        for (ExamResultDto examResultDto:response.getData())
-        {
+        for (ExamResultDto examResultDto : response.getData()) {
+
             switch (examResultDto.getResultStatus()) {
                 case "1": {
                     examResultDto.setResultStatus("قبول");
@@ -1045,8 +1037,157 @@ public abstract class EvaluationBeanMapper {
                     examResultDto.setResultStatus("منتظر اعلام نتیجه");
                     break;
                 }
+                case "4": {
+                    examResultDto.setScore("-");
+                    examResultDto.setResultStatus("بدون پاسخ");
+                    break;
+                }
+            }
+            if (null == examResultDto.getTestResult())
+                examResultDto.setTestResult("-");
+
+            if (null == examResultDto.getDescriptiveResult())
+                examResultDto.setDescriptiveResult("-");
+
+            if (null == examResultDto.getFinalResult())
+                examResultDto.setFinalResult("-");
+
+        }
+
+        return response;
+    }
+
+    public boolean checkValidScores(List<ExamResult> examResult) {
+        for (ExamResult data : examResult) {
+            try
+            {
+                double descriptiveResult=0D;
+                double finalResult=0D;
+                if ( data.getDescriptiveResult()!=null && !data.getDescriptiveResult().equals("-")) {
+                    String englishDescriptiveResult = new BigDecimal(data.getDescriptiveResult()).toString();
+                    descriptiveResult=  Double.parseDouble(englishDescriptiveResult);
+
+                 }
+
+                if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-")) {
+                    String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                    finalResult= Double.parseDouble(englishFinalResult);
+                }
+                if (finalResult<descriptiveResult && (data.getFinalResult()!=null && !data.getFinalResult().equals("-")))
+                    return false;
+
+            }
+            catch(NumberFormatException e)
+            {
+                return false;
             }
         }
-        return response;
+        return true;
+    }
+
+    public boolean checkScoreInRange(String scoringMethod, List<ExamResult> examResult) {
+        if (scoringMethod.equals("3") || scoringMethod.equals("2")) {
+
+           if (scoringMethod.equals("3") )
+           {
+               for (ExamResult data : examResult) {
+                   double finalResult=0D;
+
+                   if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-")) {
+                       String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                       finalResult= Double.parseDouble(englishFinalResult);
+                       if (finalResult>20D)
+                           return false;
+                   }
+
+               }
+               return true;
+               }
+           else
+           {
+               for (ExamResult data : examResult) {
+                   double finalResult=0D;
+
+                   if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-")) {
+                       String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                       finalResult= Double.parseDouble(englishFinalResult);
+                       if (finalResult>100D)
+                           return false;
+                   }
+
+               }
+               return true;
+           }
+           }
+          else
+        return false;
+    }
+
+    public UpdateRequest convertScoresToDto(List<ExamResult> examResult, long id) {
+        UpdateRequest request=new UpdateRequest();
+        request.setSourceExamId(id);
+        List<UpdatedResultDto> resultDtoList=new ArrayList<>();
+        for (ExamResult data:examResult)
+        {
+            UpdatedResultDto updatedResultDto=new UpdatedResultDto();
+            double descriptiveResult;
+            double finalResult;
+            double score;
+            if ( data.getDescriptiveResult()!=null && !data.getDescriptiveResult().equals("-"))
+            {
+                String englishDescriptiveResult = new BigDecimal(data.getDescriptiveResult()).toString();
+                descriptiveResult=  Double.parseDouble(englishDescriptiveResult);
+                updatedResultDto.setDescriptiveResult(descriptiveResult);
+            }
+            else
+            {
+                updatedResultDto.setDescriptiveResult(null);
+
+            }
+            if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-"))
+            {
+                String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                finalResult= Double.parseDouble(englishFinalResult);
+                updatedResultDto.setFinalResult(finalResult);
+            }
+            else
+            {
+                updatedResultDto.setFinalResult(null);
+            }
+
+            if ( data.getTestResult()!=null && !data.getTestResult().equals("-"))
+            {
+                String englishScore = new BigDecimal(data.getTestResult()).toString();
+                score= Double.parseDouble(englishScore);
+                updatedResultDto.setTestResult(score);
+            }
+            else
+            {
+                updatedResultDto.setTestResult(null);
+            }
+
+            updatedResultDto.setMobileNumber(data.getCellNumber());
+
+            resultDtoList.add(updatedResultDto);
+        }
+        request.setResults(resultDtoList);
+        return request;
+    }
+
+    public List<String> getUsersWithAnswer(List<ExamResultDto> answers, List<EvalTargetUser> newUsers) {
+        List<ExamResultDto> userListWithoutNotAnswered = answers.stream().filter(item-> !item.getResultStatus().equals("4")).collect(Collectors.toList());
+
+        List<String> userNames=new ArrayList<>();
+        for (ExamResultDto examResultDto:userListWithoutNotAnswered)
+        {
+            String nationalCode=examResultDto.getNationalCode();
+           boolean hasUser= newUsers.stream().anyMatch(item -> item.getNationalCode().equals(nationalCode));
+
+            if (hasUser)
+                userNames.add(examResultDto.getSurname() +" "+examResultDto.getLastName() );
+        }
+        return userNames;
+
+
     }
 }

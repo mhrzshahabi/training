@@ -9,6 +9,10 @@
     const yellow ="#d6d216";
     const red = "#ff8abc";
     const green = "#5dd851";
+    var apiHeader = {
+        "Authorization": "Bearer <%= (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>",
+        'Content-Type': 'application/json'
+    };
     var selectedRecord = {};
     var editing = false;
     var hasChanged = false;
@@ -296,9 +300,16 @@
         ]
     });
     let buttonSendToWorkFlow = isc.ToolStripButtonCreate.create({
-        title: "ارسال به گردش کار",
-        click: function () {
-            sendNeedsAssessmentToWorkflow();
+        title: " ذخیره و ارسال به گردش کار",
+        click: async function () {
+            if (hasChanged) {
+                let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
+                if(!isSaved)
+                    return ;
+                sendNeedsAssessmentToWorkflow(mustSent);
+            } else {
+                createDialog("info", "تغییری صورت نگرفته است")
+            }
         }
     });
     let buttonChangeCancel = isc.ToolStripButtonRemove.create({
@@ -789,20 +800,19 @@
                 title: "کپی شایستگی",
                 click: function () {
                     let record = ListGrid_NeedsAssessment_JspENA.getSelectedRecord()
-                    let url = needsAssessmentUrl + "/copy/" + record.objectType
+                    let url = needsAssessmentUrl + "/getValuesForCopyNA/" + record.objectType
                         + "/" + record.objectId + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectId")
                         + "?competenceId=" + record.competenceId;
                     wait.show();
-                    isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
+                    isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, (resp) => {
                         wait.close();
-                        if(resp.data === "true"){
-                            editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
-                            hasChanged = true;
+                        if (resp.httpResponseCode !== 200) {
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                            return;
                         }
-                        else if(resp.data === "false"){
-                            readOnly(true);
-                        }
+                        editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"),DynamicForm_JspEditNeedsAssessment.getValue("objectType"), JSON.parse(resp.data));
+                        hasChanged = true;
                     }));
                 }
             },
@@ -1406,19 +1416,18 @@
                 align: "center",
                 click(){
                     Menu_JspEditNeedsAssessment.hideContextMenu();
-                    let url = needsAssessmentUrl + "/copy/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectType")
+                    let url = needsAssessmentUrl + "/getValuesForCopyNA/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectType")
                         + "/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectId") + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectId");
                     wait.show();
                     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
                         wait.close();
-                        if(resp.data === "true"){
-                            editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"))
-                            hasChanged = true;
+                        if (resp.httpResponseCode !== 200) {
+                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                            return;
                         }
-                        else if(resp.data === "false"){
-                            readOnly(true);
-                        }
+                        editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"),DynamicForm_JspEditNeedsAssessment.getValue("objectType"), JSON.parse(resp.data));
+                        hasChanged = true;
                     }));
                 }
             }
@@ -1598,21 +1607,11 @@
     }
     function removeRecord_JspNeedsAssessment(record, state=0) {
         if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){
-            // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "?isFirstChange=" + isFirstChange, "DELETE", null, function (resp) {
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id + "/" + record.objectType + "/" + record.objectId , "DELETE", null, function (resp) {
-                wait.close();
-                if (resp.httpResponseCode === 409) {
-                    createDialog("info", resp.httpResponseText);
-                    return 0;
-                } else if (resp.httpResponseCode !== 200) {
-                    createDialog("info","خطا در حذف مهارت");
-                    return 0;
-                }
-                DataSource_Skill_JspNeedsAssessment.removeData(record);
-                hasChanged = true;
-                return 1;
-            }));
+            DataSource_Skill_JspNeedsAssessment.removeData(record);
+            hasChanged = true;
+            wait.close();
+            return 1;
         }
         else{
             if(state === 0) {
@@ -1622,18 +1621,19 @@
         }
     }
 
-    function editNeedsAssessmentRecord(objectId, objectType) {
+    function editNeedsAssessmentRecord(objectId, objectType, data) {
         updateObjectIdLG(DynamicForm_JspEditNeedsAssessment, objectType);
         clearAllGrid();
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId, "GET", null, function(resp){
-            wait.close();
-            if (resp.httpResponseCode !== 200){
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                return;
-            }
-            let data = JSON.parse(resp.data).list;
-            let flags  = [];
+        if(!data)
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId,
+	        "GET", null, r => responseToListGrid_All_JspNeedsAssessment(objectId, objectType,
+		        JSON.parse(r.data).list)));
+        else
+            responseToListGrid_All_JspNeedsAssessment(objectId, objectType, data);
+    }
+
+    function responseToListGrid_All_JspNeedsAssessment(objectId, objectType, data) {
+        let flags  = [];
             for (let i = 0; i < data.length; i++) {
                 let skill = {};
                 let competence = {};
@@ -1672,9 +1672,8 @@
             DynamicForm_JspEditNeedsAssessment.setValue("objectId", objectId);
             DynamicForm_JspEditNeedsAssessment.setValue("objectType", objectType);
             fetchDataDomainsGrid();
-        }))
-    }
-
+        }
+    
     function createNeedsAssessmentRecords(data) {
         if(data === null){
             return;
@@ -1683,27 +1682,9 @@
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
         }
-        // isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "?isFirstChange=" + isFirstChange, "POST", JSON.stringify(data),function(resp){
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl, "POST", JSON.stringify(data),function(resp){
-            wait.close()
-            if (resp.httpResponseCode === 409) {
-                createDialog("info", resp.httpResponseText);
-                return 0;
-            }
-            else if(resp.httpResponseCode === 408){
-                createDialog("warning", JSON.parse(resp.httpResponseText).message)
-                return;
-            }
-            else if (resp.httpResponseCode !== 200){
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                return;
-            }
-            data.id = JSON.parse(resp.data).id;
-            DataSource_Skill_JspNeedsAssessment.addData(data);
-            hasChanged = true;
-            fetchDataDomainsGrid();
-        }))
+        DataSource_Skill_JspNeedsAssessment.addData(data);
+        fetchDataDomainsGrid();
+        hasChanged = true;
     }
     function createData_JspNeedsAssessment(record, DomainId, PriorityId = 111) {
         if(record.skillLevelId === 1 && DomainId !== 108){
@@ -1846,17 +1827,11 @@
                 updateLabelEditNeedsAssessment(objectId);
                 if (resp.data === "true") {
                     readOnly(true);
-                    fetch(needsAssessmentUrl + "/isCreatedByCurrentUser/" + type + "/" + objectId.id,
-                        {
-                            headers: {
-                                "Authorization": "Bearer <%= (String)
-                        session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>"
-                            }
-                        }).then(r => r.json()).then(d => {
+                    fetch(needsAssessmentUrl + "/isCreatedByCurrentUser/" + type + "/" + objectId.id,{headers: apiHeader}).then(r => r.json()).then(d => {
                             if(d == false)
                                createDialog("info", "<spring:message code='na.message.doesnot.access.to.others.assessment'/>");
                             else
-                               createDialog("info", "<spring:message code='read.only.na.message'/>");
+                                readOnly(false);
                         });
                  }
                 else{
@@ -1906,39 +1881,76 @@
     }
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
-    function sendNeedsAssessmentToWorkflow() {
-        if(hasChanged){
+    function sendNeedsAssessmentToWorkflow(mustSend) {
             isc.MyYesNoDialog.create({
                 message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
                 title: "<spring:message code="message"/>",
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        let varParams = [{
-                            "processKey": "needAssessment_MainWorkflow",
-                            "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
-                            "objectName": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + ( DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code: ""),
-                            "objectType": priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")],
-                            "needAssessmentCreatorId": "${username}",
-                            "needAssessmentCreator": userFullName,
-                            "REJECTVAL": "",
-                            "REJECT": "",
-                            "target": "/course/show-form",
-                            "targetTitleFa": "نیازسنجی",
-                            "workflowStatus": "ثبت اولیه",
-                            "workflowStatusCode": "0",
-                            "workFlowName": "NeedAssessment",
-                            "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
-                        }];
-                        wait.show();
-                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
-
+                        if (mustSend) {
+                            let varParams = [{
+                                "processKey": "needAssessment_MainWorkflow",
+                                "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
+                                "objectName": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : ""),
+                                "objectType": priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")],
+                                "needAssessmentCreatorId": "${username}",
+                                "needAssessmentCreator": userFullName,
+                                "REJECTVAL": "",
+                                "REJECT": "",
+                                "target": "/course/show-form",
+                                "targetTitleFa": "نیازسنجی",
+                                "workflowStatus": "ثبت اولیه",
+                                "workflowStatusCode": "0",
+                                "workFlowName": "NeedAssessment",
+                                "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
+                            }];
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                        } else {
+                            let url = needsAssessmentUrl.concat("/updateWorkFlowStatesToSent?objectId=")
+                                        .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectId"))
+                                        .concat("&objectType=")
+                                        .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
+                            fetch(url, {headers: apiHeader, method: "POST"})
+	                            .then(resp => {
+                                if(resp.status === 500) {
+                                    createDialog("info", resp.errors[0].field);
+                                    return;
+                                }
+                                if(resp.status === 200) {
+                                    simpleDialog("<spring:message code="message"/>", "<spring:message code='course.changes.set.on.workflow.engine'/>", 3000, "say");
+                                    Window_NeedsAssessment_Edit.close(0);
+                                    return ;
+                                }
+                                else {
+                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                }
+                            });
+                        }
                     }
                 }
             });
+    }
+
+    async function sendNeedsAssessmentForSaving() {
+        let data = DataSource_Skill_JspNeedsAssessment.cacheData;
+        if (data.length == 0) {
+            createDialog("info", "<spring:message code="msg.error.list.cant.be.empty"/>")
+            return [false ,false];
         }
-        else{
-            createDialog("info","تغییری صورت نگرفته است")
+        let f = await fetch(needsAssessmentUrl+"/createOrUpdateList", {headers: apiHeader, method: "POST", body: JSON.stringify(data)});
+        let hasAlreadySentToWorkFlow = await f.json();
+        if(f.status === 500) {
+            createDialog("info", hasAlreadySentToWorkFlow.errors[0].field);
+            return [false ,false];
+        }
+        if(f.status === 200) {
+            return [true ,(hasAlreadySentToWorkFlow == false)];
+        }
+        else {
+            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            return [false ,false];
         }
     }
 

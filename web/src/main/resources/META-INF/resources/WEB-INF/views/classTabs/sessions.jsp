@@ -819,9 +819,13 @@
 
             check_valid_date();
 
-            if (DynamicForm_Session.hasErrors())
+            if (DynamicForm_Session.hasErrors()){
+                let errs = Object.keys(DynamicForm_Session.getErrors());
+                let msg = "";
+                errs.forEach(k=>msg = msg.concat(DynamicForm_Session.getErrors()[k]).concat("\n"))
+                simpleDialog("<spring:message code="message"/>",msg , "0", "error");
                 return;
-
+            }
             let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
             let classId = ClassRecord.id;
 
@@ -898,9 +902,13 @@
 
             check_valid_date();
 
-            if (DynamicForm_Session.hasErrors())
+            if (DynamicForm_Session.hasErrors()){
+                let errs = Object.keys(DynamicForm_Session.getErrors());
+                let msg = "";
+                errs.forEach(k=>msg = msg.concat(DynamicForm_Session.getErrors()[k]).concat("\n"))
+                simpleDialog("<spring:message code="message"/>",msg , "0", "error");
                 return;
-
+            }
             let sessionData = DynamicForm_Session.getValues();
             let sessionEditUrl = sessionServiceUrl;
             if (session_method.localeCompare("PUT") === 0) {

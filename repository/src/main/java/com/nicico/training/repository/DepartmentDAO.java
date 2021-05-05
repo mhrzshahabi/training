@@ -37,4 +37,5 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
 
     @Query(value = "select * from tbl_department where id = f_parent and e_enabled is null", nativeQuery = true)
     List<Department> getRoot();
+
 }

@@ -53,6 +53,7 @@ public class TrainingPostDTO {
         private JobDTO.Info job;
         private PostGradeDTO.Info postGrade;
         private String area;
+        private String mojtameTitle;
         private String assistance;
         private String affairs;
         private String section;

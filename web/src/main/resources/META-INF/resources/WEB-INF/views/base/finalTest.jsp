@@ -8,6 +8,8 @@
     let finalTestMethod_finalTest;
     let oLoadAttachments_finalTest;
     let totalScore = 0;
+    let sourceExamId = 0;
+    let allResultScores;
     var scoreLabel = isc.Label.create({
         contents: "مجموع بارم وارد شده : ",
         border: "0px solid black",
@@ -279,11 +281,11 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
-             loadTab();
+             loadTab(TabSet_finalTest.getSelectedTab().ID);
             if (TabSet_finalTest.getSelectedTab() === undefined || TabSet_finalTest.getSelectedTab() === null){
-                refreshSelectedTab_class(0);
+                refreshSelectedTab_class_final(0);
             } else {
-                refreshSelectedTab_class(TabSet_finalTest.getSelectedTab());
+                refreshSelectedTab_class_final(TabSet_finalTest.getSelectedTab());
                 if (TabSet_finalTest.getSelectedTab().ID === 'resendFinalTest'){
                     if (record.onlineFinalExamStatus === false){
                         resendFinalExam_DynamicForm.getItem("time").setDisabled(true);
@@ -330,6 +332,7 @@
                             margin: 3,
 
                             click: function () {
+                                sourceExamId=record.id
                                 loadExamResult(record)
                             }
                         });
@@ -383,9 +386,21 @@
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
-                {name: "surname", title: 'نام',align: "center", width: "15%"},
+                {name: "cellNumber", title: 'موبایل',align: "center", width: "10%",  hidden: true},
+                {name: "surname", title: 'نام',align: "center", width: "10%"},
                 {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "15%"},
-                {name: "score", title: 'نمره' ,align: "center", width: "10%"},
+                {name: "score", title: 'نمره کسب شده دانشجو' ,align: "center", width: "15%"},
+                {name: "testResult", title: 'نمره تستی' ,align: "center", width: "10%"},
+                {name: "descriptiveResult", title: 'نمره تشریحی' ,align: "center", width: "10%",
+ change: function(form, item, value, oldValue) {
+                   setDescriptiveResultValue(value, form)
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+},
+                {name: "finalResult", title: 'نمره نهایی(با ارفاق)' ,align: "center", width: "15%",
+ change: function(form, item, value, oldValue) {
+                   setFinalResultValue(value, form)
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+},
                 {name: "resultStatus", title: 'وضعیت فراگیر' ,align: "center", width: "10%"},
                 { name: "iconField", title: "نتایج", width: "10%",align:"center"},
                 { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
@@ -399,6 +414,9 @@
                         title: "پاسخ ها",
                         width: "120",
                         click: function () {
+                            if  (record.resultStatus ==="بدون پاسخ") {
+                                  createDialog("warning", "دانشجو مورد نظر به سوالی پاسخ نداده است", "اخطار"); }
+                            else
                             ListGrid_show_results(record.answers);
                         }
                     });
@@ -410,6 +428,9 @@
                         title: "چاپ گزارش",
                         width: "120",
                         click: function () {
+                               if  (record.resultStatus ==="بدون پاسخ") {
+                                  createDialog("warning", "دانشجو مورد نظر به سوالی پاسخ نداده است", "اخطار"); }
+                            else
                             printEls("pdf",recordList.id,record.nationalCode,"ElsExam.jasper",record.surname,record.lastName);
                         }
                     });
@@ -432,11 +453,11 @@
                     setTimeout(function () {
                         OK.close();
                     }, 1500);
-
+                    allResultScores=results
                     ListGrid_Result_finalTest.setData(results);
-
+                    hideFields(ListGrid_Result_finalTest,JSON.parse(resp.data).examType)
                     let Window_result_Finaltest = isc.Window.create({
-                        width: 1024,
+                        width: 1324,
                         height: 768,
                         keepInParentRect: true,
                         title: "مشاهده نتایج آزمون",
@@ -462,7 +483,13 @@
                                                 click: function () {
                                                 Window_result_Finaltest.close();
                                                 }
-                                            })
+                                            }),
+                                            isc.IButtonSave.create({
+                    title: "<spring:message code="sendScoreToOnlineExam"/>", width: 300,
+                    click: function () {
+                      sendFinalScoreToOnlineExam(Window_result_Finaltest);
+                    }
+                })
                                         ]
                                     })]
                             })
@@ -489,8 +516,8 @@
         let index = questionData.findIndex(f => f.id === form.values.id)
         questionData[index].score = value;
         // debugger
-totalScore=0;
-form.grid.data.forEach(
+         totalScore=0;
+          form.grid.data.forEach(
     q=>{ if (q.score!== null && q.score !== undefined)
 {
 totalScore=totalScore+q.score
@@ -500,6 +527,18 @@ totalScore=totalScore+q.score
 
 scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
+        }
+
+
+    function setDescriptiveResultValue(value, form) {
+
+         let index = allResultScores.findIndex(f => f.cellNumber === form.values.cellNumber)
+            allResultScores[index].descriptiveResult = value;
+
+        }
+    function setFinalResultValue(value, form) {
+   let index = allResultScores.findIndex(f => f.cellNumber === form.values.cellNumber)
+            allResultScores[index].finalResult = value;
         }
 
 
@@ -783,7 +822,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
     function ListGrid_show_results(answers) {
 
-debugger
         let dynamicForm_Answers_List = isc.DynamicForm.create({
                 padding: 6,
                 numCols: 1,
@@ -794,23 +832,34 @@ debugger
                 });
         for(var i=0 ; i<answers.length; i++) {
                 let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
-                let correct_FormItem = { title:"Pasted value",cellStyle: 'correct-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
                 let radio_FormItem =  { name: "startMode", cellStyle: 'radio-exam-form-item', disabled:true,titleOrientation: "top", title: "Initially show ColorPicker as",
                         width: "100%",
                         type: "radioGroup",
                         valueMap: {}
                     };
-                text_FormItem.title = (i+1)+"-"+answers[i].question;
-                correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
+
+                let correctAnswer="<span class=\"correctAnswer\"></span>";
+                if (answers[i].examinerAnswer!==null && answers[i].examinerAnswer!==undefined)
+                  correctAnswer = "<div class=\"correctAnswer\" ><span>"+answers[i].examinerAnswer+"</span></div>";
+                else
+                correctAnswer = "<span class=\"correctAnswer\">جوابی برای این سوال توسط استاد ثبت نشده</span>";
+
+                      let mark="<span class=\"mark\"></span>";
+                if (answers[i].mark!==null && answers[i].mark!==undefined)
+                  mark = "<div class=\"mark\" ><span>"+" ( "+answers[i].mark +" نمره ) "+"</span></div>";
+                else
+                mark = "<span class=\"mark\">( بارم ثبت نشده )</span>";
+
+
+                text_FormItem.title = (i+1)+"-"+answers[i].question +"   "+mark+ "\n"+
+                 " جواب استاد :"+ "\n"+ "  "+correctAnswer;
+                // correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
                 text_FormItem.value = answers[i].answer;
                 text_FormItem.name = answers[i].answer;
-                if (answers[i].correctAnswer!==null)
-                correct_FormItem.value = answers[i].correctAnswer;
-                else
-                correct_FormItem.value = "جوابی برای این سوال توسط استاد ثبت نشده";
 
                 if(answers[i].type == "چند گزینه ای") {
-                    radio_FormItem.title = answers[i].question;
+                    radio_FormItem.title = (i+1)+"-"+answers[i].question+"   "+mark+ "\n"+
+                     " جواب استاد :"+  "\n"+ "  "+correctAnswer;
                     radio_FormItem.name = i+"";
                     if(answers[i].options.length > 0) {
                         for(let j = 0; j< answers[i].options.length; j++){
@@ -824,13 +873,9 @@ debugger
                     if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
                          dynamicForm_Answers_List.getField(i).setValue(answers[i].answer);
                     }
-                } else {
+               } else {
                     dynamicForm_Answers_List.addField(text_FormItem)
-                    // dynamicForm_Answers_List.addField(correct_FormItem)
-
-                }
-
-
+                      }
             }
         let Window_result_Answer_FinalTest = isc.Window.create({
             width: 1024,
@@ -1215,7 +1260,7 @@ debugger
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
-                refreshSelectedTab_class(tab);
+                refreshSelectedTab_class_final(tab);
                 if (TabSet_finalTest.getSelectedTab().ID === 'resendFinalTest'){
                     if (FinalTestLG_finalTest.getSelectedRecord().onlineFinalExamStatus === false){
                         resendFinalExam_DynamicForm.getItem("time").setDisabled(true);
@@ -1233,17 +1278,17 @@ debugger
         }
     });
 
-        function refreshSelectedTab_class(tab) {
+        function refreshSelectedTab_class_final(tab) {
         let classRecord = FinalTestLG_finalTest.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
             switch (tab.ID) {
                 case "resendFinalTest": {
-                    if (typeof loadPage_student !== "undefined")
-                        loadPage_student();
+                    if (typeof loadPage_student_resend !== "undefined")
+                        loadPage_student_resend();
                     break;
                 }
                 case "finalTestQuestionBank": {
-                        loadTab();
+                        loadTab(tab.ID);
                     break;
                 }
 
@@ -1268,7 +1313,7 @@ debugger
 
 
 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
-    loadTab();
+    loadTab(TabSet_finalTest.getSelectedTab().ID);
 
     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
@@ -1352,7 +1397,7 @@ let inValidStudents = [];
     function refresh_finalTest() {
         FinalTestLG_finalTest.invalidateCache();
         FinalTestLG_finalTest.fetchData();
-        loadTab();
+        loadTab(TabSet_finalTest.getSelectedTab().ID);
     }
 
     function showNewForm_finalTest() {
@@ -1411,10 +1456,33 @@ let inValidStudents = [];
             finalTestSaveUrl += "/" + record.id;
             finalTestAction = '<spring:message code="edited"/>';
         }
+          let data = FinalTestDF_finalTest.getValues();
+        if (finalTestMethod_finalTest.localeCompare("POST") == 0) {
+
+            isc.RPCManager.sendRequest(TrDSRequest(isValidForExam+data.tclassId, "GET",null, function (resp) {
+             let respText = JSON.parse(resp.httpResponseText);
+                if (respText.status === 200)
+            {
+        isc.RPCManager.sendRequest(
+            TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest, JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')")
+        );
+
+              }
+                else
+             {
+          createDialog("warning", "روش نمره دهی این کلاس بدون نمره و یا ارزشی می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
+         }
+            }));
+        }
+        else
+         {
         let data = FinalTestDF_finalTest.getValues();
         isc.RPCManager.sendRequest(
             TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest, JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')")
         );
+
+          }
+
     };
 
     function showRemoveForm_finalTest() {
@@ -1508,25 +1576,79 @@ let inValidStudents = [];
             }
         }
 
-    function loadTab() {
+    function loadTab(id) {
         if (FinalTestLG_finalTest.getSelectedRecord() === null) {
             TabSet_finalTest.disable();
 
             return;
         }
 
-        classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
-        RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
-        ListGrid_FinalTest.invalidateCache();
-        ListGrid_FinalTest.fetchData(null,(res) => {
-            checkHaveQuestion(res);
+        switch (id) {
+                case "resendFinalTest": {
+                    if (typeof loadPage_student_resend !== "undefined")
+                        loadPage_student_resend();
+                    break;
+                }
+                case "finalTestQuestionBank": {
+                        classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
+                        RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
+                        ListGrid_FinalTest.invalidateCache();
+                        ListGrid_FinalTest.fetchData(null,(res) => {
+                        checkHaveQuestion(res);
             });
-        TabSet_finalTest.enable();
+                    TabSet_finalTest.enable();
+                    break;
+                }
+
+            }
+
+
     }
+
+    function sendFinalScoreToOnlineExam(form) {
+               wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/final/test/" +sourceExamId, "POST", JSON.stringify(allResultScores), function (resp) {
+                              let respText = JSON.parse(resp.httpResponseText);
+                if (respText.status === 200 || respText.status === 201) {
+                    form.close();
+                    createDialog("info", "ثبت نمرات انجام شد");
+
+                } else {
+                                  createDialog("warning", respText.message, "اخطار");
+
+                }
+                wait.close();
+
+    }));
+}
+    function hideFields(form,examType) {
+            switch (examType) {
+            case "چند گزینه ای":
+                              form.getField("descriptiveResult").hidden = true;
+                              form.getField("testResult").hidden = false;
+
+                break;
+            case "تشریحی":
+                              form.getField("descriptiveResult").hidden = false;
+                              form.getField("testResult").hidden = true;
+                 break;
+            case "تستی-تشریحی":
+                              form.getField("descriptiveResult").hidden = false;
+                              form.getField("testResult").hidden = false;
+                 break;
+
+            default:
+                              form.getField("descriptiveResult").hidden = false;
+                              form.getField("testResult").hidden = false;
+
+        }
+
+    }
+
     function NCodeAndMobileValidation(nationalCode, mobileNum,gender) {
 
         let isValid = true;
-        if (gender===undefined || nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null) {
+        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null) {
             isValid = false;
         }
         else {
@@ -1537,8 +1659,6 @@ let inValidStudents = [];
             if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
                 isValid = false;
             if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
-                isValid = false;
-            if(gender===null)
                 isValid = false;
         }
         return isValid;
