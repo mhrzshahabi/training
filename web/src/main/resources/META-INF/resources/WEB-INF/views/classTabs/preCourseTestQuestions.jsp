@@ -242,7 +242,7 @@
                 validators: [
                     {
                         type: "lengthRange",
-                        max: 1000,
+                        max: 4000,
                         errorMessage: "<spring:message code="class.preCourseTestQuestion.length.limit"/>"
                     },
                     <%--{type: "required", errorMessage: "<spring:message code="msg.field.is.required"/>"}--%>

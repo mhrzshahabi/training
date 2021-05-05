@@ -27,6 +27,12 @@ public interface IDepartmentService {
 
     SearchDTO.SearchRs<DepartmentDTO.OrganSegment> getOrganSegmentList(String fieldName, SearchDTO.SearchRq request);
 
+    List<DepartmentDTO.DepChart> getDepChartData();
+
+    List<DepartmentDTO.DepChart> getDepChartChildren(String category, String parentTitle, List<Long> childrenIds);
+
+    List<DepartmentDTO.DepChart> getSearchDepChartData(String value);
+
     List<DepartmentDTO.TSociety> getRoot();
 
     List<DepartmentDTO.TSociety> getDepartmentByParentId(Long parentId);

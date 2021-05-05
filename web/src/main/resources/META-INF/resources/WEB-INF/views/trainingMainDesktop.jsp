@@ -1191,6 +1191,7 @@
     const workGroupUrl = rootUrl + "/work-group";
     const evaluationUrl = rootUrl + "/evaluation";
     const hasAccessToChangeClassStatus = rootUrl + "/tclass/hasAccessToChangeClassStatus/";
+    const isValidForExam = rootUrl + "/tclass/isValidForExam/";
     const hasAccessToGroups= rootUrl + "/tclass/hasAccessToGroups/";
     const changeClassStatusToLock = rootUrl + "/tclass/changeClassStatusToLock";
     const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";
@@ -1229,6 +1230,7 @@
     const departmentUrl = rootUrl + "/department";
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
+    const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
     const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/ManHourStatisticsPerDepartmentReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
@@ -1673,6 +1675,13 @@
                     }
                 },
                 </sec:authorize>
+
+                {
+                    title: "<spring:message code="department.chart"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/departmentChart"/>");
+                    }
+                }
             ]
         }),
     });
@@ -2321,7 +2330,7 @@
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
                             {
-                                title: "گزارش پست های نیازسنجی نشده براساس مجتمع",
+                                title: "گزارش پست های نیازسنجی نشده",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/training-area-need-assessment"/>");
                                 }
@@ -2436,6 +2445,13 @@
                                 title: "<spring:message code="man.hour.statistics.per.department.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/manHourStatisticsPerDepartmentReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            {
+                                title: "<spring:message code="man.hour.statistics.by.class.features.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/manHourStatisticsByClassFeaturesReport/"/>");
                                 }
                             },
                         ]

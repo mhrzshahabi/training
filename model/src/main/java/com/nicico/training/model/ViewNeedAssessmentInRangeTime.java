@@ -37,6 +37,21 @@ public class ViewNeedAssessmentInRangeTime implements Serializable{
     @Column(name = "C_TITLE_FA")
     private String postTitle;
 
+    @Column(name = "C_MOJTAME_TITLE")
+    private String mojtameTitle;
+
+    @Column(name = "C_ASSISTANCE")
+    private String assistance;
+
+    @Column(name = "C_AFFAIRS")
+    private String affairs;
+
+    @Column(name = "C_SECTION")
+    private String section;
+
+    @Column(name = "C_UNIT")
+    private String unit;
+
     @Column(name = "NAME")
     private String updateBy;
 

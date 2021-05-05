@@ -521,3 +521,9 @@ span {
 .answers-form {
 left: 0 !important;
 }
+.correctAnswer {
+    color: #68a009;
+}
+.mark {
+    color: #9e0000;
+}

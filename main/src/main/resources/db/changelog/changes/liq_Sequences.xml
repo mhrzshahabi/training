@@ -283,4 +283,7 @@
     <changeSet author="namdari (generated)" id="1614681515816-432">
         <createSequence sequenceName="seq_lock_class_id"/>
     </changeSet>
+    <changeSet author="namdari (generated)" id="1614681515816-433">
+        <createSequence sequenceName="seq_fms_id"/>
+    </changeSet>
 </databaseChangeLog>

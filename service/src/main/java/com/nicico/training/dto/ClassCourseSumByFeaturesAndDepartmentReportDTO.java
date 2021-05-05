@@ -89,4 +89,12 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("AttendanceReportDTOSpecRs")
+    public static class ReportResponse {
+          SpecRs response;
+    }
 }

@@ -11,7 +11,7 @@
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    objectIdAttachment=null
+                    objectIdAttachment=null;
                     LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
                     closeToShowUnGroupedPosts_POST();
                     refreshLG(PostLG_post);
@@ -133,6 +133,7 @@
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "mojtameTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -276,7 +277,8 @@
             {name: "titleFa",},
             {name: "jobTitleFa",},
             {name: "postGradeTitleFa",},
-            {name: "area",},
+            {name: "area", hidden: true},
+            {name: "mojtameTitle"},
             {name: "assistance",},
             {name: "affairs",},
             {name: "section",},

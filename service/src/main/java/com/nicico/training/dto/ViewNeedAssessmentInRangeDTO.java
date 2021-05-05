@@ -16,8 +16,6 @@ import java.util.List;
 @Accessors(chain = true)
 public class ViewNeedAssessmentInRangeDTO implements Serializable {
 
-
-
     @ApiModelProperty
     private Long id;
 
@@ -29,6 +27,21 @@ public class ViewNeedAssessmentInRangeDTO implements Serializable {
 
     @ApiModelProperty
     private String postTitle;
+
+    @ApiModelProperty
+    private String mojtameTitle;
+
+    @ApiModelProperty
+    private String assistance;
+
+    @ApiModelProperty
+    private String affairs;
+
+    @ApiModelProperty
+    private String section;
+
+    @ApiModelProperty
+    private String unit;
 
     @ApiModelProperty
     private String updateBy;

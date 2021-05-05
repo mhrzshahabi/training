@@ -35,6 +35,9 @@ public class ViewTrainingPostDTO implements Serializable {
     private String area;
 
     @ApiModelProperty
+    private String mojtameTitle;
+
+    @ApiModelProperty
     private String assistance;
 
     @ApiModelProperty
@@ -113,6 +116,5 @@ public class ViewTrainingPostDTO implements Serializable {
     @ApiModel("PostReport")
     public static class Report extends Info {
         private String mojtameCode;
-        private String mojtameTitle;
     }
 }

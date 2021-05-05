@@ -199,9 +199,22 @@ public class TestQuestionService implements ITestQuestionService {
                     q.setAnswer(answer.getAnswer() + "\n");
                 else
                     q.setAnswer("پاسخ داده نشده" + "\n");
+
+
+                String questionWithMark = q.getQuestion() +
+                        " ( بارم : " + answer.getMark() + " ) ";
+                q.setQuestion(questionWithMark);
             }
             else
                 q.setAnswer("پاسخ داده نشده" + "\n");
+
+            if (answer != null && answer.getExaminerAnswer()!=null)
+                q.setExaminerAnswer(answer.getExaminerAnswer()+ "\n");
+                else
+                    q.setExaminerAnswer("پاسخ داده نشده" + "\n");
+
+
+
         }
 
         String data = mapper.writeValueAsString(testQuestionBanks);

@@ -1,31 +1,26 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
+import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
 import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
-import com.nicico.training.model.ViewPost;
 import com.nicico.training.model.ViewTrainingNeedAssessment;
-import com.nicico.training.model.ViewTrainingPostReport;
-import com.nicico.training.repository.ViewPostDAO;
 import com.nicico.training.repository.ViewTrainingNeedAssessmentDAO;
-import com.nicico.training.repository.ViewTrainingPostDAO;
-import com.nicico.training.repository.ViewTrainingPostReportDAO;
-import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -35,27 +30,8 @@ public class ReportsToExcelFormController {
 
     private final ModelMapper modelMapper;
     private final MakeExcelOutputUtil makeExcelOutputUtil;
-    private final ViewTrainingPostReportDAO viewTrainingPostReportDAO;
     private final ViewTrainingNeedAssessmentDAO viewTrainingNeedAssessmentDAO;
     private final IViewNeedAssessmentInRangeTimeService iViewNeedAssessmentInRangeTimeService;
-
-    @PostMapping(value = {"/areaNeedAssessment"})
-    public void areaNeedAssessmentExcel(HttpServletResponse response, @RequestParam MultiValueMap<String, String> criteria) throws Exception {
-
-        List<Object> resp = new ArrayList<>();
-
-        String[] fields = Objects.requireNonNull(criteria.getFirst("fields")).split(",");
-        String[] headers = Objects.requireNonNull(criteria.getFirst("headers")).split(",");
-        String[] areas = Objects.requireNonNull(criteria.getFirst("areas")).split(",");
-
-        List<ViewTrainingPostReport> viewTrainingPosts = viewTrainingPostReportDAO.findAllByAreaAndCompetenceCount(0, areas);
-
-        List<ViewTrainingPostDTO.Report> trainingPostData = viewTrainingPosts.stream().map(item -> modelMapper.map(item, ViewTrainingPostDTO.Report.class)).collect(Collectors.toList());
-        resp.addAll(trainingPostData);
-
-        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, ViewTrainingPostDTO.Report.class, fields, headers, true, "");
-        makeExcelOutputUtil.makeExcelResponse(bytes, response);
-    }
 
     @PostMapping(value = {"/courseNeedAssessment"})
     public void courseNeedAssessmentExcel(HttpServletResponse response, @RequestParam MultiValueMap<String, String> criteria) throws Exception {
@@ -74,6 +50,7 @@ public class ReportsToExcelFormController {
         byte[] bytes = makeExcelOutputUtil.makeOutput(resp, ViewTrainingNeedAssessmentDTO.Info.class, fields, headers, true, "");
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
+
     @PostMapping(value = {"/needsAssessmentsPerformed"})
     public void needsAssessmentsPerformed(HttpServletResponse response, @RequestParam MultiValueMap<String, String> criteria) throws Exception {
 
@@ -107,7 +84,7 @@ public class ReportsToExcelFormController {
         List list = new ArrayList();
         for (Object obj : resp) {
             String s = gson.toJson(obj);
-            list.add(gson.fromJson(s,Class.forName(detailDto)));
+            list.add(gson.fromJson(s, Class.forName(detailDto)));
         }
         byte[] bytes = makeExcelOutputUtil.makeOutputWithExtraHeader(list, Class.forName(detailDto), detailFields, detailHeaders, true, title, masterData);
         makeExcelOutputUtil.makeExcelResponse(bytes, response);

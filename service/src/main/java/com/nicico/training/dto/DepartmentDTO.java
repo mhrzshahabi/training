@@ -97,4 +97,18 @@ public class DepartmentDTO implements Serializable {
         public Long parentId;
     }
 
+    @Getter
+    @Setter
+    @EqualsAndHashCode(of = {"id"}, callSuper = false)
+    @ApiModel("DepChart")
+    public static class DepChart {
+
+        private Long id;
+        public String title;
+        public String code;
+        public String category;
+        public Long parentId;
+        public String parentTitle;
+    }
+
 }

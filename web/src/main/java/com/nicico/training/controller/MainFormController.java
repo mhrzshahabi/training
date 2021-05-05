@@ -26,6 +26,11 @@ public class MainFormController {
         return "basic/organizationalChart";
     }
 
+    @RequestMapping("/departmentChart")
+    public String showDepartmentChartForm() {
+        return "basic/departmentChart";
+    }
+
     @RequestMapping("/trainingFile")
     public String showTrainingFileForm() {
         return "report/trainingFile";
@@ -199,6 +204,10 @@ public class MainFormController {
     @RequestMapping("/statisticsUnitReport")
     public String showStatisticsUnitReport() {
         return "report/statisticsUnitReport";
+    }
+    @RequestMapping("/manHourStatisticsByClassFeaturesReport")
+    public String showManHourStatisticsByClassFeaturesReport() {
+        return "report/manHourStatisticsByClassFeaturesReport";
     }
     @RequestMapping("/manHourStatisticsPerDepartmentReport")
     public String showManHourStatisticsPerDepartmentReport() {

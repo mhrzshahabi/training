@@ -3,6 +3,10 @@ package com.nicico.training.service;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.GroupBy;
 import com.nicico.training.iservice.IClassCourseSumByFeaturesAndDepartmentReportService;
+import com.nicico.training.model.enums.ELevelType;
+import com.nicico.training.model.enums.ERunType;
+import com.nicico.training.model.enums.ETechnicalType;
+import com.nicico.training.model.enums.ETheoType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -136,17 +140,21 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
             int index = 1;
             if (groupBy.equals(GroupBy.CLASS_TEACHING_TYPE))
                 dto.setClassTeachingType(record[7].toString());
-            if (groupBy.equals(GroupBy.CLASS_STATUS))
+            else if (groupBy.equals(GroupBy.CLASS_STATUS))
                 dto.setClassStatus(record[7].toString());
-            if (groupBy.equals(GroupBy.COURSE_LEVEL_TYPE))
-                dto.setCourseLevelType(record[7].toString());
-            if (groupBy.equals(GroupBy.COURSE_RUN_TYPE))
-                dto.setCourseRunType(record[7].toString());
-            if (groupBy.equals(GroupBy.COURSE_TECHNICAL_TYPE))
-                dto.setCourseTechnicalType(record[7].toString());
-            if (groupBy.equals(GroupBy.COURSE_THEO_TYPE))
-                dto.setCourseTheoType(record[7].toString());
-            else
+            else if (groupBy.equals(GroupBy.COURSE_LEVEL_TYPE)) {
+                if (record[7] != null)
+                    dto.setCourseLevelType(Arrays.stream(ELevelType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+            } else if (groupBy.equals(GroupBy.COURSE_RUN_TYPE)) {
+                if (record[7] != null)
+                    dto.setCourseRunType(Arrays.stream(ERunType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+            } else if (groupBy.equals(GroupBy.COURSE_TECHNICAL_TYPE)) {
+                if (record[7] != null)
+                    dto.setCourseTechnicalType(Arrays.stream(ETechnicalType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+            } else if (groupBy.equals(GroupBy.COURSE_THEO_TYPE)) {
+                if (record[7] != null)
+                    dto.setCourseTheoType(Arrays.stream(ETheoType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+            } else
                 index = 0;
 
             if (omorCode != null) {
@@ -174,13 +182,13 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         if (groupBy.equals(GroupBy.CLASS_STATUS))
             script.append("       C_STATUS,");
         if (groupBy.equals(GroupBy.COURSE_LEVEL_TYPE))
-            script.append("       C_LEVEL_TYPE,");
+            script.append("       E_LEVEL_TYPE,");
         if (groupBy.equals(GroupBy.COURSE_RUN_TYPE))
-            script.append("       C_RUN_TYPE,");
+            script.append("       E_RUN_TYPE,");
         if (groupBy.equals(GroupBy.COURSE_TECHNICAL_TYPE))
-            script.append("       C_TECHNICAL_TYPE,");
+            script.append("       E_TECHNICAL_TYPE,");
         if (groupBy.equals(GroupBy.COURSE_THEO_TYPE))
-            script.append("       C_THEO_TYPE,");
+            script.append("       E_THEO_TYPE,");
     }
 
 }

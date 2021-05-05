@@ -107,6 +107,25 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         return true;
     }
 
+    @Transactional
+    public List<NeedsAssessmentDTO.Info> getValuesForCopyNA(String sourceObjectType, Long sourceObjectId, Long sourceCompetenceId, String objectType, Long objectId) {
+        SearchDTO.CriteriaRq criteria = getCriteria(sourceObjectType, sourceObjectId, true);
+        if (sourceCompetenceId != null) {
+            criteria.getCriteria().add(makeNewCriteria("competenceId", sourceCompetenceId, EOperator.equals, null));
+        }
+        List<Skill> skillList = needsAssessmentDAO.findAll(NICICOSpecification.of(getCriteria(objectType, objectId, true))).stream().map(NeedsAssessment::getSkill).collect(Collectors.toList());
+        List<NeedsAssessment> sourceNeedsAssessments = needsAssessmentDAO.findAll(NICICOSpecification.of(criteria));
+        List<NeedsAssessmentDTO.Info> list = new ArrayList<>();
+        sourceNeedsAssessments.forEach(sourceNA -> {
+            if (!skillList.contains(sourceNA.getSkill())) {
+                NeedsAssessmentDTO.Info newNA = new NeedsAssessmentDTO.Info();
+                modelMapper.map(sourceNA, newNA);
+                newNA.setObjectId(objectId).setObjectType(objectType);
+                list.add(newNA);
+            }
+        });
+        return list;
+    }
 
     @Transactional
     public void verify(String objectType, Long objectId) {
@@ -146,13 +165,18 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     public Boolean rollback(String objectType, Long objectId) {
         if (readOnlyStatus(objectType, objectId) > 1)
             return false;
-        deleteAllTempNA(objectType, objectId);
+        deleteAllNotSentTempNA(objectType, objectId);
         return true;
     }
 
     @Transactional
     public void deleteAllTempNA(String objectType, Long objectId) {
         dao.deleteAllByObjectIdAndObjectType(objectId, objectType);
+    }
+
+    @Transactional
+    public void deleteAllNotSentTempNA(String objectType, Long objectId) {
+        dao.deleteAllNotSentByObjectIdAndObjectType(objectId, objectType);
     }
 
     @Transactional(readOnly = true)
@@ -162,9 +186,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         if (needsAssessmentTemps == null || needsAssessmentTemps.isEmpty())
             return 0; //this object is editable and needs to be initialize
         if (needsAssessmentTemps.get(0).getCreatedBy().equals(SecurityUtil.getUsername())) {
-            if (needsAssessmentTemps.get(0).getMainWorkflowStatusCode() == null || needsAssessmentTemps.get(0).getMainWorkflowStatusCode() == -1)
                 return 1; //this object is editable and dont needs to be initialize
-            return 3; // this object is read only and user should see edited NAs
         } else
             return 2;
     }
@@ -259,20 +281,21 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     }
 
     @Transactional(readOnly = true)
-    public void checkCategoryNotEquals(NeedsAssessmentDTO.Create rq, HttpServletResponse resp) throws IOException {
+    public TrainingException checkCategoryNotEquals(NeedsAssessmentDTO.Create rq) {
         Optional<Competence> byId = competenceDAO.findById(rq.getCompetenceId());
         Competence competence = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
         if (competence.getCategoryId() == null) {
-            return;
+            return null;
         }
         Optional<Skill> byId1 = skillDAO.findById(rq.getSkillId());
         Skill skill = byId1.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
         if (!(skill.getSubCategoryId().equals(competence.getSubCategoryId()))) {
-            resp.sendError(408, messageSource.getMessage("زیر گروه شایستگی با زیر گروه مهارت یکسان نیست.", null, LocaleContextHolder.getLocale()));
+            return new TrainingException(TrainingException.ErrorType.SkillSubCatIsNotEqualWithNASubCat, messageSource.getMessage("زیر گروه شایستگی با زیر گروه مهارت یکسان نیست.", null, LocaleContextHolder.getLocale()));
         }
         if (!(skill.getCategoryId().equals(competence.getCategoryId()))) {
-            resp.sendError(408, messageSource.getMessage("گروه مهارت با گروه شایستگی یکسان نیست", null, LocaleContextHolder.getLocale()));
+            return new TrainingException(TrainingException.ErrorType.SkillCatIsNotEqualWithNACat, messageSource.getMessage("گروه مهارت با گروه شایستگی یکسان نیست", null, LocaleContextHolder.getLocale()));
         }
+        return null;
     }
 
     @Transactional
@@ -288,4 +311,41 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             return null;
         return needsAssessmentTemps.get(0).getCreatedBy().equals(SecurityUtil.getUsername());
     }
+
+    public List<NeedsAssessmentTemp> getListByObjectIdAndType(String objectType, Long objectId) {
+        SearchDTO.CriteriaRq criteriaRq = getCriteria(objectType, objectId, false);
+        return dao.findAll(NICICOSpecification.of(criteriaRq));
+    }
+
+    public Boolean createOrUpdateList(List<NeedsAssessmentDTO.Create> createList) {
+        for (NeedsAssessmentDTO.Create create : createList) {
+            TrainingException exception = checkCategoryNotEquals(create);
+            if (exception != null)
+                throw exception;
+            if (!isEditable(create.getObjectType(), create.getObjectId()))
+                throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentIsNotEditable, messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()));
+        }
+        List<NeedsAssessmentTemp> alreadyExist = getListByObjectIdAndType(createList.get(0).getObjectType(), createList.get(0).getObjectId());
+        List<NeedsAssessmentTemp> removedRecords = new ArrayList<>();
+        if (alreadyExist != null && !alreadyExist.isEmpty()) {
+            for (NeedsAssessmentTemp needsAssessmentTemp : alreadyExist) {
+                Optional<NeedsAssessmentDTO.Create> any = createList.stream().filter(create -> create.getId() != null).filter(create -> create.getId().equals(needsAssessmentTemp.getId())).findAny();
+                if (any.isPresent())
+                    createList.remove(any.get());
+                else
+                    removedRecords.add(needsAssessmentTemp);
+            }
+        }
+        if (!removedRecords.isEmpty())
+            for (NeedsAssessmentTemp removedRecord : removedRecords) {
+                delete(removedRecord.getId());
+            }
+        for (NeedsAssessmentDTO.Create create : createList) {
+            create(create);
+        }
+        Boolean hasAlreadySentToWorkFlow = !alreadyExist.isEmpty() && alreadyExist.stream()
+                .anyMatch(needsAssessmentTemp -> needsAssessmentTemp.getMainWorkflowStatusCode() != null && needsAssessmentTemp.getMainWorkflowStatusCode() == 0);
+        return hasAlreadySentToWorkFlow;
+    }
+
 }

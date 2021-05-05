@@ -58,31 +58,36 @@ public class TclassService implements ITclassService {
     private final ModelMapper modelMapper;
     private final EvaluationQuestionDAO evaluationQuestionDAO;
     private final TclassDAO tclassDAO;
+    private final TeacherDAO teacherDAO;
     private final ClassSessionDAO classSessionDAO;
     private final LockClassDAO lockClassDAO;
     private final EvaluationDAO evaluationDAO;
     private final StudentDAO studentDAO;
-    private final ClassStudentDAO classStudentDAO;
     private final EvaluationAnswerService evaluationAnswerService;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassSessionService classSessionService;
     private final TermDAO termDAO;
     private final TrainingPlaceDAO trainingPlaceDAO;
-    private final AttachmentService attachmentService;
     private final IEvaluationService evaluationService;
     private final IWorkGroupService workGroupService;
     private final ParameterService parameterService;
     private final ParameterValueService parameterValueService;
     private final CourseDAO courseDAO;
     private final MessageSource messageSource;
-    private final TargetSocietyService societyService;
-    private final TargetSocietyDAO societyDAO;
+    private final TargetSocietyService targetSocietyService;
     private final AttendanceDAO attendanceDAO;
+    private final EvaluationAnswerDAO evaluationAnswerDAO;
     private final ParameterValueDAO parameterValueDAO;
     private final TrainingClassBeanMapper trainingClassBeanMapper;
     private final EvaluationAnalysisDAO evaluationAnalysisDAO;
     private final ClassCheckListDAO classCheckListDAO;
+    private final ClassDocumentDAO classDocumentDAO;
+    private final AttachmentDAO attachmentDAO;
+    private final TargetSocietyDAO targetSocietyDAO;
+    private final TestQuestionDAO testQuestionDAO;
+    private final QuestionBankDAO questionBankDAO;
+    private final QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
     private final TclassBeanMapper tclassBeanMapper;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
@@ -272,16 +277,56 @@ public class TclassService implements ITclassService {
             resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن چک لیست قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
             return;
         }
+
+        List<ClassDocument> classDocuments = classDocumentDAO.findClassDocumentByTclassId(id);
+
+        if (!classDocuments.isEmpty()) {
+            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن مستندات قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            return;
+        }
+
+        List<Attachment> attachments = attachmentDAO.findAttachmentByObjectTypeAndObjectId("Tclass", id);
+
+        if (!attachments.isEmpty()) {
+            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن ضمائم قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            return;
+        }
+
+
+        List<Long> testQuestionIds = testQuestionDAO.findByTclassId(id).stream().map(TestQuestion::getId).collect(Collectors.toList());
+        List<Long> questionBankIds = questionBankDAO.findByTclassId(id).stream().map(QuestionBank::getId).collect(Collectors.toList());
+        List<QuestionBankTestQuestion> allQT = new ArrayList<>();
+        testQuestionIds.forEach(tIds -> questionBankIds.forEach(qIds -> allQT.addAll(questionBankTestQuestionDAO.findByQuestionBankIdAndTestQuestionId(qIds, tIds))));
+
+        allQT.stream().map(QuestionBankTestQuestion::getId).forEach(questionBankTestQuestionDAO::deleteById);
+        testQuestionIds.forEach(testQuestionDAO::deleteById);
+        questionBankIds.forEach(questionBankDAO::deleteById);
+
+
+        List<TargetSociety> targetSocieties = targetSocietyDAO.findAllByTclassId(id);
+        targetSocieties.forEach(item -> targetSocietyService.delete(item.getId()));
+
+        targetSocietyDAO.deleteClassTrainingPlace(id);
+        testQuestionDAO.deleteClassPreCourseTestQuestion(id);
+
         for (Evaluation eva : tclass.getEvaluations()) {
+            List<EvaluationAnswer> evaluationAnswers = evaluationAnswerDAO.findByEvaluationId(eva.getId());
+            evaluationAnswers.forEach(item -> evaluationAnswerService.delete(item.getId()));
             evaluationService.delete(eva.getId());
         }
 
-        tclassDAO.deleteById(id);
-        attendanceDAO.deleteAll(attendances);
-        List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Tclass", id).getList();
-        for (AttachmentDTO.Info attachment : attachmentInfoList) {
-            attachmentService.delete(attachment.getId());
-        }
+        evaluationAnalysisDAO.deleteByTClassId(id);
+
+        Teacher teacher = teacherDAO.findById(tclass.getTeacherId()).orElse(null);
+        if (teacher != null)
+            teacher.getTclasse().remove(tclass);
+
+        tclassDAO.delete(tclass);
+//        attendanceDAO.deleteAll(attendances);
+//        List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Tclass", id).getList();
+//        for (AttachmentDTO.Info attachment : attachmentInfoList) {
+//            attachmentService.delete(attachment.getId());
+//        }
     }
 
     @Transactional
@@ -1655,5 +1700,17 @@ public class TclassService implements ITclassService {
             }
             else throw new TrainingException(TrainingException.ErrorType.NotFound);
         } else throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
+
+    @Override
+    public boolean isValidForExam(long id) {
+        final Optional<Tclass> optionalTclass = tclassDAO.findById(id);
+        if (optionalTclass.isPresent())
+        {
+            Tclass tclass=optionalTclass.get();
+            return tclass.getScoringMethod() != null && (tclass.getScoringMethod().equals("2") || tclass.getScoringMethod().equals("3"));
+        }
+        else
+        return false;
     }
 }

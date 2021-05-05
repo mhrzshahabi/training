@@ -428,7 +428,7 @@
         title: "گزارش اکسل",
         width: 300,
         click: function () {
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_ManHourReport, manHourStatisticsPerDepartmentReportUrl, 0, null, '', "گزارش اصلی واحد آمار", ListGrid_ManHourReport.data.getCriteria(), null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_ManHourReport, manHourStatisticsPerDepartmentReportUrl, 0, null, '', "گزارش آمار نفر ساعت بر اساس دپارتمان", ListGrid_ManHourReport.data.getCriteria(), null);
         }
     });
 

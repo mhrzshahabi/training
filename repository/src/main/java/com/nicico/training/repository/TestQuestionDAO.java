@@ -7,6 +7,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface TestQuestionDAO extends JpaRepository<TestQuestion, Long>, JpaSpecificationExecutor<TestQuestion> {
 
@@ -19,5 +21,11 @@ public interface TestQuestionDAO extends JpaRepository<TestQuestion, Long>, JpaS
     @Modifying
     @Query(value = "update tbl_test_question set B_ONLINE_FINAL_EXAM_STATUS = :state where ID = :examId", nativeQuery = true)
     public void changeOnlineFinalExamStatus(Long examId, boolean state);
+
+    @Modifying
+    @Query(value = "delete from TBL_CLASS_PRE_COURSE_TEST_QUESTION where f_class_id = :id", nativeQuery = true)
+    void deleteClassPreCourseTestQuestion(Long id);
+
+    List<TestQuestion> findByTclassId(Long id);
 
 }

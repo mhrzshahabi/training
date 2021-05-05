@@ -1336,4 +1336,21 @@
             <column name="c_description" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="MShahabi" id="1799887766557-014">
+        <modifyDataType tableName="tbl_question_bank" columnName="c_question" newDataType="VARCHAR2(4000 CHAR)"/>
+        <modifyDataType tableName="tbl_question_bank" columnName="c_option1" newDataType="VARCHAR2(4000 CHAR)"/>
+        <modifyDataType tableName="tbl_question_bank" columnName="c_option2" newDataType="VARCHAR2(4000 CHAR)"/>
+        <modifyDataType tableName="tbl_question_bank" columnName="c_option3" newDataType="VARCHAR2(4000 CHAR)"/>
+        <modifyDataType tableName="tbl_question_bank" columnName="c_option4" newDataType="VARCHAR2(4000 CHAR)"/>
+    </changeSet>
+    <changeSet author="MShahabi" id="1799887766557-009">
+        <addColumn tableName="tbl_training_post">
+            <column name="c_mojtame_title" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="MShahabi" id="1799887766557-010">
+        <addColumn tableName="tbl_post">
+            <column name="c_mojtame_title" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
