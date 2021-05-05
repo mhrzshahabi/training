@@ -1230,6 +1230,8 @@
     const departmentUrl = rootUrl + "/department";
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
+    const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/ViewManHourStatisticsPerDepartmentReport";
+    const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
     const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
@@ -2414,10 +2416,10 @@
                             </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_Personnel_Training_Status_Report')">
                             {
-                            title: "<spring:message code="personnel.training.status.report"/>",
-                            click: function () {
-                            createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
-                            }
+                                title: "<spring:message code="personnel.training.status.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/personnelTrainingStatusReport"/>");
+                                }
                             },
                             {isSeparator: true},
                             </sec:authorize>
@@ -2437,7 +2439,21 @@
                                     createTab(this.title, "<spring:url value="web/statisticsUnitReport/"/>");
                                 }
                             },
+                            {isSeparator: true},
                             </sec:authorize>
+                            {
+                                title: "<spring:message code="man.hour.statistics.per.department.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/manHourStatisticsPerDepartmentReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            {
+                                title: "<spring:message code="man.hour.statistics.by.class.features.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/manHourStatisticsByClassFeaturesReport/"/>");
+                                }
+                            },
                         ]
                 },
                 </sec:authorize>
@@ -3584,6 +3600,7 @@
     var workflowRecordId = null;
     var workflowParameters = null;
     var todayDate = JalaliDate.JalaliTodayDate();
+    var oneMonthBeforeToday = JalaliDate.JalaliOneMonthBeforeDate();
     var userPersonInfo = null;
     isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/get-user-info", "GET", null, setUserPersonInfo));
 
@@ -3644,6 +3661,56 @@
 
         if (hideCompanyFilter === true)
             filterDF.getFields()[0].hide();
+
+        filterDF.getFields()[0].criteriaField = companyFieldName;
+        filterDF.getFields()[1].criteriaField = mojtameFieldName;
+        filterDF.getFields()[2].criteriaField = moavenatFieldName;
+        filterDF.getFields()[3].criteriaField = omorFieldName;
+        filterDF.getFields()[4].criteriaField = ghesmatFieldName;
+        filterDF.getFields()[5].criteriaField = vahedFieldName;
+
+        filterDF.getFields()[1].organSegmentFilterFieldName = useNameInCriteria ? "mojtameTitle" : "mojtameCode";
+        filterDF.getFields()[2].organSegmentFilterFieldName = useNameInCriteria ? "moavenatTitle" : "moavenatCode";
+        filterDF.getFields()[3].organSegmentFilterFieldName = useNameInCriteria ? "omorTitle" : "omorCode";
+        filterDF.getFields()[4].organSegmentFilterFieldName = useNameInCriteria ? "ghesmatTitle" : "ghesmatCode";
+
+        return filterDF;
+    }
+
+    function init_OrganSegmentFilterDF_optional(useNameInCriteria = false,
+                                                hideCompanyFilter = false,
+                                                companyFieldName = "companyName",
+                                                mojtameFieldName = "department.mojtameCode",
+                                                moavenatFieldName = "department.moavenatCode",
+                                                omorFieldName = "department.omorCode",
+                                                ghesmatFieldName = "department.ghesmatCode",
+                                                vahedFieldName = "department.vahedCode",
+                                                hideMojtameFilter = false,
+                                                hideMoavenatFilter = false,
+                                                hideOmorFilter = false,
+                                                hideGhesmatFilter = false,
+                                                hideVahedFilter = false,
+    ) {
+
+        let filterDF;
+
+        if (useNameInCriteria)
+            filterDF = isc.OrganSegmentFilterDF_title.create({});
+        else
+            filterDF = isc.OrganSegmentFilterDF_code.create({});
+
+        if (hideCompanyFilter === true)
+            filterDF.getFields()[0].hide();
+        if (hideMojtameFilter === true)
+            filterDF.getFields()[1].hide();
+        if (hideMoavenatFilter === true)
+            filterDF.getFields()[2].hide();
+        if (hideOmorFilter === true)
+            filterDF.getFields()[3].hide();
+        if (hideGhesmatFilter === true)
+            filterDF.getFields()[4].hide();
+        if (hideVahedFilter === true)
+            filterDF.getFields()[5].hide();
 
         filterDF.getFields()[0].criteriaField = companyFieldName;
         filterDF.getFields()[1].criteriaField = mojtameFieldName;
