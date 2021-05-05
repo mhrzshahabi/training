@@ -281,11 +281,11 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
-             loadTab();
+             loadTab(TabSet_finalTest.getSelectedTab().ID);
             if (TabSet_finalTest.getSelectedTab() === undefined || TabSet_finalTest.getSelectedTab() === null){
-                refreshSelectedTab_class(0);
+                refreshSelectedTab_class_final(0);
             } else {
-                refreshSelectedTab_class(TabSet_finalTest.getSelectedTab());
+                refreshSelectedTab_class_final(TabSet_finalTest.getSelectedTab());
                 if (TabSet_finalTest.getSelectedTab().ID === 'resendFinalTest'){
                     if (record.onlineFinalExamStatus === false){
                         resendFinalExam_DynamicForm.getItem("time").setDisabled(true);
@@ -1260,7 +1260,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
-                refreshSelectedTab_class(tab);
+                refreshSelectedTab_class_final(tab);
                 if (TabSet_finalTest.getSelectedTab().ID === 'resendFinalTest'){
                     if (FinalTestLG_finalTest.getSelectedRecord().onlineFinalExamStatus === false){
                         resendFinalExam_DynamicForm.getItem("time").setDisabled(true);
@@ -1278,17 +1278,17 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         }
     });
 
-        function refreshSelectedTab_class(tab) {
+        function refreshSelectedTab_class_final(tab) {
         let classRecord = FinalTestLG_finalTest.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
             switch (tab.ID) {
                 case "resendFinalTest": {
-                    if (typeof loadPage_student !== "undefined")
-                        loadPage_student();
+                    if (typeof loadPage_student_resend !== "undefined")
+                        loadPage_student_resend();
                     break;
                 }
                 case "finalTestQuestionBank": {
-                        loadTab();
+                        loadTab(tab.ID);
                     break;
                 }
 
@@ -1313,7 +1313,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
 
 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
-    loadTab();
+    loadTab(TabSet_finalTest.getSelectedTab().ID);
 
     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
@@ -1397,7 +1397,7 @@ let inValidStudents = [];
     function refresh_finalTest() {
         FinalTestLG_finalTest.invalidateCache();
         FinalTestLG_finalTest.fetchData();
-        loadTab();
+        loadTab(TabSet_finalTest.getSelectedTab().ID);
     }
 
     function showNewForm_finalTest() {
@@ -1576,20 +1576,33 @@ let inValidStudents = [];
             }
         }
 
-    function loadTab() {
+    function loadTab(id) {
         if (FinalTestLG_finalTest.getSelectedRecord() === null) {
             TabSet_finalTest.disable();
 
             return;
         }
 
-        classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
-        RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
-        ListGrid_FinalTest.invalidateCache();
-        ListGrid_FinalTest.fetchData(null,(res) => {
-            checkHaveQuestion(res);
+        switch (id) {
+                case "resendFinalTest": {
+                    if (typeof loadPage_student_resend !== "undefined")
+                        loadPage_student_resend();
+                    break;
+                }
+                case "finalTestQuestionBank": {
+                        classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
+                        RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
+                        ListGrid_FinalTest.invalidateCache();
+                        ListGrid_FinalTest.fetchData(null,(res) => {
+                        checkHaveQuestion(res);
             });
-        TabSet_finalTest.enable();
+                    TabSet_finalTest.enable();
+                    break;
+                }
+
+            }
+
+
     }
 
     function sendFinalScoreToOnlineExam(form) {

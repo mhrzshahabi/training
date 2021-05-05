@@ -8,33 +8,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
-    // ---------------------------------Functions-----------------------------------------------
 
-    function loadPage_student() {
-        let record = FinalTestLG_finalTest.getSelectedRecord();
-        if (record == null || record.tclass.id == null) {
-            isc.Dialog.create({
-                message: "<spring:message code='msg.no.records.selected'/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                    ListGrid_resendExamStudents.setData([]);
-
-                }
-            });
-
-        } else {
-            StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + record.tclass.id;
-
-
-            ListGrid_resendExamStudents.invalidateCache();
-            ListGrid_resendExamStudents.fetchData();
-            isc.Label.create({ID: "StudentsCount_student"});
-
-        }
-    }
 
     //-----------------------------Tool Strip------------------------------------
 
@@ -44,7 +18,7 @@
 
     });
 
-    function closeCalendarWindow() {
+    function closeCalendarWindowInResend() {
         if (document.getElementById(datePickerDivID) !== null) {
             var pickerDiv = document.getElementById(datePickerDivID);
             pickerDiv.style.visibility = "hidden";
@@ -184,7 +158,7 @@
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
-                        closeCalendarWindow();
+                        closeCalendarWindowInResend();
                         displayDatePicker('date_resendFinalTest', this, 'ymd', '/');
                     }
                 }],
@@ -263,7 +237,7 @@
     //-----------------------------------------------------------------
 
 
-    let StudentsDS_student = isc.TrDS.create({
+    let StudentsDS_student_resend = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "student.id", hidden: true},
@@ -379,7 +353,7 @@
     let ListGrid_resendExamStudents = isc.TrLG.create({
         ID: "ListGrid_resendExamStudents",
         <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
-        dataSource: StudentsDS_student,
+        dataSource: StudentsDS_student_resend,
         </sec:authorize>
         selectionType: "multiple",
         sortField: 1,
@@ -570,7 +544,7 @@
         }
     });
 
-    var VLayout_Body_resendExamVLayout = isc.VLayout.create({
+    let VLayout_Body_resendExamVLayout = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
@@ -665,4 +639,31 @@
 
     }
 
+    // ---------------------------------Functions-----------------------------------------------
+
+    function loadPage_student_resend() {
+        let record = FinalTestLG_finalTest.getSelectedRecord();
+        if (record == null || record.tclass.id == null) {
+            isc.Dialog.create({
+                message: "<spring:message code='msg.no.records.selected'/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code='message'/>",
+                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                    ListGrid_resendExamStudents.setData([]);
+
+                }
+            });
+
+        } else {
+            StudentsDS_student_resend.fetchDataURL = tclassStudentUrl + "/students-iscList/" + record.tclass.id;
+
+
+            ListGrid_resendExamStudents.invalidateCache();
+            ListGrid_resendExamStudents.fetchData();
+            isc.Label.create({ID: "StudentsCount_student"});
+
+        }
+    }
 // </script>
