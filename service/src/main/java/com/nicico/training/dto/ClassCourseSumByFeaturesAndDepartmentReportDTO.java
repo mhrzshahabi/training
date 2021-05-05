@@ -72,6 +72,15 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ClassCourseSumByFeaturesAndDepartmentReportDTOSpecRs")
+    public static class ClassCourseSumByFeaturesAndDepartmentReportDTOSpecRs {
+        private ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
         private List<ClassCourseSumByFeaturesAndDepartmentReportDTO> data;
         private Integer status;
