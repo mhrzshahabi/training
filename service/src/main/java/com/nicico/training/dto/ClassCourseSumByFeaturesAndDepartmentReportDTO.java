@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import io.swagger.annotations.ApiModel;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -21,7 +22,8 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
         COURSE_TECHNICAL_TYPE,
         COURSE_RUN_TYPE,
         COURSE_THEO_TYPE,
-        COURSE_LEVEL_TYPE
+        COURSE_LEVEL_TYPE,
+        EMPTY
     }
 
     private Integer presenceManHour;
@@ -78,4 +80,12 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("AttendanceReportDTOSpecRs")
+    public static class ReportResponse {
+          SpecRs response;
+    }
 }
