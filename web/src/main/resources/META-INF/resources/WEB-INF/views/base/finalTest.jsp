@@ -1579,9 +1579,13 @@ let inValidStudents = [];
     function loadTab(id) {
         if (FinalTestLG_finalTest.getSelectedRecord() === null) {
             TabSet_finalTest.disable();
-
             return;
         }
+        else {
+                      TabSet_finalTest.enable();
+
+}
+
 
         switch (id) {
                 case "resendFinalTest": {
