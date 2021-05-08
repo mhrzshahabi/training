@@ -49,7 +49,10 @@
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStatus", title:"وضعیت کلاس", filterOnKeypress: true,filterOperator: "equals", autoFitWidth: true, valueMap: {
                     1: "برنامه ریزی",
-                    2: "در حال اجرا"
+                    2: "در حال اجرا",
+                    3: "پایان یافته",
+                    4: "لغو شده",
+                    5: "اختتام"
                 }},
 
             {name: "courseType", title:"وضعیت نیازسنجی", filterOperator: "iContains", autoFitWidth: true},
@@ -447,12 +450,15 @@
                 multiple: true,
                 valueMap: {
                     "1": "برنامه ريزی",
-                    "2": "در حال اجرا"
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                    "4": "لغو شده",
+                    "5": "اختتام"
                 },
                 pickListProperties: {
                     showFilterEditor: false
                 },
-                defaultValue:  ["1","2"]
+                defaultValue:  ["1","2","3","4","5"]
             },
             {
                 name: "temp2",
