@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -38,7 +39,11 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
 
     private Double participationPercent;
 
+    private String participationPercentStr;
+
     private Double presencePerPerson;
+
+    private String presencePerPersonStr;
 
     private String classTeachingType;
 
@@ -82,6 +87,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
+        private Map<GroupBy, List<ClassCourseSumByFeaturesAndDepartmentReportDTO>> allData;
         private List<ClassCourseSumByFeaturesAndDepartmentReportDTO> data;
         private Integer status;
         private Integer startRow;
@@ -95,6 +101,6 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AttendanceReportDTOSpecRs")
     public static class ReportResponse {
-          SpecRs response;
+        SpecRs response;
     }
 }

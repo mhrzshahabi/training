@@ -7,6 +7,7 @@
 %>
 
 //<script>
+    var allData;
 
     RestDataSource_Class_JspManHourReport = isc.TrDS.create({
         fields: [
@@ -73,7 +74,17 @@
             {
                 name: "ghesmatTitle"
             },
-        ]
+        ],
+        transformResponse: function (dsResponse, dsRequest, data) {
+            if (data && data.response) {
+                allData = data.response.allData;
+                dsResponse.data = allData[Object.keys(allData)[0]];
+                dsResponse.startRow = 0;
+                dsResponse.endRow = dsResponse.data.length;
+                dsResponse.totalRows = dsResponse.data.length;
+            }
+            return this.Super("transformResponse", arguments);
+        }
     });
 
     var DynamicForm_ManHourReport = isc.DynamicForm.create({
@@ -260,7 +271,7 @@
                 hidden: false,
                 width: 200,
                 titleColSpan: 1,
-                title: "<spring:message code='start.date'/>",
+                title: "<spring:message code='from.date'/>",
                 ID: "fromDate_jspManHourReport",
                 required: true,
                 hint: "--/--/----",
@@ -289,7 +300,7 @@
                 hidden: false,
                 titleColSpan: 1,
                 width: 200,
-                title: "<spring:message code='end.date'/>",
+                title: "<spring:message code='to.date'/>",
                 ID: "toDate_jspManHourReport",
                 type: 'text', required: true,
                 hint: "--/--/----",
@@ -425,12 +436,13 @@
                 align: "center",
                 vAlign: "center",
                 members: [
-                    // isc.ToolStripButtonExcel.create({
-                    //     margin: 5,
-                    //     click: function () {
-                    //
-                    //     }
-                    // })
+                    isc.ToolStripButtonExcel.create({
+                        margin: 5,
+                        click: function () {
+                            let t = 0;
+                            Object.keys(allData).forEach(type_ => setTimeout(() => exportExcel(type_), (t++)*500));
+                        }
+                    })
                 ]
             })
             , "header", "filterEditor", "body"],
@@ -565,4 +577,96 @@
             ListGrid_ManHourReportJSP.showField("courseLevelType");
 
     };
+
+    function exportExcel(type_) {
+
+        let pivot = DynamicForm_ManHourReport.getItem('groupByType').valueMap[type_];
+
+        let detailFields = "presenceManHour,absenceManHour,unknownManHour,participationPercentStr,presencePerPersonStr";
+        let detailHeaders = '<spring:message code="report.presence.man.hour"/>,<spring:message code="report.absence.man.hour"/>,<spring:message
+	code="report.unknown.man.hour"/>,<spring:message code="report.participation.percent"/>,<spring:message
+	code="report.presence.per.person"/>';
+        detailHeaders = detailHeaders.concat(',').concat(pivot);
+        switch (type_) {
+            case 'CLASS_TEACHING_TYPE':
+                detailFields = detailFields.concat(',').concat('classTeachingType');
+                break;
+            case 'CLASS_STATUS':
+                detailFields = detailFields.concat(',').concat('classStatus');
+                break;
+            case 'COURSE_TECHNICAL_TYPE':
+                detailFields = detailFields.concat(',').concat('courseTechnicalType');
+                break;
+            case 'COURSE_RUN_TYPE':
+                detailFields = detailFields.concat(',').concat('courseRunType');
+                break;
+            case 'COURSE_THEO_TYPE':
+                detailFields = detailFields.concat(',').concat('courseTheoType');
+                break;
+            case 'COURSE_LEVEL_TYPE':
+                detailFields = detailFields.concat(',').concat('courseLevelType');
+                break;
+        }
+
+        let masterData = {'<spring:message code="report.pivot"/>': pivot};
+        let dateType = DynamicForm_ManHourReport.getItem('dateType').getValue();
+        if (dateType == 2) {
+            let terms = DynamicForm_ManHourReport.getItem('termId').getValueMap();
+            masterData['<spring:message code="year"/>'] = DynamicForm_ManHourReport.getItem('year').getValue();
+            masterData['<spring:message code="term"/>'] = terms[DynamicForm_ManHourReport.getItem('termId').getValue()];
+        } else {
+            masterData['<spring:message code="from.date"/>'] = DynamicForm_ManHourReport.getItem('fromDate').getValue();
+            masterData['<spring:message code="to.date"/>'] = DynamicForm_ManHourReport.getItem('toDate').getValue();
+        }
+        let mojtameCode = DynamicForm_ManHourReport.getItem('mojtameCode').getValue();
+        if (mojtameCode) {
+            let mojtameha = DynamicForm_ManHourReport.getItem('mojtameCode').getValueMap();
+            masterData['<spring:message code="complex"/>'] = mojtameha[mojtameCode];
+        }
+        let moavenatCode = DynamicForm_ManHourReport.getItem('moavenatCode').getValue();
+        if (moavenatCode) {
+            let moavenatha = DynamicForm_ManHourReport.getItem('moavenatCode').getValueMap();
+            masterData['<spring:message code="assistance"/>'] = moavenatha[moavenatCode];
+        }
+        let omorCode = DynamicForm_ManHourReport.getItem('omorCode').getValue();
+        if (omorCode) {
+            let omorha = DynamicForm_ManHourReport.getItem('omorCode').getValueMap();
+            masterData['<spring:message code="affairs"/>'] = omorha[omorCode];
+        }
+
+        let title = '<spring:message code="man.hour.statistics.by.class.features.report"/>';
+        let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/reportsToExcel/masterDetail",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "masterData", type: "hidden"},
+                    {name: "detailFields", type: "hidden"},
+                    {name: "detailHeaders", type: "hidden"},
+                    {name: "detailDto", type: "hidden"},
+                    {name: "title", type: "hidden"},
+                    {name: "detailData", type: "hidden"},
+                ]
+        });
+        let listData = allData[type_];
+        listData.forEach(d => d.participationPercentStr = d.participationPercent == null ? '' :
+            d.participationPercent.toFixed(2));
+        listData.forEach(d => d.presencePerPersonStr = d.presencePerPerson == null ? '' : d.presencePerPerson.toFixed(2));
+        if (type_ == 'CLASS_STATUS') {
+            let classStatusList = ListGrid_ManHourReportJSP.getField('classStatus').valueMap;
+            listData.forEach(d =>
+             d.classStatus = (classStatusList[d.classStatus] == null ? d.classStatus : classStatusList[d.classStatus]));
+        }
+        downloadForm.setValue("masterData", JSON.stringify(masterData));
+        downloadForm.setValue("detailFields", detailFields);
+        downloadForm.setValue("detailHeaders", detailHeaders);
+        downloadForm.setValue("detailData", JSON.stringify(listData));
+        downloadForm.setValue("title", title);
+        downloadForm.setValue("detailDto", "com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO");
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
+
     //</script>
