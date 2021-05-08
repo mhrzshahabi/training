@@ -205,6 +205,14 @@ public class MainFormController {
     public String showStatisticsUnitReport() {
         return "report/statisticsUnitReport";
     }
+    @RequestMapping("/manHourStatisticsByClassFeaturesReport")
+    public String showManHourStatisticsByClassFeaturesReport() {
+        return "report/manHourStatisticsByClassFeaturesReport";
+    }
+    @RequestMapping("/manHourStatisticsPerDepartmentReport")
+    public String showManHourStatisticsPerDepartmentReport() {
+        return "report/manHourStatisticsPerDepartmentReport";
+    }
 
     @RequestMapping("class-contract")
     public String showClassContractForm() {

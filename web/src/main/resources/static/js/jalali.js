@@ -326,14 +326,23 @@ JalaliDate.addMonths = function(date, months) {
     return date;
 }
 
-JalaliDate.JalaliTodayDate = function(){
+JalaliDate.JalaliTodayDate = function (){
+    today = new Date();
+    return JalaliDate.JalaliSpecialDate(today);
+}
+
+JalaliDate.JalaliOneMonthBeforeDate = function (){
+    oneMonthBefore = JalaliDate.addMonths(new Date(), -1);
+    return JalaliDate.JalaliSpecialDate(oneMonthBefore);
+}
+
+JalaliDate.JalaliSpecialDate = function(georgianDate){
     week = new Array("يكشنبه", "دوشنبه", "سه شنبه", "چهارشنبه", "پنج شنبه", "جمعه", "شنبه")
     months = new Array("فروردين", "ارديبهشت", "خرداد", "تير", "مرداد", "شهريور", "مهر", "آبان", "آذر", "دي", "بهمن", "اسفند");
-    today = new Date();
-    d = today.getDay();
-    day = today.getDate();
-    month = today.getMonth() + 1;
-    year = today.getYear();
+    d = georgianDate.getDay();
+    day = georgianDate.getDate();
+    month = georgianDate.getMonth() + 1;
+    year = georgianDate.getYear();
     year = (window.navigator.userAgent.indexOf('MSIE') > 0) ? year : 1900 + year;
     if (year == 0) {
         year = 2000;

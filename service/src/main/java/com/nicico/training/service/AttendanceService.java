@@ -76,7 +76,7 @@ public class AttendanceService implements IAttendanceService {
             map.put("startHour", s.getSessionStartHour());
             map.put("endHour", s.getSessionEndHour());
             map.put("state", "0");
-            map.put("readOnly",isReadOnly(s.getSessionDate(),s.getSessionState()));
+            map.put("readOnly",isReadOnly(s.getSessionDate()));
             for (Attendance a : attendances) {
                 if(a.getSessionId().equals(s.getId())){
                     map.put("state", a.getState());
@@ -327,7 +327,7 @@ public class AttendanceService implements IAttendanceService {
         return attendanceDAO.findBySessionInAndState(sessions, state);
     }
 
-    private String isReadOnly(String startingDate, int sessionState){
+    private String isReadOnly(String startingDate){
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
