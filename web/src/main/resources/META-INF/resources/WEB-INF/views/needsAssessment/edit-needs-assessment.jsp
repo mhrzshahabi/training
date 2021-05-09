@@ -1063,7 +1063,7 @@
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
-
+            {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
             {
@@ -1123,16 +1123,7 @@
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
-            // {
-            //     name: "needsAssessmentPriorityId",
-            //     canEdit:true,
-            //     valueField: "id",
-            //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
-            //     change(form, item){
-            //         updateSkillRecord(form, item)
-            //     }
-            // }
+            {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
             {
@@ -1193,16 +1184,7 @@
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
-            // {
-            //     name: "needsAssessmentPriorityId",
-            //     canEdit:true,
-            //     valueField: "id",
-            //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
-            //     change(form, item){
-            //         updateSkillRecord(form, item)
-            //     }
-            // }
+            {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
             {
@@ -1504,10 +1486,86 @@
                             ListGrid_Attitude_JspNeedsAssessment
                         ]
                     }),
-                    Label_Help_JspNeedsAssessment,
+                    isc.HLayout.create({
+                        height: "5%",
+                        showResizeBar: true,
+                        members: [
+                            Label_Help_JspNeedsAssessment,
+                            isc.DynamicForm.create({
+                                align: "left",
+                                width: 250,
+                                fields: [
+                                    {
+                                        name: "color",
+                                        title:"مرتب سازی براساس رنگ: ",
+                                        type: "SelectItem",
+                                        valueMap: {
+                                            111 : getFormulaMessage("قرمز", "2", red, "b"),
+                                            112 : getFormulaMessage("زرد", "2", yellow, "b"),
+                                            113 : getFormulaMessage("سبز", "2", green, "b")
+                                        },
+                                        pickListProperties: {
+                                            showFilterEditor: false
+                                        },
+                                        defaultValue:  [111],
+                                        change: function (form, item, value) {
+
+                                            debugger;
+                                            let knowledgeFirst = ListGrid_Knowledge_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 111);
+                                            let knowledgeSecond = ListGrid_Knowledge_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 112);
+                                            let knowledgeThird = ListGrid_Knowledge_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 113);
+
+                                            let abilityFirst = ListGrid_Ability_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 111);
+                                            let abilitySecond = ListGrid_Ability_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 112);
+                                            let abilityThird = ListGrid_Ability_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 113);
+
+                                            let attitudeFirst = ListGrid_Attitude_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 111);
+                                            let attitudeSecond = ListGrid_Attitude_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 112);
+                                            let attitudeThird = ListGrid_Attitude_JspNeedsAssessment.getData().localData.filter(q => q.needsAssessmentPriorityId === 113);
+
+                                            // ListGrid_Ability_JspNeedsAssessment.sortField = "needsAssessmentPriorityId";
+                                            // ListGrid_Ability_JspNeedsAssessment.sortDirection = "ascending";
+                                            // ListGrid_Ability_JspNeedsAssessment.sort();
+                                            // ListGrid_Ability_JspNeedsAssessment.invalidateCache();
+
+                                            switch (value) {
+                                                case "111":
+
+                                                    ListGrid_Ability_JspNeedsAssessment.setData([]);
+                                                    ListGrid_Ability_JspNeedsAssessment.setData(abilityFirst);
+                                                    ListGrid_Ability_JspNeedsAssessment.addData(abilitySecond);
+                                                    ListGrid_Ability_JspNeedsAssessment.addData(abilityThird);
+                                                    ListGrid_Ability_JspNeedsAssessment.invalidateCache();
+
+                                                    break;
+                                                case "112":
+
+                                                    ListGrid_Ability_JspNeedsAssessment.setData([]);
+                                                    ListGrid_Ability_JspNeedsAssessment.setData(abilitySecond);
+                                                    ListGrid_Ability_JspNeedsAssessment.addData(abilityThird);
+                                                    ListGrid_Ability_JspNeedsAssessment.addData(abilityFirst);
+                                                    ListGrid_Ability_JspNeedsAssessment.invalidateCache();
+
+                                                    break;
+                                                case "113":
+
+                                                    ListGrid_Ability_JspNeedsAssessment.setData([]);
+                                                    ListGrid_Ability_JspNeedsAssessment.setData(abilityThird);
+                                                    ListGrid_Ability_JspNeedsAssessment.addData(abilitySecond);
+                                                    ListGrid_Ability_JspNeedsAssessment.addData(abilityFirst);
+                                                    ListGrid_Ability_JspNeedsAssessment.invalidateCache();
+
+                                                    break;
+                                            }
+                                        }
+                                    }
+                                ]
+                            })
+                        ]
+                    }),
                     ListGrid_SkillAll_JspNeedsAssessment
                 ]
-            }),
+            })
         ]
     });
 
