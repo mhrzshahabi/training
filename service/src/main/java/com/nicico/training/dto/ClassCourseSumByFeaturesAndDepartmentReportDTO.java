@@ -27,11 +27,17 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
         EMPTY
     }
 
-    private Integer presenceManHour;
+    private Double presenceManHour;
 
-    private Integer absenceManHour;
+    private String presenceManHourStr;
 
-    private Integer unknownManHour;
+    private Double absenceManHour;
+
+    private String absenceManHourStr;
+
+    private Double unknownManHour;
+
+    private String unknownManHourStr;
 
     private Integer personnelCount;
 

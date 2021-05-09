@@ -440,7 +440,7 @@
                         margin: 5,
                         click: function () {
                             let t = 0;
-                            Object.keys(allData).forEach(type_ => setTimeout(() => exportExcel(type_), (t++)*500));
+                            Object.keys(allData).forEach(type_ => setTimeout(() => exportExcel(type_), (t++) * 500));
                         }
                     })
                 ]
@@ -487,7 +487,9 @@
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
-                    "3": "پایان یافته"
+                    "3": "پایان یافته",
+                    "4": "لغو شده",
+                    "5": "اختتام",
                 }
             },
             {
@@ -582,10 +584,10 @@
 
         let pivot = DynamicForm_ManHourReport.getItem('groupByType').valueMap[type_];
 
-        let detailFields = "presenceManHour,absenceManHour,unknownManHour,participationPercentStr,presencePerPersonStr";
+        let detailFields = "presenceManHourStr,absenceManHourStr,unknownManHourStr,participationPercentStr,presencePerPersonStr";
         let detailHeaders = '<spring:message code="report.presence.man.hour"/>,<spring:message code="report.absence.man.hour"/>,<spring:message
 	code="report.unknown.man.hour"/>,<spring:message code="report.participation.percent"/>,<spring:message
-	code="report.presence.per.person"/>';
+    code="report.presence.per.person"/>';
         detailHeaders = detailHeaders.concat(',').concat(pivot);
         switch (type_) {
             case 'CLASS_TEACHING_TYPE':
@@ -634,6 +636,19 @@
             masterData['<spring:message code="affairs"/>'] = omorha[omorCode];
         }
 
+        if (mojtameCode) {
+            detailFields = detailFields.concat(",moavenatTitle");
+            detailHeaders = detailHeaders.concat(',<spring:message code="assistance"/>');
+        } else if (moavenatCode) {
+            detailFields = detailFields.concat(",omorTitle");
+            detailHeaders = detailHeaders.concat(',<spring:message code="affairs"/>');
+        } else if (omorCode) {
+            detailFields = detailFields.concat(",ghesmatTitle");
+            detailHeaders = detailHeaders.concat(',<spring:message code="section"/>');
+        } else {
+            detailFields = detailFields.concat(",mojtameTitle");
+            detailHeaders = detailHeaders.concat(',<spring:message code="complex"/>');
+        }
         let title = '<spring:message code="man.hour.statistics.by.class.features.report"/>';
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
@@ -653,11 +668,15 @@
         let listData = allData[type_];
         listData.forEach(d => d.participationPercentStr = d.participationPercent == null ? '' :
             d.participationPercent.toFixed(2));
+        listData.forEach(d => d.presenceManHourStr = d.presenceManHour);
+        listData.forEach(d => d.absenceManHourStr = d.absenceManHour);
+        listData.forEach(d => d.unknownManHourStr = d.unknownManHour);
+
         listData.forEach(d => d.presencePerPersonStr = d.presencePerPerson == null ? '' : d.presencePerPerson.toFixed(2));
         if (type_ == 'CLASS_STATUS') {
             let classStatusList = ListGrid_ManHourReportJSP.getField('classStatus').valueMap;
             listData.forEach(d =>
-             d.classStatus = (classStatusList[d.classStatus] == null ? d.classStatus : classStatusList[d.classStatus]));
+                d.classStatus = (classStatusList[d.classStatus] == null ? d.classStatus : classStatusList[d.classStatus]));
         }
         downloadForm.setValue("masterData", JSON.stringify(masterData));
         downloadForm.setValue("detailFields", detailFields);
