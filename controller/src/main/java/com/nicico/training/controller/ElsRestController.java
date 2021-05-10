@@ -241,28 +241,26 @@ public class ElsRestController {
 
         }
     }
+
     @PostMapping("/checkForResendExamToEls")
     public ResponseEntity checkForResendExamToEls(@RequestBody ResendExamImportedRequest object) {
-        BaseResponse response=new BaseResponse();
+        BaseResponse response = new BaseResponse();
         try {
-        ExamListResponse examListResponse = client.getExamResults(object.getSourceExamId());
-        List<String> userWithAnswer=evaluationBeanMapper.getUsersWithAnswer(examListResponse.getData(),object.getUsers());
-        if (userWithAnswer.isEmpty())
-        {
-            response.setStatus(200);
-            return new ResponseEntity<>(response, HttpStatus.OK);
+            ExamListResponse examListResponse = client.getExamResults(object.getSourceExamId());
+            List<String> userWithAnswer = evaluationBeanMapper.getUsersWithAnswer(examListResponse.getData(), object.getUsers());
+            if (userWithAnswer.isEmpty()) {
+                response.setStatus(200);
+                return new ResponseEntity<>(response, HttpStatus.OK);
 
-        }
-        else
-        {
-            String joinedNames = String.join(System.lineSeparator(), userWithAnswer);
-            response.setStatus(409);
-            response.setMessage("کاربران مقابل یک بار جواب این آزمون را داده اند. درصورتی که آزمون مجدد برایشان ارسال شود جواب قبلی آنها پاک خواهد شد:"+System.lineSeparator() +joinedNames);
-            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+            } else {
+                String joinedNames = String.join(System.lineSeparator(), userWithAnswer);
+                response.setStatus(409);
+                response.setMessage("کاربران مقابل یک بار جواب این آزمون را داده اند. درصورتی که آزمون مجدد برایشان ارسال شود جواب قبلی آنها پاک خواهد شد:" + System.lineSeparator() + joinedNames);
+                return new ResponseEntity<>(response, HttpStatus.CONFLICT);
 
-        }
+            }
 
-        }catch (Exception e){
+        } catch (Exception e) {
             response.setMessage("خطا در ارتباط با آموزش آنلاین");
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
         }
@@ -432,17 +430,25 @@ public class ElsRestController {
     @PostMapping("/student/addAnswer/evaluation")
     public BaseResponse addStudentEvaluationAnswer(HttpServletRequest header, @RequestBody StudentEvaluationAnswerDto dto) {
         BaseResponse response = new BaseResponse();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            EvaluationAnswerObject answerObject = tclassService.classStudentEvaluations(dto);
-            EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
-            EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
-            evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
-            response.setStatus(200);
-        } else {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
+        try {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                EvaluationAnswerObject answerObject = tclassService.classStudentEvaluations(dto);
+                EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
+                EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
+                evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
+                response.setStatus(200);
+            } else {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+
+            }
+            return response;
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("ارزیابی مورد نظر در سیستم آموزش حذف شده است");
+
+            return response;
         }
-        return response;
 
     }
 
@@ -450,17 +456,22 @@ public class ElsRestController {
     @PostMapping("/teacher/addAnswer/evaluation")
     public BaseResponse addTeacherEvaluationAnswer(HttpServletRequest header, @RequestBody TeacherEvaluationAnswerDto dto) {
         BaseResponse response = new BaseResponse();
-
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            EvaluationAnswerObject answerObject = tclassService.classTeacherEvaluations(dto);
-            EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
-            EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
-            evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
-            response.setStatus(200);
-        } else {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        try {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                EvaluationAnswerObject answerObject = tclassService.classTeacherEvaluations(dto);
+                EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
+                EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
+                evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
+                response.setStatus(200);
+            } else {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            }
+            return response;
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("ارزیابی مورد نظر در سیستم آموزش حذف شده است");
+            return response;
         }
-        return response;
 
     }
 
@@ -472,25 +483,23 @@ public class ElsRestController {
             baseResponse.setStatus(406);
             baseResponse.setMessage("مقدار های وارد شده صحیح نمی باشد");
 
-        } else{
-            String scoringMethod=testQuestionService.get(id).getTclass().getScoringMethod();
-            boolean checkScoreInRange = evaluationBeanMapper.checkScoreInRange(scoringMethod,examResult);
-            if (!checkScoreInRange)
-            {
+        } else {
+            String scoringMethod = testQuestionService.get(id).getTclass().getScoringMethod();
+            boolean checkScoreInRange = evaluationBeanMapper.checkScoreInRange(scoringMethod, examResult);
+            if (!checkScoreInRange) {
                 baseResponse.setStatus(406);
                 baseResponse.setMessage("نمرات نهایی وارد شده از بیشترین مقدار روش نمره دهی کلاس بیشتر است");
 
-            }else
-            {
-                UpdateRequest requestDto=evaluationBeanMapper.convertScoresToDto(examResult,id);
+            } else {
+                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id);
                 try {
                     baseResponse = client.sendScoresToEls(requestDto);
-                    if (baseResponse.getStatus()!=200 && baseResponse.getMessage()!=null)
+                    if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
                         return baseResponse;
                 } catch (Exception e) {
-                        baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-                        baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-                        return baseResponse;
+                    baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                    baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                    return baseResponse;
 
                 }
             }
