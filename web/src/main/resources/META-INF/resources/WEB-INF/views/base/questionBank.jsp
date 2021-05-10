@@ -1447,6 +1447,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                     let question = JSON.parse(resp.httpResponseText).question;
                     if (question!==null && question!==undefined &&  question.length > 50)
                         question = question.slice(0, 50) + " ...";
+                    if (forceToCloseWindow)
                     QuestionBankWin_questionBank.close();
                     createDialog("info", "سوال ( " + question + " ) " + questionBankAction);
                     QuestionBankLG_questionBank.invalidateCache();
