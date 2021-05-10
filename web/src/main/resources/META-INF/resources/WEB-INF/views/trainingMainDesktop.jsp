@@ -3300,6 +3300,21 @@
         xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
         xhttpRequest.send(formData1);
     }
+    function MinIoUploadHttpRequest(formData1, url, method, cFunction) {
+        let xhttpRequest = new XMLHttpRequest();
+        xhttpRequest.willHandleError = true;
+        xhttpRequest.onreadystatechange = function () {
+            if (this.readyState === 4) {
+                cFunction(this);
+            } else {
+                // isc.say("خطا در اتصال به سرور");
+
+            }
+        };
+        xhttpRequest.open("Post", "http://devapp01.icico.net.ir/fms/608fa5263cee3d76470c3d30", true);
+        xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+        xhttpRequest.send(formData1);
+    }
 
     isc.defineClass("MyHLayoutButtons", HLayout);
     isc.MyHLayoutButtons.addProperties({

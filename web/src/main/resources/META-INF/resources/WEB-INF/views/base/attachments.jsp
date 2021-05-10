@@ -110,7 +110,15 @@
                     formData1.append("fileName", fileName);
                     formData1.append("fileTypeId", this.DynamicForm_JspAttachments.getValue("fileTypeId"));
                     formData1.append("description", this.DynamicForm_JspAttachments.getValue("description"));
-                    TrnXmlHttpRequest(formData1, this.saveActionUrlAttachment, this.methodAttachment, this.save_result_Attachments);
+                    if (objectTypeAttachment==="QuestionBank")
+                    {
+                        MinIoUploadHttpRequest(formData1, this.saveActionUrlAttachment, this.methodAttachment, this.save_result_Attachments_minIo);
+
+                    }
+                    else
+                    {
+                        TrnXmlHttpRequest(formData1, this.saveActionUrlAttachment, this.methodAttachment, this.save_result_Attachments);
+                    }
                 } else if (this.methodAttachment === "PUT") {
                     attachmentWait = createDialog("wait");
                     let data = this.DynamicForm_JspAttachments.getValues();
@@ -387,6 +395,34 @@
         }.bind(this)
 
         this.save_result_Attachments=function save_result_Attachments(resp) {
+            let stat;
+            let respText;
+            attachmentWait.close();
+            if (this.methodAttachment === "POST") {
+                stat = resp.status;
+                respText = resp.responseText;
+            } else {
+                stat = resp.httpResponseCode;
+                respText = resp.httpResponseText;
+            }
+            if (stat === 200 || stat === 201) {
+                let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                this.ListGrid_Attachments_refresh();
+
+                this.Window_JspAttachments.close();
+                setTimeout(function () {
+                    OK.close();
+                }, 3000);
+            } else {
+                if (stat === 406 && respText === "DuplicateRecord") {
+                    createDialog("info", "<spring:message code="msg.record.duplicate"/>");
+                } else {
+                    createDialog("info", "<spring:message code="msg.record.duplicate"/>");
+                    <%--createDialog("info", "<spring:message code="msg.operation.error"/>");--%>
+                }
+            }
+        }.bind(this)
+        this.save_result_Attachments_minIo=function save_result_Attachments_minIo(resp) {
             let stat;
             let respText;
             attachmentWait.close();
