@@ -270,14 +270,16 @@
                 required: true,
                 multiple: true,
                 valueMap: {
-                    "1": "برنامه ريزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
+                  "1": "برنامه ریزی",
+                  "2": "در حال اجرا",
+                  "3": "پایان یافته",
+                  "4": "لغو شده",
+                  "5": "اختتام",
                 },
                 pickListProperties: {
                     showFilterEditor: false
                 },
-                defaultValue: ["1", "2", "3"]
+                defaultValue: ["1", "2", "3", "4", "5"]
             },
 
         ]
