@@ -76,7 +76,13 @@
             {name: "tclassPlanner"},
             {name: "tclassSupervisor"},
             {name: "tclassCode"},
-            {name: "tclassStudentsCount"}
+            {name: "tclassStudentsCount"},
+            {name: "courselevelType.titleFa"},
+            {name: "courseTechnicalType.titleFa"},
+            {name: "courseRunType.titleFa"},
+            {name: "courseTheoType.titleFa"},
+            {name: "presenceManHour"},
+            {name: "absenceManHour"}
         ],
         fetchDataURL: viewEvaluationStaticalReportUrl + "/iscList"
     });
@@ -227,21 +233,21 @@
         contextMenu: Menu_ListGrid_JspTClassReport,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
-            {name: "tclassCode", title: "کد کلاس"},
-            {name: "courseCode", title: "کد دوره"},
-            {name: "courseTitleFa", title: "نام دوره"},
-            {name: "tclassDuration", title: "مدت کلاس", filterOperator: "equals"},
+            {name: "tclassCode", title: "کد کلاس", autoFitWidth: true},
+            {name: "courseCode", title: "کد دوره", autoFitWidth: true},
+            {name: "courseTitleFa", title: "نام دوره", autoFitWidth: true},
+            {name: "tclassDuration", title: "مدت کلاس", filterOperator: "equals", autoFitWidth: true},
             {name: "plannerComplex", title:"<spring:message code='organizer.complex'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "plannerName", title:"<spring:message code='planner.name'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "instituteName", title:"<spring:message code='institute.organizer.name'/>", filterOperator: "iContains", autoFitWidth: true },
-            {name: "tclassStartDate", title: "تاریخ شروع"},
-            {name: "tclassEndDate", title: "تاریخ پایان"},
-            {name: "tclassYear", title: "سال کاری"},
-            {name: "termTitleFa", title: "ترم"},
-            {name: "teacherFullName", title: "استاد"},
+            {name: "tclassStartDate", title: "تاریخ شروع",autoFitWidth: true},
+            {name: "tclassEndDate", title: "تاریخ پایان", autoFitWidth: true},
+            {name: "tclassYear", title: "سال کاری", autoFitWidth: true},
+            {name: "termTitleFa", title: "ترم", autoFitWidth: true},
+            {name: "teacherFullName", title: "استاد", autoFitWidth: true},
             <%--{name: "tclassPlanner",  title: "<spring:message code="planner"/>"},--%>
             <%--{name: "tclassSupervisor",  title: "<spring:message code="supervisor"/>"},--%>
-            {name: "tclassStudentsCount", title: "تعداد فراگیران" , filterOperator: "equals"},
+            {name: "tclassStudentsCount", title: "تعداد فراگیران" , filterOperator: "equals", autoFitWidth: true},
             {
                 name: "tclassReason",
                 title: "<spring:message code="training.request"/>",
@@ -250,6 +256,7 @@
                     "2": "درخواست واحد",
                     "3": "نیاز موردی",
                 }
+                , autoFitWidth: true
             },
             {
                 name: "classEvaluation",
@@ -260,6 +267,7 @@
                     "3": "رفتاری",
                     "4": "نتایج",
                 }
+                , autoFitWidth: true
             },
             {name: "tclassStatus", title: "وضعیت کلاس",
                 type: "SelectItem",
@@ -267,8 +275,10 @@
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
-                    "4": "لغو شده"
+                    "4": "لغو شده",
+                    "5": "اختتام"
                 }
+                , autoFitWidth: true
             },
             {name: "tclassTeachingType",
                 title: "<spring:message code='teaching.type'/>",
@@ -282,8 +292,43 @@
                    "اعزام":"اعزام",
                    "null":"همه"
                 }
+                , autoFitWidth: true
             },
-            {name: "classCancelReasonTitle", title: "علت لغو" , filterOperator: "iContains"},
+            {name: "classCancelReasonTitle", title: "علت لغو" ,
+                filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "courseLevelType.titleFa",
+                title: "<spring:message code='cousre_elevelType'/>",
+                autoFitWidth: true
+            },{
+                name: "courseTechnicalType.titleFa",
+                title: "<spring:message code='course.technicalType'/>",
+                autoFitWidth: true
+            },{
+                name: "courseTheoType.titleFa",
+                title: "<spring:message code='course_etheoType'/>",
+                autoFitWidth: true
+            },
+            {
+                name: "courseRunType.titleFa",
+                title: "<spring:message code='course.run.type'/>",
+                autoFitWidth: true
+            },
+            {
+                name: "courseRunType.titleFa",
+                title: "<spring:message code='course.run.type'/>",
+                autoFitWidth: true
+            },
+            {
+                name: "presenceManHour",
+                title: "<spring:message code='report.presence.man.hour'/>",
+                autoFitWidth: true
+            },
+            {
+                name: "absenceManHour",
+                title: "<spring:message code='report.absence.man.hour'/>",
+                autoFitWidth: true
+            },
         ],
         cellHeight: 43,
         showFilterEditor: false,
@@ -307,6 +352,7 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
+        width: 2000,
         minWidth: 1024,
         items: [
             isc.TrVLayout.create({
@@ -948,7 +994,8 @@
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
                     "4": "لفو شده",
-                    "5": "همه"
+                    "5": "اختتام",
+                    "6": "همه"
                 }
             },
             {
@@ -1414,7 +1461,7 @@
             else if (data_values.criteria[i].fieldName == "evaluationEffectivenessGrade") {
                 data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("evaluationOperator").getValue();
             }
-            else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "5")
+            else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "6")
                 removedObjects.add(data_values.criteria[i]);
             else if(data_values.criteria[i].fieldName == "tclassTeachingType" && data_values.criteria[i].value == "null")
                 removedObjects.add(data_values.criteria[i]);

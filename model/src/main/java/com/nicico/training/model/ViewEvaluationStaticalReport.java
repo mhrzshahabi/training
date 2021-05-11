@@ -1,6 +1,10 @@
 package com.nicico.training.model;
 
 
+import com.nicico.training.model.enums.ELevelType;
+import com.nicico.training.model.enums.ERunType;
+import com.nicico.training.model.enums.ETechnicalType;
+import com.nicico.training.model.enums.ETheoType;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -56,6 +60,18 @@ public class ViewEvaluationStaticalReport extends Auditable {
 
     @Column(name = "COURSE_C_CODE")
     private String courseCode;
+
+    @Column(name = "COURSE_TECHNICAL_TYPE")
+    private ETechnicalType courseTechnicalType;
+
+    @Column(name = "COURSE_RUN_TYPE")
+    private ERunType courseRunType;
+
+    @Column(name = "COURSE_THEO_TYPE")
+    private ETheoType courseTheoType;
+
+    @Column(name = "course_level_type")
+    private ELevelType courseLevelType;
 
     @Column(name = "COURSE_CATEGORY_ID")
     private Long courseCategory;
@@ -173,6 +189,15 @@ public class ViewEvaluationStaticalReport extends Auditable {
 
     @Column(name = "institute_name")
     private String instituteName;
+
+    @Column(name = "PRESENCE")
+    private String presenceManHour;
+
+    @Column(name = "ABSENCE")
+    private String absenceManHour;
+
+    @Column(name = "UNKNOWN")
+    private String unknownManHour;
 
 
 //   @Column(name = "COURSE_IN_NEEDASSESSMENT")

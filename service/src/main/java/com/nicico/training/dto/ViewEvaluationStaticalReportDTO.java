@@ -1,5 +1,9 @@
 package com.nicico.training.dto;
 
+import com.nicico.training.model.enums.ELevelType;
+import com.nicico.training.model.enums.ERunType;
+import com.nicico.training.model.enums.ETechnicalType;
+import com.nicico.training.model.enums.ETheoType;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,6 +38,10 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private Long courseSubCategory;
         private String courseTitleFa;
         private String courseEvaluation;
+        private ETechnicalType courseTechnicalType;
+        private ERunType courseRunType;
+        private ETheoType courseTheoType;
+        private ELevelType courseLevelType;
         private String classEvaluation;
         private String evaluationBehavioralGrade;
         private Boolean evaluationBehavioralPass;
@@ -69,6 +77,9 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private String plannerComplex;
         private String plannerName;
         private String instituteName;
+        private String presenceManHour;
+        private String absenceManHour;
+        private String unknownManHour;
     }
 
     @Getter
