@@ -88,14 +88,19 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("         DPRT.C_GHESMAT_TITLE,");
         script.append("         NVL(PRS.COUNT_,0) COUNT_");
         script.append("         FROM(SELECT * FROM (");
-        script.append("SELECT ATT_STATE, F_CLASS_ID FROM (");
+        script.append("SELECT ATT_STATE, F_CLASS_ID,S_HOUR FROM (");
         script.append("                  SELECT CASE WHEN (ATT.C_STATE = 1 OR ATT.C_STATE = 2) THEN 'PRESENCE'");
-        script.append("                          WHEN (ATT.C_STATE = 3 OR ATT.C_STATE = 4) THEN 'ABSENCE' ELSE 'UNKNOWN' END AS ATT_STATE , ATT.F_SESSION, ATT.F_STUDENT, SESS.F_CLASS_ID ");
-        script.append("                          FROM TBL_ATTENDANCE ATT INNER JOIN (SELECT * FROM TBL_SESSION WHERE ");
+        script.append("                          WHEN (ATT.C_STATE = 3 OR ATT.C_STATE = 4) THEN 'ABSENCE' ELSE 'UNKNOWN' END AS ATT_STATE , ATT.F_SESSION, ATT.F_STUDENT, SESS.F_CLASS_ID, SESS.S_HOUR ");
+        script.append("                          FROM TBL_ATTENDANCE ATT INNER JOIN (");
+        script.append("SELECT ");
+        script.append("(TO_NUMBER(REGEXP_SUBSTR(C_SESSION_END_HOUR ,'[^:]+',3,1))+60*TO_NUMBER(REGEXP_SUBSTR(C_SESSION_END_HOUR ,'[^:]+',1,1))");
+        script.append("-");
+        script.append("(TO_NUMBER(REGEXP_SUBSTR(C_SESSION_START_HOUR ,'[^:]+',3,1))+60*TO_NUMBER(REGEXP_SUBSTR(C_SESSION_START_HOUR ,'[^:]+',1,1))))/60 AS S_HOUR,");
+        script.append("ID ,F_CLASS_ID  FROM TBL_SESSION WHERE ");
         script.append("                          C_SESSION_DATE >= :FROM_DATE  ");
         script.append("                          AND C_SESSION_DATE <= :TO_DATE ");
         script.append("                          )SESS ON(ATT.F_SESSION = SESS.ID)                          ");
-        script.append("      ) )PIVOT(COUNT(ATT_STATE) FOR ATT_STATE IN('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))) SUM_");
+        script.append("      ) )PIVOT(SUM (S_HOUR) FOR ATT_STATE IN('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))) SUM_");
         script.append("                          INNER JOIN TBL_CLASS CLSS ON(CLSS.ID = SUM_.F_CLASS_ID)");
         script.append("                          LEFT JOIN (SELECT CLASS_ID , COUNT(DISTINCT(STUDENT_ID)) AS STUDENT_COUNT FROM TBL_CLASS_STUDENT GROUP BY CLASS_ID) ST_COUNT ON(ST_COUNT.CLASS_ID = CLSS.ID)");
         script.append("                          INNER JOIN TBL_COURSE CRS ON(CRS.ID = CLSS.F_COURSE)");
@@ -131,11 +136,11 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
             dto
                     .setParticipationPercent(record[0] == null ? null : Double.parseDouble(record[0].toString()))
                     .setPresencePerPerson(record[1] == null ? null : Double.parseDouble(record[1].toString()))
-                    .setPersonnelCount(Integer.parseInt(record[2].toString()))
-                    .setPresenceManHour(Integer.parseInt(record[3].toString()))
-                    .setAbsenceManHour(Integer.parseInt(record[4].toString()))
-                    .setUnknownManHour(Integer.parseInt(record[5].toString()))
-                    .setStudentCount(Integer.parseInt(record[6].toString()));
+                    .setPersonnelCount(record[2] == null ? null : Integer.parseInt(record[2].toString()))
+                    .setPresenceManHour(record[3] == null ? null : Double.parseDouble(record[3].toString()))
+                    .setAbsenceManHour(record[4] == null ? null : Double.parseDouble(record[4].toString()))
+                    .setUnknownManHour(record[5] == null ? null : Double.parseDouble(record[5].toString()))
+                    .setStudentCount(record[6] == null ? null : Integer.parseInt(record[6].toString()));
 
             int index = 1;
             if (groupBy.equals(GroupBy.CLASS_TEACHING_TYPE))

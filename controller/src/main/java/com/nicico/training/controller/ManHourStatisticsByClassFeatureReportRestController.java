@@ -12,7 +12,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,13 +36,13 @@ public class ManHourStatisticsByClassFeatureReportRestController {
         moavenatCode = moavenatCode.isEmpty() ? null : moavenatCode;
         mojtameCode = mojtameCode.isEmpty() ? null : mojtameCode;
 
-        List<ClassCourseSumByFeaturesAndDepartmentReportDTO> result = service.getReport(fromDate, toDate, mojtameCode, moavenatCode, omorCode, groupBys.get(0));
+        Map<GroupBy,List<ClassCourseSumByFeaturesAndDepartmentReportDTO>> allData = new HashMap<>();
 
+        for (int i = 0; i < groupBys.size(); i++) {
+            allData.put(groupBys.get(i), service.getReport(fromDate, toDate, mojtameCode, moavenatCode, omorCode, groupBys.get(i)));
+        }
         SpecRs specRs = new SpecRs()
-                .setData(result)
-                .setStartRow(0)
-                .setEndRow(result.size())
-                .setTotalRows(result.size());
+                .setAllData(allData);
         return new ResponseEntity<>(new ReportResponse().setResponse(specRs), HttpStatus.OK);
     }
 
