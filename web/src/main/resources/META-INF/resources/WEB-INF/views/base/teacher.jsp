@@ -1096,7 +1096,12 @@
             selectedRecordPersonalID = personalId;
             isFileAttached = false;
             if (file !== undefined) {
-                TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
+                isc.RPCManager.sendRequest(TrDSRequest(getFmsConfig, "Get",  null, function (resp) {
+                    let data= JSON.parse(resp.data)
+                    MinIoUploadHttpRequest(formData1, data.url, data.groupId, personalInfo_showTempAttach_result);
+
+                }));
+                // TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
             }
         }
     }
@@ -1116,7 +1121,12 @@
             if (file.size > 30000000) {
                 createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
         } else {
-            TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
+                isc.RPCManager.sendRequest(TrDSRequest(getFmsConfig, "Get",  null, function (resp) {
+                    let data= JSON.parse(resp.data)
+                    MinIoUploadHttpRequest(formData1, data.url, data.groupId, personalInfo_showTempAttach_result);
+
+                }));
+            // TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
         }
         }
     }

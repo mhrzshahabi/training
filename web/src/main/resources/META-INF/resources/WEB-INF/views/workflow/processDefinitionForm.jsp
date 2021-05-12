@@ -52,7 +52,12 @@
         var formData = new FormData();
         formData.append("file", fileToLoad);
         if (fileToLoad !== undefined) {
-            TrnXmlHttpRequest(formData, workflowUrl + "/uploadProcessDefinition", "POST", checkUploadResult);
+            isc.RPCManager.sendRequest(TrDSRequest(getFmsConfig, "Get",  null, function (resp) {
+                let data= JSON.parse(resp.data)
+                MinIoUploadHttpRequest(formData, data.url, data.groupId, checkUploadResult);
+
+            }));
+            // TrnXmlHttpRequest(formData, workflowUrl + "/uploadProcessDefinition", "POST", checkUploadResult);
         } else {
             isc.say("<spring:message code="no.file.selected.for.upload"/>");
         }

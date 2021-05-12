@@ -2,6 +2,8 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.model.Attachment;
+import response.BaseResponse;
 
 public interface IAttachmentService {
     AttachmentDTO.Info get(Long id);
@@ -17,4 +19,6 @@ public interface IAttachmentService {
     void delete(AttachmentDTO.Delete request);
 
     SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request, String objectType, Long objectId);
+
+    BaseResponse saveFmsFile(Attachment fmsUploadDto);
 }

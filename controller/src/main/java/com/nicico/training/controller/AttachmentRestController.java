@@ -3,24 +3,37 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.minio.MinIoClient;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.iservice.IAttachmentService;
+import com.nicico.training.mapper.fms.AttachmentMapper;
+import com.nicico.training.model.Attachment;
+import dto.fms.AttachmentDto;
+import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import response.BaseResponse;
 
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 //import com.sun.deploy.net.URLEncoder;
 
@@ -31,6 +44,8 @@ import java.net.URLEncoder;
 public class AttachmentRestController {
 
     private final IAttachmentService attachmentService;
+    private final AttachmentMapper attachmentMapper;
+    private final MinIoClient client;
 
     @Value("${nicico.upload.dir}")
     private String uploadDir;
@@ -122,54 +137,70 @@ public class AttachmentRestController {
 
     @RequestMapping(value = {"/download/{Id}"}, method = RequestMethod.GET)
     @Transactional
-    public void getAttach(HttpServletRequest request, HttpServletResponse response, @PathVariable Long Id) {
+    public ResponseEntity<ByteArrayResource> getAttach(HttpServletRequest request, HttpServletResponse response, @PathVariable Long Id) throws IOException {
         AttachmentDTO.Info attachment = attachmentService.get(Id);
-        String fileFullPath = uploadDir + File.separator + attachment.getObjectType() + File.separator + attachment.getId();
-        FileInputStream inputStream = null;
-        try {
-
-            File file = new File(fileFullPath);
-            inputStream =  new FileInputStream(file);
-            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
-            String fileName = URLEncoder.encode(attachment.getFileName(), "UTF-8").replace("+", "%20");
-            if (mimeType == null) {
-                mimeType = "application/octet-stream";
+//        if (attachment.getObjectType()!=null && attachment.getObjectType().equals("QuestionBank"))
+//        {
+            ByteArrayResource file= client.downloadFile(request.getHeader("Authorization"),attachment.getGroup_id(),attachment.getKey());
+            try {
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + attachment.getFileName() + "\"")
+                        .body(file);
+            } catch ( Exception e) {
+                e.printStackTrace();
+                return null;
             }
-            String headerKey = "Content-Disposition";
-            String headerValue;
-            if (fileName.contains(".pdf")) {
-                response.setContentType("application/pdf");
-                headerValue = String.format("filename=\"%s\"", fileName);
-            } else {
-                response.setContentType(mimeType);
-                headerValue = String.format("attachment; filename=\"%s\"", fileName);
-            }
-            response.setHeader(headerKey, headerValue);
-            response.setContentLength((int) file.length());
-            OutputStream outputStream = response.getOutputStream();
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = inputStream.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-            outputStream.flush();
-            inputStream.close();
-
-        } catch (FileNotFoundException e) {
-            String headerKey = "Content-Disposition";
-            String headerValue = String.format("attachment; filename=\"%s\"", "NOT_FOUND");
-            response.setHeader(headerKey, headerValue);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        } finally {
-            if(inputStream != null){
-                try {
-                    inputStream.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
+//        }
+//        else
+//        {
+//            String fileFullPath = uploadDir + File.separator + attachment.getObjectType() + File.separator + attachment.getId();
+//            FileInputStream inputStream = null;
+//            try {
+//
+//                File file = new File(fileFullPath);
+//                inputStream =  new FileInputStream(file);
+//                String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
+//                String fileName = URLEncoder.encode(attachment.getFileName(), "UTF-8").replace("+", "%20");
+//                if (mimeType == null) {
+//                    mimeType = "application/octet-stream";
+//                }
+//                String headerKey = "Content-Disposition";
+//                String headerValue;
+//                if (fileName.contains(".pdf")) {
+//                    response.setContentType("application/pdf");
+//                    headerValue = String.format("filename=\"%s\"", fileName);
+//                } else {
+//                    response.setContentType(mimeType);
+//                    headerValue = String.format("attachment; filename=\"%s\"", fileName);
+//                }
+//                response.setHeader(headerKey, headerValue);
+//                response.setContentLength((int) file.length());
+//                OutputStream outputStream = response.getOutputStream();
+//                byte[] buffer = new byte[4096];
+//                int bytesRead;
+//                while ((bytesRead = inputStream.read(buffer)) != -1) {
+//                    outputStream.write(buffer, 0, bytesRead);
+//                }
+//                outputStream.flush();
+//                inputStream.close();
+//
+//            } catch (FileNotFoundException e) {
+//                String headerKey = "Content-Disposition";
+//                String headerValue = String.format("attachment; filename=\"%s\"", "NOT_FOUND");
+//                response.setHeader(headerKey, headerValue);
+//            } catch (Exception ex) {
+//                ex.printStackTrace();
+//            } finally {
+//                if(inputStream != null){
+//                    try {
+//                        inputStream.close();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
+//return null;
     }
     // ---------------
 
@@ -178,6 +209,21 @@ public class AttachmentRestController {
 //    @PreAuthorize("hasAuthority('r_address')")
     public ResponseEntity<SearchDTO.SearchRs<AttachmentDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(attachmentService.search(request, null, null), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping(value = "/upload/fms")
+//    @PreAuthorize("hasAuthority('r_address')")
+    public BaseResponse UploadFileFromFMS(@RequestBody AttachmentDto fmsUploadDto) {
+        BaseResponse response = new BaseResponse();
+        Attachment attachment = attachmentMapper.toAttachment(fmsUploadDto);
+        try {
+            return attachmentService.saveFmsFile(attachment);
+
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            response.setStatus(TrainingException.ErrorType.DuplicateRecord.getHttpStatusCode());
+            return response;
+        }
     }
 
 }

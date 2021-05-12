@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -31,7 +32,8 @@ public class AttachmentService implements IAttachmentService {
     private final AttachmentDAO attachmentDAO;
     @Value("${nicico.upload.dir}")
     private String uploadDir;
-
+    @Value("${nicico.minioQuestionsGroup}")
+    private String groupId;
     @Transactional(readOnly = true)
     @Override
     public AttachmentDTO.Info get(Long id) {
@@ -112,6 +114,25 @@ public class AttachmentService implements IAttachmentService {
                 request.setCriteria(criteriaRq);
         }
         return SearchUtil.search(attachmentDAO, request, attachment -> modelMapper.map(attachment, AttachmentDTO.Info.class));
+    }
+
+    @Transactional
+    @Override
+    public BaseResponse saveFmsFile(Attachment attachment) {
+        BaseResponse response=new BaseResponse();
+        try {
+            attachment.setGroup_id(groupId);
+            Attachment savedAttachment=attachmentDAO.save(attachment);
+            if (savedAttachment.getId()!=null)
+                response.setStatus(200);
+            else
+                response.setStatus(404);
+            return response;
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            response.setStatus(404);
+            return response;
+        }
+
     }
 
     // ------------------------------
