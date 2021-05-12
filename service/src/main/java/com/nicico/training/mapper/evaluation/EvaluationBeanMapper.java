@@ -5,7 +5,9 @@ import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
+import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.model.*;
+import com.nicico.training.service.AttachmentService;
 import com.nicico.training.service.QuestionBankService;
 import com.nicico.training.utility.persianDate.PersianDate;
 import dto.Question.QuestionData;
@@ -46,6 +48,8 @@ public abstract class EvaluationBeanMapper {
 
     @Autowired
     protected QuestionBankService questionBankService;
+    @Autowired
+    protected IAttachmentService attachmentService;
 
     private final Boolean hasDuplicateQuestion = true;
 
@@ -241,14 +245,17 @@ public abstract class EvaluationBeanMapper {
 //            Double questionScore = (double) (20 / object.getQuestions().size());
 
             for (QuestionData questionData : object.getQuestions()) {
+
+
                 ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
+                QuestionBank questionBank = questionBankService.getById(questionData.getQuestionBank().getId());
 
                 ImportedQuestion question = new ImportedQuestion();
 
                 question.setId(questionData.getQuestionBank().getId());
                 question.setTitle(questionData.getQuestionBank().getQuestion());
+                question.setFiles(getFilesForQuestion(questionBank.getId()));
                 question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
-                QuestionBank questionBank = questionBankService.getById(questionData.getQuestionBank().getId());
 
                 if (question.getType().equals(MULTI_CHOICES)) {
 
@@ -312,6 +319,10 @@ public abstract class EvaluationBeanMapper {
         return examQuestionsObject;
         /*return questionProtocols;*/
     }
+
+    private List<Map<String, String>> getFilesForQuestion(Long id) {
+        return   attachmentService.getFiles("QuestionBank",id);
+     }
 
     private Boolean checkDuplicateDescriptiveQuestions(List<ImportedQuestionProtocol> protocols, String title, EQuestionType type) {
         if (protocols.size() > 0) {

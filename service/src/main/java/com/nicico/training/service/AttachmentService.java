@@ -18,9 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -133,6 +131,25 @@ public class AttachmentService implements IAttachmentService {
             return response;
         }
 
+    }
+
+    @Override
+    public List<Map<String, String>> getFiles(String questionBank, Long id) {
+        List< Map<String, String>> files=new ArrayList<>();
+
+        List<Attachment> attachments=attachmentDAO.findAttachmentByObjectTypeAndObjectId(questionBank,id);
+        if (attachments.isEmpty())
+        return files;
+        else
+        {
+            for (Attachment attachment:attachments)
+            {
+                Map<String, String> file = new HashMap<>();
+                file.put(attachment.getKey(),attachment.getGroup_id());
+                files.add(file);
+            }
+            return files;
+        }
     }
 
     // ------------------------------
