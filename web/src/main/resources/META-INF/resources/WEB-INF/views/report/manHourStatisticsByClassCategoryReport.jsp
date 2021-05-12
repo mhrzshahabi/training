@@ -3,14 +3,23 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-	final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
 //<script>
-    var allData;
+    var listData;
 
-    RestDataSource_Class_JspManHourReport = isc.TrDS.create({
+    RestDataSource_ClassCategory_JspManHourReport = isc.TrDS.create({
         fields: [
+
+            {name: "planningCount"},
+            {name: "inProgressCount"},
+            {name: "finishedCount"},
+            {name: "canceledCount"},
+            {name: "lockedCount"},
+            {
+                name: "providedTaughtPercent",
+            },
             {
                 name: "presenceManHour"
             },
@@ -33,61 +42,25 @@
                 name: "presencePerPerson"
             },
             {
-                name: "classTeachingType"
-            },
-            {
                 name: "classStatus"
             },
             {
-                name: "courseTechnicalType"
+                name: "category"
             },
             {
-                name: "courseRunType"
-            },
-            {
-                name: "courseTheoType"
-            },
-            {
-                name: "courseLevelType"
-            },
-            {
-                name: "mojtameCode"
-            },
-            {
-                name: "mojtameTitle"
-            },
-            {
-                name: "moavenatCode"
-            },
-            {
-                name: "moavenatTitle"
-            },
-            {
-                name: "omorCode"
-            },
-            {
-                name: "omorTitle"
-            },
-            {
-                name: "ghesmatCode"
-            },
-            {
-                name: "ghesmatTitle"
+                name: "categoryId"
             },
         ],
         transformResponse: function (dsResponse, dsRequest, data) {
             if (data && data.response) {
-                allData = data.response.allData;
-                dsResponse.data = allData[Object.keys(allData)[0]];
-                dsResponse.startRow = 0;
-                dsResponse.endRow = dsResponse.data.length;
-                dsResponse.totalRows = dsResponse.data.length;
+                listData = data.response.dataSumByStatus;
+                dsResponse.data = listData;
             }
             return this.Super("transformResponse", arguments);
         }
     });
 
-    var DynamicForm_ManHourReport = isc.DynamicForm.create({
+    var DynamicForm_ManHourByCatReport = isc.DynamicForm.create({
         numCols: 8,
         padding: 10,
         titleAlign: "left",
@@ -106,7 +79,7 @@
                 valueField: "code",
                 displayField: "title",
                 filterOnKeypress: true,
-                multiple: false,
+                multiple: true,
 // layoutStyle: "vertical",
                 vAlign: "top",
                 pickListFields: [
@@ -130,7 +103,7 @@
                 valueField: "code",
                 displayField: "title",
                 filterOnKeypress: true,
-                multiple: false,
+                multiple: true,
                 autoFitButtons: true,
                 vAlign: "top",
                 criteriaHasChanged: false,
@@ -161,7 +134,7 @@
                 valueField: "code",
                 displayField: "title",
                 filterOnKeypress: true,
-                multiple: false,
+                multiple: true,
                 autoFitButtons: true,
                 vAlign: "top",
                 criteriaHasChanged: false,
@@ -243,8 +216,8 @@
                 ],
                 changed: function (form, item, value) {
                     if (value != null && value != undefined) {
-                        RestDataSource_Term_JspUnitReport.fetchDataURL = termUrl + "listByYear/" + value;
-                        form.getField("termId").optionDataSource = RestDataSource_Term_JspUnitReport;
+                        RestDataSource_Term_JspManHourReport.fetchDataURL = termUrl + "listByYear/" + value;
+                        form.getField("termId").optionDataSource = RestDataSource_Term_JspManHourReport;
                         form.getField("termId").fetchData();
                         form.getField("termId").enable();
                     } else {
@@ -272,7 +245,7 @@
                 width: 200,
                 titleColSpan: 1,
                 title: "<spring:message code='from.date'/>",
-                ID: "fromDate_jspManHourReport",
+                ID: "fromDate_jspManHourByCatReport",
                 required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
@@ -281,7 +254,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('fromDate_jspManHourReport', this, 'ymd', '/');
+                        displayDatePicker('fromDate_jspManHourByCatReport', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
@@ -301,7 +274,7 @@
                 titleColSpan: 1,
                 width: 200,
                 title: "<spring:message code='to.date'/>",
-                ID: "toDate_jspManHourReport",
+                ID: "toDate_jspManHourByCatReport",
                 type: 'text', required: true,
                 hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
@@ -310,7 +283,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('toDate_jspManHourReport', this, 'ymd', '/');
+                        displayDatePicker('toDate_jspManHourByCatReport', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
@@ -331,29 +304,12 @@
                 colSpan: 2
             },
             {
-                name: "groupByType",
-                title: "<spring:message code='report.pivot'/>",
-                required: true,
-//width: 200,
-//defaultValue: 5,
-                textAlign: "center",
-                multiple: true,
-                valueMap: {
-                    "CLASS_STATUS": "<spring:message code='class.status'/>",
-                    "CLASS_TEACHING_TYPE": "<spring:message code='class.teaching.type'/>",
-                    "COURSE_TECHNICAL_TYPE": "<spring:message code='course.technicalType'/>",
-                    "COURSE_RUN_TYPE": "<spring:message code='course.run.type'/>",
-                    "COURSE_THEO_TYPE": "<spring:message code='course_etheoType'/>",
-                    "COURSE_LEVEL_TYPE": "<spring:message code='cousre_elevelType'/>",
-                }
-            },
-            {
                 type: "SpacerItem",
-                colSpan: 2
+                colSpan: 4
             },
             {
                 name: "searchBtn",
-                ID: "searchBtnJspManHourReport",
+                ID: "searchBtnJspManHourByCatReport",
                 title: "<spring:message code="search"/>",
                 type: "ButtonItem",
                 width: "*",
@@ -366,7 +322,6 @@
                         return
                     }
                     var ManHour_Report_wait = createDialog("wait");
-                    hideColumns();
                     setTimeout(function () {
                         let fromDate = form.getValue("fromDate");
                         let toDate = form.getValue("toDate");
@@ -379,18 +334,17 @@
                                 fromDate = form.getItem("termId").getAllLocalOptions().filter(d => d.id == form.getValue("termId"))[0].startDate.trim();
                             }
                         }
-                        let url = manHourStatisticsByClassFeaturesReportUrl.concat("/list?fromDate=").concat(fromDate).concat("&toDate=").concat(toDate)
-                            .concat("&groupBys=").concat(form.getValue("groupByType")).concat("&omorCode=");
+                        let url = manHourStatisticsByClassCategoryReportUrl.concat("/list?fromDate=").concat(fromDate).concat("&toDate=").concat(toDate).concat("&omorCodes=");
                         if (form.getValue("omorCode")) url = url.concat(form.getValue("omorCode"));
-                        url = url.concat("&moavenatCode=");
+                        url = url.concat("&moavenatCodes=");
                         if (form.getValue("moavenatCode")) url = url.concat(form.getValue("moavenatCode"));
-                        url = url.concat("&mojtameCode=");
+                        url = url.concat("&mojtameCodes=");
                         if (form.getValue("mojtameCode")) url = url.concat(form.getValue("mojtameCode"));
 
-                        RestDataSource_Class_JspManHourReport.fetchDataURL = url;
+                        RestDataSource_ClassCategory_JspManHourReport.fetchDataURL = url;
 
-                        ListGrid_ManHourReportJSP.invalidateCache();
-                        ListGrid_ManHourReportJSP.fetchData();
+                        ListGrid_ManHourByCatReportJSP.invalidateCache();
+                        ListGrid_ManHourByCatReportJSP.fetchData();
                         ManHour_Report_wait.close();
 
                     }, 100);
@@ -407,17 +361,17 @@
                 click(form, item) {
                     form.clearValues();
                     form.clearErrors();
-                    ListGrid_ManHourReportJSP.setData([]);
+                    ListGrid_ManHourByCatReportJSP.setData([]);
                 }
             },
         ],
         itemKeyPress: function (item, keyName) {
             if (keyName == "Enter") {
-                searchBtnJspManHourReport.click(DynamicForm_ManHourReport);
+                searchBtnJspManHourReport.click(DynamicForm_ManHourByCatReport);
             }
         }
     });
-    var RestDataSource_Term_JspUnitReport = isc.TrDS.create({
+    var RestDataSource_Term_JspManHourReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -425,12 +379,12 @@
             {name: "endDate"}
         ]
     });
-    var ListGrid_ManHourReportJSP = isc.TrLG.create({
-        ID: "ManHourReportGrid",
+    var ListGrid_ManHourByCatReportJSP = isc.TrLG.create({
+        ID: "ManHourByCatReportGrid",
 //dynamicTitle: true,
         filterOnKeypress: false,
         showFilterEditor: true,
-        gridComponents: [DynamicForm_ManHourReport,
+        gridComponents: [DynamicForm_ManHourByCatReport,
             isc.HLayout.create({
                 alignment: 'center',
                 align: "center",
@@ -439,16 +393,26 @@
                     isc.ToolStripButtonExcel.create({
                         margin: 5,
                         click: function () {
-                            let t = 0;
-                            Object.keys(allData).forEach(type_ => setTimeout(() => exportExcel(type_), (t++) * 500));
+                            exportExcelByCat();
                         }
                     })
                 ]
             })
             , "header", "filterEditor", "body"],
-        dataSource: RestDataSource_Class_JspManHourReport,
-
+        dataSource: RestDataSource_ClassCategory_JspManHourReport,
         fields: [
+            {
+                name: "category", title: "<spring:message code='category'/>"
+            },
+            {
+                name: "providedTaughtPercent",
+                title: "<spring:message code='report.provided.taught.percent'/>"
+            },
+            {name: "planningCount", title: "<spring:message code='report.planning.class.count'/>"},
+            {name: "inProgressCount", title: "<spring:message code='report.in.progress.class.count'/>"},
+            {name: "finishedCount", title: "<spring:message code='report.finished.class.count'/>"},
+            {name: "canceledCount", title: "<spring:message code='report.canceled.class.count'/>"},
+            {name: "lockedCount", title: "<spring:message code='report.locked.class.count'/>"},
             {
                 name: "presenceManHour",
                 title: "<spring:message code='report.presence.man.hour'/>"
@@ -459,7 +423,7 @@
             },
             {
                 name: "unknownManHour",
-                title: "<spring:message code='report.unknown.man.hour'/>"
+                title: "<spring:message code='report.unknown.man.hour'/>",hidden: true
             },
             {
                 name: "studentCount",
@@ -475,181 +439,53 @@
                 name: "presencePerPerson",
                 title: "<spring:message code='report.presence.per.person'/>",
             },
-            {
-                name: "classTeachingType",
-                title: "<spring:message code='class.teaching.type'/>",
-                hidden: true,
-            },
-            {
-                name: "classStatus",
-                title: "<spring:message code='class.status'/>",
-                hidden: true,
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                    "4": "لغو شده",
-                    "5": "اختتام",
-                }
-            },
-            {
-                name: "courseTechnicalType",
-                title: "<spring:message code='course.technicalType'/>",
-                hidden: true,
-            },
-            {
-                name: "courseRunType",
-                title: "<spring:message code='course.run.type'/>",
-                hidden: true
-            },
-            {
-                name: "courseTheoType",
-                title: "<spring:message code='course_etheoType'/>",
-                hidden: true,
-            },
-            {
-                name: "courseLevelType",
-                title: "<spring:message code='cousre_elevelType'/>",
-                hidden: true,
-            },
-            {
-                name: "mojtameTitle",
-                title: "<spring:message code='complex'/>",
-                hidden: true,
-            },
-            {
-                name: "moavenatTitle",
-                title: "<spring:message code='assistance'/>",
-                hidden: true,
-            },
-            {
-                name: "omorTitle",
-                title: "<spring:message code='affairs'/>",
-                hidden: true,
-            },
-            {
-                name: "ghesmatTitle",
-                title: "<spring:message code='section'/>",
-                hidden: true,
-            },
         ]
     });
-    var VLayout_Body_ = isc.VLayout.create({
+    var VLayout_Body_ByCat = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
-            ListGrid_ManHourReportJSP
+            ListGrid_ManHourByCatReportJSP
         ]
     });
 
-    function hideColumns() {
+    function exportExcelByCat() {
 
-        ListGrid_ManHourReportJSP.hideField("mojtameTitle");
-        ListGrid_ManHourReportJSP.hideField("moavenatTitle");
-        ListGrid_ManHourReportJSP.hideField("omorTitle");
-        ListGrid_ManHourReportJSP.hideField("ghesmatTitle");
+        let detailFields = "category";
+        let detailHeaders = '<spring:message code="category"/>';
 
-        if (DynamicForm_ManHourReport.getValue("mojtameCode"))
-            ListGrid_ManHourReportJSP.showField("moavenatTitle");
-        else if (DynamicForm_ManHourReport.getValue("moavenatCode"))
-            ListGrid_ManHourReportJSP.showField("omorTitle");
-        else if (DynamicForm_ManHourReport.getValue("omorCode"))
-            ListGrid_ManHourReportJSP.showField("ghesmatTitle");
-        else
-            ListGrid_ManHourReportJSP.showField("mojtameTitle");
-
-        ListGrid_ManHourReportJSP.hideField("classTeachingType");
-        ListGrid_ManHourReportJSP.hideField("classStatus");
-        ListGrid_ManHourReportJSP.hideField("courseTechnicalType");
-        ListGrid_ManHourReportJSP.hideField("courseRunType");
-        ListGrid_ManHourReportJSP.hideField("courseTheoType");
-        ListGrid_ManHourReportJSP.hideField("courseLevelType");
-
-        if (DynamicForm_ManHourReport.getValue("groupByType").includes('CLASS_TEACHING_TYPE'))
-            ListGrid_ManHourReportJSP.showField("classTeachingType");
-        if (DynamicForm_ManHourReport.getValue("groupByType").includes('CLASS_STATUS'))
-            ListGrid_ManHourReportJSP.showField("classStatus");
-        if (DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_TECHNICAL_TYPE'))
-            ListGrid_ManHourReportJSP.showField("courseTechnicalType");
-        if (DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_RUN_TYPE'))
-            ListGrid_ManHourReportJSP.showField("courseRunType");
-        if (DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_THEO_TYPE'))
-            ListGrid_ManHourReportJSP.showField("courseTheoType");
-        if (DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_LEVEL_TYPE'))
-            ListGrid_ManHourReportJSP.showField("courseLevelType");
-
-    };
-
-    function exportExcel(type_) {
-
-        let pivot = DynamicForm_ManHourReport.getItem('groupByType').valueMap[type_];
-
-        let detailFields = "presenceManHourStr,absenceManHourStr,unknownManHourStr,participationPercentStr,presencePerPersonStr";
-        let detailHeaders = '<spring:message code="report.presence.man.hour"/>,<spring:message code="report.absence.man.hour"/>,<spring:message
-	code="report.unknown.man.hour"/>,<spring:message code="report.participation.percent"/>,<spring:message
-    code="report.presence.per.person"/>';
-        detailHeaders = detailHeaders.concat(',').concat(pivot);
-        switch (type_) {
-            case 'CLASS_TEACHING_TYPE':
-                detailFields = detailFields.concat(',').concat('classTeachingType');
-                break;
-            case 'CLASS_STATUS':
-                detailFields = detailFields.concat(',').concat('classStatus');
-                break;
-            case 'COURSE_TECHNICAL_TYPE':
-                detailFields = detailFields.concat(',').concat('courseTechnicalType');
-                break;
-            case 'COURSE_RUN_TYPE':
-                detailFields = detailFields.concat(',').concat('courseRunType');
-                break;
-            case 'COURSE_THEO_TYPE':
-                detailFields = detailFields.concat(',').concat('courseTheoType');
-                break;
-            case 'COURSE_LEVEL_TYPE':
-                detailFields = detailFields.concat(',').concat('courseLevelType');
-                break;
-        }
-
-        let masterData = {'<spring:message code="report.pivot"/>': pivot};
-        let dateType = DynamicForm_ManHourReport.getItem('dateType').getValue();
+        let masterData = {};
+        let dateType = DynamicForm_ManHourByCatReport.getItem('dateType').getValue();
         if (dateType == 2) {
-            let terms = DynamicForm_ManHourReport.getItem('termId').getValueMap();
-            masterData['<spring:message code="year"/>'] = DynamicForm_ManHourReport.getItem('year').getValue();
-            masterData['<spring:message code="term"/>'] = terms[DynamicForm_ManHourReport.getItem('termId').getValue()];
+            let terms = DynamicForm_ManHourByCatReport.getItem('termId').getValueMap();
+            masterData['<spring:message code="year"/>'] = DynamicForm_ManHourByCatReport.getItem('year').getValue();
+            masterData['<spring:message code="term"/>'] = terms[DynamicForm_ManHourByCatReport.getItem('termId').getValue()];
         } else {
-            masterData['<spring:message code="from.date"/>'] = DynamicForm_ManHourReport.getItem('fromDate').getValue();
-            masterData['<spring:message code="to.date"/>'] = DynamicForm_ManHourReport.getItem('toDate').getValue();
+            masterData['<spring:message code="from.date"/>'] = DynamicForm_ManHourByCatReport.getItem('fromDate').getValue();
+            masterData['<spring:message code="to.date"/>'] = DynamicForm_ManHourByCatReport.getItem('toDate').getValue();
         }
-        let mojtameCode = DynamicForm_ManHourReport.getItem('mojtameCode').getValue();
+        let mojtameCode = DynamicForm_ManHourByCatReport.getItem('mojtameCode').getValue();
         if (mojtameCode) {
-            let mojtameha = DynamicForm_ManHourReport.getItem('mojtameCode').getValueMap();
-            masterData['<spring:message code="complex"/>'] = mojtameha[mojtameCode];
+            masterData['<spring:message code="complex"/>'] = DynamicForm_ManHourByCatReport.getItem("mojtameCode").getDisplayValue().toString();
         }
-        let moavenatCode = DynamicForm_ManHourReport.getItem('moavenatCode').getValue();
+        let moavenatCode = DynamicForm_ManHourByCatReport.getItem('moavenatCode').getValue();
         if (moavenatCode) {
-            let moavenatha = DynamicForm_ManHourReport.getItem('moavenatCode').getValueMap();
-            masterData['<spring:message code="assistance"/>'] = moavenatha[moavenatCode];
+            masterData['<spring:message code="assistance"/>'] = DynamicForm_ManHourByCatReport.getItem("moavenatCode").getDisplayValue().toString();
         }
-        let omorCode = DynamicForm_ManHourReport.getItem('omorCode').getValue();
+        let omorCode = DynamicForm_ManHourByCatReport.getItem('omorCode').getValue();
         if (omorCode) {
-            let omorha = DynamicForm_ManHourReport.getItem('omorCode').getValueMap();
-            masterData['<spring:message code="affairs"/>'] = omorha[omorCode];
+            masterData['<spring:message code="affairs"/>'] = DynamicForm_ManHourByCatReport.getItem("omorCode").getDisplayValue().toString();
         }
 
-        if (mojtameCode) {
-            detailFields = detailFields.concat(",moavenatTitle");
-            detailHeaders = detailHeaders.concat(',<spring:message code="assistance"/>');
-        } else if (moavenatCode) {
-            detailFields = detailFields.concat(",omorTitle");
-            detailHeaders = detailHeaders.concat(',<spring:message code="affairs"/>');
-        } else if (omorCode) {
-            detailFields = detailFields.concat(",ghesmatTitle");
-            detailHeaders = detailHeaders.concat(',<spring:message code="section"/>');
-        } else {
-            detailFields = detailFields.concat(",mojtameTitle");
-            detailHeaders = detailHeaders.concat(',<spring:message code="complex"/>');
-        }
-        let title = '<spring:message code="man.hour.statistics.by.class.features.report"/>';
+        detailFields = detailFields.concat(",providedTaughtPercentStr,planningCount,inProgressCount,finishedCount,canceledCount,lockedCount");
+        detailFields = detailFields.concat(",presenceManHourStr,absenceManHourStr,unknownManHourStr,studentCount,participationPercentStr,presencePerPersonStr");
+        detailHeaders = detailHeaders.concat(',<spring:message code="report.provided.taught.percent"/>,<spring:message code="report.planning.class.count"/>,');
+        detailHeaders = detailHeaders.concat('<spring:message code="report.in.progress.class.count"/>,<spring:message code="report.finished.class.count"/>,');
+        detailHeaders = detailHeaders.concat('<spring:message code="report.canceled.class.count"/>,<spring:message code="report.locked.class.count"/>,');
+        detailHeaders = detailHeaders.concat('<spring:message code="report.presence.man.hour"/>,<spring:message code="report.absence.man.hour"/>,<spring:message code="report.unknown.man.hour"/>,');
+        detailHeaders = detailHeaders.concat('<spring:message code="report.student.count"/>,<spring:message code="report.participation.percent"/>,<spring:message code="report.presence.per.person"/>');
+
+        let title = '<spring:message code="man.hour.statistics.by.class.category.report"/>';
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
             action: "/training/reportsToExcel/masterDetail",
@@ -665,25 +501,20 @@
                     {name: "detailData", type: "hidden"},
                 ]
         });
-        let listData = allData[type_];
-        listData.forEach(d => d.participationPercentStr = d.participationPercent == null ? '' :
-            d.participationPercent.toFixed(2));
+        listData.forEach(d => d.participationPercentStr = d.participationPercent);
         listData.forEach(d => d.presenceManHourStr = d.presenceManHour);
         listData.forEach(d => d.absenceManHourStr = d.absenceManHour);
         listData.forEach(d => d.unknownManHourStr = d.unknownManHour);
+        listData.forEach(d => d.presencePerPersonStr = d.presencePerPerson);
+        listData.forEach(d => d.providedTaughtPercentStr = d.providedTaughtPercent);
 
-        listData.forEach(d => d.presencePerPersonStr = d.presencePerPerson == null ? '' : d.presencePerPerson.toFixed(2));
-        if (type_ == 'CLASS_STATUS') {
-            let classStatusList = ListGrid_ManHourReportJSP.getField('classStatus').valueMap;
-            listData.forEach(d =>
-                d.classStatus = (classStatusList[d.classStatus] == null ? d.classStatus : classStatusList[d.classStatus]));
-        }
+
         downloadForm.setValue("masterData", JSON.stringify(masterData));
         downloadForm.setValue("detailFields", detailFields);
         downloadForm.setValue("detailHeaders", detailHeaders);
         downloadForm.setValue("detailData", JSON.stringify(listData));
         downloadForm.setValue("title", title);
-        downloadForm.setValue("detailDto", "com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO$ClassFeatures");
+        downloadForm.setValue("detailDto", "com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO$ClassSumByStatus");
         downloadForm.show();
         downloadForm.submitForm();
     }

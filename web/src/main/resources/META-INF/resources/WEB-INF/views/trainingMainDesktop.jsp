@@ -1231,6 +1231,7 @@
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
+    const manHourStatisticsByClassCategoryReportUrl = rootUrl + "/manHourStatisticsByClassCategoryReport";
     const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/ManHourStatisticsPerDepartmentReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
@@ -2452,6 +2453,13 @@
                                 title: "<spring:message code="man.hour.statistics.by.class.features.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/manHourStatisticsByClassFeaturesReport/"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            {
+                                title: "<spring:message code="man.hour.statistics.by.class.category.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/manHourStatisticsByClassCategoryReport/"/>");
                                 }
                             },
                         ]

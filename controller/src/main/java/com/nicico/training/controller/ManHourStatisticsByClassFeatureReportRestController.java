@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,10 +37,12 @@ public class ManHourStatisticsByClassFeatureReportRestController {
         moavenatCode = moavenatCode.isEmpty() ? null : moavenatCode;
         mojtameCode = mojtameCode.isEmpty() ? null : mojtameCode;
 
-        Map<GroupBy,List<ClassCourseSumByFeaturesAndDepartmentReportDTO>> allData = new HashMap<>();
+        Map<GroupBy,List<ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures>> allData = new HashMap<>();
 
         for (int i = 0; i < groupBys.size(); i++) {
-            allData.put(groupBys.get(i), service.getReport(fromDate, toDate, mojtameCode, moavenatCode, omorCode, groupBys.get(i)));
+            List<ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures> list = new ArrayList<>();
+            service.getReport(fromDate, toDate, mojtameCode, moavenatCode, omorCode, groupBys.get(i)).forEach(dto -> list.add((ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures) dto));
+            allData.put(groupBys.get(i), list);
         }
         SpecRs specRs = new SpecRs()
                 .setAllData(allData);

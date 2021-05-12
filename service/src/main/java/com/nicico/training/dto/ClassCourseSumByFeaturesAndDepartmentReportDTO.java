@@ -51,18 +51,6 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
 
     private String presencePerPersonStr;
 
-    private String classTeachingType;
-
-    private String classStatus;
-
-    private String courseTechnicalType;
-
-    private String courseRunType;
-
-    private String courseTheoType;
-
-    private String courseLevelType;
-
     private String mojtameCode;
 
     private String mojtameTitle;
@@ -83,6 +71,40 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ClassFeatures")
+    public static class ClassFeatures extends ClassCourseSumByFeaturesAndDepartmentReportDTO {
+
+        private String classTeachingType;
+        private String classStatus;
+        private String courseTechnicalType;
+        private String courseRunType;
+        private String courseTheoType;
+        private String courseLevelType;
+
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ClassFeatures")
+    public static class ClassSumByStatus extends ClassCourseSumByFeaturesAndDepartmentReportDTO {
+
+        private Integer planningCount;
+        private Integer inProgressCount;
+        private Integer finishedCount;
+        private Integer canceledCount;
+        private Integer lockedCount;
+        private Double providedTaughtPercent;
+        private String providedTaughtPercentStr;
+        private Long categoryId;
+        private String category;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("ClassCourseSumByFeaturesAndDepartmentReportDTOSpecRs")
     public static class ClassCourseSumByFeaturesAndDepartmentReportDTOSpecRs {
         private ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs response;
@@ -93,8 +115,9 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private Map<GroupBy, List<ClassCourseSumByFeaturesAndDepartmentReportDTO>> allData;
+        private Map<GroupBy, List<ClassFeatures>> allData;
         private List<ClassCourseSumByFeaturesAndDepartmentReportDTO> data;
+        private List<ClassSumByStatus> dataSumByStatus;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
