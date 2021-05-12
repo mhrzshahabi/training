@@ -1194,6 +1194,9 @@
     const isValidForExam = rootUrl + "/tclass/isValidForExam/";
     const hasAccessToGroups= rootUrl + "/tclass/hasAccessToGroups/";
     const changeClassStatusToLock = rootUrl + "/tclass/changeClassStatusToLock";
+    const uploadFms = rootUrl + "/attachment/upload/fms";
+    const getFmsConfig = rootUrl + "/fms/config";
+    const downloadFms = rootUrl + "/fms/downloadFile";
     const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const skillNAUrl = rootUrl + "/skill-na";
@@ -3300,7 +3303,8 @@
         xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
         xhttpRequest.send(formData1);
     }
-    function MinIoUploadHttpRequest(formData1, url, method, cFunction) {
+    function MinIoUploadHttpRequest(formData1, url, groupId, cFunction) {
+
         let xhttpRequest = new XMLHttpRequest();
         xhttpRequest.willHandleError = true;
         xhttpRequest.onreadystatechange = function () {
@@ -3311,11 +3315,10 @@
 
             }
         };
-        xhttpRequest.open("Post", "http://devapp01.icico.net.ir/fms/608fa5263cee3d76470c3d30", true);
+        xhttpRequest.open("Post", url+"/"+groupId, true);
         xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
         xhttpRequest.send(formData1);
     }
-
     isc.defineClass("MyHLayoutButtons", HLayout);
     isc.MyHLayoutButtons.addProperties({
         width: "100%",

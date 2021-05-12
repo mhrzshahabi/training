@@ -24,7 +24,9 @@
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "fileName", title: "<spring:message code='attach.file.name'/>", filterOperator: "iContains"},
                 {name: "fileTypeId", title: "<spring:message code='attach.file.format'/>", filterOperator: "equals"},
-                {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains"}
+                {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains"},
+                {name: "key", title: "<spring:message code='description'/>", filterOperator: "iContains"},
+                {name: "group_id", title: "<spring:message code='description'/>", filterOperator: "iContains"}
             ]
         });
 
@@ -99,26 +101,16 @@
                         return;
                     }
                     attachmentWait = createDialog("wait");
-                    let formData1 = new FormData();
-                    let file = document.getElementById('file_JspAttachments').files[0];
-                    let fileName = this.DynamicForm_JspAttachments.getValue("fileName");
-                    if (file.name.split('.').length > 1)
-                        fileName += "." + file.name.split('.')[1];
-                    formData1.append("file", file);
-                    formData1.append("objectType",objectTypeAttachment);
-                    formData1.append("objectId", objectIdAttachment);
-                    formData1.append("fileName", fileName);
-                    formData1.append("fileTypeId", this.DynamicForm_JspAttachments.getValue("fileTypeId"));
-                    formData1.append("description", this.DynamicForm_JspAttachments.getValue("description"));
-                    if (objectTypeAttachment==="QuestionBank")
-                    {
-                        MinIoUploadHttpRequest(formData1, this.saveActionUrlAttachment, this.methodAttachment, this.save_result_Attachments_minIo);
+                      let formData1 = new FormData();
 
-                    }
-                    else
-                    {
-                        TrnXmlHttpRequest(formData1, this.saveActionUrlAttachment, this.methodAttachment, this.save_result_Attachments);
-                    }
+                let file = document.getElementById('file_JspAttachments').files[0];
+                     formData1.append("file", file);
+
+                         isc.RPCManager.sendRequest(TrDSRequest(getFmsConfig, "Get",  null, function (resp) {
+                            let data= JSON.parse(resp.data)
+                             MinIoUploadHttpRequest(formData1, data.url, data.groupId, me.save_result_Attachments_minIo);
+
+                         }));
                 } else if (this.methodAttachment === "PUT") {
                     attachmentWait = createDialog("wait");
                     let data = this.DynamicForm_JspAttachments.getValues();
@@ -256,6 +248,14 @@
                 },
                 {
                     name: "description"
+                },
+                {
+                    hidden:true,
+                    name: "key"
+                }  ,
+                {
+                    hidden:true,
+                    name: "group_id"
                 }
             ],
             recordDoubleClick: function (viewer, record) {
@@ -408,7 +408,6 @@
             if (stat === 200 || stat === 201) {
                 let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
                 this.ListGrid_Attachments_refresh();
-
                 this.Window_JspAttachments.close();
                 setTimeout(function () {
                     OK.close();
@@ -423,31 +422,47 @@
             }
         }.bind(this)
         this.save_result_Attachments_minIo=function save_result_Attachments_minIo(resp) {
-            let stat;
-            let respText;
-            attachmentWait.close();
-            if (this.methodAttachment === "POST") {
-                stat = resp.status;
-                respText = resp.responseText;
-            } else {
-                stat = resp.httpResponseCode;
-                respText = resp.httpResponseText;
-            }
-            if (stat === 200 || stat === 201) {
-                let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-                this.ListGrid_Attachments_refresh();
+          let response=  JSON.parse(resp.response);
+            if (response.status === 200) {
 
-                this.Window_JspAttachments.close();
+                let fileName = this.DynamicForm_JspAttachments.getValue("fileName");
+                let file = document.getElementById('file_JspAttachments').files[0];
+
+                if (file.name.split('.').length > 1)
+                    fileName += "." + file.name.split('.')[1];
+
+                let data = {};
+                data.fileKey= response.key;
+                data.objectType= objectTypeAttachment;
+                data.objectId= objectIdAttachment;
+                data.name= fileName;
+                data.type= this.DynamicForm_JspAttachments.getValue("fileTypeId");
+                data.description= this.DynamicForm_JspAttachments.getValue("description");
+                 isc.RPCManager.sendRequest(TrDSRequest(uploadFms, "POST",  JSON.stringify(data), function (resp) {
+                     attachmentWait.close();
+                     responseStatus = JSON.parse(resp.httpResponseText).status;
+                                if (responseStatus === 200 || responseStatus === 201) {
+                let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+
+                                    me.ListGrid_Attachments_refresh();
+                                    me.Window_JspAttachments.close();
                 setTimeout(function () {
                     OK.close();
                 }, 3000);
+                                } else {
+                                    if (responseStatus === 404)
+                                    {
+                                        createDialog("info", "<spring:message code="upload.failed.duplicate"/>");
+                                    }
+                                    else
+                                    {
+                                        createDialog("info", "<spring:message code="upload.failed"/>");
+                                    }
+                                }
+                            }));
             } else {
-                if (stat === 406 && respText === "DuplicateRecord") {
-                    createDialog("info", "<spring:message code="msg.record.duplicate"/>");
-                } else {
-                    createDialog("info", "<spring:message code="msg.record.duplicate"/>");
-                    <%--createDialog("info", "<spring:message code="msg.operation.error"/>");--%>
-                }
+                attachmentWait.close();
+                    createDialog("info", "<spring:message code="upload.failed"/>");
             }
         }.bind(this)
 
@@ -490,19 +505,20 @@
         }.bind(this)
 
         this.Show_Attachment_Attachments=function Show_Attachment_Attachments(record) {
-            let downloadForm = isc.DynamicForm.create({
-                method: "GET",
-                action: "attachment/download/" + record.id,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "myToken", type: "hidden"}
-                    ]
-            });
-            downloadForm.setValue("myToken", "<%=accessToken%>");
-            downloadForm.show();
-            downloadForm.submitForm();
+                let downloadForm = isc.DynamicForm.create({
+                    method: "GET",
+                    action: "attachment/download/" + record.id,
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "myToken", type: "hidden"}
+                        ]
+                });
+                downloadForm.setValue("myToken", "<%=accessToken%>");
+                downloadForm.show();
+                downloadForm.submitForm();
+
         }
 
         this.Upload_Changed_JspAttachments=function Upload_Changed_JspAttachments() {
@@ -594,6 +610,24 @@
         this.clear_Attachments=function clear_Attachments() {
             this.ListGrid_JspAttachment.clear();
         }.bind(this)
+
+
+        function test() {
+
+           let downloadForm = isc.DynamicForm.create({
+                    method: "GET",
+                    action: "attachment/download/" + 5,
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "myToken", type: "hidden"}
+                        ]
+                });
+                downloadForm.setValue("myToken", "<%=accessToken%>");
+                downloadForm.show();
+                downloadForm.submitForm();
+        }
 
     }
 

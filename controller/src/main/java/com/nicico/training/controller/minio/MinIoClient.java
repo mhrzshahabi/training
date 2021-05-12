@@ -1,6 +1,7 @@
 package com.nicico.training.controller.minio;
 
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import request.minio.CreateFmsGroupReq;
@@ -22,28 +23,8 @@ public interface MinIoClient {
                             @PathVariable("groupId") String groupId);
 
     @RequestMapping(method = RequestMethod.GET,value = "{groupId}/{key}")
-    UploadFmsRes downloadFile(@RequestHeader("Authorization") String token,
-                            @PathVariable("groupId") String groupId,
-                            @PathVariable("key") String key);
-
-
-
-//
-//    @RequestMapping(method = RequestMethod.POST, value = "/group/leave")
-//    BaseResponse leaveGroup(@RequestBody ElsEvalRequest request);
-//
-//    @RequestMapping(method = RequestMethod.POST, value = "/{bucketName}/{groupId}")
-//    BaseResponse uploadFile(@PathVariable("bucketName") String bucketName,@PathVariable("groupId") String groupId);
-//
-//    @RequestMapping(method = RequestMethod.GET, value = "/{bucketName}/{groupId}/{uuid}")
-//    BaseResponse downloadFile(@PathVariable("bucketName") String bucketName,@PathVariable("groupId") String groupId,
-//                              @PathVariable("uuid") String uuid);
-//
-//    @RequestMapping(method = RequestMethod.GET, value = "/info/{uuid}")
-//    BaseResponse getInfo(@PathVariable("uuid") String uuid);
-//
-//    @RequestMapping(method = RequestMethod.POST, value = "/tag/{uuid}")
-//    BaseResponse createTag(@PathVariable("uuid") String uuid);
-
+    ByteArrayResource downloadFile(@RequestHeader("Authorization") String token,
+                                   @PathVariable("groupId") String groupId,
+                                   @PathVariable("key") String key);
 
 }

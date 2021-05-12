@@ -1,14 +1,25 @@
 package com.nicico.training.controller;
 
+import com.google.gson.JsonObject;
 import com.nicico.training.controller.minio.MinIoClient;
+import com.nicico.training.dto.AttachmentDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import request.minio.CreateFmsGroupReq;
 import response.minio.CreateFmsGroupRes;
+import response.minio.FmsConfig;
 import response.minio.UploadFmsRes;
+
+import javax.activation.MimetypesFileTypeMap;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.*;
+import java.net.URLEncoder;
 
 
 @RestController
@@ -17,6 +28,11 @@ import response.minio.UploadFmsRes;
 public class FmsRestController {
 
     private final MinIoClient client;
+
+    @Value("${nicico.minioUrl}")
+    private String minioUrl;
+    @Value("${nicico.minioQuestionsGroup}")
+    private String groupId;
 
     @PostMapping("createFmsGroup")
     public CreateFmsGroupRes createFmsGroup(String token,String name){
@@ -34,17 +50,24 @@ public class FmsRestController {
         return client.uploadFile(token,file,groupId);
     }
 
+//    @PostMapping("downloadFile")
+//    public void downloadFile(@RequestParam(value = "data") String data) {
+////test fms
+//         client.downloadFile("Bearer 79cc3d16-70c0-4ff8-983d-cc879fcc734d",groupId,"1cebc875-1244-4566-889f-fcbdbe29d0c1");
+//    }
 
-
-    @PostMapping("downloadFile")
-    public UploadFmsRes downloadFile(String token, String groupId , String key) {
-        return client.downloadFile(token,groupId,key);
+    @GetMapping("config")
+    public ResponseEntity<FmsConfig> getConfig() {
+        FmsConfig fmsConfig=new FmsConfig();
+        fmsConfig.setGroupId(groupId);
+        fmsConfig.setUrl(minioUrl);
+        return new ResponseEntity<>(fmsConfig, HttpStatus.OK);
     }
 
-
-
-
-
-
-
+    @PostMapping("download")
+    public void download(@RequestBody JsonObject object) {
+        FmsConfig fmsConfig=new FmsConfig();
+        fmsConfig.setGroupId(groupId);
+        fmsConfig.setUrl(minioUrl);
+    }
 }

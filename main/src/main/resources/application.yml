@@ -2,7 +2,7 @@ spring:
   application:
     name: Training
   profiles:
-    active: Local
+    active: Development
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
@@ -76,7 +76,7 @@ nicico:
     version: '2'
     pass: 'DplSkqONgQcfymUb'
     dayBeforeStartCourse: '4'
-    minioGroup: '608fa5263cee3d76470c3d30'
+
   sms:
     magfa:
       username: 'maaden_81794'
@@ -225,6 +225,8 @@ spring:
 nicico:
   security:
 #    sys-password: password
+  minioQuestionsGroup: '608fa5263cee3d76470c3d30'
+  minioUrl: 'http://devapp01.icico.net.ir/fms/'
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
@@ -284,6 +286,8 @@ spring:
 nicico:
   security:
 #    sys-password: password
+  minioQuestionsGroup: '608fa5263cee3d76470c3d30'
+  minioUrl: 'http://devapp01.icico.net.ir/fms/'
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:
