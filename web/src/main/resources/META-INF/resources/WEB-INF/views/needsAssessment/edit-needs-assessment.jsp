@@ -308,7 +308,11 @@
                     return ;
                 sendNeedsAssessmentToWorkflow(mustSent);
             } else {
-                createDialog("info", "تغییری صورت نگرفته است")
+                let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
+                if(!isSaved)
+                    return ;
+                sendNeedsAssessmentToWorkflow(mustSent);
+                // createDialog("info", "تغییری صورت نگرفته است")
             }
         }
     });
