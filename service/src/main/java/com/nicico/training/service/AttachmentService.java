@@ -15,11 +15,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -31,7 +30,8 @@ public class AttachmentService implements IAttachmentService {
     private final AttachmentDAO attachmentDAO;
     @Value("${nicico.upload.dir}")
     private String uploadDir;
-
+    @Value("${nicico.minioQuestionsGroup}")
+    private String groupId;
     @Transactional(readOnly = true)
     @Override
     public AttachmentDTO.Info get(Long id) {
@@ -112,6 +112,44 @@ public class AttachmentService implements IAttachmentService {
                 request.setCriteria(criteriaRq);
         }
         return SearchUtil.search(attachmentDAO, request, attachment -> modelMapper.map(attachment, AttachmentDTO.Info.class));
+    }
+
+    @Transactional
+    @Override
+    public BaseResponse saveFmsFile(Attachment attachment) {
+        BaseResponse response=new BaseResponse();
+        try {
+            attachment.setGroup_id(groupId);
+            Attachment savedAttachment=attachmentDAO.save(attachment);
+            if (savedAttachment.getId()!=null)
+                response.setStatus(200);
+            else
+                response.setStatus(404);
+            return response;
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            response.setStatus(404);
+            return response;
+        }
+
+    }
+
+    @Override
+    public List<Map<String, String>> getFiles(String questionBank, Long id) {
+        List< Map<String, String>> files=new ArrayList<>();
+
+        List<Attachment> attachments=attachmentDAO.findAttachmentByObjectTypeAndObjectId(questionBank,id);
+        if (attachments.isEmpty())
+        return files;
+        else
+        {
+            for (Attachment attachment:attachments)
+            {
+                Map<String, String> file = new HashMap<>();
+                file.put(attachment.getKey(),attachment.getGroup_id());
+                files.add(file);
+            }
+            return files;
+        }
     }
 
     // ------------------------------

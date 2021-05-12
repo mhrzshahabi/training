@@ -7,6 +7,7 @@ import org.hibernate.annotations.AnyMetaDef;
 import org.hibernate.annotations.MetaValue;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
@@ -61,4 +62,10 @@ public class Attachment<E> extends Auditable {
 
     @Column(name = "c_object_type")
     private String objectType;
+
+    @Column(name = "group_id")
+    private String group_id;
+
+    @Column(name = "key")
+    private String key;
 }

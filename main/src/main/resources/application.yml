@@ -76,6 +76,7 @@ nicico:
     version: '2'
     pass: 'DplSkqONgQcfymUb'
     dayBeforeStartCourse: '4'
+
   sms:
     magfa:
       username: 'maaden_81794'
@@ -224,6 +225,8 @@ spring:
 nicico:
   security:
 #    sys-password: password
+  minioQuestionsGroup: '608fa5263cee3d76470c3d30'
+  minioUrl: 'http://devapp01.icico.net.ir/fms/'
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
@@ -283,6 +286,8 @@ spring:
 nicico:
   security:
 #    sys-password: password
+  minioQuestionsGroup: '608fa5263cee3d76470c3d30'
+  minioUrl: 'http://devapp01.icico.net.ir/fms/'
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:

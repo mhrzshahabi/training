@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.util.List;
+ import java.util.Map;
 
 @Getter
 @Setter
@@ -38,6 +39,9 @@ public class ImportedQuestion {
 
         @ApiModelProperty
         private List<ImportedQuestionOption> questionOption;
+
+        @ApiModelProperty
+        private List<Map<String,String>> files;
 
 
 }

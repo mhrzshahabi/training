@@ -20,6 +20,8 @@ public class AttachmentDTO {
     private String description;
     private Long objectId;
     private String objectType;
+    private String key;
+    private String group_id;
 
     @Getter
     @Setter

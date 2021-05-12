@@ -2,6 +2,11 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.model.Attachment;
+import response.BaseResponse;
+
+import java.util.List;
+import java.util.Map;
 
 public interface IAttachmentService {
     AttachmentDTO.Info get(Long id);
@@ -17,4 +22,8 @@ public interface IAttachmentService {
     void delete(AttachmentDTO.Delete request);
 
     SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request, String objectType, Long objectId);
+
+    BaseResponse saveFmsFile(Attachment fmsUploadDto);
+
+    List<Map<String, String>> getFiles(String questionBank, Long id);
 }

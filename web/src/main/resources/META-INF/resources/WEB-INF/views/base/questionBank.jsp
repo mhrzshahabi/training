@@ -1541,14 +1541,16 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         if (QuestionBankLG_questionBank.getSelectedRecord() === null) {
             TabSet_questionBank.disable();
             oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", 0, "<spring:message code="document"/>", {
-                1: "سوالات عملی",
+                1: "صورت سوال",
+                2: "سوالات عملی",
             });
 
             return;
         }
 
         oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", QuestionBankLG_questionBank.getSelectedRecord().id, "<spring:message code="document"/>", {
-            1: "سوالات عملی",
+            1: "صورت سوال",
+            2: "سوالات عملی",
         });
 
         TabSet_questionBank.enable();

@@ -1353,4 +1353,10 @@
             <column name="c_mojtame_title" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="namdari" id="1620705168000-001">
+        <addColumn tableName="tbl_attachment">
+            <column name="group_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="key" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
