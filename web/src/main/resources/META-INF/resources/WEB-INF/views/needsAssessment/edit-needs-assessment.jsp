@@ -264,6 +264,7 @@
             {name: "objectCode"},
             {name: "course"},
             {name: "skill"},
+            {name: "skill.code", title: "کد مهارت", filterOperator: "iContains"},
             {name: "mainWorkflowStatus"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
                 showHover:true,
@@ -1064,14 +1065,19 @@
         contextMenu: Menu_ListGrid_JspENA,
         fields: [
             {name: "id", hidden: true},
-            {name: "titleFa"},
+            {name: "titleFa", align: "center"},
+            {name: "skill.code", align: "center",
+                sortNormalizer: function (record) {
+                    return record.skill.code;
+                }
+            },
             {name: "objectType"},
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false}
 
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="knowledge"/>"
             }],
         headerHeight: 50,
@@ -1082,7 +1088,7 @@
         showHoverComponents: true,
         canRemoveRecords:true,
         showHeaderContextMenu: false,
-        showFilterEditor:false,
+        showFilterEditor:true,
         removeRecordClick(rowNum){
             removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
         },
@@ -1124,9 +1130,14 @@
         sortDirection: "descending",
         fields: [
             {name: "id", hidden: true},
-            {name: "titleFa"},
+            {name: "titleFa", align: "center"},
+            {name: "skill.code", align: "center",
+                sortNormalizer: function (record) {
+                    return record.skill.code;
+                }
+            },
             {name: "objectType"},
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false}
             // {
             //     name: "needsAssessmentPriorityId",
             //     canEdit:true,
@@ -1140,7 +1151,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
@@ -1152,7 +1163,7 @@
         showHoverComponents: true,
         autoSaveEdits:false,
         canRemoveRecords:true,
-        showFilterEditor:false,
+        showFilterEditor:true,
         implicitCriteria:{"needsAssessmentDomainId":109},
         removeRecordClick(rowNum){
             removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
@@ -1194,9 +1205,14 @@
         sortDirection: "descending",
         fields: [
             {name: "id", hidden: true},
-            {name: "titleFa"},
+            {name: "titleFa", align: "center"},
+            {name: "skill.code", align: "center",
+                sortNormalizer: function (record) {
+                    return record.skill.code;
+                }
+            },
             {name: "objectType"},
-            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false}
             // {
             //     name: "needsAssessmentPriorityId",
             //     canEdit:true,
@@ -1210,7 +1226,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="attitude"/>"
             }],
         headerHeight: 50,
@@ -1224,7 +1240,7 @@
         showHoverComponents: true,
         // hoverMode: "details",
         canRemoveRecords:true,
-        showFilterEditor:false,
+        showFilterEditor:true,
         implicitCriteria:{"needsAssessmentDomainId":110},
         removeRecordClick(rowNum){
             removeRecord_JspNeedsAssessment(this.getRecord(rowNum));
