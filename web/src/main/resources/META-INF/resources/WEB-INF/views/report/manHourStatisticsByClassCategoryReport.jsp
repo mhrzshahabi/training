@@ -52,6 +52,7 @@
             },
         ],
         transformResponse: function (dsResponse, dsRequest, data) {
+            wait.close();
             if (data && data.response) {
                 listData = data.response.dataSumByStatus;
                 dsResponse.data = listData;
@@ -346,7 +347,7 @@
                         ListGrid_ManHourByCatReportJSP.invalidateCache();
                         ListGrid_ManHourByCatReportJSP.fetchData();
                         ManHour_Report_wait.close();
-
+                        wait.show();
                     }, 100);
                 }
             },

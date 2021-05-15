@@ -32,21 +32,19 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
                                                                           String endDate,
                                                                           String mojtameCode,
                                                                           String moavenatCode,
-                                                                          String omorCode,
-                                                                          GroupBy groupBy) {
+                                                                          String omorCode) {
         StringBuffer departmentFilterCode = new StringBuffer();
         StringBuffer script = new StringBuffer("SELECT ");
         script.append(" CASE WHEN AL.presence + AL.absence = 0 THEN NULL");
-        script.append("     ELSE (100*AL.presence /(AL.presence + AL.absence)) END AS participationPercent,");
+        script.append("     ELSE ROUND(100*AL.presence /(AL.presence + AL.absence) ,2) END AS participationPercent,");
         script.append(" CASE WHEN AL.count_prs = 0 THEN NULL");
-        script.append(" ELSE (NVL(AL.count_prs ,(AL.presence / AL.count_prs))) END AS presencePerPerson,");
+        script.append(" ELSE ROUND(AL.presence / AL.count_prs , 2) END AS presencePerPerson,");
         script.append("       AL.* FROM (SELECT");
         script.append("       SUM(COUNT_) COUNT_PRS,");
         script.append("       SUM(PRESENCE) PRESENCE,");
         script.append("       SUM(ABSENCE) ABSENCE,");
         script.append("       SUM(UNKNOWN) UNKNOWN,");
         script.append("       SUM(STUDENT_COUNT) STUDENT_COUNT,");
-        addGroupByFeatureClause(groupBy, script);
         if (omorCode != null) {
             script.append("       C_GHESMAT_CODE,");
             script.append("       C_GHESMAT_TITLE");
@@ -113,7 +111,6 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("                          )DPRT ON(DPRT.ID = CLSS.F_PLANNER)");
         script.append("                          LEFT JOIN (SELECT COUNT(*) COUNT_, F_DEPARTMENT_ID FROM TBL_PERSONNEL WHERE DELETED = 0 GROUP BY F_DEPARTMENT_ID) PRS ON DPRT.ID = PRS.F_DEPARTMENT_ID");
         script.append("              )GROUP BY ");
-        addGroupByFeatureClause(groupBy, script);
         if (omorCode != null) {
             script.append("       C_GHESMAT_CODE,");
             script.append("       C_GHESMAT_TITLE");
@@ -145,7 +142,115 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
                     .setUnknownManHour(record[5] == null ? null : Double.parseDouble(record[5].toString()))
                     .setStudentCount(record[6] == null ? null : Integer.parseInt(record[6].toString()));
 
-            int index = 1;
+            if (omorCode != null) {
+                dto.setGhesmatCode(record[7] == null ? null : record[7].toString());
+                dto.setGhesmatTitle(record[8] == null ? null : record[8].toString());
+            } else if (moavenatCode != null) {
+                dto.setOmorCode(record[7] == null ? null : record[7].toString());
+                dto.setOmorTitle(record[8] == null ? null : record[8].toString());
+            } else if (mojtameCode != null) {
+                dto.setMoavenatCode(record[7] == null ? null : record[7].toString());
+                dto.setMoavenatTitle(record[8] == null ? null : record[8].toString());
+            } else {
+                dto.setMojtameCode(record[7] == null ? null : record[7].toString());
+                dto.setMojtameTitle(record[8] == null ? null : record[8].toString());
+            }
+
+            list.add(dto);
+        }
+        return list;
+    }
+
+    @Override
+    public List<ClassFeatures> getReportForMultipleDepartment(String startDate, String endDate, List<String> mojtameCodes, List<String> moavenatCodes, List<String> omorCodes, GroupBy groupBy) {
+        StringBuffer script = new StringBuffer("SELECT ");
+        script.append(" CASE WHEN AL.presence + AL.absence = 0 THEN NULL");
+        script.append("     ELSE ROUND(100*AL.presence /(AL.presence + AL.absence) ,2) END AS participationPercent,");
+        script.append(" CASE WHEN AL.count_prs = 0 THEN NULL");
+        script.append(" ELSE (NVL(AL.count_prs ,(AL.presence / AL.count_prs)) ) END AS presencePerPerson,");
+        script.append("       AL.* FROM (SELECT");
+        script.append("       SUM(COUNT_) COUNT_PRS,");
+        script.append("       SUM(PRESENCE) PRESENCE,");
+        script.append("       SUM(ABSENCE) ABSENCE,");
+        script.append("       SUM(UNKNOWN) UNKNOWN,");
+        script.append("       SUM(STUDENT_COUNT) STUDENT_COUNT,");
+        addGroupByFeatureClause(groupBy, script);
+        script.append("       FROM (");
+        script.append("SELECT   PRESENCE,");
+        script.append("         ABSENCE,");
+        script.append("         UNKNOWN,");
+        script.append("         STUDENT_COUNT,");
+        script.append("         CLSS.C_CODE,");
+        script.append("         CLSS.C_END_DATE,");
+        script.append("         CLSS.C_START_DATE,");
+        script.append("         CLSS.C_STATUS,");
+        script.append("         CLSS.C_TEACHING_TYPE,");
+        script.append("         CRS.C_CODE,");
+        script.append("         CRS.C_TITLE_FA,");
+        script.append("         CRS.E_TECHNICAL_TYPE,");
+        script.append("         CRS.E_RUN_TYPE,");
+        script.append("         CRS.E_THEO_TYPE,");
+        script.append("         CRS.E_LEVEL_TYPE,");
+        script.append("         DPRT.C_TITLE,");
+        script.append("         DPRT.C_MOJTAME_CODE,");
+        script.append("         DPRT.C_MOJTAME_TITLE,");
+        script.append("         DPRT.C_OMOR_CODE,");
+        script.append("         DPRT.C_OMOR_TITLE,");
+        script.append("         DPRT.C_MOAVENAT_CODE,");
+        script.append("         DPRT.C_MOAVENAT_TITLE,");
+        script.append("         DPRT.C_GHESMAT_CODE,");
+        script.append("         DPRT.C_GHESMAT_TITLE,");
+        script.append("         NVL(PRS.COUNT_,0) COUNT_");
+        script.append("         FROM(SELECT * FROM (");
+        script.append("SELECT ATT_STATE, F_CLASS_ID,S_HOUR FROM (");
+        script.append("                  SELECT CASE WHEN (ATT.C_STATE = 1 OR ATT.C_STATE = 2) THEN 'PRESENCE'");
+        script.append("                          WHEN (ATT.C_STATE = 3 OR ATT.C_STATE = 4) THEN 'ABSENCE' ELSE 'UNKNOWN' END AS ATT_STATE , ATT.F_SESSION, ATT.F_STUDENT, SESS.F_CLASS_ID, SESS.S_HOUR ");
+        script.append("                          FROM TBL_ATTENDANCE ATT INNER JOIN (");
+        script.append("SELECT ");
+        script.append("(TO_NUMBER(REGEXP_SUBSTR(C_SESSION_END_HOUR ,'[^:]+',3,1))+60*TO_NUMBER(REGEXP_SUBSTR(C_SESSION_END_HOUR ,'[^:]+',1,1))");
+        script.append("-");
+        script.append("(TO_NUMBER(REGEXP_SUBSTR(C_SESSION_START_HOUR ,'[^:]+',3,1))+60*TO_NUMBER(REGEXP_SUBSTR(C_SESSION_START_HOUR ,'[^:]+',1,1))))/60 AS S_HOUR,");
+        script.append("ID ,F_CLASS_ID  FROM TBL_SESSION WHERE ");
+        script.append("                          C_SESSION_DATE >= :FROM_DATE  ");
+        script.append("                          AND C_SESSION_DATE <= :TO_DATE ");
+        script.append("                          )SESS ON(ATT.F_SESSION = SESS.ID)                          ");
+        script.append("      ) )PIVOT(SUM (S_HOUR) FOR ATT_STATE IN('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))) SUM_");
+        script.append("                          INNER JOIN TBL_CLASS CLSS ON(CLSS.ID = SUM_.F_CLASS_ID)");
+        script.append("                          LEFT JOIN (SELECT CLASS_ID , COUNT(DISTINCT(STUDENT_ID)) AS STUDENT_COUNT FROM TBL_CLASS_STUDENT GROUP BY CLASS_ID) ST_COUNT ON(ST_COUNT.CLASS_ID = CLSS.ID)");
+        script.append("                          INNER JOIN TBL_COURSE CRS ON(CRS.ID = CLSS.F_COURSE)");
+        script.append("                          INNER JOIN (");
+        script.append("                          SELECT * FROM TBL_DEPARTMENT WHERE ");
+        if (omorCodes != null) {
+            script.append(" C_OMOR_CODE IN (").append(omorCodes.stream().collect(Collectors.joining(","))).append(")");
+        } else if (moavenatCodes != null) {
+            script.append(" C_MOAVENAT_CODE IN (").append(moavenatCodes.stream().collect(Collectors.joining(","))).append(")");
+        } else if (mojtameCodes != null) {
+            script.append(" C_MOJTAME_CODE IN (").append(mojtameCodes.stream().collect(Collectors.joining(","))).append(")");
+        } else {
+            script.append(" 1=1");
+        }
+        script.append("                          )DPRT ON(DPRT.ID = CLSS.F_PLANNER)");
+        script.append("                          LEFT JOIN (SELECT COUNT(*) COUNT_, F_DEPARTMENT_ID FROM TBL_PERSONNEL WHERE DELETED = 0 GROUP BY F_DEPARTMENT_ID) PRS ON DPRT.ID = PRS.F_DEPARTMENT_ID");
+        script.append("              )GROUP BY ");
+        addGroupByFeatureClause(groupBy, script);
+        script.append(" ) AL");
+        List<Object[]> records = (List<Object[]>) entityManager.createNativeQuery(script.toString())
+                .setParameter("FROM_DATE", startDate)
+                .setParameter("TO_DATE", endDate)
+                .getResultList();
+        List<ClassFeatures> list = new ArrayList<>();
+
+        for (Object[] record : records) {
+            ClassFeatures dto = new ClassFeatures();
+            dto
+                    .setParticipationPercent(record[0] == null ? null : Double.parseDouble(record[0].toString()))
+                    .setPresencePerPerson(record[1] == null ? null : Double.parseDouble(record[1].toString()))
+                    .setPersonnelCount(record[2] == null ? null : Integer.parseInt(record[2].toString()))
+                    .setPresenceManHour(record[3] == null ? null : Double.parseDouble(record[3].toString()))
+                    .setAbsenceManHour(record[4] == null ? null : Double.parseDouble(record[4].toString()))
+                    .setUnknownManHour(record[5] == null ? null : Double.parseDouble(record[5].toString()))
+                    .setStudentCount(record[6] == null ? null : Integer.parseInt(record[6].toString()));
+
             if (groupBy.equals(GroupBy.CLASS_TEACHING_TYPE))
                 dto.setClassTeachingType(record[7].toString());
             else if (groupBy.equals(GroupBy.CLASS_STATUS))
@@ -162,21 +267,6 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
             } else if (groupBy.equals(GroupBy.COURSE_THEO_TYPE)) {
                 if (record[7] != null)
                     dto.setCourseTheoType(Arrays.stream(ETheoType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
-            } else
-                index = 0;
-
-            if (omorCode != null) {
-                dto.setGhesmatCode(record[index + 7] == null ? null : record[index + 7].toString());
-                dto.setGhesmatTitle(record[index + 8] == null ? null : record[index + 8].toString());
-            } else if (moavenatCode != null) {
-                dto.setOmorCode(record[index + 7] == null ? null : record[index + 7].toString());
-                dto.setOmorTitle(record[index + 8] == null ? null : record[index + 8].toString());
-            } else if (mojtameCode != null) {
-                dto.setMoavenatCode(record[index + 7] == null ? null : record[index + 7].toString());
-                dto.setMoavenatTitle(record[index + 8] == null ? null : record[index + 8].toString());
-            } else {
-                dto.setMojtameCode(record[index + 7] == null ? null : record[index + 7].toString());
-                dto.setMojtameTitle(record[index + 8] == null ? null : record[index + 8].toString());
             }
 
             list.add(dto);
@@ -288,17 +378,17 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
 
     private void addGroupByFeatureClause(GroupBy groupBy, StringBuffer script) {
         if (groupBy.equals(GroupBy.CLASS_TEACHING_TYPE))
-            script.append("       C_TEACHING_TYPE,");
+            script.append("       C_TEACHING_TYPE");
         if (groupBy.equals(GroupBy.CLASS_STATUS))
-            script.append("       C_STATUS,");
+            script.append("       C_STATUS");
         if (groupBy.equals(GroupBy.COURSE_LEVEL_TYPE))
-            script.append("       E_LEVEL_TYPE,");
+            script.append("       E_LEVEL_TYPE");
         if (groupBy.equals(GroupBy.COURSE_RUN_TYPE))
-            script.append("       E_RUN_TYPE,");
+            script.append("       E_RUN_TYPE");
         if (groupBy.equals(GroupBy.COURSE_TECHNICAL_TYPE))
-            script.append("       E_TECHNICAL_TYPE,");
+            script.append("       E_TECHNICAL_TYPE");
         if (groupBy.equals(GroupBy.COURSE_THEO_TYPE))
-            script.append("       E_THEO_TYPE,");
+            script.append("       E_THEO_TYPE");
     }
 
 }

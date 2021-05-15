@@ -1,7 +1,7 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
-import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO;
+import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.GroupBy;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.ReportResponse;
@@ -29,19 +29,19 @@ public class ManHourStatisticsByClassFeatureReportRestController {
     @GetMapping(value = "/list")
     public ResponseEntity<ReportResponse> list(@RequestParam String fromDate,
                                                @RequestParam String toDate,
-                                               @RequestParam String omorCode,
-                                               @RequestParam String moavenatCode,
-                                               @RequestParam String mojtameCode,
+                                               @RequestParam List<String> omorCodes,
+                                               @RequestParam List<String> moavenatCodes,
+                                               @RequestParam List<String> mojtameCodes,
                                                @RequestParam List<GroupBy> groupBys) {
-        omorCode = omorCode.isEmpty() ? null : omorCode;
-        moavenatCode = moavenatCode.isEmpty() ? null : moavenatCode;
-        mojtameCode = mojtameCode.isEmpty() ? null : mojtameCode;
+        omorCodes = omorCodes.isEmpty() ? null : omorCodes;
+        moavenatCodes = moavenatCodes.isEmpty() ? null : moavenatCodes;
+        mojtameCodes = mojtameCodes.isEmpty() ? null : mojtameCodes;
 
-        Map<GroupBy,List<ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures>> allData = new HashMap<>();
+        Map<GroupBy, List<ClassFeatures>> allData = new HashMap<>();
 
         for (int i = 0; i < groupBys.size(); i++) {
-            List<ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures> list = new ArrayList<>();
-            service.getReport(fromDate, toDate, mojtameCode, moavenatCode, omorCode, groupBys.get(i)).forEach(dto -> list.add((ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures) dto));
+            List<ClassFeatures> list = new ArrayList<>();
+            service.getReportForMultipleDepartment(fromDate, toDate, mojtameCodes, moavenatCodes, omorCodes, groupBys.get(i)).forEach(dto -> list.add(dto));
             allData.put(groupBys.get(i), list);
         }
         SpecRs specRs = new SpecRs()
