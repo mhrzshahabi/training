@@ -595,6 +595,7 @@
                             }
 
                         } else {
+                            Remove_All_Cell_Action();
                             createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>");
                             return;
                         }
