@@ -1142,8 +1142,8 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
                         saveQuestionBank_questionBank();
                     }
                 }),
-            ],
-        }),]
+            ]
+        })]
     });
     // ------------------------------------------- TabSet -------------------------------------------
     var TabSet_questionBank = isc.TabSet.create({
@@ -1368,10 +1368,12 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
     }
 
     function saveQuestionBank_questionBank() {
+
         if (!QuestionBankDF_questionBank.validate()) {
             return;
         }
         if(QuestionBankDF_questionBank.getItem("questionTypeId").getValue()==520){
+
             let option1Value = QuestionBankDF_questionBank.getItem("option1").getValue();
             let option1Value2 = QuestionBankDF_questionBank.getItem("option2").getValue();
             let option1Value3 = QuestionBankDF_questionBank.getItem("option3").getValue();
@@ -1426,6 +1428,32 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
                 return;
            }
+
+           if(option1Value3) {
+
+                if (option1Value4) {
+
+                    if (option1Value === option1Value2 || option1Value === option1Value3 || option1Value === option1Value4 || option1Value2 === option1Value3 ||
+                        option1Value2 === option1Value4 || option1Value3 === option1Value4) {
+                        createDialog("info", "<spring:message code="question.bank.equal.options"/>");
+                        return;
+                    }
+
+                } else {
+
+                    if (option1Value === option1Value2 || option1Value === option1Value3 || option1Value2 === option1Value3) {
+                        createDialog("info", "<spring:message code="question.bank.equal.options"/>");
+                        return;
+                    }
+                }
+           } else {
+
+                if (option1Value === option1Value2) {
+                    createDialog("info", "<spring:message code="question.bank.equal.options"/>");
+                    return;
+                }
+           }
+
         }
 
 
