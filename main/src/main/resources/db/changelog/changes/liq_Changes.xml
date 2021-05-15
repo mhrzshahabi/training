@@ -1359,4 +1359,7 @@
             <column name="key" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="MShahabi" id="1799887766557-015">
+        <modifyDataType tableName="tbl_question_bank" columnName="c_descriptive_answer" newDataType="VARCHAR2(4000 CHAR)"/>
+    </changeSet>
 </databaseChangeLog>
