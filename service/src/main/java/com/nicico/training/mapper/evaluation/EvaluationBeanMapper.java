@@ -268,9 +268,13 @@ public abstract class EvaluationBeanMapper {
                     ImportedQuestionOption option3 = new ImportedQuestionOption();
                     ImportedQuestionOption option4 = new ImportedQuestionOption();
                     option1.setTitle(questionBank.getOption1());
+                    option1.setLabel("الف");
                     option2.setTitle(questionBank.getOption2());
+                    option2.setLabel("ب");
                     option3.setTitle(questionBank.getOption3());
+                    option3.setLabel("ج");
                     option4.setTitle(questionBank.getOption4());
+                    option4.setLabel("د");
 
                     options.add(option1);
                     options.add(option2);

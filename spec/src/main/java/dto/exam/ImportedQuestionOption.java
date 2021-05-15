@@ -17,4 +17,6 @@ public class ImportedQuestionOption {
         @ApiModelProperty(required = true, hidden = false)
         private String title;
 
+        private String label;
+
 }

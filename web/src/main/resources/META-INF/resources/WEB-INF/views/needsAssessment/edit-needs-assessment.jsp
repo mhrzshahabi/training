@@ -1748,20 +1748,35 @@
         if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
             let updating = {objectType: record.objectType, objectId: record.objectId, needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1};
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" + record.id, "PUT", JSON.stringify(updating), function (resp) {
-                wait.close()
-                if (resp.httpResponseCode === 409) {
-                    createDialog("info", resp.httpResponseText);
-                    return 0;
-                } else if (resp.httpResponseCode !== 200) {
-                    createDialog("info", "<spring:message code='error'/>");
-                    return;
-                }
-                record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
-                DataSource_Skill_JspNeedsAssessment.updateData(record);
-                hasChanged = true;
-                viewer.endEditing();
-            }));
+            let id=record.id
+            //TODO ZAZA
+        //     if (id===undefined)
+        //     {
+        //         let data = DataSource_Skill_JspNeedsAssessment.cacheData;
+        //
+        //         for (let i = 0; i < data.length; i++) {
+        //            if (data.get(i).titleFa!==record.titleFa)
+        //                data.removeAt(i);
+        //         }
+        // //add api for temp
+        //     }
+        //     else
+        //     {
+                isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" +id, "PUT", JSON.stringify(updating), function (resp) {
+                    wait.close()
+                    if (resp.httpResponseCode === 409) {
+                        createDialog("info", resp.httpResponseText);
+                        return 0;
+                    } else if (resp.httpResponseCode !== 200) {
+                        createDialog("info", "<spring:message code='error'/>");
+                        return;
+                    }
+                    record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
+                    DataSource_Skill_JspNeedsAssessment.updateData(record);
+                    hasChanged = true;
+                    viewer.endEditing();
+                }));
+            // }
         }
         else{
             createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")]+" قابل تغییر است.")
