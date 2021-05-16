@@ -121,6 +121,7 @@
             {name: "studentCostCurrency"},
             {name: "planner"},
             {name: "organizer"},
+            {name: "hasTest", type: "boolean"}
         ]
     });
 
@@ -585,7 +586,8 @@
             {name: "startEvaluation", hidden: true},
             {name: "behavioralLevel", hidden: true},
             {name: "studentCost", hidden: true},
-            {name: "studentCostCurrency", hidden: true}
+            {name: "studentCostCurrency", hidden: true},
+            {name: "hasTest", hidden: true}
         ],
         getCellCSSText: function (record, rowNum, colNum) {
             let style;
@@ -616,7 +618,7 @@
         dataArrived: function () {
             wait.close();
             selectWorkflowRecord();
-        },
+        }
     });
 
     var VM_JspClass = isc.ValuesManager.create({
@@ -1331,7 +1333,8 @@
                 textAlign: "center",
                 startRow: true,
                 defaultValue: 1,
-                width: 120,
+                width: 100,
+                colSpan: 1,
                 valueMap: {
                     "1": "واکنشی",
                     "2": "یادگیری",
@@ -1342,14 +1345,28 @@
                     showFilterEditor: false
                 },
                 change: function (form, item, value, oldValue) {
-                    if (value === "3") {
+                    if (value === "2") {
+
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                        DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(false);
+                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                        DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        DynamicForm_Class_JspClass.getItem("behavioralLevel").setValue();
+                    } else if (value === "3") {
+
                         DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                        DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(true);
+                        DynamicForm_Class_JspClass.getItem("hasTest").setValue(false);
                         DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
                         DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
                         DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
                         DynamicForm_Class_JspClass.getItem("startEvaluation").setValue("3");
                     } else {
+
                         DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                        DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(true);
+                        DynamicForm_Class_JspClass.getItem("hasTest").setValue(false);
                         DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
                         DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
                         DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
@@ -1358,12 +1375,22 @@
                 }
             },
             {
+                name: "hasTest",
+                title: "آزمون دارد",
+                required: false,
+                colSpan: 1,
+                type: "boolean",
+                // titleOrientation: "top",
+                labelAsTitle: true,
+            },
+            {
                 name: "startEvaluation",
                 title: "<spring:message code="start.evaluation"/>:",
                 required: false,
                 defaultValue: "",
                 textAlign: "center",
                 width: 60,
+                colSpan: 1,
                 hint: "&nbsp;ماه",
                 pickListProperties: {
                     showFilterEditor: false
@@ -1386,7 +1413,7 @@
             {
                 name: "behavioralLevel",
                 title: "<spring:message code="behavioral.Level"/>:",
-                colSpan: 2,
+                colSpan: 1,
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
@@ -1399,7 +1426,7 @@
             {name: "evaluationScore",
                 canEdit:false,
                 title:"نمره ارزیابی مدرس کلاس: ",
-                calSpan:2,
+                calSpan: 1,
                 defaultValue: " _ ",
                 type: "StaticTextItem",
             }
@@ -1822,6 +1849,7 @@
                     return;
             }
             let data = VM_JspClass.getValues();
+            debugger;
             data.courseId = data.course.id;
             delete data.course;
             delete data.term;
@@ -2897,15 +2925,27 @@
                         classMethod = "PUT";
                         url = classUrl + record.id;
                         Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
-                        if(record.evaluation != undefined && record.evaluation == "3"){
+                        if(record.evaluation !== undefined && record.evaluation === "3") {
+
                             DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                            DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("hasTest").setValue(false);
                             DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
                             DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
                             DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
                             DynamicForm_Class_JspClass.getItem("startEvaluation").setValue("3");
-                        }
-                        else{
+                        } else if (record.evaluation !== undefined && record.evaluation === "2") {
+
                             DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                            DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        } else {
+
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                            DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("hasTest").setValue(false);
                             DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
                             DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
                             DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
@@ -2963,6 +3003,7 @@
                     } else {
                         classMethod = "POST";
                         url = classUrl;
+                        debugger;
                         DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
                         DynamicForm_Class_JspClass.setValue("course.theoryDuration", record.course.theoryDuration);
                         DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
@@ -2987,15 +3028,27 @@
                         }
 
                         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
-                        if(record.evaluation != undefined && record.evaluation == "3"){
+                        if(record.evaluation !== undefined && record.evaluation === "3") {
+
                             DynamicForm_Class_JspClass.getItem("startEvaluation").required = true;
+                            DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("hasTest").setValue(false);
                             DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(false);
                             DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(false);
                             DynamicForm_Class_JspClass.getItem("startEvaluation").enable();
                             DynamicForm_Class_JspClass.getItem("startEvaluation").setValue("3");
-                        }
-                        else{
+                        } else if (record.evaluation !== undefined && record.evaluation === "2") {
+
                             DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                            DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(false);
+                            DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
+                        } else {
+
+                            DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+                            DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(true);
+                            DynamicForm_Class_JspClass.getItem("hasTest").setValue(false);
                             DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
                             DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
                             DynamicForm_Class_JspClass.getItem("startEvaluation").setValue();
@@ -3061,6 +3114,7 @@
         VM_JspClass.clearValues();
         Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
         DynamicForm_Class_JspClass.getItem("startEvaluation").required = false;
+        DynamicForm_Class_JspClass.getItem("hasTest").setDisabled(true);
         DynamicForm_Class_JspClass.getItem("behavioralLevel").setDisabled(true);
         DynamicForm_Class_JspClass.getItem("startEvaluation").setDisabled(true);
         Window_Class_JspClass.show();

@@ -77,6 +77,7 @@ public class TclassDTO {
     private Long studentCostCurrency;
     private Boolean teacherOnlineEvalStatus;
     private Boolean studentOnlineEvalStatus;
+    private Boolean hasTest;
     private String courseCode;
 
 
