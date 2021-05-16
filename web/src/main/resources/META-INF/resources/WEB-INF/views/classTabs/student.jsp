@@ -1916,26 +1916,41 @@
         function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
 
             let warnStudents = [];
+            let warnPreCourseStudents = [];
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
 
                 JSON.parse(response.data).forEach(q => equalCourseIds.add(q));
                 let checkAll = 0;
 
-                for(let inx = 0; inx < studentsDataArray.length; inx++) {
+                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "preCourse/" + courseId, "GET", null, function (resp) {
+
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                let preCourseIds = JSON.parse(resp.httpResponseText).map(q => q.id);
+                for (let inx = 0; inx < studentsDataArray.length; inx++) {
+
                     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
                     studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
 
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                             let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).map(q => q.courseId);
-                            if(equalCourseIds.some(eq => personnelCourses.includes(eq))) {
-                                warnStudents.add(studentsDataArray[inx]);
+                            if (preCourseIds.every(pq => personnelCourses.includes(pq))) {
+
+                                if(equalCourseIds.some(eq => personnelCourses.includes(eq))) {
+                                    warnStudents.add(studentsDataArray[inx]);
+                                }
+                            } else {
+                                warnPreCourseStudents.add(studentsDataArray[inx]);
                             }
+
                             checkAll ++;
-                            if(studentsDataArray.length-1 === checkAll-1) {
+                            if (studentsDataArray.length-1 === checkAll-1) {
                                 var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
-                                validateStudents(uniqueWarnStudents, classId, studentsDataArray);
+                                studentsDataArray.removeList(warnPreCourseStudents);
+                                validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray);
                             }
+
                         } else {
 
                             var ERROR = isc.Dialog.create({
@@ -1950,12 +1965,38 @@
                         }
                     }));
                 }
+
+                } else {
+                    createDialog("info", "<spring:message code='exception.un-managed'/>");
+                }
+                }));
             }));
         }
 
-        function validateStudents(warnStudents, classId, studentsDataArray) {
+        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray) {
 
-            if(warnStudents.length > 0) {
+            let preCourseNames = "";
+            let names = "";
+
+            if (warnPreCourseStudents.length > 0) {
+
+                for (var j = 0; j < warnPreCourseStudents.length; j++) {
+                    preCourseNames = preCourseNames.concat(warnPreCourseStudents[j].firstName + " " + warnPreCourseStudents[j].lastName);
+                    if (j !== warnPreCourseStudents.length -1)
+                        preCourseNames = preCourseNames.concat(", ");
+                }
+            }
+
+            if (warnStudents.length > 0) {
+
+                for (var j = 0; j < warnStudents.length; j++) {
+                    names = names.concat(warnStudents[j].firstName + " " + warnStudents[j].lastName);
+                    if (j !== warnStudents.length -1)
+                        names = names.concat(", ");
+                }
+            }
+
+            if (warnPreCourseStudents.length > 0 || warnStudents.length > 0) {
 
                 let DynamicForm_Warn_Students = isc.DynamicForm.create({
                     width: 600,
@@ -1964,15 +2005,32 @@
                     titleAlign: "right",
                     fields: [
                         {
+                            name: "preCourseText",
+                            width: "100%",
+                            colSpan: 2,
+                            value: "<spring:message code='msg.class.student.not.pass.pre.course.warn'/>",
+                            showTitle: false,
+                            editorType: 'staticText'
+                        },
+                        {
+                            name: "warnPreCourseNames",
+                            width: "100%",
+                            colSpan: 2,
+                            title: "<spring:message code="title"/>",
+                            showTitle: false,
+                            editorType: 'textArea',
+                            canEdit: false
+                        },
+                        {
+                            type: "RowSpacerItem"
+                        },
+                        {
                             name: "text",
                             width: "100%",
                             colSpan: 2,
                             value: "<spring:message code='msg.class.student.pass.course.warn'/>",
                             showTitle: false,
                             editorType: 'staticText'
-                        },
-                        {
-                            type: "RowSpacerItem"
                         },
                         {
                             name: "warnNames",
@@ -1986,13 +2044,23 @@
                     ]
                 });
 
-                let names = "";
-                for (var j = 0; j < warnStudents.length; j++) {
-                    names = names.concat(warnStudents[j].firstName + " " + warnStudents[j].lastName);
-                    if (j !== warnStudents.length -1)
-                        names = names.concat(", ");
-                };
-                DynamicForm_Warn_Students.setValue("warnNames", names);
+                DynamicForm_Warn_Students.getItem("preCourseText").hide();
+                DynamicForm_Warn_Students.getItem("warnPreCourseNames").hide();
+                DynamicForm_Warn_Students.getItem("text").hide();
+                DynamicForm_Warn_Students.getItem("warnNames").hide();
+
+                if (warnPreCourseStudents.length > 0) {
+
+                    DynamicForm_Warn_Students.getItem("preCourseText").show();
+                    DynamicForm_Warn_Students.getItem("warnPreCourseNames").show();
+                    DynamicForm_Warn_Students.setValue("warnPreCourseNames", preCourseNames);
+                }
+                if (warnStudents.length > 0) {
+
+                    DynamicForm_Warn_Students.getItem("text").show();
+                    DynamicForm_Warn_Students.getItem("warnNames").show();
+                    DynamicForm_Warn_Students.setValue("warnNames", names);
+                }
 
                 let Window_Warn_Students = isc.Window.create({
                     width: 600,
