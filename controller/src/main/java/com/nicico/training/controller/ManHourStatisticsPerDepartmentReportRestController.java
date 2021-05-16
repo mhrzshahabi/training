@@ -93,21 +93,21 @@ public class ManHourStatisticsPerDepartmentReportRestController {
         List<ClassCourseSumByFeaturesAndDepartmentReportDTO> finalList = new ArrayList<>();
         if (omorCodeList != null && omorCodeList.size() > 0) {
             for (String affairCode : omorCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, affairCode, ClassCourseSumByFeaturesAndDepartmentReportDTO.GroupBy.EMPTY);
+                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, affairCode);
                 finalList.addAll(tempList);
             }
         } else if (moavenatCodeList != null && moavenatCodeList.size() > 0) {
             for (String assistantCode : moavenatCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, assistantCode, null, ClassCourseSumByFeaturesAndDepartmentReportDTO.GroupBy.EMPTY);
+                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, assistantCode, null);
                 finalList.addAll(tempList);
             }
         } else if (complexCodeList != null && complexCodeList.size() > 0) {
             for (String complexCode : complexCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, complexCode, null, null, ClassCourseSumByFeaturesAndDepartmentReportDTO.GroupBy.EMPTY);
+                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, complexCode, null, null);
                 finalList.addAll(tempList);
             }
         } else {
-            List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, null, ClassCourseSumByFeaturesAndDepartmentReportDTO.GroupBy.EMPTY);
+            List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, null);
             finalList.addAll(tempList);
         }
 
