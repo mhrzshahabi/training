@@ -926,7 +926,7 @@
             {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
             {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
         ];
-    DynamicForm_SelectPostGrade_JspUnitReport.getField("PostGrade.code").comboBox.filterFields = ["titleFa","peopleType","enabled"];
+    // DynamicForm_SelectPostGrade_JspUnitReport.getField("PostGrade.code").comboBox.filterFields = ["titleFa","peopleType","enabled"];
 
     IButton_ConfirmPostGradeSelections_JspUnitReport = isc.IButtonSave.create({
         top: 260,
