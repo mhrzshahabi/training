@@ -435,6 +435,7 @@
         customEdges: []});
     var Label_Help_JspNeedsAssessment = isc.LgLabel.create({
         align:"left",
+        width: "50%",
         // contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
         contents:getFormulaMessage("اولویت : ", "2", "#020404", "b")+getFormulaMessage("عملکردی ضروری", "2", red, "b")+" *** "+getFormulaMessage("عملکردی بهبود", "2", yellow, "b")+" *** "+getFormulaMessage("توسعه ای", "2", green, "b"),
         customEdges: []});
@@ -1052,6 +1053,7 @@
             }
         },
     });
+
     let ListGrid_Knowledge_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_Knowledge_JspNeedsAssessment",
         autoFetchData:false,
@@ -1074,6 +1076,8 @@
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false}
 
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
             {
@@ -1148,6 +1152,8 @@
             //         updateSkillRecord(form, item)
             //     }
             // }
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
             {
@@ -1223,6 +1229,8 @@
             //         updateSkillRecord(form, item)
             //     }
             // }
+            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
             {
@@ -1283,6 +1291,7 @@
                 selectedRecord = record;
             }
         }});
+
     let Window_AddCompetence = isc.Window.create({
         title: "<spring:message code="competence.list"/>",
         width: "80%",
@@ -1524,10 +1533,32 @@
                             ListGrid_Attitude_JspNeedsAssessment
                         ]
                     }),
-                    Label_Help_JspNeedsAssessment,
+                    isc.HLayout.create({
+                        height: "5%",
+                        showResizeBar: true,
+                        members: [
+                            Label_Help_JspNeedsAssessment,
+                            isc.Button.create({
+                                width: "140",
+                                align: "left",
+                                title: "مرتب سازی براساس رنگ",
+                                click: function () {
+
+                                    ListGrid_Knowledge_JspNeedsAssessment.unsort();
+                                    ListGrid_Knowledge_JspNeedsAssessment.sort("needsAssessmentPriorityId", "ascending");
+
+                                    ListGrid_Ability_JspNeedsAssessment.unsort();
+                                    ListGrid_Ability_JspNeedsAssessment.sort("needsAssessmentPriorityId", "ascending");
+
+                                    ListGrid_Attitude_JspNeedsAssessment.unsort();
+                                    ListGrid_Attitude_JspNeedsAssessment.sort("needsAssessmentPriorityId", "ascending");
+                                }
+                            })
+                        ]
+                    }),
                     ListGrid_SkillAll_JspNeedsAssessment
                 ]
-            }),
+            })
         ]
     });
 
