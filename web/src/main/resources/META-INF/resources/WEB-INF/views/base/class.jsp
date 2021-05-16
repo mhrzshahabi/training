@@ -1849,7 +1849,6 @@
                     return;
             }
             let data = VM_JspClass.getValues();
-            debugger;
             data.courseId = data.course.id;
             delete data.course;
             delete data.term;
@@ -3003,7 +3002,6 @@
                     } else {
                         classMethod = "POST";
                         url = classUrl;
-                        debugger;
                         DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
                         DynamicForm_Class_JspClass.setValue("course.theoryDuration", record.course.theoryDuration);
                         DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
