@@ -1074,9 +1074,7 @@
                 }
             },
             {name: "objectType"},
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false}
-
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false},
             {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
@@ -1141,18 +1139,7 @@
                 }
             },
             {name: "objectType"},
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false}
-            // {
-            //     name: "needsAssessmentPriorityId",
-            //     canEdit:true,
-            //     valueField: "id",
-            //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
-            //     change(form, item){
-            //         updateSkillRecord(form, item)
-            //     }
-            // }
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false},
             {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
@@ -1218,18 +1205,7 @@
                 }
             },
             {name: "objectType"},
-            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false}
-            // {
-            //     name: "needsAssessmentPriorityId",
-            //     canEdit:true,
-            //     valueField: "id",
-            //     displayField: "title",
-            //     optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
-            //     change(form, item){
-            //         updateSkillRecord(form, item)
-            //     }
-            // }
-            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false},
             {name: "needsAssessmentPriorityId", hidden: true}
         ],
         headerSpans: [
