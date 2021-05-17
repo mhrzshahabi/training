@@ -359,7 +359,7 @@ public class EvaluationRestController {
     public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
         evaluationService.deleteAllReactionEvaluationForms(classId);
         if (classId != null) {
-            iTclassService.changeOnlineEvalTeacherStatus(classId, false);
+            iTclassService.changeOnlineEvalStudentStatus(classId, false);
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
