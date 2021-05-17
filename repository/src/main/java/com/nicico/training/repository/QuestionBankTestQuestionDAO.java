@@ -25,4 +25,6 @@ public interface QuestionBankTestQuestionDAO extends JpaRepository<QuestionBankT
 
     List<QuestionBankTestQuestion> findByQuestionBankIdAndTestQuestionId(Long questionBankId, Long testQuestionId);
 
+    List<QuestionBankTestQuestion> findByTestQuestionId(Long testQuestionId);
+
 }
