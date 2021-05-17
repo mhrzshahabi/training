@@ -184,6 +184,18 @@ public class ViewEvaluationStaticalReport extends Auditable {
     @Column(name = "planner_complex")
     private String plannerComplex;
 
+    @Column(name = "planner_assistant")
+    private String plannerAssistant;
+
+    @Column(name = "planner_affairs")
+    private String plannerAffairs;
+
+    @Column(name = "planner_section")
+    private String plannerSection;
+
+    @Column(name = "planner_unit")
+    private String plannerUnit;
+
     @Column(name = "planner_name")
     private String plannerName;
 
