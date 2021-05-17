@@ -13,6 +13,7 @@
     var endDateCheck_Order_RER = true;
     var data_values_RER = null;
     var wait_RER = null;
+    let reportComponentCriteria_RER;
 
     $(document).ready(()=>{
         setTimeout(()=>{
@@ -78,14 +79,15 @@
     });
 
     //----------------------------------------------------Criteria Form------------------------------------------------
+    var organSegmentFilter_RER = init_OrganSegmentFilterDF(true, true , null, "complexTitle","assistant","affairs", "section", "unit");
     var DynamicForm_CriteriaForm_RER = isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
         titleAlign: "center",
         showInlineErrors: true,
         showErrorText: false,
-        numCols: 6,
-        colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
+        numCols: 4,
+        colWidths: ["7%", "43%", "7%", "43%"],
         fields: [
             {
                 name: "tclassCode",
@@ -101,11 +103,6 @@
             },
             {
                 name: "temp1",
-                title: "",
-                canEdit: false
-            },
-            {
-                name: "temp2",
                 title: "",
                 canEdit: false
             },
@@ -197,11 +194,6 @@
                 }
             },
             {
-                name: "temp4",
-                title: "",
-                canEdit: false
-            },
-            {
                 name: "endDate1",
                 ID: "endDate1_RER",
                 title: "تاریخ پایان کلاس: از",
@@ -288,11 +280,6 @@
                 }
             },
             {
-                name: "temp5",
-                title: "",
-                canEdit: false
-            },
-            {
                 name: "courseCategory",
                 title: "گروه کاری",
                 type: "SelectItem",
@@ -364,11 +351,6 @@
                 }
             },
             {
-                name: "temp6",
-                title: "",
-                canEdit: false
-            },
-            {
                 name: "tclassYear",
                 title: "سال کاری",
                 type: "SelectItem",
@@ -379,14 +361,15 @@
                 filterFields: ["year"],
                 filterLocally: true,
                 changed: function (form, item, value) {
-                    if (value != null && value != undefined) {
+
+                    form.getField("termId").clearValue();
+                    if (value !== null && value !== undefined) {
                         RestDataSource_Term_RER.fetchDataURL = termUrl + "listByYear/" + value;
                         DynamicForm_CriteriaForm_RER.getField("termId").optionDataSource = RestDataSource_Term_RER;
                         DynamicForm_CriteriaForm_RER.getField("termId").fetchData();
                         DynamicForm_CriteriaForm_RER.getField("termId").enable();
                     } else {
                         form.getField("termId").disabled = true;
-                        form.getField("termId").clearValue();
                     }
                 }
             },
@@ -441,11 +424,6 @@
                 }
             },
             {
-                name: "temp7",
-                title: "",
-                canEdit: false
-            },
-            {
                 name: "teacherId",
                 title: "مدرس",
                 type: "ComboBoxItem",
@@ -487,11 +465,6 @@
                 }
             },
             {
-                name: "temp8",
-                title: "",
-                canEdit: false
-            },
-            {
                 name: "tclassTeachingType",
                 colSpan: 1,
                 rowSpan: 3,
@@ -508,7 +481,7 @@
                     "آموزش حین کار(OJT)",
                     "همه"
                 ]
-            },
+            }
         ]
     });
     var IButton_Confirm_RER = isc.IButtonSave.create({
@@ -537,13 +510,11 @@
                 }
                 if (startDate2Check_RER == false) {
                     DynamicForm_CriteriaForm_RER.clearFieldErrors("startDate2", true);
-                    DynamicForm_CriteriaForm_RER.addFieldErrors("startDate2", "<spring:message
-        code='msg.correct.date'/>", true);
+                    DynamicForm_CriteriaForm_RER.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
                 }
                 if (startDate1Check_RER == false) {
                     DynamicForm_CriteriaForm_RER.clearFieldErrors("startDate1", true);
-                    DynamicForm_CriteriaForm_RER.addFieldErrors("startDate1", "<spring:message
-        code='msg.correct.date'/>", true);
+                    DynamicForm_CriteriaForm_RER.addFieldErrors("startDate1", "<spring:message code='msg.correct.date'/>", true);
                 }
 
                 if (endDateCheck_Order_RER == false) {
@@ -581,7 +552,7 @@
                 item.name = "description";
                 item.title = "توضیحات ابتدای گزارش";
                 item.type = 'textArea';
-                item.height = "60";
+                item.height = "100";
                 itemList.add(item);
                 // for (let j = 0; j <classNotPassedItems.size() ; j++) {
                 //     item = {};
@@ -696,17 +667,17 @@
             Reporting_RER();
             trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printReactionEvaluationReport"/>",
                                 data_values_RER,JSON.stringify(DynamicForm_reportComments_RER.getValues()));
+            Window_FillReport_RER.close();
         }
     });
     var DynamicForm_reportComments_RER = isc.DynamicForm.create({
         validateOnExit: true,
-        width: "100%",
-        padding: 10,
+        width: "90%",
         fields: []
     });
     var Window_FillReport_RER = isc.Window.create({
         width: 500,
-        height: 300,
+        height: 250,
         placement: "center",
         title: "انتقادات و پیشنهادات مسئول ارزیابی جهت درج در گزارش",
         items: [
@@ -719,76 +690,105 @@
     });
 
     //----------------------------------- functions --------------------------------------------------------------------
-    function Reporting_RER(){
+    function Reporting_RER() {
+
         data_values_RER = null;
         data_values_RER = DynamicForm_CriteriaForm_RER.getValuesAsAdvancedCriteria();
         var removedObjects = [];
         for (var i = 0; i < data_values_RER.criteria.size(); i++) {
 
-            if (data_values_RER.criteria[i].fieldName == "tclassCode") {
+            if (data_values_RER.criteria[i].fieldName === "tclassCode") {
                 var codesString = data_values_RER.criteria[i].value;
                 var codesArray;
                 codesArray = codesString.split(",");
                 for (var j = 0; j < codesArray.length; j++) {
-                    if (codesArray[j] == "" || codesArray[j] == " ") {
+                    if (codesArray[j] === "" || codesArray[j] === " ") {
                         codesArray.remove(codesArray[j]);
                     }
                 }
                 data_values_RER.criteria[i].operator = "equals";
                 data_values_RER.criteria[i].value = codesArray;
             }
-            else if (data_values_RER.criteria[i].fieldName == "startDate1") {
+            else if (data_values_RER.criteria[i].fieldName === "startDate1") {
                 data_values_RER.criteria[i].fieldName = "tclassStartDate";
                 data_values_RER.criteria[i].operator = "greaterThan";
             }
-            else if (data_values_RER.criteria[i].fieldName == "startDate2") {
+            else if (data_values_RER.criteria[i].fieldName === "startDate2") {
                 data_values_RER.criteria[i].fieldName = "tclassStartDate";
                 data_values_RER.criteria[i].operator = "lessThan";
             }
-            else if (data_values_RER.criteria[i].fieldName == "endDate1") {
+            else if (data_values_RER.criteria[i].fieldName === "endDate1") {
                 data_values_RER.criteria[i].fieldName = "tclassEndDate";
                 data_values_RER.criteria[i].operator = "greaterThan";
             }
-            else if (data_values_RER.criteria[i].fieldName == "endDate2") {
+            else if (data_values_RER.criteria[i].fieldName === "endDate2") {
                 data_values_RER.criteria[i].fieldName = "tclassEndDate";
                 data_values_RER.criteria[i].operator = "lessThan";
             }
-            else if(data_values_RER.criteria[i].fieldName == "tclassOrganizerId")
+            else if(data_values_RER.criteria[i].fieldName === "tclassOrganizerId")
                 data_values_RER.criteria[i].operator = "equals";
-            else if(data_values_RER.criteria[i].fieldName == "courseCategory"){
+            else if(data_values_RER.criteria[i].fieldName === "courseCategory"){
                 data_values_RER.criteria[i].operator = "inSet";
             }
-            else if(data_values_RER.criteria[i].fieldName == "courseSubCategory"){
+            else if(data_values_RER.criteria[i].fieldName === "courseSubCategory"){
                 data_values_RER.criteria[i].operator = "inSet";
             }
-            else if(data_values_RER.criteria[i].fieldName == "tclassTeachingType" && data_values_RER.criteria[i].value == "همه"){
+            else if(data_values_RER.criteria[i].fieldName === "tclassTeachingType" && data_values_RER.criteria[i].value === "همه"){
                 removedObjects.add(data_values_RER.criteria[i]);
             }
         }
         data_values_RER.criteria.removeList(removedObjects);
+
+        if (organSegmentFilter_RER.getCriteria() !== undefined) {
+
+            reportComponentCriteria_RER = organSegmentFilter_RER.getCriteria();
+            for (let i = 0; i < reportComponentCriteria_RER.criteria.size(); i++) {
+
+                if (reportComponentCriteria_RER.criteria[i].fieldName === "complexTitle") {
+
+                    reportComponentCriteria_RER.criteria[i].fieldName = "plannerComplex";
+                    reportComponentCriteria_RER.criteria[i].operator = "inSet";
+                    data_values_RER.criteria.add(reportComponentCriteria_RER.criteria[i]);
+
+                } else if (reportComponentCriteria_RER.criteria[i].fieldName === "assistant") {
+
+                    reportComponentCriteria_RER.criteria[i].fieldName = "plannerAssistant";
+                    reportComponentCriteria_RER.criteria[i].operator = "inSet";
+                    data_values_RER.criteria.add(reportComponentCriteria_RER.criteria[i]);
+
+                } else if (reportComponentCriteria_RER.criteria[i].fieldName === "affairs") {
+
+                    reportComponentCriteria_RER.criteria[i].fieldName = "plannerAffairs";
+                    reportComponentCriteria_RER.criteria[i].operator = "inSet";
+                    data_values_RER.criteria.add(reportComponentCriteria_RER.criteria[i]);
+
+                } else if (reportComponentCriteria_RER.criteria[i].fieldName === "section") {
+
+                    reportComponentCriteria_RER.criteria[i].fieldName = "plannerSection";
+                    reportComponentCriteria_RER.criteria[i].operator = "inSet";
+                    data_values_RER.criteria.add(reportComponentCriteria_RER.criteria[i]);
+
+                } else if (reportComponentCriteria_RER.criteria[i].fieldName === "unit") {
+
+                    reportComponentCriteria_RER.criteria[i].fieldName = "plannerUnit";
+                    reportComponentCriteria_RER.criteria[i].operator = "inSet";
+                    data_values_RER.criteria.add(reportComponentCriteria_RER.criteria[i]);
+                }
+            }
+        }
+
     }
 
     //----------------------------------- layOut -----------------------------------------------------------------------
-    var Window_CriteriaForm_RER = isc.Window.create({
-        placement: "fillScreen",
-        title: "",
-        showCloseButton: false,
-        showMaximizeButton: false,
-        canDragReposition: false,
-        showMinimizeButton: false,
-        canDragResize: false,
-        closeClick: false,
-        minimize: false,
-        items: [DynamicForm_CriteriaForm_RER]
-    });
-    var HLayOut_CriteriaForm_RER = isc.TrHLayoutButtons.create({
+    var VLayOut_CriteriaForm_RER = isc.VLayout.create({
         showEdges: false,
         edgeImage: "",
         width: "100%",
         height: "100%",
         alignLayout: "center",
         members: [
-            Window_CriteriaForm_RER
+            organSegmentFilter_RER,
+            DynamicForm_CriteriaForm_RER
         ]
     });
     var HLayOut_Confirm_RER = isc.TrHLayoutButtons.create({
@@ -804,11 +804,10 @@
         ]
     });
     var VLayout_Body_RER = isc.TrVLayout.create({
+        border: "2px solid blue",
+        padding: 20,
         members: [
-            HLayOut_CriteriaForm_RER,
+            VLayOut_CriteriaForm_RER,
             HLayOut_Confirm_RER
         ]
     });
-
-    //----------------------------------- final ------------------------------------------------------------------------
-    Window_FillReport_RER.hide();
