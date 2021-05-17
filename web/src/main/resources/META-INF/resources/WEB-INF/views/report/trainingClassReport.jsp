@@ -315,11 +315,6 @@
                 autoFitWidth: true
             },
             {
-                name: "courseRunType.titleFa",
-                title: "<spring:message code='course.run.type'/>",
-                autoFitWidth: true
-            },
-            {
                 name: "presenceManHour",
                 title: "<spring:message code='report.presence.man.hour'/>",
                 autoFitWidth: true
