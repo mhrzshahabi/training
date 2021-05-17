@@ -378,7 +378,7 @@ public class SendMessageService implements ISendMessageService {
 
         } else if (type.equals("classTeacher")) {
 
-            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher")).findFirst().orElseThrow(null);
+            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher2")).findFirst().orElseThrow(null);
             pid = prmv.getValue();
             textMessage = prmv.getDescription();
 

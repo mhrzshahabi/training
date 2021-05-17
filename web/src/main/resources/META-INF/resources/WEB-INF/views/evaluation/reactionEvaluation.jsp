@@ -562,7 +562,7 @@
                     if (generalGetResp(resp)) {
                         if (resp.httpResponseCode == 200) {
 
-                            isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MTeacher\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {
+                            isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MTeacher2\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {
                                 wait.close();
                                 if (generalGetResp(resp)) {
                                     if (resp.httpResponseCode == 200) {
