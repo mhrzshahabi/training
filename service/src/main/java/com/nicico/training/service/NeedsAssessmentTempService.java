@@ -347,5 +347,25 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
                 .anyMatch(needsAssessmentTemp -> needsAssessmentTemp.getMainWorkflowStatusCode() != null && needsAssessmentTemp.getMainWorkflowStatusCode() == 0);
         return hasAlreadySentToWorkFlow;
     }
+    public Long createOrUpdateListForNewSkill(List<NeedsAssessmentDTO.Create> createList, Long skill) {
+        List<NeedsAssessmentDTO.Create> newList=new ArrayList<>();
+        for (NeedsAssessmentDTO.Create needsAssessmentDTO : createList) {
+            if (needsAssessmentDTO.getSkillId().equals(skill))
+                newList.add(needsAssessmentDTO);
+        }
+        for (NeedsAssessmentDTO.Create create : newList) {
+            TrainingException exception = checkCategoryNotEquals(create);
+            if (exception != null)
+                throw exception;
+            if (!isEditable(create.getObjectType(), create.getObjectId()))
+                throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentIsNotEditable, messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()));
+        }
+        NeedsAssessmentDTO.Info createItem =new   NeedsAssessmentDTO.Info ();
+
+        for (NeedsAssessmentDTO.Create create : newList) {
+            createItem  =   create(create);
+        }
+          return createItem.getId();
+    }
 
 }

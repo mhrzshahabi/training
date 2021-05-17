@@ -237,8 +237,8 @@
                 hoverHTML(record) {
                     return (record.mainWorkflowStatus !== undefined ? record.mainWorkflowStatus : getFormulaMessage("به گردش کار ارسال نشده است", "2", "orange", "b")) + "<br>" +
                         (record.course ?
-                        "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code :
-                        "نام مهارت: " + record.titleFa);
+                            "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code :
+                            "نام مهارت: " + record.titleFa);
                 },
             },
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
@@ -1652,55 +1652,55 @@
         updateObjectIdLG(DynamicForm_JspEditNeedsAssessment, objectType);
         clearAllGrid();
         if(!data)
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId,
-	        "GET", null, r => responseToListGrid_All_JspNeedsAssessment(objectId, objectType,
-		        JSON.parse(r.data).list)));
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId,
+                "GET", null, r => responseToListGrid_All_JspNeedsAssessment(objectId, objectType,
+                    JSON.parse(r.data).list)));
         else
             responseToListGrid_All_JspNeedsAssessment(objectId, objectType, data);
     }
 
     function responseToListGrid_All_JspNeedsAssessment(objectId, objectType, data) {
         let flags  = [];
-            for (let i = 0; i < data.length; i++) {
-                let skill = {};
-                let competence = {};
-                skill.id = data[i].id;
-                skill.titleFa = data[i].skill.titleFa;
-                skill.needsAssessmentPriorityId = data[i].needsAssessmentPriorityId;
-                skill.needsAssessmentDomainId = data[i].needsAssessmentDomainId;
-                skill.skillId = data[i].skillId;
-                skill.competenceId = data[i].competenceId;
-                skill.objectId = data[i].objectId;
-                skill.objectType = data[i].objectType;
-                skill.objectName = data[i].objectName;
-                skill.objectCode = data[i].objectCode;
-                skill.skill = data[i].skill;
-                skill.mainWorkflowStatus = data[i].mainWorkflowStatus;
-                if(data[i].skill.course === undefined){
-                    skill.hasWarning = "alarm";
-                }
-                else {
-                    skill.course = data[i].skill.course;
-                }
-                DataSource_Skill_JspNeedsAssessment.addData(skill);
-                if( flags[data[i].competenceId]) continue;
-                flags[data[i].competenceId] = true;
-                // outPut.push(data[i].competenceId);
-                competence.id = data[i].competenceId;
-                competence.title = data[i].competence.title;
-                competence.competenceType = data[i].competence.competenceType;
-                competence.categoryId = data[i].competence.categoryId;
-                competence.subCategoryId = data[i].competence.subCategoryId;
-                competence.code = data[i].competence.code;
-                DataSource_Competence_JspNeedsAssessment.addData(competence, ()=>{ListGrid_Competence_JspNeedsAssessment.selectRecord(0)});
+        for (let i = 0; i < data.length; i++) {
+            let skill = {};
+            let competence = {};
+            skill.id = data[i].id;
+            skill.titleFa = data[i].skill.titleFa;
+            skill.needsAssessmentPriorityId = data[i].needsAssessmentPriorityId;
+            skill.needsAssessmentDomainId = data[i].needsAssessmentDomainId;
+            skill.skillId = data[i].skillId;
+            skill.competenceId = data[i].competenceId;
+            skill.objectId = data[i].objectId;
+            skill.objectType = data[i].objectType;
+            skill.objectName = data[i].objectName;
+            skill.objectCode = data[i].objectCode;
+            skill.skill = data[i].skill;
+            skill.mainWorkflowStatus = data[i].mainWorkflowStatus;
+            if(data[i].skill.course === undefined){
+                skill.hasWarning = "alarm";
             }
-            ListGrid_Competence_JspNeedsAssessment.fetchData();
-            ListGrid_Competence_JspNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
-            DynamicForm_JspEditNeedsAssessment.setValue("objectId", objectId);
-            DynamicForm_JspEditNeedsAssessment.setValue("objectType", objectType);
-            fetchDataDomainsGrid();
+            else {
+                skill.course = data[i].skill.course;
+            }
+            DataSource_Skill_JspNeedsAssessment.addData(skill);
+            if( flags[data[i].competenceId]) continue;
+            flags[data[i].competenceId] = true;
+            // outPut.push(data[i].competenceId);
+            competence.id = data[i].competenceId;
+            competence.title = data[i].competence.title;
+            competence.competenceType = data[i].competence.competenceType;
+            competence.categoryId = data[i].competence.categoryId;
+            competence.subCategoryId = data[i].competence.subCategoryId;
+            competence.code = data[i].competence.code;
+            DataSource_Competence_JspNeedsAssessment.addData(competence, ()=>{ListGrid_Competence_JspNeedsAssessment.selectRecord(0)});
         }
-    
+        ListGrid_Competence_JspNeedsAssessment.fetchData();
+        ListGrid_Competence_JspNeedsAssessment.emptyMessage = "<spring:message code="msg.no.records.for.show"/>";
+        DynamicForm_JspEditNeedsAssessment.setValue("objectId", objectId);
+        DynamicForm_JspEditNeedsAssessment.setValue("objectType", objectType);
+        fetchDataDomainsGrid();
+    }
+
     function createNeedsAssessmentRecords(data) {
         if(data === null){
             return;
@@ -1767,42 +1767,39 @@
             );
         }
     }
-    function updatePriority_JspEditNeedsAssessment(viewer, record) {
-        if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
-            let updating = {objectType: record.objectType, objectId: record.objectId, needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1};
+    async function updatePriority_JspEditNeedsAssessment(viewer, record) {
+        if (record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
+            let updating = {
+                objectType: record.objectType,
+                objectId: record.objectId,
+                needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1
+            };
             wait.show();
-            let id=record.id
-            //TODO ZAZA
-        //     if (id===undefined)
-        //     {
-        //         let data = DataSource_Skill_JspNeedsAssessment.cacheData;
-        //
-        //         for (let i = 0; i < data.length; i++) {
-        //            if (data.get(i).titleFa!==record.titleFa)
-        //                data.removeAt(i);
-        //         }
-        // //add api for temp
-        //     }
-        //     else
-        //     {
-                isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" +id, "PUT", JSON.stringify(updating), function (resp) {
-                    wait.close()
-                    if (resp.httpResponseCode === 409) {
-                        createDialog("info", resp.httpResponseText);
-                        return 0;
-                    } else if (resp.httpResponseCode !== 200) {
-                        createDialog("info", "<spring:message code='error'/>");
-                        return;
-                    }
-                    record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
-                    DataSource_Skill_JspNeedsAssessment.updateData(record);
-                    hasChanged = true;
-                    viewer.endEditing();
-                }));
-            // }
-        }
-        else{
-            createDialog("info","فقط نیازسنجی های مرتبط با "+priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")]+" قابل تغییر است.")
+            let id = record.id
+            if (id === undefined) {
+                let dataForNewSkill= {};
+                dataForNewSkill.list=DataSource_Skill_JspNeedsAssessment.cacheData;
+                dataForNewSkill.skillId=record.skillId;
+                if (dataForNewSkill.list.length !== 0) {
+
+                    isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl+"/createOrUpdateListForNewSkill" , "POST", JSON.stringify(dataForNewSkill),
+                        function (resp) {
+
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                changePriority(resp.httpResponseText, updating, record, viewer);
+                            }
+                        }
+
+                    ));
+
+                }
+
+            } else {
+                changePriority(id, updating, record, viewer);
+
+            }
+        } else {
+            createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " قابل تغییر است.")
         }
     }
     function priorityColor(record){
@@ -1817,24 +1814,24 @@
     }
 
     let ListGrid_SkillAll_JspNeedsAssessment_Refresh = ()=>{
-            let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
-            if(record == null){
-                ListGrid_SkillAll_JspNeedsAssessment.setData([]);
-            }else{
-                let cr = {};
-                if(record.subCategoryId != null) {
-                    cr = {
-                        _constructor: "AdvancedCriteria",
-                        operator: "and",
-                        criteria: [
-                            {fieldName: "subCategoryId", operator: "equals", value: record.subCategoryId},
-                        ]
-                    }
+        let record = ListGrid_Competence_JspNeedsAssessment.getSelectedRecord();
+        if(record == null){
+            ListGrid_SkillAll_JspNeedsAssessment.setData([]);
+        }else{
+            let cr = {};
+            if(record.subCategoryId != null) {
+                cr = {
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [
+                        {fieldName: "subCategoryId", operator: "equals", value: record.subCategoryId},
+                    ]
                 }
-                ListGrid_SkillAll_JspNeedsAssessment.setImplicitCriteria(cr);
-                ListGrid_SkillAll_JspNeedsAssessment.invalidateCache();
-                ListGrid_SkillAll_JspNeedsAssessment.fetchData();
             }
+            ListGrid_SkillAll_JspNeedsAssessment.setImplicitCriteria(cr);
+            ListGrid_SkillAll_JspNeedsAssessment.invalidateCache();
+            ListGrid_SkillAll_JspNeedsAssessment.fetchData();
+        }
     }
 
 
@@ -1870,12 +1867,12 @@
                 if (resp.data === "true") {
                     readOnly(true);
                     fetch(needsAssessmentUrl + "/isCreatedByCurrentUser/" + type + "/" + objectId.id,{headers: apiHeader}).then(r => r.json()).then(d => {
-                            if(d == false)
-                               createDialog("info", "<spring:message code='na.message.doesnot.access.to.others.assessment'/>");
-                            else
-                                readOnly(false);
-                        });
-                 }
+                        if(d == false)
+                            createDialog("info", "<spring:message code='na.message.doesnot.access.to.others.assessment'/>");
+                        else
+                            readOnly(false);
+                    });
+                }
                 else{
                     readOnly(false);
                 }
@@ -1924,38 +1921,38 @@
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedsAssessmentToWorkflow(mustSend) {
-            isc.MyYesNoDialog.create({
-                message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
-                title: "<spring:message code="message"/>",
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index === 0) {
-                        if (mustSend) {
-                            let varParams = [{
-                                "processKey": "needAssessment_MainWorkflow",
-                                "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
-                                "objectName": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : ""),
-                                "objectType": priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")],
-                                "needAssessmentCreatorId": "${username}",
-                                "needAssessmentCreator": userFullName,
-                                "REJECTVAL": "",
-                                "REJECT": "",
-                                "target": "/course/show-form",
-                                "targetTitleFa": "نیازسنجی",
-                                "workflowStatus": "ثبت اولیه",
-                                "workflowStatusCode": "0",
-                                "workFlowName": "NeedAssessment",
-                                "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
-                            }];
-                            wait.show();
-                            isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
-                        } else {
-                            let url = needsAssessmentUrl.concat("/updateWorkFlowStatesToSent?objectId=")
-                                        .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectId"))
-                                        .concat("&objectType=")
-                                        .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
-                            fetch(url, {headers: apiHeader, method: "POST"})
-	                            .then(resp => {
+        isc.MyYesNoDialog.create({
+            message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
+            title: "<spring:message code="message"/>",
+            buttonClick: function (button, index) {
+                this.close();
+                if (index === 0) {
+                    if (mustSend) {
+                        let varParams = [{
+                            "processKey": "needAssessment_MainWorkflow",
+                            "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
+                            "objectName": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : ""),
+                            "objectType": priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")],
+                            "needAssessmentCreatorId": "${username}",
+                            "needAssessmentCreator": userFullName,
+                            "REJECTVAL": "",
+                            "REJECT": "",
+                            "target": "/course/show-form",
+                            "targetTitleFa": "نیازسنجی",
+                            "workflowStatus": "ثبت اولیه",
+                            "workflowStatusCode": "0",
+                            "workFlowName": "NeedAssessment",
+                            "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
+                        }];
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                    } else {
+                        let url = needsAssessmentUrl.concat("/updateWorkFlowStatesToSent?objectId=")
+                            .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectId"))
+                            .concat("&objectType=")
+                            .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectType"));
+                        fetch(url, {headers: apiHeader, method: "POST"})
+                            .then(resp => {
                                 if(resp.status === 500) {
                                     createDialog("info", resp.errors[0].field);
                                     return;
@@ -1969,10 +1966,10 @@
                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                 }
                             });
-                        }
                     }
                 }
-            });
+            }
+        });
     }
 
     async function sendNeedsAssessmentForSaving() {
@@ -2006,6 +2003,30 @@
         } else {
             simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
         }
+    }
+
+
+    async    function addNewSkillForChangePriority(data) {
+
+
+    }
+
+    function changePriority(id,updating,record,viewer ) {
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/" +id, "PUT", JSON.stringify(updating), function (resp) {
+            wait.close()
+            if (resp.httpResponseCode === 409) {
+                createDialog("info", resp.httpResponseText);
+                return 0;
+            } else if (resp.httpResponseCode !== 200) {
+                createDialog("info", "<spring:message code='error'/>");
+                return;
+            }
+            record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
+            DataSource_Skill_JspNeedsAssessment.updateData(record);
+            hasChanged = true;
+            viewer.endEditing();
+        }));
+
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>

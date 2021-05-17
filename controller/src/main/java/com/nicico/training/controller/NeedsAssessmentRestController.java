@@ -13,7 +13,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.mapper.needsassessment.NeedsAssessmentBeanMapper;
-import com.nicico.training.model.NeedsAssessmentTemp;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.NeedsAssessmentTempService;
 import lombok.RequiredArgsConstructor;
@@ -25,10 +24,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
+import request.dataForNewSkill.DataForNewSkillDto;
 import request.needsassessment.NeedsAssessmentUpdateRequest;
 import response.needsassessment.NeedsAssessmentUpdateResponse;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -220,6 +218,17 @@ public class NeedsAssessmentRestController {
     public ResponseEntity<Boolean> isCreatedByCurrentUser(@PathVariable String objectType,
                                                           @PathVariable Long objectId) {
         return new ResponseEntity<>(needsAssessmentTempService.isCreatedByCurrentUser(objectType, objectId), HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @PostMapping("/createOrUpdateListForNewSkill")
+    public ResponseEntity<Long> createOrUpdateListForNewSkill(@RequestBody DataForNewSkillDto rq) {
+
+        List<NeedsAssessmentDTO.Create> createList = modelMapper.map(rq.getList(), new TypeToken<List<NeedsAssessmentDTO.Create>>() {
+        }.getType());
+        Long savedId = needsAssessmentTempService.createOrUpdateListForNewSkill(createList,rq.getSkillId());
+        return new ResponseEntity<>(savedId, HttpStatus.OK);
     }
 
 }
