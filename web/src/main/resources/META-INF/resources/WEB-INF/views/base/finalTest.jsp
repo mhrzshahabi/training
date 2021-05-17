@@ -9,6 +9,7 @@
     let oLoadAttachments_finalTest;
     let totalScore = 0;
     let sourceExamId = 0;
+    let isCopyForm = false;
     let allResultScores;
     var scoreLabel = isc.Label.create({
         contents: "مجموع بارم وارد شده : ",
@@ -67,6 +68,12 @@
             isc.ToolStripButtonRemove.create({
                 click: function () {
                     showRemoveForm_finalTest();
+                }
+            }),
+            isc.ToolStripButton.create({
+                title: "<spring:message code='copy.of.test'/>",
+                click: function () {
+                    showCopyForm_finalTest();
                 }
             }),
             isc.ToolStripButtonExcel.create({
@@ -515,7 +522,6 @@
     function setScoreValue(value, form) {
         let index = questionData.findIndex(f => f.id === form.values.id)
         questionData[index].score = value;
-        // debugger
          totalScore=0;
           form.grid.data.forEach(
     q=>{ if (q.score!== null && q.score !== undefined)
@@ -1228,16 +1234,19 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             members: [
                 isc.TrSaveBtn.create({
                     click: function () {
-                        saveFinalTest_finalTest();
+                        if (!isCopyForm)
+                            saveFinalTest_finalTest();
+                        else
+                            saveCopyTest_finalTest();
                     }
                 }),
                 isc.TrCancelBtn.create({
                     click: function () {
                         FinalTestWin_finalTest.close();
                     }
-                }),
-            ],
-        }),]
+                })
+            ]
+        })]
     });
     // ------------------------------------------- TabSet -------------------------------------------
     var TabSet_finalTest = isc.TabSet.create({
@@ -1404,7 +1413,7 @@ let inValidStudents = [];
         finalTestMethod_finalTest = "POST";
         FinalTestDF_finalTest.clearValues();
         FinalTestWin_finalTest.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="exam"/>");
-
+        isCopyForm = false;
         FinalTestWin_finalTest.show();
     }
 
@@ -1434,7 +1443,7 @@ let inValidStudents = [];
 
                 FinalTestWin_finalTest.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="evaluation.final.test"/>" + '&nbsp;\'' + record.tclass.course.titleFa + '\'');
                 FinalTestDF_finalTest.editRecord(record);
-
+                isCopyForm = false;
                 FinalTestWin_finalTest.show();
             } else {
                 createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
@@ -1443,47 +1452,37 @@ let inValidStudents = [];
     }
 
     function saveFinalTest_finalTest() {
+
         if (!FinalTestDF_finalTest.validate()) {
             return;
         }
-
         let finalTestSaveUrl = testQuestionUrl;
-
         let finalTestAction = '<spring:message code="created"/>';
 
-        if (finalTestMethod_finalTest.localeCompare("PUT") == 0) {
+        if (finalTestMethod_finalTest.localeCompare("PUT") === 0) {
             let record = FinalTestLG_finalTest.getSelectedRecord();
             finalTestSaveUrl += "/" + record.id;
             finalTestAction = '<spring:message code="edited"/>';
         }
-          let data = FinalTestDF_finalTest.getValues();
-        if (finalTestMethod_finalTest.localeCompare("POST") == 0) {
+        let data = FinalTestDF_finalTest.getValues();
+        if (finalTestMethod_finalTest.localeCompare("POST") === 0) {
 
             isc.RPCManager.sendRequest(TrDSRequest(isValidForExam+data.tclassId, "GET",null, function (resp) {
-             let respText = JSON.parse(resp.httpResponseText);
-                if (respText.status === 200)
-            {
-        isc.RPCManager.sendRequest(
-            TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest, JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')")
-        );
 
-              }
-                else
-             {
-          createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
-         }
+            let respText = JSON.parse(resp.httpResponseText);
+            if (respText.status === 200) {
+            isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
+                JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
+            } else {
+                createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
+            }
             }));
+        } else {
+            let data = FinalTestDF_finalTest.getValues();
+            isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
+                JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
         }
-        else
-         {
-        let data = FinalTestDF_finalTest.getValues();
-        isc.RPCManager.sendRequest(
-            TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest, JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')")
-        );
-
-          }
-
-    };
+    }
 
     function showRemoveForm_finalTest() {
         let record = FinalTestLG_finalTest.getSelectedRecord();
@@ -1517,6 +1516,51 @@ let inValidStudents = [];
 
         }
     };
+
+    function showCopyForm_finalTest() {
+
+        let record = FinalTestLG_finalTest.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("warning", "<spring:message code='msg.not.selected.record'/>", "<spring:message code="warning"/>");
+        } else {
+            finalTestMethod_finalTest = "POST";
+            FinalTestDF_finalTest.clearValues();
+            FinalTestWin_finalTest.setTitle("<spring:message code="copy"/>&nbsp;" + "<spring:message code="exam"/>");
+            isCopyForm = true;
+            FinalTestWin_finalTest.show();
+        }
+    }
+
+    function saveCopyTest_finalTest() {
+
+        if (!FinalTestDF_finalTest.validate())
+            return;
+
+        let data = FinalTestDF_finalTest.getValues();
+        let recordId = FinalTestLG_finalTest.getSelectedRecord().id;
+
+        isc.RPCManager.sendRequest(TrDSRequest(isValidForExam + data.tclassId, "GET",null, function (resp) {
+
+            let respText = JSON.parse(resp.httpResponseText);
+            if (respText.status === 200) {
+                isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/create-copy/" + recordId, finalTestMethod_finalTest, JSON.stringify(data), function (resp) {
+
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        let result = JSON.parse(resp.httpResponseText);
+                        showOkDialog("آزمون برای (" + result.tclass.course.titleFa + ") کپی شد");
+                        refresh_finalTest();
+                        FinalTestWin_finalTest.close();
+                    } else if (resp.httpResponseCode === 204) {
+                        showOkDialog("<spring:message code="exception.duplicate.information"/>");
+                    } else {
+                        showOkDialog("<spring:message code="exception.data-validation"/>");
+                    }
+                }));
+            } else {
+                createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
+            }
+        }));
+    }
 
     function rcpResponse(resp, entityType, action, entityName) {
         if (generalGetResp(resp)) {

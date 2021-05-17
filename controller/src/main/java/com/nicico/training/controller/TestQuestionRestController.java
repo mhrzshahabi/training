@@ -3,18 +3,16 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.GoalDTO;
-import com.nicico.training.dto.SkillLevelDTO;
-import com.nicico.training.dto.TermDTO;
 import com.nicico.training.dto.TestQuestionDTO;
-import com.nicico.training.iservice.ISkillLevelService;
 import com.nicico.training.iservice.ITestQuestionService;
+import com.nicico.training.model.QuestionBank;
+import com.nicico.training.model.QuestionBankTestQuestion;
+import com.nicico.training.model.TestQuestion;
+import com.nicico.training.repository.QuestionBankTestQuestionDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -22,7 +20,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -31,8 +28,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -40,8 +37,9 @@ import java.util.List;
 @RequestMapping(value = "/api/test-question")
 public class TestQuestionRestController {
     private final ModelMapper modelMapper;
-    private final ITestQuestionService testQuestionService;
     private final ObjectMapper objectMapper;
+    private final ITestQuestionService testQuestionService;
+    private final QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
     // ------------------------------
 
     @Loggable
@@ -152,6 +150,35 @@ public class TestQuestionRestController {
             info = null;
         }
         return new ResponseEntity<>(info, httpStatus);
+    }
+
+    @Loggable
+    @PostMapping(value = "/create-copy/{testId}")
+    public ResponseEntity<TestQuestionDTO.Info> createCopy(@PathVariable Long testId, @Validated @RequestBody TestQuestionDTO.Create request) {
+
+        HttpStatus httpStatus = HttpStatus.CREATED;
+        TestQuestionDTO.Info testQuestionInfo = null;
+
+        try {
+            testQuestionInfo = testQuestionService.create(request);
+            TestQuestion testQuestion = modelMapper.map(testQuestionInfo, TestQuestion.class);
+            List<QuestionBankTestQuestion> questionTests = questionBankTestQuestionDAO.findByTestQuestionId(testId);
+            List<QuestionBank> questionBanks = questionTests.stream().map(QuestionBankTestQuestion::getQuestionBank).collect(Collectors.toList());
+
+            questionBanks.stream().forEach(qb -> {
+                QuestionBankTestQuestion questionBankTestQuestion = new QuestionBankTestQuestion();
+                questionBankTestQuestion.setQuestionBank(qb);
+                questionBankTestQuestion.setQuestionBankId(qb.getId());
+                questionBankTestQuestion.setTestQuestion(testQuestion);
+                questionBankTestQuestion.setTestQuestionId(testQuestion.getId());
+                questionBankTestQuestionDAO.save(questionBankTestQuestion);
+            });
+        } catch (Exception e) {
+            httpStatus = HttpStatus.NO_CONTENT;
+            testQuestionInfo = null;
+        }
+
+        return new ResponseEntity<>(testQuestionInfo, httpStatus);
     }
 
     @Loggable
