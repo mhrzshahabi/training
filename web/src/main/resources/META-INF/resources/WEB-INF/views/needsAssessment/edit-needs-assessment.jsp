@@ -16,6 +16,7 @@
     var selectedRecord = {};
     var editing = false;
     var hasChanged = false;
+    var canSendToWorkFlowNA = false;
 
     var skillData = [];
     var competenceData = [];
@@ -309,6 +310,7 @@
                     return ;
                 sendNeedsAssessmentToWorkflow(mustSent);
             } else {
+                canSendToWorkFlowNA = false;
                 let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
                 if(!isSaved)
                     return ;
@@ -328,6 +330,7 @@
                 wait.close();
                 if(resp.httpResponseCode === 200){
                     hasChanged = false;
+                    canSendToWorkFlowNA = false;
                     editNeedsAssessmentRecord(id, type);
                 }
             }));
@@ -819,6 +822,7 @@
                         }
                         editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"),DynamicForm_JspEditNeedsAssessment.getValue("objectType"), JSON.parse(resp.data));
                         hasChanged = true;
+                        canSendToWorkFlowNA = true;
                     }));
                 }
             },
@@ -1433,6 +1437,7 @@
                         }
                         editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"),DynamicForm_JspEditNeedsAssessment.getValue("objectType"), JSON.parse(resp.data));
                         hasChanged = true;
+                        canSendToWorkFlowNA = true;
                     }));
                 }
             }
@@ -1637,6 +1642,7 @@
             wait.show();
             DataSource_Skill_JspNeedsAssessment.removeData(record);
             hasChanged = true;
+            canSendToWorkFlowNA = true;
             wait.close();
             return 1;
         }
@@ -1712,6 +1718,7 @@
         DataSource_Skill_JspNeedsAssessment.addData(data);
         fetchDataDomainsGrid();
         hasChanged = true;
+        canSendToWorkFlowNA = true;
     }
     function createData_JspNeedsAssessment(record, DomainId, PriorityId = 111) {
         if(record.skillLevelId === 1 && DomainId !== 108){
@@ -1955,14 +1962,17 @@
                             .then(resp => {
                                 if(resp.status === 500) {
                                     createDialog("info", resp.errors[0].field);
+                                    canSendToWorkFlowNA = true;
                                     return;
                                 }
                                 if(resp.status === 200) {
                                     simpleDialog("<spring:message code="message"/>", "<spring:message code='course.changes.set.on.workflow.engine'/>", 3000, "say");
                                     Window_NeedsAssessment_Edit.close(0);
+                                    canSendToWorkFlowNA = false;
                                     return ;
                                 }
                                 else {
+                                    canSendToWorkFlowNA = true;
                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                 }
                             });
@@ -2024,6 +2034,7 @@
             record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
             DataSource_Skill_JspNeedsAssessment.updateData(record);
             hasChanged = true;
+            canSendToWorkFlowNA = true;
             viewer.endEditing();
         }));
 
