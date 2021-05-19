@@ -1538,13 +1538,13 @@ let inValidStudents = [];
 
         let data = FinalTestDF_finalTest.getValues();
         let recordId = FinalTestLG_finalTest.getSelectedRecord().id;
-
         isc.RPCManager.sendRequest(TrDSRequest(isValidForExam + data.tclassId, "GET",null, function (resp) {
 
             let respText = JSON.parse(resp.httpResponseText);
             if (respText.status === 200) {
+                         wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/create-copy/" + recordId, finalTestMethod_finalTest, JSON.stringify(data), function (resp) {
-
+                         wait.close();
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         let result = JSON.parse(resp.httpResponseText);
                         showOkDialog("آزمون برای (" + result.tclass.course.titleFa + ") کپی شد");

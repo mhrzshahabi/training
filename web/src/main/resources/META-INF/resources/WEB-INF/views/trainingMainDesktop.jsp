@@ -2658,6 +2658,15 @@
                         createTab(this.title, "<spring:url value="/operational-unit/show-form"/>");
                     }
                 },
+<%--                </sec:authorize>--%>
+
+<%--                <sec:authorize access="hasAuthority('Menu_Security_OperationalUnit')">--%>
+<%--                {--%>
+<%--                    title: "zaza",--%>
+<%--                    click: function () {--%>
+<%--alert("Bearer <%= accessToken %>")--%>
+<%--                    }--%>
+<%--                },--%>
                 {isSeparator: true},
                 </sec:authorize>
 
