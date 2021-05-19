@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="EvaluationReaction" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="56e2d541-5e98-474b-a7e6-17738d01e289">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<style name="Table 1_TD" mode="Opaque" backcolor="#FFFFFF">
@@ -397,6 +397,28 @@
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="43"/>
+		<band height="43">
+			<staticText>
+				<reportElement x="470" y="11" width="75" height="21" uuid="3eaae5d2-9122-4d40-a8a3-32f0ef07f339"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[محل امضا استاد:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="310" y="11" width="75" height="21" uuid="2182df74-b83d-4573-bc74-532094c185fd"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[محل امضا مسئول اجرا:]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="115" y="11" width="115" height="21" uuid="e3f92ef2-1b4d-4baf-a62c-a99574c5fe2a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="10"/>
+				</textElement>
+				<text><![CDATA[محل امضا سرپرست ارزيابي و آزمون:]]></text>
+			</staticText>
+		</band>
 	</pageFooter>
 </jasperReport>
