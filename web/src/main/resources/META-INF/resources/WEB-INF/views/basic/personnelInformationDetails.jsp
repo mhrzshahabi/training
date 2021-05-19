@@ -15,6 +15,18 @@
             this.nationalCode_Info, this.personnelNo_Info, this.nationalCode_Training, this.personnelNo_Training, this.nationalCode_Need;
 
             this.set_PersonnelInfo_Details  = function set_PersonnelInfo_Details(selectedPersonnel) {
+                let hasReport=false;
+                let reportTabId;
+                for (let i = 0; i < mainTabSet.tabs.length; i++) {
+                    if (mainTabSet.tabs.get(i).title==="گزارشات نیازسنجی"){
+                        hasReport=true;
+                        reportTabId=i;
+                    }
+                }
+                if (hasReport)
+                {
+                    mainTabSet.removeTab(mainTabSet.tabs.get(reportTabId));
+                }
 
                 if (selectedPersonnel !== undefined && selectedPersonnel !== null) {
 
