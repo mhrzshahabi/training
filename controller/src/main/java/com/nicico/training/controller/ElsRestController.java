@@ -37,6 +37,7 @@ import response.evaluation.SendEvalToElsResponse;
 import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
+import response.exam.ResendExamTimes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -505,6 +506,23 @@ public class ElsRestController {
             }
         }
         return baseResponse;
+    }
+
+    @GetMapping(value = "/extendedList/{sourceExamId}")
+    public ResponseEntity<ResendExamTimes> getResendExamTimes(@PathVariable long sourceExamId){
+        ResendExamTimes resendExamTimes=client.getResendExamTimes(sourceExamId);
+
+        if (resendExamTimes.getStatus()== HttpStatus.OK.value())
+        {
+            return new ResponseEntity<>(resendExamTimes, HttpStatus.OK);
+
+        }
+        else
+            return new ResponseEntity<>(resendExamTimes, HttpStatus.NOT_ACCEPTABLE);
+
+
+
+
     }
 
 }

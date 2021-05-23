@@ -12,6 +12,7 @@ import response.evaluation.PdfResponse;
 import response.evaluation.dto.EvaluationDoneOnlineDto;
 import response.exam.DoneOnlineExamDto;
 import response.exam.ExamListResponse;
+import response.exam.ResendExamTimes;
 
 import java.util.List;
 
@@ -51,4 +52,8 @@ public interface ElsClient {
 
     @RequestMapping(method = RequestMethod.PUT, value = "/updateResult")
     BaseResponse sendScoresToEls(@RequestBody UpdateRequest requestDto);
+
+    @GetMapping("/extendedList/{sourceExamId}")
+    ResendExamTimes getResendExamTimes(@PathVariable Long sourceExamId);
+
 }

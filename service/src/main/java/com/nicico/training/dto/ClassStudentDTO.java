@@ -58,6 +58,7 @@ public class ClassStudentDTO implements Serializable {
         private TclassDTO.CoursesOfStudent tclass;
         private Integer numberOfSendedBehavioralForms;
         private Integer numberOfRegisteredBehavioralForms;
+        private String extendTime="ندارد";
 
         private String isSentMessage;
 

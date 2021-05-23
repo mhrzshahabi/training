@@ -386,11 +386,6 @@
             },
             {name: "student.fatherName", hidden: true},
             {
-                name: "applicantCompanyName",
-                textAlign: "center",
-                autoFitWidth: true
-            },
-            {
                 name: "student.personnelNo",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -439,39 +434,11 @@
                 }
             },
             {
-                name: "student.ccpArea",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.ccpArea;
-                }
-            },
-            {
-                name: "student.ccpAssistant",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.ccpAssistant;
-                }
-            },
-            {
-                name: "student.ccpAffairs",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.ccpAffairs;
-                }
-            },
-            {
-                name: "student.ccpSection",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.ccpSection;
-                }
-            },
-            {
-                name: "student.ccpUnit",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.ccpUnit;
-                }
+                name: "extendTime",
+                title: " زمان آزمون مجدد" +
+                    "",
+                filterOperator: "iContains",
+                autoFitWidth: true
             },
         ],
         gridComponents: [resendFinalExam_DynamicForm, "filterEditor", "header", "body"],
@@ -657,9 +624,7 @@
             });
 
         } else {
-            StudentsDS_student_resend.fetchDataURL = tclassStudentUrl + "/students-iscList/" + record.tclass.id;
-
-
+            StudentsDS_student_resend.fetchDataURL = tclassStudentUrl + "/students-iscList/resend/" + record.tclass.id+"/"+record.id;
             ListGrid_resendExamStudents.invalidateCache();
             ListGrid_resendExamStudents.fetchData();
             isc.Label.create({ID: "StudentsCount_student"});
