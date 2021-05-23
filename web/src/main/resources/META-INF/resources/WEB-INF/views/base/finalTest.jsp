@@ -46,10 +46,10 @@
                     break;
             }
             case "2":
-              refresh_finalTest();
+        FinalTestLG_finalTest.invalidateCache();
+        FinalTestLG_finalTest.fetchData();
+        loadTab(TabSet_finalTest.getSelectedTab().ID);
                  break;
-            default:
-                return refresh_finalTest();
         }
                 }
             }
@@ -1445,6 +1445,7 @@ let inValidStudents = [];
                     } }));
                     }
     function refresh_finalTest() {
+        DynamicForm_Filter_exam.getField('filter_exam').setValue(null)
         FinalTestLG_finalTest.invalidateCache();
         FinalTestLG_finalTest.fetchData();
         loadTab(TabSet_finalTest.getSelectedTab().ID);
