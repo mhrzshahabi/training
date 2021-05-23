@@ -14,6 +14,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
+import com.nicico.training.utility.persianDate.CalendarTool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -45,8 +46,8 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.nicico.training.controller.EvaluationRestController.getPersianDate;
-import static com.nicico.training.service.BaseService.makeNewCriteria;
+ import static com.nicico.training.service.BaseService.makeNewCriteria;
+import static com.nicico.training.service.ClassSessionService.getPersianDate;
 
 @Slf4j
 @RestController
@@ -470,10 +471,11 @@ public class ClassStudentRestController {
                         List<ExtendedUserDto> dataList = resendExamTimes.getExtendedUsers().stream().filter(data -> data.getStartDate() != null ).collect(Collectors.toList());
                         for (ExtendedUserDto data:dataList)
                         {
-                            ClassStudentDTO.ClassStudentInfo x = classStudentInfos.stream().filter(a -> a.getStudent().getNationalCode()!=null && a.getStudent().getNationalCode().equals(data.getUser().getNationalCode())).findFirst().get();
+                            ClassStudentDTO.ClassStudentInfo classStudentInfo = classStudentInfos.stream().filter(a -> a.getStudent().getNationalCode()!=null && a.getStudent().getNationalCode().equals(data.getUser().getNationalCode())).findFirst().get();
                             LocalDate date =
                                     Instant.ofEpochMilli(data.getStartDate()).atZone(ZoneId.systemDefault()).toLocalDate();
-                            x.setExtendTime(getPersianDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth()));
+                            CalendarTool calendarTool = new CalendarTool(date.getYear(),date.getMonthValue(), date.getDayOfMonth());
+                            classStudentInfo.setExtendTime(calendarTool.getIranianDate());
                         }
 
                     }
