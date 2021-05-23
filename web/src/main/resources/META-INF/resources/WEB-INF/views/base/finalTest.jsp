@@ -17,6 +17,45 @@
         align: "center",
         width: "100%"
     });
+    let DynamicForm_Filter_exam =isc.DynamicForm.create({
+            height: "100%",
+            fields: [
+                {
+                name: "filter_exam",
+                title: "",
+                type: "radioGroup",
+                valueMap: {
+                    "1": "لیست آزمون هايی که زمان آنها امروز است",
+                    "2": "لیست همه ی آزمون ها"
+                },
+                vertical: false,
+                changed: function (form, item, value) {
+                         switch (value) {
+            case "1":
+                {
+                          let criteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {fieldName: "date", operator: "equals", value: todayDate}
+                            ]
+                        };
+                        FinalTestDS_finalTest.fetchDataURL = testQuestionUrl + "/spec-list";
+                        FinalTestLG_finalTest.invalidateCache();
+                        FinalTestLG_finalTest.fetchData(criteria);
+                    break;
+            }
+            case "2":
+              refresh_finalTest();
+                 break;
+            default:
+                return refresh_finalTest();
+        }
+                }
+            }
+        ]
+    });
+
 // ------------------------------------------- Menu -------------------------------------------
     FinalTestMenu_finalTest = isc.Menu.create({
         data: [
@@ -76,6 +115,7 @@
                     showCopyForm_finalTest();
                 }
             }),
+
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let implicitCriteria = JSON.parse(JSON.stringify(FinalTestDS_finalTest.implicitCriteria)) ;
@@ -93,6 +133,7 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
+                  DynamicForm_Filter_exam,
             isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refresh_finalTest();
