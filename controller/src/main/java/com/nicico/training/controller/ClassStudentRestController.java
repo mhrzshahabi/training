@@ -9,14 +9,15 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.dto.*;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
-import com.nicico.training.model.ClassStudent;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.apache.poi.ss.formula.functions.T;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -25,6 +26,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.student.UpdatePreTestScoreRequest;
 import request.student.UpdateStudentScoreRequest;
+import response.exam.ExtendedUserDto;
+import response.exam.ResendExamTimes;
 import response.student.UpdatePreTestScoreResponse;
 import response.student.UpdateStudentScoreResponse;
 
@@ -35,13 +38,14 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.ZoneId;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.controller.EvaluationRestController.getPersianDate;
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
@@ -62,9 +66,8 @@ public class ClassStudentRestController {
     private final ContinuousStatusReportViewService continuousStatusReportViewService;
     private final ClassSessionService classSessionService;
     private final ClassStudentBeanMapper mapper;
-//    private final SearchDTO.SearchRq searchRq;
-//    private final SearchDTO.CriteriaRq criteriaRq;
-//    private final List<SearchDTO.CriteriaRq> list;
+    private final ElsClient client;
+
 
 
     private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
@@ -415,5 +418,76 @@ public class ClassStudentRestController {
 
         reportUtil.export("/reports/trainingFile.jasper", params, jsonDataSource, response);
     }
+
+
+    @Loggable
+    @GetMapping(value = "/students-iscList/resend/{classId}/{sourceExamId}")
+    public ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> resendExamStudents(HttpServletRequest iscRq, @PathVariable Long classId,@PathVariable Long sourceExamId) throws IOException, ParseException {
+        ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list = search1(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+
+        List<ClassStudentDTO.ClassStudentInfo> tmplist = (List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData();
+
+        if (tmplist.size() > 0 && (tmplist.get(0).getTclass().getClassStatus().equals("1") || tmplist.get(0).getTclass().getClassStatus().equals("2"))) {
+
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            searchRq.setCount(1);
+            searchRq.setStartIndex(0);
+
+            List<String> sortBy = new ArrayList<>();
+            sortBy.add("sessionDate");
+            sortBy.add("sessionStartHour");
+
+            searchRq.setSortBy(sortBy);
+            SearchDTO.SearchRs<ClassSessionDTO.Info> result = classSessionService.searchWithCriteria(searchRq, classId);
+
+            if (result.getList().size() > 0) {
+                String str = DateUtil.convertKhToMi1(result.getList().get(0).getSessionDate());
+                LocalDate date = LocalDate.parse(str);
+
+                if ((date.isBefore(LocalDate.now().plusDays(7))||date.equals(LocalDate.now().plusDays(7))) && (date.isAfter(LocalDate.now())||date.equals(LocalDate.now()))) {
+                    Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
+
+                    tmplist.forEach(p -> {
+                        if (p.getStudent().getMobile() != null && mobiles.get(p.getStudent().getMobile()) != null && mobiles.get(p.getStudent().getMobile()) > 0) {
+                            p.setIsSentMessage("");
+                        } else {
+                            p.setIsSentMessage("warning");
+                        }
+                    });
+                }
+            }
+        }
+        try {
+            if (list.getBody()!= null && list.getBody().getResponse()!=null && list.getBody().getResponse().getData()!=null && list.getBody().getResponse().getData().size()>0)
+            {
+                ResendExamTimes resendExamTimes=client.getResendExamTimes(sourceExamId);
+
+                if (resendExamTimes.getStatus()== HttpStatus.OK.value())
+                {
+                    if (resendExamTimes.getExtendedUsers()!= null && resendExamTimes.getExtendedUsers().size()>0)
+                    {
+                        List<ClassStudentDTO.ClassStudentInfo>classStudentInfos= (List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData();
+                        List<ExtendedUserDto> dataList = resendExamTimes.getExtendedUsers().stream().filter(data -> data.getStartDate() != null ).collect(Collectors.toList());
+                        for (ExtendedUserDto data:dataList)
+                        {
+                            ClassStudentDTO.ClassStudentInfo x = classStudentInfos.stream().filter(a -> a.getStudent().getNationalCode()!=null && a.getStudent().getNationalCode().equals(data.getUser().getNationalCode())).findFirst().get();
+                            LocalDate date =
+                                    Instant.ofEpochMilli(data.getStartDate()).atZone(ZoneId.systemDefault()).toLocalDate();
+                            x.setExtendTime(getPersianDate(date.getYear(), date.getMonthValue(), date.getDayOfMonth()));
+                        }
+
+                    }
+
+                }
+
+            }
+            return list;
+        }
+        catch (Exception e){
+            return list;
+        }
+
+    }
+
 
 }
