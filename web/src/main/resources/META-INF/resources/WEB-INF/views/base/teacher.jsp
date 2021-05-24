@@ -1036,6 +1036,7 @@
     function ListGrid_teacher_add() {
         ListGrid_Teacher_JspTeacher.invalidateCache();
         vm.clearValues();
+        DynamicForm_BasicInfo_JspTeacher.clearValues();
         vm.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();
