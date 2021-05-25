@@ -140,6 +140,14 @@ public class AttendanceRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/attendance-completion")
+    public Boolean getAttendanceCompletion(@RequestParam(value = "classId", required = false) Long classId) {
+
+        List<ClassSessionDTO.ClassSessionsDateForOneClass> list = classSessionService.getDateForOneClass(classId);
+        return list.stream().anyMatch(q -> q.getHasWarning().equals("alarm"));
+    }
+
+    @Loggable
     @GetMapping(value = "/students")
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getStudentForOneClass(@RequestParam(value = "classId", required = false) Long classId) {

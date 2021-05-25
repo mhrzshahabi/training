@@ -3800,22 +3800,46 @@
     function checkEndingClass(oldValue) {
         let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record !== null) {
-            wait.show()
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id + "/" + record.endDate.replaceAll("/", "-"), "GET", null, function (resp) {
+
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(attendanceUrl + "/attendance-completion?classId=" + record.id, "GET", null, function (resp) {
                 wait.close();
-                if (resp.data !== "") {
-                    TabSet_Class.selectTab("classAlarmsTab");
-                    isc.Dialog.create({
-                        message: resp.data,
-                        icon: "[SKIN]ask.png",
-                        title: "<spring:message code="message"/>",
-                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                    classTypeStatus.setValue(oldValue);
-                    highlightClassStauts(oldValue, 10);
+                if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let result = JSON.parse(resp.httpResponseText);
+                    if (result == true) {
+                        TabSet_Class.selectTab("classAlarmsTab");
+                        isc.Dialog.create({
+                            message: "حضور غیاب تکمیل نشده است",
+                            icon: "[SKIN]ask.png",
+                            title: "<spring:message code="message"/>",
+                            buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                            buttonClick: function (button, index) {
+                                this.close();
+                            }
+                        });
+                        classTypeStatus.setValue(oldValue);
+                        highlightClassStauts(oldValue, 10);
+                    } else {
+                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id + "/" + record.endDate.replaceAll("/", "-"), "GET", null, function (resp) {
+                            wait.close();
+                            if (resp.data !== "") {
+                                TabSet_Class.selectTab("classAlarmsTab");
+                                isc.Dialog.create({
+                                    message: resp.data,
+                                    icon: "[SKIN]ask.png",
+                                    title: "<spring:message code="message"/>",
+                                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                                    buttonClick: function (button, index) {
+                                        this.close();
+                                    }
+                                });
+                                classTypeStatus.setValue(oldValue);
+                                highlightClassStauts(oldValue, 10);
+                            }
+                        }));
+                    }
+                } else {
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }
             }));
         }
