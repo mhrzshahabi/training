@@ -40,7 +40,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
-import static com.nicico.training.service.ClassSessionService.getPersianDate;
 
 
 @RequiredArgsConstructor
