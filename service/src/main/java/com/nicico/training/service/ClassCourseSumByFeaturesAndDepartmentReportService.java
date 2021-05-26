@@ -375,6 +375,45 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         return list;
     }
 
+    @Override
+    public List<ClassSumByStatus> getSummeryGroupByCategory(String startDate, String endDate, List<String> mojtameCodes, List<String> moavenatCodes, List<String> omorCodes) {
+        StringBuffer script = new StringBuffer();
+        script.append("SELECT C_TITLE_FA AS CATEGORY, SUM(PLANNING) AS PLANNING, SUM(IN_PROGRESS) AS IN_PROGRESS, SUM(FINISHED) AS FINISHED, SUM(CANCELED) AS CANCELED, SUM(LOCKED_) AS LOCKED");
+        script.append(" FROM(SELECT CAT.C_TITLE_FA, CLASS_.PLANNING, CLASS_.IN_PROGRESS, CLASS_.FINISHED, CLASS_.CANCELED, CLASS_.LOCKED_");
+        script.append(" FROM(SELECT * FROM (");
+        script.append(" SELECT C_STATUS, F_COURSE, C_START_DATE, C_END_DATE FROM (");
+        script.append(" SELECT CLZZ.C_STATUS, CLZZ.F_COURSE, CLZZ.C_START_DATE, CLZZ.C_END_DATE");
+        script.append(" FROM TBL_CLASS  CLZZ  LEFT JOIN TBL_DEPARTMENT   DPRT ON CLZZ.F_PLANNER = DPRT.ID WHERE ");
+        if (omorCodes != null) {
+            script.append(" C_OMOR_CODE IN (").append(omorCodes.stream().collect(Collectors.joining(","))).append(")");
+        } else if (moavenatCodes != null) {
+            script.append(" C_MOAVENAT_CODE IN (").append(moavenatCodes.stream().collect(Collectors.joining(","))).append(")");
+        } else if (mojtameCodes != null) {
+            script.append(" C_MOJTAME_CODE IN (").append(mojtameCodes.stream().collect(Collectors.joining(","))).append(")");
+        } else {
+            script.append(" 1=1");
+        }
+        script.append(") WHERE C_START_DATE <= :TO_DATE AND C_END_DATE >= :FROM_DATE) PIVOT (COUNT (C_STATUS) FOR C_STATUS IN (1 AS PLANNING, 2 AS IN_PROGRESS, 3 AS FINISHED, 4 AS CANCELED, 5 AS LOCKED_))) CLASS_");
+        script.append(" LEFT JOIN TBL_COURSE COURSE ON COURSE.ID = CLASS_.F_COURSE");
+        script.append(" LEFT JOIN TBL_CATEGORY CAT ON CAT.ID = COURSE.CATEGORY_ID)GROUP BY C_TITLE_FA");
+        List<Object[]> records = (List<Object[]>) entityManager.createNativeQuery(script.toString())
+                .setParameter("FROM_DATE", startDate)
+                .setParameter("TO_DATE", endDate)
+                .getResultList();
+        List<ClassSumByStatus> list = new ArrayList<>();
+
+        for (Object[] record : records) {
+            ClassSumByStatus dto = new ClassSumByStatus();
+            dto.setCategory(record[0].toString());
+            dto.setPlanningCount(record[1] == null ? null : Integer.parseInt(record[1].toString()));
+            dto.setInProgressCount(record[2] == null ? null : Integer.parseInt(record[2].toString()));
+            dto.setFinishedCount(record[3] == null ? null : Integer.parseInt(record[3].toString()));
+            dto.setCanceledCount(record[4] == null ? null : Integer.parseInt(record[4].toString()));
+            dto.setLockedCount(record[5] == null ? null : Integer.parseInt(record[5].toString()));
+            list.add(dto);
+        }
+        return list;
+    }
 
     private void addGroupByFeatureClause(GroupBy groupBy, StringBuffer script) {
         if (groupBy.equals(GroupBy.CLASS_TEACHING_TYPE))

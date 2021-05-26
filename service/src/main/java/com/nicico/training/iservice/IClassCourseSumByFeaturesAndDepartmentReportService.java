@@ -32,4 +32,5 @@ public interface IClassCourseSumByFeaturesAndDepartmentReportService {
                                                      List<String> moavenatCodes,
                                                      List<String> omorCodes);
 
+    List<ClassSumByStatus> getSummeryGroupByCategory(String startDate, String endDate, List<String> mojtameCodes, List<String> moavenatCodes, List<String> omorCodes);
 }
