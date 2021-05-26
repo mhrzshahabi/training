@@ -130,7 +130,7 @@ public abstract class EvaluationBeanMapper {
         List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
 
         ImportedUser teacher = getTeacherData(teacherInfo);
-
+//ToDo
         request.setUsers(classStudents.stream()
                 .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList()));
 
@@ -1204,5 +1204,10 @@ public abstract class EvaluationBeanMapper {
         return userNames;
 
 
+    }
+
+    public  ElsExamRequest removeAbsentUsersForExam(ElsExamRequest request, List<EvalTargetUser> absentUsers){
+        request.getUsers().removeIf(p -> absentUsers.stream().anyMatch(x -> (p.getNationalCode().equals(x.getNationalCode()))));
+        return request;
     }
 }

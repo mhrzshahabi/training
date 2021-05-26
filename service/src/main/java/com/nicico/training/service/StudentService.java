@@ -6,6 +6,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.model.Student;
@@ -16,6 +17,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,6 +104,16 @@ public class StudentService implements IStudentService {
     @Override
     public SearchDTO.SearchRs<StudentDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(studentDAO, request, student -> modelMapper.map(student, StudentDTO.Info.class));
+    }
+
+    @Override
+    public List<Student> getStudentList(List<Long> absentStudents) {
+        List<Student>students=new ArrayList<>();
+        for (Long id:absentStudents)
+        {
+            students.add(getStudent(id));
+        }
+        return students;
     }
 
     // ------------------------------

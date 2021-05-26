@@ -158,6 +158,10 @@ public class ElsRestController {
                         evaluationBeanMapper.validateTeacherExam(request.getInstructor())) {
                     try {
                         request = evaluationBeanMapper.removeInvalidUsersForExam(request);
+                        if (object.isDeleteAbsentUsers())
+                        {
+                            request = evaluationBeanMapper.removeAbsentUsersForExam(request,object.getAbsentUsers());
+                        }
                         if (request.getUsers() != null && !request.getUsers().isEmpty()) {
                             response = client.sendExam(request);
                         } else {

@@ -1,6 +1,8 @@
 package com.nicico.training.mapper.attendance;
 
 import com.nicico.training.model.Attendance;
+import com.nicico.training.model.Student;
+import dto.evaluuation.EvalTargetUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -23,4 +25,11 @@ public interface AttendanceBeanMapper {
         return requestList.getAttendanceDtos().stream().map(this::toAttendance).collect(Collectors.toList());
     }
 
+
+    @Mapping(target = "surname", source = "firstName")
+    @Mapping(target = "lastName", source = "lastName")
+    @Mapping(target = "nationalCode", source = "nationalCode")
+    EvalTargetUser toTargetUser(Student student);
+
+    List<EvalTargetUser> toTargetUsers(List<Student> students);
 }

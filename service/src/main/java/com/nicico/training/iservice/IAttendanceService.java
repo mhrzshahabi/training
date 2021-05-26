@@ -3,7 +3,9 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.model.Attendance;
+import com.nicico.training.model.Student;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.ParseException;
@@ -68,6 +70,7 @@ public interface IAttendanceService {
     void studentAttendanceSave(List<List<Map<String, String>>> maps);
 
     String studentUnknownSessionsInClass(Long classId);
+    List<Student> studentAbsentSessionsInClass(Long classId);
 
     void saveOrUpdateList(List<Attendance> attendances);
 }
