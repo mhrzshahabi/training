@@ -414,4 +414,9 @@ public class MainFormController {
         return "report/reactionEvaluationReport";
     }
 
+    @RequestMapping("/coursesEvaluationReport")
+    public String coursesEvaluationReport() {
+        return "report/coursesEvaluationReport";
+    }
+
 }
