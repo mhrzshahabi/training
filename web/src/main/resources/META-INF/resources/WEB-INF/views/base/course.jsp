@@ -876,6 +876,13 @@
             ToolStripButton_Remove,
             </sec:authorize>
 
+            isc.ToolStripButton.create({
+                title: "<spring:message code='copy.of.course'/>",
+                click: function () {
+                    ListGrid_Course_Copy();
+                }
+            }),
+
             <sec:authorize access="hasAuthority('Course_P')">
             ToolStripButton_Print,
 
@@ -1461,7 +1468,6 @@
                     }
                 }
             },
-
             {
                 ID: "statusGroupTab",
                 name: "statusGroupTab",
@@ -1477,7 +1483,7 @@
                 colSpan: 1,
                 title: "<spring:message code="course_category"/>",
                 textAlign: "center",
-                autoFetchData: false,
+                autoFetchData: true,
                 required: true,
                 width: "*",
                 displayField: "titleFa",
@@ -1524,6 +1530,7 @@
                     showFilterEditor: false
                 },
                 changed: function (form, item, value) {
+
                     DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                     mainObjectiveGrid_Refresh("clear");
                     if(course_method === "PUT"){
@@ -2475,7 +2482,7 @@
 
 
     });
-    Detail_Tab_Course.setDisabled(true)
+    Detail_Tab_Course.setDisabled(true);
     var HLayout_Tab_Course = isc.HLayout.create({
         width: "100%",
         height: "50%",
@@ -2519,7 +2526,7 @@
         Window_course.show();
         courseRecord = {};
 
-        disabledTabs()
+        disabledTabs();
         mainObjectiveGrid_Refresh(1);
     }
     let disabledTabs = function () {
@@ -2561,6 +2568,72 @@
                     }
                 }
             });
+        }
+    }
+    
+    function ListGrid_Course_Copy() {
+
+        let record = ListGrid_Course.getSelectedRecord();
+        if (record == null || record.id == null) {
+
+            createDialog("warning", "<spring:message code='msg.not.selected.record'/>", "<spring:message code="warning"/>");
+        } else {
+
+            DynamicForm_course_GroupTab.getItem("category.id").enable();
+            DynamicForm_course_GroupTab.getItem("runType.id").enable();
+            DynamicForm_course_GroupTab.getItem("levelType.id").enable();
+            DynamicForm_course_GroupTab.getItem("theoType.id").enable();
+            course_method = "POST";
+            DynamicForm_course_GroupTab.getItem('statusGroupTab').hide();
+            course_url = courseUrl;
+            vm_JspCourse.clearValues();
+            vm_JspCourse.clearErrors();
+            DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
+            DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
+            DynamicForm_course_MainTab.getItem("startEvaluation").disable();
+            Window_course.setTitle("<spring:message code="copy"/>" + " " + "<spring:message code="course"/>");
+            equalCourse.length = 0;
+            testData.length = 0;
+            lblCourse.hide();
+            preCourseGrid.invalidateCache();
+            equalCourseGrid.invalidateCache();
+            courseAllGrid.invalidateCache();
+            courseRecord = {};
+
+            disabledTabs();
+            mainObjectiveGrid_Refresh(1);
+
+
+            DynamicForm_course_MainTab.setValue("evaluation", record.evaluation);
+            DynamicForm_course_MainTab.getItem("evaluation").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("evaluation"), record.evaluation);
+            DynamicForm_course_MainTab.setValue("behavioralLevel", record.behavioralLevel);
+            DynamicForm_course_MainTab.setValue("scoringMethod", record.scoringMethod);
+            DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), record.scoringMethod);
+
+
+            DynamicForm_course_GroupTab.setValue("duration", record.duration);
+            DynamicForm_course_GroupTab.setValue("category.id", record.category.id);
+            DynamicForm_course_GroupTab.setValue("subCategory.id", record.subCategory.id);
+            DynamicForm_course_GroupTab.setValue("runType.id", record.runType.id);
+            DynamicForm_course_GroupTab.setValue("levelType.id", record.levelType.id);
+            DynamicForm_course_GroupTab.setValue("theoType.id", record.theoType.id);
+            DynamicForm_course_GroupTab.setValue("technicalType.id", record.technicalType.id);
+            DynamicForm_course_GroupTab.setValue("issueTitle", record.issueTitle);
+            DynamicForm_course_GroupTab.setValue("description", record.description);
+            setTimeout(() => {
+                DynamicForm_course_GroupTab.getItem("category.id").changed(DynamicForm_course_GroupTab, DynamicForm_course_GroupTab.getItem("category.id"), record.category.id);
+                DynamicForm_course_GroupTab.setValue("subCategory.id", record.subCategory.id);
+                DynamicForm_course_GroupTab.getItem("subCategory.id").changed(DynamicForm_course_GroupTab, DynamicForm_course_GroupTab.getItem("subCategory.id"), record.subCategory.id);
+                DynamicForm_course_GroupTab.getItem("runType.id").changed(DynamicForm_course_GroupTab, DynamicForm_course_GroupTab.getItem("runType.id"), record.runType.id);
+                DynamicForm_course_GroupTab.getItem("theoType.id").changed(DynamicForm_course_GroupTab, DynamicForm_course_GroupTab.getItem("theoType.id"), record.theoType.id);
+                DynamicForm_course_GroupTab.getItem("technicalType.id").changed(DynamicForm_course_GroupTab, DynamicForm_course_GroupTab.getItem("technicalType.id"), record.technicalType.id);
+            }, 1000);
+
+
+            VLayout_Tab_JspCourse.getMember("teacherForm").setValue("minTeacherDegree", record.minTeacherDegree);
+            VLayout_Tab_JspCourse.getMember("teacherForm").setValue("minTeacherExpYears", record.minTeacherExpYears);
+            VLayout_Tab_JspCourse.getMember("teacherForm").setValue("minTeacherEvalScore", record.minTeacherEvalScore);
+            Window_course.show();
         }
     }
 
@@ -2705,6 +2778,7 @@
     }
 
     function courseCode() {
+
         let subCatDis = DynamicForm_course_GroupTab.getItem("subCategory.id").isDisabled();
         let cat = DynamicForm_course_GroupTab.getItem("category.id").getSelectedRecord();
         let subCat = DynamicForm_course_GroupTab.getItem("subCategory.id");
