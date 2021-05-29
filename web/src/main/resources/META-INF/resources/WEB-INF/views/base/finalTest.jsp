@@ -3,7 +3,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-//<script>
+// <script>
 
     let finalTestMethod_finalTest;
     let oLoadAttachments_finalTest;
@@ -1008,6 +1008,10 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         return validationData;
     }
 
+    function checkExamRoles (classId) {
+
+
+    }
     function loadExamQuestions(record,questionData,dialog) {
 
             wait.show();
@@ -1017,36 +1021,109 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                     var examData = {
                     examItem : record,
                     questions: result,
+                    absentUsers: [],
+                    deleteAbsentUsers: false,
                     questionData: questionData
                     };
                     let validationData = checkExamValidation(examData);
+
+
                     if (validationData.isValid) {
-                        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/test", "POST", JSON.stringify(examData), function (resp) {
-                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                refresh_finalTest();
+                        isc.RPCManager.sendRequest(TrDSRequest( attendanceUrl + "/studentAbsentSessionsInClass?classId="+record.tclass.id, "GET", null, res => {
 
-                                var OK = isc.Dialog.create({
-                                message: "<spring:message code="msg.operation.successful"/>",
-                                icon: "[SKIN]say.png",
-                                title: "<spring:message code='message'/>"
-                                });
-                                setTimeout(function () {
-                                dialog.close();
-                                OK.close();
-                                }, 2000);
-                            } else {
+                            if (res.httpResponseCode === 200) {
 
-                                if (resp.httpResponseCode === 406)
-                                    createDialog("info","<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
-                                else if (resp.httpResponseCode === 404)
-                                    createDialog("info", "<spring:message code="msg.check.users.mobile.ncode"/>", "<spring:message code="error"/>");
-                                else if (resp.httpResponseCode === 500)
-                                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                                else
-                                    createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+                                let result = JSON.parse(res.httpResponseText);
+
+                                for (let i = 0; i < result.size(); i++) {
+                                    let item = {};
+                                    item.surname = result[i].surname;
+                                    item.lastName = result[i].lastName;
+                                    item.nationalCode = result[i].nationalCode;
+                                    item.cellNumber = result[i].cellNumber;
+                                    item.gender = result[i].gender;
+
+
+                                    examData.absentUsers.add(item);
+                                }
+                                 if (result.size()>0)
+                                {
+
+                                    let DynamicForm_InValid_Students = isc.DynamicForm.create({
+                                        width: 600,
+                                        height: 100,
+                                        padding: 6,
+                                        titleAlign: "right",
+                                        fields: [
+                                            {
+                                                name: "text",
+                                                width: "100%",
+                                                colSpan: 2,
+                                                value: "<spring:message code='absent.students.description'/>",
+                                                showTitle: false,
+                                                editorType: 'staticText'
+                                            },
+                                            {
+                                                type: "RowSpacerItem"
+                                            },
+                                            {
+                                                name: "invalidNames",
+                                                width: "100%",
+                                                colSpan: 2,
+                                                title: "<spring:message code="title"/>",
+                                                showTitle: false,
+                                                editorType: 'textArea',
+                                                canEdit: false
+                                            }
+                                        ]
+                                    });
+
+                                    let names = "";
+                                    for (var j = 0; j < result.length; j++) {
+
+                                        names = names.concat(result[j].surname + " " + result[j].lastName  + "\n");
+                                    }
+                                    DynamicForm_InValid_Students.setValue("invalidNames", names);
+
+                                    let Window_InValid_Students = isc.Window.create({
+                                        width: 600,
+                                        height: 150,
+                                        numCols: 2,
+                                        title: "<spring:message code='absent.students.window'/>",
+                                        items: [
+                                            DynamicForm_InValid_Students,
+                                            isc.MyHLayoutButtons.create({
+                                                members: [
+                                                    isc.IButtonSave.create({
+                                                        title: "<spring:message code="yes"/>",
+                                                        click: function () {
+                                                            examData.deleteAbsentUsers=false;
+                                                            Window_InValid_Students.close();
+                                                            callApiForSendExam(examData,dialog);
+                                                        }
+                                                    }),
+                                                    isc.IButtonCancel.create({
+                                                        title: "<spring:message code="no"/>",
+                                                        click: function () {
+                                                            examData.deleteAbsentUsers=true;
+                                                            Window_InValid_Students.close();
+                                                            callApiForSendExam(examData,dialog);
+                                                        }
+                                                    })
+                                                ],
+                                            })]
+                                    });
+                                    Window_InValid_Students.show();
+                                }
                             }
-                            wait.close();
+                            else
+                            {
+                               callApiForSendExam(examData,dialog);
+                            }
                         }));
+
+
+
                     } else {
                         wait.close();
                         createDialog("info", validationData.message, "<spring:message code="error"/>");
@@ -1780,5 +1857,33 @@ let inValidStudents = [];
     var reg = new RegExp(".{1," + maxLength + "}","g");
     var parts = str.match(reg);
     return parts.join('\n');
+}
+       function callApiForSendExam(data,dialog){
+           isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/test", "POST", JSON.stringify(data), function (resp) {
+               if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                   refresh_finalTest();
+
+                   var OK = isc.Dialog.create({
+                       message: "<spring:message code="msg.operation.successful"/>",
+                       icon: "[SKIN]say.png",
+                       title: "<spring:message code='message'/>"
+                   });
+                   setTimeout(function () {
+                       dialog.close();
+                       OK.close();
+                   }, 2000);
+               } else {
+
+                   if (resp.httpResponseCode === 406)
+                       createDialog("info","<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
+                   else if (resp.httpResponseCode === 404)
+                       createDialog("info", "دوره فراگیر ندارد");
+                   else if (resp.httpResponseCode === 500)
+                       createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                   else
+                       createDialog("info",JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
+               }
+               wait.close();
+           }));
 }
     //</script>

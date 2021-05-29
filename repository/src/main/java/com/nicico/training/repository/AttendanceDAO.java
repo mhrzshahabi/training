@@ -72,5 +72,6 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
     Integer checkAttendanceByStudentIdAndClassId(Long studentId,Long classId);
 
 
-
+    @Query(value = "select c_state FROM TBL_ATTENDANCE where f_student=:studentId and f_session in (select id from tbl_session where f_class_id=:classId)",nativeQuery = true)
+    List<Long> getAttendanceByClassIdAndStudentId(Long classId,Long studentId);
 }

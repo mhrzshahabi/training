@@ -7,8 +7,10 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IAttendanceService;
+import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
@@ -32,6 +34,7 @@ public class AttendanceService implements IAttendanceService {
     private final AttendanceDAO attendanceDAO;
     private final ClassSessionDAO classSessionDAO;
     private final TclassService tclassService;
+    private final IStudentService studentService;
     private final ClassSessionService classSessionService;
     private final ParameterService parameterService;
     private final ClassAlarmService classAlarmService;
@@ -364,6 +367,24 @@ public class AttendanceService implements IAttendanceService {
     }
 
     @Override
+    public List<Student> studentAbsentSessionsInClass(Long classId) {
+        List<ClassStudentDTO.AttendanceInfo> students  =  tclassService.getStudents(classId);
+        List<Long> absentStudents=new ArrayList<>();
+            for (ClassStudentDTO.AttendanceInfo student : students) {
+                List<Long> list=attendanceDAO.getAttendanceByClassIdAndStudentId(classId,student.getStudentId());
+                if (!list.isEmpty())
+                    {
+                        boolean allAbsent = list.stream().allMatch(x -> x.equals(3L));
+                        if (allAbsent)
+                        {
+                            absentStudents.add(student.getStudentId()) ;
+                        }
+                    }
+        }
+        return studentService.getStudentList(absentStudents);
+     }
+
+    @Override
     public void saveOrUpdateList(List<Attendance> attendances) {
         attendances.forEach(attendance -> {
             Optional<Attendance> optional = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(),
@@ -374,6 +395,8 @@ public class AttendanceService implements IAttendanceService {
                 oldAttendance.setDescription(attendance.getDescription());
                 attendanceDAO.save(oldAttendance);
             } else {
+                attendance.setStudent(null);
+                attendance.setSession(null);
                 attendanceDAO.save(attendance);
             }
         });

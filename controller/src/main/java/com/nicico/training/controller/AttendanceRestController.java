@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
@@ -12,11 +11,11 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.ParameterValueDTO;
-import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
-import com.nicico.training.model.ParameterValue;
+import com.nicico.training.model.Attendance;
+import com.nicico.training.model.Student;
 import com.nicico.training.service.*;
+import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -33,7 +32,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
@@ -106,7 +104,8 @@ public class AttendanceRestController {
       //  attendanceService.convertToModelAndSave(req, classId, date);
  /*       classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
         classAlarmService.saveAlarms();*/
-        attendanceService.saveOrUpdateList(mapper.ToAttendanceList(request));
+        List<Attendance> attendances =mapper.ToAttendanceList(request);
+        attendanceService.saveOrUpdateList(attendances);
         AttendanceListSaveResponse response = new AttendanceListSaveResponse();
         response.setStatus(HttpStatus.CREATED.value());
         response.setMessage("با موفقیت ایجاد شد");
@@ -269,5 +268,20 @@ public class AttendanceRestController {
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<String> studentUnknownSessionsInClass(@RequestParam("classId") Long classId) {
         return new ResponseEntity<>(attendanceService.studentUnknownSessionsInClass(classId), HttpStatus.OK);
+    }
+    @Loggable
+    @GetMapping(value = "/studentAbsentSessionsInClass")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<List<EvalTargetUser>> studentAbsentSessionsInClass(@RequestParam("classId") Long classId) {
+
+        List<Student> students=    attendanceService.studentAbsentSessionsInClass(classId);
+        if (students.isEmpty())
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        else
+        {
+          List<EvalTargetUser> targetUsers=mapper.toTargetUsers(students);
+            return new ResponseEntity<>(targetUsers, HttpStatus.OK);
+        }
+
     }
 }
