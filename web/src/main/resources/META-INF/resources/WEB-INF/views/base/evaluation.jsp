@@ -7,56 +7,60 @@
 //<script>
     //----------------------------------------- DataSources ------------------------------------------------------------
 
-        var RestDataSource_class_Evaluation = isc.TrDS.create({
-            fields: [
-                {name: "id"},
-                {name: "termId"},
-                {name: "instituteId"},
-                {name: "teacherId"},
-                {name: "tclassStudentsCount"},
-                {name: "tclassCode"},
-                {name: "tclassStartDate"},
-                {name: "tclassEndDate"},
-                {name: "tclassYear"},
-                {name: "courseCode"},
-                {name: "courseCategory"},
-                {name: "courseSubCategory"},
-                {name: "courseTitleFa"},
-                {name: "evaluation"},
-                {name: "tclassDuration"},
-                {name: "tclassOrganizerId"},
-                {name: "tclassStatus"},
-                {name: "tclassEndingStatus"},
-                {name: "tclassPlanner"},
-                {name: "termTitleFa"},
-                {name: "instituteTitleFa"},
-                {name: "classScoringMethod"},
-                {name: "classPreCourseTest"},
-                {name: "courseId"},
-                {name: "teacherEvalStatus"},
-                {name: "trainingEvalStatus"},
-                {name: "tclassSupervisor"},
-                {name: "tclassTeachingType"},
-                {name: "classTeacherOnlineEvalStatus"},
-                {name: "classStudentOnlineEvalStatus"}
-            ],
-            fetchDataURL: viewClassDetailUrl + "/iscList",
-            implicitCriteria: {
-                _constructor: "AdvancedCriteria",
-                operator: "and",
-                criteria: [
-                    {fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
-                    {fieldName: "evaluation", operator: "notNull"},
-                    {fieldName: "tclassStatus", operator: "notEqual", value: "1"}]
-            },
-        });
+    let evalTypeCriteria = [];
+    let evalDateCriteria = [];
+    let departmentCriteria = [];
+
+    var RestDataSource_class_Evaluation = isc.TrDS.create({
+        fields: [
+            {name: "id"},
+            {name: "termId"},
+            {name: "instituteId"},
+            {name: "teacherId"},
+            {name: "tclassStudentsCount"},
+            {name: "tclassCode"},
+            {name: "tclassStartDate"},
+            {name: "tclassEndDate"},
+            {name: "tclassYear"},
+            {name: "courseCode"},
+            {name: "courseCategory"},
+            {name: "courseSubCategory"},
+            {name: "courseTitleFa"},
+            {name: "evaluation"},
+            {name: "tclassDuration"},
+            {name: "tclassOrganizerId"},
+            {name: "tclassStatus"},
+            {name: "tclassEndingStatus"},
+            {name: "tclassPlanner"},
+            {name: "termTitleFa"},
+            {name: "instituteTitleFa"},
+            {name: "classScoringMethod"},
+            {name: "classPreCourseTest"},
+            {name: "courseId"},
+            {name: "teacherEvalStatus"},
+            {name: "trainingEvalStatus"},
+            {name: "tclassSupervisor"},
+            {name: "tclassTeachingType"},
+            {name: "classTeacherOnlineEvalStatus"},
+            {name: "classStudentOnlineEvalStatus"}
+        ],
+        fetchDataURL: viewClassDetailUrl + "/iscList",
+        implicitCriteria: {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [
+                {fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
+                {fieldName: "evaluation", operator: "notNull"},
+                {fieldName: "tclassStatus", operator: "notEqual", value: "1"}]
+        },
+    });
 
     //----------------------------------------- DynamicForms -----------------------------------------------------------
-        var DynamicForm_AlarmSelection = isc.DynamicForm.create({
-            width: "85%",
-            height: "100%",
-            fields: [
-                {
+    var DynamicForm_AlarmSelection = isc.DynamicForm.create({
+        width: "85%",
+        height: "100%",
+        fields: [
+            {
 
                 name: "classAlarmSelect",
                 title: "",
@@ -70,53 +74,58 @@
                 },
                 vertical: false,
                 changed: function (form, item, value) {
-                    if (value == "1") {
-                        let criteria = {
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: "tclassEndDate", operator: "equals", value: todayDate}
-                                // {fieldName:"evaluation", operator:"equals", value: "1"}
-                            ]
-                        };
+                    if (value === "1") {
+                        evalDateCriteria = createCriteria("tclassEndDate", "equals", todayDate);
+                        evalTypeCriteria = createCriteria("evaluation", "equals", "1");
+                        let mainCriteria = createMainCriteria();
+
                         RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
                         ListGrid_class_Evaluation.invalidateCache();
-                        ListGrid_class_Evaluation.fetchData(criteria);
+                        ListGrid_class_Evaluation.fetchData(mainCriteria);
                     }
-                    if (value == "2") {
-                        let criteria = {
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {fieldName: "tclassStartDate", operator: "equals", value: todayDate},
-                                {fieldName: "evaluation", operator: "notEqual", value: "1"}
-                            ]
-                        };
+                    if (value === "2") {
+                        evalDateCriteria = createCriteria("tclassStartDate", "equals", todayDate);
+                        evalTypeCriteria = createCriteria("evaluation", "equals", "2");
+                        let mainCriteria = createMainCriteria();
+                        // let criteria = {
+                        //     _constructor: "AdvancedCriteria",
+                        //     operator: "and",
+                        //     criteria: [
+                        //         {fieldName: "tclassStartDate", operator: "equals", value: todayDate},
+                        //         {fieldName: "evaluation", operator: "notEqual", value: "1"}
+                        //     ]
+                        // };
                         RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
                         ListGrid_class_Evaluation.invalidateCache();
-                        ListGrid_class_Evaluation.fetchData(criteria);
+                        ListGrid_class_Evaluation.fetchData(mainCriteria);
                     }
-                    if (value == "3") {
-                        let criteria = {
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [
-                                {
-                                    fieldName: "behavioralDueDate",
-                                    operator: "equals",
-                                    value: Date.create(today).toUTCString()
-                                },
-                                {fieldName: "evaluation", operator: "equals", value: "3"}
-                            ]
-                        };
+                    if (value === "3") {
+                        evalDateCriteria = createCriteria("behavioralDueDate", "equals", Date.create(today).toUTCString());
+                        evalTypeCriteria = createCriteria("evaluation", "equals", "3");
+                        let mainCriteria = createMainCriteria();
+                        // let criteria = {
+                        //     _constructor: "AdvancedCriteria",
+                        //     operator: "and",
+                        //     criteria: [
+                        //         {
+                        //             fieldName: "behavioralDueDate",
+                        //             operator: "equals",
+                        //             value: Date.create(today).toUTCString()
+                        //         },
+                        //         {fieldName: "evaluation", operator: "equals", value: "3"}
+                        //     ]
+                        // };
                         RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
                         ListGrid_class_Evaluation.invalidateCache();
-                        ListGrid_class_Evaluation.fetchData(criteria);
+                        ListGrid_class_Evaluation.fetchData(mainCriteria);
                     }
-                    if (value == "4") {
+                    if (value === "4") {
+                        evalDateCriteria = [];
+                        evalTypeCriteria = [];
                         RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
+                        let mainCriteria = createMainCriteria();
                         ListGrid_class_Evaluation.invalidateCache();
-                        ListGrid_class_Evaluation.fetchData();
+                        ListGrid_class_Evaluation.fetchData(mainCriteria);
                     }
                 },
             }
@@ -242,58 +251,58 @@
                         setTimeout(() => {
                             $('.comboBoxItemPickerrtl').eq(5).remove();
                             $('.comboBoxItemPickerrtl').eq(4).remove();
-                        },0);
-                        }
-                    },
-                    valueMap: {
-                        // "1": "برنامه ریزی",
-                        "2": "در حال اجرا",
-                        "3": "پایان یافته",
-                        "4": "لغو شده"
+                        }, 0);
                     }
                 },
-                {
-                    name: "tclassEndingStatus",
-                    title: "<spring:message code="ending.class.status"/>",
-                    align: "center",
-                    filterOperator: "iContains",
-                    autoFithWidth: true
-                },
-                {
-                    name: "tclassTeachingType",
-                    title: "روش آموزش",
-                    filterOperator: "equals",
-                    filterEditorProperties:{
-                        pickListProperties: {
-                            showFilterEditor: false,
-                            autoFitWidthApproach: "both"
-                        }
-                    },
-                    valueMap: [
-                        "حضوری",
-                        "غیر حضوری",
-                        "مجازی",
-                        "عملی و کارگاهی",
-                        "آموزش حین کار(OJT)"
-                    ]
-                },
-                {name: "classScoringMethod", hidden: true},
-                {name: "classPreCourseTest", hidden: true},
-                {name: "courseId", hidden: true},
-                {name: "teacherId", hidden: true},
-                {name: "x", hidden: true},
-                {name: "trainingEvalStatus", hidden: true},
-                {name: "tclassSupervisor", hidden: true},
-                {name: "classStudentOnlineEvalStatus", title: "classStudentOnlineEvalStatus", hidden: true},
-                {name: "classTeacherOnlineEvalStatus", title: "classTeacherOnlineEvalStatus", hidden: true},
-            ],
-            selectionUpdated: function () {
-                loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
-                set_Evaluation_Tabset_status();
+                valueMap: {
+                    // "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                    "4": "لغو شده"
+                }
             },
-            createRecordComponent: function (record, colNum) {
-                var fieldName = this.getFieldName(colNum);
-                if (fieldName == "iconField") {
+            {
+                name: "tclassEndingStatus",
+                title: "<spring:message code="ending.class.status"/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFithWidth: true
+            },
+            {
+                name: "tclassTeachingType",
+                title: "روش آموزش",
+                filterOperator: "equals",
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    }
+                },
+                valueMap: [
+                    "حضوری",
+                    "غیر حضوری",
+                    "مجازی",
+                    "عملی و کارگاهی",
+                    "آموزش حین کار(OJT)"
+                ]
+            },
+            {name: "classScoringMethod", hidden: true},
+            {name: "classPreCourseTest", hidden: true},
+            {name: "courseId", hidden: true},
+            {name: "teacherId", hidden: true},
+            {name: "x", hidden: true},
+            {name: "trainingEvalStatus", hidden: true},
+            {name: "tclassSupervisor", hidden: true},
+            {name: "classStudentOnlineEvalStatus", title: "classStudentOnlineEvalStatus", hidden: true},
+            {name: "classTeacherOnlineEvalStatus", title: "classTeacherOnlineEvalStatus", hidden: true},
+        ],
+        selectionUpdated: function () {
+            loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
+            set_Evaluation_Tabset_status();
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName == "iconField") {
 
                 if ((!ListGrid_class_Evaluation.getFieldByName("evaluation").hidden && record.evaluation))
                     return labelList(record.evaluation);
@@ -451,6 +460,24 @@
                                 changed: function (form, item, value) {
                                     load_classList_by_department(value);
                                 },
+                                icons: [
+                                    {
+                                        name: "clear",
+                                        src: "[SKIN]actions/remove.png",
+                                        width: 15,
+                                        height: 15,
+                                        inline: true,
+                                        prompt: "پاک کردن",
+                                        click: function (form, item) {
+                                            item.clearValue();
+                                            item.focusInItem();
+                                            departmentCriteria = [];
+                                            let mainCriteria = createMainCriteria();
+                                            ListGrid_class_Evaluation.invalidateCache();
+                                            ListGrid_class_Evaluation.fetchData(mainCriteria);
+                                        }
+                                    }
+                                ],
                             }]
                     })]
             }),
@@ -466,80 +493,76 @@
 
             Detail_Tab_Evaluation.enable();
 
-                switch (tab.id) {
-                    case "TabPane_Reaction": {
-                        RestDataSource_student_RE.implicitCriteria=null;
-                        RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
-                        ListGrid_student_RE.invalidateCache();
-                        ListGrid_student_RE.fetchData();
-                        DynamicForm_ReturnDate_RE.clearValues();
-                        classRecord_RE = classRecord;
+            switch (tab.id) {
+                case "TabPane_Reaction": {
+                    RestDataSource_student_RE.implicitCriteria = null;
+                    RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                    ListGrid_student_RE.invalidateCache();
+                    ListGrid_student_RE.fetchData();
+                    DynamicForm_ReturnDate_RE.clearValues();
+                    classRecord_RE = classRecord;
 
-                        if (classRecord.trainingEvalStatus === 0 ||
-                                classRecord.trainingEvalStatus === undefined ||
-                                    classRecord.trainingEvalStatus === null) {
-                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
-                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
-                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(true);
-                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(true);
-                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
-                            ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
-                        }
-                        else if(classRecord.trainingEvalStatus === 1){
-                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
-                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                    if (classRecord.trainingEvalStatus === 0 ||
+                        classRecord.trainingEvalStatus === undefined ||
+                        classRecord.trainingEvalStatus === null) {
+                        ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                        ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(true);
+                        // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(true);
+                        ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
+                        ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                    } else if (classRecord.trainingEvalStatus === 1) {
+                        ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                        ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
 
-                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(false);
-                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(false);
-                       }
-                        else{
-                                ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
-                                ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(false);
+                        // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(false);
+                    } else {
+                        ToolStrip_SendForms_RE.getField("sendButtonTraining").hideIcon("ok");
+                        ToolStrip_SendForms_RE.getField("registerButtonTraining").hideIcon("ok");
 
-                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(false);
-                            // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(false);
-                        }
+                        // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceForAll_RE").setDisabled(false);
+                        // ToolStrip_SendForms_RE.getField("ToolStripButton_OnlineFormIssuanceResultForAll_RE").setDisabled(false);
+                    }
 
-                        if (classRecord.classStudentOnlineEvalStatus){
-                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
-                            ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(false);
-                        }else {
-                            ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
-                            ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(true);
-                        }
+                    if (classRecord.classStudentOnlineEvalStatus) {
+                        ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(true);
+                        ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(false);
+                    } else {
+                        ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+                        ToolStripButton_OnlineFormIssuanceResultForAll_RE.setDisabled(true);
+                    }
 
-                        if (classRecord.teacherEvalStatus === 0 ||
-                            classRecord.teacherEvalStatus === undefined ||
-                            classRecord.teacherEvalStatus === null) {
+                    if (classRecord.teacherEvalStatus === 0 ||
+                        classRecord.teacherEvalStatus === undefined ||
+                        classRecord.teacherEvalStatus === null) {
 
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
+                        ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                        ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
+
+                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
+                    } else if (classRecord.teacherEvalStatus === 1) {
+                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                        if (classRecord.classTeacherOnlineEvalStatus) {
                             ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                        } else {
+                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
                             ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
 
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                         }
-                    else if(classRecord.teacherEvalStatus === 1){
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                            if (classRecord.classTeacherOnlineEvalStatus){
-                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
-                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
-                            } else {
-                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
-                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
 
-                            }
-
-                            ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
+                        ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
+                    } else {
+                        ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                        if (classRecord.classTeacherOnlineEvalStatus) {
+                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
+                        } else {
+                            ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                            ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
                         }
-                        else{
-                            ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
-                            if (classRecord.classTeacherOnlineEvalStatus){
-                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
-                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
-                            } else {
-                                ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
-                                ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
-                            }
 
                         ToolStrip_SendForms_RE.getField("registerButtonTeacher").showIcon("ok");
                     }
@@ -662,7 +685,7 @@
                         }
                     ]
                 };
-                
+
                 if (ListGrid_class_Evaluation.implicitCriteria) {
                     let termCriteria = ListGrid_class_Evaluation.implicitCriteria.criteria.filter(c => c.fieldName
                         != "tclassPlanner");
@@ -671,13 +694,33 @@
                     }
                 }
                 RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
-                ListGrid_class_Evaluation.implicitCriteria = criteria;
+                departmentCriteria = criteria;
+                let mainCriteria = createMainCriteria();
                 ListGrid_class_Evaluation.invalidateCache();
-                ListGrid_class_Evaluation.fetchData();
+                ListGrid_class_Evaluation.fetchData(mainCriteria);
             } else {
                 createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
             }
         }));
+    }
+    //creating criteria in detail
+    function createCriteria(fieldName, operator, value) {
+        let criteriaObject = {};
+        criteriaObject.fieldName = fieldName;
+        criteriaObject.operator = operator;
+        criteriaObject.value = value;
+        return criteriaObject;
+    }
+   //for creating the main criteria to load the evalutions grid
+    function createMainCriteria(){
+        let mainCriteria = {};
+        mainCriteria._constructor = "AdvancedCriteria";
+        mainCriteria.operator = "and";
+        mainCriteria.criteria = [];
+        mainCriteria.criteria.add(evalDateCriteria);
+        mainCriteria.criteria.add(evalTypeCriteria);
+        mainCriteria.criteria.add(departmentCriteria);
+        return mainCriteria;
     }
 
 //</script>
