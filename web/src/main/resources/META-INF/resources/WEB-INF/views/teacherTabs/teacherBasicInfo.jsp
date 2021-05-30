@@ -105,7 +105,7 @@
                 name: "personnelStatus",
                 title: "<spring:message code='teacher.type'/>",
                 type: "radioGroup",
-                textMatchStyle:"exact",
+                textMatchStyle: "exact",
                 width: "*",
                 valueMap: {
                     "true": "<spring:message code='company.staff'/>",
@@ -116,15 +116,14 @@
                 changed: function () {
                     DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
-                    if(personnelStatusTemp == "true"){
+                    if (personnelStatusTemp == "true") {
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
                         vm.clearValues();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
                         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
-                    }
-                    else if(personnelStatusTemp == "false"){
+                    } else if (personnelStatusTemp == "false") {
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
                         DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
@@ -174,7 +173,7 @@
                 displayField: "personnelNo",
                 valueField: "personnelNo",
                 optionDataSource: RestDataSource_PersonnelDS_JspTeacher,
-                filterFields: ["firstName","lastName", "nationalCode","personnelNo2","personnelNo"],
+                filterFields: ["firstName", "lastName", "nationalCode", "personnelNo2", "personnelNo"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 pickListWidth: 550,
@@ -185,31 +184,34 @@
                 pickListFields: [
                     {name: "firstName"},
                     {name: "lastName"},
-                    {name: "nationalCode",
+                    {
+                        name: "nationalCode",
                         filterEditorProperties: {
                             keyPressFilter: "[0-9]"
                         }
                     },
-                    {name: "personnelNo",
+                    {
+                        name: "personnelNo",
                         filterEditorProperties: {
                             keyPressFilter: "[0-9]"
                         }
                     },
-                    {name: "personnelNo2",
+                    {
+                        name: "personnelNo2",
                         filterEditorProperties: {
                             keyPressFilter: "[0-9]"
                         }
                     }
                 ],
                 changed: function () {
-                            if(DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != null &&
-                                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != undefined &&
-                                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode != undefined){
-                                    let nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
-                                    fillPersonalInfoFields(nationalCodeTemp,true,DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
-                            }
-                        },
-                validators : [{
+                    if (DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != null &&
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != undefined &&
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode != undefined) {
+                        let nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
+                        fillPersonalInfoFields(nationalCodeTemp, true, DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
+                    }
+                },
+                validators: [{
                     type: "requiredIf",
                     expression: "DynamicForm_BasicInfo_JspTeacher.getValue('personnelStatus') == 'true'",
                     errorMessage: "فیلد اجباری است"
@@ -303,12 +305,12 @@
                         displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
                     }
                 }],
-                editorExit:function(){
-                    let result=reformat(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
-                    if (result){
+                editorExit: function () {
+                    let result = reformat(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
+                    if (result) {
                         DynamicForm_BasicInfo_JspTeacher.getItem("personality.birthDate").setValue(result);
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.birthDate", true);
-                        persianDateCheck=true;
+                        persianDateCheck = true;
                     }
                 },
                 changed: function () {
@@ -446,7 +448,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Education_Major_ByID_JspTeacher,
-                filterFields: ["titleFa","titleFa"],
+                filterFields: ["titleFa", "titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 pickListProperties: {
@@ -614,7 +616,7 @@
                     showFilterEditor: false,
                     autoFitWidthApproach: "both"
                 },
-                filterFields: ["titleFa","titleFa"],
+                filterFields: ["titleFa", "titleFa"],
                 generateExactMatchCriteria: true,
                 pickListFields: [
                     {
@@ -623,12 +625,12 @@
                         filterOperator: "iContains"
                     }
                 ],
-                changed: function (form,item,value) {
+                changed: function (form, item, value) {
                     hasTeacherMajorCategoryChanged = true;
                     DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").clearValue();
                     if (value == null || value == undefined) {
                         DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").disable();
-                    } else{
+                    } else {
                         DynamicForm_BasicInfo_JspTeacher.getField("majorSubCategoryId").enable();
                     }
                 }
@@ -653,7 +655,7 @@
                     showFilterEditor: false,
                     autoFitWidthApproach: "both"
                 },
-                filterFields: ["titleFa","titleFa"],
+                filterFields: ["titleFa", "titleFa"],
                 sortField: ["id"],
                 generateExactMatchCriteria: true,
                 pickListFields: [

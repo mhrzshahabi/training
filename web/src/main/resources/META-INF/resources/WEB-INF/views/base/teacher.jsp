@@ -1275,10 +1275,16 @@
     }
 
     function fillPersonalInfoFields(nationalCode,internalTeacher,personnelCode) {
+        DynamicForm_BasicInfo_JspTeacher.clearValues();
+        DynamicForm_BasicInfo_JspTeacher.invalidateCache();
+        selectedRecordPersonalID = null;
+        var personality = "";
         isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + nationalCode, "GET", null,(resp) => {
                 if (resp !== null && resp !== undefined && resp.data !== "") {
                     vm.clearValues();
-                    var personality = JSON.parse(resp.data);
+                    DynamicForm_BasicInfo_JspTeacher.clearValues();
+                    DynamicForm_BasicInfo_JspTeacher.invalidateCache();
+                    personality = JSON.parse(resp.data);
                     showAttach(personality.id);
                     DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personality.nationalCode);
                     DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personality.nationalCode);
