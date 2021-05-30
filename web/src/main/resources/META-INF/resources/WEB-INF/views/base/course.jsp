@@ -1483,7 +1483,7 @@
                 colSpan: 1,
                 title: "<spring:message code="course_category"/>",
                 textAlign: "center",
-                autoFetchData: true,
+                autoFetchData: false,
                 required: true,
                 width: "*",
                 displayField: "titleFa",
@@ -2600,7 +2600,6 @@
             courseAllGrid.invalidateCache();
             courseRecord = {};
 
-            disabledTabs();
             mainObjectiveGrid_Refresh(1);
 
 
@@ -2627,13 +2626,14 @@
                 DynamicForm_course_GroupTab.getItem("runType.id").changed(DynamicForm_course_GroupTab, DynamicForm_course_GroupTab.getItem("runType.id"), record.runType.id);
                 DynamicForm_course_GroupTab.getItem("theoType.id").changed(DynamicForm_course_GroupTab, DynamicForm_course_GroupTab.getItem("theoType.id"), record.theoType.id);
                 DynamicForm_course_GroupTab.getItem("technicalType.id").changed(DynamicForm_course_GroupTab, DynamicForm_course_GroupTab.getItem("technicalType.id"), record.technicalType.id);
-            }, 1000);
+            }, 2000);
 
 
             VLayout_Tab_JspCourse.getMember("teacherForm").setValue("minTeacherDegree", record.minTeacherDegree);
             VLayout_Tab_JspCourse.getMember("teacherForm").setValue("minTeacherExpYears", record.minTeacherExpYears);
             VLayout_Tab_JspCourse.getMember("teacherForm").setValue("minTeacherEvalScore", record.minTeacherEvalScore);
             Window_course.show();
+            disabledTabs();
         }
     }
 
