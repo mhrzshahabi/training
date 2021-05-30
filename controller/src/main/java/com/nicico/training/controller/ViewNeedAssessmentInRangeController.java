@@ -19,9 +19,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,6 +34,17 @@ public class ViewNeedAssessmentInRangeController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewNeedAssessmentInRangeDTO.TrainingNeedAssessmentDTOSpecRs>> iscListReport(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+
+        Long endDateValue = (Long) searchRq.getCriteria().getCriteria().stream().filter(a -> a.getOperator().equals(EOperator.lessOrEqual)).collect(Collectors.toList()).get(0).getValue().get(0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(endDateValue);
+        calendar.set(Calendar.HOUR, 11);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 59);
+        calendar.set(Calendar.AM_PM, Calendar.PM);
+        searchRq.getCriteria().getCriteria().stream().filter(a -> a.getOperator().equals(EOperator.lessOrEqual)).collect(Collectors.toList()).get(0).setValue(calendar.getTimeInMillis());
+
         SearchDTO.SearchRs result = iViewNeedAssessmentInRangeTimeService.search(searchRq, o -> modelMapper.map(o, ViewNeedAssessmentInRangeDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(result, searchRq.getStartIndex()), HttpStatus.OK);
     }

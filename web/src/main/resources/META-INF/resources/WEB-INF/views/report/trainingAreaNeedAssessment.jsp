@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
     var complex = [];
     var assistance = [];
@@ -10,28 +10,35 @@
     var section = [];
     var unit = [];
 
-    let reportCriteria_AreaNeedAsssesment;
+    let reportCriteria_AreaNeedAssessment;
 
     //--------------------------------------------------------REST DataSources-----------------------------------------------------//
 
     var RestDataSource_view_training_Post = isc.TrDS.create({
         fields: [
             { name: "id", title: "id", primaryKey: true, hidden: true },
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "mojtameTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", valueMap:peopleTypeMap, filterOnKeypress: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains"},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
+            {name: "mojtameTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains"},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains"},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains"},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains"},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains"},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains"},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidthApproach: "both"},
         ],
-        fetchDataURL: viewTrainingPostUrl + "/iscListReport?_endRow=10000"
+        fetchDataURL: viewTrainingPostUrl + "/iscListReport?_endRow=10000",
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"and",
+            criteria:[
+                { fieldName: "competenceCount", operator: "equals", value: 0}
+            ]
+        }
     });
 
     //------------------------------------------------------Main Window--------------------------------------------------------------//
@@ -51,7 +58,7 @@
         }
     });
 
-    IButton_JspTrainingAreaNeedAsssesment = isc.IButtonSave.create({
+    IButton_JspTrainingAreaNeedAssessment = isc.IButtonSave.create({
         top: 260,
         title: "چاپ گزارش",
         width: 300,
@@ -60,57 +67,67 @@
             if (organSegmentFilter.hasErrors())
                 return;
 
-            reportCriteria_AreaNeedAsssesment = organSegmentFilter.getCriteria();
+            reportCriteria_AreaNeedAssessment = organSegmentFilter.getCriteria();
             complex = [];
             assistance = [];
             affairs = [];
             section = [];
             unit = [];
 
-            if (reportCriteria_AreaNeedAsssesment !== undefined) {
+            if (reportCriteria_AreaNeedAssessment !== undefined) {
 
-                for (let i = 0; i < reportCriteria_AreaNeedAsssesment.criteria.size(); i++) {
+                for (let i = 0; i < reportCriteria_AreaNeedAssessment.criteria.size(); i++) {
 
-                    if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "complexTitle") {
-                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "mojtameTitle";
-                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
-                        complex.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
-                    } else if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "assistant") {
-                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "assistance";
-                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
-                        assistance.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
-                    } else if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "affairs") {
-                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "affairs";
-                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
-                        affairs.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
-                    } else if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "section") {
-                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "section";
-                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
-                        section.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
-                    } else if (reportCriteria_AreaNeedAsssesment.criteria[i].fieldName === "unit") {
-                        reportCriteria_AreaNeedAsssesment.criteria[i].fieldName = "unit";
-                        reportCriteria_AreaNeedAsssesment.criteria[i].operator = "inSet";
-                        unit.add(reportCriteria_AreaNeedAsssesment.criteria[i].value);
+                    if (reportCriteria_AreaNeedAssessment.criteria[i].fieldName === "complexTitle") {
+                        reportCriteria_AreaNeedAssessment.criteria[i].fieldName = "mojtameTitle";
+                        reportCriteria_AreaNeedAssessment.criteria[i].operator = "inSet";
+                        complex.add(reportCriteria_AreaNeedAssessment.criteria[i].value);
+                    } else if (reportCriteria_AreaNeedAssessment.criteria[i].fieldName === "assistant") {
+                        reportCriteria_AreaNeedAssessment.criteria[i].fieldName = "assistance";
+                        reportCriteria_AreaNeedAssessment.criteria[i].operator = "inSet";
+                        assistance.add(reportCriteria_AreaNeedAssessment.criteria[i].value);
+                    } else if (reportCriteria_AreaNeedAssessment.criteria[i].fieldName === "affairs") {
+                        reportCriteria_AreaNeedAssessment.criteria[i].fieldName = "affairs";
+                        reportCriteria_AreaNeedAssessment.criteria[i].operator = "inSet";
+                        affairs.add(reportCriteria_AreaNeedAssessment.criteria[i].value);
+                    } else if (reportCriteria_AreaNeedAssessment.criteria[i].fieldName === "section") {
+                        reportCriteria_AreaNeedAssessment.criteria[i].fieldName = "section";
+                        reportCriteria_AreaNeedAssessment.criteria[i].operator = "inSet";
+                        section.add(reportCriteria_AreaNeedAssessment.criteria[i].value);
+                    } else if (reportCriteria_AreaNeedAssessment.criteria[i].fieldName === "unit") {
+                        reportCriteria_AreaNeedAssessment.criteria[i].fieldName = "unit";
+                        reportCriteria_AreaNeedAssessment.criteria[i].operator = "inSet";
+                        unit.add(reportCriteria_AreaNeedAssessment.criteria[i].value);
                     }
                 }
 
-                reportCriteria_AreaNeedAsssesment.criteria.add({
-                    fieldName: "competenceCount",
-                    operator: "equals",
-                    value: 0
-                });
-
-                ListGrid_Training_Post.implicitCriteria = reportCriteria_AreaNeedAsssesment;
+                reportCriteria_AreaNeedAssessment.criteria.add(RestDataSource_view_training_Post.implicitCriteria.criteria.get(0));
+                ListGrid_Training_Post.implicitCriteria = reportCriteria_AreaNeedAssessment;
                 ListGrid_Training_Post.invalidateCache();
                 ListGrid_Training_Post.fetchData();
 
             } else {
-                createDialog("info", "فیلتری انتخاب نشده است");
+
+                reportCriteria_AreaNeedAssessment = RestDataSource_view_training_Post.implicitCriteria;
+                ListGrid_Training_Post.implicitCriteria = reportCriteria_AreaNeedAssessment;
+                ListGrid_Training_Post.invalidateCache();
+                ListGrid_Training_Post.fetchData();
             }
         }
     });
 
-    var HLayOut_Confirm_JspTrainingAreaNeedAsssesment = isc.TrHLayoutButtons.create({
+    IButton_Clear_JspTrainingAreaNeedAssessment = isc.IButtonSave.create({
+        top: 260,
+        title: "پاک کردن",
+        width: 300,
+        click: function () {
+
+            organSegmentFilter.clearValues();
+            ListGrid_Training_Post.setData([]);
+        }
+    });
+
+    var HLayOut_Confirm_JspTrainingAreaNeedAssessment = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -119,7 +136,8 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_JspTrainingAreaNeedAsssesment
+            IButton_JspTrainingAreaNeedAssessment,
+            IButton_Clear_JspTrainingAreaNeedAssessment
         ]
     });
 
@@ -186,7 +204,7 @@
     VLayout_Body_Training_Area = isc.TrVLayout.create({
         members: [
             organSegmentFilter,
-            HLayOut_Confirm_JspTrainingAreaNeedAsssesment,
+            HLayOut_Confirm_JspTrainingAreaNeedAssessment,
             ListGrid_Training_Post
         ]
     });
@@ -207,7 +225,7 @@
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else
             ExportToFile.downloadExcelRestUrl(null, ListGrid_Training_Post, viewTrainingPostUrl + "/iscListReport?_endRow=10000", 0, null, '',"گزارش پست های نیازسنجی نشده"  ,
-                reportCriteria_AreaNeedAsssesment, null);
+                reportCriteria_AreaNeedAssessment, null);
     }
 
 //</script>

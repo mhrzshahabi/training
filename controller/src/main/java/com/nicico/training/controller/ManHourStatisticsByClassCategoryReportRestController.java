@@ -46,5 +46,27 @@ public class ManHourStatisticsByClassCategoryReportRestController {
         return new ResponseEntity<>(new ReportResponse().setResponse(specRs), HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/summeryGroupByCategory")
+    public ResponseEntity<ReportResponse> getSummeryGroupByCategory(@RequestParam String fromDate,
+                                               @RequestParam String toDate,
+                                               @RequestParam List<String> omorCodes,
+                                               @RequestParam List<String> moavenatCodes,
+                                               @RequestParam List<String> mojtameCodes) {
+        omorCodes = omorCodes.isEmpty() ? null : omorCodes;
+        moavenatCodes = moavenatCodes.isEmpty() ? null : moavenatCodes;
+        mojtameCodes = mojtameCodes.isEmpty() ? null : mojtameCodes;
+
+        List<ClassSumByStatus> list = service.getSummeryGroupByCategory(fromDate, toDate, mojtameCodes, moavenatCodes, omorCodes);
+
+        SpecRs specRs = new SpecRs()
+                .setDataSumByStatus(list)
+                .setStartRow(0)
+                .setTotalRows(list.size())
+                .setEndRow(list.size());
+
+        return new ResponseEntity<>(new ReportResponse().setResponse(specRs), HttpStatus.OK);
+    }
+
 
 }

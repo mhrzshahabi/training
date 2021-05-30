@@ -409,7 +409,12 @@
                 icons: [{
                     src: "[SKIN]/pickers/search_picker.png",
                     click: function () {
-                       // DynamicForm_SelectCourses_JspTClassReport.clearValues();
+
+                        let courseCodes = DynamicForm_CriteriaForm_JspTClassReport.getItem("courseCode").getValue();
+                        if (courseCodes !== undefined) {
+                            DynamicForm_SelectCourses_JspTClassReport.getItem("courseCode").setValue([]);
+                            DynamicForm_SelectCourses_JspTClassReport.getItem("courseCode").setValue(courseCodes);
+                        }
                         Window_SelectCourses_JspTClassReport.show();
                     }
                 }],
@@ -1196,77 +1201,71 @@
         ]
     });
 
-    var initialLayoutStyle = "vertical";
     var DynamicForm_SelectCourses_JspTClassReport = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
         titleAlign: "center",
         width: 500,
-        height: 300,
+        height: 120,
         fields: [
             {
                 name: "courseCode",
                 align: "center",
                 title: "",
-                editorType: "MultiComboBoxItem",
+                editorType: "SelectItem",
                 multiple: true,
                 defaultValue: null,
-                changeOnKeypress: true,
                 showHintInField: true,
                 displayField: "code",
-                comboBoxWidth: 500,
                 valueField: "code",
-                layoutStyle: initialLayoutStyle,
-                optionDataSource: RestDataSource_Course_JspTClassReport
+                optionDataSource: RestDataSource_Course_JspTClassReport,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
+                    {name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"}
+                ],
+                icons: [{
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "پاک کردن",
+                    click: function (form) {
+                        form.getField("courseCode").setValue([]);
+                    }
+                }]
             }
         ]
     });
-    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.setHint("دوره های مورد نظر را انتخاب کنید");
-    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.pickListFields = [
-        {name: "titleFa", title: "نام دوره", width: "30%", filterOperator: "iContains"},
-        {name: "code", title: "کد دوره", width: "30%", filterOperator: "iContains"}
-    ];
-    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").comboBox.filterFields = ["titleFa", "code"];
+    DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").setHint("دوره های مورد نظر را انتخاب کنید");
 
     IButton_ConfirmCourseSelections_JspTClassReport = isc.IButtonSave.create({
         top: 260,
         title: "تائید",
-        width: 300,
+        width: 150,
         click: function () {
-            var criteriaDisplayValues = "";
+
             var selectorDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getItem("courseCode").getValue();
-            if (DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_SelectCourses_JspTClassReport.getField("courseCode").getValue().join(",");
-                var ALength = criteriaDisplayValues.length;
-                var lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ",")
-                    criteriaDisplayValues += ",";
-            }
-            if (selectorDisplayValues != undefined) {
-                for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
-                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
-                }
-                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+
+            if (selectorDisplayValues != null) {
+                DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").setValue(selectorDisplayValues);
+            } else {
+                DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").setValue([]);
             }
 
-            if (typeof criteriaDisplayValues != "undefined") {
-                let uniqueNames = [];
-
-                $.each(criteriaDisplayValues.split(","), function (i, el) {
-                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
-                });
-                criteriaDisplayValues = uniqueNames.join(",");
-            }
-
-            criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
-
-            DynamicForm_CriteriaForm_JspTClassReport.getField("courseCode").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspTClassReport.close();
         }
     });
 
-    var Window_SelectCourses_JspTClassReport = isc.Window.create({
+    IButton_CancelCourseSelections_JspTClassReport = isc.IButtonCancel.create({
+        top: 260,
+        title: "انصراف",
+        width: 150,
+        click: function () {
+            Window_SelectCourses_JspTClassReport.close();
+        }
+    });
+
+    Window_SelectCourses_JspTClassReport = isc.Window.create({
         placement: "center",
         title: "انتخاب دوره ها",
         canDragReposition: true,
@@ -1274,12 +1273,22 @@
         autoDraw: false,
         border: "2px solid gray",
         width: 500,
-        height: 300,
+        height: 150,
+        closeClick: function () {
+            return this.Super("closeClick", arguments);
+        },
         items: [
             isc.TrVLayout.create({
                 members: [
                     DynamicForm_SelectCourses_JspTClassReport,
-                    IButton_ConfirmCourseSelections_JspTClassReport
+                    isc.HLayout.create({
+                        align: "center",
+                        membersMargin: 10,
+                        members: [
+                            IButton_ConfirmCourseSelections_JspTClassReport,
+                            IButton_CancelCourseSelections_JspTClassReport
+                      ]
+                    })
                 ]
             })
         ]
@@ -1366,19 +1375,7 @@
         var removedObjects = [];
         for (var i = 0; i < data_values.criteria.size(); i++) {
 
-            if (data_values.criteria[i].fieldName == "courseCode") {
-                var codesString = data_values.criteria[i].value;
-                var codesArray;
-                codesArray = codesString.split(";");
-                for (var j = 0; j < codesArray.length; j++) {
-                    if (codesArray[j] == "" || codesArray[j] == " ") {
-                        codesArray.remove(codesArray[j]);
-                    }
-                }
-                data_values.criteria[i].operator = "equals";
-                data_values.criteria[i].value = codesArray;
-            }
-            else if (data_values.criteria[i].fieldName == "courseTitleFa") {
+            if (data_values.criteria[i].fieldName == "courseTitleFa") {
                 data_values.criteria[i].operator = DynamicForm_CriteriaForm_JspTClassReport.getField("courseFilterOperator").getValue();
             }
             else if (data_values.criteria[i].fieldName == "hDurationStart") {

@@ -9054,4 +9054,74 @@ GROUP BY
         </createView>
     </changeSet>
 
+
+    <changeSet author="zare" id="abiz-2278">
+        <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
+            <![CDATA[
+                   SELECT TR_POST.ID,
+       TR_POST.C_CREATED_BY,
+       TR_POST.D_CREATED_DATE,
+       TR_POST.E_DELETED,
+       TR_POST.E_ENABLED,
+       TR_POST.C_LAST_MODIFIED_BY,
+       TR_POST.D_LAST_MODIFIED_DATE,
+       TR_POST.N_VERSION,
+       TR_POST.C_CODE,
+       TR_POST.C_TITLE_FA,
+       TR_POST.C_AFFAIRS,
+       TR_POST.C_AREA,
+       TR_POST.C_MOJTAME_TITLE,
+       TR_POST.C_ASSISTANCE,
+       TR_POST.C_COST_CENTER_TITLE_FA,
+       TR_POST.C_COST_CENTER_CODE,
+       TR_POST.C_SECTION,
+       TR_POST.C_UNIT,
+       TR_POST.F_DEPARTMENT_ID,
+       TR_POST.F_POST_GRADE_ID,
+       TR_POST.F_JOB_ID,
+       TR_POST.D_LAST_MODIFIED_DATE_NA,
+       TR_POST.C_MODIFIED_BY_NA,
+       TR_POST.C_PEOPLE_TYPE,
+       J.C_TITLE_FA    AS JOB_C_TITLE_FA,
+       J.C_CODE        AS JOB_C_CODE,
+       PG.C_TITLE_FA   AS POST_GRADE_C_TITLE_FA,
+       PG.C_CODE       AS POST_GRADE_C_CODE,
+       NVL(NA.N_COMPETENCE_COUNT, 0) AS N_COMPETENCE_COUNT,
+       NVL(PRS_COUNT.N_PERSONNEL_COUNT, 0) AS N_PERSONNEL_COUNT
+FROM TBL_TRAINING_POST   TR_POST
+LEFT JOIN TBL_JOB             J ON J.ID = TR_POST.F_JOB_ID
+LEFT JOIN TBL_POST_GRADE      PG ON PG.ID = TR_POST.F_POST_GRADE_ID
+LEFT JOIN (
+    SELECT F_TRAINING_POST_ID,
+           COUNT(*) AS N_PERSONNEL_COUNT
+    FROM (
+        SELECT POST.ID                  AS POST_ID,
+               PRS.ID                   AS PRS_ID,
+               PTP.F_TRAINING_POST_ID   AS F_TRAINING_POST_ID
+        FROM TBL_POST_TRAINING_POST   PTP
+        INNER JOIN TBL_POST                 POST ON POST.ID = PTP.F_POST_ID
+        INNER JOIN TBL_PERSONNEL            PRS ON ( POST.ID = PRS.F_POST_ID AND
+                                          PRS.DELETED = 0 )
+    )
+    GROUP BY F_TRAINING_POST_ID
+) PRS_COUNT ON PRS_COUNT.F_TRAINING_POST_ID = TR_POST.ID
+LEFT JOIN (
+    SELECT F_OBJECT AS TR_POST_ID,
+           COUNT(DISTINCT F_COMPETENCE) AS N_COMPETENCE_COUNT
+    FROM (
+        SELECT C_OBJECT_TYPE,
+               F_OBJECT,
+               F_COMPETENCE
+        FROM TBL_NEEDS_ASSESSMENT
+        WHERE C_OBJECT_TYPE = 'TrainingPost' AND
+              E_ENABLED IS NULL AND
+              E_DELETED IS NULL
+    )
+    GROUP BY F_OBJECT
+) NA ON NA.TR_POST_ID = TR_POST.ID
+             ]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>
