@@ -437,13 +437,13 @@ public class ClassSessionService implements IClassSession {
             idx++;
 
             for (ClassSession session : sessions) {
+
                 if (!outerCheck) {
                     break;
                 }
 
-                List<Attendance> attendanceList = attendanceDAO.findBySessionId(session.getId());
-
-                if (numStudents == 0 || attendanceList.size() == 0 || attendanceList.size() != numStudents) {
+                List<Attendance> attendanceList = attendanceDAO.findPresenceAttendance(session.getId());
+                if (attendanceList.size() == 0) {
                     exitList.get(idx - 1).setHasWarning("alarm");
                     break;
                 }
@@ -453,8 +453,8 @@ public class ClassSessionService implements IClassSession {
                         exitList.get(idx - 1).setHasWarning("alarm");
                         outerCheck = false;
                         break;
-                    }//end if
-                }//end for
+                    }
+                }
             }
         }
 

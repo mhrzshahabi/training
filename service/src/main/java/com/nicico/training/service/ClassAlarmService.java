@@ -1872,21 +1872,6 @@ public class ClassAlarmService implements IClassAlarm {
 
             List<String> alarmScripts = new ArrayList<>();
 
-            //*****attendance*****
-            alarmScripts.add(" SELECT " +
-                    "    'حضور و غیاب' AS hasalarm " +
-                    " FROM " +
-                    "    tbl_class_student " +
-                    "    INNER JOIN tbl_session ON tbl_class_student.class_id = tbl_session.f_class_id " +
-                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
-                    " WHERE " +
-                    "    tbl_session.f_class_id =:class_id " +
-                    "    AND   tbl_session.c_session_date <:todaydat " +
-                    "    AND   ( " +
-                    "        tbl_attendance.c_state IS NULL " +
-                    "        OR    tbl_attendance.c_state = 0 " +
-                    "    ) AND rownum = 1 ");
-
             //*****check list not verify*****
             alarmScripts.add(" SELECT  " +
                     "    'چک لیست ها' AS hasalarm  " +

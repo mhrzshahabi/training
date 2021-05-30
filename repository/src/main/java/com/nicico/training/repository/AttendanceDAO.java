@@ -74,4 +74,13 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
 
     @Query(value = "select c_state FROM TBL_ATTENDANCE where f_student=:studentId and f_session in (select id from tbl_session where f_class_id=:classId)",nativeQuery = true)
     List<Long> getAttendanceByClassIdAndStudentId(Long classId,Long studentId);
+
+    @Query(value = "SELECT * FROM " +
+            "tbl_attendance " +
+            "INNER JOIN tbl_student ON tbl_student.id = tbl_attendance.f_student " +
+            "INNER JOIN tbl_class_student ON tbl_student.id = tbl_class_student.student_id " +
+            "INNER JOIN tbl_session ON tbl_session.id = tbl_attendance.f_session AND tbl_session.f_class_id = tbl_class_student.class_id " +
+            "WHERE tbl_attendance.f_session =:sessionId And tbl_class_student.PRESENCE_TYPE_ID = 103", nativeQuery = true)
+    List<Attendance> findPresenceAttendance(Long sessionId);
+
 }
