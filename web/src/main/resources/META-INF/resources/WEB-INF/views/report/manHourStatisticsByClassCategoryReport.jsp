@@ -384,6 +384,14 @@
                     form.clearValues();
                     form.clearErrors();
                     ListGrid_ManHourByCatReportJSP.setData([]);
+                    ListGrid_ByCatReportTwoJSP.setData([]);
+                    form.setValue("dateType", 1);
+                    form.getItem("year").hide();
+                    form.getItem("termId").hide();
+                    form.setValue("year", null);
+                    form.setValue("termId", null);
+                    form.getItem("fromDate").show();
+                    form.getItem("toDate").show();
                 }
             },
         ],
