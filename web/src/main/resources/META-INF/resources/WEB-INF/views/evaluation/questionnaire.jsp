@@ -440,9 +440,10 @@
                         createDialog("info", "پرسشنامه مورد نظر در ارزیابی استفاده شده است. بنابراین قابل تغییر نیست.");
                         return ;
                     }
-
-                    questionnaireQuestionMethod_questionnaire = "POST";
                     QuestionnaireQuestionDF_questionnaire.clearValues();
+                    if(QuestionnaireQuestionDF_questionnaire.getItem('evaluationQuestionId').pickList)
+                        QuestionnaireQuestionDF_questionnaire.getItem('evaluationQuestionId').pickList.setData([]);
+                    questionnaireQuestionMethod_questionnaire = "POST";
                     QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.id").setValue(record.id);
                     QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.title").setValue(record.title);
                     QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="add"/>&nbsp;" + "<spring:message code="question"/>");
