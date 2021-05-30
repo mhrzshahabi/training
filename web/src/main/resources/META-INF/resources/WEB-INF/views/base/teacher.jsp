@@ -21,6 +21,7 @@
     var tab_selected = null;
     var selectedRecordID = null;
     var isFileAttached = false;
+    var editTeacherMode = false;
     let oLoadAttachments_Teacher = null;
     var vm = isc.ValuesManager.create({});
 
@@ -434,7 +435,8 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
-        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide();ListGrid_Teacher_JspTeacher.invalidateCache(); selected_teacher = null;},
+        close : function(){closeCalendarWindow(); Window_Teacher_JspTeacher.hide();ListGrid_Teacher_JspTeacher.invalidateCache(); selected_teacher = null;
+            editTeacherMode = false;},
         items: [isc.TrVLayout.create({
             members: [
                 TabSet_BasicInfo_JspTeacher,
@@ -760,6 +762,7 @@
     function ListGrid_teacher_refresh() {
         ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspTeacher.filterByEditor();
+        editTeacherMode = false;
     }
 
     function Teacher_Save_Button_Click_JspTeacher() {
@@ -848,6 +851,7 @@
             DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
     }
     function ListGrid_teacher_edit(teacherRecordId = null,tab) {
+        editTeacherMode = true;
         tab_selected=tab
         // console.log(teacherRecordId)
         selected_teacher = teacherRecordId;
@@ -1036,6 +1040,7 @@
     function ListGrid_teacher_add() {
         ListGrid_Teacher_JspTeacher.invalidateCache();
         vm.clearValues();
+        DynamicForm_BasicInfo_JspTeacher.clearValues();
         vm.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();

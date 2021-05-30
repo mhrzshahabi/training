@@ -153,7 +153,9 @@
                     if (codeCheck === true) {
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                         var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
-                        fillPersonalInfoFields(nationalCodeTemp);
+                        if (!editTeacherMode) {
+                            fillPersonalInfoFields(nationalCodeTemp);
+                        }
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").setValue(nationalCodeTemp);
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
                         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
@@ -246,7 +248,7 @@
                 click: function () {
                     DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getValue();
-                    if (personnelCodeTemp != undefined && personnelCodeTemp != null) {
+                    if (personnelCodeTemp != undefined && personnelCodeTemp != null && !editTeacherMode) {
                         fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
                     } else {
                         createDialog("info", "ابتدا شماره پرسنلی را انتخاب کنید.")
