@@ -7,7 +7,7 @@
 %>
 
 //<script>
-    var listData;
+    var listData, listDataTwo;
 
     RestDataSource_ClassCategory_JspManHourReport = isc.TrDS.create({
         fields: [
@@ -56,6 +56,24 @@
             if (data && data.response) {
                 listData = data.response.dataSumByStatus;
                 dsResponse.data = listData;
+            }
+            return this.Super("transformResponse", arguments);
+        }
+    });
+
+    RestDataSource_ClassCategoryTwo_JspManHourReport = isc.TrDS.create({
+        fields: [
+            {name: "planningCount"},
+            {name: "inProgressCount"},
+            {name: "finishedCount"},
+            {name: "canceledCount"},
+            {name: "lockedCount"},
+            {name: "category"}
+        ],
+        transformResponse: function (dsResponse, dsRequest, data) {
+            if (data && data.response) {
+                listDataTwo = data.response.dataSumByStatus;
+                dsResponse.data = listDataTwo;
             }
             return this.Super("transformResponse", arguments);
         }
@@ -343,9 +361,12 @@
                         if (form.getValue("mojtameCode")) url = url.concat(form.getValue("mojtameCode"));
 
                         RestDataSource_ClassCategory_JspManHourReport.fetchDataURL = url;
+                        RestDataSource_ClassCategoryTwo_JspManHourReport.fetchDataURL = url.replace('/list?', '/summeryGroupByCategory?');
 
                         ListGrid_ManHourByCatReportJSP.invalidateCache();
                         ListGrid_ManHourByCatReportJSP.fetchData();
+                        ListGrid_ByCatReportTwoJSP.invalidateCache();
+                        ListGrid_ByCatReportTwoJSP.fetchData();
                         ManHour_Report_wait.close();
                         wait.show();
                     }, 100);
@@ -382,20 +403,22 @@
     });
     var ListGrid_ManHourByCatReportJSP = isc.TrLG.create({
         ID: "ManHourByCatReportGrid",
-//dynamicTitle: true,
+        height: 500,
+        overflow: "auto",
         filterOnKeypress: false,
         showFilterEditor: true,
-        gridComponents: [DynamicForm_ManHourByCatReport,
+        gridComponents: [
             isc.HLayout.create({
-                alignment: 'center',
-                align: "center",
-                vAlign: "center",
+                alignment: 'right',
+                align: "right",
                 members: [
                     isc.ToolStripButtonExcel.create({
-                        margin: 5,
                         click: function () {
                             exportExcelByCat();
                         }
+                    }),
+                    isc.Label.create({
+                        contents: "<span style='color: red; font-weight: bold; font-size: smaller;margin-top:5;margin-right:10'><spring:message code="report.statistics.by.class.category.warning.header.one"/></span>"
                     })
                 ]
             })
@@ -424,7 +447,7 @@
             },
             {
                 name: "unknownManHour",
-                title: "<spring:message code='report.unknown.man.hour'/>",hidden: true
+                title: "<spring:message code='report.unknown.man.hour'/>", hidden: true
             },
             {
                 name: "studentCount",
@@ -442,11 +465,54 @@
             },
         ]
     });
+
+    var ListGrid_ByCatReportTwoJSP = isc.TrLG.create({
+        ID: "ByCatReportTwoGrid",
+        height: 550,
+        overflow: "auto",
+        filterOnKeypress: false,
+        showFilterEditor: true,
+        gridComponents: [
+            isc.HLayout.create({
+                alignment: 'right',
+                align: "right",
+                members: [
+                    isc.ToolStripButtonExcel.create({
+                        click: function () {
+                            exportExcelByCatTwo();
+                        }
+                    }),
+                    isc.Label.create({
+                        contents: "<span style='color: red; font-weight: bold; font-size: smaller;margin-top:5;margin-right:10'><spring:message code="report.statistics.by.class.category.warning.header.two"/></span>"
+                    })
+                ]
+            })
+            , "header", "filterEditor", "body"],
+        dataSource: RestDataSource_ClassCategoryTwo_JspManHourReport,
+        fields: [
+            {name: "category", title: "<spring:message code='category'/>"},
+            {name: "planningCount", title: "<spring:message code='report.planning.class.count'/>"},
+            {name: "inProgressCount", title: "<spring:message code='report.in.progress.class.count'/>"},
+            {name: "finishedCount", title: "<spring:message code='report.finished.class.count'/>"},
+            {name: "canceledCount", title: "<spring:message code='report.canceled.class.count'/>"},
+            {name: "lockedCount", title: "<spring:message code='report.locked.class.count'/>"},
+        ]
+    });
+
     var VLayout_Body_ByCat = isc.VLayout.create({
         width: "100%",
-        height: "100%",
+        //  height: "100%",
         members: [
-            ListGrid_ManHourByCatReportJSP
+            DynamicForm_ManHourByCatReport,
+            isc.VLayout.create({
+                width: "100%",
+                overflow: "auto",
+                align: "top",
+                members: [
+                    ListGrid_ManHourByCatReportJSP,
+                    ListGrid_ByCatReportTwoJSP
+                ]
+            })
         ]
     });
 
@@ -519,5 +585,67 @@
         downloadForm.show();
         downloadForm.submitForm();
     }
+
+
+    function exportExcelByCatTwo() {
+
+        let detailFields = "category";
+        let detailHeaders = '<spring:message code="category"/>';
+
+        let masterData = {};
+        let dateType = DynamicForm_ManHourByCatReport.getItem('dateType').getValue();
+        if (dateType == 2) {
+            let terms = DynamicForm_ManHourByCatReport.getItem('termId').getValueMap();
+            masterData['<spring:message code="year"/>'] = DynamicForm_ManHourByCatReport.getItem('year').getValue();
+            masterData['<spring:message code="term"/>'] = terms[DynamicForm_ManHourByCatReport.getItem('termId').getValue()];
+        } else {
+            masterData['<spring:message code="from.date"/>'] = DynamicForm_ManHourByCatReport.getItem('fromDate').getValue();
+            masterData['<spring:message code="to.date"/>'] = DynamicForm_ManHourByCatReport.getItem('toDate').getValue();
+        }
+        let mojtameCode = DynamicForm_ManHourByCatReport.getItem('mojtameCode').getValue();
+        if (mojtameCode) {
+            masterData['<spring:message code="complex"/>'] = DynamicForm_ManHourByCatReport.getItem("mojtameCode").getDisplayValue().toString();
+        }
+        let moavenatCode = DynamicForm_ManHourByCatReport.getItem('moavenatCode').getValue();
+        if (moavenatCode) {
+            masterData['<spring:message code="assistance"/>'] = DynamicForm_ManHourByCatReport.getItem("moavenatCode").getDisplayValue().toString();
+        }
+        let omorCode = DynamicForm_ManHourByCatReport.getItem('omorCode').getValue();
+        if (omorCode) {
+            masterData['<spring:message code="affairs"/>'] = DynamicForm_ManHourByCatReport.getItem("omorCode").getDisplayValue().toString();
+        }
+
+        detailFields = detailFields.concat(",planningCount,inProgressCount,finishedCount,canceledCount,lockedCount");
+        detailHeaders = detailHeaders.concat(',<spring:message code="report.planning.class.count"/>,');
+        detailHeaders = detailHeaders.concat('<spring:message code="report.in.progress.class.count"/>,<spring:message code="report.finished.class.count"/>,');
+        detailHeaders = detailHeaders.concat('<spring:message code="report.canceled.class.count"/>,<spring:message code="report.locked.class.count"/>');
+
+        let title = '<spring:message code="man.hour.statistics.by.class.category.report"/>';
+        let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/reportsToExcel/masterDetail",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "masterData", type: "hidden"},
+                    {name: "detailFields", type: "hidden"},
+                    {name: "detailHeaders", type: "hidden"},
+                    {name: "detailDto", type: "hidden"},
+                    {name: "title", type: "hidden"},
+                    {name: "detailData", type: "hidden"},
+                ]
+        });
+
+        downloadForm.setValue("masterData", JSON.stringify(masterData));
+        downloadForm.setValue("detailFields", detailFields);
+        downloadForm.setValue("detailHeaders", detailHeaders);
+        downloadForm.setValue("detailData", JSON.stringify(listDataTwo));
+        downloadForm.setValue("title", title);
+        downloadForm.setValue("detailDto", "com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO$ClassSumByStatus");
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
+
 
     //</script>
