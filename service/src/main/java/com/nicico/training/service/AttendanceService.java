@@ -19,6 +19,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -68,7 +69,7 @@ public class AttendanceService implements IAttendanceService {
         List<ClassSession> sessions = classSessionDAO.findByClassId(classId);
         List<Attendance> attendances = attendanceDAO.findBySessionInAndStudentId(sessions, studentId);
         ArrayList<Long> existIds = new ArrayList<>();
-        attendances.forEach(a->existIds.add(a.getSessionId()));
+        attendances.forEach(a -> existIds.add(a.getSessionId()));
         List<Map> maps = new ArrayList<>();
         for (ClassSession s : sessions) {
             Map<String, String> map = new HashMap<>();
@@ -79,9 +80,9 @@ public class AttendanceService implements IAttendanceService {
             map.put("startHour", s.getSessionStartHour());
             map.put("endHour", s.getSessionEndHour());
             map.put("state", "0");
-            map.put("readOnly",isReadOnly(s.getSessionDate()));
+            map.put("readOnly", isReadOnly(s.getSessionDate()));
             for (Attendance a : attendances) {
-                if(a.getSessionId().equals(s.getId())){
+                if (a.getSessionId().equals(s.getId())) {
                     map.put("state", a.getState());
                     break;
                 }
@@ -170,6 +171,7 @@ public class AttendanceService implements IAttendanceService {
         returnList.add(causesMap);
         return returnList;
     }
+
     @Transactional
     @Override
     public void studentAttendanceSave(List<List<Map<String, String>>> maps) {
@@ -191,7 +193,7 @@ public class AttendanceService implements IAttendanceService {
         for (Attendance attendance : attendanceSaving) {
             ClassSessionDTO.Info info = classSessionService.get(attendance.getSessionId());
             classIdSet.add(info.getClassId());
-            if(!info.getReadOnly()){
+            if (!info.getReadOnly()) {
                 Optional<Attendance> saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
                 if (saved.isPresent()) {
                     Attendance oldAttendance = saved.get();
@@ -313,7 +315,7 @@ public class AttendanceService implements IAttendanceService {
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
         ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("VAP")).findFirst().orElse(null);
 
-        Double acceptAbsentHoursForClass = acceptAbsentHoursForClass(classId, Double.valueOf(info == null ? "0" : info.getValue())/100);
+        Double acceptAbsentHoursForClass = acceptAbsentHoursForClass(classId, Double.valueOf(info == null ? "0" : info.getValue()) / 100);
 
         return acceptAbsentHoursForClass >= sum;
     }
@@ -326,11 +328,11 @@ public class AttendanceService implements IAttendanceService {
     }
 
     @Transactional(readOnly = true)
-    public List<Attendance> findBySessionInAndState(List<ClassSession> sessions, String state){
+    public List<Attendance> findBySessionInAndState(List<ClassSession> sessions, String state) {
         return attendanceDAO.findBySessionInAndState(sessions, state);
     }
 
-    private String isReadOnly(String startingDate){
+    private String isReadOnly(String startingDate) {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
@@ -343,7 +345,7 @@ public class AttendanceService implements IAttendanceService {
     public String studentUnknownSessionsInClass(Long classId) {
         List<ClassSessionDTO.Info> sessions = classSessionService.getSessions(classId);
         Tclass tclassOfSession = tclassService.getEntity(classId);
-        int numStudents=tclassOfSession.getClassStudents().size();
+        int numStudents = tclassOfSession.getClassStudents().size();
         Collections.sort(sessions, (ClassSessionDTO.Info s1, ClassSessionDTO.Info s2) -> {
                     if (s1.getSessionDate() != null && s2.getSessionDate() != null)
                         return s1.getSessionDate().compareTo(s2.getSessionDate());
@@ -351,7 +353,7 @@ public class AttendanceService implements IAttendanceService {
                 }
         );
 
-        for (ClassSessionDTO.Info s:sessions) {
+        for (ClassSessionDTO.Info s : sessions) {
             List<Attendance> attendanceList = attendanceDAO.findBySessionId(s.getId());
             if (attendanceList.size() != numStudents) {
                 return s.getSessionDate();
@@ -368,24 +370,24 @@ public class AttendanceService implements IAttendanceService {
 
     @Override
     public List<Student> studentAbsentSessionsInClass(Long classId) {
-        List<ClassStudentDTO.AttendanceInfo> students  =  tclassService.getStudents(classId);
-        List<Long> absentStudents=new ArrayList<>();
-            for (ClassStudentDTO.AttendanceInfo student : students) {
-                List<Long> list=attendanceDAO.getAttendanceByClassIdAndStudentId(classId,student.getStudentId());
-                if (!list.isEmpty())
-                    {
-                        boolean allAbsent = list.stream().allMatch(x -> x.equals(3L));
-                        if (allAbsent)
-                        {
-                            absentStudents.add(student.getStudentId()) ;
-                        }
-                    }
+        List<ClassStudentDTO.AttendanceInfo> students = tclassService.getStudents(classId);
+        List<Long> absentStudents = new ArrayList<>();
+        for (ClassStudentDTO.AttendanceInfo student : students) {
+            List<Long> list = attendanceDAO.getAttendanceByClassIdAndStudentId(classId, student.getStudentId());
+            if (!list.isEmpty()) {
+                boolean allAbsent = list.stream().allMatch(x -> x.equals(3L));
+                if (allAbsent) {
+                    absentStudents.add(student.getStudentId());
+                }
+            }
         }
         return studentService.getStudentList(absentStudents);
-     }
+    }
 
     @Override
-    public void saveOrUpdateList(List<Attendance> attendances) {
+    public boolean saveOrUpdateList(List<Attendance> attendances) {
+        List<Attendance> updateAttendanceList = new ArrayList<>();
+        List<Attendance> newAttendanceList = new ArrayList<>();
         attendances.forEach(attendance -> {
             Optional<Attendance> optional = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(),
                     attendance.getStudentId());
@@ -393,12 +395,32 @@ public class AttendanceService implements IAttendanceService {
                 Attendance oldAttendance = optional.get();
                 oldAttendance.setState(attendance.getState());
                 oldAttendance.setDescription(attendance.getDescription());
-                attendanceDAO.save(oldAttendance);
+//                attendanceDAO.save(oldAttendance);
+                updateAttendanceList.add(oldAttendance);
             } else {
-                attendance.setStudent(null);
-                attendance.setSession(null);
-                attendanceDAO.save(attendance);
+                Student student = studentService.getStudent(attendance.getStudentId());
+                ClassSession session = classSessionService.getClassSession(attendance.getSessionId());
+                attendance.setStudent(student);
+                attendance.setSession(session);
+//                attendanceDAO.save(attendance);
+                newAttendanceList.add(attendance);
+
             }
         });
+        try {
+            if (updateAttendanceList.size() > 0) {
+                attendanceDAO.saveAll(updateAttendanceList);
+            }
+
+            if (newAttendanceList.size() > 0) {
+                attendanceDAO.saveAll(newAttendanceList);
+            }
+            return true;
+        }
+        catch (Exception e)
+        {
+            return false;
+        }
+
     }
 }

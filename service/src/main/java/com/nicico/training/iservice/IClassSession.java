@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.ClassSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,8 @@ import java.util.Set;
 public interface IClassSession {
 
     ClassSessionDTO.Info get(Long id);
+
+    ClassSession getClassSession(Long id);
 
     List<ClassSessionDTO.Info> list();
 

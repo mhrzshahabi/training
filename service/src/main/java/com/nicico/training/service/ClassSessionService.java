@@ -60,6 +60,11 @@ public class ClassSessionService implements IClassSession {
         return modelMapper.map(classSession, ClassSessionDTO.Info.class);
     }
 
+    @Override
+    public ClassSession getClassSession(Long id) {
+        return classSessionDAO.getClassSessionById(id);
+    }
+
     //*********************************
     @Transactional(readOnly = true)
     @Override

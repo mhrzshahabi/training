@@ -11,6 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.model.Attendance;
 import com.nicico.training.model.Student;
@@ -26,6 +27,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import request.attendance.AttendanceListSaveRequest;
+import response.BaseResponse;
 import response.attendance.AttendanceListSaveResponse;
 
 import javax.servlet.http.HttpServletResponse;
@@ -40,7 +42,7 @@ import java.util.*;
 @RequestMapping(value = "/api/attendance")
 public class AttendanceRestController {
 
-    private final AttendanceService attendanceService;
+    private final IAttendanceService attendanceService;
     private final ClassSessionService classSessionService;
     private final TclassService tclassService;
     //    private final ClassStudent classStudent;
@@ -105,11 +107,22 @@ public class AttendanceRestController {
  /*       classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
         classAlarmService.saveAlarms();*/
         List<Attendance> attendances =mapper.ToAttendanceList(request);
-        attendanceService.saveOrUpdateList(attendances);
-        AttendanceListSaveResponse response = new AttendanceListSaveResponse();
-        response.setStatus(HttpStatus.CREATED.value());
-        response.setMessage("با موفقیت ایجاد شد");
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+     boolean status=  attendanceService.saveOrUpdateList(attendances);
+     if (status)
+     {
+         AttendanceListSaveResponse response = new AttendanceListSaveResponse();
+         response.setStatus(HttpStatus.CREATED.value());
+         response.setMessage("با موفقیت ایجاد شد");
+         return new ResponseEntity<>(response, HttpStatus.CREATED);
+     }
+     else
+     {
+         AttendanceListSaveResponse response = new AttendanceListSaveResponse();
+         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+         response.setMessage("عملیات انجام نشد");
+         return new ResponseEntity<>(response, HttpStatus.CREATED);
+     }
+
     }
 
     @Loggable
