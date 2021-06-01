@@ -210,9 +210,17 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 ///////////////
                 row = new ArrayList<>();
 
-                row.add("عملکردی ضروری");
-                row.add(filterOfPersonnelDurations.get(0).getEssential().toString());
-                row.add(filterOfPersonnelDurations.get(0).getEssentialPassed().toString());
+                row.add("ضروری ضمن خدمت");
+                row.add(filterOfPersonnelDurations.get(0).getEssentialService().toString());
+                row.add(filterOfPersonnelDurations.get(0).getEssentialServicePassed().toString());
+
+                dataOfGrid.add(row);
+                ///////////////
+                row = new ArrayList<>();
+
+                row.add("ضروری انتصاب سمت");
+                row.add(filterOfPersonnelDurations.get(0).getEssentialAppointment().toString());
+                row.add(filterOfPersonnelDurations.get(0).getEssentialAppointmentPassed().toString());
 
                 dataOfGrid.add(row);
                 ///////////////
@@ -243,7 +251,15 @@ public class TrainingFileNAReportService implements ITrainingFileNAReportService
                 ///////////////
                 row = new ArrayList<>();
 
-                row.add("عملکردی ضروری");
+                row.add("ضروری ضمن خدمت");
+                row.add("0");
+                row.add("0");
+
+                dataOfGrid.add(row);
+                ///////////////
+                row = new ArrayList<>();
+
+                row.add("ضروری انتصاب سمت");
                 row.add("0");
                 row.add("0");
 

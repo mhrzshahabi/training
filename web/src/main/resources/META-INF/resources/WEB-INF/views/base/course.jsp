@@ -2996,9 +2996,11 @@
                         loadPage_course_evaluation();
                     break;
                 case "teacherInformationCourse":
-                    RestDataSource_teacherInformation_Course.fetchDataURL = teacherInformation + "/teacher-information-iscList" + "/" + courseRecord.id;
-                    ListGrid_teacherInformation_Course.fetchData();
-                    ListGrid_teacherInformation_Course.invalidateCache();
+                    if (ListGrid_Course.getSelectedRecord() != null) {
+                        RestDataSource_teacherInformation_Course.fetchDataURL = teacherInformation + "/teacher-information-iscList" + "/" + courseRecord.id;
+                        ListGrid_teacherInformation_Course.fetchData();
+                        ListGrid_teacherInformation_Course.invalidateCache();
+                    }
                     break;
                 case "tabGoal":
                     if (ListGrid_Course.getSelectedRecord() != null) {

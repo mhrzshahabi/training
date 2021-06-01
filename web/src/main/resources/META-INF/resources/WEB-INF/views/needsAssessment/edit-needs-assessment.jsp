@@ -9,6 +9,7 @@
     const yellow ="#d6d216";
     const red = "#ff8abc";
     const green = "#5dd851";
+    const blue = "#0380fc";
     var apiHeader = {
         "Authorization": "Bearer <%= (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>",
         'Content-Type': 'application/json'
@@ -439,9 +440,9 @@
     var Label_Help_JspNeedsAssessment = isc.LgLabel.create({
         align:"left",
         width: "50%",
-        // contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
-        contents:getFormulaMessage("اولویت : ", "2", "#020404", "b")+getFormulaMessage("عملکردی ضروری", "2", red, "b")+" *** "+getFormulaMessage("عملکردی بهبود", "2", yellow, "b")+" *** "+getFormulaMessage("توسعه ای", "2", green, "b"),
-        customEdges: []});
+        contents: getFormulaMessage("اولویت : ", "2", "#020404", "b") + getFormulaMessage("ضروری ضمن خدمت", "2", red, "b") +" *** " +
+            getFormulaMessage("عملکردی بهبود", "2", yellow, "b") + " *** " + getFormulaMessage("توسعه ای", "2", green, "b") + " *** " +
+            getFormulaMessage("ضروری انتصاب سمت", "2", blue, "b"), customEdges: []});
     var Button_CourseDetail_JspEditNeedsAssessment = isc.Button.create({
         title:"جزئیات دوره",
         margin: 1,
@@ -1776,10 +1777,17 @@
     }
     async function updatePriority_JspEditNeedsAssessment(viewer, record) {
         if (record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
+            let priority = null;
+            if(record.needsAssessmentPriorityId === 113)
+                priority = 554;
+            else if (record.needsAssessmentPriorityId === 554)
+                priority = 111;
+            else
+                priority = record.needsAssessmentPriorityId + 1;
             let updating = {
                 objectType: record.objectType,
                 objectId: record.objectId,
-                needsAssessmentPriorityId: record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1
+                needsAssessmentPriorityId: priority
             };
             wait.show();
             let id = record.id
@@ -1817,6 +1825,8 @@
                 return "background-color : " + yellow;
             case 113:
                 return "background-color : " + green;
+            case 554:
+                return "background-color : " + blue;
         }
     }
 
@@ -2031,7 +2041,14 @@
                 createDialog("info", "<spring:message code='error'/>");
                 return;
             }
-            record.needsAssessmentPriorityId = record.needsAssessmentPriorityId + 1 > 113 ? 111 : record.needsAssessmentPriorityId + 1;
+            let priority = null;
+            if(record.needsAssessmentPriorityId === 113)
+                priority = 554;
+            else if (record.needsAssessmentPriorityId === 554)
+                priority = 111;
+            else
+                priority = record.needsAssessmentPriorityId + 1;
+            record.needsAssessmentPriorityId = priority;
             DataSource_Skill_JspNeedsAssessment.updateData(record);
             hasChanged = true;
             canSendToWorkFlowNA = true;

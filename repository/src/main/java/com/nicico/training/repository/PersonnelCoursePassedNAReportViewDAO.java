@@ -16,8 +16,10 @@ public interface PersonnelCoursePassedNAReportViewDAO extends JpaRepository<Pers
             "    na.course_id, " +
             "    na.course_code, " +
             "    na.course_title_fa, " +
-            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 111 THEN 1 ELSE 0 END),0) AS total_essential_personnel_count, " +
-            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 111 AND na.IS_PASSED = 399 THEN 1 ELSE 0 END),0) AS not_passed_essential_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 111 THEN 1 ELSE 0 END),0) AS total_essential_service_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 111 AND na.IS_PASSED = 399 THEN 1 ELSE 0 END),0) AS not_passed_essential_service_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 554 THEN 1 ELSE 0 END),0) AS total_essential_appointment_personnel_count, " +
+            "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 554 AND na.IS_PASSED = 399 THEN 1 ELSE 0 END),0) AS not_passed_essential_appointment_personnel_count, " +
             "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 112 THEN 1 ELSE 0 END),0) AS total_improving_personnel_count, " +
             "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 112 AND na.IS_PASSED = 399 THEN 1 ELSE 0 END),0) AS not_passed_improving_personnel_count, " +
             "    NVL(SUM(CASE WHEN na.NA_PRIORITY_ID = 113 THEN 1 ELSE 0 END),0) AS total_developmental_personnel_count, " +

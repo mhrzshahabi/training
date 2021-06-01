@@ -35,11 +35,17 @@ public class PersonnelDurationNAReport implements Serializable {
     @Column(name = "passed")
     private Float passed;
 
-    @Column(name = "essential")
-    private Float essential;
+    @Column(name = "essential_service")
+    private Float essentialService;
 
-    @Column(name = "essential_passed")
-    private Float essentialPassed;
+    @Column(name = "essential_service_passed")
+    private Float essentialServicePassed;
+
+    @Column(name = "essential_appointment")
+    private Float essentialAppointment;
+
+    @Column(name = "essential_appointment_passed")
+    private Float essentialAppointmentPassed;
 
     @Column(name = "improving")
     private Float improving;

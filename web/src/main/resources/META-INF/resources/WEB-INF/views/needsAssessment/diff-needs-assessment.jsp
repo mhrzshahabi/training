@@ -12,6 +12,7 @@
     const yellow ="#d6d216";
     const red = "#ff8abc";
     const green = "#5dd851";
+    const blue = "#0380fc";
     var editing = false;
 
     var skillTopData = [];
@@ -413,9 +414,9 @@
         customEdges: []});
     var Label_Help_JspDiffNeedsAssessment = isc.LgLabel.create({
         align:"left",
-        // contents:"<span>.اولویت ضروری با رنگ قرمز، اولویت بهبود با رنگ زرد و اولویت توسعه با رنگ سبز مشخص شده اند<span/>",
-        contents:getFormulaMessage("اولویت : ", "2", "#020404", "b")+getFormulaMessage("عملکردی ضروری", "2", red, "b")+" *** "+getFormulaMessage("عملکردی بهبود", "2", yellow, "b")+" *** "+getFormulaMessage("توسعه ای", "2", green, "b"),
-        customEdges: []});
+        contents: getFormulaMessage("اولویت : ", "2", "#020404", "b") + getFormulaMessage("ضروری ضمن خدمت", "2", red, "b") + " *** " +
+            getFormulaMessage("عملکردی بهبود", "2", yellow, "b") + " *** " + getFormulaMessage("توسعه ای", "2", green, "b") + " *** " +
+        getFormulaMessage("ضروری انتصاب سمت", "2", blue, "b"), customEdges: []});
     var Button_CourseDetail_JspDiffNeedsAssessment = isc.Button.create({
         title:"جزئیات دوره",
         margin: 1,
@@ -1550,6 +1551,9 @@
                 case 112:
                     record.needsAssessmentPriorityId++;
                     break;
+                case 113:
+                    record.needsAssessmentPriorityId = 554;
+                    break;
                 default:
                     record.needsAssessmentPriorityId = 111;
                     break;
@@ -1577,6 +1581,8 @@
                 return "background-color : " + yellow;
             case 113:
                 return "background-color : " + green;
+            case 554:
+                return "background-color : " + blue;
         }
     }
 

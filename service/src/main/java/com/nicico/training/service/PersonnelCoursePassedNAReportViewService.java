@@ -54,12 +54,14 @@ public class PersonnelCoursePassedNAReportViewService implements IPersonnelCours
                     .setCourseId(Long.parseLong(courseAndPersonnelCount.get(0).toString()))
                     .setCourseCode(courseAndPersonnelCount.get(1).toString())
                     .setCourseTitleFa(courseAndPersonnelCount.get(2).toString())
-                    .setTotalEssentialPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(3).toString()))
-                    .setNotPassedEssentialPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(4).toString()))
-                    .setTotalImprovingPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(5).toString()))
-                    .setNotPassedImprovingPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(6).toString()))
-                    .setTotalDevelopmentalPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(7).toString()))
-                    .setNotPassedDevelopmentalPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(8).toString()));
+                    .setTotalEssentialServicePersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(3).toString()))
+                    .setNotPassedEssentialServicePersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(4).toString()))
+                    .setTotalEssentialAppointmentPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(5).toString()))
+                    .setNotPassedEssentialAppointmentPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(6).toString()))
+                    .setTotalImprovingPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(7).toString()))
+                    .setNotPassedImprovingPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(8).toString()))
+                    .setTotalDevelopmentalPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(9).toString()))
+                    .setNotPassedDevelopmentalPersonnelCount(Integer.parseInt(courseAndPersonnelCount.get(10).toString()));
             result.add(courseAndPersonnelCountDTO);
         });
 

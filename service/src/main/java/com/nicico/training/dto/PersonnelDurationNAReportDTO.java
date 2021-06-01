@@ -21,8 +21,10 @@ public class PersonnelDurationNAReportDTO {
         private long personnelId;
         private Float duration;
         private Float passed;
-        private Float essential;
-        private Float essentialPassed;
+        private Float essentialService;
+        private Float essentialServicePassed;
+        private Float essentialAppointment;
+        private Float essentialAppointmentPassed;
         private Float improving;
         private Float improvingPassed;
         private Float developmental;

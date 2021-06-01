@@ -41,8 +41,10 @@
     var changeablePerson_NABOP = true;
     var changeableObject_NABOP = true;
     var chartData_NABOP = [
-        {title: "<spring:message code='essential'/>",  type: "<spring:message code='total'/>", duration: 0},
-        {title: "<spring:message code='essential'/>",  type: "<spring:message code='passed'/>", duration: 0},
+        {title: "<spring:message code='essential.service'/>",  type: "<spring:message code='total'/>", duration: 0},
+        {title: "<spring:message code='essential.service'/>",  type: "<spring:message code='passed'/>", duration: 0},
+        {title: "<spring:message code='essential.appointment'/>",  type: "<spring:message code='total'/>", duration: 0},
+        {title: "<spring:message code='essential.appointment'/>",  type: "<spring:message code='passed'/>", duration: 0},
         {title: "<spring:message code='improving'/>", type: "<spring:message code='total'/>", duration: 0},
         {title: "<spring:message code='improving'/>", type: "<spring:message code='passed'/>", duration: 0},
         {title: "<spring:message code='developmental'/>",  type: "<spring:message code='total'/>", duration: 0},
@@ -768,12 +770,14 @@
                 ],
                 sortNormalizer(record){
                     switch (record.needsAssessmentPriorityId) {
-                        case "عملکردی ضروری":
+                        case 554:
                             return 0;
-                        case "عملکردی بهبود":
+                        case 111:
                             return 1;
-                        case "عملکردی توسعه":
+                        case 112:
                             return 2;
+                        case 113:
+                            return 3;
                         default:
                             return record.needsAssessmentPriorityId;
                     }
@@ -924,14 +928,25 @@
 
                     var str =rows.length;
 
-                    if(dataForExcel["totalNecessary"]!==0 )
+                    if(dataForExcel["totalAppointmentNecessary"]!==0 )
                     {
 
                         data[str] = {};
-                        data[str][fields[1].name] = ("جمع کل ساعات ضروری:").toString();
-                        data[str][fields[2].name] = (dataForExcel["totalNecessary"]).toString();
-                        data[str][fields[3].name] = ("جمع ساعات ضروری گذرانده شده:").toString();
-                        data[str][fields[4].name] = (dataForExcel["passedNecessary"]).toString();
+                        data[str][fields[1].name] = ("جمع کل ساعات ضروری انتصاب سمت:").toString();
+                        data[str][fields[2].name] = (dataForExcel["totalAppointmentNecessary"]).toString();
+                        data[str][fields[3].name] = ("جمع ساعات ضروری انتصاب سمت گذرانده شده:").toString();
+                        data[str][fields[4].name] = (dataForExcel["passedAppointmentNecessary"]).toString();
+
+                        str++;
+                    }
+                    if(dataForExcel["totalServiceNecessary"]!==0 )
+                    {
+
+                        data[str] = {};
+                        data[str][fields[1].name] = ("جمع کل ساعات ضروری ضمن خدمت:").toString();
+                        data[str][fields[2].name] = (dataForExcel["totalServiceNecessary"]).toString();
+                        data[str][fields[3].name] = ("جمع ساعات ضروری ضمن خدمت گذرانده شده:").toString();
+                        data[str][fields[4].name] = (dataForExcel["passedServiceNecessary"]).toString();
 
                         str++;
                     }
@@ -1071,12 +1086,14 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             priorities_NABOP = JSON.parse(resp.httpResponseText).response.data;
             for (let i = 0; i < priorities_NABOP.length; i++) {
-                if (priorities_NABOP[i].title === "عملکردی ضروری")
-                    priorities_NABOP[i].title = "<spring:message code='essential'/>";
+                if (priorities_NABOP[i].title === "ضروری ضمن خدمت")
+                    priorities_NABOP[i].title = "<spring:message code='essential.service'/>";
                 else if (priorities_NABOP[i].title === "عملکردی بهبود")
                     priorities_NABOP[i].title = "<spring:message code='improving'/>";
                 else if (priorities_NABOP[i].title === "عملکردی توسعه")
                     priorities_NABOP[i].title = "<spring:message code='developmental'/>";
+                else if (priorities_NABOP[i].title === "ضروری انتصاب سمت")
+                    priorities_NABOP[i].title = "<spring:message code='essential.appointment'/>";
             }
         } else {
             createDialog("info", "<spring:message code="msg.operation.error"/>");
@@ -1147,8 +1164,10 @@
         CoursesLG_NABOP.setData([]);
         CourseDS_NABOP.fetchDataURL = null;
         chartData_NABOP = [
-            {title: "<spring:message code='essential'/>",  type: "<spring:message code='total'/>", duration: 0},
-            {title: "<spring:message code='essential'/>",  type: "<spring:message code='passed'/>", duration: 0},
+            {title: "<spring:message code='essential.service'/>",  type: "<spring:message code='total'/>", duration: 0},
+            {title: "<spring:message code='essential.service'/>",  type: "<spring:message code='passed'/>", duration: 0},
+            {title: "<spring:message code='essential.appointment'/>",  type: "<spring:message code='total'/>", duration: 0},
+            {title: "<spring:message code='essential.appointment'/>",  type: "<spring:message code='passed'/>", duration: 0},
             {title: "<spring:message code='improving'/>", type: "<spring:message code='total'/>", duration: 0},
             {title: "<spring:message code='improving'/>", type: "<spring:message code='passed'/>", duration: 0},
             {title: "<spring:message code='developmental'/>",  type: "<spring:message code='total'/>", duration: 0},
@@ -1217,20 +1236,23 @@
             createDialog("info", "<spring:message code='print.no.data.to.print'/>");
             return;
         }
-        let groupedRecords = [[], [], []];
+        let groupedRecords = [[], [], [], []];
 
         for (let i = 0; i < records.length; i++) {
             groupedRecords[getIndexById_NABOP(records[i].needsAssessmentPriorityId)].add(records[i]);
         }
 
         let params = {};
-        params.essentialTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='total'/>"}).duration).toString();
-        params.essentialPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='passed'/>"}).duration).toString();
+        params.essentialServiceTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='total'/>"}).duration).toString();
+        params.essentialAppointmentTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AE")].title, type:"<spring:message code='total'/>"}).duration).toString();
+        params.essentialServicePassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AZ")].title, type:"<spring:message code='passed'/>"}).duration).toString();
+        params.essentialAppointmentPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AE")].title, type:"<spring:message code='passed'/>"}).duration).toString();
         params.improvingTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='total'/>"}).duration).toString();
         params.improvingPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AB")].title, type:"<spring:message code='passed'/>"}).duration).toString();
         params.developmentalTotal = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='total'/>"}).duration).toString();
         params.developmentalPassed = (chartData_NABOP.find({title:priorities_NABOP[getIndexByCode_NABOP("AT")].title, type:"<spring:message code='passed'/>"}).duration).toString();
-        params.essentialPercent = (params.essentialTotal === "0" ? 0 : Math.round(params.essentialPassed / params.essentialTotal * 100)).toString();
+        params.essentialServicePercent = (params.essentialServiceTotal === "0" ? 0 : Math.round(params.essentialServicePassed / params.essentialServiceTotal * 100)).toString();
+        params.essentialAppointmentPercent = (params.essentialAppointmentTotal === "0" ? 0 : Math.round(params.essentialAppointmentPassed / params.essentialAppointmentTotal * 100)).toString();
         params.improvingPercent = (params.improvingTotal === "0" ? 0 : Math.round(params.improvingPassed / params.improvingTotal * 100)).toString();
         params.developmentalPercent = (params.developmentalTotal === "0" ? 0 : Math.round(params.developmentalPassed / params.developmentalTotal * 100)).toString();
 
@@ -1256,7 +1278,8 @@
             canSubmit: true,
             fields:
                 [
-                    {name: "essentialRecords", type: "hidden"},
+                    {name: "essentialServiceRecords", type: "hidden"},
+                    {name: "essentialAppointmentRecords", type: "hidden"},
                     {name: "improvingRecords", type: "hidden"},
                     {name: "developmentalRecords", type: "hidden"},
                     {name: "params", type: "hidden"},
@@ -1264,7 +1287,8 @@
                     {name: "reportType", type: "hidden"},
                 ]
         });
-        criteriaForm_course.setValue("essentialRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AZ")]));
+        criteriaForm_course.setValue("essentialServiceRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AZ")]));
+        criteriaForm_course.setValue("essentialAppointmentRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AE")]));
         criteriaForm_course.setValue("improvingRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AB")]));
         criteriaForm_course.setValue("developmentalRecords", JSON.stringify(groupedRecords[getIndexByCode_NABOP("AT")]));
         criteriaForm_course.setValue("params", JSON.stringify(params));
@@ -1275,27 +1299,41 @@
 
     function getDataForExcel(data) {
 
-        let totalNecessary = 0;
+        let totalServiceNecessary = 0;
+        let totalAppointmentNecessary = 0;
         let totalDevelopmental = 0;
         let totalImprovement = 0;
-        let passedNecessary = 0;
+
+        let passedServiceNecessary = 0;
+        let passedAppointmentNecessary = 0;
         let passedDevelopmental = 0;
         let passedImprovement = 0;
 
-        let newRecNecessary = [];
+        let newRecServiceNecessary = [];
+        let newRecAppointmentNecessary = [];
         let newRecDevelopmental = [];
         let newRecImprovement = [];
 
         for (let i = 0; i < data.length; i++) {
 
-            if (data.get(i).needsAssessmentPriorityId.toString()==="عملکردی ضروری")
+            if (data.get(i).needsAssessmentPriorityId.toString()==="ضروری انتصاب سمت")
             {
-                if (!newRecNecessary.contains(data[i]["skill.course.code"]))
+                if (!newRecAppointmentNecessary.contains(data[i]["skill.course.code"]))
                 {
-                    newRecNecessary.add(data[i]["skill.course.code"]);
-                    totalNecessary += data[i]["skill.course.theoryDuration"];
+                    newRecAppointmentNecessary.add(data[i]["skill.course.code"]);
+                    totalAppointmentNecessary += data[i]["skill.course.theoryDuration"];
                     if (data[i]["skill.course.scoresState"] === "گذرانده")
-                        passedNecessary += data[i]["skill.course.theoryDuration"];
+                        passedAppointmentNecessary += data[i]["skill.course.theoryDuration"];
+                }
+            }
+            if (data.get(i).needsAssessmentPriorityId.toString()==="ضروری ضمن خدمت")
+            {
+                if (!newRecServiceNecessary.contains(data[i]["skill.course.code"]))
+                {
+                    newRecServiceNecessary.add(data[i]["skill.course.code"]);
+                    totalServiceNecessary += data[i]["skill.course.theoryDuration"];
+                    if (data[i]["skill.course.scoresState"] === "گذرانده")
+                        passedServiceNecessary += data[i]["skill.course.theoryDuration"];
                 }
             }
             if (data.get(i).needsAssessmentPriorityId.toString()==="عملکردی بهبود")
@@ -1323,10 +1361,12 @@
             }
             }
         return {
-            totalNecessary: totalNecessary,
+            totalServiceNecessary: totalServiceNecessary,
+            totalAppointmentNecessary: totalAppointmentNecessary,
             totalDevelopmental: totalDevelopmental,
             totalImprovement: totalImprovement,
-            passedNecessary: passedNecessary,
+            passedServiceNecessary: passedServiceNecessary,
+            passedAppointmentNecessary: passedAppointmentNecessary,
             passedDevelopmental: passedDevelopmental,
             passedImprovement: passedImprovement
         };

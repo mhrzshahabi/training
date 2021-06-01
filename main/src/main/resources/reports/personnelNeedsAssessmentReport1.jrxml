@@ -149,7 +149,7 @@
 			<style backcolor="#FBFDFF"/>
 		</conditionalStyle>
 	</style>
-	<subDataset name="essentialDS" uuid="ae35db03-79d7-4eaf-b5dd-a39c3f473f16">
+	<subDataset name="essentialServiceDS" uuid="ae35db03-79d7-4eaf-b5dd-a39c3f473f16">
 		<parameter name="totalHours" class="java.lang.String"/>
 		<parameter name="passedHours" class="java.lang.String"/>
 		<queryString language="SQL">
@@ -190,11 +190,26 @@
 		<field name="skill.titleFa" class="java.lang.String"/>
 		<field name="skill.course.scoresState" class="java.lang.String"/>
 	</subDataset>
+	<subDataset name="essentialAppointmentDS" uuid="012852a3-8a0f-40ef-b69c-635964d740eb">
+		<parameter name="totalHours" class="java.lang.String"/>
+		<parameter name="passedHours" class="java.lang.String"/>
+		<queryString language="SQL">
+			<![CDATA[]]>
+		</queryString>
+		<field name="id" class="java.lang.String"/>
+		<field name="skill.course.code" class="java.lang.String"/>
+		<field name="skill.course.titleFa" class="java.lang.String"/>
+		<field name="skill.course.theoryDuration" class="java.lang.String"/>
+		<field name="skill.course.scoresState" class="java.lang.String"/>
+		<field name="competence.title" class="java.lang.String"/>
+		<field name="skill.code" class="java.lang.String"/>
+		<field name="skill.titleFa" class="java.lang.String"/>
+	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
-	<parameter name="essentialTotal" class="java.lang.String"/>
-	<parameter name="essentialPassed" class="java.lang.String"/>
-	<parameter name="essentialPercent" class="java.lang.String"/>
+	<parameter name="essentialServiceTotal" class="java.lang.String"/>
+	<parameter name="essentialServicePassed" class="java.lang.String"/>
+	<parameter name="essentialServicePercent" class="java.lang.String"/>
 	<parameter name="improvingTotal" class="java.lang.String"/>
 	<parameter name="improvingPassed" class="java.lang.String"/>
 	<parameter name="improvingPercent" class="java.lang.String"/>
@@ -212,6 +227,9 @@
 	<parameter name="assistance" class="java.lang.String"/>
 	<parameter name="affairs" class="java.lang.String"/>
 	<parameter name="unit" class="java.lang.String"/>
+	<parameter name="essentialAppointmentTotal" class="java.lang.String"/>
+	<parameter name="essentialAppointmentPassed" class="java.lang.String"/>
+	<parameter name="essentialAppointmentPercent" class="java.lang.String"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -268,30 +286,30 @@
 		</band>
 	</pageHeader>
 	<detail>
-		<band height="395">
+		<band height="470">
 			<staticText>
-				<reportElement positionType="Float" x="-3" y="5" width="555" height="20" uuid="e283f684-c0ab-4d98-a7e7-19618fa30464"/>
+				<reportElement positionType="Float" x="-2" y="122" width="555" height="20" uuid="e283f684-c0ab-4d98-a7e7-19618fa30464"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12" isBold="true"/>
 				</textElement>
-				<text><![CDATA[دوره های با اولویت عملکردی ضروری]]></text>
+				<text><![CDATA[دوره های با اولویت ضروری ضمن خدمت]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="497" y="88" width="55" height="20" uuid="864f896b-4489-4641-a6e9-cc9b75c8412e"/>
+				<reportElement positionType="Float" x="497" y="205" width="55" height="20" uuid="864f896b-4489-4641-a6e9-cc9b75c8412e"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[جمع ساعات:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement positionType="Float" x="419" y="88" width="78" height="20" uuid="a66d45c3-bfa1-435e-9920-cdab402f49ab"/>
+				<reportElement positionType="Float" x="419" y="205" width="78" height="20" uuid="a66d45c3-bfa1-435e-9920-cdab402f49ab"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{essentialTotal}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{essentialServiceTotal}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement style="Table_CH" positionType="Float" x="0" y="26" width="555" height="60" uuid="8731e92f-ec7f-46e7-a6a8-560b704ad927">
+				<reportElement style="Table_CH" positionType="Float" x="0" y="143" width="555" height="60" uuid="8731e92f-ec7f-46e7-a6a8-560b704ad927">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -301,8 +319,8 @@
 					<property name="com.jaspersoft.studio.components.autoresize.next" value="true"/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="Blank">
-					<datasetRun subDataset="essentialDS" uuid="6dac8d0c-ae2c-499a-bf13-cb07b929ecb8">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("essentialDS")]]></dataSourceExpression>
+					<datasetRun subDataset="essentialServiceDS" uuid="58bd4bbf-cfa5-41ae-b44f-86ed6e891a11">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("essentialServiceDS")]]></dataSourceExpression>
 					</datasetRun>
 					<jr:columnGroup width="73" uuid="f5446811-5cbd-4afd-9282-f12ae76ad1f3">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
@@ -457,28 +475,28 @@
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement positionType="Float" x="-3" y="138" width="555" height="20" uuid="e9cef34d-a315-4f2a-b51f-abc545bc95fb"/>
+				<reportElement positionType="Float" x="-3" y="240" width="555" height="20" uuid="e9cef34d-a315-4f2a-b51f-abc545bc95fb"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[دوره های با اولویت عملکردی بهبود]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="497" y="222" width="55" height="20" uuid="672b98e1-375d-4495-b3c1-42abce37c4be"/>
+				<reportElement positionType="Float" x="497" y="324" width="55" height="20" uuid="672b98e1-375d-4495-b3c1-42abce37c4be"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[جمع ساعات:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement positionType="Float" x="419" y="222" width="78" height="20" uuid="2cf5f634-c8f9-409a-85e8-4328632388ac"/>
+				<reportElement positionType="Float" x="419" y="324" width="78" height="20" uuid="2cf5f634-c8f9-409a-85e8-4328632388ac"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{improvingTotal}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement style="Table_CH" positionType="Float" x="0" y="158" width="555" height="60" uuid="28cd36a6-a337-4fdb-bb25-33a284939042">
+				<reportElement style="Table_CH" positionType="Float" x="0" y="260" width="555" height="60" uuid="28cd36a6-a337-4fdb-bb25-33a284939042">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -644,28 +662,28 @@
 				</jr:table>
 			</componentElement>
 			<staticText>
-				<reportElement positionType="Float" x="0" y="271" width="555" height="20" uuid="23db6f4b-aa83-491a-875b-2b5fd68d2b6f"/>
+				<reportElement positionType="Float" x="0" y="359" width="555" height="20" uuid="23db6f4b-aa83-491a-875b-2b5fd68d2b6f"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[دوره های با اولویت توسعه ای]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="499" y="359" width="55" height="20" uuid="a3ea8047-4521-46cc-92c2-5ab336135d04"/>
+				<reportElement positionType="Float" x="499" y="447" width="55" height="20" uuid="a3ea8047-4521-46cc-92c2-5ab336135d04"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[جمع ساعات:]]></text>
 			</staticText>
 			<textField isBlankWhenNull="true">
-				<reportElement positionType="Float" x="421" y="359" width="78" height="20" uuid="b852c21f-14c2-46a5-9e69-c9f98eace10b"/>
+				<reportElement positionType="Float" x="421" y="447" width="78" height="20" uuid="b852c21f-14c2-46a5-9e69-c9f98eace10b"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="12"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{developmentalTotal}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement style="Table_CH" positionType="Float" x="0" y="292" width="555" height="60" uuid="77dedfb9-a51d-4c33-9cae-f5fa82236fd1">
+				<reportElement style="Table_CH" positionType="Float" x="0" y="380" width="555" height="60" uuid="77dedfb9-a51d-4c33-9cae-f5fa82236fd1">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -821,6 +839,193 @@
 						<jr:detailCell style="Table_TD" height="30">
 							<textField isStretchWithOverflow="true">
 								<reportElement x="0" y="0" width="96" height="30" uuid="173f8db1-a163-43f1-8306-1d3f0d24aab7"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam" size="10"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{competence.title}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement positionType="Float" x="-5" y="8" width="555" height="20" uuid="6b3272eb-134d-466b-b90b-516ecf9ff3f5"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[دوره های با اولویت ضروری انتصاب سمت]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="496" y="91" width="55" height="20" uuid="d1fd43b4-1082-4773-9604-fd6d48f6059c"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="12" isBold="true"/>
+				</textElement>
+				<text><![CDATA[جمع ساعات:]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="418" y="91" width="78" height="20" uuid="c8b26fa6-3329-477c-96a7-977e503ea2fe"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="12"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{essentialAppointmentTotal}]]></textFieldExpression>
+			</textField>
+			<componentElement>
+				<reportElement style="Table_CH" positionType="Float" x="-1" y="29" width="555" height="60" uuid="06108041-e132-4652-851c-437ea01f0ab4">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
+					<property name="com.jaspersoft.studio.components.autoresize.proportional" value="true"/>
+					<property name="com.jaspersoft.studio.components.autoresize.next" value="true"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="Blank">
+					<datasetRun subDataset="essentialAppointmentDS" uuid="fa2e8edd-86b0-4ac2-8c8e-a86e0ef579fa">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("essentialAppointmentDS")]]></dataSourceExpression>
+					</datasetRun>
+					<jr:columnGroup width="73" uuid="eb7619b8-5833-4d49-b288-b3974308761b">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="73" height="30" uuid="d8176891-f80d-48dd-b9be-2a19442dab82"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="B Nazanin" size="10"/>
+								</textElement>
+								<text><![CDATA[مدت]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="73" uuid="c8a58e22-433c-4e09-b324-adf1e4888782">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="73" height="30" uuid="a8872beb-207f-43c5-a966-423fdb1681f5"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="B Nazanin" size="10"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{skill.course.theoryDuration}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="141" uuid="32a2f27f-bb8e-4661-9f86-6272d0f9fb85">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="141" height="30" uuid="90dbf7e1-22e9-405c-b340-2fce647086ad"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="B Nazanin" size="10"/>
+								</textElement>
+								<text><![CDATA[دوره]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="141" uuid="d4c89140-91f0-436b-9b9c-79afd2ba3faf">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textField isStretchWithOverflow="true">
+									<reportElement x="0" y="0" width="141" height="30" uuid="7fe62737-6756-4b01-b4f3-00a6f347f521"/>
+									<textElement textAlignment="Center" verticalAlignment="Middle">
+										<font fontName="Shabnam" size="10"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{skill.course.titleFa}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:column width="72" uuid="669f0f47-fd6f-4995-a7e8-b0362c44c3a6">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="72" height="30" uuid="d817be4e-9bfe-4923-8daf-e405503b5af6"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="B Nazanin" size="10"/>
+								</textElement>
+								<text><![CDATA[کد دوره]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="72" height="30" uuid="3ddb13f2-c9ad-468c-99e7-40b249168430"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam" size="10"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{skill.course.code}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="106" uuid="31f312e6-8f49-42ac-8492-b330ff90f8d3">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="106" height="30" uuid="1fdad9cf-5032-4bc3-8f0b-822aab861aab"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="B Nazanin" size="10"/>
+								</textElement>
+								<text><![CDATA[مهارت]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="106" height="30" uuid="94e6417b-a20b-4d0d-a452-28e11e4c083e"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam" size="10"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{skill.titleFa}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="67" uuid="4e31f745-91ba-4e04-8c02-1a331ddef1ff">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="67" height="30" uuid="ec6082b8-bf45-4483-bdf6-ce23a6a528e1"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="B Nazanin" size="10"/>
+								</textElement>
+								<text><![CDATA[کد مهارت]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="67" height="30" uuid="66495d5f-1373-4871-8f4b-508d84edba9c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam" size="10"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{skill.code}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="96" uuid="b5c779eb-7401-4315-8c41-c1e4b7a1bba5">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="96" height="30" uuid="7d7fe0d6-eaba-48c3-b4a7-0e7c4fa9164d"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="B Nazanin" size="10"/>
+								</textElement>
+								<text><![CDATA[شایستگی]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isStretchWithOverflow="true">
+								<reportElement x="0" y="0" width="96" height="30" uuid="5949770c-24ab-4c3e-a401-585cb2453305"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam" size="10"/>
 								</textElement>
