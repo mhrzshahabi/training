@@ -235,14 +235,15 @@
         click: function () {
 
             reportCriteria_CER = null;
-
             let form = DynamicForm_CER;
-            if(form.getValue("endDate") < form.getValue("startDate")) {
-                createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
+
+            if(form.getValue("endDate") == null || form.getValue("startDate") == null) {
+                createDialog("info","بازه خاتمه کلاس مشخص نشده است");
                 return;
             }
-            if(form.getValuesAsAdvancedCriteria() == null || form.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
-                createDialog("info","بازه خاتمه کلاس مشخص نشده است");
+
+            if(form.getValue("endDate") < form.getValue("startDate")) {
+                createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
                 return;
             }
 

@@ -9123,5 +9123,30 @@ LEFT JOIN (
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-019">
+        <createView viewName="VIEW_PERSONNEL_DURATION_NA_REPORT" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    prs.id AS personnel_id,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 111 THEN course.n_theory_duration ELSE 0 END),0) AS essential_service,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 111 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS essential_service_passed,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 554 THEN course.n_theory_duration ELSE 0 END),0) AS essential_appointment,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 554 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS essential_appointment_passed,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 112 THEN course.n_theory_duration ELSE 0 END),0) AS improving,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 112 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS improving_passed,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 113 THEN course.n_theory_duration ELSE 0 END),0) AS developmental,
+                    NVL(SUM(CASE WHEN na_passed.na_priority_id = 113 and na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS developmental_passed,
+                    NVL(SUM(course.n_theory_duration),0) AS duration,
+                    NVL(SUM(CASE WHEN na_passed.is_passed = 216 THEN course.n_theory_duration ELSE 0 END),0) AS passed
+                FROM
+                    VIEW_ACTIVE_PERSONNEL prs
+                    LEFT JOIN view_personnel_course_passed_na_report   na_passed on na_passed.personnel_id = prs.id
+                    LEFT JOIN tbl_course                    course ON course.id = na_passed.course_id
+                GROUP BY
+                    prs.id
+            ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>

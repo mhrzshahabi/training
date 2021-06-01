@@ -14,9 +14,10 @@ import lombok.ToString;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ENeedAssessmentPriority {
 
-    EssentialFunctional(1, "عملکردی ضروری"),
+    EssentialService(1, "ضروری ضمن خدمت"),
     ImprovingFunctional(2, "عملکردی بهبود"),
-    Developmental(3, "توسعه ای");
+    Developmental(3, "توسعه ای"),
+    EssentialAppointment(4, "ضروری انتصاب سمت");
 
     private final Integer id;
     private final String titleFa;

@@ -67,14 +67,16 @@
     NACourseDS_PCNR = isc.TrDS.create({
         fields: [
             {name: "courseId", primaryKey: true, hidden: true},
-            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "totalEssentialPersonnelCount", title: "تعداد کل پرسنل در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedEssentialPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت ضروری", filterOperator: "equals", autoFitWidth: true},
-            {name: "totalImprovingPersonnelCount", title: "تعداد کل پرسنل در اولویت کل بهبود", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedImprovingPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت بهبود", filterOperator: "equals", autoFitWidth: true},
-            {name: "totalDevelopmentalPersonnelCount", title: "تعداد کل پرسنل در اولویت توسعه ای", filterOperator: "equals", autoFitWidth: true},
-            {name: "notPassedDevelopmentalPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت توسعه ای", filterOperator: "equals", autoFitWidth: true},
+            {name: "courseCode", title:"<spring:message code='course.code'/>", filterOperator: "iContains"},
+            {name: "courseTitleFa", title:"<spring:message code='course.title'/>", filterOperator: "iContains"},
+            {name: "totalEssentialServicePersonnelCount", title: "تعداد کل پرسنل در اولویت ضروری ضمن خدمت", filterOperator: "equals"},
+            {name: "notPassedEssentialServicePersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت ضروری ضمن خدمت", filterOperator: "equals"},
+            {name: "totalEssentialAppointmentPersonnelCount", title: "تعداد کل پرسنل در اولویت ضروری انتصاب سمت", filterOperator: "equals"},
+            {name: "notPassedEssentialAppointmentPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت ضروری انتصاب سمت", filterOperator: "equals"},
+            {name: "totalImprovingPersonnelCount", title: "تعداد کل پرسنل در اولویت بهبود", filterOperator: "equals"},
+            {name: "notPassedImprovingPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت بهبود", filterOperator: "equals"},
+            {name: "totalDevelopmentalPersonnelCount", title: "تعداد کل پرسنل در اولویت توسعه ای", filterOperator: "equals"},
+            {name: "notPassedDevelopmentalPersonnelCount", title:"تعداد پرسنل نگذرانده در اولویت توسعه ای", filterOperator: "equals"},
         ],
         fetchDataURL: personnelCourseNAReportUrl
     });
@@ -398,8 +400,10 @@
         fields:[
             {name: "courseCode"},
             {name: "courseTitleFa"},
-            {name: "totalEssentialPersonnelCount"},
-            {name: "notPassedEssentialPersonnelCount"},
+            {name: "totalEssentialServicePersonnelCount"},
+            {name: "notPassedEssentialServicePersonnelCount"},
+            {name: "totalEssentialAppointmentPersonnelCount"},
+            {name: "notPassedEssentialAppointmentPersonnelCount"},
             {name: "totalImprovingPersonnelCount"},
             {name: "notPassedImprovingPersonnelCount"},
             {name: "totalDevelopmentalPersonnelCount"},
@@ -411,12 +415,15 @@
                 autoFitWidth: true,
                 canFilter: false,
                 formatCellValue: function (value, record) {
-                    if(record.notPassedEssentialPersonnelCount || record.notPassedImprovingPersonnelCount || record.notPassedDevelopmentalPersonnelCount)
-                        return record?.notPassedEssentialPersonnelCount + record?.notPassedImprovingPersonnelCount + record?.notPassedDevelopmentalPersonnelCount;
+                    if(record.notPassedEssentialServicePersonnelCount || record.notPassedEssentialAppointmentPersonnelCount ||
+                        record.notPassedImprovingPersonnelCount || record.notPassedDevelopmentalPersonnelCount)
+                        return record?.notPassedEssentialServicePersonnelCount + record?.notPassedEssentialAppointmentPersonnelCount +
+                            record?.notPassedImprovingPersonnelCount + record?.notPassedDevelopmentalPersonnelCount;
                     return 0;
                 },
                 sortNormalizer: function (record) {
-                    return record?.notPassedEssentialPersonnelCount + record?.notPassedImprovingPersonnelCount + record?.notPassedDevelopmentalPersonnelCount;
+                    return record?.notPassedEssentialServicePersonnelCount + record?.notPassedEssentialAppointmentPersonnelCount +
+                        record?.notPassedImprovingPersonnelCount + record?.notPassedDevelopmentalPersonnelCount;
                 }
             },
             { name: "personnelList", title: "لیست پرسنل", align: "center", width: 130, canFilter: false},

@@ -29,7 +29,8 @@ public class NeedsAssessmentReportsFormController {
     public void print(HttpServletResponse response,
                       @PathVariable String type,
                       @RequestParam(value = "reportType") String reportType,
-                      @RequestParam(value = "essentialRecords") String essentialRecords,
+                      @RequestParam(value = "essentialServiceRecords") String essentialServiceRecords,
+                      @RequestParam(value = "essentialAppointmentRecords") String essentialAppointmentRecords,
                       @RequestParam(value = "improvingRecords") String improvingRecords,
                       @RequestParam(value = "developmentalRecords") String developmentalRecords,
                       @RequestParam(value = "params") String receiveParams
@@ -45,7 +46,8 @@ public class NeedsAssessmentReportsFormController {
         params.put(ConstantVARs.REPORT_TYPE, type);
 
         String data = "{" +
-                "\"essentialDS\": " + essentialRecords + "," +
+                "\"essentialServiceDS\": " + essentialServiceRecords + "," +
+                "\"essentialAppointmentDS\": " + essentialAppointmentRecords + "," +
                 "\"improvingDS\": " + improvingRecords + "," +
                 "\"developmentalDS\": " + developmentalRecords +
                 "}";

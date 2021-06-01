@@ -20,8 +20,10 @@
             {name: "personnelId", primaryKey: true, hidden:true},
             {name: "duration", title:"جمع کل"},
             {name: "passed", title:"جمع گذرانده"},
-            {name: "essential", title:"جمع عملکردی ضروری"},
-            {name: "essentialPassed", title:"گذرانده عملکردی ضروری"},
+            {name: "essentialService", title:"جمع ضروری ضمن خدمت"},
+            {name: "essentialServicePassed", title:"گذرانده ضروری ضمن خدمت"},
+            {name: "essentialAppointment", title:"جمع ضروری انتصاب سمت"},
+            {name: "essentialAppointmentPassed", title:"گذرانده ضروری انتصاب سمت"},
             {name: "improving", title:"جمع عملکردی بهبود"},
             {name: "improvingPassed", title:"گذرانده عملکردی بهبود"},
             {name: "developmental", title:"جمع عملکردی توسعه ای"},
@@ -286,7 +288,7 @@
             }
 
 
-            let cr = ListGrid_Personnel_JspTrainingFileNAReport.getCriteria().criteria
+            let cr = ListGrid_Personnel_JspTrainingFileNAReport.getCriteria().criteria;
 
             let strCr=JSON.stringify(cr);
             strCr=strCr.substring(1,strCr.length-1);

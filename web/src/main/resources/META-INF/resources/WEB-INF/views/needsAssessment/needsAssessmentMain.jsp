@@ -5,7 +5,6 @@
 
     var temp;
     var editing = false;
-    // var valueMap_NeedsAssessmentPriority = {"AB":"عملکرد بهبود","AT":"عملکرد توسعه","AZ":"عملکرد ضروری"};
     var RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment = isc.TrDS.create({
         fields:[
             {name: "id", primaryKey:true},
@@ -310,7 +309,6 @@
                 displayField: "title",
                 optionDataSource: RestDataSource_NeedsAssessmentPriority_JspNeedsAssessment,
                 // modalEditing: true,
-                // valueMap:["عملکرد ضروری","عملکرد توسعه ای","عملکرد بهبود"]
             }
         ],
         gridComponents: [

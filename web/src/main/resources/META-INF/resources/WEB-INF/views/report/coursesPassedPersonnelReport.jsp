@@ -42,8 +42,9 @@
             {name: "classStudentScoresStateId", title:"وضعیت قبولی", filterOperator:"equals", filterOnKeypress: true,autoFitWidth: true, valueMap: {400 : "قبولی با نمره", 401 : "قبولی بدون نمره",}},
             {name: "score",title:"<spring:message code="score"/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseType", title:"وضعیت نیازسنجی", filterOperator: "iContains", autoFitWidth: true},
-            {name: "naPriorityId", title:"اولویت نیازسنجی",filterOnKeypress: true, filterOperator:"equals" , autoFitWidth: true, valueMap: {111 : "عملکردی ضروری", 113 : "عملکردی توسعه", 112 : "عملکردی بهبود"}},
-
+            {name: "naPriorityId", title:"اولویت نیازسنجی",filterOnKeypress: true, filterOperator:"equals" , autoFitWidth: true, valueMap:
+                    {111 : "ضروری ضمن خدمت", 554 : "ضروری انتصاب سمت", 113 : "عملکردی توسعه", 112 : "عملکردی بهبود"}
+            },
             {name: "termId", hidden: true, filterOperator: "equals"},
             {name: "courseId", hidden: true, filterOperator: "equals"},
         ],
