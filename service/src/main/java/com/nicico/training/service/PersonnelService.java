@@ -254,8 +254,8 @@ public class PersonnelService implements IPersonnelService {
         List<Personnel> personnels = null;
         List<PersonnelRegistered> personnelRegistereds = null;
 
-        nationalCode=nationalCode.trim();
-        personnelNo=personnelNo.trim();
+        nationalCode = nationalCode.trim();
+        personnelNo = personnelNo.trim();
 
         if (personnelId > 0 && (personnelType == 1 || personnelType == 2)) {
 
@@ -422,6 +422,11 @@ public class PersonnelService implements IPersonnelService {
     @Override
     public List<Long> inDepartmentIsPlanner(String mojtameCode) {
         return personnelDAO.inDepartmentIsPlanner(mojtameCode);
+    }
+
+    @Override
+    public Optional<Personnel[]> getOneByNationalCodeAndDeleted(String nationalCode, int deleted) {
+        return personnelDAO.findOneByNationalCodeAndDeleted(nationalCode, deleted);
     }
 
 //    @Transactional(readOnly = true)

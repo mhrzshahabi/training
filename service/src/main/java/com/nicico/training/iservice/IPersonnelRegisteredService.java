@@ -7,9 +7,11 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.model.PersonnelRegistered;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 public interface IPersonnelRegisteredService {
 
@@ -36,4 +38,6 @@ public interface IPersonnelRegisteredService {
     PersonnelRegisteredDTO.Info getByPersonnelCode(String personnelCode);
 
     PersonnelRegisteredDTO.Info getByPersonnelCodeAndNationalCode(String nationalCode, String personnelNo);
+
+    Optional<PersonnelRegistered[]> getByNationalCode(String nationalCode);
 }

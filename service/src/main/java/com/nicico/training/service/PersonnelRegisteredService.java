@@ -118,10 +118,10 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
 
         for (String personnelNo : personnelNos) {
             List<PersonnelRegistered> list2 = list.stream().filter(p -> (p.getDeleted() == null) && (p.getPersonnelNo() != null && p.getPersonnelNo().equals(personnelNo)) || (p.getPersonnelNo2() != null && p.getPersonnelNo2().equals(personnelNo))).collect(Collectors.toList());
-            if (list2.size() == 0){
+            if (list2.size() == 0) {
                 result.add(new PersonnelRegisteredDTO.InfoForStudent());
 
-            } else{
+            } else {
                 prs = list2.get(0);
                 result.add(modelMapper.map(prs, PersonnelRegisteredDTO.InfoForStudent.class));
             }
@@ -133,7 +133,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     //unUsed
     @Override
     public PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode) {
-        PersonnelRegistered[]  personnelRegisterdList = personnelRegisteredDAO.findAllByNationalCode(nationalCode);
+        PersonnelRegistered[] personnelRegisterdList = personnelRegisteredDAO.findAllByNationalCode(nationalCode);
         if (personnelRegisterdList != null && personnelRegisterdList.length != 0)
             return modelMapper.map(personnelRegisterdList[0], PersonnelRegisteredDTO.Info.class);
         else
@@ -188,6 +188,11 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         }
 
         return modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class);
+    }
+
+    @Override
+    public Optional<PersonnelRegistered[]> getByNationalCode(String nationalCode) {
+        return personnelRegisteredDAO.findOneByNationalCode(nationalCode);
     }
 
 }

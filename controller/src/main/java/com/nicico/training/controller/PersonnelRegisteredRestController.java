@@ -11,6 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.repository.PersonnelDAO;
@@ -41,8 +42,9 @@ import java.util.Optional;
 @RequestMapping(value = "/api/personnelRegistered")
 public class PersonnelRegisteredRestController {
 
-    private final PersonnelRegisteredService personnelRegisteredService;
-    private final IPersonnelRegisteredService iPersonnelRegisteredService;
+//    private final PersonnelRegisteredService personnelRegisteredService;
+    private final IPersonnelRegisteredService personnelRegisteredService;
+    private final IPersonnelService iPersonnelService;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
     private final PersonnelDAO personnelDAO;
     private final ReportUtil reportUtil;
@@ -79,8 +81,8 @@ public class PersonnelRegisteredRestController {
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<PersonnelRegisteredDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
 
-        Optional<PersonnelRegistered[]> optionalPersonnelReg = personnelRegisteredDAO.findOneByNationalCode(nationalCode);
-        Optional<Personnel[]> optionalPersonnel = personnelDAO.findOneByNationalCode(nationalCode);
+        Optional<PersonnelRegistered[]> optionalPersonnelReg = personnelRegisteredService.getByNationalCode(nationalCode);
+        Optional<Personnel[]> optionalPersonnel = iPersonnelService.getOneByNationalCodeAndDeleted(nationalCode,0);
 
         if (((optionalPersonnel.map(personalInfo -> modelMapper.map(personalInfo, PersonnelDTO.Info.class)).orElse(null)) != null)
                 || ((optionalPersonnelReg.map(personalInfo -> modelMapper.map(personalInfo, PersonnelRegisteredDTO.Info.class)).orElse(null)) != null)) {

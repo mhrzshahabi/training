@@ -7,6 +7,7 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.model.Personnel;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 
 public interface IPersonnelService {
@@ -42,6 +43,8 @@ public interface IPersonnelService {
     SearchDTO.SearchRs<PersonnelDTO.FieldValue> findAllValuesOfOneFieldFromPersonnel(String fieldName);
 
     List<Long> inDepartmentIsPlanner(String mojtameCode);
+
+    Optional<Personnel[]> getOneByNationalCodeAndDeleted(String nationalCode, int i);
 
 //    <R> R getPOrRegisteredP(Long id, Function<Object, R> converter);
 }
