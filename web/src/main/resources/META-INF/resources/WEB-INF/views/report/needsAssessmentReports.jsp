@@ -770,7 +770,7 @@
                 ],
                 sortNormalizer(record){
                     switch (record.needsAssessmentPriorityId) {
-                        case 554:
+                        case 574:
                             return 0;
                         case 111:
                             return 1;

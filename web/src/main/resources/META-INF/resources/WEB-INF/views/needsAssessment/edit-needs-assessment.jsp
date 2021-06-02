@@ -1779,8 +1779,8 @@
         if (record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")) {
             let priority = null;
             if(record.needsAssessmentPriorityId === 113)
-                priority = 554;
-            else if (record.needsAssessmentPriorityId === 554)
+                priority = 574;
+            else if (record.needsAssessmentPriorityId === 574)
                 priority = 111;
             else
                 priority = record.needsAssessmentPriorityId + 1;
@@ -1825,7 +1825,7 @@
                 return "background-color : " + yellow;
             case 113:
                 return "background-color : " + green;
-            case 554:
+            case 574:
                 return "background-color : " + blue;
         }
     }
@@ -2043,8 +2043,8 @@
             }
             let priority = null;
             if(record.needsAssessmentPriorityId === 113)
-                priority = 554;
-            else if (record.needsAssessmentPriorityId === 554)
+                priority = 574;
+            else if (record.needsAssessmentPriorityId === 574)
                 priority = 111;
             else
                 priority = record.needsAssessmentPriorityId + 1;
