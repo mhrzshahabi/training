@@ -210,9 +210,9 @@
             {
                 name: "duration",
                 title: "<spring:message code='test.question.duration'/>",
-                required: true,
                 textAlign: "center",
                 type: "IntegerItem",
+                hidden:true,
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='test.question.duration.hint'/>",
                 showHintInField: true,
@@ -624,6 +624,7 @@
             });
 
         } else {
+            resendFinalExam_DynamicForm.setValue("duration",record.duration)
             StudentsDS_student_resend.fetchDataURL = tclassStudentUrl + "/students-iscList/resend/" + record.tclass.id+"/"+record.id;
             ListGrid_resendExamStudents.invalidateCache();
             ListGrid_resendExamStudents.fetchData();
