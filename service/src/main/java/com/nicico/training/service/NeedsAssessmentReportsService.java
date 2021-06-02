@@ -31,7 +31,7 @@ import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria
 @RequiredArgsConstructor
 public class NeedsAssessmentReportsService {
 
-    private final List<String> needsAssessmentPriorityCodes = Arrays.asList("AZ", "AB", "AT");
+    private final List<String> needsAssessmentPriorityCodes = Arrays.asList("AZ", "AB", "AT", "AE");
 
     private final ModelMapper modelMapper;
 
@@ -379,8 +379,29 @@ public class NeedsAssessmentReportsService {
         List<NeedsAssessmentReportsDTO.CourseNAS> result = new ArrayList<>();
         needsAssessmentPriorityCodes.forEach(code -> {
             NeedsAssessmentReportsDTO.CourseNAS courseNAS = new NeedsAssessmentReportsDTO.CourseNAS().setNeedsAssessmentPriorityId(parameterValueService.getId(code));
-            courseNAS.setTotalPersonnelCount(personnelCountByPriority.get(0).get(2 * (courseNAS.getNeedsAssessmentPriorityId().intValue() - 111)));
-            courseNAS.setPassedPersonnelCount(personnelCountByPriority.get(0).get(2 * (courseNAS.getNeedsAssessmentPriorityId().intValue() - 111) + 1));
+            int priorityId = courseNAS.getNeedsAssessmentPriorityId().intValue();
+            switch (priorityId) {
+                case 111:
+                    courseNAS.setTotalPersonnelCount(personnelCountByPriority.get(0).get(0));
+                    courseNAS.setPassedPersonnelCount(personnelCountByPriority.get(0).get(1));
+                    break;
+                case 574:
+                    courseNAS.setTotalPersonnelCount(personnelCountByPriority.get(0).get(2));
+                    courseNAS.setPassedPersonnelCount(personnelCountByPriority.get(0).get(3));
+                    break;
+                case 112:
+                    courseNAS.setTotalPersonnelCount(personnelCountByPriority.get(0).get(4));
+                    courseNAS.setPassedPersonnelCount(personnelCountByPriority.get(0).get(5));
+                    break;
+                case 113:
+                    courseNAS.setTotalPersonnelCount(personnelCountByPriority.get(0).get(6));
+                    courseNAS.setPassedPersonnelCount(personnelCountByPriority.get(0).get(7));
+                    break;
+                default:
+                    courseNAS.setTotalPersonnelCount(0);
+                    courseNAS.setPassedPersonnelCount(0);
+                    break;
+            }
             result.add(courseNAS);
         });
 

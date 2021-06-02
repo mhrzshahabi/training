@@ -58,7 +58,7 @@
             {name: "courseType", title:"وضعیت نیازسنجی", filterOperator: "iContains", autoFitWidth: true},
             {name: "naPriorityId", title:"اولویت نیازسنجی",filterOnKeypress: true, filterOperator: "equals",  autoFitWidth: true, valueMap: {
                     111 : "ضروری ضمن خدمت",
-                    554 : "ضروری انتصاب سمت",
+                    574 : "ضروری انتصاب سمت",
                     113 : "عملکردی توسعه",
                     112 : "عملکردی بهبود"
                 }},
