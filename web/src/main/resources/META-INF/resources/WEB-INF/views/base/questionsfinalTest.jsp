@@ -179,6 +179,8 @@
         sortField: "id",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
+        allowAdvancedCriteria: false,
+        filterOnKeypress: false,
         gridComponents: [Lable_AllQuestions_FinalTest, "filterEditor", "header", "body"],
         dataArrived:function(){
             let lgIds = ListGrid_ForQuestions_FinalTestJSP.data.getAllCachedRows().map(function(item) {
@@ -189,13 +191,11 @@
                 return;
             }
 
-
-            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  lgIds.some(p=>(!questionBank)?p==id:p==questionBankId));
-
-            if(findRows && findRows.length>0) {
-                ListGrid_AllQuestions_FinalTestJSP.setSelectedState(findRows);
-                findRows.setProperty("enabled", false);
-            }
+            // let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  lgIds.some(p=>(!questionBank)?p==id:p==questionBankId));
+            // if(findRows && findRows.length>0) {
+            //     ListGrid_AllQuestions_FinalTestJSP.setSelectedState(findRows);
+            //     findRows.setProperty("enabled", false);
+            // }
         },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -234,7 +234,7 @@
                         }
 
                         if(ids.length!==0){
-                            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id }) =>  [current.id].some(p=>p==id));
+                            // let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id }) =>  [current.id].some(p=>p==id));
 
                             let classRecord = FinalTestLG_finalTest.getSelectedRecord();
                             let classId = classRecord.tclass.id;
@@ -253,8 +253,10 @@
                                 callback: function (resp) {
                                     wait.close();
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                        ListGrid_AllQuestions_FinalTestJSP.selectRecord(findRows);
-                                        findRows.setProperty("enabled", false);
+                                        // if (findRows !== null && findRows > 0 ) {
+                                        //     ListGrid_AllQuestions_FinalTestJSP.selectRecord(findRows);
+                                        //     findRows.setProperty("enabled", false);
+                                        // }
                                         ListGrid_AllQuestions_FinalTestJSP.redraw();
 
                                         ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
@@ -346,14 +348,15 @@
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                     ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
-
-                                    let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  [activeId].some(p=>(!questionBank)?p==id:p==questionBankId));
-
-                                    if(findRows && findRows.length>0){
-                                        findRows.setProperty("enabled", true);
-                                        ListGrid_AllQuestions_FinalTestJSP.deselectRecord(findRows[0]);
-                                        ListGrid_AllQuestions_FinalTestJSP.redraw();
-                                    }
+                                    // let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  [activeId].some(p=>(!questionBank)?p==id:p==questionBankId));
+                                    //
+                                    // if(findRows !== null && findRows.length>0){
+                                    //     findRows.setProperty("enabled", true);
+                                    //     ListGrid_AllQuestions_FinalTestJSP.deselectRecord(findRows[0]);
+                                    //     ListGrid_AllQuestions_FinalTestJSP.redraw();
+                                    // }
+                                    ListGrid_AllQuestions_FinalTestJSP.deselectAllRecords();
+                                    ListGrid_AllQuestions_FinalTestJSP.redraw();
 
                                 } else {
                                     isc.say("خطا در پاسخ سرویس دهنده");
@@ -830,12 +833,16 @@
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                             ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
 
-                                            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
-
-                                            if(findRows && findRows.length>0){
-                                                findRows.setProperty("enabled", false);
-                                                ListGrid_AllQuestions_FinalTestJSP.redraw();
-                                            }
+                                            // let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
+                                            //
+                                            // if(findRows && findRows.length>0){
+                                            //
+                                            //     findRows.setProperty("enabled", false);
+                                            //     ListGrid_AllQuestions_FinalTestJSP.redraw();
+                                            // }
+                                            ListGrid_AllQuestions_FinalTestJSP.getSelectedRecords().setProperty("enabled", false);
+                                            ListGrid_AllQuestions_FinalTestJSP.deselectAllRecords();
+                                            ListGrid_AllQuestions_FinalTestJSP.redraw();
                                             isc.say("عملیات با موفقیت انجام شد.");
 
                                         } else {
@@ -882,13 +889,14 @@
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                             ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
-                                            let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
-
-                                            if(findRows && findRows.length>0){
-                                                findRows.setProperty("enabled", true);
-                                                ListGrid_AllQuestions_FinalTestJSP.deselectRecord(findRows);
-                                                ListGrid_AllQuestions_FinalTestJSP.redraw();
-                                            }
+                                            // let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
+                                            // if(findRows && findRows.length>0){
+                                            //     findRows.setProperty("enabled", true);
+                                            //     ListGrid_AllQuestions_FinalTestJSP.deselectRecord(findRows);
+                                            //     ListGrid_AllQuestions_FinalTestJSP.redraw();
+                                            // }
+                                            ListGrid_AllQuestions_FinalTestJSP.deselectAllRecords();
+                                            ListGrid_AllQuestions_FinalTestJSP.redraw();
                                             isc.say("عملیات با موفقیت انجام شد.");
                                         } else {
                                             isc.say("خطا در پاسخ سرویس دهنده");
