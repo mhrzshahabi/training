@@ -544,7 +544,7 @@
 
         let examData = {
             sourceExamId: record.id,
-            duration: resendFinalExam_DynamicForm.getValue("duration"),
+            duration: record.duration,
             time: resendFinalExam_DynamicForm.getValue("time"),
             startDate: resendFinalExam_DynamicForm.getValue("startDate"),
             users: users
