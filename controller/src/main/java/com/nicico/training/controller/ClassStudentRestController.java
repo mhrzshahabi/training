@@ -475,7 +475,10 @@ public class ClassStudentRestController {
                             LocalDate date =
                                     Instant.ofEpochMilli(data.getStartDate()).atZone(ZoneId.systemDefault()).toLocalDate();
                             CalendarTool calendarTool = new CalendarTool(date.getYear(),date.getMonthValue(), date.getDayOfMonth());
-                            classStudentInfo.setExtendTime(calendarTool.getIranianDate());
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTimeInMillis(data.getStartDate());
+                            cal.setTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
+                            classStudentInfo.setExtendTime( " ( "+ cal.get(Calendar.HOUR_OF_DAY) + ":"+cal.get(Calendar.MINUTE)+" ) "+" --- " +calendarTool.getIranianDate()  );
                         }
 
                     }

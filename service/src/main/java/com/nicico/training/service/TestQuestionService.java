@@ -196,7 +196,7 @@ public class TestQuestionService implements ITestQuestionService {
                     .orElse(null);
             if (answer != null){
                 if (answer.getAnswer() != null)
-                    q.setAnswer(answer.getAnswer() + "\n");
+                    q.setAnswer(answer.getAnswer().replace("\n", " "));
                 else
                     q.setAnswer("پاسخ داده نشده" + "\n");
 
@@ -209,7 +209,7 @@ public class TestQuestionService implements ITestQuestionService {
                 q.setAnswer("پاسخ داده نشده" + "\n");
 
             if (answer != null && answer.getExaminerAnswer()!=null)
-                q.setExaminerAnswer(answer.getExaminerAnswer()+ "\n");
+                q.setExaminerAnswer(answer.getExaminerAnswer());
                 else
                     q.setExaminerAnswer("پاسخ داده نشده" + "\n");
 
