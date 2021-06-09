@@ -48,6 +48,7 @@ import java.util.stream.Collectors;
 
  import static com.nicico.training.service.BaseService.makeNewCriteria;
 import static com.nicico.training.service.ClassSessionService.getPersianDate;
+import static com.nicico.training.utility.persianDate.PersianDate.convertToTimeZone;
 
 @Slf4j
 @RestController
@@ -475,10 +476,9 @@ public class ClassStudentRestController {
                             LocalDate date =
                                     Instant.ofEpochMilli(data.getStartDate()).atZone(ZoneId.systemDefault()).toLocalDate();
                             CalendarTool calendarTool = new CalendarTool(date.getYear(),date.getMonthValue(), date.getDayOfMonth());
-                            Calendar cal = Calendar.getInstance();
-                            cal.setTimeInMillis(data.getStartDate());
-                            cal.setTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
-                            classStudentInfo.setExtendTime( " ( "+ cal.get(Calendar.HOUR_OF_DAY) + ":"+cal.get(Calendar.MINUTE)+" ) "+" --- " +calendarTool.getIranianDate()  );
+                            String newTime = convertToTimeZone(data.getStartDate().toString());
+
+                            classStudentInfo.setExtendTime( " ( "+ newTime +" ) "+" --- " +calendarTool.getIranianDate()  );
                         }
 
                     }

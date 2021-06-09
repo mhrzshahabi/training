@@ -39,6 +39,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.utility.persianDate.PersianDate.convertToTimeZone;
 import static com.nicico.training.utility.persianDate.PersianDate.getEndDateFromDuration;
 import static dto.exam.EQuestionType.DESCRIPTIVE;
 import static dto.exam.EQuestionType.MULTI_CHOICES;
@@ -799,19 +800,6 @@ public abstract class EvaluationBeanMapper {
         }
 
         return programs;
-    }
-
-
-    private String convertToTimeZone(String dateString) {
-
-// parse the string
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
-        DateTime dateTime = formatter.parseDateTime(dateString);
-        int hours = (int) (-4); //since both are ints, you get an int
-        int minutes = (int) (-30);
-        dateTime = dateTime.plusMinutes(minutes);
-        dateTime = dateTime.plusHours(hours);
-        return dateTime.getHourOfDay() + ":" + dateTime.getMinuteOfHour();
     }
 
     private Date getDate(String date, String time) {
