@@ -10,6 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.controller.util.TimeZoneUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.repository.ClassStudentDAO;
@@ -48,7 +49,6 @@ import java.util.stream.Collectors;
 
  import static com.nicico.training.service.BaseService.makeNewCriteria;
 import static com.nicico.training.service.ClassSessionService.getPersianDate;
-import static com.nicico.training.utility.persianDate.PersianDate.convertToTimeZone;
 
 @Slf4j
 @RestController
@@ -476,9 +476,12 @@ public class ClassStudentRestController {
                             LocalDate date =
                                     Instant.ofEpochMilli(data.getStartDate()).atZone(ZoneId.systemDefault()).toLocalDate();
                             CalendarTool calendarTool = new CalendarTool(date.getYear(),date.getMonthValue(), date.getDayOfMonth());
-                            String newTime = convertToTimeZone(data.getStartDate().toString());
-
-                            classStudentInfo.setExtendTime( " ( "+ newTime +" ) "+" --- " +calendarTool.getIranianDate()  );
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTimeInMillis(data.getStartDate());
+                            cal.setTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
+                            int hour = cal.get(Calendar.HOUR_OF_DAY)+ TimeZoneUtil.getHour();
+                            int min = cal.get(Calendar.MINUTE)+ TimeZoneUtil.getMin();
+                            classStudentInfo.setExtendTime( " ( "+ hour + ":"+min+" ) "+" --- " +calendarTool.getIranianDate()  );
                         }
 
                     }
