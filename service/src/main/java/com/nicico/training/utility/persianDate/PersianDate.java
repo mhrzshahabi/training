@@ -681,4 +681,15 @@ public final class PersianDate implements ChronoLocalDate {
         dateTime = dateTime.plusHours(hours);
         return dateTime.getHourOfDay() + ":" + dateTime.getMinuteOfHour();
     }
+    public static String convertFtomTimeZone(String dateString) {
+
+// parse the string
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
+        DateTime dateTime = formatter.parseDateTime(dateString);
+        int hours = (int) (4); //since both are ints, you get an int
+        int minutes = (int) (30);
+        dateTime = dateTime.plusMinutes(minutes);
+        dateTime = dateTime.plusHours(hours);
+        return dateTime.getHourOfDay() + ":" + dateTime.getMinuteOfHour();
+    }
 }
