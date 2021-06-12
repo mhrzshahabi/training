@@ -1356,8 +1356,26 @@
                 mark = "<span class=\"mark\">( بارم ثبت نشده )</span>";
 
 
-                text_FormItem.title = (i+1)+"-"+customSplit2(answers[i].question, 150) +"   "+mark+ "\n"+
-                 " جواب استاد :"+ "\n"+ "  "+correctAnswer;
+
+            let files="<span class=\"files\"></span>";
+
+            if (answers[i].files!==null && answers[i].files!==undefined)
+            {
+                let token="<%=accessToken%>";
+                let filesData=" ";
+
+                for(let key in answers[i].files)
+                {
+                    filesData+=" "
+                    filesData+="<a href=\""+downloadFiles+answers[i].files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل سوال - </a>"
+                }
+                files=filesData;
+            }
+
+
+            text_FormItem.title = (i+1)+"-"+ customSplit2(answers[i].question, 150)  +"   "+mark+" "+files+ "\n\n"+
+                " جواب استاد :"+ "\n"+ "  "+correctAnswer+ "\n";
+
                 // correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
                 text_FormItem.value = answers[i].answer;
                 text_FormItem.name = answers[i].answer;

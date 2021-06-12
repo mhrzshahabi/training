@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.controller.minio.MinIoClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
@@ -21,11 +22,13 @@ import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import request.evaluation.StudentEvaluationAnswerDto;
@@ -42,6 +45,7 @@ import response.exam.ResendExamTimes;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -67,6 +71,7 @@ public class ElsRestController {
     private final ITclassService iTclassService;
     private final PersonalInfoService personalInfoService;
     private final ElsClient client;
+    private final MinIoClient client2;
     private final TestQuestionService testQuestionService;
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
@@ -526,6 +531,26 @@ public class ElsRestController {
 
 
 
+
+    }
+
+
+    @RequestMapping(value = {"/download/{group}/{key}/{token}"}, method = RequestMethod.GET)
+    @Transactional
+    public ResponseEntity<ByteArrayResource> downloadWithKey(HttpServletRequest request, HttpServletResponse response, @PathVariable String group
+            , @PathVariable String key
+            , @PathVariable String token
+    ) throws IOException {
+
+        ByteArrayResource file= client2.downloadFile("Bearer " +token ,group,key);
+        try {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +file.getFilename()+  "\"")
+                    .body(file);
+        } catch ( Exception e) {
+            e.printStackTrace();
+            return null;
+        }
 
     }
 

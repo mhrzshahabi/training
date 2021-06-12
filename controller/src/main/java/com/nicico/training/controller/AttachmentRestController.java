@@ -226,4 +226,22 @@ public class AttachmentRestController {
         }
     }
 
+    @RequestMapping(value = {"/download/{group}/{key}"}, method = RequestMethod.GET)
+    @Transactional
+    public ResponseEntity<ByteArrayResource> downloadWithKey(HttpServletRequest request, HttpServletResponse response, @PathVariable String group
+   , @PathVariable String key
+    ) throws IOException {
+
+        ByteArrayResource file= client.downloadFile(request.getHeader("Authorization"),"608fa5263cee3d76470c3d30","fd97198b-bfbf-40e7-8b0b-42846166fe73");
+        try {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +"file"+  "\"")
+                    .body(file);
+        } catch ( Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+
+    }
+
 }

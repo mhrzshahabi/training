@@ -526,4 +526,6 @@ left: 0 !important;
 }
 .mark {
     color: #9e0000;
+}.files {
+    color: #25d000;
 }

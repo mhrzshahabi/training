@@ -4,7 +4,9 @@
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 // <script>
-
+    <%
+        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    %>
     let finalTestMethod_finalTest;
     let oLoadAttachments_finalTest;
     let totalScore = 0;
@@ -898,8 +900,25 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 mark = "<span class=\"mark\">( بارم ثبت نشده )</span>";
 
 
-                text_FormItem.title = (i+1)+"-"+ customSplit(answers[i].question, 150)  +"   "+mark+ "\n"+
-                 " جواب استاد :"+ "\n"+ "  "+correctAnswer;
+            let files="<span class=\"files\"></span>";
+
+            if (answers[i].files!==null && answers[i].files!==undefined)
+            {
+                let token="<%=accessToken%>";
+                 let filesData=" ";
+
+                for(let key in answers[i].files)
+                {
+                    filesData+=" "
+                    // filesData+="<a href=\"http://localhost:8080/training/anonymous/els/download/"+answers[i].files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل سوال - </a>"
+                    filesData+="<a href=\""+downloadFiles+answers[i].files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل سوال - </a>"
+                }
+                files=filesData;
+            }
+
+
+            text_FormItem.title = (i+1)+"-"+ customSplit(answers[i].question, 150)  +"   "+mark+" "+files+ "\n\n"+
+                 " جواب استاد :"+ "\n"+ "  "+correctAnswer+ "\n";
 
                 text_FormItem.value = answers[i].answer;
                 text_FormItem.name = answers[i].answer;

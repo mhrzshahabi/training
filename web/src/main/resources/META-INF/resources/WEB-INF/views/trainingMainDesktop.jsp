@@ -1150,6 +1150,7 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
+    const baseUrl = "${contextPath}";
     const trainingMainUrl = rootUrl + "/main";
     const oauthUserUrl = rootUrl + "/oauth/users";
     const oauthRoleUrl = rootUrl + "/oauth/app-roles";
@@ -1172,6 +1173,7 @@
     const viewActivePersonnelInRegisteringUrl = rootUrl + "/view-active-personnel-in-registering";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
+    const downloadFiles = baseUrl + "/anonymous/els/download/";
     const parameterUrl = rootUrl + "/parameter";
     const parameterValueUrl = rootUrl + "/parameter-value";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";

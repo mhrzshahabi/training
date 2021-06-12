@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -15,5 +16,6 @@ public class ExamAnswerDto {
     private String examinerAnswer;
     private Double  mark;
     private String type;
+    private Map<String,String> files;
     private List<ImportedQuestionOption> options;
 }
