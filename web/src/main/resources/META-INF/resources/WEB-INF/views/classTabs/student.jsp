@@ -2352,6 +2352,7 @@
                                                 "nationalCode" : person.nationalCode,
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
+                                                "employmentStatus": person.employmentStatus,
                                                 "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
                                             });
                                         }
@@ -2369,6 +2370,7 @@
                         equalCourseIds.add(courseId);
                         SelectedPersonnelsLG_student.setData(students);
                         wait.close();
+                        debugger
                         addValidStudents(classId, courseId, equalCourseIds, students);
                         // SelectedPersonnelsLG_student.data.clearAll();
                         ClassStudentWin_student_GroupInsert.close();
