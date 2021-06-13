@@ -1367,4 +1367,15 @@
             <column name="b_has_test" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="nick (generated)" id="1623473096661-525">
+        <sql>
+            <![CDATA[
+                ALTER TABLE tbl_class ADD f_target_population_type_id number(19, 0);
+                UPDATE tbl_class SET f_target_population_type_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'TargetPopulationOther');
+                ALTER TABLE tbl_class MODIFY f_target_population_type_id NOT NULL;
+            ]]>
+        </sql>
+        <addForeignKeyConstraint baseColumnNames="f_target_population_type_id" baseTableName="tbl_class" constraintName="FKfsvy7pf9o912i84vkmi88cw7k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+
+    </changeSet>
 </databaseChangeLog>

@@ -79,6 +79,7 @@ public class TclassDTO {
     private Boolean studentOnlineEvalStatus;
     private Boolean hasTest;
     private String courseCode;
+    private Long targetPopulationTypeId;
 
 
     @Getter
@@ -122,6 +123,7 @@ public class TclassDTO {
         private InstituteDTO.InstituteInfoTuple organizer;
         private List<TclassDTO.InfoTuple> canceledClasses;
         private String isSentMessage;
+        private ParameterValueDTO targetPopulationType;
         //*********************************
         //******old code for alarms********
         // private String hasWarning;

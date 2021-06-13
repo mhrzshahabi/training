@@ -255,4 +255,11 @@ public class Tclass extends Auditable {
 
     @Column(name = "b_has_test")
     private Boolean hasTest;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_target_population_type_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue targetPopulationType;
+
+    @Column(name = "f_target_population_type_id")
+    private Long targetPopulationTypeId;
 }
