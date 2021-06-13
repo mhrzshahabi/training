@@ -815,6 +815,12 @@
                         keyPressFilter: "[0-9]"
                     }
                 },
+                  {
+                    name: "employmentStatus",
+                    title: "<spring:message code="employment.status"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
                 {
                     name: "applicantCompanyName",
                     title: "<spring:message code="company.applicant"/>",
@@ -1777,7 +1783,9 @@
             let cr = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
-                criteria: [{fieldName: "courseId", operator: "equals", value: classRecord.courseId}]
+                criteria: [{fieldName: "courseId", operator: "equals", value: classRecord.courseId}
+                // ,{fieldName: "firstName", operator: "notContains", value: "ابراهیم"}
+                ]
             };
             PersonnelsLG_student.invalidateCache();
             PersonnelsLG_student.setImplicitCriteria(cr);
@@ -1914,8 +1922,8 @@
         }
 
         function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
-
             let warnStudents = [];
+            let retiredPersonnel = [];
             let warnPreCourseStudents = [];
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
 
@@ -1928,6 +1936,13 @@
 
                 let preCourseIds = JSON.parse(resp.httpResponseText).map(q => q.id);
                 for (let inx = 0; inx < studentsDataArray.length; inx++) {
+
+                    if (studentsDataArray[inx].employmentStatus !== null &&
+                        studentsDataArray[inx].employmentStatus !== undefined &&
+                        studentsDataArray[inx].employmentStatus.contains("بازنشسته")){
+                        retiredPersonnel.add(studentsDataArray[inx]); }
+
+
 
                     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
                     studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
@@ -1948,7 +1963,8 @@
                             if (studentsDataArray.length-1 === checkAll-1) {
                                 var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
                                 studentsDataArray.removeList(warnPreCourseStudents);
-                                validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray);
+
+                                validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray,retiredPersonnel);
                             }
 
                         } else {
@@ -1973,8 +1989,7 @@
             }));
         }
 
-        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray) {
-
+        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray,retiredPersonnel) {
             let preCourseNames = "";
             let names = "";
 
@@ -1996,7 +2011,16 @@
                 }
             }
 
-            if (warnPreCourseStudents.length > 0 || warnStudents.length > 0) {
+             if (retiredPersonnel.length > 0) {
+
+                for (let z = 0; z < retiredPersonnel.length; z++) {
+                    names = names.concat(retiredPersonnel[z].firstName + " " + retiredPersonnel[z].lastName);
+                    if (z !== retiredPersonnel.length -1)
+                        names = names.concat(", ");
+                }
+            }
+
+            if (warnPreCourseStudents.length > 0 || warnStudents.length > 0 || retiredPersonnel.length > 0) {
 
                 let DynamicForm_Warn_Students = isc.DynamicForm.create({
                     width: 600,
@@ -2061,6 +2085,12 @@
                     DynamicForm_Warn_Students.getItem("warnNames").show();
                     DynamicForm_Warn_Students.setValue("warnNames", names);
                 }
+                  if (retiredPersonnel.length > 0) {
+                    DynamicForm_Warn_Students.getItem("text").show();
+                    DynamicForm_Warn_Students.getItem("warnNames").show();
+                    DynamicForm_Warn_Students.setValue("text", "<spring:message code='msg.class.student.retired.warn'/>");
+                    DynamicForm_Warn_Students.setValue("warnNames", names);
+                 }
 
                 let Window_Warn_Students = isc.Window.create({
                     width: 600,
