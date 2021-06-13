@@ -101,6 +101,7 @@
             {name: "reason" , autoFitWidth: true},
             {name: "classStatus" , autoFitWidth: true},
             {name: "topology"},
+            {name: "targetPopulationTypeId"},
             {name: "trainingPlaceIds"},
             {name: "instituteId"},
             {name: "workflowEndingStatusCode"},
@@ -184,6 +185,15 @@
         allowAdvancedCriteria: true,
     });
 
+    var RestDataSource_Target_Population_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/TargetPopulation"
+    });
+
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -200,7 +210,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
-        fetchDataURL: parameterValueUrl + "/iscList/438"
+        fetchDataURL: parameterValueUrl + "/listByCode/RCC"
     });
 
     let SupervisorDS_JspClass = isc.TrDS.create({
@@ -548,6 +558,7 @@
                 },
                 filterOnKeypress: true,
             },
+            {name: "targetPopulationTypeId", hidden: true},
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
             {
@@ -820,8 +831,30 @@
                 }
             },
             {
+                name: "targetPopulationTypeId",
+                editorType: "ComboBoxItem",
+                <%--title: "<spring:message code="executer"/>:",--%>
+                title: "دوره ویژه ی:",
+                colSpan: 1,
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_Target_Population_List,
+                displayField: "title",
+                autoFetchData: false,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                    ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
+            },
+            {
                 name: "hduration",
-                colSpan: 2,
+                colSpan: 1,
                 formatOnBlur: true,
                 title: "<spring:message code='duration'/>:",
                 textAlign: "Right",
@@ -1780,6 +1813,7 @@
         align: "center",
         click: function () {
             Window_Class_JspClass.close();
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         }
     });
 
@@ -1900,6 +1934,7 @@
                     simpleDialog("<spring:message code="message"/>", response.message, "0", "error");
                 }
             }));
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         }
     });
 
@@ -1942,6 +1977,7 @@
         placement: "fillPanel",
         closeClick: function () {
             this.Super("closeClick", arguments);
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         },
         items: [
             isc.TrVLayout.create({
@@ -2892,6 +2928,7 @@
             function startEdit(record) {
                 VM_JspClass.clearErrors();
                 VM_JspClass.clearValues();
+                DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").disable();
                 delete RestDataSource_Term_JspClass.implicitCriteria;
                 DynamicForm_Class_JspClass.setValue("erunType", record.course.erunType);
                 wait.show();

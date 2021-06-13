@@ -183,6 +183,9 @@ public class TclassService implements ITclassService {
         Long classOldTeacher = tclass.getTeacherId();
         if (tclass.getClassStatus().equals("4")){
             throw new TrainingException(TrainingException.ErrorType.Forbidden);
+        }
+        else if (!tclass.getTargetPopulationTypeId().equals(request.getTargetSocietyTypeId())){
+            throw new TrainingException(TrainingException.ErrorType.Forbidden);
         } else {
             Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
             List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
