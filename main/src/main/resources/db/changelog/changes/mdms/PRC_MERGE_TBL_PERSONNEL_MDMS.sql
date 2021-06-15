@@ -224,31 +224,31 @@ USING (
         AND department_title IS NOT NULL)
        OR (TR_PERS.department_title IS NOT NULL
         AND department_title IS NULL)
-       OR TR_PERS.education_level_title <> education_level_title
+       OR TR_PERS.education_level_title <> emp.c_edu_lvl_title
        OR (TR_PERS.education_level_title IS NULL
-        AND education_level_title IS NOT NULL)
+        AND emp.c_edu_lvl_title IS NOT NULL)
        OR (TR_PERS.education_level_title IS NOT NULL
-        AND education_level_title IS NULL)
-       OR TR_PERS.education_field_title <> education_field_title
+        AND emp.c_edu_lvl_title IS NULL)
+       OR TR_PERS.education_field_title <> emp.c_area_of_study
        OR (TR_PERS.education_field_title IS NULL
-        AND education_field_title IS NOT NULL)
+        AND emp.c_area_of_study IS NOT NULL)
        OR (TR_PERS.education_field_title IS NOT NULL
-        AND education_field_title IS NULL)
-       OR TR_PERS.email <> email
+        AND emp.c_area_of_study IS NULL)
+       OR TR_PERS.email <> emp.c_email
        OR (TR_PERS.email IS NULL
-        AND email IS NOT NULL)
+        AND emp.c_email IS NOT NULL)
        OR (TR_PERS.email IS NOT NULL
-        AND email IS NULL)
-       OR TR_PERS.employment_date <> employment_date
+        AND emp.c_email IS NULL)
+       OR TR_PERS.employment_date <> emp.c_emp_date
        OR (TR_PERS.employment_date IS NULL
-        AND employment_date IS NOT NULL)
+        AND emp.c_emp_date IS NOT NULL)
        OR (TR_PERS.employment_date IS NOT NULL
-        AND employment_date IS NULL)
-       OR TR_PERS.employment_status_id <> employment_status_id
+        AND emp.c_emp_date IS NULL)
+       OR TR_PERS.employment_status_id <> emp.c_emp_status_id
        OR (TR_PERS.employment_status_id IS NULL
-        AND employment_status_id IS NOT NULL)
+        AND emp.c_emp_status_id IS NOT NULL)
        OR (TR_PERS.employment_status_id IS NOT NULL
-        AND employment_status_id IS NULL)
+        AND emp.c_emp_status_id IS NULL)
        OR TR_PERS.EMPLOYMENT_STATUS_TITLE <> emp.EMPLOYMENT_STATUS_TITLE
        OR (TR_PERS.EMPLOYMENT_STATUS_TITLE IS NULL
         AND emp.EMPLOYMENT_STATUS_TITLE IS NOT NULL)
@@ -259,61 +259,61 @@ USING (
         AND emp.EMPLOYMENT_TYPE_TITLE IS NOT NULL)
        OR (TR_PERS.EMPLOYMENT_TYPE_TITLE IS NOT NULL
         AND emp.EMPLOYMENT_TYPE_TITLE IS NULL)
-       OR TR_PERS.father_name <> father_name
+       OR TR_PERS.father_name <> emp.c_father_name
        OR (TR_PERS.father_name IS NULL
-        AND father_name IS NOT NULL)
+        AND emp.c_father_name IS NOT NULL)
        OR (TR_PERS.father_name IS NOT NULL
-        AND father_name IS NULL)
-       OR TR_PERS.first_name <> first_name
+        AND emp.c_father_name IS NULL)
+       OR TR_PERS.first_name <> emp.c_first_name
        OR (TR_PERS.first_name IS NULL
-        AND first_name IS NOT NULL)
+        AND emp.c_first_name IS NOT NULL)
        OR (TR_PERS.first_name IS NOT NULL
-        AND first_name IS NULL)
+        AND emp.c_first_name IS NULL)
        OR TR_PERS.gender_title <> emp.gender_title
        OR (TR_PERS.gender_title IS NULL
         AND emp.gender_title IS NOT NULL)
        OR (TR_PERS.gender_title IS NOT NULL
         AND emp.gender_title IS NULL)
-       OR TR_PERS.last_name <> last_name
+       OR TR_PERS.last_name <> emp.c_last_name
        OR (TR_PERS.last_name IS NULL
-        AND last_name IS NOT NULL)
+        AND emp.c_last_name IS NOT NULL)
        OR (TR_PERS.last_name IS NOT NULL
-        AND last_name IS NULL)
+        AND emp.c_last_name IS NULL)
        OR TR_PERS.marital_status_title <> emp.marital_status_title
        OR (TR_PERS.marital_status_title IS NULL
         AND emp.marital_status_title IS NOT NULL)
        OR (TR_PERS.marital_status_title IS NOT NULL
         AND emp.marital_status_title IS NULL)
-       OR TR_PERS.mobile <> mobile
+       OR TR_PERS.mobile <> emp.c_mobile
        OR (TR_PERS.mobile IS NULL
-        AND mobile IS NOT NULL)
+        AND emp.c_mobile IS NOT NULL)
        OR (TR_PERS.mobile IS NOT NULL
-        AND mobile IS NULL)
-       OR TR_PERS.national_code <> national_code
+        AND emp.c_mobile IS NULL)
+       OR TR_PERS.national_code <> emp.c_national_code
        OR (TR_PERS.national_code IS NULL
-        AND national_code IS NOT NULL)
+        AND emp.c_national_code IS NOT NULL)
        OR (TR_PERS.national_code IS NOT NULL
-        AND national_code IS NULL)
-       OR TR_PERS.emp_no <> emp_no
+        AND emp.c_national_code IS NULL)
+       OR TR_PERS.emp_no <> to_char(emp.c_em_number)
        OR (TR_PERS.emp_no IS NULL
-        AND emp_no IS NOT NULL)
+        AND to_char(emp.c_em_number) IS NOT NULL)
        OR (TR_PERS.emp_no IS NOT NULL
-        AND emp_no IS NULL)
-       OR TR_PERS.phone <> phone
+        AND to_char(emp.c_em_number) IS NULL)
+       OR TR_PERS.phone <> emp.C_HOME_PHONE
        OR (TR_PERS.phone IS NULL
-        AND phone IS NOT NULL)
+        AND emp.C_HOME_PHONE IS NOT NULL)
        OR (TR_PERS.phone IS NOT NULL
-        AND phone IS NULL)
+        AND emp.C_HOME_PHONE IS NULL)
        OR TR_PERS.post_code <> emp.post_code
        OR (TR_PERS.post_code IS NULL
         AND emp.post_code IS NOT NULL)
        OR (TR_PERS.post_code IS NOT NULL
         AND emp.post_code IS NULL)
-       OR TR_PERS.post_grade_code <> post_grade_code
+       OR TR_PERS.post_grade_code <> emp.C_JOB_GRADE
        OR (TR_PERS.post_grade_code IS NULL
-        AND post_grade_code IS NOT NULL)
+        AND emp.C_JOB_GRADE IS NOT NULL)
        OR (TR_PERS.post_grade_code IS NOT NULL
-        AND post_grade_code IS NULL)
+        AND emp.C_JOB_GRADE IS NULL)
        OR TR_PERS.post_title <> emp.post_title
        OR (TR_PERS.post_title IS NULL
         AND emp.post_title IS NOT NULL)
