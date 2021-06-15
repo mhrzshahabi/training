@@ -1813,6 +1813,7 @@
         align: "center",
         click: function () {
             Window_Class_JspClass.close();
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         }
     });
 
@@ -1933,6 +1934,7 @@
                     simpleDialog("<spring:message code="message"/>", response.message, "0", "error");
                 }
             }));
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         }
     });
 
@@ -1975,6 +1977,7 @@
         placement: "fillPanel",
         closeClick: function () {
             this.Super("closeClick", arguments);
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         },
         items: [
             isc.TrVLayout.create({
@@ -2925,6 +2928,7 @@
             function startEdit(record) {
                 VM_JspClass.clearErrors();
                 VM_JspClass.clearValues();
+                DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").disable();
                 delete RestDataSource_Term_JspClass.implicitCriteria;
                 DynamicForm_Class_JspClass.setValue("erunType", record.course.erunType);
                 wait.show();
