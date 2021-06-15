@@ -84,7 +84,7 @@
                         ListGrid_class_Evaluation.fetchData(mainCriteria);
                     }
                     if (value === "2") {
-                        evalDateCriteria = createCriteria("tclassStartDate", "equals", todayDate);
+                        evalDateCriteria = createCriteria("tclassEndDate", "equals", todayDate);
                         evalTypeCriteria = createCriteria("evaluation", "equals", "2");
                         let mainCriteria = createMainCriteria();
                         // let criteria = {
