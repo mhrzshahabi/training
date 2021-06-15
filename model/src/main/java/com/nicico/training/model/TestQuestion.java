@@ -40,6 +40,12 @@ public class TestQuestion extends Auditable {
     @Column(name = "c_date")
     private String date;
 
+    @Column(name = "c_end_date")
+    private String endDate;
+
+    @Column(name = "c_end_time")
+    private String endTime;
+
     @Column(name = "c_time")
     private String time;
 

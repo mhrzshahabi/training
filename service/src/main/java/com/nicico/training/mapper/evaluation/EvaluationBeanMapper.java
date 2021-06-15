@@ -426,12 +426,12 @@ public abstract class EvaluationBeanMapper {
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
         String newTime = convertToTimeZone(object.getExamItem().getTime());
+        String newEndTime = convertToTimeZone(object.getExamItem().getEndTime());
 //        String newTime = object.getExamItem().getTime();
 
         Date startDate = getDate(object.getExamItem().getDate(), newTime);
 
-        Date endDate = getEndDateFromDuration(getStringGeoDate(object.getExamItem().getDate(), newTime)
-                , object.getExamItem().getDuration());
+        Date endDate = getDate(object.getExamItem().getEndDate(), newEndTime);
         ExamCreateDTO exam = new ExamCreateDTO();
         exam.setCode(object.getExamItem().getTclass().getCode());
         exam.setName(object.getExamItem().getTclass().getTitleClass());

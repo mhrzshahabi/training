@@ -14,6 +14,8 @@ public class ExamData {
     private Long duration;
     private String time;
     private String date;
+    private String endTime;
+    private String endDate;
     private Long id;
     private ExamClassData tclass;
  }

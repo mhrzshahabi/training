@@ -1923,7 +1923,7 @@
 
         function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
             let warnStudents = [];
-            let retiredPersonnel = [];
+            let inValidPersonnel = [];
             let warnPreCourseStudents = [];
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
 
@@ -1939,8 +1939,17 @@
 
                     if (studentsDataArray[inx].employmentStatus !== null &&
                         studentsDataArray[inx].employmentStatus !== undefined &&
-                        studentsDataArray[inx].employmentStatus.contains("بازنشسته")){
-                        retiredPersonnel.add(studentsDataArray[inx]); }
+                             (
+                             studentsDataArray[inx].employmentStatus.contains("بازنشسته") ||
+                             studentsDataArray[inx].employmentStatus.contains("فوت") ||
+                             studentsDataArray[inx].employmentStatus.contains("اخراج") ||
+                             studentsDataArray[inx].employmentStatus.contains("استعفا") ||
+                             studentsDataArray[inx].employmentStatus.contains("خاتمه قرارداد") ||
+                             studentsDataArray[inx].employmentStatus.contains("فسخ")
+                              )
+
+                                      ){
+                        inValidPersonnel.add(studentsDataArray[inx]); }
 
 
 
@@ -1964,7 +1973,7 @@
                                 var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
                                 studentsDataArray.removeList(warnPreCourseStudents);
 
-                                validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray,retiredPersonnel);
+                                validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray,inValidPersonnel);
                             }
 
                         } else {
@@ -1989,7 +1998,7 @@
             }));
         }
 
-        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray,retiredPersonnel) {
+        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray,inValidPersonnel) {
             let preCourseNames = "";
             let names = "";
 
@@ -2011,16 +2020,16 @@
                 }
             }
 
-             if (retiredPersonnel.length > 0) {
+             if (inValidPersonnel.length > 0) {
 
-                for (let z = 0; z < retiredPersonnel.length; z++) {
-                    names = names.concat(retiredPersonnel[z].firstName + " " + retiredPersonnel[z].lastName);
-                    if (z !== retiredPersonnel.length -1)
+                for (let z = 0; z < inValidPersonnel.length; z++) {
+                    names = names.concat(inValidPersonnel[z].firstName + " " + inValidPersonnel[z].lastName);
+                    if (z !== inValidPersonnel.length -1)
                         names = names.concat(", ");
                 }
             }
 
-            if (warnPreCourseStudents.length > 0 || warnStudents.length > 0 || retiredPersonnel.length > 0) {
+            if (warnPreCourseStudents.length > 0 || warnStudents.length > 0 || inValidPersonnel.length > 0) {
 
                 let DynamicForm_Warn_Students = isc.DynamicForm.create({
                     width: 600,
@@ -2085,7 +2094,7 @@
                     DynamicForm_Warn_Students.getItem("warnNames").show();
                     DynamicForm_Warn_Students.setValue("warnNames", names);
                 }
-                  if (retiredPersonnel.length > 0) {
+                  if (inValidPersonnel.length > 0) {
                     DynamicForm_Warn_Students.getItem("text").show();
                     DynamicForm_Warn_Students.getItem("warnNames").show();
                     DynamicForm_Warn_Students.setValue("text", "<spring:message code='msg.class.student.retired.warn'/>");
@@ -2370,7 +2379,6 @@
                         equalCourseIds.add(courseId);
                         SelectedPersonnelsLG_student.setData(students);
                         wait.close();
-                        debugger
                         addValidStudents(classId, courseId, equalCourseIds, students);
                         // SelectedPersonnelsLG_student.data.clearAll();
                         ClassStudentWin_student_GroupInsert.close();

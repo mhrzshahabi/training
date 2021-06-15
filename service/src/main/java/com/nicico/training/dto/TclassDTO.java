@@ -169,6 +169,48 @@ public class TclassDTO {
             else return 0;
         }
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassExamInfo")
+    public static class ExamInfo {
+        private Long courseId;
+        private Long id;
+        private CourseDTO.CourseInfoTuple course;
+        ////////////////
+        private String code;
+        private Long teacherId;
+        private String titleClass;
+        private String teachingType;//روش آموزش
+        @ApiModelProperty(required = true)
+        private String startDate;
+        @ApiModelProperty(required = true)
+        private String endDate;
+        private String scoringMethod;
+        private String acceptancelimit;
+        private Boolean preCourseTest;
+        private String evaluation;
+        private String behavioralLevel;
+        private Boolean teacherOnlineEvalStatus;
+        private Boolean studentOnlineEvalStatus;
+        private Boolean hasTest;
+        private String courseCode;
+//        private Integer evaluationStatusReactionTraining;
+//        private Integer evaluationStatusReactionTeacher;
+//        private Integer startEvaluation;
+        //        private Long minCapacity;
+//        private Long maxCapacity;
+        //        private String teachingBrand;//نحوه آموزش
+        //        @Getter(AccessLevel.NONE)
+//        private TeacherDTO.TeacherFullNameTuple teacher;
+//        private List<TclassDTO.InfoTuple> canceledClasses;
+//        public String getTeacher() {
+//            if (teacher != null)
+//                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
+//            else return " ";
+//        }
+
+    }
 
     // ------------------------------
 

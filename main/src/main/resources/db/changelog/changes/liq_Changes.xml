@@ -1367,4 +1367,12 @@
             <column name="b_has_test" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="namdari (generated)" id="1623579894000-1">
+        <addColumn tableName="tbl_test_question">
+            <column name="c_end_date" type="varchar2(255 CHAR)"/>
+            <column name="c_end_time" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

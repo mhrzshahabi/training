@@ -11,6 +11,13 @@
     let oLoadAttachments_finalTest;
     let totalScore = 0;
     let sourceExamId = 0;
+    let firstHour = "";
+    let diffHour = "";
+    let diffMin = "";
+    let examDuration = "";
+    let secondHour = "";
+    let firstMin = "";
+    let secondMin = "";
     let isCopyForm = false;
     let allResultScores;
     var scoreLabel = isc.Label.create({
@@ -169,11 +176,11 @@
                 title: "<spring:message code="end.date"/>",
                 filterOperator: "iContains", autoFitWidth: true
             },
-            {
-                name: "tclass.teacher",
-                title: "<spring:message code="teacher"/>",
-                filterOperator: "iContains", autoFitWidth: true
-            },
+            <%--{--%>
+            <%--    name: "tclass.teacher",--%>
+            <%--    title: "<spring:message code="teacher"/>",--%>
+            <%--    filterOperator: "iContains", autoFitWidth: true--%>
+            <%--},--%>
             {
                 name: "date",
                 title: "<spring:message code="test.question.date"/>",
@@ -249,7 +256,7 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "group"},
-            {name: "titleClass"},
+            {name: "c"},
             {name: "startDate"},
             {name: "endDate"},
             {name: "studentCount", canFilter: false, canSort: false},
@@ -308,15 +315,15 @@
             {name: "tclass.course.titleFa", sortNormalizer: function (record) {return record.tclass.course.titleFa; } },
             {name: "tclass.startDate", sortNormalizer: function (record) {return record.tclass.startDate; } },
             {name: "tclass.endDate", sortNormalizer: function (record) {return record.tclass.endDate; } },
-            {name: "tclass.teacher", sortNormalizer: function (record) {return record.tclass.teacher; } },
+            // {name: "tclass.teacher", sortNormalizer: function (record) {return record.tclass.teacher; } },
             {name: "date",},
             {name: "time",},
             {name: "duration",},
-            { name: "onlineFinalExamStatus", valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
-            { name: "sendBtn", title: "بارم بندی ", width: "145"},
-            { name: "showBtn", title: "نتایج ", width: "130"},
-            { name: "checkDate", title: "اطلاعات کاربران", width: "145"},
-            { name: "onlineExamDeadLineStatus" , hidden: true},
+            { name: "onlineFinalExamStatus",canFilter: false, valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
+            { name: "sendBtn",canFilter: false, title: "بارم بندی ", width: "145"},
+            { name: "showBtn",canFilter: false, title: "نتایج ", width: "130"},
+            { name: "checkDate",canFilter: false, title: "اطلاعات کاربران", width: "145"},
+            { name: "onlineExamDeadLineStatus",canFilter: false , hidden: true},
 
             //{name: "isPreTestQuestion",}
         ],
@@ -1287,7 +1294,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             {
                 name: "date",
                 ID: "date_FinalTest",
-                title: "<spring:message code='test.question.date'/>",
+                title: "<spring:message code='test.question.start.date'/>",
                 required: true,
                 width: "*",
                 defaultValue: todayDate,
@@ -1346,6 +1353,67 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 }
             },
             {
+                name: "endDate",
+                ID: "end_date_FinalTest",
+                title: "<spring:message code='test.question.end.date'/>",
+                required: true,
+                width: "*",
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_FinalTest', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "endTime",
+                title: "<spring:message code="test.question.end.time"/>",
+                required: true,
+                requiredMessage: "<spring:message code="msg.field.is.required"/>",
+                hint: "--:--",
+                defaultValue: "09:00",
+                keyPressFilter: "[0-9:]",
+                showHintInField: true,
+                textAlign: "center",
+                validateOnChange: true,
+                validators: [{
+                    type: "isString",
+                    validateOnExit: true,
+                    type: "lengthRange",
+                    min: 5,
+                    max: 5,
+                    stopOnError: true,
+                    errorMessage: "زمان مجاز بصورت 08:30 است"
+                },
+                    {
+                        type: "regexp",
+                        expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",
+                        validateOnChange: true,
+                        errorMessage: "ساعت 23-0 و دقیقه 59-0"
+                    }
+                ],
+                length:5,
+                editorExit:function(){
+                    DynamicForm_Session.setValue("time",arrangeDate(DynamicForm_Session.getValue("time")));
+                    let val=DynamicForm_Session.getValue("time");
+                    if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
+                        DynamicForm_Session.addFieldErrors("time", "<spring:message code="session.hour.invalid"/>", true);
+                    }else{
+                        DynamicForm_Session.clearFieldErrors("time", true);
+                    }
+                }
+            },
+            {
                 name: "duration",
                 title: "<spring:message code='test.question.duration'/>",
                 required: true,
@@ -1361,7 +1429,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
     let FinalTestWin_finalTest = isc.Window.create({
         width: 500,
-        height: 250,
+        height: 320,
         //autoCenter: true,
         overflow: "hidden",
         showMaximizeButton: false,
@@ -1590,36 +1658,41 @@ let inValidStudents = [];
     }
 
     function saveFinalTest_finalTest() {
-
-        if (!FinalTestDF_finalTest.validate()) {
-            return;
-        }
-        let finalTestSaveUrl = testQuestionUrl;
-        let finalTestAction = '<spring:message code="created"/>';
-
-        if (finalTestMethod_finalTest.localeCompare("PUT") === 0) {
-            let record = FinalTestLG_finalTest.getSelectedRecord();
-            finalTestSaveUrl += "/" + record.id;
-            finalTestAction = '<spring:message code="edited"/>';
-        }
-        let data = FinalTestDF_finalTest.getValues();
-        if (finalTestMethod_finalTest.localeCompare("POST") === 0) {
-
-            isc.RPCManager.sendRequest(TrDSRequest(isValidForExam+data.tclassId, "GET",null, function (resp) {
-
-            let respText = JSON.parse(resp.httpResponseText);
-            if (respText.status === 200) {
-            isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
-                JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
-            } else {
-                createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
+        if(validExamTime(FinalTestDF_finalTest))
+        {
+            if (!FinalTestDF_finalTest.validate()) {
+                return;
             }
-            }));
-        } else {
+            let finalTestSaveUrl = testQuestionUrl;
+            let finalTestAction = '<spring:message code="created"/>';
+
+            if (finalTestMethod_finalTest.localeCompare("PUT") === 0) {
+                let record = FinalTestLG_finalTest.getSelectedRecord();
+                finalTestSaveUrl += "/" + record.id;
+                finalTestAction = '<spring:message code="edited"/>';
+            }
             let data = FinalTestDF_finalTest.getValues();
-            isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
-                JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
+            if (finalTestMethod_finalTest.localeCompare("POST") === 0) {
+
+                isc.RPCManager.sendRequest(TrDSRequest(isValidForExam+data.tclassId, "GET",null, function (resp) {
+
+                    let respText = JSON.parse(resp.httpResponseText);
+                    if (respText.status === 200) {
+                        isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
+                            JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
+                    } else {
+                        createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
+                    }
+                }));
+            } else {
+                let data = FinalTestDF_finalTest.getValues();
+                isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
+                    JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
+            }
         }
+
+
+
     }
 
     function showRemoveForm_finalTest() {
@@ -1670,34 +1743,38 @@ let inValidStudents = [];
     }
 
     function saveCopyTest_finalTest() {
+        if(validExamTime(FinalTestDF_finalTest))
+        {
+            if (!FinalTestDF_finalTest.validate())
+                return;
 
-        if (!FinalTestDF_finalTest.validate())
-            return;
+            let data = FinalTestDF_finalTest.getValues();
+            let recordId = FinalTestLG_finalTest.getSelectedRecord().id;
+            isc.RPCManager.sendRequest(TrDSRequest(isValidForExam + data.tclassId, "GET",null, function (resp) {
 
-        let data = FinalTestDF_finalTest.getValues();
-        let recordId = FinalTestLG_finalTest.getSelectedRecord().id;
-        isc.RPCManager.sendRequest(TrDSRequest(isValidForExam + data.tclassId, "GET",null, function (resp) {
+                let respText = JSON.parse(resp.httpResponseText);
+                if (respText.status === 200) {
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/create-copy/" + recordId, finalTestMethod_finalTest, JSON.stringify(data), function (resp) {
+                        wait.close();
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            let result = JSON.parse(resp.httpResponseText);
+                            showOkDialog("آزمون برای (" + result.tclass.course.titleFa + ") کپی شد");
+                            refresh_finalTest();
+                            FinalTestWin_finalTest.close();
+                        } else if (resp.httpResponseCode === 204) {
+                            showOkDialog("<spring:message code="exception.duplicate.information"/>");
+                        } else {
+                            showOkDialog("<spring:message code="exception.data-validation"/>");
+                        }
+                    }));
+                } else {
+                    createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
+                }
+            }));
+        }
 
-            let respText = JSON.parse(resp.httpResponseText);
-            if (respText.status === 200) {
-                         wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/create-copy/" + recordId, finalTestMethod_finalTest, JSON.stringify(data), function (resp) {
-                         wait.close();
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        let result = JSON.parse(resp.httpResponseText);
-                        showOkDialog("آزمون برای (" + result.tclass.course.titleFa + ") کپی شد");
-                        refresh_finalTest();
-                        FinalTestWin_finalTest.close();
-                    } else if (resp.httpResponseCode === 204) {
-                        showOkDialog("<spring:message code="exception.duplicate.information"/>");
-                    } else {
-                        showOkDialog("<spring:message code="exception.data-validation"/>");
-                    }
-                }));
-            } else {
-                createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
-            }
-        }));
+
     }
 
     function rcpResponse(resp, entityType, action, entityName) {
@@ -1830,6 +1907,26 @@ let inValidStudents = [];
         }
 
     }
+    function validExamTime(form) {
+        if (form.getValue("endDate") < form.getValue("date")) {
+            createDialog("info", "تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
+            return false;
+        }
+        if ((form.getValue("endDate") === form.getValue("date")) && (form.getValue("endTime") <= form.getValue("time") ))
+        {
+            createDialog("info", "ساعت شروع و پایان آزمون معتبر نیستند");
+            return false;
+        }
+
+        if ((form.getValue("endDate") === form.getValue("date")) &&
+            checkDuration(form.getValue("time"),form.getValue("endTime"),form.getValue("duration")))
+        {
+            createDialog("info", "مدت زمان آزمون کمتر از بازه آزمون می باشد");
+            return false;
+        }
+
+        return true;
+    }
 
     function NCodeAndMobileValidation(nationalCode, mobileNum,gender) {
 
@@ -1848,6 +1945,35 @@ let inValidStudents = [];
                 isValid = false;
         }
         return isValid;
+    }
+    function checkDuration(startTime, endTime,duration) {
+
+        firstHour = parseInt(startTime.split(":")[0]);
+        firstMin = parseInt(startTime.split(":")[1]);
+        secondHour = parseInt(endTime.split(":")[0]);
+        secondMin = parseInt(endTime.split(":")[1]);
+        examDuration = duration;
+        diffHour=secondHour-firstHour
+        diffMin=secondMin-firstMin
+
+        if (diffMin<0)
+        {
+            diffHour-=1;
+            diffMin=60+diffMin;
+            if (duration>diffMin+(diffHour*60))
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (duration>diffMin+(diffHour*60))
+            {
+                return true;
+            }
+        }
+        return false;
+
     }
 
     async function hasEvaluation(classId) {
