@@ -17,6 +17,7 @@ create sequence SEQ_JOB_ID increment by 1;
 create sequence SEQ_PERSONAL_ID increment by 1;
 create sequence SEQ_POST_ID increment by 1;
 create sequence SEQ_POST_GRADE_ID increment by 1;
+create sequence SEQ_MDMS_PRC_LOG_ID increment by 1;
 
 declare
         next_ID number;
