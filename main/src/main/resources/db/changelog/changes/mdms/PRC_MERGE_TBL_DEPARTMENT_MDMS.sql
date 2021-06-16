@@ -298,7 +298,7 @@ BEGIN
                MDMS_DEPARTMENT.C_OLD_CODE           AS MDMS_C_OLD_CODE,
                MDMS_DEPARTMENT.C_OMOR_CODE          AS MDMS_C_OMOR_CODE,
                MDMS_DEPARTMENT.C_OMOR_TITLE         AS MDMS_C_OMOR_TITLE,
-               TR_PARENT.C_PARENT_CODE              AS MDMS_C_PARENT_CODE,
+               TR_PARENT.C_CODE                     AS MDMS_C_PARENT_CODE,
                MDMS_DEPARTMENT.C_START_DATE         AS MDMS_C_START_DATE,
                MDMS_DEPARTMENT.C_TITLE              AS MDMS_C_TITLE,
                MDMS_DEPARTMENT.C_TITLE_L            AS MDMS_C_TITLE_L,
@@ -306,7 +306,7 @@ BEGIN
                MDMS_DEPARTMENT.C_USER               AS MDMS_C_USER,
                MDMS_DEPARTMENT.C_VAHED_CODE         AS MDMS_C_VAHED_CODE,
                MDMS_DEPARTMENT.C_VAHED_TITLE        AS MDMS_C_VAHED_TITLE,
-               TR_PARENT.C_CODE                     AS MDMS_C_PARENT,
+               TR_PARENT.ID                         AS MDMS_C_PARENT,
                MDMS_DEPARTMENT.C_MOJTAME_CODE       AS MDMS_C_MOJTAME_CODE,
                MDMS_DEPARTMENT.C_MOJTAME_TITLE      AS MDMS_C_MOJTAME_TITLE
         FROM (
@@ -326,15 +326,15 @@ BEGIN
                                 75
                             END AS E_DELETED
                  FROM DEV_MDMS.TBL_MD_DEPARTMENT DP) MDMS_DEPARTMENT
-                 LEFT JOIN TBL_DEPARTMENT TR_JOB
-                           ON (MDMS_DEPARTMENT.C_CODE = TR_JOB.C_CODE AND
-                               MDMS_DEPARTMENT.C_PEOPLE_TYPE = TR_JOB.C_PEOPLE_TYPE)
+                 LEFT JOIN TBL_DEPARTMENT TR_DEP
+                           ON (MDMS_DEPARTMENT.C_CODE = TR_DEP.C_CODE AND
+                               MDMS_DEPARTMENT.C_PEOPLE_TYPE = TR_DEP.C_PEOPLE_TYPE)
                  LEFT JOIN DEV_MDMS.TBL_MD_DEPARTMENT mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
                  LEFT JOIN TBL_DEPARTMENT TR_PARENT
                            ON (mdms_parent_.C_CODE = TR_PARENT.C_CODE AND
                                mdms_parent_.C_PEOPLE_TYPE = TR_PARENT.C_PEOPLE_TYPE)
 
-        WHERE TR_JOB.ID IS NULL) NEW_
+        WHERE TR_DEP.ID IS NULL) NEW_
     ON (NEW_.MDMS_C_CODE = T.C_CODE AND NEW_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
     WHEN NOT MATCHED THEN
         INSERT (ID,
