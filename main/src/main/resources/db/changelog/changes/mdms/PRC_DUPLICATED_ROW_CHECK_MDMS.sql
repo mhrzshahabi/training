@@ -31,15 +31,16 @@ create PROCEDURE PRC_DUPLICATED_ROW_CHECK_MDMS AS
                    WHEN EXISTS(
                            SELECT C_CODE
                            FROM (SELECT * FROM DEV_MDMS.TBL_MD_POST)
-                           GROUP BY C_CODE
+                           GROUP BY C_CODE ,C_PEOPLE_TYPE
                            HAVING COUNT(*) > 1
                        ) THEN 'TBL_MD_POST'
                    WHEN EXISTS(
-                           SELECT C_NATIONAL_CODE
-                           FROM (SELECT * FROM DEV_MDMS.VIW_EMPLOYEE)
-                           GROUP BY C_NATIONAL_CODE
-                           HAVING COUNT(*) > 1
-                       ) THEN 'VIW_EMPLOYEE'
+                           SELECT C_NATIONAL_CODE FROM (
+                               SELECT * FROM (
+                                   SELECT E.*, ROW_NUMBER() OVER (PARTITION BY E.C_PEOPLE_ID ORDER BY C_ID DESC) AS INX FROM DEV_MDMS.TBL_MD_EMPLOYEE E
+                                )    WHERE INX = 1
+                           ) GROUP BY C_NATIONAL_CODE HAVING COUNT(*) > 1
+                       ) THEN 'TBL_MD_EMPLOYEE'
                    WHEN EXISTS(
                            SELECT NATIONAL_CODE
                            FROM (SELECT * FROM TBL_PERSONNEL where DELETED = 0 and active = 1)

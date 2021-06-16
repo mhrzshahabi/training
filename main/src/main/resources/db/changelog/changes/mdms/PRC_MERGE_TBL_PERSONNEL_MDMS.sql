@@ -110,7 +110,7 @@ USING (
                        e.C_POST_ID,
                        e.C_EMAIL,
                        e.C_ADDRESS,
-                       e.C_MOBILE,
+                       nvl(e.C_MOBILE ,po.c_mobile) as c_mobile,
                        e.P_TYPE,
                        e.C_PEOPLE_ID,
                        e.C_HOME_PHONE,
@@ -510,7 +510,7 @@ USING (
                        e.C_POST_ID,
                        e.C_EMAIL,
                        e.C_ADDRESS,
-                       e.C_MOBILE,
+                       nvl(e.C_MOBILE ,po.C_MOBILE) as c_mobile,
                        e.P_TYPE,
                        e.C_PEOPLE_ID,
                        e.C_HOME_PHONE,
@@ -636,6 +636,15 @@ WHEN NOT MATCHED THEN
             NEW_.f_post_id,
             NEW_.work_place_title,
             NEW_.c_username);
+
+----------- UPDATE DELETED PERSONALS ----------------------
+
+UPDATE TBL_PERSONNEL SET DELETED = 1 WHERE ID IN (SELECT PRS_EXIST_TR.ID
+      FROM TBL_PERSONNEL PRS_EXIST_TR
+               LEFT JOIN  dev_mdms.TBL_MD_EMPLOYEE PRS_MDMS ON PRS_MDMS.C_NATIONAL_CODE = PRS_EXIST_TR.NATIONAL_CODE
+      WHERE PRS_EXIST_TR.DELETED = 0 AND PRS_MDMS.C_ID IS NULL);
+
+
 end;
 /
 
