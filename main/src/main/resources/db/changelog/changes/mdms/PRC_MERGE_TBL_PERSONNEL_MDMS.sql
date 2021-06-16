@@ -134,7 +134,7 @@ USING (
                            )
                       where inx = 1
                      ) e
-                         inner join tbl_md_people po on po.c_id = e.c_people_id
+                         inner join dev_mdms.tbl_md_people po on po.c_id = e.c_people_id
                ) emp
                    LEFT JOIN DEV_MDMS.tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
                    LEFT JOIN tbl_department dep ON (mdms_dep.c_code = dep.c_code)
@@ -532,7 +532,7 @@ USING (
                                           order by c_id desc) as inx
                                from dev_mdms.tbl_md_employee e)
                       where inx = 1) e
-                         inner join tbl_md_people po on po.c_id = e.c_people_id
+                         inner join dev_mdms.tbl_md_people po on po.c_id = e.c_people_id
                ) emp
                    LEFT JOIN DEV_MDMS.tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
                    LEFT JOIN TBL_DEPARTMENT dep on mdms_dep.c_code = dep.C_CODE
