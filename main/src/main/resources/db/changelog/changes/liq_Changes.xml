@@ -1374,5 +1374,30 @@
             <column name="c_end_time" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet author="nick (generated)" id="1623819623743-525">
+        <sql>
+            <![CDATA[
+                ALTER TABLE tbl_class ADD f_holding_class_type_id number(19, 0);
+                UPDATE tbl_class SET f_holding_class_type_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'intraOrganizational') where C_TEACHING_TYPE <> 'اعزام';
+                UPDATE tbl_class SET f_holding_class_type_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'InTheCountryExtraOrganizational')  where C_TEACHING_TYPE = 'اعزام';
+                ALTER TABLE tbl_class MODIFY f_holding_class_type_id NOT NULL;
+            ]]>
+        </sql>
+        <addForeignKeyConstraint baseColumnNames="f_holding_class_type_id" baseTableName="tbl_class" constraintName="FKakayi0tf9no2id2um3y1wxgin" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1623819623743-526">
+        <sql>
+            <![CDATA[
+                ALTER TABLE tbl_class ADD f_teaching_method_id number(19, 0);
+                UPDATE tbl_class SET f_teaching_method_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'intraOrganizationalInPersonClass') where C_TEACHING_TYPE = 'حضوری';
+                UPDATE tbl_class SET f_teaching_method_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'intraOrganizationalOnlineCourse') where C_TEACHING_TYPE = 'مجازی';
+                UPDATE tbl_class SET f_teaching_method_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'intraOrganizationalPracticalClass') where C_TEACHING_TYPE = 'عملی و کارگاهی';
+                UPDATE tbl_class SET f_teaching_method_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'intraOrganizationalRemotelyClass') where C_TEACHING_TYPE = 'غیر حضوری';
+                UPDATE tbl_class SET f_teaching_method_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'intraOrganizationalAtWorkLearning') where C_TEACHING_TYPE = 'آموزش حین کار(OJT)';
+                UPDATE tbl_class SET f_teaching_method_id = (SELECT id FROM TBL_PARAMETER_VALUE WHERE c_code = 'InTheCountryExtraOClassCourse') where C_TEACHING_TYPE = 'اعزام';
+                ALTER TABLE tbl_class MODIFY f_teaching_method_id NOT NULL;
+            ]]>
+        </sql>
+        <addForeignKeyConstraint baseColumnNames="f_teaching_method_id" baseTableName="tbl_class" constraintName="FKbla0dcn5qssm14l5foq53ax6v" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
