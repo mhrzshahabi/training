@@ -765,6 +765,7 @@ public class TclassRestController {
     public List<String> getDefaultTermScope() {
         return tClassService.getClassDefaultTermScope();
     }
+
     @Loggable
     @GetMapping(value = "/isValidForExam/{id}")
     public BaseResponse isValidForExam(@PathVariable long id) {
@@ -778,5 +779,12 @@ public class TclassRestController {
         return response;
     }
 
+    @Loggable
+    @GetMapping("/changeClassStatusToInProcess/{classId}")
+    public ResponseEntity changeClassStatusToInProcess(@PathVariable Long classId) {
+
+        BaseResponse response = tClassService.changeClassStatusToInProcess(classId);
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
 }
