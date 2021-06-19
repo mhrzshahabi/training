@@ -29,7 +29,7 @@ BEGIN
                              WHEN C_DELETED = 0 THEN
                                  NULL
                              END                         AS E_DELETED
-                  FROM DEV_MDMS.TBL_MD_JOB) MDMS_JOB
+                  FROM MDMS_TBL_MD_JOB) MDMS_JOB
                   INNER JOIN TBL_JOB TR_JOB
                              ON (MDMS_JOB.C_CODE = TR_JOB.C_CODE AND MDMS_JOB.C_PEOPLE_TYPE = TR_JOB.C_PEOPLE_TYPE)
          WHERE TR_JOB.C_TITLE_FA <> MDMS_JOB.C_TITLE_FA
@@ -69,7 +69,7 @@ BEGIN
                             WHEN C_DELETED = 0 THEN
                                 NULL
                             END                         AS E_DELETED
-                 FROM DEV_MDMS.TBL_MD_JOB) MDMS_JOB
+                 FROM MDMS_TBL_MD_JOB) MDMS_JOB
                  LEFT JOIN TBL_JOB TR_JOB
                            ON (MDMS_JOB.C_CODE = TR_JOB.C_CODE AND MDMS_JOB.C_PEOPLE_TYPE = TR_JOB.C_PEOPLE_TYPE)
         WHERE TR_JOB.ID IS NULL) NEW_

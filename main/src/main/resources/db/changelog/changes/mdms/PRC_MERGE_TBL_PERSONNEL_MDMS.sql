@@ -130,20 +130,20 @@ USING (
                                select e.*,
                                       row_number() over (partition by e.c_people_id
                                           order by c_id desc) as inx
-                               from dev_mdms.tbl_md_employee e
+                               from MDMS_tbl_md_employee e
                            )
                       where inx = 1
                      ) e
-                         inner join dev_mdms.tbl_md_people po on po.c_id = e.c_people_id
+                         inner join MDMS_tbl_md_people po on po.c_id = e.c_people_id
                ) emp
-                   LEFT JOIN DEV_MDMS.tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
+                   LEFT JOIN MDMS_tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
                    LEFT JOIN tbl_department dep ON (mdms_dep.c_code = dep.c_code)
-                   LEFT JOIN DEV_MDMS.tbl_md_geo_work mdms_geo ON emp.c_geo_id = mdms_geo.c_id
+                   LEFT JOIN MDMS_tbl_md_geo_work mdms_geo ON emp.c_geo_id = mdms_geo.c_id
                    LEFT JOIN TBL_GEO_WORK geo
                              on (geo.C_CODE = mdms_geo.c_code and geo.C_PEOPLE_TYPE = mdms_geo.C_PEOPLE_TYPE)
-                   LEFT JOIN DEV_MDMS.TBL_MD_EMPLOYEE_STATUS stat ON emp.c_emp_status_id = stat.c_id
-                   LEFT JOIN DEV_MDMS.TBL_MD_EMPLOYMENT_TYPE type ON emp.c_emp_type_id = type.c_id
-                   LEFT JOIN DEV_MDMS.TBL_MD_POST mdms_post on mdms_post.c_id = emp.c_post_id
+                   LEFT JOIN MDMS_tbl_md_employee_STATUS stat ON emp.c_emp_status_id = stat.c_id
+                   LEFT JOIN MDMS_TBL_MD_EMPLOYMENT_TYPE type ON emp.c_emp_type_id = type.c_id
+                   LEFT JOIN MDMS_TBL_MD_POST mdms_post on mdms_post.c_id = emp.c_post_id
                    LEFT JOIN TBL_POST post
                              on mdms_post.c_code = post.c_code and post.C_PEOPLE_TYPE = mdms_post.C_PEOPLE_TYPE
          ) emp
@@ -530,18 +530,18 @@ USING (
                                select e.*,
                                       row_number() over (partition by e.c_people_id
                                           order by c_id desc) as inx
-                               from dev_mdms.tbl_md_employee e)
+                               from MDMS_tbl_md_employee e)
                       where inx = 1) e
-                         inner join dev_mdms.tbl_md_people po on po.c_id = e.c_people_id
+                         inner join MDMS_tbl_md_people po on po.c_id = e.c_people_id
                ) emp
-                   LEFT JOIN DEV_MDMS.tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
+                   LEFT JOIN MDMS_tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
                    LEFT JOIN TBL_DEPARTMENT dep on mdms_dep.c_code = dep.C_CODE
-                   LEFT JOIN DEV_MDMS.tbl_md_geo_work mdms_geo ON emp.c_geo_id = mdms_geo.c_id
+                   LEFT JOIN MDMS_tbl_md_geo_work mdms_geo ON emp.c_geo_id = mdms_geo.c_id
                    LEFT JOIN TBL_GEO_WORK geo
                              on (geo.C_CODE = mdms_geo.c_code and geo.C_PEOPLE_TYPE = mdms_geo.C_PEOPLE_TYPE)
-                   LEFT JOIN DEV_MDMS.TBL_MD_EMPLOYEE_STATUS stat ON emp.c_emp_status_id = stat.c_id
-                   LEFT JOIN DEV_MDMS.TBL_MD_EMPLOYMENT_TYPE type ON emp.c_emp_type_id = type.c_id
-                   LEFT JOIN DEV_MDMS.TBL_MD_POST mdms_post on mdms_post.c_id = emp.c_post_id
+                   LEFT JOIN MDMS_tbl_md_employee_STATUS stat ON emp.c_emp_status_id = stat.c_id
+                   LEFT JOIN MDMS_TBL_MD_EMPLOYMENT_TYPE type ON emp.c_emp_type_id = type.c_id
+                   LEFT JOIN MDMS_TBL_MD_POST mdms_post on mdms_post.c_id = emp.c_post_id
                    LEFT JOIN TBL_POST post
                              on mdms_post.c_code = post.c_code and post.C_PEOPLE_TYPE = mdms_post.C_PEOPLE_TYPE
          ) emp
@@ -641,7 +641,7 @@ WHEN NOT MATCHED THEN
 
 UPDATE TBL_PERSONNEL SET DELETED = 1 WHERE ID IN (SELECT PRS_EXIST_TR.ID
       FROM TBL_PERSONNEL PRS_EXIST_TR
-               LEFT JOIN  dev_mdms.TBL_MD_EMPLOYEE PRS_MDMS ON PRS_MDMS.C_NATIONAL_CODE = PRS_EXIST_TR.NATIONAL_CODE
+               LEFT JOIN  MDMS_tbl_md_employee PRS_MDMS ON PRS_MDMS.C_NATIONAL_CODE = PRS_EXIST_TR.NATIONAL_CODE
       WHERE PRS_EXIST_TR.DELETED = 0 AND PRS_MDMS.C_ID IS NULL);
 
 

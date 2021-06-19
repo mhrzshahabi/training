@@ -29,7 +29,7 @@ BEGIN
                              WHEN C_DELETED = 0 THEN
                                  NULL
                              END                         AS E_DELETED
-                  FROM DEV_MDMS.TBL_MD_POST_GRADE) MDMS_POST_GRADE
+                  FROM MDMS_TBL_MD_POST_GRADE) MDMS_POST_GRADE
                   INNER JOIN TBL_POST_GRADE TR_POST_GRADE
                              ON (MDMS_POST_GRADE.C_CODE = TR_POST_GRADE.C_CODE AND MDMS_POST_GRADE.C_PEOPLE_TYPE = TR_POST_GRADE.C_PEOPLE_TYPE)
          WHERE TR_POST_GRADE.C_TITLE_FA <> MDMS_POST_GRADE.C_TITLE_FA
@@ -83,7 +83,7 @@ BEGIN
                             WHEN C_DELETED = 0 THEN
                                 NULL
                             END                         AS E_DELETED
-                 FROM DEV_MDMS.TBL_MD_POST_GRADE) MDMS_POST_GRADE
+                 FROM MDMS_TBL_MD_POST_GRADE) MDMS_POST_GRADE
                  LEFT JOIN TBL_POST_GRADE TR_POST_GRADE
                            ON (MDMS_POST_GRADE.C_CODE = TR_POST_GRADE.C_CODE AND MDMS_POST_GRADE.C_PEOPLE_TYPE = TR_POST_GRADE.C_PEOPLE_TYPE)
         WHERE TR_POST_GRADE.ID IS NULL) NEW_

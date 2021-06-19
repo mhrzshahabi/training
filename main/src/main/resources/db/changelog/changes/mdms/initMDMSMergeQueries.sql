@@ -19,6 +19,20 @@ create sequence SEQ_POST_ID increment by 1;
 create sequence SEQ_POST_GRADE_ID increment by 1;
 create sequence SEQ_MDMS_PRC_LOG_ID increment by 1;
 
+
+
+create or replace synonym  MDMS_TBL_MD_JOB for STG_MDMS.TBL_MD_JOB;
+create or replace synonym  MDMS_TBL_MD_POST for STG_MDMS.TBL_MD_POST;
+create or replace synonym  MDMS_TBL_MD_POST_GRADE for STG_MDMS.TBL_MD_POST_GRADE;
+create or replace synonym  MDMS_TBL_MD_DEPARTMENT for STG_MDMS.TBL_MD_DEPARTMENT;
+create or replace synonym  MDMS_tbl_md_employee for STG_MDMS.tbl_md_employee;
+create or replace synonym  MDMS_tbl_md_people for STG_MDMS.tbl_md_people;
+create or replace synonym  MDMS_TBL_MD_GEO_WORK for STG_MDMS.TBL_MD_GEO_WORK;
+create or replace synonym  MDMS_TBL_MD_EMPLOYMENT_TYPE for STG_MDMS.TBL_MD_EMPLOYMENT_TYPE;
+create or replace synonym  MDMS_tbl_md_employee_STATUS for STG_MDMS.tbl_md_employee_STATUS;
+
+
+
 declare
         next_ID number;
 begin

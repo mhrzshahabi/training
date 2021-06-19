@@ -80,11 +80,11 @@ BEGIN
                           ELSE
                               75
                           END AS E_DELETED
-               FROM DEV_MDMS.TBL_MD_DEPARTMENT DP) MDMS_DEPARTMENT
+               FROM MDMS_TBL_MD_DEPARTMENT DP) MDMS_DEPARTMENT
                   INNER JOIN TBL_DEPARTMENT TR_DEPARTMENT
                              ON (MDMS_DEPARTMENT.C_CODE = TR_DEPARTMENT.C_CODE AND
                                  MDMS_DEPARTMENT.C_PEOPLE_TYPE = TR_DEPARTMENT.C_PEOPLE_TYPE)
-                  LEFT JOIN DEV_MDMS.TBL_MD_DEPARTMENT mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
+                  LEFT JOIN MDMS_TBL_MD_DEPARTMENT mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
                   LEFT JOIN TBL_DEPARTMENT TR_PARENT
                             ON (mdms_parent_.C_CODE = TR_PARENT.C_CODE AND
                                 mdms_parent_.C_PEOPLE_TYPE = TR_PARENT.C_PEOPLE_TYPE)
@@ -325,11 +325,11 @@ BEGIN
                             ELSE
                                 75
                             END AS E_DELETED
-                 FROM DEV_MDMS.TBL_MD_DEPARTMENT DP) MDMS_DEPARTMENT
+                 FROM MDMS_TBL_MD_DEPARTMENT DP) MDMS_DEPARTMENT
                  LEFT JOIN TBL_DEPARTMENT TR_DEP
                            ON (MDMS_DEPARTMENT.C_CODE = TR_DEP.C_CODE AND
                                MDMS_DEPARTMENT.C_PEOPLE_TYPE = TR_DEP.C_PEOPLE_TYPE)
-                 LEFT JOIN DEV_MDMS.TBL_MD_DEPARTMENT mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
+                 LEFT JOIN MDMS_TBL_MD_DEPARTMENT mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
                  LEFT JOIN TBL_DEPARTMENT TR_PARENT
                            ON (mdms_parent_.C_CODE = TR_PARENT.C_CODE AND
                                mdms_parent_.C_PEOPLE_TYPE = TR_PARENT.C_PEOPLE_TYPE)

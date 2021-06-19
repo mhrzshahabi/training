@@ -63,18 +63,18 @@ BEGIN
                             WHEN post.c_deleted = 0 THEN
                                 NULL
                             END                                   AS e_deleted
-                 FROM DEV_MDMS.TBL_MD_POST post
-                          left join DEV_MDMS.tbl_md_department mdms_dep on post.c_dep_id = mdms_dep.c_id
+                 FROM MDMS_TBL_MD_POST post
+                          left join MDMS_tbl_md_department mdms_dep on post.c_dep_id = mdms_dep.c_id
                           left join TBL_DEPARTMENT dep on dep.C_CODE = mdms_dep.c_code
-                          left join DEV_MDMS.tbl_md_post_grade mdms_post_grade
+                          left join MDMS_TBL_MD_POST_grade mdms_post_grade
                                     on (post.c_grade_id = mdms_post_grade.c_id)
                           left join TBL_POST_GRADE post_grade
                                     on (post_grade.c_code = mdms_post_grade.c_code and
                                         post_grade.C_PEOPLE_TYPE = mdms_post_grade.C_PEOPLE_TYPE)
-                          left join dev_mdms.TBL_md_job MDMS_POST on MDMS_POST.c_id = post.c_job_id
+                          left join MDMS_TBL_md_job MDMS_POST on MDMS_POST.c_id = post.c_job_id
                           left join TBL_JOB job_ on (job_.c_code = MDMS_POST.c_code and
                                                       job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
-                          left join DEV_MDMS.TBL_MD_POST mdms_parent on mdms_parent.c_id = post.n_parent_id
+                          left join MDMS_TBL_MD_POST mdms_parent on mdms_parent.c_id = post.n_parent_id
                           left join TBL_POST parent_ on (parent_.c_code = mdms_parent.c_code and
                                                          parent_.C_PEOPLE_TYPE = mdms_parent.C_PEOPLE_TYPE)
              ) MDMS_POST
@@ -205,18 +205,18 @@ BEGIN
                             WHEN post.c_deleted = 0 THEN
                                 NULL
                             END                                   AS e_deleted
-                 FROM DEV_MDMS.TBL_MD_POST post
-                          left join DEV_MDMS.tbl_md_department mdms_dep on post.c_dep_id = mdms_dep.c_id
+                 FROM MDMS_TBL_MD_POST post
+                          left join MDMS_tbl_md_department mdms_dep on post.c_dep_id = mdms_dep.c_id
                           left join TBL_DEPARTMENT dep on dep.C_CODE = mdms_dep.c_code
-                          left join DEV_MDMS.tbl_md_post_grade mdms_post_grade
+                          left join MDMS_TBL_MD_POST_grade mdms_post_grade
                                     on (post.c_grade_id = mdms_post_grade.c_id)
                           left join TBL_POST_GRADE post_grade
                                     on (post_grade.c_code = mdms_post_grade.c_code and
                                         post_grade.C_PEOPLE_TYPE = mdms_post_grade.C_PEOPLE_TYPE)
-                          left join dev_mdms.TBL_md_job MDMS_POST on MDMS_POST.c_id = post.c_job_id
+                          left join MDMS_TBL_md_job MDMS_POST on MDMS_POST.c_id = post.c_job_id
                           left join TBL_JOB job_ on (job_.c_code = MDMS_POST.c_code and
                                                       job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
-                          left join DEV_MDMS.TBL_MD_POST mdms_parent on mdms_parent.c_id = post.n_parent_id
+                          left join MDMS_TBL_MD_POST mdms_parent on mdms_parent.c_id = post.n_parent_id
                           left join TBL_POST parent_ on (parent_.c_code = mdms_parent.c_code and
                                                          parent_.C_PEOPLE_TYPE = mdms_parent.C_PEOPLE_TYPE)
              ) MDMS_POST

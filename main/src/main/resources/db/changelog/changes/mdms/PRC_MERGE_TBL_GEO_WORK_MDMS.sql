@@ -12,7 +12,7 @@ BEGIN
          FROM (SELECT C_CODE,
                          C_PEOPLE_TYPE,
                          NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE
-                         FROM DEV_MDMS.TBL_MD_GEO_WORK) MDMS_GEO_WORK
+                         FROM MDMS_TBL_MD_GEO_WORK) MDMS_GEO_WORK
                   INNER JOIN TBL_GEO_WORK TR_GEO_WORK
                              ON (MDMS_GEO_WORK.C_CODE = TR_GEO_WORK.C_CODE AND
                                  MDMS_GEO_WORK.C_PEOPLE_TYPE = TR_GEO_WORK.C_PEOPLE_TYPE)
@@ -32,7 +32,7 @@ BEGIN
                  SELECT C_CODE,
                         C_PEOPLE_TYPE,
                         NVL(C_TITLE, 'NULL_' || C_CODE) AS C_TITLE_FA
-                   FROM DEV_MDMS.TBL_MD_GEO_WORK) MDMS_GEO_WORK
+                   FROM MDMS_TBL_MD_GEO_WORK) MDMS_GEO_WORK
                  LEFT JOIN TBL_GEO_WORK TR_GEO_WORK
                            ON (MDMS_GEO_WORK.C_CODE = TR_GEO_WORK.C_CODE AND
                                MDMS_GEO_WORK.C_PEOPLE_TYPE = TR_GEO_WORK.C_PEOPLE_TYPE)
