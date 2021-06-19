@@ -355,6 +355,7 @@
 
     var VLayout_Body_CER = isc.VLayout.create({
         border: "2px solid blue",
+        padding: 20,
         width: "100%",
         height: "100%",
         members: [

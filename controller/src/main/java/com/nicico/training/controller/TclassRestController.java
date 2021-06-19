@@ -564,6 +564,14 @@ public class TclassRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/get-reaction-evaluation-formula")
+    public Map<String, Double> getClassReactionEvaluationFormula(@PathVariable Long classId) {
+
+        Map<String, Double> classReactionEvaluationFormula = tClassService.getClassReactionEvaluationFormula(classId);
+        return classReactionEvaluationFormula;
+    }
+
+    @Loggable
     @GetMapping(value = "/listByteacherID/{teacherId}")
     public ResponseEntity<TclassDTO.TclassTeachingHistorySpecRs> listByTeacherID(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
                                                                                  @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,

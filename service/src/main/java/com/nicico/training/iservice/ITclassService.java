@@ -89,6 +89,8 @@ public interface ITclassService {
     @Transactional(readOnly = true)
     Double getClassReactionEvaluationGrade(Long classId, Long tId);
 
+    Map<String, Double> getClassReactionEvaluationFormula(Long classId);
+
     @Transactional(readOnly = true)
     List<TclassDTO.Info> PersonnelClass(Long id);
 
