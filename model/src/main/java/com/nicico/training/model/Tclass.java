@@ -262,4 +262,19 @@ public class Tclass extends Auditable {
 
     @Column(name = "f_target_population_type_id")
     private Long targetPopulationTypeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_holding_class_type_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue holdingClassType;
+
+    @Column(name = "f_holding_class_type_id")
+    private Long holdingClassTypeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_teaching_method_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue teachingMethod;
+
+    @Column(name = "f_teaching_method_id")
+    private Long teachingMethodId;
+
 }

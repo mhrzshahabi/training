@@ -80,6 +80,9 @@ public class TclassDTO {
     private Boolean hasTest;
     private String courseCode;
     private Long targetPopulationTypeId;
+    private Long holdingClassTypeId;
+    private Long teachingMethodId;
+
 
 
     @Getter
@@ -124,6 +127,8 @@ public class TclassDTO {
         private List<TclassDTO.InfoTuple> canceledClasses;
         private String isSentMessage;
         private ParameterValueDTO targetPopulationType;
+        private ParameterValueDTO holdingClassType;
+        private ParameterValueDTO teachingMethod;
         //*********************************
         //******old code for alarms********
         // private String hasWarning;

@@ -102,6 +102,8 @@
             {name: "classStatus" , autoFitWidth: true},
             {name: "topology"},
             {name: "targetPopulationTypeId"},
+            {name: "holdingClassTypeId"},
+            {name: "teachingMethodId"},
             {name: "trainingPlaceIds"},
             {name: "instituteId"},
             {name: "workflowEndingStatusCode"},
@@ -183,6 +185,43 @@
         ],
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria: true,
+    });
+
+
+    var RestDataSource_Holding_Class_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/HoldingClassType"
+    });
+
+    var RestDataSource_intraOrganizational_Holding_Class_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/intraOrganizationalHoldingClassType"
+    });
+
+    var RestDataSource_InTheCountryExtraOrganizational_Holding_Class_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/InTheCountryExtraOrganizationalHoldingClassType"
+    });
+
+    var RestDataSource_AbroadExtraOrganizational_Holding_Class_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/AbroadExtraOrganizationalHoldingClassType"
     });
 
     var RestDataSource_Target_Population_List = isc.TrDS.create({
@@ -559,6 +598,8 @@
                 filterOnKeypress: true,
             },
             {name: "targetPopulationTypeId", hidden: true},
+            {name: "holdingClassTypeId", hidden: true},
+            {name: "teachingMethodId", hidden: true},
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
             {
@@ -743,6 +784,43 @@
                 }
             },
             {
+                name: "holdingClassTypeId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="course_eruntype"/>:",
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_Holding_Class_Type_List,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                changed: function (form, item, value) {
+                    DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(null);
+                    DynamicForm_Class_JspClass.getItem("teachingMethodId").setValue(null);
+                    switch (item.getSelectedRecord().code) {
+                        case "intraOrganizational":
+                            DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_intraOrganizational_Holding_Class_Type_List);
+                            break;
+                        case "InTheCountryExtraOrganizational":
+                            DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_InTheCountryExtraOrganizational_Holding_Class_Type_List);
+                            break;
+                        case "AbroadExtraOrganizational":
+                            DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_AbroadExtraOrganizational_Holding_Class_Type_List);
+                            break;
+                    }
+
+                },
+            },
+
+            {
                 name: "minCapacity",
                 title: "<spring:message code='capacity'/>:",
                 textAlign: "center",
@@ -767,7 +845,7 @@
             },
             {
                 name: "maxCapacity",
-                colSpan: 2,
+                colSpan: 1,
                 showTitle: false,
                 hint: "حداکثر نفر",
                 textAlign: "center",
@@ -783,7 +861,7 @@
             {
                 name: "code",
                 title: "<spring:message code='class.code'/>:",
-                colSpan: 3,
+                colSpan: 2,
                 textAlign: "center",
                 readOnlyHover: "به منظور تولید اتوماتیک کد کلاس، باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
                 canEdit: false,
@@ -799,22 +877,37 @@
                 }
             },
             {
-                name: "teachingType",
+                name: "teachingMethodId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code='teaching.type'/>:",
                 colSpan: 1,
                 rowSpan: 3,
-                title: "<spring:message code='teaching.type'/>:",
-                type: "radioGroup",
-                fillHorizontalSpace: true,
-                defaultValue: "حضوری",
-                valueMap: [
-                    "حضوری",
-                    "غیر حضوری",
-                    "مجازی",
-                    "عملی و کارگاهی",
-                    "آموزش حین کار(OJT)",
-                    "اعزام",
-                ]
+                optionDataSource: RestDataSource_intraOrganizational_Holding_Class_Type_List,
+                pickListWidth: 200,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
             },
+            <%--{--%>
+            <%--    name: "teachingType",--%>
+            <%--    colSpan: 1,--%>
+            <%--    rowSpan: 3,--%>
+            <%--    title: "<spring:message code='teaching.type'/>:",--%>
+            <%--    type: "radioGroup",--%>
+            <%--    fillHorizontalSpace: true,--%>
+            <%--    valueField: "title",--%>
+            <%--    hidden: true--%>
+            <%--},--%>
             {
                 name: "topology",
                 colSpan: 1,
@@ -1466,14 +1559,15 @@
             //------------------------ DONE BY ROYA---------------------------------------------------------------------
         ],
         itemChanged: function () {
-            if (DynamicForm_Class_JspClass.getField('teachingType').getValue() == "غیر حضوری" || DynamicForm_Class_JspClass.getField('teachingType').getValue() == "مجازی") {
+            if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "غیر حضوری" ||
+                DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "مجازی") {
                 DynamicForm_Class_JspClass.getField('instituteId').setDisabled(true);
                 DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(true);
             } else {
                 DynamicForm_Class_JspClass.getField('instituteId').setDisabled(false);
                 DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(false);
             }
-            if (DynamicForm_Class_JspClass.getValue("teachingType") === "اعزام"){
+            if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "اعزام"){
                 DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
             }else {
                 DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
@@ -1820,7 +1914,8 @@
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
         click: async function () {
-            if (DynamicForm_Class_JspClass.getValue("teachingType") === "غیر حضوری" || DynamicForm_Class_JspClass.getValue("teachingType") === "مجازی") {
+            if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "غیر حضوری" ||
+                DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "مجازی") {
                 DynamicForm_Class_JspClass.getItem("instituteId").setRequired(false);
                 DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(false);
                 DynamicForm_Class_JspClass.clearValue("instituteId");
@@ -1829,7 +1924,7 @@
                 DynamicForm_Class_JspClass.getItem("instituteId").setRequired(true);
                 DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(true);
             }
-            if (DynamicForm_Class_JspClass.getValue("teachingType") === "اعزام"){
+            if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "اعزام"){
                 DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
             }else {
                 DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
@@ -1857,8 +1952,8 @@
                 }
             }
 
-            if (!OJT && DynamicForm_Class_JspClass.getItem("teachingType")._value === "آموزش حین کار(OJT)" && DynamicForm_Class_JspClass.getValue("erunType").id === 5) { // id = 5 -> "حین کار"
-                let dialog_Accept = createDialog("ask", 'نوع اجرا دوره کلاس از "حین کار" می باشد، آیا مایلید که روش آموزش را نیز از نوع "آموزش حین کار (OJT)" انتخاب کنید', "توجه");
+            if (!OJT && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "آموزش حین کار" && DynamicForm_Class_JspClass.getValue("erunType").id === 5) { // id = 5 -> "حین کار"
+                let dialog_Accept = createDialog("ask", 'نوع اجرا دوره کلاس از "حین کار" می باشد، آیا مایلید که روش آموزش را نیز از نوع "آموزش حین کار " انتخاب کنید', "توجه");
                 dialog_Accept.addProperties({
                     buttonClick: function (button, index) {
                         this.close();
@@ -3046,7 +3141,9 @@
                         DynamicForm_Class_JspClass.setValue("minCapacity", record.minCapacity);
                         DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
                         DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
-                        DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
+                        // DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
+                        DynamicForm_Class_JspClass.setValue("teachingMethodId", record.teachingMethodId);
+                        DynamicForm_Class_JspClass.setValue("holdingClassTypeId", record.holdingClassTypeId);
                         DynamicForm_Class_JspClass.setValue("topology", record.topology);
                         DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
                         DynamicForm_Class_JspClass.setValue("reason", record.reason);
@@ -3059,6 +3156,8 @@
                         DynamicForm_Class_JspClass.setValue("startEvaluation", record.startEvaluation);
                         DynamicForm_Class_JspClass.setValue("behavioralLevel", record.behavioralLevel);
                         DynamicForm_Class_JspClass.setValue("targetPopulationTypeId", record.targetPopulationTypeId);
+                        DynamicForm_Class_JspClass.setValue("holdingClassTypeId", record.holdingClassTypeId);
+                        DynamicForm_Class_JspClass.setValue("teachingMethodId", record.teachingMethodId);
 
                         if (userPersonInfo != null) {
                             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
