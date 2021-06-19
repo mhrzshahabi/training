@@ -100,7 +100,6 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-
     FinalTestTS_finalTest = isc.ToolStrip.create({
         members: [
             isc.ToolStripButtonAdd.create({
@@ -411,7 +410,7 @@
                     }
                 },
     });
-        var RestDataSource_Result_FinalTest = isc.TrDS.create({
+    var RestDataSource_Result_FinalTest = isc.TrDS.create({
         fields: [
             {name: "surname", title: 'نام'},
             {name: "lastName", title: 'نام خانوادگی'},
@@ -419,7 +418,7 @@
             {name: "answers", hidden: true },
         ]
     });
-        var RestDataSource_Questions_finalTest = isc.TrDS.create({
+    var RestDataSource_Questions_finalTest = isc.TrDS.create({
         fields: [
              {name: "id",hidden:true },
              {name: "question", title: 'سوال'},
@@ -429,6 +428,8 @@
                 }
         ]
     });
+
+
     function loadExamResult(recordList) {
 
         let ListGrid_Result_finalTest = isc.TrLG.create({
@@ -584,8 +585,6 @@ totalScore=totalScore+q.score
 scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
         }
-
-
     function setDescriptiveResultValue(value, form) {
 
          let index = allResultScores.findIndex(f => f.cellNumber === form.values.cellNumber)
@@ -596,14 +595,11 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
    let index = allResultScores.findIndex(f => f.cellNumber === form.values.cellNumber)
             allResultScores[index].finalResult = value;
         }
-
-
-
     function loadExamForScores(record) {
 
         var ListGrid_Questions_finalTest = isc.ListGrid.create({
             width: "100%",
-            height: 700,
+            height: 600,
 
             dataSource: RestDataSource_Questions_finalTest,
             showRecordComponents: true,
@@ -647,7 +643,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
                     let Window_result_Finaltest = isc.Window.create({
                         width: 1024,
-                        height: 768,
+                        height: 668,
                         keepInParentRect: true,
                         title: "ارسال آزمون به آزمون آنلاین",
                         items: [
@@ -807,7 +803,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         }
                     }))
     }
-
     function printFullClearForm(id) {
           wait.show();
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getExamReport/" +id, "GET", null, function (resp) {
@@ -868,14 +863,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         <%--criteriaForm.submitForm();--%>
 
     }
-
-    var RestDataSource_Result_Answers_FianlTest = isc.TrDS.create({
-        fields: [
-            {name: "question", title: 'سوال'},
-            {name: "answer", title: 'پاسخ'},
-        ]
-    });
-
     function ListGrid_show_results(answers) {
 
         let dynamicForm_Answers_List = isc.DynamicForm.create({
@@ -987,7 +974,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         });
             Window_result_Answer_FinalTest.show();
     }
-
     function checkExamScore(examData) {
         if (examData.examItem.tclass.scoringMethod === "3" || examData.examItem.tclass.scoringMethod === "2") {
 
@@ -1010,7 +996,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             return false;
         }
     }
-
     function checkExamValidation (examData) {
 
         let validationData = {
@@ -1032,11 +1017,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             validationData.message = validationData.message.concat("بارم بندی آزمون صحیح نمی باشد");
         }
         return validationData;
-    }
-
-    function checkExamRoles (classId) {
-
-
     }
     function loadExamQuestions(record,questionData,dialog) {
 
@@ -1785,7 +1765,7 @@ let inValidStudents = [];
                 if (entityName) {
                     name = entityName;
                 } else {
-                    name = JSON.parse(resp.data).tclass.course.titleFa;
+                    name = JSON.parse(resp.data).tclass.titleClass;
                 }
                 let msg = entityType + '&nbsp;\'<b>' + name + '</b>\'&nbsp;' + action + '.';
                 showOkDialog(msg);
@@ -1825,7 +1805,7 @@ let inValidStudents = [];
         }, 3000);
     };
 
-        function checkHaveQuestion(res) {
+    function checkHaveQuestion(res) {
             if(res.data.length == 0) {
             ToolStrip_Actions_FinalTest.members[2].setDisabled(true);
             ToolStrip_Actions_FinalTest.members[3].setDisabled(true);
@@ -1996,14 +1976,14 @@ let inValidStudents = [];
         return true;
         }
 
-       function customSplit(str, maxLength){
+    function customSplit(str, maxLength){
     if(str.length <= maxLength)
         return str;
     var reg = new RegExp(".{1," + maxLength + "}","g");
     var parts = str.match(reg);
     return parts.join('\n');
 }
-       function callApiForSendExam(data,dialog){
+    function callApiForSendExam(data,dialog){
            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/test", "POST", JSON.stringify(data), function (resp) {
                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                    refresh_finalTest();
