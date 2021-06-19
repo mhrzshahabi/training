@@ -131,4 +131,6 @@ public interface ITclassService {
     List<String> getClassDefaultTermScope();
 
     boolean isValidForExam(long id);
+
+    BaseResponse changeClassStatusToInProcess(Long classId);
 }

@@ -47,7 +47,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Slf4j
 @Service
@@ -1715,5 +1714,24 @@ public class TclassService implements ITclassService {
         }
         else
         return false;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse changeClassStatusToInProcess(Long classId) {
+
+        BaseResponse response=new BaseResponse();
+        Optional<Tclass> optionalTClass = tclassDAO.findById(classId);
+
+        if (optionalTClass.isPresent()) {
+
+            tclassDAO.changeClassStatus(classId, ClassStatus.inProcess.getId().toString());
+            response.setStatus(200);
+            return response;
+        } else {
+
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            return response;
+        }
     }
 }
