@@ -871,6 +871,35 @@ public class TclassService implements ITclassService {
             return null;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Map<String, Double> getClassReactionEvaluationFormula(Long classId) {
+
+        Map<String, Double> reactionEvaluationFormulaResult = new HashMap<>();
+
+        Tclass tclass = getTClass(classId);
+        Set<ClassStudent> classStudents = tclass.getClassStudents();
+        Double teacherGradeToClass = getTeacherGradeToClass(classId, tclass.getTeacherId());
+        Map<String, Double> studentReactions = calculateStudentsReactionEvaluationResult(classStudents);
+
+        if (studentReactions.get("studentsGradeToTeacher") != null)
+            reactionEvaluationFormulaResult.put("studentsGradeToTeacher", studentReactions.get("studentsGradeToTeacher"));
+
+        if (studentReactions.get("studentsGradeToGoals") != null)
+            reactionEvaluationFormulaResult.put("studentsGradeToGoals", studentReactions.get("studentsGradeToGoals"));
+
+        if (studentReactions.get("studentsGradeToFacility") != null)
+            reactionEvaluationFormulaResult.put("studentsGradeToFacility", studentReactions.get("studentsGradeToFacility"));
+
+        if (studentReactions.get("evaluatedPercent") != null)
+            reactionEvaluationFormulaResult.put("evaluatedPercent", studentReactions.get("evaluatedPercent"));
+
+        if (teacherGradeToClass != null)
+            reactionEvaluationFormulaResult.put("teacherGradeToClass", teacherGradeToClass);
+
+        return reactionEvaluationFormulaResult;
+    }
+
     public Double getStudentsGradeToTeacher(Set<ClassStudent> classStudentList) {
         Map<String, Double> result = calculateStudentsReactionEvaluationResult(classStudentList);
         if (result.get("studentsGradeToTeacher") != null)
@@ -888,12 +917,15 @@ public class TclassService implements ITclassService {
         Integer studentsGradeToFacility_count = null;
         Integer studentsGradeToGoals_count = null;
         Map<String, Double> result = new HashMap<>();
+        Double completeNum = 0.0;
+
         for (ClassStudent classStudent : classStudents) {
             if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
                 EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(139L, classStudent.getTclass().getId(), classStudent.getId(), 188L,
                         classStudent.getTclass().getId(), 504L, 154L);
                 Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
                 if (evaluation != null) {
+                    completeNum ++;
                     int studentsGradeToTeacher_cl = 0;
                     int studentsGradeToFacility_cl = 0;
                     int studentsGradeToGoals_cl = 0;
@@ -906,21 +938,21 @@ public class TclassService implements ITclassService {
                     double goalsTotalWeight = 0.0;
                     for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
                         if (answer.getAnswerId() != null) {
-                            if (answer.getDomainId().equals(54L)) { //Facilities
+                            if (answer.getDomainId().equals(54L)) { //studentsToFacilities
                                 studentsGradeToFacility_cl = 1;
                                 if (answer.getWeight() != null)
                                     facilityTotalWeight += answer.getWeight();
                                 else
                                     facilityTotalWeight++;
                                 facilityTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
-                            } else if (answer.getDomainId().equals(183L)) { //Content
+                            } else if (answer.getDomainId().equals(183L)) { //studentsToContent
                                 studentsGradeToGoals_cl = 1;
                                 if (answer.getWeight() != null)
                                     goalsTotalWeight += answer.getWeight();
                                 else
                                     goalsTotalWeight++;
                                 goalsTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
-                            } else if (answer.getDomainId().equals(53L)) { //teacher
+                            } else if (answer.getDomainId().equals(53L)) { //studentsToTeacher
                                 studentsGradeToTeacher_cl = 1;
                                 if (answer.getWeight() != null)
                                     teacherTotalWeight += answer.getWeight();
@@ -962,6 +994,7 @@ public class TclassService implements ITclassService {
         result.put("studentsGradeToTeacher", studentsGradeToTeacher_l);
         result.put("studentsGradeToFacility", studentsGradeToFacility_l);
         result.put("studentsGradeToGoals", studentsGradeToGoals_l);
+        result.put("evaluatedPercent", (completeNum/Double.valueOf(classStudents.size())) * 100);
         return result;
     }
 

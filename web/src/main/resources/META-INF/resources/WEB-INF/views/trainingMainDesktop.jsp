@@ -1223,6 +1223,7 @@
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
     const viewTrainingPostUrl = rootUrl + "/view-training-post";
     const viewCoursesEvaluationReportUrl = rootUrl + "/view_courses_evaluation_report";
+    const viewReactionEvaluationFormulaReportUrl = rootUrl + "/view_reaction_evaluation_formula_report";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
     const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
@@ -2383,6 +2384,13 @@
                                 title:  "<spring:message code="courses.evaluation.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/coursesEvaluationReport"/>");
+                                }
+                            },
+
+                            {
+                                title:  "<spring:message code="reaction.evaluation.formula.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/reactionEvaluationFormulaReport"/>");
                                 }
                             },
 
