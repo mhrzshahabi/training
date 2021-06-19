@@ -9148,5 +9148,30 @@ LEFT JOIN (
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-020">
+        <createView viewName="VIEW_REACTION_EVALUATION_FORMULA_REPORT" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                  ROWNUM              AS id,
+                  tClass.ID           AS class_id,
+                  tClass.C_CODE       AS class_code,
+                  tClass.C_STATUS     AS class_status,
+                  tClass.C_START_DATE AS class_start_date,
+                  tClass.C_END_DATE   AS class_end_date,
+                  course.ID           AS course_id,
+                  course.C_CODE       AS course_code,
+                  course.C_TITLE_FA   AS course_titlefa,
+                  cat.C_TITLE_FA      AS category_titlefa,
+                  suCat.C_TITLE_FA    AS sub_category_titlefa
+                FROM
+                  TBL_CLASS tClass
+                  INNER JOIN TBL_COURSE course ON TCLASS.F_COURSE = course.ID
+                  INNER JOIN TBL_CATEGORY cat ON cat.ID = course.CATEGORY_ID
+                  INNER JOIN TBL_SUB_CATEGORY suCat ON suCat.ID = course.SUBCATEGORY_ID
+                WHERE tClass.C_STATUS != '1'
+             ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>

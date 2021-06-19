@@ -257,6 +257,13 @@ public class Tclass extends Auditable {
     private Boolean hasTest;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_target_population_type_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue targetPopulationType;
+
+    @Column(name = "f_target_population_type_id")
+    private Long targetPopulationTypeId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_holding_class_type_id", nullable = false, insertable = false, updatable = false)
     private ParameterValue holdingClassType;
 

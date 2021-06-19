@@ -101,6 +101,7 @@
             {name: "reason" , autoFitWidth: true},
             {name: "classStatus" , autoFitWidth: true},
             {name: "topology"},
+            {name: "targetPopulationTypeId"},
             {name: "holdingClassTypeId"},
             {name: "teachingMethodId"},
             {name: "trainingPlaceIds"},
@@ -223,6 +224,15 @@
         fetchDataURL: parameterValueUrl + "/listByCode/AbroadExtraOrganizationalHoldingClassType"
     });
 
+    var RestDataSource_Target_Population_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/TargetPopulation"
+    });
+
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -239,7 +249,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
-        fetchDataURL: parameterValueUrl + "/iscList/438"
+        fetchDataURL: parameterValueUrl + "/listByCode/RCC"
     });
 
     let SupervisorDS_JspClass = isc.TrDS.create({
@@ -587,6 +597,7 @@
                 },
                 filterOnKeypress: true,
             },
+            {name: "targetPopulationTypeId", hidden: true},
             {name: "holdingClassTypeId", hidden: true},
             {name: "teachingMethodId", hidden: true},
             {name: "createdBy", hidden: true},
@@ -913,8 +924,30 @@
                 }
             },
             {
+                name: "targetPopulationTypeId",
+                editorType: "ComboBoxItem",
+                <%--title: "<spring:message code="executer"/>:",--%>
+                title: "دوره ویژه ی:",
+                colSpan: 1,
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_Target_Population_List,
+                displayField: "title",
+                autoFetchData: false,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                    ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
+            },
+            {
                 name: "hduration",
-                colSpan: 2,
+                colSpan: 1,
                 formatOnBlur: true,
                 title: "<spring:message code='duration'/>:",
                 textAlign: "Right",
@@ -1874,6 +1907,7 @@
         align: "center",
         click: function () {
             Window_Class_JspClass.close();
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         }
     });
 
@@ -1995,6 +2029,7 @@
                     simpleDialog("<spring:message code="message"/>", response.message, "0", "error");
                 }
             }));
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         }
     });
 
@@ -2037,6 +2072,7 @@
         placement: "fillPanel",
         closeClick: function () {
             this.Super("closeClick", arguments);
+            DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         },
         items: [
             isc.TrVLayout.create({
@@ -2987,6 +3023,7 @@
             function startEdit(record) {
                 VM_JspClass.clearErrors();
                 VM_JspClass.clearValues();
+                DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").disable();
                 delete RestDataSource_Term_JspClass.implicitCriteria;
                 DynamicForm_Class_JspClass.setValue("erunType", record.course.erunType);
                 wait.show();
@@ -3014,6 +3051,7 @@
                     VM_JspClass.clearValues();
                     OJT = false;
                     if (a === 0) {
+                        DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").disable();
                         VM_JspClass.editRecord(record);
                         saveButtonStatus();
                         classMethod = "PUT";
@@ -3096,6 +3134,7 @@
                         highlightClassStauts(DynamicForm_Class_JspClass.getField("classStatus").getValue(), 1200);
                     } else {
                         classMethod = "POST";
+                        DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
                         url = classUrl;
                         DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
                         DynamicForm_Class_JspClass.setValue("course.theoryDuration", record.course.theoryDuration);
@@ -3116,6 +3155,7 @@
                         DynamicForm_Class_JspClass.setValue("evaluation", record.evaluation);
                         DynamicForm_Class_JspClass.setValue("startEvaluation", record.startEvaluation);
                         DynamicForm_Class_JspClass.setValue("behavioralLevel", record.behavioralLevel);
+                        DynamicForm_Class_JspClass.setValue("targetPopulationTypeId", record.targetPopulationTypeId);
                         DynamicForm_Class_JspClass.setValue("holdingClassTypeId", record.holdingClassTypeId);
                         DynamicForm_Class_JspClass.setValue("teachingMethodId", record.teachingMethodId);
 
@@ -3205,6 +3245,7 @@
     }
 
     function ListGrid_Class_add() {
+        DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         classMethod = "POST";
         url = classUrl;
         VM_JspClass.clearErrors();

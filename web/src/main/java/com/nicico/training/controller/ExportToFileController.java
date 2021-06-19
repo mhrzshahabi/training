@@ -254,7 +254,8 @@ public class ExportToFileController {
                 searchRq.getCriteria().getCriteria().remove(0);
 
                 SearchDTO.SearchRq request3 = new SearchDTO.SearchRq();
-                request3.setStartIndex(null);
+                request3.setStartIndex(Integer.parseInt(req.getParameter("_startRow")));
+                request3.setCount(Integer.parseInt(req.getParameter("_len")));
 
                 if (req.getParameter("_sortBy") == null) {
                     request3.setSortBy("personalNum");

@@ -4,7 +4,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../messenger/MLanding.jsp" %>
 
-//<script>
+// <script>
     //----------------------------------------- DataSources ------------------------------------------------------------
 
     let evalTypeCriteria = [];
@@ -17,6 +17,7 @@
             {name: "termId"},
             {name: "instituteId"},
             {name: "teacherId"},
+            {name: "teacherFullName"},
             {name: "tclassStudentsCount"},
             {name: "tclassCode"},
             {name: "tclassStartDate"},
@@ -207,6 +208,13 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
+            },
+            {
+                name: "teacherFullName",
+                title: "<spring:message code='teacher'/>",
+                canSort: false,
+                canFilter: false,
+                autoFitWidth: true
             },
             {
                 name: "instituteTitleFa",
@@ -723,4 +731,4 @@
         return mainCriteria;
     }
 
-//</script>
+// </script>

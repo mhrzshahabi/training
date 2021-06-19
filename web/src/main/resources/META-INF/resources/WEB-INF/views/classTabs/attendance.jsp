@@ -1042,8 +1042,8 @@
                                             title: "<spring:message code='message'/>",
                                             message: "تعداد غیبت های "+ selfTaughts[x].fullName +" از تعداد غیبت های مجاز عبور میکند، آیا مایل هستید که غیبت غیر موجه را برای فراگیر مورد نظر اعمال کنید؟",
                                             buttons: [
-                                                isc.IButtonSave.create({title: "بلی",}),
-                                                isc.IButtonCancel.create({title: "خیر",})],
+                                                isc.IButtonSave.create({title: "بلی"}),
+                                                isc.IButtonCancel.create({title: "خیر"})],
                                             buttonClick: function (button, index) {
                                                 this.close();
                                                 attendanceGrid.setSelectedState([{studentId: x}]);
@@ -1122,10 +1122,10 @@
         canEditCell(rowNum, colNum){
             return colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh";
         },
-        saveAllEdits(){
+        saveAllEdits() {
             this.Super("saveAllEdits",arguments);
             setTimeout(function () {
-                if(attendanceForm.getValue("filterType")==1) {
+                if(attendanceForm.getValue("filterType") == 1) {
                     wait.show();
                     let sendObject = {};
                     sendObject.serialVersionUID = 7710786106266650447;
@@ -1153,7 +1153,6 @@
 
                     sendObject.attendanceDtos = sendList;
                     isc.RPCManager.sendRequest({
-                        // actionURL: attendanceUrl + "/save-attendance?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
                         actionURL: attendanceUrl + "/save-attendance",
                         willHandleError: true,
                         httpMethod: "POST",
@@ -1162,20 +1161,30 @@
                         contentType: "application/json; charset=utf-8",
                         showPrompt: false,
                         data: JSON.stringify(sendObject),
-                        // data: JSON.stringify([sessionInOneDate, causeOfAbsence]),
                         serverOutputAsString: false,
                         callback: function (resp) {
                             loadPage_Attendance();
                             wait.close();
-                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                                if(classRecord.classStatus === "1") {
+                                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "changeClassStatusToInProcess/" + classRecord.id, "GET", null, function (resp) {
+                                        if (resp.httpResponseCode === 200) {
+                                            ListGrid_Class_JspClass.invalidateCache();
+                                            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                        } else {
+                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                        }
+                                    }));
+                                } else {
+                                    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                }
                             } else {
                                 simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                             }
                         }
                     });
-                }
-                else if(attendanceForm.getValue("filterType")==2) {
+                } else if(attendanceForm.getValue("filterType") == 2) {
                     wait.show();
                     isc.RPCManager.sendRequest({
                         actionURL: attendanceUrl + "/student-attendance-save",
@@ -1190,8 +1199,20 @@
                         callback: function (resp) {
                             loadPage_Attendance();
                             wait.close();
-                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                                if(classRecord.classStatus === "1") {
+                                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "changeClassStatusToInProcess/" + classRecord.id, "GET", null, function (resp) {
+                                        if (resp.httpResponseCode === 200) {
+                                            ListGrid_Class_JspClass.invalidateCache();
+                                            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                        } else {
+                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                        }
+                                    }));
+                                } else {
+                                    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                }
                             } else {
                                 simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                             }

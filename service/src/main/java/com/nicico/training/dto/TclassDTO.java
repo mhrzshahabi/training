@@ -79,6 +79,7 @@ public class TclassDTO {
     private Boolean studentOnlineEvalStatus;
     private Boolean hasTest;
     private String courseCode;
+    private Long targetPopulationTypeId;
     private Long holdingClassTypeId;
     private Long teachingMethodId;
 
@@ -125,6 +126,7 @@ public class TclassDTO {
         private InstituteDTO.InstituteInfoTuple organizer;
         private List<TclassDTO.InfoTuple> canceledClasses;
         private String isSentMessage;
+        private ParameterValueDTO targetPopulationType;
         private ParameterValueDTO holdingClassType;
         private ParameterValueDTO teachingMethod;
         //*********************************
