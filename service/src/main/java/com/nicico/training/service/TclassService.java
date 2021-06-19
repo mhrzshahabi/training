@@ -183,7 +183,7 @@ public class TclassService implements ITclassService {
         if (tclass.getClassStatus().equals("4")){
             throw new TrainingException(TrainingException.ErrorType.Forbidden);
         }
-        else if (!tclass.getTargetPopulationTypeId().equals(request.getTargetSocietyTypeId())){
+        else if (!tclass.getTargetPopulationTypeId().equals(request.getTargetPopulationTypeId())){
             throw new TrainingException(TrainingException.ErrorType.Forbidden);
         } else {
             Tclass mappedClass = trainingClassBeanMapper.updateTClass(request, tclass);
