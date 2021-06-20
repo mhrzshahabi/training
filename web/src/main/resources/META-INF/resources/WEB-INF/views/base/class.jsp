@@ -883,7 +883,6 @@
                 title: "<spring:message code='teaching.type'/>:",
                 colSpan: 1,
                 rowSpan: 3,
-                optionDataSource: RestDataSource_intraOrganizational_Holding_Class_Type_List,
                 pickListWidth: 200,
                 displayField: "title",
                 autoFetchData: true,
@@ -3068,6 +3067,18 @@
                         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").disable();
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
                         DynamicForm_Class_JspClass.getItem("holdingClassTypeId").disable();
+                        DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(null);
+                        switch (record.holdingClassType.code) {
+                            case "intraOrganizational":
+                                DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_intraOrganizational_Holding_Class_Type_List);
+                                break;
+                            case "InTheCountryExtraOrganizational":
+                                DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_InTheCountryExtraOrganizational_Holding_Class_Type_List);
+                                break;
+                            case "AbroadExtraOrganizational":
+                                DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_AbroadExtraOrganizational_Holding_Class_Type_List);
+                                break;
+                        }
                         VM_JspClass.editRecord(record);
                         saveButtonStatus();
                         classMethod = "PUT";
