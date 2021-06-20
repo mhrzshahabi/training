@@ -1332,67 +1332,67 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                     }
                 }
             },
-            {
-                name: "endDate",
-                ID: "end_date_FinalTest",
-                title: "<spring:message code='test.question.end.date'/>",
-                required: true,
-                width: "*",
-                defaultValue: todayDate,
-                keyPressFilter: "[0-9/]",
-                length: 10,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('date_FinalTest', this, 'ymd', '/');
-                    }
-                }],
-                changed: function (form, item, value) {
-                    if (value == null || value === "" || checkDate(value))
-                        item.clearErrors();
-                    else
-                        item.setErrors("<spring:message code='msg.correct.date'/>");
-                }
-            },
-            {
-                name: "endTime",
-                title: "<spring:message code="test.question.end.time"/>",
-                required: true,
-                requiredMessage: "<spring:message code="msg.field.is.required"/>",
-                hint: "--:--",
-                defaultValue: "09:00",
-                keyPressFilter: "[0-9:]",
-                showHintInField: true,
-                textAlign: "center",
-                validateOnChange: true,
-                validators: [{
-                    type: "isString",
-                    validateOnExit: true,
-                    type: "lengthRange",
-                    min: 5,
-                    max: 5,
-                    stopOnError: true,
-                    errorMessage: "زمان مجاز بصورت 08:30 است"
-                },
-                    {
-                        type: "regexp",
-                        expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",
-                        validateOnChange: true,
-                        errorMessage: "ساعت 23-0 و دقیقه 59-0"
-                    }
-                ],
-                length:5,
-                editorExit:function(){
-                    DynamicForm_Session.setValue("time",arrangeDate(DynamicForm_Session.getValue("time")));
-                    let val=DynamicForm_Session.getValue("time");
-                    if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){
-                        DynamicForm_Session.addFieldErrors("time", "<spring:message code="session.hour.invalid"/>", true);
-                    }else{
-                        DynamicForm_Session.clearFieldErrors("time", true);
-                    }
-                }
-            },
+            <%--{--%>
+            <%--    name: "endDate",--%>
+            <%--    ID: "end_date_FinalTest",--%>
+            <%--    title: "<spring:message code='test.question.end.date'/>",--%>
+            <%--    required: true,--%>
+            <%--    width: "*",--%>
+            <%--    defaultValue: todayDate,--%>
+            <%--    keyPressFilter: "[0-9/]",--%>
+            <%--    length: 10,--%>
+            <%--    icons: [{--%>
+            <%--        src: "<spring:url value="calendar.png"/>",--%>
+            <%--        click: function () {--%>
+            <%--            closeCalendarWindow();--%>
+            <%--            displayDatePicker('date_FinalTest', this, 'ymd', '/');--%>
+            <%--        }--%>
+            <%--    }],--%>
+            <%--    changed: function (form, item, value) {--%>
+            <%--        if (value == null || value === "" || checkDate(value))--%>
+            <%--            item.clearErrors();--%>
+            <%--        else--%>
+            <%--            item.setErrors("<spring:message code='msg.correct.date'/>");--%>
+            <%--    }--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "endTime",--%>
+            <%--    title: "<spring:message code="test.question.end.time"/>",--%>
+            <%--    required: true,--%>
+            <%--    requiredMessage: "<spring:message code="msg.field.is.required"/>",--%>
+            <%--    hint: "--:--",--%>
+            <%--    defaultValue: "09:00",--%>
+            <%--    keyPressFilter: "[0-9:]",--%>
+            <%--    showHintInField: true,--%>
+            <%--    textAlign: "center",--%>
+            <%--    validateOnChange: true,--%>
+            <%--    validators: [{--%>
+            <%--        type: "isString",--%>
+            <%--        validateOnExit: true,--%>
+            <%--        type: "lengthRange",--%>
+            <%--        min: 5,--%>
+            <%--        max: 5,--%>
+            <%--        stopOnError: true,--%>
+            <%--        errorMessage: "زمان مجاز بصورت 08:30 است"--%>
+            <%--    },--%>
+            <%--        {--%>
+            <%--            type: "regexp",--%>
+            <%--            expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",--%>
+            <%--            validateOnChange: true,--%>
+            <%--            errorMessage: "ساعت 23-0 و دقیقه 59-0"--%>
+            <%--        }--%>
+            <%--    ],--%>
+            <%--    length:5,--%>
+            <%--    editorExit:function(){--%>
+            <%--        DynamicForm_Session.setValue("time",arrangeDate(DynamicForm_Session.getValue("time")));--%>
+            <%--        let val=DynamicForm_Session.getValue("time");--%>
+            <%--        if(val===null || val==='' || typeof (val) === 'undefined'|| !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)){--%>
+            <%--            DynamicForm_Session.addFieldErrors("time", "<spring:message code="session.hour.invalid"/>", true);--%>
+            <%--        }else{--%>
+            <%--            DynamicForm_Session.clearFieldErrors("time", true);--%>
+            <%--        }--%>
+            <%--    }--%>
+            <%--},--%>
             {
                 name: "duration",
                 title: "<spring:message code='test.question.duration'/>",
@@ -1638,8 +1638,9 @@ let inValidStudents = [];
     }
 
     function saveFinalTest_finalTest() {
-        if(validExamTime(FinalTestDF_finalTest))
-        {
+
+        // if(validExamTime(FinalTestDF_finalTest))
+        // {
             if (!FinalTestDF_finalTest.validate()) {
                 return;
             }
@@ -1669,7 +1670,7 @@ let inValidStudents = [];
                 isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
                     JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
             }
-        }
+        // }
 
 
 
@@ -1723,8 +1724,8 @@ let inValidStudents = [];
     }
 
     function saveCopyTest_finalTest() {
-        if(validExamTime(FinalTestDF_finalTest))
-        {
+        // if(validExamTime(FinalTestDF_finalTest))
+        // {
             if (!FinalTestDF_finalTest.validate())
                 return;
 
@@ -1752,7 +1753,7 @@ let inValidStudents = [];
                     createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
                 }
             }));
-        }
+        // }
 
 
     }

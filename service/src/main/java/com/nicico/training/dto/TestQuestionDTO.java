@@ -40,13 +40,13 @@ public class TestQuestionDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private String time;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private String endDate;
-
-        @NotNull
-        @ApiModelProperty(required = true)
-        private String endTime;
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private String endDate;
+//
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private String endTime;
 
         @NotNull
         @ApiModelProperty(required = true)
@@ -70,9 +70,9 @@ public class TestQuestionDTO {
 
         private Integer duration;
 
-        private String endDate;
-
-        private String endTime;
+//        private String endDate;
+//
+//        private String endTime;
 
         private TclassDTO.ExamInfo tclass;
         //private Set<QuestionBankTestQuestionDTO.Info> QuestionBankTestQuestionList;
@@ -88,8 +88,8 @@ public class TestQuestionDTO {
         private Integer version;
         private String date;
         private String time;
-        private String endDate;
-        private String endTime;
+//        private String endDate;
+//        private String endTime;
         private Integer duration;
         private TclassDTO.FinalTestInfo tclass;
     }
@@ -110,13 +110,13 @@ public class TestQuestionDTO {
         @ApiModelProperty(required = true)
         private String time;
 
-        @NotNull
-        @ApiModelProperty(required = true)
-        private String endDate;
-
-        @NotNull
-        @ApiModelProperty(required = true)
-        private String endTime;
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private String endDate;
+//
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private String endTime;
 
 
         @NotNull
@@ -146,13 +146,13 @@ public class TestQuestionDTO {
         private Long id;
         private Integer version;
 
-        @NotNull
-        @ApiModelProperty(required = true)
-        private String endDate;
-
-        @NotNull
-        @ApiModelProperty(required = true)
-        private String endTime;
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private String endDate;
+//
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private String endTime;
 
     }
 
