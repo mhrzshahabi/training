@@ -1,8 +1,3 @@
-/*
-ghazanfari_f,
-1/14/2020,
-2:46 PM
-*/
 package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
