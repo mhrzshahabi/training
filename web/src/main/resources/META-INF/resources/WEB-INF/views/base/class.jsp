@@ -805,6 +805,7 @@
                 changed: function (form, item, value) {
                     DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(null);
                     DynamicForm_Class_JspClass.getItem("teachingMethodId").setValue(null);
+                    DynamicForm_Class_JspClass.getItem("teachingMethodId").enable();
                     switch (item.getSelectedRecord().code) {
                         case "intraOrganizational":
                             DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_intraOrganizational_Holding_Class_Type_List);
@@ -882,7 +883,6 @@
                 title: "<spring:message code='teaching.type'/>:",
                 colSpan: 1,
                 rowSpan: 3,
-                optionDataSource: RestDataSource_intraOrganizational_Holding_Class_Type_List,
                 pickListWidth: 200,
                 displayField: "title",
                 autoFetchData: true,
@@ -1559,18 +1559,21 @@
             //------------------------ DONE BY ROYA---------------------------------------------------------------------
         ],
         itemChanged: function () {
-            if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "غیر حضوری" ||
-                DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "مجازی") {
-                DynamicForm_Class_JspClass.getField('instituteId').setDisabled(true);
-                DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(true);
-            } else {
-                DynamicForm_Class_JspClass.getField('instituteId').setDisabled(false);
-                DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(false);
-            }
-            if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "اعزام"){
-                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
-            }else {
-                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
+            if (DynamicForm_Class_JspClass.getItem("teachingMethodId") !== null && DynamicForm_Class_JspClass.getItem("teachingMethodId") !== undefined
+                    && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord() !== null && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord() !== undefined ){
+                if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "غیر حضوری" ||
+                    DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "مجازی") {
+                    DynamicForm_Class_JspClass.getField('instituteId').setDisabled(true);
+                    DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(true);
+                } else {
+                    DynamicForm_Class_JspClass.getField('instituteId').setDisabled(false);
+                    DynamicForm_Class_JspClass.getField('trainingPlaceIds').setDisabled(false);
+                }
+                if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "اعزام") {
+                    DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
+                } else {
+                    DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
+                }
             }
         }
     });
@@ -1908,26 +1911,31 @@
         click: function () {
             Window_Class_JspClass.close();
             DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
+            DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
         }
     });
 
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
         click: async function () {
-            if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "غیر حضوری" ||
-                DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "مجازی") {
-                DynamicForm_Class_JspClass.getItem("instituteId").setRequired(false);
-                DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(false);
-                DynamicForm_Class_JspClass.clearValue("instituteId");
-                DynamicForm_Class_JspClass.clearValue("trainingPlaceIds");
-            } else {
-                DynamicForm_Class_JspClass.getItem("instituteId").setRequired(true);
-                DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(true);
-            }
-            if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "اعزام"){
-                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
-            }else {
-                DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
+
+            if (DynamicForm_Class_JspClass.getItem("teachingMethodId") !== null && DynamicForm_Class_JspClass.getItem("teachingMethodId") !== undefined
+                    && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord() !== null && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord() !== undefined ) {
+                if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "غیر حضوری" ||
+                    DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "مجازی") {
+                    DynamicForm_Class_JspClass.getItem("instituteId").setRequired(false);
+                    DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(false);
+                    DynamicForm_Class_JspClass.clearValue("instituteId");
+                    DynamicForm_Class_JspClass.clearValue("trainingPlaceIds");
+                } else {
+                    DynamicForm_Class_JspClass.getItem("instituteId").setRequired(true);
+                    DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setRequired(true);
+                }
+                if (DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "اعزام") {
+                    DynamicForm_Class_JspClass.getItem("teacherId").setRequired(false);
+                } else {
+                    DynamicForm_Class_JspClass.getItem("teacherId").setRequired(true);
+                }
             }
 
             if (DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord() != undefined) {
@@ -1952,7 +1960,9 @@
                 }
             }
 
-            if (!OJT && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "آموزش حین کار" && DynamicForm_Class_JspClass.getValue("erunType").id === 5) { // id = 5 -> "حین کار"
+            if (DynamicForm_Class_JspClass.getItem("teachingMethodId") !== null && DynamicForm_Class_JspClass.getItem("teachingMethodId") !== undefined
+                && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord() !== null && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord() !== undefined
+                && !OJT && DynamicForm_Class_JspClass.getItem("teachingMethodId").getSelectedRecord().title === "آموزش حین کار" && DynamicForm_Class_JspClass.getValue("erunType").id === 5) { // id = 5 -> "حین کار"
                 let dialog_Accept = createDialog("ask", 'نوع اجرا دوره کلاس از "حین کار" می باشد، آیا مایلید که روش آموزش را نیز از نوع "آموزش حین کار " انتخاب کنید', "توجه");
                 dialog_Accept.addProperties({
                     buttonClick: function (button, index) {
@@ -2030,6 +2040,7 @@
                 }
             }));
             DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
+            DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
         }
     });
 
@@ -2073,6 +2084,8 @@
         closeClick: function () {
             this.Super("closeClick", arguments);
             DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
+            DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
+
         },
         items: [
             isc.TrVLayout.create({
@@ -3052,6 +3065,20 @@
                     OJT = false;
                     if (a === 0) {
                         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").disable();
+                        DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
+                        DynamicForm_Class_JspClass.getItem("holdingClassTypeId").disable();
+                        DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(null);
+                        switch (record.holdingClassType.code) {
+                            case "intraOrganizational":
+                                DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_intraOrganizational_Holding_Class_Type_List);
+                                break;
+                            case "InTheCountryExtraOrganizational":
+                                DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_InTheCountryExtraOrganizational_Holding_Class_Type_List);
+                                break;
+                            case "AbroadExtraOrganizational":
+                                DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_AbroadExtraOrganizational_Holding_Class_Type_List);
+                                break;
+                        }
                         VM_JspClass.editRecord(record);
                         saveButtonStatus();
                         classMethod = "PUT";
@@ -3101,7 +3128,7 @@
                             DynamicForm_Class_JspClass.getItem("preCourseTest").hide();
                         } else
                             DynamicForm_Class_JspClass.getItem("preCourseTest").show();
-                        wait.show()
+                        wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "classHasAnySession/" + record.id, "GET", null, (resp) => {
                             let result = resp.httpResponseText == Boolean(true).toString() ? true : false;
                             autoTimeActivation(result ? false : true);
@@ -3135,6 +3162,8 @@
                     } else {
                         classMethod = "POST";
                         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
+                        DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
+                        DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
                         url = classUrl;
                         DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
                         DynamicForm_Class_JspClass.setValue("course.theoryDuration", record.course.theoryDuration);
@@ -3142,8 +3171,6 @@
                         DynamicForm_Class_JspClass.setValue("maxCapacity", record.maxCapacity);
                         DynamicForm_Class_JspClass.setValue("titleClass", record.titleClass);
                         // DynamicForm_Class_JspClass.setValue("teachingType", record.teachingType);
-                        DynamicForm_Class_JspClass.setValue("teachingMethodId", record.teachingMethodId);
-                        DynamicForm_Class_JspClass.setValue("holdingClassTypeId", record.holdingClassTypeId);
                         DynamicForm_Class_JspClass.setValue("topology", record.topology);
                         DynamicForm_Class_JspClass.setValue("hduration", record.hduration);
                         DynamicForm_Class_JspClass.setValue("reason", record.reason);
@@ -3155,9 +3182,9 @@
                         DynamicForm_Class_JspClass.setValue("evaluation", record.evaluation);
                         DynamicForm_Class_JspClass.setValue("startEvaluation", record.startEvaluation);
                         DynamicForm_Class_JspClass.setValue("behavioralLevel", record.behavioralLevel);
-                        DynamicForm_Class_JspClass.setValue("targetPopulationTypeId", record.targetPopulationTypeId);
-                        DynamicForm_Class_JspClass.setValue("holdingClassTypeId", record.holdingClassTypeId);
-                        DynamicForm_Class_JspClass.setValue("teachingMethodId", record.teachingMethodId);
+                        DynamicForm_Class_JspClass.setValue("targetPopulationTypeId", null);
+                        DynamicForm_Class_JspClass.setValue("holdingClassTypeId",null);
+                        DynamicForm_Class_JspClass.setValue("teachingMethodId", null);
 
                         if (userPersonInfo != null) {
                             DynamicForm_Class_JspClass.setValue("supervisor", userPersonInfo.id);
@@ -3246,6 +3273,8 @@
 
     function ListGrid_Class_add() {
         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
+        DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
+        DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
         classMethod = "POST";
         url = classUrl;
         VM_JspClass.clearErrors();
