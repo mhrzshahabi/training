@@ -1744,9 +1744,7 @@ public class TclassService implements ITclassService {
         {
             Tclass tclass=optionalTclass.get();
             return tclass.getScoringMethod() != null &&
-                    (tclass.getScoringMethod().equals("2") || tclass.getScoringMethod().equals("3")) &&
-                    tclass.getTeachingType() != null &&
-                    !tclass.getTeachingType().equals("عملی و کارگاهی")  ;
+                    (tclass.getScoringMethod().equals("2") || tclass.getScoringMethod().equals("3")) ;
         }
         else
         return false;

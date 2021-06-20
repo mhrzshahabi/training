@@ -1790,8 +1790,8 @@
                 needsAssessmentPriorityId: priority
             };
             wait.show();
-            let id = record.id
-            if (id === undefined) {
+            // let id = record.id
+            // if (id === undefined) {
                 let dataForNewSkill= {};
                 dataForNewSkill.list=DataSource_Skill_JspNeedsAssessment.cacheData;
                 dataForNewSkill.skillId=record.skillId;
@@ -1809,10 +1809,10 @@
 
                 }
 
-            } else {
-                changePriority(id, updating, record, viewer);
+            // } else {
+            //     changePriority(id, updating, record, viewer);
 
-            }
+            // }
         } else {
             createDialog("info", "فقط نیازسنجی های مرتبط با " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " قابل تغییر است.")
         }
