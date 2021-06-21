@@ -75,6 +75,10 @@
       "code": "Menu_NeedAssessment_PostGroup",
       "title": "منوی نیازسنجی - گروه پستي"
     },
+    {
+      "code": "Menu_NeedAssessment_Certification",
+      "title": "منوی نیازسنجی - تایید صلاحیت علمی و فنی"
+    },
 
 
 
