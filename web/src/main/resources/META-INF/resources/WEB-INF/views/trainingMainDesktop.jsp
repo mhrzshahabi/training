@@ -1801,7 +1801,15 @@
                         createTab(this.title, "<spring:url value="web/training-post"/>");
                     }
                 },
+                {isSeparator: true},
                 </sec:authorize>
+
+                {
+                    title: "<spring:message code="scientific.technical.certification"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/certification"/>");
+                    }
+                },
 
                 <%--,--%>
                 <%--{--%>
@@ -1870,7 +1878,7 @@
                 </sec:authorize>
 
             ]
-        }),
+        })
     });
     </sec:authorize>
 

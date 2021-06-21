@@ -75,6 +75,10 @@
       "code": "Menu_NeedAssessment_Training_Post",
       "title": "منوی نیازسنجی - پست"
     },
+    {
+      "code": "Menu_NeedAssessment_Certification",
+      "title": "منوی نیازسنجی - تایید صلاحیت علمی و فنی"
+    },
 
 
     {

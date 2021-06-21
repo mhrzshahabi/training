@@ -131,6 +131,11 @@ public class MainFormController {
         return "base/training-post";
     }
 
+    @RequestMapping("/certification")
+    public String showCertificationForm() {
+        return "base/certification";
+    }
+
     @RequestMapping("/needAssessment")
     public String showNeedAssessmentForm() {
         return "base/needAssessmentNew1";
