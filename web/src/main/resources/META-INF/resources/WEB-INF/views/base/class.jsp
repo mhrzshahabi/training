@@ -3068,6 +3068,8 @@
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
                         DynamicForm_Class_JspClass.getItem("holdingClassTypeId").disable();
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(null);
+                        DynamicForm_Class_JspClass.getItem("teachingMethodId").setValueMap(null);
+                        DynamicForm_Class_JspClass.getItem("teachingMethodId").clearErrors();
                         switch (record.holdingClassType.code) {
                             case "intraOrganizational":
                                 DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(RestDataSource_intraOrganizational_Holding_Class_Type_List);
