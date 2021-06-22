@@ -120,5 +120,7 @@ public class StudentPortalRestController {
     public void getEvaluationForms(HttpServletRequest iscRq, HttpServletResponse response,@PathVariable String nationalCode, @PathVariable Long personnelId) throws IOException {
         String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
         response.sendRedirect(restApiUrl + "/api/evaluation/personnelEvaluationForms/" + nationalCode + "/" + personnelId + "?" + iscRq.getQueryString());
+
+
     }
 }

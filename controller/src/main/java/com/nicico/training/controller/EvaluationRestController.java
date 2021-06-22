@@ -21,6 +21,8 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +62,7 @@ public class EvaluationRestController {
     private final ClassEvaluationGoalsService classEvaluationGoalsService;
     private final ITclassService iTclassService;
     private final EvaluationAnswerService answerService;
-
+    private final MessageSource messageSource;
     @Loggable
     @PostMapping("/printWithCriteria")
     @Transactional
@@ -576,8 +578,8 @@ public class EvaluationRestController {
             }
         }
 
-        final Optional<ViewActivePersonnel> pById = viewActivePersonnelDAO.findById(personnelId);
-        final ViewActivePersonnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        final ViewActivePersonnel personnel = viewActivePersonnelDAO.findPersonnelByPersonnelNo(String.valueOf(personnelId));
+            //        final ViewActivePersonnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
         List<Evaluation> behavioralResultCoWorker = evaluationDAO.findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
                 personnelId,
@@ -593,7 +595,7 @@ public class EvaluationRestController {
                 ClassStudent classStudent = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 res.setClassId(tclass.getId());
                 res.setEvaluatorId(personnelId);
-                res.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+                res.setEvaluatorName((personnel != null ? personnel.getFirstName() : null) + " " + (personnel != null ? personnel.getLastName() : null));
                 res.setEvaluatedId(evaluation.getEvaluatedId());
                 res.setEvaluatedName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
                 res.setEvaluatedTypeId(evaluation.getEvaluatedTypeId());
@@ -639,7 +641,7 @@ public class EvaluationRestController {
                 ClassStudent classStudent = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 res.setClassId(tclass.getId());
                 res.setEvaluatorId(personnelId);
-                res.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+                res.setEvaluatorName((personnel != null ? personnel.getFirstName() : null) + " " + (personnel != null ? personnel.getLastName() : null));
                 res.setEvaluatedId(evaluation.getEvaluatedId());
                 res.setEvaluatedName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
                 res.setEvaluatedTypeId(evaluation.getEvaluatedTypeId());
@@ -685,7 +687,7 @@ public class EvaluationRestController {
                 ClassStudent classStudent = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 res.setClassId(tclass.getId());
                 res.setEvaluatorId(personnelId);
-                res.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+                res.setEvaluatorName((personnel != null ? personnel.getFirstName() : null) + " " + (personnel != null ? personnel.getLastName() : null));
                 res.setEvaluatedId(evaluation.getEvaluatedId());
                 res.setEvaluatedName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
                 res.setEvaluatedTypeId(evaluation.getEvaluatedTypeId());
