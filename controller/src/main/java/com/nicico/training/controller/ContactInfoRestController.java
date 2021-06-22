@@ -18,7 +18,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/contactinfo")
+@RequestMapping(value = "/api/contactInfo")
 public class ContactInfoRestController {
 
     private final IContactInfoService contactInfoService;

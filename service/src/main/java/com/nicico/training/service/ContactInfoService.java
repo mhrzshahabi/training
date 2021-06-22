@@ -3,12 +3,12 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AddressDTO;
-import com.nicico.training.dto.ContactInfoDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.model.Address;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.repository.ContactInfoDAO;
+import com.nicico.training.service.hrm.HrmFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -16,7 +16,9 @@ import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.nicico.training.dto.StudentDTO.ClassStudentInfo;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +28,7 @@ public class ContactInfoService implements IContactInfoService {
     private final ModelMapper modelMapper;
     private final ContactInfoDAO contactInfoDAO;
     private final AddressService addressService;
+    private final HrmFeignClient hrmClient;
 
     @Transactional(readOnly = true)
     @Override
@@ -126,4 +129,36 @@ public class ContactInfoService implements IContactInfoService {
             }
         }
     }
+
+    @Override
+    public String fetchAndUpdateLastHrMobile(String nationalCode, ClassStudentInfo classStudentInfo, String token) {
+        if (nationalCode == null)
+            return null;
+        long now = new Date().getTime();
+        ContactInfoDTO.Info contactInfo = classStudentInfo.getContactInfo();
+        if (contactInfo == null) {
+            ContactInfo info = contactInfoDAO.save(new ContactInfo());
+            contactInfo = new ContactInfoDTO.Info().setId(info.getId());
+            classStudentInfo.setContactInfo(contactInfo);
+        }
+        long lastModified = contactInfo.getLastModifiedDate() == null ? 0 : contactInfo.getLastModifiedDate().getTime();
+        String hrMobile = contactInfo.getHrMobile();
+        if ((now - lastModified) / 1000 / 60 / 60 > 12) {
+            try {
+                HrmPersonDTO person = hrmClient.getPersonByNationalCode(nationalCode, token);
+                hrMobile = person.getMobile();
+                final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfo.getId());
+                if (cById.isPresent()) {
+                    ContactInfo contact = cById.get();
+                    contact.setHrMobile(hrMobile);
+                    contactInfoDAO.saveAndFlush(contact);
+                } else
+                    hrMobile = null;
+            } catch (Exception ex) {
+            }
+        }
+        contactInfo.setHrMobile(hrMobile);
+        return hrMobile;
+    }
+
 }

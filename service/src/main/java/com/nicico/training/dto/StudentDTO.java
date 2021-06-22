@@ -174,6 +174,7 @@ public class StudentDTO {
         private String birthCertificateNo;
         private String postCode;
         private String gender;
+        private ContactInfoDTO.Info contactInfo;
     }
 
     @Getter

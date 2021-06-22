@@ -133,6 +133,148 @@
         ]
     });
 
+    var editMobileForm = isc.DynamicForm.create({
+        height: "200",
+        numCols: 4,
+        colWidths: [5, 5, 5, 205],
+        fields: [
+            {
+                type: "staticText",
+                title: "<spring:message code='student.edit.mobile.default.for.sms'/>",
+            },
+            {
+                type: "SpacerItem",
+                colSpan: 2
+            },
+            {
+                name: "mobile_c",
+                title: "",
+                type: "checkbox",
+                width: "2",
+                changed: function (form, item, value) {
+                    if (value) {
+                        editMobileForm.getItem('mobile2_c').setValue(null);
+                        editMobileForm.getItem('mdmsMobile_c').setValue(null);
+                        editMobileForm.getItem('hrMobile_c').setValue(null);
+                        editMobileForm.getValues().mobileForSMS = 1;
+                    }
+                }
+            },
+            {
+                name: "mobile",
+                title: "",
+                type: "text",
+                keyPressFilter: "[0-9/+-_]",
+            },
+            {
+                name: "mobile2_c",
+                title: "",
+                type: "checkbox",
+                width: "2",
+                changed: function (form, item, value) {
+                    if (value) {
+                        editMobileForm.getItem('mobile_c').setValue(null);
+                        editMobileForm.getItem('mdmsMobile_c').setValue(null);
+                        editMobileForm.getItem('hrMobile_c').setValue(null);
+                        editMobileForm.getValues().mobileForSMS = 2
+                    }
+                }
+            },
+            {
+                name: "mobile2",
+                title: "",
+                type: "text",
+                keyPressFilter: "[0-9/+-_]",
+            },
+            {
+                name: "hrMobile_c",
+                title: "",
+                type: "checkbox",
+                width: "2",
+                changed: function (form, item, value) {
+                    if (value) {
+                        editMobileForm.getItem('mobile2_c').setValue(null);
+                        editMobileForm.getItem('mdmsMobile_c').setValue(null);
+                        editMobileForm.getItem('mobile_c').setValue(null);
+                        editMobileForm.getValues().mobileForSMS = 3
+                    }
+                }
+            },
+            {
+                name: "hrMobile",
+                title: "",
+                type: "text",
+                disabled: true,
+            },
+            {
+                name: "mdmsMobile_c",
+                title: "",
+                type: "checkbox",
+                width: "2",
+                changed: function (form, item, value) {
+                    if (value) {
+                        editMobileForm.getItem('mobile2_c').setValue(null);
+                        editMobileForm.getItem('mobile_c').setValue(null);
+                        editMobileForm.getItem('hrMobile_c').setValue(null);
+                        editMobileForm.getValues().mobileForSMS = 4
+                    }
+                }
+            },
+            {
+                name: "mdmsMobile",
+                title: "",
+                type: "text",
+                disabled: true,
+            },
+
+        ]
+    });
+
+    var Window_EditMobile = isc.Window.create({
+        width: "300",
+        align: "center",
+        border: "1px solid gray",
+        title: "<spring:message code='student.edit.mobile'/>",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        keyPress: function () {
+            if (isc.EventHandler.getKey() === "Enter") {
+
+            }
+        },
+        items: [isc.TrVLayout.create({
+            members: [editMobileForm, isc.TrHLayoutButtons.create({
+                layoutMargin: 5,
+                showEdges: false,
+                edgeImage: "",
+                padding: 10,
+                members: [isc.IButtonSave.create({
+                    top: 260,
+                    click: function () {
+                        if (!editMobileForm.validate()) {
+                            return;
+                        }
+                        var data = editMobileForm.getValues();
+                        delete data.emobileForSMS;
+                        isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data), (r) => {
+                            editMobileForm.clearValues();
+                            Window_EditMobile.close();
+                            editMobileForm.callBack();
+                        }));
+                    }
+                }), isc.IButtonCancel.create({
+                    prompt: "",
+                    orientation: "vertical",
+                    click: function () {
+                        editMobileForm.clearValues();
+                        Window_EditMobile.close();
+                    }
+                })]
+            })]
+        })]
+    });
+
     //----------------------------------------- ListGrids --------------------------------------------------------------
     var ListGrid_class_Evaluation = isc.TrLG.create({
         width: "100%",

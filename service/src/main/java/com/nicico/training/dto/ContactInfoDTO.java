@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.enums.EMobileForSMS;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -21,6 +23,12 @@ public class ContactInfoDTO {
     private String personalWebSite;
     private Long homeAddressId;
     private Long workAddressId;
+    private String mdmsMobile;
+    private String hrMobile;
+    private String mobile2;
+    private EMobileForSMS eMobileForSMS;
+    private Date lastModifiedDate;
+
 
     @Getter
     @Setter
@@ -125,6 +133,16 @@ public class ContactInfoDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    public void setMobileForSMS(Integer mobileForSMS) {
+        eMobileForSMS = EMobileForSMS.getEnum(mobileForSMS);
+    }
+
+    public Integer getMobileForSMS() {
+        if (eMobileForSMS == null)
+            return null;
+        return eMobileForSMS.getId();
     }
 
 }

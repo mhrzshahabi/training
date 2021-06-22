@@ -1411,4 +1411,53 @@
         </sql>
         <addForeignKeyConstraint baseColumnNames="f_teaching_method_id" baseTableName="tbl_class" constraintName="FKbla0dcn5qssm14l5foq53ax6v" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+
+    <changeSet author="zare" id="abiz-2283">
+        <addColumn tableName="tbl_contact_info">
+            <column name="c_mobile2" type="varchar2(15 CHAR)"/>
+            <column name="c_mdms_mobile" type="varchar2(15 CHAR)"/>
+            <column name="c_hr_mobile" type="varchar2(15 CHAR)"/>
+            <column name="n_mobile_for_sms" type="number(1)"/>
+        </addColumn>
+        <addColumn tableName="tbl_student">
+            <column name="f_contact_info" type="number(19, 0)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="tbl_student" baseColumnNames="f_contact_info"
+                                 constraintName="FK_tbl_student_contact_info" referencedTableName="tbl_contact_info"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet author="zare" id="abiz-2342">
+        <sql>
+            <![CDATA[
+           alter table TBL_CONTACT_INFO add tmp_student_id number;
+           merge into TBL_CONTACT_INFO c_info
+           using (select *
+                  from (
+                           select row_number() over (partition by NATIONAL_CODE order by D_LAST_MODIFIED_DATE desc) as ix, s.*
+                           from TBL_STUDENT s) s
+                  where s.ix = 1
+                    and f_contact_info is null) student
+           on (student.f_contact_info = c_info.id)
+           when not matched then
+               insert (id, c_mobile, C_CREATED_BY, D_CREATED_DATE, N_VERSION, tmp_student_id)
+               values (seq_contact_info_id.nextval, student.mobile, 'system(first mobile data from TBL_STUDENT)', sysdate, 0,
+                       student.id);
+
+           merge into TBL_STUDENT student
+           using TBL_CONTACT_INFO c_info
+           on (student.id = c_info.tmp_student_id)
+           when matched then update set f_contact_info = c_info.id
+           where f_contact_info is null;
+
+           merge into TBL_STUDENT log_student
+           using (select * from TBL_STUDENT s where f_contact_info is not null) student
+           on (log_student.NATIONAL_CODE = student.NATIONAL_CODE)
+           when matched then
+                  update set f_contact_info = student.F_CONTACT_INFO
+          where log_student.F_CONTACT_INFO is null;
+          alter table TBL_CONTACT_INFO drop column tmp_student_id;
+             ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

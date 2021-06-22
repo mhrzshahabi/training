@@ -269,6 +269,32 @@
             {name: "removeForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
         ],
+        cellClick: function (record, rowNum, colNum) {
+            editMobileForm.callBack = () => ListGrid_student_RE.invalidateCache();
+            if (colNum == 8) {
+                if (record.student.contactInfo) {
+                    editMobileForm.editRecord(record.student.contactInfo);
+                    switch (record.student.contactInfo.mobileForSMS) {
+                        case 1:
+                            editMobileForm.getItem('mobile_c').setValue(true);
+                            break;
+                        case 2:
+                            editMobileForm.getItem('mobile2_c').setValue(true);
+                            break;
+                        case 3:
+                            editMobileForm.getItem('hrMobile_c').setValue(true);
+                            break;
+                        case 4:
+                            editMobileForm.getItem('mdmsMobile_c').setValue(true);
+                            break;
+                        default:
+                            editMobileForm.getItem('mobile_c').setValue(true);
+                            editMobileForm.getValues().mobileForSMS = 1;
+                    }
+                }
+                Window_EditMobile.show();
+            }
+        },
         filterEditorSubmit: function () {
             ListGrid_student_RE.invalidateCache();
         },
