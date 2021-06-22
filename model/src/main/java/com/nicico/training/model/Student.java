@@ -177,12 +177,6 @@ public class Student extends Auditable {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "mobile")
-    private String mobile;
-
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "religion_title")
     private String religion;
 

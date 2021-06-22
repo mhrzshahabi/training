@@ -4,7 +4,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../messenger/MLanding.jsp" %>
 
-// <script>
+//<script>
     //----------------------------------------- DataSources ------------------------------------------------------------
 
     let evalTypeCriteria = [];
@@ -257,10 +257,19 @@
                         }
                         var data = editMobileForm.getValues();
                         delete data.emobileForSMS;
+                        wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data), (r) => {
+                            let m = "";
+                            switch (data.mobileForSMS) {
+                                case 4: {m = data.mdmsMobile};break;
+                                case 3: {m = data.hrMobile};break;
+                                case 2: {m = data.mobile2};break;
+                                default :{m = data.mobile};
+                            }
+                            editMobileForm.callBack(data, m);
                             editMobileForm.clearValues();
                             Window_EditMobile.close();
-                            editMobileForm.callBack();
+                            wait.close();
                         }));
                     }
                 }), isc.IButtonCancel.create({

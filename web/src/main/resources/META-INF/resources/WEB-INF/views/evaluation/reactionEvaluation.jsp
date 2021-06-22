@@ -6,7 +6,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
-// <script>
+//<script>
     //----------------------------------------- Variables --------------------------------------------------------------
     var evalWait_RE;
 
@@ -236,7 +236,7 @@
                 }
             },
             {name: "student.postTitle"},
-            {name: "student.mobile"},
+            {name: "student.contactInfo.smSMobileNumber"},
             {
                 name: "applicantCompanyName",
                 textAlign: "center"
@@ -270,14 +270,11 @@
             {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
         ],
         cellClick: function (record, rowNum, colNum) {
-            editMobileForm.callBack = () => ListGrid_student_RE.invalidateCache();
-            if (colNum == 8) {
+            editMobileForm.callBack = (contactInfo ,m) => {record.student.contactInfo = contactInfo;record.student.contactInfo.smSMobileNumber = m;};
+            if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber") {
                 if (record.student.contactInfo) {
                     editMobileForm.editRecord(record.student.contactInfo);
                     switch (record.student.contactInfo.mobileForSMS) {
-                        case 1:
-                            editMobileForm.getItem('mobile_c').setValue(true);
-                            break;
                         case 2:
                             editMobileForm.getItem('mobile2_c').setValue(true);
                             break;
@@ -304,6 +301,9 @@
 
             if ((!ListGrid_student_RE.getFieldByName("evaluationStatusReaction").hidden && (record.evaluationStatusReaction === 3 || record.evaluationStatusReaction === 2)))
                 return "background-color : #b7dee8";
+
+            if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber")
+                return  ";color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
         },
         createRecordComponent: function (record, colNum) {
             let fieldName = this.getFieldName(colNum);
@@ -448,7 +448,7 @@
                                     if (resp.httpResponseCode == 200) {
 
                                         let id = [];
-                                        JSON.parse(resp.data).response.data.filter(p => p.student.mobile && (p.evaluationStatusReaction == 1)).forEach(p => id.push(p.id));
+                                        JSON.parse(resp.data).response.data.filter(p => p.student.contactInfo.smSMobileNumber && (p.evaluationStatusReaction == 1)).forEach(p => id.push(p.id));
 
                                         if (JSON.parse(resp.data).response.data.filter(p => (p.evaluationStatusReaction == 1)).length == 0) {
 
@@ -514,7 +514,7 @@
                                                 align: "center"
                                             },
                                             {
-                                                name: "student.mobile",
+                                                name: "student.contactInfo.smSMobileNumber",
                                                 title: "<spring:message code="mobile"/>",
                                                 width: 100,
                                                 align: "center"
@@ -523,7 +523,7 @@
                                         MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
                                         MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
                                         MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
-                                            let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.mobile || !(p.evaluationStatusReaction == 1)).map(function (item) {
+                                            let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.contactInfo.smSMobileNumber || !(p.evaluationStatusReaction == 1)).map(function (item) {
                                                 return item.id;
                                             });
 
@@ -544,9 +544,9 @@
 
                                         linkFormMLanding.getItem('link').setValue('');
 
-                                        if (JSON.parse(resp.data).response.data.filter(p => !p.student.mobile && (p.evaluationStatusReaction == 1)).length != 0) {
-                                            ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.mobile && (p.evaluationStatusReaction == 1)).length + ' فراگیر، شماره موبایل تعریف نشده است.');
-                                        } else if (JSON.parse(resp.data).response.data.filter(p => p.student.mobile && (p.evaluationStatusReaction == 1)).length == 0) {
+                                        if (JSON.parse(resp.data).response.data.filter(p => !p.student.contactInfo.smSMobileNumber && (p.evaluationStatusReaction == 1)).length != 0) {
+                                            ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.contactInfo.smSMobileNumber && (p.evaluationStatusReaction == 1)).length + ' فراگیر، شماره موبایل تعریف نشده است.');
+                                        } else if (JSON.parse(resp.data).response.data.filter(p => p.student.contactInfo.smSMobileNumber && (p.evaluationStatusReaction == 1)).length == 0) {
                                             ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');
                                         } else {
                                             ErrorMsg.setContents('');

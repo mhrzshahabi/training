@@ -149,7 +149,7 @@ public class ClassStudentRestController {
                     Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
 
                     tmplist.forEach(p -> {
-                        if (p.getStudent().getMobile() != null && mobiles.get(p.getStudent().getMobile()) != null && mobiles.get(p.getStudent().getMobile()) > 0) {
+                        if (p.getStudent().getContactInfo().getSmSMobileNumber() != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) > 0) {
                             p.setIsSentMessage("");
                         } else {
                             p.setIsSentMessage("warning");
@@ -451,7 +451,7 @@ public class ClassStudentRestController {
                     Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
 
                     tmplist.forEach(p -> {
-                        if (p.getStudent().getMobile() != null && mobiles.get(p.getStudent().getMobile()) != null && mobiles.get(p.getStudent().getMobile()) > 0) {
+                        if (p.getStudent().getContactInfo().getSmSMobileNumber() != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) > 0) {
                             p.setIsSentMessage("");
                         } else {
                             p.setIsSentMessage("warning");

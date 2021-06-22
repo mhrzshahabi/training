@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-// <<script>
+//<script>
     {
         var studentRemoveWait;
         var studentDefaultPresenceId = 103;
@@ -138,7 +138,7 @@
                             obj.firstName = localData[i].student.firstName.trim();
                             obj.lastName = localData[i].student.lastName.trim();
                             obj.fatherName = localData[i].student.fatherName;
-                            obj.mobile = localData[i].student.mobile;
+                            obj.mobile = localData[i].student.contactInfo.smSMobileNumber;
                             obj.ccpArea = localData[i].student.ccpArea;
                             obj.ccpAssistant = localData[i].student.ccpAssistant;
                             obj.ccpAffairs = localData[i].student.ccpAffairs;
@@ -158,19 +158,19 @@
                 isc.ToolStripButtonExcel.create({
                     title: 'اکسل نواقص اطلاعات فراگیران',
                     click: function () {
-                        let sendFields = [{name:"rowNum",title:"ردیف"},{name:"fullName",title:"نام"},{name:"description",title:"توضیحات"}];
+                        let sendFields = [{name: "rowNum", title: "ردیف"}, {name: "fullName", title: "نام"}, {name: "description", title: "توضیحات"}];
                         let data = [];
                         let rows = StudentsLG_student.data.getAllLoadedRows();
                         let j = 0;
                         for (let i = 0; i < rows.length; i++) {
-                            if(rows[i].student.nationalCode === null || rows[i].student.nationalCode === undefined ){
+                            if (rows[i].student.nationalCode === null || rows[i].student.nationalCode === undefined) {
                                 data[j] = {};
                                 data[j].rowNum = i + 1;
                                 data[j].fullName = rows[i].fullName;
                                 data[j].description = "شماره ملی فراگیر در سیستم ثبت نشده است";
                                 j++;
-                            } else{
-                                if(rows[i].student.nationalCode.length !== 10 || !(/^-?\d+$/.test(rows[i].student.nationalCode.length))){
+                            } else {
+                                if (rows[i].student.nationalCode.length !== 10 || !(/^-?\d+$/.test(rows[i].student.nationalCode.length))) {
                                     data[j] = {};
                                     data[j].rowNum = i + 1;
                                     data[j].fullName = rows[i].fullName;
@@ -178,36 +178,36 @@
                                     j++;
                                 }
                             }
-                            if(rows[i].student.mobile === null || rows[i].student.mobile === undefined ){
+                            if (rows[i].student.contactInfo.smSMobileNumber === null || rows[i].student.contactInfo.smSMobileNumber === undefined) {
                                 data[j] = {};
                                 data[j].rowNum = i + 1;
                                 data[j].fullName = rows[i].fullName;
                                 data[j].description = "شماره همراه فراگیر در سیستم ثبت نشده است";
                                 j++;
-                            } else{
-                                if((rows[i].student.mobile.length !== 10 && rows[i].student.mobile.length !== 11) || !(/^-?\d+$/.test(rows[i].student.mobile))){
-                                        data[j] = {};
-                                        data[j].rowNum = i + 1;
-                                        data[j].fullName = rows[i].fullName;
-                                        data[j].description = "تعداد ارقام همراه فراگیر در سیستم صحیح نیست";
-                                        j++;
+                            } else {
+                                if ((rows[i].student.contactInfo.smSMobileNumber.length !== 10 && rows[i].student.contactInfo.smSMobileNumber.length !== 11) || !(/^-?\d+$/.test(rows[i].student.contactInfo.smSMobileNumber))) {
+                                    data[j] = {};
+                                    data[j].rowNum = i + 1;
+                                    data[j].fullName = rows[i].fullName;
+                                    data[j].description = "تعداد ارقام همراه فراگیر در سیستم صحیح نیست";
+                                    j++;
                                 }
-                                if(rows[i].student.mobile.length === 10 && !rows[i].student.mobile.startsWith("9")){
-                                        data[j] = {};
-                                        data[j].rowNum = i + 1;
-                                        data[j].fullName = rows[i].fullName;
-                                        data[j].description = "فرمت شماره همراه فراگیر در سیستم صحیح نیست";
-                                        j++;
+                                if (rows[i].student.contactInfo.smSMobileNumber.length === 10 && !rows[i].student.contactInfo.smSMobileNumber.startsWith("9")) {
+                                    data[j] = {};
+                                    data[j].rowNum = i + 1;
+                                    data[j].fullName = rows[i].fullName;
+                                    data[j].description = "فرمت شماره همراه فراگیر در سیستم صحیح نیست";
+                                    j++;
                                 }
-                                if(rows[i].student.mobile.length === 11 && !rows[i].student.mobile.startsWith("09")){
-                                        data[j] = {};
-                                        data[j].rowNum = i + 1;
-                                        data[j].fullName = rows[i].fullName;
-                                        data[j].description = "فرمت شماره همراه فراگیر در سیستم صحیح نیست";
-                                        j++;
+                                if (rows[i].student.contactInfo.smSMobileNumber.length === 11 && !rows[i].student.contactInfo.smSMobileNumber.startsWith("09")) {
+                                    data[j] = {};
+                                    data[j].rowNum = i + 1;
+                                    data[j].fullName = rows[i].fullName;
+                                    data[j].description = "فرمت شماره همراه فراگیر در سیستم صحیح نیست";
+                                    j++;
                                 }
                             }
-                            if(rows[i].student.gender === null || rows[i].student.gender === undefined ){
+                            if (rows[i].student.gender === null || rows[i].student.gender === undefined) {
                                 data[j] = {};
                                 data[j].rowNum = i + 1;
                                 data[j].fullName = rows[i].fullName;
@@ -215,12 +215,12 @@
                                 j++;
                             }
                         }
-                        if(data.length === 0){
-                            createDialog("info"," اطلاعات فراگیران این کلاس صحیح است." );
+                        if (data.length === 0) {
+                            createDialog("info", " اطلاعات فراگیران این کلاس صحیح است.");
                         } else {
                             let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                            let fileTitle = classRecord.code + " نواقص فراگیران کلاس با کد " ;
-                            ExportToFile.exportToExcelFromClient(sendFields, data, fileTitle , "اطلاعات ناقص فراگیران");
+                            let fileTitle = classRecord.code + " نواقص فراگیران کلاس با کد ";
+                            ExportToFile.exportToExcelFromClient(sendFields, data, fileTitle, "اطلاعات ناقص فراگیران");
                         }
                     }
                 }),
@@ -240,106 +240,106 @@
                                     isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria=" +
                                         "{\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MCSR\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title",
                                         "GET", null, function (resp2) {
-                                        wait.close();
-                                        if (generalGetResp(resp)) {
-                                            if (resp.httpResponseCode == 200) {
+                                            wait.close();
+                                            if (generalGetResp(resp)) {
+                                                if (resp.httpResponseCode == 200) {
 
 
-                                                let id = [];
-                                                JSON.parse(resp.data).response.data.filter(p => p.student.mobile).forEach(p => id.push(p.id));
+                                                    let id = [];
+                                                    JSON.parse(resp.data).response.data.filter(p => p.student.contactInfo.smSMobileNumber).forEach(p => id.push(p.id));
 
-                                                MSG_sendTypesItems = [];
-                                                MSG_msgContent.type = [];
-                                                MSG_sendTypesItems.push('MSG_messageType_sms');
-                                                MSG_msgContent.type = MSG_sendTypesItems;
+                                                    MSG_sendTypesItems = [];
+                                                    MSG_msgContent.type = [];
+                                                    MSG_sendTypesItems.push('MSG_messageType_sms');
+                                                    MSG_msgContent.type = MSG_sendTypesItems;
 
-                                                sendMessageFunc = sendMessage_StudentClassJsp;
-                                                MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = StudentsDS_student;
+                                                    sendMessageFunc = sendMessage_StudentClassJsp;
+                                                    MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = StudentsDS_student;
 
-                                                //MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
-                                                MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
-                                                    {
-                                                        name: "student.firstName",
-                                                        title: "<spring:message code="firstName"/>",
-                                                        autoFitWidth: false,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.lastName",
-                                                        title: "<spring:message code="lastName"/>",
-                                                        autoFitWidth: false,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.nationalCode",
-                                                        title: "<spring:message code="national.code"/>",
-                                                        width: 100,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.personnelNo",
-                                                        title: "<spring:message code="personnel.no"/>",
-                                                        width: 100,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.personnelNo2",
-                                                        title: "<spring:message code="personnel.no.6.digits"/>",
-                                                        width: 100,
-                                                        align: "center"
-                                                    },
-                                                    {
-                                                        name: "student.mobile",
-                                                        title: "<spring:message code="mobile"/>",
-                                                        width: 100,
-                                                        align: "center"
-                                                    },
-                                                ];
-                                                MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
-                                                MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
-                                                MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
-                                                    let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.mobile).map(function (item) {
-                                                        return item.id;
-                                                    });
+                                                    //MSG_selectUsersForm.getItem("multipleSelect").pickListWidth=600;
+                                                    MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
+                                                        {
+                                                            name: "student.firstName",
+                                                            title: "<spring:message code="firstName"/>",
+                                                            autoFitWidth: false,
+                                                            align: "center"
+                                                        },
+                                                        {
+                                                            name: "student.lastName",
+                                                            title: "<spring:message code="lastName"/>",
+                                                            autoFitWidth: false,
+                                                            align: "center"
+                                                        },
+                                                        {
+                                                            name: "student.nationalCode",
+                                                            title: "<spring:message code="national.code"/>",
+                                                            width: 100,
+                                                            align: "center"
+                                                        },
+                                                        {
+                                                            name: "student.personnelNo",
+                                                            title: "<spring:message code="personnel.no"/>",
+                                                            width: 100,
+                                                            align: "center"
+                                                        },
+                                                        {
+                                                            name: "student.personnelNo2",
+                                                            title: "<spring:message code="personnel.no.6.digits"/>",
+                                                            width: 100,
+                                                            align: "center"
+                                                        },
+                                                        {
+                                                            name: "student.contactInfo.smSMobileNumber",
+                                                            title: "<spring:message code="mobile"/>",
+                                                            width: 100,
+                                                            align: "center"
+                                                        },
+                                                    ];
+                                                    MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
+                                                    MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
+                                                    MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
+                                                        let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.student.contactInfo.smSMobileNumber).map(function (item) {
+                                                            return item.id;
+                                                        });
 
-                                                    let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
-                                                        _constructor: "AdvancedCriteria",
-                                                        operator: "and",
-                                                        criteria: [{fieldName: "id", operator: "inSet", value: ids}]
-                                                    });
+                                                        let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
+                                                            _constructor: "AdvancedCriteria",
+                                                            operator: "and",
+                                                            criteria: [{fieldName: "id", operator: "inSet", value: ids}]
+                                                        });
 
-                                                    findRows.setProperty("enabled", false);
+                                                        findRows.setProperty("enabled", false);
 
-                                                    MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
-                                                }
-                                                MSG_selectUsersForm.getItem("multipleSelect").fetchData();
+                                                        MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                                                    }
+                                                    MSG_selectUsersForm.getItem("multipleSelect").fetchData();
 
-                                                MSG_textEditorValue = JSON.parse(resp2.data).response.data[0].description;
-                                                MSG_contentEditor.setValue(MSG_textEditorValue);
+                                                    MSG_textEditorValue = JSON.parse(resp2.data).response.data[0].description;
+                                                    MSG_contentEditor.setValue(MSG_textEditorValue);
 
-                                                linkFormMLanding.getItem('link').setValue('');
+                                                    linkFormMLanding.getItem('link').setValue('');
 
-                                                if (JSON.parse(resp.data).response.data.filter(p => !p.student.mobile).length != 0) {
-                                                    ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.mobile).length + ' فراگیر، شماره موبایل تعریف نشده است.');
-                                                } else if (JSON.parse(resp.data).response.data.filter(p => p.student.mobile).length == 0) {
-                                                    ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');
+                                                    if (JSON.parse(resp.data).response.data.filter(p => !p.student.contactInfo.smSMobileNumber).length != 0) {
+                                                        ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.contactInfo.smSMobileNumber).length + ' فراگیر، شماره موبایل تعریف نشده است.');
+                                                    } else if (JSON.parse(resp.data).response.data.filter(p => p.student.contactInfo.smSMobileNumber).length == 0) {
+                                                        ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');
+                                                    } else {
+                                                        ErrorMsg.setContents('');
+                                                    }
+                                                    MSG_userType = "classStudentRegistered";
+                                                    MSG_classID = row.id;
+
+                                                    MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                                                    MSG_repeatOptions.getItem('timeBMessages').setValue(1);
+                                                    linkFormMLanding.getItem('link').setValue('');
+                                                    linkFormMLanding.getItem('link').setRequired(true);
+                                                    linkFormMLanding.getItem('link').enable();
+                                                    MSG_Window_MSG_Main.show();
                                                 } else {
-                                                    ErrorMsg.setContents('');
+                                                    createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
                                                 }
-                                                MSG_userType = "classStudentRegistered";
-                                                MSG_classID = row.id;
-
-                                                MSG_repeatOptions.getItem('maxRepeat').setValue(0);
-                                                MSG_repeatOptions.getItem('timeBMessages').setValue(1);
-                                                linkFormMLanding.getItem('link').setValue('');
-                                                linkFormMLanding.getItem('link').setRequired(true);
-                                                linkFormMLanding.getItem('link').enable();
-                                                MSG_Window_MSG_Main.show();
-                                            } else {
-                                                createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
                                             }
-                                        }
-                                    }))
+                                        }))
 
                                 } else {
                                     wait.close();
@@ -502,7 +502,7 @@
                     title: "<spring:message code="father.name"/>",
                     filterOperator: "iContains"
                 },
-                {name: "student.mobile", title: "<spring:message code="mobile"/>", filterOperator: "iContains"},
+                {name: "student.contactInfo.smSMobileNumber", title: "<spring:message code="mobile"/>", filterOperator: "iContains"},
                 {
                     name: "student.birthCertificateNo",
                     title: "<spring:message code="birth.certificate.no"/>",
@@ -641,10 +641,10 @@
                     }
                 },
                 {
-                    name: "student.mobile",
+                    name: "student.contactInfo.smSMobileNumber",
                     autoFitWidth: true,
                     sortNormalizer: function (record) {
-                        return record.student.mobile;
+                        return record.student.contactInfo.smSMobileNumber;
                     }
                 },
                 {
@@ -736,7 +736,7 @@
                         break;
                 }//end switch-case
 
-                if (this.getFieldName(colNum) == "student.personnelNo") {
+                if (this.getFieldName(colNum) == "student.personnelNo" || this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber") {
                     result += ";color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
                 }
 
@@ -781,6 +781,27 @@
                     });
                     window_class_Information.show();
                 }
+                if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber") {
+                    editMobileForm_class.callBack = (contactInfo ,m) => {record.student.contactInfo = contactInfo;record.student.contactInfo.smSMobileNumber = m;};
+                       if (record.student.contactInfo) {
+                            editMobileForm_class.editRecord(record.student.contactInfo);
+                            switch (record.student.contactInfo.mobileForSMS) {
+                                case 2:
+                                    editMobileForm_class.getItem('mobile2_c').setValue(true);
+                                    break;
+                                case 3:
+                                    editMobileForm_class.getItem('hrMobile_c').setValue(true);
+                                    break;
+                                case 4:
+                                    editMobileForm_class.getItem('mdmsMobile_c').setValue(true);
+                                    break;
+                                default:
+                                    editMobileForm_class.getItem('mobile_c').setValue(true);
+                                    editMobileForm_class.getValues().mobileForSMS = 1;
+                            }
+                        }
+                        Window_EditMobile_class.show();
+                }
             }
         });
 
@@ -815,7 +836,7 @@
                         keyPressFilter: "[0-9]"
                     }
                 },
-                  {
+                {
                     name: "employmentStatus",
                     title: "<spring:message code="employment.status"/>",
                     filterOperator: "iContains",
@@ -1759,7 +1780,165 @@
             ]
         });
 
-        // ------------------------------------------- Page UI -------------------------------------------
+        let editMobileForm_class = isc.DynamicForm.create({
+            height: "200",
+            numCols: 4,
+            colWidths: [5, 5, 5, 205],
+            fields: [
+                {
+                    type: "staticText",
+                    title: "<spring:message code='student.edit.mobile.default.for.sms'/>",
+                },
+                {
+                    type: "SpacerItem",
+                    colSpan: 2
+                },
+                {
+                    name: "mobile_c",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_class.getItem('mobile2_c').setValue(null);
+                            editMobileForm_class.getItem('mdmsMobile_c').setValue(null);
+                            editMobileForm_class.getItem('hrMobile_c').setValue(null);
+                            editMobileForm_class.getValues().mobileForSMS = 1;
+                        }
+                    }
+                },
+                {
+                    name: "mobile",
+                    title: "",
+                    type: "text",
+                    keyPressFilter: "[0-9/+-_]",
+                },
+                {
+                    name: "mobile2_c",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_class.getItem('mobile_c').setValue(null);
+                            editMobileForm_class.getItem('mdmsMobile_c').setValue(null);
+                            editMobileForm_class.getItem('hrMobile_c').setValue(null);
+                            editMobileForm_class.getValues().mobileForSMS = 2
+                        }
+                    }
+                },
+                {
+                    name: "mobile2",
+                    title: "",
+                    type: "text",
+                    keyPressFilter: "[0-9/+-_]",
+                },
+                {
+                    name: "hrMobile_c",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_class.getItem('mobile2_c').setValue(null);
+                            editMobileForm_class.getItem('mdmsMobile_c').setValue(null);
+                            editMobileForm_class.getItem('mobile_c').setValue(null);
+                            editMobileForm_class.getValues().mobileForSMS = 3
+                        }
+                    }
+                },
+                {
+                    name: "hrMobile",
+                    title: "",
+                    type: "text",
+                    disabled: true,
+                },
+                {
+                    name: "mdmsMobile_c",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_class.getItem('mobile2_c').setValue(null);
+                            editMobileForm_class.getItem('mobile_c').setValue(null);
+                            editMobileForm_class.getItem('hrMobile_c').setValue(null);
+                            editMobileForm_class.getValues().mobileForSMS = 4
+                        }
+                    }
+                },
+                {
+                    name: "mdmsMobile",
+                    title: "",
+                    type: "text",
+                    disabled: true,
+                },
+
+            ]
+        });
+
+        let Window_EditMobile_class = isc.Window.create({
+            width: "300",
+            align: "center",
+            border: "1px solid gray",
+            title: "<spring:message code='student.edit.mobile'/>",
+            closeClick: function () {
+                this.Super("closeClick", arguments);
+            },
+            keyPress: function () {
+                if (isc.EventHandler.getKey() === "Enter") {
+
+                }
+            },
+            items: [isc.TrVLayout.create({
+                members: [editMobileForm_class, isc.TrHLayoutButtons.create({
+                    layoutMargin: 5,
+                    showEdges: false,
+                    edgeImage: "",
+                    padding: 10,
+                    members: [isc.IButtonSave.create({
+                        top: 260,
+                        click: function () {
+                            if (!editMobileForm_class.validate()) {
+                                return;
+                            }
+                            var data = editMobileForm_class.getValues();
+                            delete data.emobileForSMS;
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data), (r) => {
+                                let m = "";
+                                switch (data.mobileForSMS) {
+                                    case 4:
+                                        m = data.mdmsMobile;
+                                        break;
+                                    case 3:
+                                        m = data.hrMobile;
+                                        break;
+                                    case 2:
+                                        m = data.mobile2;
+                                        break;
+                                    default :
+                                        m = data.mobile;
+                                }
+                                editMobileForm_class.callBack(data, m);
+                                editMobileForm_class.clearValues();
+                                Window_EditMobile_class.close();
+                                wait.close();
+                            }));
+                        }
+                    }), isc.IButtonCancel.create({
+                        prompt: "",
+                        orientation: "vertical",
+                        click: function () {
+                            editMobileForm_class.clearValues();
+                            Window_EditMobile_class.close();
+                        }
+                    })]
+                })]
+            })]
+        });
+
+// ------------------------------------------- Page UI -------------------------------------------
         isc.TrVLayout.create({
             members: [
                 StudentsLG_student
@@ -1784,7 +1963,7 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [{fieldName: "courseId", operator: "equals", value: classRecord.courseId}
-                // ,{fieldName: "firstName", operator: "notContains", value: "ابراهیم"}
+                    // ,{fieldName: "firstName", operator: "notContains", value: "ابراهیم"}
                 ]
             };
             PersonnelsLG_student.invalidateCache();
@@ -1932,73 +2111,73 @@
 
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "preCourse/" + courseId, "GET", null, function (resp) {
 
-                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                let preCourseIds = JSON.parse(resp.httpResponseText).map(q => q.id);
-                for (let inx = 0; inx < studentsDataArray.length; inx++) {
+                        let preCourseIds = JSON.parse(resp.httpResponseText).map(q => q.id);
+                        for (let inx = 0; inx < studentsDataArray.length; inx++) {
 
-                    if (studentsDataArray[inx].employmentStatus !== null &&
-                        studentsDataArray[inx].employmentStatus !== undefined &&
-                             (
-                             studentsDataArray[inx].employmentStatus.contains("بازنشسته") ||
-                             studentsDataArray[inx].employmentStatus.contains("فوت") ||
-                             studentsDataArray[inx].employmentStatus.contains("اخراج") ||
-                             studentsDataArray[inx].employmentStatus.contains("استعفا") ||
-                             studentsDataArray[inx].employmentStatus.contains("خاتمه قرارداد") ||
-                             studentsDataArray[inx].employmentStatus.contains("فسخ")
-                              )
+                            if (studentsDataArray[inx].employmentStatus !== null &&
+                                studentsDataArray[inx].employmentStatus !== undefined &&
+                                (
+                                    studentsDataArray[inx].employmentStatus.contains("بازنشسته") ||
+                                    studentsDataArray[inx].employmentStatus.contains("فوت") ||
+                                    studentsDataArray[inx].employmentStatus.contains("اخراج") ||
+                                    studentsDataArray[inx].employmentStatus.contains("استعفا") ||
+                                    studentsDataArray[inx].employmentStatus.contains("خاتمه قرارداد") ||
+                                    studentsDataArray[inx].employmentStatus.contains("فسخ")
+                                )
 
-                                      ){
-                        inValidPersonnel.add(studentsDataArray[inx]); }
+                            ) {
+                                inValidPersonnel.add(studentsDataArray[inx]);
+                            }
 
 
+                            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
+                                studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
 
-                    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
-                    studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).map(q => q.courseId);
+                                    if (preCourseIds.every(pq => personnelCourses.includes(pq))) {
 
-                            let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).map(q => q.courseId);
-                            if (preCourseIds.every(pq => personnelCourses.includes(pq))) {
+                                        if (equalCourseIds.some(eq => personnelCourses.includes(eq))) {
+                                            warnStudents.add(studentsDataArray[inx]);
+                                        }
+                                    } else {
+                                        warnPreCourseStudents.add(studentsDataArray[inx]);
+                                    }
 
-                                if(equalCourseIds.some(eq => personnelCourses.includes(eq))) {
-                                    warnStudents.add(studentsDataArray[inx]);
+                                    checkAll++;
+                                    if (studentsDataArray.length - 1 === checkAll - 1) {
+                                        var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
+                                        studentsDataArray.removeList(warnPreCourseStudents);
+
+                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel);
+                                    }
+
+                                } else {
+
+                                    var ERROR = isc.Dialog.create({
+                                        message: "<spring:message code='exception.un-managed'/>",
+                                        icon: "[SKIN]stop.png",
+                                        title: "<spring:message code='message'/>"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 8000);
+                                    inx = studentsDataArray.length - 1;
                                 }
-                            } else {
-                                warnPreCourseStudents.add(studentsDataArray[inx]);
-                            }
-
-                            checkAll ++;
-                            if (studentsDataArray.length-1 === checkAll-1) {
-                                var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
-                                studentsDataArray.removeList(warnPreCourseStudents);
-
-                                validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray,inValidPersonnel);
-                            }
-
-                        } else {
-
-                            var ERROR = isc.Dialog.create({
-                                message: "<spring:message code='exception.un-managed'/>",
-                                icon: "[SKIN]stop.png",
-                                title: "<spring:message code='message'/>"
-                            });
-                            setTimeout(function () {
-                                ERROR.close();
-                            }, 8000);
-                            inx = studentsDataArray.length-1;
+                            }));
                         }
-                    }));
-                }
 
-                } else {
-                    createDialog("info", "<spring:message code='exception.un-managed'/>");
-                }
+                    } else {
+                        createDialog("info", "<spring:message code='exception.un-managed'/>");
+                    }
                 }));
             }));
         }
 
-        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray,inValidPersonnel) {
+        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel) {
             let preCourseNames = "";
             let names = "";
 
@@ -2006,7 +2185,7 @@
 
                 for (var j = 0; j < warnPreCourseStudents.length; j++) {
                     preCourseNames = preCourseNames.concat(warnPreCourseStudents[j].firstName + " " + warnPreCourseStudents[j].lastName);
-                    if (j !== warnPreCourseStudents.length -1)
+                    if (j !== warnPreCourseStudents.length - 1)
                         preCourseNames = preCourseNames.concat(", ");
                 }
             }
@@ -2015,16 +2194,16 @@
 
                 for (var j = 0; j < warnStudents.length; j++) {
                     names = names.concat(warnStudents[j].firstName + " " + warnStudents[j].lastName);
-                    if (j !== warnStudents.length -1)
+                    if (j !== warnStudents.length - 1)
                         names = names.concat(", ");
                 }
             }
 
-             if (inValidPersonnel.length > 0) {
+            if (inValidPersonnel.length > 0) {
 
                 for (let z = 0; z < inValidPersonnel.length; z++) {
                     names = names.concat(inValidPersonnel[z].firstName + " " + inValidPersonnel[z].lastName);
-                    if (z !== inValidPersonnel.length -1)
+                    if (z !== inValidPersonnel.length - 1)
                         names = names.concat(", ");
                 }
             }
@@ -2094,12 +2273,12 @@
                     DynamicForm_Warn_Students.getItem("warnNames").show();
                     DynamicForm_Warn_Students.setValue("warnNames", names);
                 }
-                  if (inValidPersonnel.length > 0) {
+                if (inValidPersonnel.length > 0) {
                     DynamicForm_Warn_Students.getItem("text").show();
                     DynamicForm_Warn_Students.getItem("warnNames").show();
                     DynamicForm_Warn_Students.setValue("text", "<spring:message code='msg.class.student.retired.warn'/>");
                     DynamicForm_Warn_Students.setValue("warnNames", names);
-                 }
+                }
 
                 let Window_Warn_Students = isc.Window.create({
                     width: 600,
@@ -2109,24 +2288,24 @@
                     items: [
                         DynamicForm_Warn_Students,
                         isc.MyHLayoutButtons.create({
-                        members: [
-                            isc.IButtonSave.create({
-                                title: "<spring:message code="continue"/>",
-                                click: function () {
-                                    wait.show();
-                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST",
-                                        JSON.stringify(studentsDataArray), class_add_students_result));
-                                    Window_Warn_Students.close();
-                                }
-                            }),
-                            isc.IButtonCancel.create({
-                                title: "<spring:message code="cancel"/>",
+                            members: [
+                                isc.IButtonSave.create({
+                                    title: "<spring:message code="continue"/>",
                                     click: function () {
-                                    wait.close();
-                                    Window_Warn_Students.close();
-                                }
-                            })
-                        ]
+                                        wait.show();
+                                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST",
+                                            JSON.stringify(studentsDataArray), class_add_students_result));
+                                        Window_Warn_Students.close();
+                                    }
+                                }),
+                                isc.IButtonCancel.create({
+                                    title: "<spring:message code="cancel"/>",
+                                    click: function () {
+                                        wait.close();
+                                        Window_Warn_Students.close();
+                                    }
+                                })
+                            ]
                         })
                     ]
                 });
@@ -2159,7 +2338,7 @@
                 btnRemove_student_class.setVisibility(true);
 
                 if (classRecord.classStatus === "3" || classRecord.classStatus === "4"
-                     || classRecord.classStatus === "5") {
+                    || classRecord.classStatus === "5") {
                     //StudentTS_student.setVisibility(false)
                     btnAdd_student_class.setVisibility(false);
                     btnRemove_student_class.setVisibility(false);
@@ -2355,10 +2534,10 @@
                                             return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
                                         }).length == 0) {
                                             students.add({
-                                                "firstName" : person.firstName,
-                                                "lastName" : person.lastName,
+                                                "firstName": person.firstName,
+                                                "lastName": person.lastName,
                                                 "personnelNo": person.personnelNo,
-                                                "nationalCode" : person.nationalCode,
+                                                "nationalCode": person.nationalCode,
                                                 "applicantCompanyName": person.companyName,
                                                 "presenceTypeId": studentDefaultPresenceId,
                                                 "employmentStatus": person.employmentStatus,
@@ -2493,4 +2672,4 @@
         );
     }
 
-// </script>
+    // </script>

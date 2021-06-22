@@ -145,5 +145,20 @@ public class ContactInfoDTO {
         return eMobileForSMS.getId();
     }
 
+    public String getSmSMobileNumber() {
+        if (eMobileForSMS == null)
+            return mobile;
+        switch (eMobileForSMS) {
+            case hrMobile:
+                return hrMobile;
+            case mdmsMobile:
+                return mdmsMobile;
+            case trainingSecondMobile:
+                return mobile2;
+            default:
+                return mobile;
+        }
+    }
+
 }
 

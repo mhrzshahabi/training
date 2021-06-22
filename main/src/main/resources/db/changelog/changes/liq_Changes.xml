@@ -1459,5 +1459,20 @@
              ]]>
         </sql>
     </changeSet>
+    <changeSet author="zare" id="abiz-2340">
+        <sql>
+        <![CDATA[
 
+        merge into TBL_CONTACT_INFO c_info
+        using TBL_STUDENT student
+        on (student.F_CONTACT_INFO = c_info.id)
+        when matched then
+        update
+        set C_EMAIL = student.EMAIL;
+        alter table TBL_STUDENT drop column EMAIL;
+        alter table TBL_STUDENT drop column mobile;
+
+             ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>
