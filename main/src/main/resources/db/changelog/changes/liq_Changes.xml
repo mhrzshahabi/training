@@ -1475,4 +1475,43 @@
              ]]>
         </sql>
     </changeSet>
+    <changeSet author="zare" id="abiz-2340-2">
+        <addColumn tableName="tbl_personnel">
+            <column name="f_contact_info" type="number(19, 0)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="tbl_personnel" baseColumnNames="f_contact_info"
+                                 constraintName="FK_tbl_personnel_contact_info" referencedTableName="tbl_contact_info"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet author="zare" id="abiz-2340-data-migration">
+        <sql>
+            <![CDATA[
+
+            alter table TBL_CONTACT_INFO add tmp_personnel_id number;
+            merge into TBL_CONTACT_INFO c_info
+            using (select * from TBL_PERSONNEL where ACTIVE = 1 and DELETED = 0 and f_contact_info is null) personnel
+            on (personnel.f_contact_info = c_info.id)
+            when not matched then
+            insert (id, c_mobile, c_email, C_CREATED_BY, D_CREATED_DATE, N_VERSION, tmp_personnel_id)
+            values (seq_contact_info_id.nextval, personnel.mobile,personnel.EMAIL, 'system(first mobile data from TBL_PERSONNEL)', sysdate, 0,
+            personnel.id);
+
+            merge into TBL_PERSONNEL personnel
+            using TBL_CONTACT_INFO c_info
+            on (personnel.id = c_info.tmp_personnel_id)
+            when matched then update set f_contact_info = c_info.id
+            where f_contact_info is null;
+
+            merge into TBL_PERSONNEL log_personnel
+            using (select * from TBL_PERSONNEL s where f_contact_info is not null) personnel
+            on (log_personnel.NATIONAL_CODE = personnel.NATIONAL_CODE)
+            when matched then
+            update set f_contact_info = personnel.F_CONTACT_INFO
+            where log_personnel.F_CONTACT_INFO is null;
+            alter table TBL_CONTACT_INFO drop column tmp_personnel_id;
+
+             ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

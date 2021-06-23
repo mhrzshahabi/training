@@ -161,4 +161,10 @@ public class ContactInfoService implements IContactInfoService {
         return hrMobile;
     }
 
+    @Override
+    public String fetchAndUpdateLastHrMobile(String nationalCode, PersonnelDTO.Info personnelInfo, String token) {
+
+        return null;
+    }
+
 }

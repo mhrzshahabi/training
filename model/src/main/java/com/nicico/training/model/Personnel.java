@@ -171,11 +171,11 @@ public class Personnel {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "mobile")
+    /*@Column(name = "mobile")
     private String mobile;
 
     @Column(name = "email")
-    private String email;
+    private String email;*/
 
     @Column(name = "p_type", length = 50)
     private String peopleType;
@@ -203,4 +203,12 @@ public class Personnel {
 
     @Column(name = "c_username")
     private String userName;
+
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "f_contact_info")
+    private ContactInfo contactInfo;
+
+    @Column(name = "f_contact_info", insertable = false, updatable = false)
+    private Long contactInfoId;
+
 }
