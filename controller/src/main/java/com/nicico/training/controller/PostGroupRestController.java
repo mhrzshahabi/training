@@ -24,6 +24,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -83,9 +84,21 @@ public class PostGroupRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_post_group')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        postGroupService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<BaseResponse> delete(@PathVariable Long id) {
+       boolean isDeletable= postGroupService.delete(id);
+       BaseResponse response=new BaseResponse();
+       response.setStatus(200);
+       if (isDeletable)
+       {
+           response.setMessage("عملیات با موفقیت انجام شد");
+           return new ResponseEntity<>(response,HttpStatus.OK);
+       }
+       else{
+            response.setMessage("گروه پستی مورد نظر به علت نیاز سنجی شدن قابل حذف نیست");
+            return new ResponseEntity<>(response,HttpStatus.NOT_ACCEPTABLE);
+
+        }
+
     }
 
     @Loggable

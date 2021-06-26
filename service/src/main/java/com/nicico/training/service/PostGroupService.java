@@ -148,18 +148,26 @@ public class PostGroupService implements IPostGroupService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
-        if (needsAssessmentService.checkBeforeDeleteObject("PostGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("PostGroup", id))
-            postGroupDAO.deleteById(id);
-        else
-            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+    public boolean delete(Long id) {
+        try {
+            if (needsAssessmentService.checkBeforeDeleteObject("PostGroup", id) && needsAssessmentTempService.checkBeforeDeleteObject("PostGroup", id))
+            {
+                postGroupDAO.deleteById(id);
+                return true;
+            }
+            else
+                return false;
+        }
+        catch (Exception e){
+            return false;
+        }
 
     }
 
     @Transactional
     @Override
     public void delete(PostGroupDTO.Delete request) {
-        request.getIds().forEach(id -> delete(id));
+        request.getIds().forEach(this::delete);
 //        final List<PostGroup> cAllById = postGroupDAO.findAllById(request.getIds());
 //        postGroupDAO.deleteAll(cAllById);
     }

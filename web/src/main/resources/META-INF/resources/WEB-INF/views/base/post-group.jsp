@@ -1985,11 +1985,6 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        var wait = isc.Dialog.create({
-                            message: "در حال انجام عملیات...",
-                            icon: "[SKIN]say.png",
-                            title: "پیام"
-                        });
                         isc.RPCManager.sendRequest({
                             actionURL: postGroupUrl + "/" + record.id,
                             httpMethod: "DELETE",

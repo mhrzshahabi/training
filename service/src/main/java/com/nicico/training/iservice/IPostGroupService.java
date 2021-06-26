@@ -17,7 +17,7 @@ public interface IPostGroupService {
 
     PostGroupDTO.Info update(Long id, PostGroupDTO.Update request);
 
-    void delete(Long id);
+    boolean delete(Long id);
 
     void delete(PostGroupDTO.Delete request);
 
