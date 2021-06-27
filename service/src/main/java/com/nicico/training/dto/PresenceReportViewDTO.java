@@ -26,7 +26,11 @@ public class PresenceReportViewDTO {
         private String classCode;
         private String classStartDate;
         private String classEndDate;
-        private String classTeachingType;
+//        private String classTeachingType;
+        private String holdingClassTypeId;
+        private String holdingClassTypeTitle;
+        private String teachingMethodId;
+        private String teachingMethodTitle;
 
         ///////////////////////////////////////////////////session///////////////////////////////////////
         private String sessionDate;

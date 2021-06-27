@@ -211,6 +211,18 @@ public class ViewEvaluationStaticalReport extends Auditable {
     @Column(name = "UNKNOWN")
     private String unknownManHour;
 
+    @Column(name = "holding_class_type_id")
+    private String holdingClassTypeId;
+
+    @Column(name = "holding_class_type_title")
+    private String holdingClassTypeTitle;
+
+    @Column(name = "teaching_method_id")
+    private String teachingMethodId;
+
+    @Column(name = "teaching_method_title")
+    private String teachingMethodTitle;
+
 
 //   @Column(name = "COURSE_IN_NEEDASSESSMENT")
 //   private Long isCourseInNeedAssessment;

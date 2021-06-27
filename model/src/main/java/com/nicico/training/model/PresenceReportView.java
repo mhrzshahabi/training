@@ -50,9 +50,20 @@ public class PresenceReportView implements Serializable {
     @Column(name = "class_end_date")
     private String classEndDate;
 
-    @Column(name = "class_teaching_type")
-    private String classTeachingType;
+//    @Column(name = "class_teaching_type")
+//    private String classTeachingType;
 
+    @Column(name = "holding_class_type_id")
+    private String holdingClassTypeId;
+
+    @Column(name = "holding_class_type_title")
+    private String holdingClassTypeTitle;
+
+    @Column(name = "teaching_method_id")
+    private String teachingMethodId;
+
+    @Column(name = "teaching_method_title")
+    private String teachingMethodTitle;
     ///////////////////////////////////////////////////session///////////////////////////////////////
     @Column(name = "session_session_date", insertable = false, updatable = false)
     private String sessionDate;
