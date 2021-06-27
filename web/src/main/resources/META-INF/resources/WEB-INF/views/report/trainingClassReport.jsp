@@ -67,7 +67,6 @@
             {name: "tclassReason"},
             {name: "classEvaluation"},
             {name: "tclassStatus"},
-            {name: "tclassTeachingType"},
             {name: "classCancelReasonId"},
             {name: "classCancelReasonTitle"},
             {name: "plannerComplex"},
@@ -82,7 +81,11 @@
             {name: "courseRunType.titleFa"},
             {name: "courseTheoType.titleFa"},
             {name: "presenceManHour"},
-            {name: "absenceManHour"}
+            {name: "absenceManHour"},
+            {name: "holdingClassTypeId"},
+            {name: "holdingClassTypeTitle"},
+            {name: "teachingMethodId"},
+            {name: "teachingMethodTitle"}
         ],
         fetchDataURL: viewEvaluationStaticalReportUrl + "/iscList"
     });
@@ -179,6 +182,42 @@
             {name: "societyId", primaryKey: true},
             {name: "title", type: "text"}
         ]
+    });
+
+    var RestDataSource_class_Holding_Class_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/HoldingClassType"
+    });
+
+    var RestDataSource_class_intraOrganizational_Holding_Class_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/intraOrganizationalHoldingClassType"
+    });
+
+    var RestDataSource_class_InTheCountryExtraOrganizational_Holding_Class_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/InTheCountryExtraOrganizationalHoldingClassType"
+    });
+
+    var RestDataSource_class_AbroadExtraOrganizational_Holding_Class_Type_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/AbroadExtraOrganizationalHoldingClassType"
     });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var Menu_ListGrid_JspTClassReport= isc.Menu.create({
@@ -280,22 +319,14 @@
                 }
                 , autoFitWidth: true
             },
-            {name: "tclassTeachingType",
-                title: "<spring:message code='teaching.type'/>",
-                type: "SelectItem",
-                valueMap: {
-                   "حضوری": "حضوری",
-                   "غیر حضوری":"غیر حضوری",
-                   "مجازی":"مجازی",
-                   "عملی و کارگاهی":"عملی و کارگاهی",
-                   "آموزش حین کار(OJT)":"آموزش حین کار(OJT)",
-                   "اعزام":"اعزام",
-                   "null":"همه"
-                }
-                , autoFitWidth: true
-            },
             {name: "classCancelReasonTitle", title: "علت لغو" ,
                 filterOperator: "iContains", autoFitWidth: true},
+            {name: "holdingClassTypeTitle", title: "<spring:message code="course_eruntype"/>" ,
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {name: "teachingMethodTitle", title: "<spring:message code='teaching.type'/>" ,
+                filterOperator: "iContains", autoFitWidth: true
+            },
             {
                 name: "courseLevelType.titleFa",
                 title: "<spring:message code='cousre_elevelType'/>",
@@ -981,6 +1012,65 @@
                 canEdit: false
             },
             {
+                name: "holdingClassTypeId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="course_eruntype"/>:",
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_class_Holding_Class_Type_List,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                changed: function (form, item, value) {
+                    DynamicForm_CriteriaForm_JspTClassReport.getItem("teachingMethodId").setOptionDataSource(null);
+                    DynamicForm_CriteriaForm_JspTClassReport.getItem("teachingMethodId").setValue(null);
+                    DynamicForm_CriteriaForm_JspTClassReport.getItem("teachingMethodId").enable();
+                    switch (item.getSelectedRecord().code) {
+                        case "intraOrganizational":
+                            DynamicForm_CriteriaForm_JspTClassReport.getItem("teachingMethodId").setOptionDataSource(RestDataSource_class_intraOrganizational_Holding_Class_Type_List);
+                            break;
+                        case "InTheCountryExtraOrganizational":
+                            DynamicForm_CriteriaForm_JspTClassReport.getItem("teachingMethodId").setOptionDataSource(RestDataSource_class_InTheCountryExtraOrganizational_Holding_Class_Type_List);
+                            break;
+                        case "AbroadExtraOrganizational":
+                            DynamicForm_CriteriaForm_JspTClassReport.getItem("teachingMethodId").setOptionDataSource(RestDataSource_class_AbroadExtraOrganizational_Holding_Class_Type_List);
+                            break;
+                    }
+                },
+            },
+            {
+                name: "teachingMethodId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code='teaching.type'/>:",
+                pickListWidth: 200,
+                disabled: true,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
+            },
+            {
+                name: "temp6",
+                title: "",
+                canEdit: false
+            },
+            {
                 name: "tclassStatus",
                 title: "وضعیت کلاس:",
                 wrapTitle: true,
@@ -1007,24 +1097,6 @@
                 name: "temp8",
                 title: "",
                 canEdit: false
-            },
-            {
-                name: "tclassTeachingType",
-                title: "<spring:message code='teaching.type'/>:",
-                type: "radioGroup",
-                vertical: false,
-                filterOperator: "equals",
-                fillHorizontalSpace: true,
-                defaultValue: "حضوری",
-                valueMap: {
-                    "حضوری": "حضوری",
-                    "غیر حضوری":"غیر حضوری",
-                    "مجازی":"مجازی",
-                    "عملی و کارگاهی":"عملی و کارگاهی",
-                    "آموزش حین کار(OJT)":"آموزش حین کار(OJT)",
-                    "اعزام":"اعزام",
-                    "null":"همه"
-                }
             },
             {
                 name: "reactionEvaluation",
@@ -1402,6 +1474,17 @@
                 data_values.criteria[i].fieldName = "tclassEndDate";
                 data_values.criteria[i].operator = "lessThan";
             }
+            else if (data_values.criteria[i].fieldName == "holdingClassTypeId") {
+                console.log("toosh holdingClassTypeId:..........", data_values.criteria[i].value );
+                data_values.criteria[i].fieldName = "holdingClassTypeId";
+                data_values.criteria[i].operator = "equals";
+                data_values.criteria[i].value = DynamicForm_CriteriaForm_JspTClassReport.getField("holdingClassTypeId").getValue().toString();
+            }
+            else if (data_values.criteria[i].fieldName == "teachingMethodId") {
+                data_values.criteria[i].fieldName = "teachingMethodId";
+                data_values.criteria[i].operator = "equals";
+                data_values.criteria[i].value = DynamicForm_CriteriaForm_JspTClassReport.getField("teachingMethodId").getValue().toString();
+            }
             else if(data_values.criteria[i].fieldName == "tclassOrganizerId")
                 data_values.criteria[i].operator = "equals";
             else if(data_values.criteria[i].fieldName == "tclassSupervisor")
@@ -1455,7 +1538,9 @@
             }
             else if(data_values.criteria[i].fieldName == "tclassStatus" && data_values.criteria[i].value == "6")
                 removedObjects.add(data_values.criteria[i]);
-            else if(data_values.criteria[i].fieldName == "tclassTeachingType" && data_values.criteria[i].value == "null")
+            else if(data_values.criteria[i].fieldName == "holdingClassTypeId" && data_values.criteria[i].value == "null")
+                removedObjects.add(data_values.criteria[i]);
+            else if(data_values.criteria[i].fieldName == "teachingMethodId" && data_values.criteria[i].value == "null")
                 removedObjects.add(data_values.criteria[i]);
             //-----------------------------------TEMP----------------------------
             // else if (data_values.criteria[i].fieldName == "teacherPayingStatus") {
@@ -1539,14 +1624,24 @@
             courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassStatus").getDisplayValue();
             courseInfo_print += ", ";
         }
-        if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassTeachingType").getValue() !== undefined) {
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("holdingClassTypeId").getValue() !== undefined) {
+            courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "نوع اجرا: " + "</span>";
+            courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
+                DynamicForm_CriteriaForm_JspTClassReport.getField("holdingClassTypeId").getDisplayValue() + "</span>";
+            courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
+
+            courseInfo_print +=  "نوع اجرا: " ;
+            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("holdingClassTypeId").getDisplayValue();
+            courseInfo_print += ", ";
+        }
+        if (DynamicForm_CriteriaForm_JspTClassReport.getField("teachingMethodId").getValue() !== undefined) {
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + "روش آموزش: " + "</span>";
             courseInfo.contents += "<span style='color:rgba(199,23,15,0.91); font-size:12px;'>" +
-                DynamicForm_CriteriaForm_JspTClassReport.getField("tclassTeachingType").getDisplayValue() + "</span>";
+                DynamicForm_CriteriaForm_JspTClassReport.getField("teachingMethodId").getDisplayValue() + "</span>";
             courseInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             courseInfo_print +=  "روش آموزش: " ;
-            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("tclassTeachingType").getDisplayValue();
+            courseInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("teachingMethodId").getDisplayValue();
             courseInfo_print += ", ";
         }
 
