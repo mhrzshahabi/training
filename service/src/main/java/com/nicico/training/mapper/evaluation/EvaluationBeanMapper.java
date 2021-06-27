@@ -58,7 +58,7 @@ public abstract class EvaluationBeanMapper {
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "nationalCode", target = "nationalCode")
     @Mapping(source = "gender", target = "gender")
-    @Mapping(source = "mobile", target = "cellNumber")
+    @Mapping(source = "contactInfo.mobile", target = "cellNumber")
     public abstract EvalTargetUser toTargetUser(Student student);
 
     public ElsEvalRequest toElsEvalRequest(Evaluation evaluation, Questionnaire questionnaire, List<ClassStudent> classStudents,
