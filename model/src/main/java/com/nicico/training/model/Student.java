@@ -177,12 +177,6 @@ public class Student extends Auditable {
     @Column(name = "phone")
     private String phone;
 
-    @Column(name = "mobile")
-    private String mobile;
-
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "religion_title")
     private String religion;
 
@@ -224,4 +218,12 @@ public class Student extends Auditable {
 
     @Column(name = "c_username")
     private String userName;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "f_contact_info")
+    private ContactInfo contactInfo;
+
+    @Column(name = "f_contact_info", insertable = false, updatable = false)
+    private Long contactInfoId;
+
 }

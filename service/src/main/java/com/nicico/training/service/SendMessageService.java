@@ -306,7 +306,7 @@ public class SendMessageService implements ISendMessageService {
             SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
             searchRs.getList().forEach(p -> {
-                        mobiles.add(p.getStudent().getMobile());
+                        mobiles.add(p.getStudent().getContactInfo().getSmSMobileNumber());
                         fullName.add(p.getFullName());
                         prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
                     }
@@ -341,7 +341,7 @@ public class SendMessageService implements ISendMessageService {
             SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
             searchRs.getList().forEach(p -> {
-                        mobiles.add(p.getStudent().getMobile());
+                        mobiles.add(p.getStudent().getContactInfo().getSmSMobileNumber());
                         fullName.add(p.getFullName());
                         prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
                     }

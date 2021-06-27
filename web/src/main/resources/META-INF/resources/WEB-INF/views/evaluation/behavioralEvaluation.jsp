@@ -72,7 +72,7 @@
                     }
                 },
                 {
-                    name: "student.mobile",
+                    name: "student.contactInfo.smSMobileNumber",
                     title: "<spring:message code="cellPhone"/>",
                     filterOperator: "iContains",
                 },
@@ -226,7 +226,7 @@
                     name: "student.postTitle",
                 },
                 {
-                    name: "student.mobile",
+                    name: "student.contactInfo.smSMobileNumber",
                 },
 	            {
                     name: "applicantCompanyName",
@@ -259,6 +259,8 @@
                 //
                 // if (!ListGrid_student_BE.getFieldByName("evaluationStatusBehavior").hidden && (record.evaluationStatusBehavior === 3 || record.evaluationStatusBehavior === 2))
                 //     return "background-color : #b7dee8";
+                if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber")
+                    return  ";color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
             },
             createRecordComponent: function (record, colNum) {
                 let fieldName = this.getFieldName(colNum);
@@ -288,6 +290,30 @@
                     return null;
                 }
             },
+            cellClick: function (record, rowNum, colNum) {
+                editMobileForm.callBack = (contactInfo ,m) => {record.student.contactInfo = contactInfo;record.student.contactInfo.smSMobileNumber = m;};
+                if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber") {
+                    if (record.student.contactInfo) {
+                        editMobileForm.editRecord(record.student.contactInfo);
+                        switch (record.student.contactInfo.mobileForSMS) {
+                            case 2:
+                                editMobileForm.getItem('mobile2_c').setValue(true);
+                                break;
+                            case 3:
+                                editMobileForm.getItem('hrMobile_c').setValue(true);
+                                break;
+                            case 4:
+                                editMobileForm.getItem('mdmsMobile_c').setValue(true);
+                                break;
+                            default:
+                                editMobileForm.getItem('mobile_c').setValue(true);
+                                editMobileForm.getValues().mobileForSMS = 1;
+                        }
+                    }
+                    Window_EditMobile.show();
+                }
+            },
+
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------

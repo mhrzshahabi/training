@@ -170,10 +170,10 @@ public class StudentDTO {
         private String ccpSection;
         private String ccpUnit;
         private String fatherName;
-        private String mobile;
         private String birthCertificateNo;
         private String postCode;
         private String gender;
+        private ContactInfoDTO.Info contactInfo;
     }
 
     @Getter

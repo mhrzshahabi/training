@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.enums.EMobileForSMS;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -8,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -21,6 +23,13 @@ public class ContactInfoDTO {
     private String personalWebSite;
     private Long homeAddressId;
     private Long workAddressId;
+    private String mdmsMobile;
+    private String hrMobile;
+    private String mobile2;
+    private EMobileForSMS eMobileForSMS;
+    private EMobileForSMS eMobileForCN;
+    private Date lastModifiedDate;
+
 
     @Getter
     @Setter
@@ -127,5 +136,54 @@ public class ContactInfoDTO {
         private Integer totalRows;
     }
 
+    public void setMobileForSMS(Integer mobileForSMS) {
+        eMobileForSMS = EMobileForSMS.getEnum(mobileForSMS);
+    }
+
+    public Integer getMobileForSMS() {
+        if (eMobileForSMS == null)
+            return null;
+        return eMobileForSMS.getId();
+    }
+
+    public String getSmSMobileNumber() {
+        if (eMobileForSMS == null)
+            return mobile;
+        switch (eMobileForSMS) {
+            case hrMobile:
+                return hrMobile;
+            case mdmsMobile:
+                return mdmsMobile;
+            case trainingSecondMobile:
+                return mobile2;
+            default:
+                return mobile;
+        }
+    }
+
+    public void setMobileForCN(Integer mobileForCN) {
+        eMobileForCN = EMobileForSMS.getEnum(mobileForCN);
+    }
+
+    public Integer getMobileForCN() {
+        if (eMobileForCN == null)
+            return null;
+        return eMobileForCN.getId();
+    }
+
+    public String getCnMobileNumber() {
+        if (eMobileForCN == null)
+            return mobile;
+        switch (eMobileForCN) {
+            case hrMobile:
+                return hrMobile;
+            case mdmsMobile:
+                return mdmsMobile;
+            case trainingSecondMobile:
+                return mobile2;
+            default:
+                return mobile;
+        }
+    }
 }
 

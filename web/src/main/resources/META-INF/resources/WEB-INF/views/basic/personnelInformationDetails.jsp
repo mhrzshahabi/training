@@ -9,7 +9,6 @@
         this.tempPersonnel;
         this.tempListGrid_PersonnelTraining;
 
-
         // <<----------------------------------------------- Functions --------------------------------------------
         //{
             this.nationalCode_Info, this.personnelNo_Info, this.nationalCode_Training, this.personnelNo_Training, this.nationalCode_Need;
@@ -102,6 +101,49 @@
                             this.nationalCode_Need = nationalCode;
                             call_needsAssessmentReports("0", true, selectedPersonnel);
                         }
+                    } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_ContactInfo") {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/fetchAndUpdateLastHrMobile/" + selectedPersonnel.id, "GET", null, function (resp) {
+                            if (!selectedPersonnel.contactInfo || !selectedPersonnel.contactInfo.id) {
+                                selectedPersonnel.contactInfo = {id: Number(resp.data)}
+                            }
+                            editMobileForm_Personnel.callBack = (contactInfo , sms, cn) => {
+                                                                        selectedPersonnel.contactInfo = contactInfo;
+                                                                        selectedPersonnel.contactInfo.smSMobileNumber = sms;
+                                                                        selectedPersonnel.contactInfo.cNMobileNumber = cn;
+                                                                        editMobileForm_Personnel.editRecord(selectedPersonnel.contactInfo);
+                           };
+                            editMobileForm_Personnel.editRecord(selectedPersonnel.contactInfo);
+                            switch (selectedPersonnel.contactInfo.mobileForSMS) {
+                                case 2:
+                                    editMobileForm_Personnel.getItem('mobile2_sms').setValue(true);
+                                    break;
+                                case 3:
+                                    editMobileForm_Personnel.getItem('hrMobile_sms').setValue(true);
+                                    break;
+                                case 4:
+                                    editMobileForm_Personnel.getItem('mdmsMobile_sms').setValue(true);
+                                    break;
+                                default:
+                                    editMobileForm_Personnel.getItem('mobile_sms').setValue(true);
+                                    editMobileForm_Personnel.getValues().mobileForSMS = 1;
+                            }
+                            switch (selectedPersonnel.contactInfo.mobileForCN) {
+                                case 2:
+                                    editMobileForm_Personnel.getItem('mobile2_cn').setValue(true);
+                                    break;
+                                case 3:
+                                    editMobileForm_Personnel.getItem('hrMobile_cn').setValue(true);
+                                    break;
+                                case 4:
+                                    editMobileForm_Personnel.getItem('mdmsMobile_cn').setValue(true);
+                                    break;
+                                default:
+                                    editMobileForm_Personnel.getItem('mobile_cn').setValue(true);
+                                    editMobileForm_Personnel.getValues().mobileForCN = 1;
+                            }
+                            wait.close();
+                        }));
                     }
                 } else {
                     this.DynamicForm_PersonnelInfo.clearValues();
@@ -285,6 +327,22 @@
 
                 }
             }
+
+            this.saveContact_CallBack = function saveContact_CallBack(r,data) {
+                debugger
+                let m = "";
+                switch (data.mobileForSMS) {
+                    case 4: {m = data.mdmsMobile};break;
+                    case 3: {m = data.hrMobile};break;
+                    case 2: {m = data.mobile2};break;
+                    default :{m = data.mobile};
+                }
+                editMobileForm.callBack(data, m);
+                editMobileForm.clearValues();
+                Window_EditMobile.close();
+                wait.close();
+            }
+
         //}
 
         // ------------------------------------------------- Functions ------------------------------------------>>
@@ -1161,7 +1219,160 @@
 
         // <<-------------------------------------- Create - TabSet & Tab -----------------------------------------
         //{
-            this.VLayout_PersonnelInfo_Detail = isc.VLayout.create({
+
+        var editMobileForm_Personnel = isc.DynamicForm.create({
+            height: "200",
+            numCols: 6,
+            colWidths: [30, 30, 30, 30, 60, 205],
+            fields: [
+                {
+                    name : "id", hidden: true
+                },
+                {
+                    type: "HeaderItem",
+                    cellStyle: "lineField",
+                    defaultValue: "<spring:message code='student.edit.mobile.default.for.sms'/>  ,  <spring:message code='student.edit.mobile.default.for.social.network'/>",
+                },
+                {
+                    name: "mobile_sms",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_Personnel.getItem('mobile2_sms').setValue(null);
+                            editMobileForm_Personnel.getItem('mdmsMobile_sms').setValue(null);
+                            editMobileForm_Personnel.getItem('hrMobile_sms').setValue(null);
+                            editMobileForm_Personnel.getValues().mobileForSMS = 1;
+                        }
+                    }
+                },
+                {
+                    name: "mobile_cn",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_Personnel.getItem('mobile2_cn').setValue(null);
+                            editMobileForm_Personnel.getItem('mdmsMobile_cn').setValue(null);
+                            editMobileForm_Personnel.getItem('hrMobile_cn').setValue(null);
+                            editMobileForm_Personnel.getValues().mobileForCN = 1;
+                        }
+                    }
+                },
+                {
+                    name: "mobile",
+                    title: "",
+                    type: "text",
+                    keyPressFilter: "[0-9/+-_]",
+                },
+                {
+                    name: "mobile2_sms",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_Personnel.getItem('mobile_sms').setValue(null);
+                            editMobileForm_Personnel.getItem('mdmsMobile_sms').setValue(null);
+                            editMobileForm_Personnel.getItem('hrMobile_sms').setValue(null);
+                            editMobileForm_Personnel.getValues().mobileForSMS = 2
+                        }
+                    }
+                },
+                {
+                    name: "mobile2_cn",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_Personnel.getItem('mobile_cn').setValue(null);
+                            editMobileForm_Personnel.getItem('mdmsMobile_cn').setValue(null);
+                            editMobileForm_Personnel.getItem('hrMobile_cn').setValue(null);
+                            editMobileForm_Personnel.getValues().mobileForCN = 2
+                        }
+                    }
+                },
+                {
+                    name: "mobile2",
+                    title: "",
+                    type: "text",
+                    keyPressFilter: "[0-9/+-_]",
+                },
+                {
+                    name: "hrMobile_sms",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_Personnel.getItem('mobile2_sms').setValue(null);
+                            editMobileForm_Personnel.getItem('mdmsMobile_sms').setValue(null);
+                            editMobileForm_Personnel.getItem('mobile_sms').setValue(null);
+                            editMobileForm_Personnel.getValues().mobileForSMS = 3
+                        }
+                    }
+                },
+                {
+                    name: "hrMobile_cn",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_Personnel.getItem('mobile2_cn').setValue(null);
+                            editMobileForm_Personnel.getItem('mdmsMobile_cn').setValue(null);
+                            editMobileForm_Personnel.getItem('mobile_cn').setValue(null);
+                            editMobileForm_Personnel.getValues().mobileForCN = 3
+                        }
+                    }
+                },
+                {
+                    name: "hrMobile",
+                    title: "",
+                    type: "text",
+                    disabled: true,
+                },
+                {
+                    name: "mdmsMobile_sms",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_Personnel.getItem('mobile2_sms').setValue(null);
+                            editMobileForm_Personnel.getItem('mobile_sms').setValue(null);
+                            editMobileForm_Personnel.getItem('hrMobile_sms').setValue(null);
+                            editMobileForm_Personnel.getValues().mobileForSMS = 4
+                        }
+                    }
+                },
+                {
+                    name: "mdmsMobile_cn",
+                    title: "",
+                    type: "checkbox",
+                    width: "2",
+                    changed: function (form, item, value) {
+                        if (value) {
+                            editMobileForm_Personnel.getItem('mobile2_cn').setValue(null);
+                            editMobileForm_Personnel.getItem('mobile_cn').setValue(null);
+                            editMobileForm_Personnel.getItem('hrMobile_cn').setValue(null);
+                            editMobileForm_Personnel.getValues().mobileForCN = 4
+                        }
+                    }
+                },
+                {
+                    name: "mdmsMobile",
+                    title: "",
+                    type: "text",
+                    disabled: true,
+                },
+            ]
+        });
+
+        this.VLayout_PersonnelInfo_Detail = isc.VLayout.create({
                 width: "100%",
                 height: "100%",
                 membersMargin: 5,
@@ -1224,8 +1435,65 @@
                         id: "PersonnelInfo_Tab_NeedAssessment",
                         title: "<spring:message code="competence"/>",
                         pane: isc.ViewLoader.create({autoDraw: false, viewURL: "web/needsAssessment-reports"}),
+                    },
+                    {
+                        id: "PersonnelInfo_Tab_ContactInfo",
+                        title: "<spring:message code="contact.information"/>",
+                        pane: isc.VLayout.create({
+                            width: "30%",
+                            members: [
+                                editMobileForm_Personnel,
+                                isc.MyHLayoutButtons.create({
+                                    align:"center",
+                                    members:
+                                        [isc.IButtonSave.create({
+                                            click: function () {
+                                                if (!editMobileForm_Personnel.validate()) {
+                                                    return;
+                                                }
+                                                var data = editMobileForm_Personnel.getValues();
+                                                delete data.emobileForSMS;
+                                                delete data.emobileForCN;
+                                                wait.show();
+                                                isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data),(r)=>{
+                                                debugger
+                                                let sms = "", cn = "";
+                                                switch (data.mobileForSMS) {
+                                                case 4:
+                                                    sms = data.mdmsMobile;
+                                                    break;
+                                                case 3:
+                                                    sms = data.hrMobile;
+                                                    break;
+                                                case 2:
+                                                    sms = data.mobile2;
+                                                    break;
+                                                default :
+                                                    sms = data.mobile;
+                                                }
+                                                switch (data.mobileForCN) {
+                                                    case 4:
+                                                        cn = data.mdmsMobile;
+                                                        break;
+                                                    case 3:
+                                                        cn = data.hrMobile;
+                                                        break;
+                                                    case 2:
+                                                        cn = data.mobile2;
+                                                        break;
+                                                    default :
+                                                        cn = data.mobile;
+                                                }
+                                                editMobileForm_Personnel.clearValues();
+                                                editMobileForm_Personnel.callBack(data, sms, cn);
+                                                wait.close();
+                                            } ));
+                                            }
+                                        })]
+                                })
+                            ]
+                        })
                     }
-
                 ],
                 tabSelected: function () {
                     //console.log(me);

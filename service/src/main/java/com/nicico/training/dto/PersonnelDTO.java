@@ -129,8 +129,7 @@ public class PersonnelDTO implements Serializable {
         private String complexTitle;
         private String address;
         private String phone;
-        private String mobile;
-        private String email;
+        private ContactInfoDTO.Info contactInfo;
         private Long postId;
 
         @Getter(AccessLevel.NONE)
@@ -207,6 +206,7 @@ public class PersonnelDTO implements Serializable {
         private String userName;
         private PostDTO.PersonnelInfo post;
         private DepartmentDTO.Info department;
+        private ContactInfoDTO.Info contactInfo;
     }
 
     @Getter

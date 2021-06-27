@@ -1,6 +1,8 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.StudentDTO.ClassStudentInfo;
 import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.model.ContactInfo;
 
@@ -22,4 +24,9 @@ public interface IContactInfoService {
     SearchDTO.SearchRs<ContactInfoDTO.Info> search(SearchDTO.SearchRq request);
 
     void modify(ContactInfoDTO.CreateOrUpdate request, ContactInfo contactInfo);
+
+    String fetchAndUpdateLastHrMobile(String nationalCode, ClassStudentInfo classStudentInfo, String token);
+
+    Long fetchAndUpdateLastHrMobile(Long id, String token);
+
 }

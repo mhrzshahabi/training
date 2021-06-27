@@ -11,6 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
@@ -67,7 +68,7 @@ public class ClassStudentRestController {
     private final ClassSessionService classSessionService;
     private final ClassStudentBeanMapper mapper;
     private final ElsClient client;
-
+    private final IContactInfoService contactInfoService;
 
     private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, SearchDTO.CriteriaRq criteria, Function<E, T> converter) throws IOException {
         int startRow = 0;
@@ -123,6 +124,9 @@ public class ClassStudentRestController {
         ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list = search1(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
         List<ClassStudentDTO.ClassStudentInfo> tmplist = (List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData();
+        for (ClassStudentDTO.ClassStudentInfo studentInfo : tmplist) {
+            contactInfoService.fetchAndUpdateLastHrMobile(studentInfo.getStudent().getNationalCode(), studentInfo.getStudent() ,iscRq.getHeader("Authorization"));
+        }
 
         if (tmplist.size() > 0 && (tmplist.get(0).getTclass().getClassStatus().equals("1") || tmplist.get(0).getTclass().getClassStatus().equals("2"))) {
 
@@ -145,7 +149,7 @@ public class ClassStudentRestController {
                     Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
 
                     tmplist.forEach(p -> {
-                        if (p.getStudent().getMobile() != null && mobiles.get(p.getStudent().getMobile()) != null && mobiles.get(p.getStudent().getMobile()) > 0) {
+                        if (p.getStudent().getContactInfo().getSmSMobileNumber() != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) > 0) {
                             p.setIsSentMessage("");
                         } else {
                             p.setIsSentMessage("warning");
@@ -447,7 +451,7 @@ public class ClassStudentRestController {
                     Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
 
                     tmplist.forEach(p -> {
-                        if (p.getStudent().getMobile() != null && mobiles.get(p.getStudent().getMobile()) != null && mobiles.get(p.getStudent().getMobile()) > 0) {
+                        if (p.getStudent().getContactInfo().getSmSMobileNumber() != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) > 0) {
                             p.setIsSentMessage("");
                         } else {
                             p.setIsSentMessage("warning");
