@@ -42,7 +42,7 @@
                 var EvalTargetUser = {
                     surname: selectedStudents[i].student.firstName,
                     lastName: selectedStudents[i].student.lastName,
-                    cellNumber: selectedStudents[i].student.mobile,
+                    cellNumber: selectedStudents[i].student.contactInfo.mobile,
                     nationalCode: selectedStudents[i].student.nationalCode,
                     gender: selectedStudents[i].student.gender
                 };
@@ -318,7 +318,7 @@
                 title: "<spring:message code="father.name"/>",
                 filterOperator: "iContains"
             },
-            {name: "student.mobile", title: "<spring:message code="mobile"/>", filterOperator: "iContains"},
+            {name: "student.contactInfo.mobile", title: "<spring:message code="mobile"/>", filterOperator: "iContains"},
             {
                 name: "student.birthCertificateNo",
                 title: "<spring:message code="birth.certificate.no"/>",
@@ -413,10 +413,10 @@
                 }
             },
             {
-                name: "student.mobile",
+                name: "student.contactInfo.mobile",
                 autoFitWidth: true,
                 sortNormalizer: function (record) {
-                    return record.student.mobile;
+                    return record.student.contactInfo.mobile;
                 }
             },
             {

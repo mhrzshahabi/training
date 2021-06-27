@@ -130,7 +130,7 @@
                 filterOperator: "iContains"
             },
             {
-                name: "student.mobile",
+                name: "student.contactInfo.smSMobileNumber",
                 title: "<spring:message code="cellPhone"/>",
                 filterOperator: "iContains",
             },
@@ -1696,7 +1696,7 @@
                 for (let i = 0; i < gridData.length; i++) {
 
                     let studentData = gridData[i].student;
-                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.mobile, studentData.gender)) {
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.mobile, studentData.gender)) {
 
                         inValidStudents.add({
                             firstName: studentData.firstName,
@@ -1797,18 +1797,15 @@
             }
 
             if( classRecord_RE.id) {
-                let rec=ListGrid_student_RE.getData().localData[0];
-
-
-
-
+                // let rec=ListGrid_student_RE.getData().localData[0];
                 let gridData = ListGrid_student_RE.getData().localData;
                 let inValidStudents = [];
 
                 for (let i = 0; i < gridData.length; i++) {
 
                     let studentData = gridData[i].student;
-                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.mobile, studentData.gender)) {
+
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.mobile, studentData.gender)) {
 
                         inValidStudents.add({
                             firstName: studentData.firstName,
