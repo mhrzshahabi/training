@@ -60,6 +60,15 @@ public class ViewStatisticsUnitReport implements Serializable {
     @Column(name = "class_c_teaching_type")
     private String classTeachingType;
 
+    @Column(name = "class_reason")
+    private String classReason;
+
+    @Column(name = "class_target_population_type_id")
+    private Long classTargetPopulationTypeId;
+
+    @Column(name = "class_holding_class_type_id")
+    private Long classHoldingClassTypeId;
+
     @Column(name = "class_year")
     private String classYear;
 
@@ -76,6 +85,9 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "course_title_fa")
     private String courseTitleFa;
+
+    @Column(name = "course_e_technical_type")
+    private String courseETechnicalType;
 
     @Column(name = "course_duration")
     private Long courseDuration;
