@@ -31,6 +31,7 @@ public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExec
     String findOneById(@Param("postId") Long postId);
 
     Optional<Post> findByCode(@Param("code") String code);
+    Optional<Post> findByCodeAndDeleted(@Param("code") String code,Long deleted);
 
     @Modifying
     @Query(value = "update TBL_POST set D_LAST_MODIFIED_DATE_NA = :modificationDate, C_MODIFIED_BY_NA = :userName ,N_VERSION = N_VERSION + 1 where ID = :objectId", nativeQuery = true)

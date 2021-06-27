@@ -1,22 +1,17 @@
 package com.nicico.training.service;
 
-import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.ICourseService;
-import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.iservice.ISkillService;
-import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections.map.MultiValueMap;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +24,7 @@ import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria
 
 @Service
 @RequiredArgsConstructor
-public class NeedsAssessmentReportsService {
+public class NeedsAssessmentReportsService implements INeedsAssessmentReportsService {
 
     private final List<String> needsAssessmentPriorityCodes = Arrays.asList("AZ", "AB", "AT", "AE");
 
@@ -99,22 +94,22 @@ public class NeedsAssessmentReportsService {
             for (int i = 0; i < mustPass.size(); i++) {
 //                 makeNewCriteria("tclassId", needsAssessmentList.get(i).getC, EOperator.equals, null);
 
-                List<TclassDTO.PersonnelClassInfo> personClasses =  tClassService.findPersonnelClassByCourseId(student.getNationalCode(), student.getPersonnelNo(), needsAssessmentList.get(i).getSkill().getCourse().getId());
+                List<TclassDTO.PersonnelClassInfo> personClasses = tClassService.findPersonnelClassByCourseId(student.getNationalCode(), student.getPersonnelNo(), needsAssessmentList.get(i).getSkill().getCourse().getId());
 
                 if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed)) {
                     mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
-                    if (personClasses.size()> 0){
+                    if (personClasses.size() > 0) {
                         String courseStatus = personClasses.get(0).getScoreState();
                         if (!passedCourseIds.contains(needsAssessmentList.get(i).getSkill().getCourse().getId()) &&
                                 isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId()) != null
-                                && isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId())){
+                                && isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId())) {
                             courseStatus += " - دوره معادل گذرانده شده است ";
                         }
                         mustPass.get(i).getSkill().getCourse().setScoresStatus(courseStatus);
                     }
                 } else {
                     mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);
-                    if (personClasses.size()> 0){
+                    if (personClasses.size() > 0) {
                         mustPass.get(i).getSkill().getCourse().setScoresStatus(personClasses.get(0).getScoreState());
                     }
                 }
@@ -493,4 +488,103 @@ public class NeedsAssessmentReportsService {
             criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.and, list));
         }
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchForBpms(SearchDTO.SearchRq searchRq, String postCode, String objectType, String nationalCode,String personnelNumber) {
+        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(postCode, objectType, nationalCode,personnelNumber);
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) needsAssessmentReportList.size());
+        rs.setList(needsAssessmentReportList);
+        return rs;
+    }
+
+
+    @Transactional(readOnly = true)
+//    @Override
+    public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseListForBpms( String postCode, String objectType, String nationalCode,String personnelNumber) {
+        Long passedCodeId = parameterValueService.getId("Passed");
+        Long notPassedCodeId = parameterValueService.getId("false");
+
+
+        List<NeedsAssessment> needsAssessmentList = getNeedsAssessmentListForBpms(postCode, objectType);
+        needsAssessmentList = needsAssessmentList.stream().filter(NA -> NA.getSkill().getCourse() != null).collect(Collectors.toList());
+        List<NeedsAssessmentReportsDTO.ReportInfo> mustPass = modelMapper.map(needsAssessmentList, new TypeToken<List<NeedsAssessmentReportsDTO.ReportInfo>>() {
+        }.getType());
+
+        if (nationalCode != null && !mustPass.isEmpty()) {
+            try {
+                PersonnelDTO.Info student = personnelService.getByPersonnelCodeAndNationalCode(nationalCode,personnelNumber);
+                if (student == null) {
+                    throw new TrainingException(TrainingException.ErrorType.NotFound);
+                }
+
+                Set<Long> passedCourseIds = classStudentReportService.getPassedCoursesIdsOfStudentByNationalCode(student.getNationalCode());
+                Map<Long, Boolean> isPassed = passedCourseIds.stream().collect(Collectors.toMap(id -> id, id -> true));
+
+                for (int i = 0; i < mustPass.size(); i++) {
+                    List<TclassDTO.PersonnelClassInfo> personClasses = tClassService.findPersonnelClassByCourseId(student.getNationalCode(), student.getPersonnelNo(), needsAssessmentList.get(i).getSkill().getCourse().getId());
+
+                    if (classStudentReportService.isPassed(needsAssessmentList.get(i).getSkill().getCourse(), isPassed)) {
+                        mustPass.get(i).getSkill().getCourse().setScoresState(passedCodeId);
+                        if (personClasses.size() > 0) {
+                            String courseStatus = personClasses.get(0).getScoreState();
+                            if (!passedCourseIds.contains(needsAssessmentList.get(i).getSkill().getCourse().getId()) &&
+                                    isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId()) != null
+                                    && isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId())) {
+                                courseStatus += " - دوره معادل گذرانده شده است ";
+                            }
+                            mustPass.get(i).getSkill().getCourse().setScoresStatus(courseStatus);
+                        }
+                    } else {
+                        mustPass.get(i).getSkill().getCourse().setScoresState(notPassedCodeId);
+                        if (personClasses.size() > 0) {
+                            mustPass.get(i).getSkill().getCourse().setScoresStatus(personClasses.get(0).getScoreState());
+                        }
+                    }
+                }
+            }
+            catch (Exception e){
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+
+            }
+
+
+        }
+        return mustPass;
+    }
+
+    @Transactional(readOnly = true)
+//    @Override
+    public List<NeedsAssessment> getNeedsAssessmentListForBpms(String postCode, String objectType) {
+        List<NeedsAssessment> needsAssessmentList = new ArrayList<>();
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.or, new ArrayList<>()));
+        criteriaRq.getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
+        addCriteriaForBpms(criteriaRq.getCriteria().get(0), objectType, postCode, true, true);
+        if (!criteriaRq.getCriteria().get(0).getCriteria().isEmpty())
+            needsAssessmentList = needsAssessmentDAO.findAll(NICICOSpecification.of(criteriaRq));
+        return removeDuplicateNAs(needsAssessmentList);
+    }
+
+
+    @Transactional(readOnly = true)
+    public void addCriteriaForBpms(SearchDTO.CriteriaRq criteriaRq, String objectType, String postCode, boolean isFirstObject, boolean addFirstObject) {
+        Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
+        if (objectType.equals("Post")) {
+            Post currentPost = postDAO.findByCodeAndDeleted(postCode,null).orElseThrow(trainingExceptionSupplier);
+            if (!isFirstObject && (currentPost.getDeleted() != null || currentPost.getEnabled() != null))
+                return;
+            currentPost.getTrainingPostSet().forEach(trainingPost -> addCriteria(criteriaRq, "TrainingPost", trainingPost.getId(), false, addFirstObject));
+            currentPost.getPostGroupSet().forEach(postGroup -> addCriteria(criteriaRq, "PostGroup", postGroup.getId(), false, addFirstObject));
+        }
+            if (!isFirstObject || addFirstObject) {
+                List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+                list.add(makeNewCriteria("objectCode", postCode, EOperator.equals, null));
+                list.add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
+                criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.and, list));
+            }
+        }
+
+
 }
