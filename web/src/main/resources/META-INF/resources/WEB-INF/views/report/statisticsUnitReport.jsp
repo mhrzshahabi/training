@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 
-//<script>
+// <script>
 
     $(document).ready(()=>{
         setTimeout(()=>{
@@ -36,13 +36,20 @@
             {name: "studentPostGradeTitle", title: "<spring:message code="post.grade"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "studentJobTitle", title: "<spring:message code="job"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classCode", title:"<spring:message code="class.code"/>", autoFitWidth: true},
-            {name: "classStatus", title:"<spring:message code="class.status"/>", autoFitWidth: true, valueMap: {
-            "1": "برنامه ريزی", "2": "در حال اجرا", "3": "پایان یافته"}},
+            {name: "classStatus", title:"<spring:message code="class.status"/>", autoFitWidth: true,
+                valueMap: {"1": "برنامه ريزی", "2": "در حال اجرا", "3": "پایان یافته", "4": "لغو شده", "5": "اختتام"}
+            },
             {name: "courseCode", title:"<spring:message code='course.code'/>", autoFitWidth: true},
             {name: "courseTitleFa", title:"<spring:message code='course'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseETechnicalType", title:"<spring:message code='course_etechnicalType'/>", filterOperator: "iContains", autoFitWidth: true, valueMap: {
+                1: "عمومي", 2: "فني", 3: "مديريتي"}},
             {name: "courseDuration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseTheoType", title:"<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classTeachingType", title: "<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classReason", title: "<spring:message code="training.request"/>", filterOperator: "iContains", autoFitWidth: true, valueMap: {
+                    "1": "نیازسنجی", "2": "درخواست واحد", "3": "نیاز موردی"}},
+            {name: "classTargetPopulationTypeId", title: "دوره ویژه", filterOperator: "iContains", autoFitWidth: true},
+            {name: "classHoldingClassTypeId", title: "<spring:message code="course_eruntype"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classStartDate", title:"<spring:message code="start.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classEndDate", title:"<spring:message code="end.date"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "teacherFirstName", title:"نام استاد", filterOperator: "iContains", autoFitWidth: true},
@@ -56,7 +63,7 @@
             {name: "presenceMinute", title:"حضور بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
             {name: "absenceHour", title:"غیبت بر حسب ساعت", filterOperator: "equals", autoFitWidth: true},
             {name: "absenceMinute", title:"غیبت بر حسب دقیقه", filterOperator: "equals", autoFitWidth: true},
-            {name: "instituteTitleFa", title: "<spring:message code="institute"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "instituteTitleFa", title: "واحد آموزشی برگزار کننده", filterOperator: "iContains", autoFitWidth: true},
 
             {name: "evaluationReactionStatus",title: "ارزیابی واکنشی",filterOperator: "equals",filterOnKeypress:true,autoFitWidth: true,valueMap: {true: "انجام شده", false: "انجام نشده"}},
             {name: "evaluationReactionPass",title: "وضعیت ارزیابی واکنشی", filterOnKeypress: true,autoFitWidth: true,valueMap: {true: "تائید شده", false: "تائید نشده"}},
@@ -77,8 +84,7 @@
             {name: "categoryId", hidden: true,filterOperator: "equals"},
             {name: "subCategoryId", hidden: true,filterOperator: "equals"},
             {name: "classPlanner", hidden: true, filterOperator: "equals"},
-            {name: "classSupervisor", hidden: true, filterOperator: "equals"},
-
+            {name: "classSupervisor", hidden: true, filterOperator: "equals"}
         ],
         fetchDataURL: statisticsUnitReportUrl
     });
@@ -254,6 +260,24 @@
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria: true
     });
+
+    var RestDataSource_Target_Population_JspTClassReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/TargetPopulation"
+    });
+
+    var RestDataSource_Holding_Class_Type_JspTClassReport = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/HoldingClassType"
+    });
     //----------------------------------------------------ListGrid Result-----------------------------------------------
     var ListGrid_JspUnitReport = isc.TrLG.create({
         width: "100%",
@@ -269,6 +293,81 @@
         initialSort: [
             {property: "studentId", direction: "ascending",primarySort: true}
         ],
+        fields: [
+            {name: "studentPersonnelNo"},
+            {name: "studentPersonnelNo2"},
+            {name: "studentNationalCode"},
+            {name: "studentFirstName"},
+            {name: "studentLastName"},
+            {name: "personnelComplexTitle"},
+            {name: "classStudentApplicantCompanyName"},
+            {name: "studentCcpAssistant"},
+            {name: "studentCcpSection"},
+            {name: "studentCcpUnit"},
+            {name: "studentCcpAffairs"},
+            {name: "studentWorkPlaceTitle"},
+            {name: "studentPostGradeTitle"},
+            {name: "studentJobTitle"},
+            {name: "classCode"},
+            {name: "classStatus"},
+            {name: "courseCode"},
+            {name: "courseTitleFa"},
+            {name: "courseETechnicalType"},
+            {name: "courseDuration"},
+            {name: "courseTheoType"},
+            {name: "classTeachingType"},
+            {name: "classReason"},
+            {
+                name: "classTargetPopulationTypeId",
+                optionDataSource: RestDataSource_Target_Population_JspTClassReport,
+                autoFetchData: false,
+                valueField: "id",
+                displayField: "title",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
+            },
+            {
+                name: "classHoldingClassTypeId",
+                optionDataSource: RestDataSource_Holding_Class_Type_JspTClassReport,
+                displayField: "title",
+                autoFetchData: false,
+                valueField: "id",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
+            },
+            {name: "classStartDate"},
+            {name: "classEndDate"},
+            {name: "teacherFirstName"},
+            {name: "teacherLastName"},
+            {name: "courseTeacherStatus"},
+            {name: "sessionDate"},
+            {name: "presenceHour"},
+            {name: "presenceMinute"},
+            {name: "absenceHour"},
+            {name: "absenceMinute"},
+            {name: "instituteTitleFa"},
+
+            {name: "evaluationReactionStatus"},
+            {name: "evaluationReactionPass"},
+            {name: "evaluationLearningStatus"},
+            {name: "evaluationLearningPass"},
+            {name: "evaluationBehavioralStatus"},
+            {name: "evaluationBehavioralPass"},
+            {name: "evaluationEffectivenessStatus"},
+            {name: "evaluationEffectivenessPass"},
+            {name: "evaluationResultsStatus"},
+            {name: "evaluationResultsPass"}
+        ]
     });
 
     IButton_JspUnitReport_FullExcel = isc.IButtonSave.create({
@@ -375,6 +474,8 @@
                     "1": "برنامه ريزی",
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
+                    "4": "لغو شده",
+                    "5": "اختتام"
                 },
                 pickListProperties: {
                     showFilterEditor: false
@@ -777,15 +878,15 @@
         click: function () {
             var criteriaDisplayValues = "";
             var selectorDisplayValues = DynamicForm_SelectCourses_JspUnitReport.getItem("course.code").getValue();
-            if (DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() != "") {
+            if (DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() !== undefined
+                && DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() !== "") {
                 criteriaDisplayValues = DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue();
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
+                if (lastChar !== ";")
                     criteriaDisplayValues += ";";
             }
-            if (selectorDisplayValues != undefined) {
+            if (selectorDisplayValues !== undefined) {
                 for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
                     criteriaDisplayValues += selectorDisplayValues [i] + ";";
                 }
@@ -855,21 +956,21 @@
         click: function () {
             let criteriaDisplayValues = "";
             let selectorDisplayValues = DynamicForm_SelectClasses_JspUnitReport.getItem("class.code").getValue();
-            if (DynamicForm_SelectClasses_JspUnitReport.getField("class.code").getValue() != undefined && DynamicForm_SelectClasses_JspUnitReport.getField("class.code").getValue() != "") {
+            if (DynamicForm_SelectClasses_JspUnitReport.getField("class.code").getValue() !== undefined && DynamicForm_SelectClasses_JspUnitReport.getField("class.code").getValue() !== "") {
                 criteriaDisplayValues = DynamicForm_SelectClasses_JspUnitReport.getField("class.code").getValue().join(",");
                 let ALength = criteriaDisplayValues.length;
                 let lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
+                if (lastChar !== ";")
                     criteriaDisplayValues += ",";
             }
-            if (selectorDisplayValues != undefined) {
+            if (selectorDisplayValues !== undefined) {
                 for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
                     criteriaDisplayValues += selectorDisplayValues [i] + ",";
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
 
-            if (typeof criteriaDisplayValues != "undefined") {
+            if (typeof criteriaDisplayValues !== "undefined") {
                 let uniqueNames = [];
 
                 $.each(criteriaDisplayValues.split(","), function (i, el) {
@@ -878,7 +979,7 @@
                 criteriaDisplayValues = uniqueNames.join(",");
             }
 
-            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues === "undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspUnitReport.getField("classCode").setValue(criteriaDisplayValues);
             Window_SelectClasses_JspUnitReport.close();
@@ -943,22 +1044,22 @@
         click: function () {
             var criteriaDisplayValues = "";
             var selectorDisplayValues = DynamicForm_SelectCourses_JspUnitReportReport.getItem("courseCode").getValue();
-            if (DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() != undefined
-                && DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() != "") {
+            if (DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() !== undefined
+                && DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").getValue() !== "") {
                 criteriaDisplayValues = DynamicForm_SelectCourses_JspUnitReportReport.getField("courseCode").getValue().join(",");
                 var ALength = criteriaDisplayValues.length;
                 var lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
+                if (lastChar !== ";")
                     criteriaDisplayValues += ",";
             }
-            if (selectorDisplayValues != undefined) {
+            if (selectorDisplayValues !== undefined) {
                 for (var i = 0; i < selectorDisplayValues.size() - 1; i++) {
                     criteriaDisplayValues += selectorDisplayValues [i] + ",";
                 }
                 criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
             }
 
-            if (typeof criteriaDisplayValues != "undefined") {
+            if (typeof criteriaDisplayValues !== "undefined") {
                 let uniqueNames = [];
 
                 $.each(criteriaDisplayValues.split(","), function (i, el) {
@@ -969,7 +1070,7 @@
 
             // console.log(criteriaDisplayValues);
 
-            criteriaDisplayValues = criteriaDisplayValues == ",undefined" ? "" : criteriaDisplayValues;
+            criteriaDisplayValues = criteriaDisplayValues === ",undefined" ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_JspUnitReport.getField("courseCode").setValue(criteriaDisplayValues);
             Window_SelectCourses_JspUnitReportReport.close();
@@ -1011,15 +1112,15 @@
             if (DynamicForm_CriteriaForm_JspUnitReport.hasErrors() || organizationFilter.hasErrors())
                 return;
 
-            else{
+            else {
                 data_values = organizationFilter.getCriteria(DynamicForm_CriteriaForm_JspUnitReport.getValuesAsAdvancedCriteria());
                 for (var i = 0; i < data_values.criteria.size(); i++) {
-                    if (data_values.criteria[i].fieldName == "courseCode") {
+                    if (data_values.criteria[i].fieldName === "courseCode") {
                         var codesString = data_values.criteria[i].value;
                         var codesArray;
                         codesArray = codesString.split(",");
                         for (var j = 0; j < codesArray.length; j++) {
-                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                            if (codesArray[j] === "" || codesArray[j] === " ") {
                                 codesArray.remove(codesArray[j]);
                             }
                         }
@@ -1027,12 +1128,12 @@
                         data_values.criteria[i].value = codesArray;
                     }
 
-                    else if (data_values.criteria[i].fieldName == "classCode") {
+                    else if (data_values.criteria[i].fieldName === "classCode") {
                         var codesString = data_values.criteria[i].value;
                         var codesArray;
                         codesArray = codesString.split(",");
                         for (var j = 0; j < codesArray.length; j++) {
-                            if (codesArray[j] == "" || codesArray[j] == " ") {
+                            if (codesArray[j] === "" || codesArray[j] === " ") {
                                 codesArray.remove(codesArray[j]);
                             }
                         }
@@ -1040,87 +1141,87 @@
                         data_values.criteria[i].value = codesArray;
                     }
 
-                    else if (data_values.criteria[i].fieldName == "instituteId") {
+                    else if (data_values.criteria[i].fieldName === "instituteId") {
                         data_values.criteria[i].fieldName = "instituteId";
                         data_values.criteria[i].operator = "equals";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "personnelComplexTitle") {
+                    else if (data_values.criteria[i].fieldName === "personnelComplexTitle") {
                         data_values.criteria[i].fieldName = "personnelComplexTitle";
                         data_values.criteria[i].operator = "inSet";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "classStudentApplicantCompanyName") {
+                    else if (data_values.criteria[i].fieldName === "classStudentApplicantCompanyName") {
                         data_values.criteria[i].fieldName = "classStudentApplicantCompanyName";
                         data_values.criteria[i].operator = "iContains";
                     }
-                    else if (data_values.criteria[i].fieldName == "studentCcpAssistant") {
+                    else if (data_values.criteria[i].fieldName === "studentCcpAssistant") {
                         data_values.criteria[i].fieldName = "studentCcpAssistant";
                         data_values.criteria[i].operator = "inSet";
                     }
-                    else if (data_values.criteria[i].fieldName == "studentCcpUnit") {
+                    else if (data_values.criteria[i].fieldName === "studentCcpUnit") {
                         data_values.criteria[i].fieldName = "studentCcpUnit";
                         data_values.criteria[i].operator = "inSet";
                     }
-                    else if (data_values.criteria[i].fieldName == "studentCcpAffairs") {
+                    else if (data_values.criteria[i].fieldName === "studentCcpAffairs") {
                         data_values.criteria[i].fieldName = "studentCcpAffairs";
                         data_values.criteria[i].operator = "inSet";
                     }
-                    else if (data_values.criteria[i].fieldName == "studentCcpSection") {
+                    else if (data_values.criteria[i].fieldName === "studentCcpSection") {
                         data_values.criteria[i].fieldName = "studentCcpSection";
                         data_values.criteria[i].operator = "inSet";
                     }
-                    else if (data_values.criteria[i].fieldName == "courseTitleFa") {
+                    else if (data_values.criteria[i].fieldName === "courseTitleFa") {
                         data_values.criteria[i].fieldName = "courseTitleFa";
                         data_values.criteria[i].operator = "iContains";
                     }
-                    else if (data_values.criteria[i].fieldName == "startDate1") {
+                    else if (data_values.criteria[i].fieldName === "startDate1") {
                         data_values.criteria[i].fieldName = "classStartDate";
                         data_values.criteria[i].operator = "greaterOrEqual";
                     }
-                    else if (data_values.criteria[i].fieldName == "startDate2") {
+                    else if (data_values.criteria[i].fieldName === "startDate2") {
                         data_values.criteria[i].fieldName = "classStartDate";
                         data_values.criteria[i].operator = "lessOrEqual";
                     }
-                    else if (data_values.criteria[i].fieldName == "endDate1") {
+                    else if (data_values.criteria[i].fieldName === "endDate1") {
                         data_values.criteria[i].fieldName = "classEndDate";
                         data_values.criteria[i].operator = "greaterOrEqual";
                     }
-                    else if (data_values.criteria[i].fieldName == "endDate2") {
+                    else if (data_values.criteria[i].fieldName === "endDate2") {
                         data_values.criteria[i].fieldName = "classEndDate";
                         data_values.criteria[i].operator = "lessOrEqual";
                     }
-                    else if (data_values.criteria[i].fieldName == "classPlanner") {
+                    else if (data_values.criteria[i].fieldName === "classPlanner") {
                         data_values.criteria[i].fieldName = "classPlanner";
                         data_values.criteria[i].operator = "equals";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "classSupervisor") {
+                    else if (data_values.criteria[i].fieldName === "classSupervisor") {
                         data_values.criteria[i].fieldName = "classSupervisor";
                         data_values.criteria[i].operator = "equals";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "courseTeacherId") {
+                    else if (data_values.criteria[i].fieldName === "courseTeacherId") {
                         data_values.criteria[i].fieldName = "courseTeacherId";
                         data_values.criteria[i].operator = "equals";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "classYear") {
+                    else if (data_values.criteria[i].fieldName === "classYear") {
                         data_values.criteria[i].fieldName = "classYear";
                         data_values.criteria[i].operator = "iContains";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "termId") {
+                    else if (data_values.criteria[i].fieldName === "termId") {
                         data_values.criteria[i].fieldName = "termId";
                         data_values.criteria[i].operator = "equals";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "courseCategory") {
+                    else if (data_values.criteria[i].fieldName === "courseCategory") {
                         data_values.criteria[i].fieldName = "courseCategory";
                         data_values.criteria[i].operator = "equals";
                     }
 
-                    else if (data_values.criteria[i].fieldName == "courseSubCategory") {
+                    else if (data_values.criteria[i].fieldName === "courseSubCategory") {
                         data_values.criteria[i].fieldName = "courseSubCategory";
                         data_values.criteria[i].operator = "equals";
                     }

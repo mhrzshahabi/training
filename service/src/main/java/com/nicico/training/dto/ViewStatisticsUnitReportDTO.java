@@ -41,6 +41,12 @@ public class ViewStatisticsUnitReportDTO {
 
         private String classTeachingType;
 
+        private String classReason;
+
+        private Long classTargetPopulationTypeId;
+
+        private Long classHoldingClassTypeId;
+
         private String classYear;
 
         private Long classPlanner;
@@ -52,6 +58,8 @@ public class ViewStatisticsUnitReportDTO {
         private String courseCode;
 
         private String courseTitleFa;
+
+        private String courseETechnicalType;
 
         private Long courseDuration;
 

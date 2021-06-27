@@ -146,7 +146,7 @@
             {name: "id", title: "id", canEdit: false, hidden: true},
             {
                 name: "teacherCode",
-                title: "<spring:message code='national.code'/>",
+                title: "<spring:message code='teacher.code'/>",
                 align: "center",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
