@@ -6,15 +6,18 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Tclass;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
+import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
 import org.springframework.transaction.annotation.Transactional;
 import request.evaluation.TeacherEvaluationAnswerDto;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface ITclassService {
 
@@ -135,4 +138,6 @@ public interface ITclassService {
     boolean isValidForExam(long id);
 
     BaseResponse changeClassStatusToInProcess(Long classId);
+
+    EvalAverageResult getStudentsAverageGradeToTeacher(Set<ClassStudent> classStudents);
 }

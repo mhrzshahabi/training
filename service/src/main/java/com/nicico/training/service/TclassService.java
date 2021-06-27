@@ -20,22 +20,24 @@ import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import request.evaluation.StudentEvaluationAnswerDto;
-import response.BaseResponse;
-import response.evaluation.dto.EvaluationAnswerObject;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerList;
+import response.BaseResponse;
+import response.evaluation.dto.AveragePerQuestion;
+import response.evaluation.dto.EvalAverageResult;
+import response.evaluation.dto.EvaluationAnswerObject;
 import response.evaluation.dto.TeacherEvaluationAnswer;
 import response.tclass.dto.TclassDto;
 
@@ -1767,5 +1769,81 @@ public class TclassService implements ITclassService {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             return response;
         }
+    }
+
+    @Transactional(readOnly = true)
+    public EvalAverageResult getEvaluationAverageResultToTeacher(Long classId) {
+
+
+        Tclass tclass = getTClass(classId);
+        Set<ClassStudent> classStudents = tclass.getClassStudents();
+        EvalAverageResult studentsAverageGradeToTeacher = getStudentsAverageGradeToTeacher(classStudents);
+
+        return studentsAverageGradeToTeacher;
+    }
+
+    @Transactional
+    public EvalAverageResult getStudentsAverageGradeToTeacher(Set<ClassStudent> classStudents) {
+
+        Map<String, Double> answeredStudentsNo = new HashMap<>();
+        Map<String, Double> questionsAverageGrade = new HashMap<>();
+
+        for (ClassStudent classStudent : classStudents) {
+
+            if (Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
+                EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(139L, classStudent.getTclass().getId(), classStudent.getId(), 188L,
+                        classStudent.getTclass().getId(), 504L, 154L);
+                Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
+
+
+                if (evaluation != null) {
+                    List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers = evaluationService.getEvaluationFormAnswerDetail(evaluation);
+
+                    for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
+                        if (!questionsAverageGrade.containsKey(answer.getQuestion()) && answer.getDomainId().equals(53L)) {
+                            questionsAverageGrade.put(answer.getQuestion(), 0.0);
+                        }
+                    }
+
+                    for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
+
+                        //studentsGradeToTeacher
+                        if (answer.getAnswerId() != null && answer.getDomainId().equals(53L)) {
+
+                            if(!answeredStudentsNo.containsKey(answer.getQuestion()))
+                                answeredStudentsNo.put(answer.getQuestion(), 1.0);
+                            else {
+                                Double aDouble = answeredStudentsNo.get(answer.getQuestion());
+                                answeredStudentsNo.put(answer.getQuestion(), aDouble+1);
+                            }
+
+                            String answerValue = parameterValueDAO.findFirstById(answer.getAnswerId()).getValue();
+                            Double ansGrade = questionsAverageGrade.get(answer.getQuestion());
+                            ansGrade += (Double.parseDouble(answerValue)) * answer.getWeight();
+                            questionsAverageGrade.put(answer.getQuestion(), ansGrade);
+                        }
+                    }
+                }
+            }
+        }
+
+        EvalAverageResult evalAverageResult = new EvalAverageResult();
+        List<AveragePerQuestion> averagePerQuestions = new ArrayList<>();
+        Double totalAverage = 0.0;
+
+        for (Map.Entry<String, Double> entry : questionsAverageGrade.entrySet()) {
+            for (Map.Entry<String, Double> entryAnswered : answeredStudentsNo.entrySet()) {
+
+                if (entry.getKey().equals(entryAnswered.getKey())) {
+                    averagePerQuestions.add(new AveragePerQuestion(entry.getKey(), entry.getValue()/entryAnswered.getValue()));
+                    totalAverage += entry.getValue()/entryAnswered.getValue();
+                }
+            }
+        }
+
+        evalAverageResult.setLimitScore(100L);
+        evalAverageResult.setAveragePerQuestionList(averagePerQuestions);
+        evalAverageResult.setTotalAverage(totalAverage / averagePerQuestions.size());
+        return evalAverageResult;
     }
 }

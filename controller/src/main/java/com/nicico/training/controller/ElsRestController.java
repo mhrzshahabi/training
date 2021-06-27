@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 
+import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -37,6 +38,7 @@ import request.exam.*;
 import response.BaseResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
+import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
@@ -552,6 +554,21 @@ public class ElsRestController {
             return null;
         }
 
+    }
+
+    @GetMapping("/averageResult/{classId}")
+    public EvalAverageResult getEvaluationAverageResultToTeacher(HttpServletRequest header, @PathVariable Long classId) {
+
+        EvalAverageResult evaluationAverageResultToInstructor = new EvalAverageResult();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+            evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
+            evaluationAverageResultToInstructor.setStatus(200);
+            return evaluationAverageResultToInstructor;
+        } else {
+            evaluationAverageResultToInstructor.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return evaluationAverageResultToInstructor;
+        }
     }
 
 }
