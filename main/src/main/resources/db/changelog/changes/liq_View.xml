@@ -9172,6 +9172,350 @@ LEFT JOIN (
              ]]>
         </createView>
     </changeSet>
+    <changeSet author="nick (generated)" id="1624703414476-600">
+        <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
+            <![CDATA[
+                SELECT rowNum                                                                     as id,
+                       term.C_TITLE_FA                                                            as term_TitleFa,
+                       personal.C_FIRST_NAME_FA                                                   as teacher_FirstName,
+                       personal.C_LAST_NAME_FA                                                    as teacher_LastName,
+                       CONCAT(CONCAT(personal.C_FIRST_NAME_FA, ' '), personal.C_LAST_NAME_FA)     as teacher_FullName,
+                       tclass.N_H_DURATION                                                        as tclass_n_duration,
+                       tclass.F_INSTITUTE_ORGANIZER                                               as tclass_organizer,
+                       tclass.C_STATUS                                                            as tclass_status,
+                       tclass.f_cancel_class_reason                                               as class_cancel_reason_id,
+                       parameterValue.C_TITLE                                                     as class_cancel_reason_title,
+                       tclass.F_PLANNER                                                           as tclass_planner,
+                       tclass.F_SUPERVISOR                                                        as tclass_supervisor,
+                       tclass.c_created_by                                                        as c_created_by,
+                       tclass.d_created_date                                                      as d_created_date,
+                       tclass.e_deleted                                                           as e_deleted,
+                       tclass.e_enabled                                                           as e_enabled,
+                       tclass.c_last_modified_by                                                  as c_last_modified_by,
+                       tclass.d_last_modified_date                                                as d_last_modified_date,
+                       tclass.n_version                                                           as n_version,
+                       tclass.ID                                                                  as tclass_id,
+                       evaluationanalysis.ID                                                      as evaluationanalysis_id,
+                       unit.ID                                                                    as unit_id,
+                       tclass.C_CODE                                                              as tclass_c_code,
+                       tclass.F_INSTITUTE                                                         as institute_id,
+                       tclass.F_TEACHER                                                           as teacher_id,
+                       tclass.F_TERM                                                              as term_id,
+                       tclass.C_START_DATE                                                        as tclass_c_start_date,
+                       tclass.C_END_DATE                                                          as tclass_c_end_date,
+                       tclass.C_REASON                                                            as tclass_reason,
+                       tclass.C_EVALUATION                                                        as tclass_evaluation,
+                       tclass.c_teaching_type                                                     as tclass_teaching_type,
+                       tclass.f_holding_class_type_id                                             as holding_class_type_id,
+                       holdingClassTypParameterValue.C_TITLE                                      as holding_class_type_title,
+                       tclass.f_teaching_method_id                                                as teaching_method_id,
+                       teachingMethodParameterValue.C_TITLE                                       as teaching_method_title,
+                       SUBSTR(tclass.C_START_DATE, 1, 4)                                          as tclass_year,
+                       course.C_CODE                                                              as course_c_code,
+                       course.E_TECHNICAL_TYPE                                                    as course_technical_type,
+                       course.E_RUN_TYPE                                                          as course_run_type,
+                       course.E_THEO_TYPE                                                         as course_theo_type,
+                       course.E_LEVEL_TYPE                                                        as course_level_type,
+                       course.CATEGORY_ID                                                         as course_category_id,
+                       course.SUBCATEGORY_ID                                                      as course_subcategory_id,
+                       course.C_TITLE_FA                                                          as course_c_title_fa,
+                       course.C_EVALUATION                                                        as course_c_evaluation,
+                       plnner_dep.C_MOJTAME_TITLE                                                 as planner_complex,
+                       plnner_dep.C_MOAVENAT_TITLE                                                as planner_assistant,
+                       plnner_dep.C_OMOR_TITLE                                                    as planner_affairs,
+                       plnner_dep.C_GHESMAT_TITLE                                                 as planner_section,
+                       plnner_dep.C_VAHED_TITLE                                                   as planner_unit,
+                       CONCAT(CONCAT(personelPlanner.FIRST_NAME, ' '), personelPlanner.LAST_NAME) as planner_name,
+                       organizer_ins.C_TITLE_FA                                                   as institute_name,
+                       CASE WHEN students.counts IS NULL THEN 0 ELSE students.counts END          AS tclass_students_count,
+                       evaluationanalysis.C_BEHAVIORAL_GRADE                                      as evaluationanalysis_c_behavioral_grade,
+                       evaluationanalysis.B_BEHAVIORAL_PASS                                       as evaluationanalysis_c_behavioral_pass,
+                       evaluationanalysis.C_EFFECTIVENESS_GRADE                                   as evaluationanalysis_c_effectiveness_grade,
+                       evaluationanalysis.B_EFFECTIVENESS_PASS                                    as evaluationanalysis_c_effectiveness_pass,
+                       evaluationanalysis.C_LEARNING_GRADE                                        as evaluationanalysis_c_learning_grade,
+                       evaluationanalysis.B_LEARNING_PASS                                         as evaluationanalysis_c_learning_pass,
+                       evaluationanalysis.C_REACTION_GRADE                                        as evaluationanalysis_c_reaction_grade,
+                       evaluationanalysis.B_REACTION_PASS                                         as evaluationanalysis_c_reaction_pass,
+                       evaluationanalysis.C_RESULTS_GRADE                                         as evaluationanalysis_c_results_grade,
+                       evaluationanalysis.B_RESULTS_PASS                                          as evaluationanalysis_c_results_pass,
+                       evaluationanalysis.C_TEACHER_GRADE                                         as evaluationanalysis_c_teacher_grade,
+                       evaluationanalysis.B_TEACHER_PASS                                          as evaluationanalysis_c_teacher_pass,
+                       CASE WHEN evaluationanalysis.C_REACTION_GRADE IS NULL THEN 0 ELSE 1 END    as evaluationanalysis_b_reaction_status,
+                       CASE WHEN evaluationanalysis.C_BEHAVIORAL_GRADE IS NULL THEN 0 ELSE 1 END  as evaluationanalysis_b_behavioral_status,
+                       CASE WHEN evaluationanalysis.C_LEARNING_GRADE IS NULL THEN 0 ELSE 1 END    as evaluationanalysis_b_learning_status,
+                       CASE WHEN evaluationanalysis.C_RESULTS_GRADE IS NULL THEN 0 ELSE 1 END     as evaluationanalysis_b_results_status,
+                       CASE WHEN evaluationanalysis.C_TEACHER_GRADE IS NULL THEN 0 ELSE 1 END     as evaluationanalysis_b_teacher_status,
+                       CASE
+                           WHEN evaluationanalysis.C_EFFECTIVENESS_GRADE IS NULL THEN 0
+                           ELSE 1 END                                                             as evaluationanalysis_b_effectiveness_status,
+                       STATISTICS_.PRESENCE,
+                       STATISTICS_.ABSENCE,
+                       STATISTICS_.UNKNOWN
+                FROM TBL_CLASS tclass
+                         INNER JOIN TBL_COURSE course
+                                    ON tclass.F_COURSE = course.ID
+                         LEFT JOIN TBL_TARGET_SOCIETY unit
+                                   ON unit.F_CLASS_ID = tclass.ID
+                         LEFT JOIN (SELECT TBL_CLASS_STUDENT.CLASS_ID,
+                                           count(TBL_CLASS_STUDENT.ID) as counts
+                                    FROM TBL_CLASS_STUDENT
+                                    GROUP BY TBL_CLASS_STUDENT.CLASS_ID) students ON students.CLASS_ID = tclass.ID
+                         LEFT JOIN TBL_EVALUATION_ANALYSIS evaluationanalysis
+                                   ON evaluationanalysis.F_TCLASS = tclass.ID
+                         INNER JOIN TBL_TERM term ON tclass.F_TERM = term.ID
+                         INNER JOIN TBL_TEACHER teacher ON tclass.F_TEACHER = teacher.ID
+                         LEFT JOIN TBL_PERSONAL_INFO personal ON teacher.F_PERSONALITY = personal.ID
+                         LEFT JOIN tbl_personnel personelPlanner on personelPlanner.id = tclass.f_planner
+                         LEFT JOIN tbl_department plnner_dep on plnner_dep.id = personelPlanner.f_department_id
+                         LEFT JOIN TBL_INSTITUTE organizer_ins on tclass.F_INSTITUTE_ORGANIZER = organizer_ins.ID
+                         LEFT JOIN TBL_PARAMETER_VALUE parameterValue on tclass.f_cancel_class_reason = parameterValue.ID
+                         LEFT JOIN TBL_PARAMETER_VALUE holdingClassTypParameterValue
+                                   on tclass.f_holding_class_type_id = holdingClassTypParameterValue.ID
+                         LEFT JOIN TBL_PARAMETER_VALUE teachingMethodParameterValue
+                                   on tclass.f_teaching_method_id = teachingMethodParameterValue.ID
+                         LEFT JOIN(
+                    SELECT *
+                    FROM
+                        (
+                            SELECT att_state,
+                                   f_class_id,
+                                   s_hour
+                            FROM (
+                                     SELECT CASE
+                                                WHEN (att.c_state = 1
+                                                    OR att.c_state = 2) THEN
+                                                    'PRESENCE'
+                                                WHEN (att.c_state = 3
+                                                    OR att.c_state = 4) THEN
+                                                    'ABSENCE'
+                                                ELSE
+                                                    'UNKNOWN'
+                                                END AS att_state,
+                                            att.f_session,
+                                            att.f_student,
+                                            sess.f_class_id,
+                                            sess.s_hour
+                                     FROM tbl_attendance att
+                                              INNER JOIN (
+                                         SELECT (to_number(regexp_substr(c_session_end_hour, '[^:]+', 3, 1)) + 60 * to_number
+                                             (regexp_substr(c_session_end_hour, '[^:]+', 1, 1)) - (to_number(regexp_substr
+                                             (c_session_start_hour, '[^:]+', 3, 1)) + 60 * to_number(regexp_substr(c_session_start_hour
+                                             , '[^:]+', 1, 1)))) / 60 AS s_hour,
+                                                id,
+                                                f_class_id
+                                         FROM tbl_session
+                                     ) sess ON (att.f_session = sess.id)
+                                 )
+                        ) PIVOT (
+                            SUM(s_hour)
+                            FOR att_state
+                            IN ( 'PRESENCE' AS presence, 'ABSENCE' AS absence, 'UNKNOWN' AS unknown )
+                            )
+                ) STATISTICS_ on (tclass.id = STATISTICS_.f_class_id)
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1624777292958-624">
+        <createView viewName="view_presence_report" replaceIfExists="true">
+            <![CDATA[
+                SELECT DISTINCT SUM(
+                                        CASE
+                                            WHEN att.c_state IN (
+                                                                 '1', '2'
+                                                ) THEN
+                                                round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') -
+                                                                to_date(csession.c_session_start_hour, 'HH24:MI'
+                                                                    )) * 24, 1)
+                                            ELSE
+                                                0
+                                            END
+                                    )                                 AS presence_hour,
+                                SUM(
+                                        CASE
+                                            WHEN att.c_state IN (
+                                                                 '1', '2'
+                                                ) THEN
+                                                round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') -
+                                                                to_date(csession.c_session_start_hour, 'HH24:MI'
+                                                                    )) * 24 * 60)
+                                            ELSE
+                                                0
+                                            END
+                                    )                                 AS presence_minute,
+                                SUM(
+                                        CASE
+                                            WHEN att.c_state IN (
+                                                                 '3', '4'
+                                                ) THEN
+                                                round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') -
+                                                                to_date(csession.c_session_start_hour, 'HH24:MI'
+                                                                    )) * 24, 1)
+                                            ELSE
+                                                0
+                                            END
+                                    )                                 AS absence_hour,
+                                SUM(
+                                        CASE
+                                            WHEN att.c_state IN (
+                                                                 '3', '4'
+                                                ) THEN
+                                                round(to_number(to_date(csession.c_session_end_hour, 'HH24:MI') -
+                                                                to_date(csession.c_session_start_hour, 'HH24:MI'
+                                                                    )) * 24 * 60)
+                                            ELSE
+                                                0
+                                            END
+                                    )                                 AS absence_minute,
+                                class.id                              AS class_id,
+                                class.c_code                          AS class_code,
+                                class.c_start_date                    AS class_start_date,
+                                class.c_end_date                      AS class_end_date,
+                                class.F_HOLDING_CLASS_TYPE_ID         As holding_class_type_id,
+                                holdingClassTypParameterValue.C_TITLE As holding_class_type_title,
+                                class.F_TEACHING_METHOD_ID            As teaching_method_id,
+                                teachingMethodParameterValue.C_TITLE  As teaching_method_title,
+                                csession.c_session_date               AS session_session_date,
+                                std.id                                AS student_id,
+                                std.emp_no                            AS student_emp_no,
+                                std.personnel_no                      AS student_personnel_no,
+                                std.national_code                     AS student_national_code,
+                                std.first_name                        AS student_first_name,
+                                std.last_name                         AS student_last_name,
+                                class_std.applicant_company_name      AS class_student_applicant_company_name,
+                                department.c_hoze_title               AS personnel_complex_title,
+                                department.c_moavenat_title           AS student_ccp_assistant,
+                                department.c_omor_title               AS student_ccp_affairs,
+                                department.c_ghesmat_title            AS student_ccp_section,
+                                department.c_vahed_title              AS student_ccp_unit,
+                                course.id                             AS course_id,
+                                course.c_code                         AS course_code,
+                                course.c_title_fa                     AS course_title_fa,
+                                course.category_id                    AS course_category_id,
+                                CASE
+                                    WHEN course.e_run_type = 1 THEN
+                                        'داخلی'
+                                    WHEN course.e_run_type = 2 THEN
+                                        'اعزام'
+                                    WHEN course.e_run_type = 3 THEN
+                                        'سمينار داخلي'
+                                    WHEN course.e_run_type = 4 THEN
+                                        'سمينار اعزام'
+                                    WHEN course.e_run_type = 5 THEN
+                                        'حين كار'
+                                    WHEN course.e_run_type = 6 THEN
+                                        'خارجی'
+                                    WHEN course.e_run_type = 7 THEN
+                                        'سمینار خارجی'
+                                    WHEN course.e_run_type = 8 THEN
+                                        'مجازي'
+                                    WHEN course.e_run_type = 9 THEN
+                                        'بازآموزي'
+                                    WHEN course.e_run_type = 10 THEN
+                                        'جعبه ابزار'
+                                    ELSE
+                                        NULL
+                                    END                               AS course_run_type,
+                                CASE
+                                    WHEN course.e_theo_type = 1 THEN
+                                        'تئوري'
+                                    WHEN course.e_theo_type = 2 THEN
+                                        'عملي'
+                                    WHEN course.e_theo_type = 3 THEN
+                                        'تئوري_عملي'
+                                    ELSE
+                                        NULL
+                                    END                               AS course_theo_type,
+                                CASE
+                                    WHEN course.e_level_type = 1 THEN
+                                        'كارشناسي'
+                                    WHEN course.e_level_type = 2 THEN
+                                        'تكنسيني'
+                                    WHEN course.e_level_type = 3 THEN
+                                        'كارگري'
+                                    WHEN course.e_level_type = 4 THEN
+                                        'عمومی'
+                                    ELSE
+                                        NULL
+                                    END                               AS course_level_type,
+                                CASE
+                                    WHEN course.e_technical_type = 1 THEN
+                                        'عمومي'
+                                    WHEN course.e_technical_type = 2 THEN
+                                        'فني'
+                                    WHEN course.e_technical_type = 3 THEN
+                                        'مديريتي'
+                                    ELSE
+                                        NULL
+                                    END                               AS course_technical_type,
+                                institute.id                          AS institute_id,
+                                institute.c_title_fa                  AS institute_c_title_fa
+                FROM tbl_attendance att
+                         INNER JOIN tbl_student std ON att.f_student = std.id
+                         INNER JOIN (
+                    SELECT view_active_personnel.personnel_no,
+                           view_active_personnel.national_code,
+                           view_active_personnel.complex_title,
+                           view_active_personnel.work_place_title,
+                           view_active_personnel.post_grade_title,
+                           view_active_personnel.job_title,
+                           view_active_personnel.f_department_id
+                    FROM view_active_personnel
+                    UNION ALL
+                    SELECT tbl_personnel_registered.personnel_no,
+                           tbl_personnel_registered.national_code,
+                           tbl_personnel_registered.complex_title,
+                           tbl_personnel_registered.work_place_title,
+                           tbl_personnel_registered.post_grade_title,
+                           tbl_personnel_registered.job_title,
+                           tbl_personnel_registered.f_department_id
+                    FROM tbl_personnel_registered
+                ) personnel ON std.national_code = personnel.national_code
+                         LEFT JOIN tbl_department department ON department.id = personnel.f_department_id
+                         INNER JOIN tbl_session csession ON att.f_session = csession.id
+                         INNER JOIN tbl_class class ON csession.f_class_id = class.id
+                         INNER JOIN tbl_institute institute ON class.f_institute_organizer = institute.id
+                         INNER JOIN tbl_course course ON class.f_course = course.id
+                         INNER JOIN tbl_class_student class_std ON class_std.student_id = std.id
+                    AND class_std.class_id = class.id
+                         LEFT JOIN TBL_PARAMETER_VALUE holdingClassTypParameterValue
+                                   on class.f_holding_class_type_id = holdingClassTypParameterValue.ID
+                         LEFT JOIN TBL_PARAMETER_VALUE teachingMethodParameterValue
+                                   on class.f_teaching_method_id = teachingMethodParameterValue.ID
+
+                GROUP BY class.id,
+                         class.c_start_date,
+                         class.c_end_date,
+                         csession.c_session_date,
+                         std.id,
+                         std.emp_no,
+                         std.personnel_no,
+                         std.national_code,
+                         std.first_name,
+                         std.last_name,
+                         class_std.applicant_company_name,
+                         department.c_hoze_title,
+                         department.c_moavenat_title,
+                         department.c_omor_title,
+                         department.c_ghesmat_title,
+                         department.c_vahed_title,
+                         class.c_code,
+                         course.id,
+                         course.c_code,
+                         course.c_title_fa,
+                         class.F_HOLDING_CLASS_TYPE_ID,
+                         holdingClassTypParameterValue.C_TITLE,
+                         class.F_TEACHING_METHOD_ID,
+                         teachingMethodParameterValue.C_TITLE,
+                         institute.c_title_fa,
+                         course.category_id,
+                         course.e_run_type,
+                         course.e_theo_type,
+                         course.e_level_type,
+                         course.e_technical_type,
+                         institute.id
+            ]]>
+        </createView>
+    </changeSet>
 
     <changeSet author="MShahabi" id="1799887766557-021">
         <createView viewName="view_statistics_unit_report" replaceIfExists="true">

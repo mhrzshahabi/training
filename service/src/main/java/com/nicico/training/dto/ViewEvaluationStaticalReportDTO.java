@@ -84,6 +84,10 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private String presenceManHour;
         private String absenceManHour;
         private String unknownManHour;
+        private String holdingClassTypeId;
+        private String holdingClassTypeTitle;
+        private String teachingMethodId;
+        private String teachingMethodTitle;
     }
 
     @Getter
