@@ -219,7 +219,7 @@ public class Student extends Auditable {
     @Column(name = "c_username")
     private String userName;
 
-    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "f_contact_info")
     private ContactInfo contactInfo;
 

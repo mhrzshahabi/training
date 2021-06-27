@@ -57,4 +57,8 @@ public class ContactInfo extends Auditable {
     @Column(name = "n_mobile_for_sms")
     private EMobileForSMS eMobileForSMS;
 
+    @Column(name = "n_mobile_for_cn")
+    private EMobileForSMS eMobileForCN;
+
+
 }

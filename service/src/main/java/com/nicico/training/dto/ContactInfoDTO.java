@@ -27,6 +27,7 @@ public class ContactInfoDTO {
     private String hrMobile;
     private String mobile2;
     private EMobileForSMS eMobileForSMS;
+    private EMobileForSMS eMobileForCN;
     private Date lastModifiedDate;
 
 
@@ -160,5 +161,29 @@ public class ContactInfoDTO {
         }
     }
 
+    public void setMobileForCN(Integer mobileForCN) {
+        eMobileForCN = EMobileForSMS.getEnum(mobileForCN);
+    }
+
+    public Integer getMobileForCN() {
+        if (eMobileForCN == null)
+            return null;
+        return eMobileForCN.getId();
+    }
+
+    public String getCnMobileNumber() {
+        if (eMobileForCN == null)
+            return mobile;
+        switch (eMobileForCN) {
+            case hrMobile:
+                return hrMobile;
+            case mdmsMobile:
+                return mdmsMobile;
+            case trainingSecondMobile:
+                return mobile2;
+            default:
+                return mobile;
+        }
+    }
 }
 

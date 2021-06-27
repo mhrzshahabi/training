@@ -16,6 +16,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
+import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Personnel;
@@ -39,6 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,6 +62,7 @@ public class PersonnelRestController {
     private final PersonnelService personnelService;
     private final PersonnelDAO personnelDAO;
     private final IPersonnelRegisteredService personnelRegisteredService;
+    private final IContactInfoService contactInfoService;
 
     //Unused
     @GetMapping("list")
@@ -168,12 +171,12 @@ public class PersonnelRestController {
 
     @GetMapping(value = "/findPersonnel/{personnelType}/{personnelId}/{nationalCode}/{personnelNo}")
     public ResponseEntity<PersonnelDTO.DetailInfo> findPersonnel(@PathVariable Long personnelType, @PathVariable Long personnelId, @PathVariable String nationalCode, @PathVariable String personnelNo) {
-            PersonnelDTO.DetailInfo personnel = personnelService.findPersonnel(personnelType, personnelId, nationalCode, personnelNo);
-            if(personnel==null){
-                return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
-            }else{
-                return new ResponseEntity<>(personnel, HttpStatus.OK);
-            }
+        PersonnelDTO.DetailInfo personnel = personnelService.findPersonnel(personnelType, personnelId, nationalCode, personnelNo);
+        if (personnel == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(personnel, HttpStatus.OK);
+        }
 
 
     }
@@ -228,6 +231,12 @@ public class PersonnelRestController {
     @GetMapping("/inDepartmentIsPlanner/{mojtameCode}")
     public ResponseEntity<List<Long>> inDepartmentIsPlanner(@PathVariable String mojtameCode) {
         return new ResponseEntity<>(personnelService.inDepartmentIsPlanner(mojtameCode), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/fetchAndUpdateLastHrMobile/{id}")
+    public ResponseEntity fetchAndUpdateLastHrMobile(HttpServletRequest iscRq, @PathVariable Long id) {
+        Long infoId = contactInfoService.fetchAndUpdateLastHrMobile(id, iscRq.getHeader("Authorization"));
+        return new ResponseEntity(infoId, HttpStatus.OK);
     }
 
 }

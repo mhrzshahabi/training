@@ -27,6 +27,6 @@ public interface IContactInfoService {
 
     String fetchAndUpdateLastHrMobile(String nationalCode, ClassStudentInfo classStudentInfo, String token);
 
-    String fetchAndUpdateLastHrMobile(String nationalCode, PersonnelDTO.Info personnelInfo, String token);
+    Long fetchAndUpdateLastHrMobile(Long id, String token);
 
 }

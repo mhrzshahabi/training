@@ -7,7 +7,9 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.model.Address;
 import com.nicico.training.model.ContactInfo;
+import com.nicico.training.model.Personnel;
 import com.nicico.training.repository.ContactInfoDAO;
+import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.service.hrm.HrmFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -29,6 +31,7 @@ public class ContactInfoService implements IContactInfoService {
     private final ContactInfoDAO contactInfoDAO;
     private final AddressService addressService;
     private final HrmFeignClient hrmClient;
+    private final PersonnelDAO personnelDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -161,10 +164,36 @@ public class ContactInfoService implements IContactInfoService {
         return hrMobile;
     }
 
+    @Transactional
     @Override
-    public String fetchAndUpdateLastHrMobile(String nationalCode, PersonnelDTO.Info personnelInfo, String token) {
-
-        return null;
+    public Long fetchAndUpdateLastHrMobile(Long id, String token) {
+        Personnel personnel = personnelDAO.findById(id).get();
+        if (personnel.getNationalCode() == null)
+            return null;
+        ContactInfo contactInfo = personnel.getContactInfo();
+        if (personnel.getContactInfoId() == null) {
+            contactInfo = new ContactInfo();
+            contactInfoDAO.save(contactInfo);
+            personnel.setContactInfo(contactInfo);
+            personnelDAO.saveAndFlush(personnel);
+        }
+        long now = new Date().getTime();
+        long lastModified = contactInfo.getLastModifiedDate() == null ? 0 : contactInfo.getLastModifiedDate().getTime();
+        String hrMobile;
+        if ((now - lastModified) / 1000 / 60 / 60 > 12) {
+            try {
+                HrmPersonDTO person = hrmClient.getPersonByNationalCode(personnel.getNationalCode(), token);
+                hrMobile = person.getMobile();
+                final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfo.getId());
+                if (cById.isPresent()) {
+                    ContactInfo contact = cById.get();
+                    contact.setHrMobile(hrMobile);
+                    contactInfoDAO.saveAndFlush(contact);
+                }
+            } catch (Exception ex) {
+            }
+        }
+        return contactInfo.getId();
     }
 
 }

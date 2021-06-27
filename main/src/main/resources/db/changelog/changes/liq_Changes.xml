@@ -1464,7 +1464,7 @@
         <![CDATA[
 
         merge into TBL_CONTACT_INFO c_info
-        using TBL_STUDENT student
+        using (select * from TBL_STUDENT st where ACTIVE = 1 and DELETED = 0) student
         on (student.F_CONTACT_INFO = c_info.id)
         when matched then
         update
@@ -1512,6 +1512,11 @@
 
              ]]>
         </sql>
+    </changeSet>
+    <changeSet author="zare" id="abiz-2340-3">
+        <addColumn tableName="tbl_contact_info">
+            <column name="n_mobile_for_cn" type="number(1)"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

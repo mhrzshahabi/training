@@ -8,7 +8,6 @@
     function loadPersonnelInformationDetails() {
         this.tempPersonnel;
         this.tempListGrid_PersonnelTraining;
-        this.tmpContactInfo;
 
         // <<----------------------------------------------- Functions --------------------------------------------
         //{
@@ -103,7 +102,48 @@
                             call_needsAssessmentReports("0", true, selectedPersonnel);
                         }
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_ContactInfo") {
-
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/fetchAndUpdateLastHrMobile/" + selectedPersonnel.id, "GET", null, function (resp) {
+                            if (!selectedPersonnel.contactInfo || !selectedPersonnel.contactInfo.id) {
+                                selectedPersonnel.contactInfo = {id: Number(resp.data)}
+                            }
+                            editMobileForm_Personnel.callBack = (contactInfo , sms, cn) => {
+                                                                        selectedPersonnel.contactInfo = contactInfo;
+                                                                        selectedPersonnel.contactInfo.smSMobileNumber = sms;
+                                                                        selectedPersonnel.contactInfo.cNMobileNumber = cn;
+                                                                        editMobileForm_Personnel.editRecord(selectedPersonnel.contactInfo);
+                           };
+                            editMobileForm_Personnel.editRecord(selectedPersonnel.contactInfo);
+                            switch (selectedPersonnel.contactInfo.mobileForSMS) {
+                                case 2:
+                                    editMobileForm_Personnel.getItem('mobile2_sms').setValue(true);
+                                    break;
+                                case 3:
+                                    editMobileForm_Personnel.getItem('hrMobile_sms').setValue(true);
+                                    break;
+                                case 4:
+                                    editMobileForm_Personnel.getItem('mdmsMobile_sms').setValue(true);
+                                    break;
+                                default:
+                                    editMobileForm_Personnel.getItem('mobile_sms').setValue(true);
+                                    editMobileForm_Personnel.getValues().mobileForSMS = 1;
+                            }
+                            switch (selectedPersonnel.contactInfo.mobileForCN) {
+                                case 2:
+                                    editMobileForm_Personnel.getItem('mobile2_cn').setValue(true);
+                                    break;
+                                case 3:
+                                    editMobileForm_Personnel.getItem('hrMobile_cn').setValue(true);
+                                    break;
+                                case 4:
+                                    editMobileForm_Personnel.getItem('mdmsMobile_cn').setValue(true);
+                                    break;
+                                default:
+                                    editMobileForm_Personnel.getItem('mobile_cn').setValue(true);
+                                    editMobileForm_Personnel.getValues().mobileForCN = 1;
+                            }
+                            wait.close();
+                        }));
                     }
                 } else {
                     this.DynamicForm_PersonnelInfo.clearValues();
@@ -1186,6 +1226,9 @@
             colWidths: [30, 30, 30, 30, 60, 205],
             fields: [
                 {
+                    name : "id", hidden: true
+                },
+                {
                     type: "HeaderItem",
                     cellStyle: "lineField",
                     defaultValue: "<spring:message code='student.edit.mobile.default.for.sms'/>  ,  <spring:message code='student.edit.mobile.default.for.social.network'/>",
@@ -1410,9 +1453,41 @@
                                                 }
                                                 var data = editMobileForm_Personnel.getValues();
                                                 delete data.emobileForSMS;
+                                                delete data.emobileForCN;
                                                 wait.show();
+                                                isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data),(r)=>{
                                                 debugger
-                                                isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data), null));
+                                                let sms = "", cn = "";
+                                                switch (data.mobileForSMS) {
+                                                case 4:
+                                                    sms = data.mdmsMobile;
+                                                    break;
+                                                case 3:
+                                                    sms = data.hrMobile;
+                                                    break;
+                                                case 2:
+                                                    sms = data.mobile2;
+                                                    break;
+                                                default :
+                                                    sms = data.mobile;
+                                                }
+                                                switch (data.mobileForCN) {
+                                                    case 4:
+                                                        cn = data.mdmsMobile;
+                                                        break;
+                                                    case 3:
+                                                        cn = data.hrMobile;
+                                                        break;
+                                                    case 2:
+                                                        cn = data.mobile2;
+                                                        break;
+                                                    default :
+                                                        cn = data.mobile;
+                                                }
+                                                editMobileForm_Personnel.clearValues();
+                                                editMobileForm_Personnel.callBack(data, sms, cn);
+                                                wait.close();
+                                            } ));
                                             }
                                         })]
                                 })
