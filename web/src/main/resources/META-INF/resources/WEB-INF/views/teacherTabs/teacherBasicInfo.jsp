@@ -153,6 +153,8 @@
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                         var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
                         if (!editTeacherMode) {
+                            DynamicForm_BasicInfo_JspTeacher.clearValues();
+                            DynamicForm_BasicInfo_JspTeacher.invalidateCache();
                             fillPersonalInfoFields(nationalCodeTemp);
                         }
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").setValue(nationalCodeTemp);
@@ -207,6 +209,7 @@
                     if (DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != null &&
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != undefined &&
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode != undefined) {
+                        DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", null);
                         let nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
                         fillPersonalInfoFields(nationalCodeTemp, true, DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
                     }
