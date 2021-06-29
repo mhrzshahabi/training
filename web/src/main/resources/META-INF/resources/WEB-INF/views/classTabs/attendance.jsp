@@ -595,7 +595,7 @@
                                             }
                                         }
                                         causeOfAbsence = data1[1];
-                                        attendanceGrid.fetchData();
+                                        // attendanceGrid.fetchData();
                                         $.each(filterValues, function(i, el){
                                             if($.inArray(el, filterValuesUnique) === -1) filterValuesUnique.push(el);
                                         });
