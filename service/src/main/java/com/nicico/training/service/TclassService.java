@@ -21,6 +21,7 @@ import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
 import com.nicico.training.repository.*;
+import com.nicico.training.utility.persianDate.MyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -43,6 +44,7 @@ import response.tclass.dto.TclassDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -1705,11 +1707,12 @@ public class TclassService implements ITclassService {
 
     @Override
     public Long getClassDefaultTerm(String year) {
-
+        year = MyUtils.convertToEnglishDigits(year);
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
         ParameterValueDTO.Info termParameter = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("defaultTerm")).findFirst().orElse(null);
         if (termParameter != null) {
-            Term termByCode = termDAO.getTermByCode(termParameter.getValue());
+        String value = MyUtils.convertToEnglishDigits(termParameter.getValue());;
+            Term termByCode = termDAO.getTermByCode(value);
             if (termByCode != null) {
                 if (termByCode.getCode().startsWith(year)) return termByCode.getId();
                 else throw new TrainingException(TrainingException.ErrorType.InvalidData);

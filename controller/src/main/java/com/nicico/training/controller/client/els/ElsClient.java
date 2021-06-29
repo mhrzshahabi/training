@@ -18,7 +18,7 @@ import java.util.List;
 
 
 
-@FeignClient(value = "elsClient", url = "http://devapp01.icico.net.ir/els/api/training")
+@FeignClient(value = "elsClient", url ="${nicico.elsUrl}")
 public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/evaluation")
     BaseResponse sendEvaluation(@RequestBody ElsEvalRequest request);

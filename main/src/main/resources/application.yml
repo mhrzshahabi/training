@@ -227,6 +227,7 @@ nicico:
 #    sys-password: password
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
   minioUrl: 'http://devapp01.icico.net.ir/fms/'
+  elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
@@ -288,6 +289,7 @@ nicico:
 #    sys-password: password
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
   minioUrl: 'http://devapp01.icico.net.ir/fms/'
+  elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:
