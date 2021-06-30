@@ -1345,7 +1345,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('date_FinalTest', this, 'ymd', '/');
+                        displayDatePicker('end_date_FinalTest', this, 'ymd', '/');
                     }
                 }],
                 changed: function (form, item, value) {
