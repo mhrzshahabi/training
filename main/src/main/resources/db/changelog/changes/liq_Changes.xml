@@ -1518,5 +1518,107 @@
             <column name="n_mobile_for_cn" type="number(1)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="zare" id="abiz-insert_student_trigger">
+        <sql endDelimiter="/">
+            <![CDATA[
+              create or replace TRIGGER "INSERT_TBL_STUDENT" FOR
+                         INSERT ON tbl_student
+                     COMPOUND TRIGGER
+                         TYPE t_student_type IS
+                             TABLE OF tbl_student%rowtype INDEX BY PLS_INTEGER;
+                         new_student t_student_type;
+                         AFTER EACH ROW IS BEGIN
+                             new_student(new_student.count + 1).id := :new.id;
+                             new_student(new_student.count).personnel_no := :new.personnel_no;
+                         END AFTER EACH ROW;
+                         AFTER STATEMENT IS
+                             person tbl_personnel%rowtype;
+                         BEGIN
+                             FOR indx IN 1..new_student.count LOOP
+                                 BEGIN
+                                     SELECT
+                                         p.*
+                                     INTO person
+                                     FROM
+                                         tbl_personnel p
+                                     WHERE
+                                         p.personnel_no = new_student(indx).personnel_no
+                                         AND p.deleted = 0
+                                         AND ROWNUM = 1;
 
+                                 EXCEPTION
+                                     WHEN no_data_found THEN
+                                         person := NULL;
+                                 END;
+
+                                 IF person.id IS NOT NULL THEN
+                                     UPDATE tbl_student s
+                                     SET
+                                         s.active = person.active,
+                                         s.age = person.age,
+                                         s.birth_certificate_no = person.birth_certificate_no,
+                                         s.birth_date = person.birth_date,
+                                         s.birth_place = person.birth_place,
+                                         s.ccp_affairs = person.ccp_affairs,
+                                         s.ccp_area = person.ccp_area,
+                                         s.ccp_assistant = person.ccp_assistant,
+                                         s.ccp_code = person.ccp_code,
+                                         s.ccp_section = person.ccp_section,
+                                         s.ccp_title = person.ccp_title,
+                                         s.ccp_unit = person.ccp_unit,
+                                         s.company_name = person.company_name,
+                                         s.complex_title = person.complex_title,
+                                         s.contract_description = person.contract_description,
+                                         s.contract_no = person.contract_no,
+                                         s.deleted = person.deleted,
+                                         s.department_code = person.department_code,
+                                         s.department_title = person.department_title,
+                                         s.education_level_title = person.education_level_title,
+                                         s.education_license_type_title = person.education_license_type_title,
+                                         s.education_field_title = person.education_field_title,
+                                         s.employment_date = person.employment_date,
+                                         s.employment_status_title = person.employment_status_title,
+                                         s.employment_status_id = person.employment_status_id,
+                                         s.employment_type_title = person.employment_type_title,
+                                         s.father_name = person.father_name,
+                                         s.first_name = person.first_name,
+                                         s.gender_title = person.gender_title,
+                                         s.insurance_code = person.insurance_code,
+                                         s.job_no = person.job_no,
+                                         s.job_title = person.job_title,
+                                         s.last_name = person.last_name,
+                                         s.marital_status_title = person.marital_status_title,
+                                         s.military_status_title = person.military_status_title,
+                                         s.national_code = person.national_code,
+                                         s.operational_unit_title = person.operational_unit_title,
+                                         s.emp_no = person.emp_no,
+                                         s.post_assignment_date = person.post_assignment_date,
+                                         s.post_code = person.post_code,
+                                         s.post_grade_code = person.post_grade_code,
+                                         s.post_grade_title = person.post_grade_title,
+                                         s.post_title = person.post_title,
+                                         s.work_days = person.work_days,
+                                         s.work_months = person.work_months,
+                                         s.work_place_title = person.work_place_title,
+                                         s.work_turn_title = person.work_turn_title,
+                                         s.work_years = person.work_years,
+                                         s.address = person.address,
+                                         s.phone = person.phone,
+                                         s.f_department_id = person.f_department_id,
+                                         s.p_type = person.p_type,
+                                         s.f_geo_id = person.f_geo_id,
+                                         s.f_post_id = person.f_post_id,
+                                         s.c_username = person.c_username
+                                     WHERE
+                                         s.id = new_student(indx).id;
+
+                                 END IF;
+
+                             END LOOP;
+                         END AFTER STATEMENT;
+                     END;
+                     /
+            ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>
