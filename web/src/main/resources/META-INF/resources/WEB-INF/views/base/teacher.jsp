@@ -997,9 +997,15 @@
 
         if(selected_record.personnelStatus == true){
             DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
-            DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+            if(!editTeacherMode){
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+                DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
+            } else {
+                DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+                DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").disabled = true;
+            }
+
             DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
-            DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
             DynamicForm_BasicInfo_JspTeacher.getItem("personnelCode").setRequired(true);
         }
         else if(selected_record.personnelStatus == false){
@@ -1275,8 +1281,6 @@
     }
 
     function fillPersonalInfoFields(nationalCode,internalTeacher,personnelCode) {
-        DynamicForm_BasicInfo_JspTeacher.clearValues();
-        DynamicForm_BasicInfo_JspTeacher.invalidateCache();
         selectedRecordPersonalID = null;
         var personality = "";
         isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + nationalCode, "GET", null,(resp) => {
