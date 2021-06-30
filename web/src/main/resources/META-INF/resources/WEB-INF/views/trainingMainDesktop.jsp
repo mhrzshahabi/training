@@ -900,7 +900,8 @@
 
                                             if(isValidate(trTrim(exportExcelForm.getValue("maxRow")))) {
 
-                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, parseInt(trTrim(exportExcelForm.getValue("maxRow"))), parentListGrid, titr, pageName,JSON.stringify(criteria));
+                                                let outputRow = exportExcelForm.getValue("maxRow") > size ? size : exportExcelForm.getValue("maxRow");
+                                                ExportToFile.downloadExcelFromServer(listgrid, fileName, parseInt(trTrim(exportExcelForm.getValue("startRow")))-1, outputRow, parentListGrid, titr, pageName,JSON.stringify(criteria));
                                                 exportExcelWindow.close();
 
                                             }
