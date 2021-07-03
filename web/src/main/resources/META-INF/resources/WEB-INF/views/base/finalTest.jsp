@@ -918,7 +918,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 text_FormItem.name = answers[i].answer;
 
                 if(answers[i].type == "چند گزینه ای") {
-                    radio_FormItem.title = (i+1)+"-"+customSplit(answers[i].question, 150)+"   "+mark+ "\n"+
+                    radio_FormItem.title = (i+1)+"-"+customSplit(answers[i].question, 150)+"   "+mark+" "+files+ "\n\n"+
                      " جواب استاد :"+  "\n"+ "  "+correctAnswer;
                     radio_FormItem.name = i+"";
                     if(answers[i].options.length > 0) {
