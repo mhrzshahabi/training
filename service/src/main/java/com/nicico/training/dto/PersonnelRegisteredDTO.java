@@ -80,13 +80,12 @@ public class PersonnelRegisteredDTO {
     private String address;
     private String phone;
     private String fax;
-    private String mobile;
-    private String email;
     private String accountNumber;
     private String personnelNo2;
     private Long postId;
     private Long departmentId;
     private String departmentCode;
+    private ContactInfoDTO.Info contactInfo;
 
 
     @Getter
@@ -146,8 +145,6 @@ public class PersonnelRegisteredDTO {
         private String complexTitle;
         private String address;
         private String phone;
-        private String mobile;
-        private String email;
         private Long postId;
         private Boolean isInNA;
         private Long scoreState;

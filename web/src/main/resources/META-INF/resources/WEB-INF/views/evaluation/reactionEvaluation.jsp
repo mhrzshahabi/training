@@ -289,7 +289,8 @@
                             editMobileForm.getValues().mobileForSMS = 1;
                     }
                 }
-                Window_EditMobile.show();
+               editMobileForm.clearErrors();
+               Window_EditMobile.show();
             }
         },
         filterEditorSubmit: function () {

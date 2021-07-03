@@ -126,12 +126,12 @@
                         filterOperator: "iContains"
                     },
                     {
-                        name: "mobile",
+                        name: "contactInfo.smSMobileNumber",
                         title: "<spring:message code="mobile"/>",
                         filterOperator: "iContains"
                     },
                     {
-                        name: "email",
+                        name: "contactInfo.email",
                         title: "<spring:message code="email"/>",
                         filterOperator: "iContains"
                     }
@@ -260,8 +260,8 @@
                     {name: "ccpAffairs"},
                     {name: "ccpSection"},
                     {name: "ccpUnit"},
-                    {name: "mobile"},
-                    {name: "email"}
+                    {name: "contactInfo.smSMobileNumber"},
+                    {name: "contactInfo.email"}
                 ],
                 recordClick: function () {
                     if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {

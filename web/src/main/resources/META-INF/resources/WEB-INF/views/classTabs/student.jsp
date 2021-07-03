@@ -782,25 +782,28 @@
                     window_class_Information.show();
                 }
                 if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber") {
-                    editMobileForm_class.callBack = (contactInfo ,m) => {record.student.contactInfo = contactInfo;record.student.contactInfo.smSMobileNumber = m;};
-                       if (record.student.contactInfo) {
-                            editMobileForm_class.editRecord(record.student.contactInfo);
-                            switch (record.student.contactInfo.mobileForSMS) {
-                                case 2:
-                                    editMobileForm_class.getItem('mobile2_c').setValue(true);
-                                    break;
-                                case 3:
-                                    editMobileForm_class.getItem('hrMobile_c').setValue(true);
-                                    break;
-                                case 4:
-                                    editMobileForm_class.getItem('mdmsMobile_c').setValue(true);
-                                    break;
-                                default:
-                                    editMobileForm_class.getItem('mobile_c').setValue(true);
-                                    editMobileForm_class.getValues().mobileForSMS = 1;
-                            }
+                    editMobileForm_class.callBack = (contactInfo, m) => {
+                        record.student.contactInfo = contactInfo;
+                        record.student.contactInfo.smSMobileNumber = m;
+                    };
+                    if (record.student.contactInfo) {
+                        editMobileForm_class.editRecord(record.student.contactInfo);
+                        switch (record.student.contactInfo.mobileForSMS) {
+                            case 2:
+                                editMobileForm_class.getItem('mobile2_c').setValue(true);
+                                break;
+                            case 3:
+                                editMobileForm_class.getItem('hrMobile_c').setValue(true);
+                                break;
+                            case 4:
+                                editMobileForm_class.getItem('mdmsMobile_c').setValue(true);
+                                break;
+                            default:
+                                editMobileForm_class.getItem('mobile_c').setValue(true);
+                                editMobileForm_class.getValues().mobileForSMS = 1;
                         }
-                        Window_EditMobile_class.show();
+                    }
+                    Window_EditMobile_class.show();
                 }
             }
         });
@@ -1784,6 +1787,10 @@
             height: "200",
             numCols: 4,
             colWidths: [5, 5, 5, 205],
+            showInlineErrors: true,
+            showErrorText: true,
+            showErrorStyle: false,
+            errorOrientation: "bottom",
             fields: [
                 {
                     type: "staticText",
@@ -1804,6 +1811,9 @@
                             editMobileForm_class.getItem('mdmsMobile_c').setValue(null);
                             editMobileForm_class.getItem('hrMobile_c').setValue(null);
                             editMobileForm_class.getValues().mobileForSMS = 1;
+                            if (!editMobileForm_class.getValue("mobile"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
+
                         }
                     }
                 },
@@ -1811,7 +1821,23 @@
                     name: "mobile",
                     title: "",
                     type: "text",
-                    keyPressFilter: "[0-9/+-_]",
+                    length: 11,
+                    keyPressFilter: "[0-9]",
+                    wrapHintText: false,
+                    validators: [{
+                        validateOnExit: true,
+                        type: "lengthRange",
+                        min: 11,
+                        max: 11,
+                        errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
+                    },
+                        {
+                            type: "regexp",
+                            expression: "^[0][9][0-9]*$",
+                            validateOnChange: true,
+                            errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
+                        }
+                    ],
                 },
                 {
                     name: "mobile2_c",
@@ -1823,7 +1849,10 @@
                             editMobileForm_class.getItem('mobile_c').setValue(null);
                             editMobileForm_class.getItem('mdmsMobile_c').setValue(null);
                             editMobileForm_class.getItem('hrMobile_c').setValue(null);
-                            editMobileForm_class.getValues().mobileForSMS = 2
+                            editMobileForm_class.getValues().mobileForSMS = 2;
+                            if (!editMobileForm_class.getValue("mobile2"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
+
                         }
                     }
                 },
@@ -1831,7 +1860,23 @@
                     name: "mobile2",
                     title: "",
                     type: "text",
-                    keyPressFilter: "[0-9/+-_]",
+                    length: 11,
+                    keyPressFilter: "[0-9]",
+                    wrapHintText: false,
+                    validators: [{
+                        validateOnExit: true,
+                        type: "lengthRange",
+                        min: 11,
+                        max: 11,
+                        errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
+                    },
+                        {
+                            type: "regexp",
+                            expression: "^[0][9][0-9]*$",
+                            validateOnChange: true,
+                            errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
+                        }
+                    ],
                 },
                 {
                     name: "hrMobile_c",
@@ -1843,7 +1888,9 @@
                             editMobileForm_class.getItem('mobile2_c').setValue(null);
                             editMobileForm_class.getItem('mdmsMobile_c').setValue(null);
                             editMobileForm_class.getItem('mobile_c').setValue(null);
-                            editMobileForm_class.getValues().mobileForSMS = 3
+                            editMobileForm_class.getValues().mobileForSMS = 3;
+                            if (!editMobileForm_class.getValue("hrMobile"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1863,7 +1910,9 @@
                             editMobileForm_class.getItem('mobile2_c').setValue(null);
                             editMobileForm_class.getItem('mobile_c').setValue(null);
                             editMobileForm_class.getItem('hrMobile_c').setValue(null);
-                            editMobileForm_class.getValues().mobileForSMS = 4
+                            editMobileForm_class.getValues().mobileForSMS = 4;
+                            if (!editMobileForm_class.getValue("mdmsMobile"))
+                               createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
