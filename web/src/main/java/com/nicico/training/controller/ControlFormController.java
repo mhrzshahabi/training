@@ -13,6 +13,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.service.ControlReportService;
+import com.nicico.training.service.ExportToFileService;
 import com.nicico.training.service.StudentService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +52,7 @@ public class ControlFormController {
     private final MessageSource messageSource;
     private final PersonnelDAO personnelDAO;
     private final StudentService studentService;
+    private final ExportToFileService exportToFileService;
 
     @Transactional(readOnly = true)
     @PostMapping(value = {"/clear-print/{type}"})
@@ -59,7 +61,8 @@ public class ControlFormController {
                                             @RequestParam(value = "list") String list,
                                             @RequestParam(value = "classId") Long classId,
                                             @RequestParam(value = "page") String page,
-                                            @RequestParam(value = "dataStatus") String dataStatus
+                                            @RequestParam(value = "dataStatus") String dataStatus,
+                                            @RequestParam(value = "fields") String fields
     ) throws Exception {
         //-------------------------------------
         Gson gson = new Gson();
@@ -78,11 +81,11 @@ public class ControlFormController {
                 .thenComparing(ClassSession::getSessionStartHour))
                 .collect(Collectors.toList());
 
-        int maxSessions=0;
+        int maxSessions = 0;
 
         String dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
-        int sessionCounter=0;
+        int sessionCounter = 0;
 
         for (int i = 0; i < sessionList.size(); i++) {
             ClassSession classSession = sessionList.get(i);
@@ -90,25 +93,25 @@ public class ControlFormController {
             if (classSession != null) {
                 if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
                     dayDate = sessionList.get(i).getSessionDate();
-                    sessionCounter=0;
+                    sessionCounter = 0;
                 }
 
                 sessionCounter++;
 
-                if (sessionCounter>=maxSessions)
-                    maxSessions=sessionCounter;
+                if (sessionCounter >= maxSessions)
+                    maxSessions = sessionCounter;
             }//end if
         }//end inner for
 
-        maxSessions= maxSessions >=5 ? 5 : (maxSessions >=0 && maxSessions <=3 ? 3 : maxSessions);
+        maxSessions = maxSessions >= 5 ? 5 : (maxSessions >= 0 && maxSessions <= 3 ? 3 : maxSessions);
 
         for (Student student : students) {
             StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
 
             st.setFullName(st.getFirstName() + " " + st.getLastName());
 
-            st.setCcpAffairs(student.getDepartment() !=null ? student.getDepartment().getOmorTitle() : "");
-            st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() !=null ? student.getPost().getJob().getTitleFa() : "") : "");
+            st.setCcpAffairs(student.getDepartment() != null ? student.getDepartment().getOmorTitle() : "");
+            st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() != null ? student.getPost().getJob().getTitleFa() : "") : "");
 
             dayDate = sessionList.get(0).getSessionDate() != null ? sessionList.get(0).getSessionDate() : "";
 
@@ -126,7 +129,7 @@ public class ControlFormController {
                         z = ztemp;
                     }
 
-                    Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), student.getId());
+                    Optional<Attendance> attendance = attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), student.getId());
 
                     if (attendance.isPresent()) {
                         AttendanceDTO attendanceDTO = new AttendanceDTO();
@@ -155,23 +158,64 @@ public class ControlFormController {
             studentArrayList.add(st);
         }//end outer for
 
-        final int threshold=24;
-        int remainSize=threshold-studentArrayList.size();
+        final int threshold = 24;
+        int remainSize = threshold - studentArrayList.size();
 
-        for (int i=0;i<remainSize;i++)
+        for (int i = 0; i < remainSize; i++)
             studentArrayList.add(new StudentDTO.clearAttendanceWithState());
 
-        int pages = (int)Math.ceil(sessionList.stream().map(ClassSession::getSessionDate).collect(Collectors.toSet()).size() / 5)+1;
+        int pages = (int) Math.ceil(sessionList.stream().map(ClassSession::getSessionDate).collect(Collectors.toSet()).size() / 5) + 1;
         Set<String> daysOnClass = sessionList.stream().map(ClassSession::getDayName).collect(Collectors.toSet());
 
-        final Map<String, Object> params = print(allData,maxSessions);
+        final Map<String, Object> params = print(allData, maxSessions);
+
+        if (type.equalsIgnoreCase("WORD")) {
+            List fieldList = gson.fromJson(fields, List.class);
+            List<String> days = params.keySet().stream().filter(s -> s.startsWith("d")).sorted().collect(Collectors.toList());
+            List<String> ss = params.keySet().stream().filter(s -> !days.contains(s)).sorted().collect(Collectors.toList());
+            int count = 1;
+            Iterator<String> iterator = days.iterator();
+            String day = iterator.next();
+            for (String session : ss) {
+                if (count > maxSessions) {
+                    count = 1;
+                    day = iterator.next();
+                }
+                count++;
+                LinkedHashMap<String, String> map = new LinkedHashMap<>();
+                map.put("name", String.format("z%02d", Integer.valueOf(session.replace("se", "")) - 1));
+                map.put("title", "(" + params.get(day) + ") " + params.get(session));
+                fieldList.add(map);
+            }
+            fields = objectMapper.writeValueAsString(fieldList);
+            List ls = new ArrayList();
+            for (StudentDTO.clearAttendance clearAttendance : studentArrayList) {
+                Map states = (Map) gson.fromJson(objectMapper.writeValueAsString(clearAttendance), HashMap.class).get("states");
+                ((StudentDTO.clearAttendanceWithState) clearAttendance).setStates(null);
+                Map m = gson.fromJson(objectMapper.writeValueAsString(clearAttendance), HashMap.class);
+                if (states != null && states.size() > 0)
+                    m.putAll(states);
+                ls.add(m);
+            }
+            Locale locale = LocaleContextHolder.getLocale();
+            Map titles = new TreeMap();
+            titles.put(messageSource.getMessage("class.days", null, locale), daysOnClass.toString());
+            titles.put(messageSource.getMessage("class.title", null, locale), tclassDTO.getTitleClass());
+            titles.put(messageSource.getMessage("class.code", null, locale), tclassDTO.getCode());
+            titles.put(messageSource.getMessage("start.date", null, locale), tclassDTO.getStartDate());
+            titles.put(messageSource.getMessage("end.date", null, locale), tclassDTO.getEndDate());
+            titles.put(messageSource.getMessage("teacher", null, locale), tclassDTO.getTeacher());
+            titles.put(messageSource.getMessage("duration", null, locale), (tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + " ساعت " : ""));
+            exportToFileService.exportToWord(response, fields, objectMapper.writeValueAsString(ls), null, null, titles);
+            return;
+        }
         params.put("days", "روزهای تشکیل کلاس: " + daysOnClass.toString());
         params.put("titleClass", tclassDTO.getTitleClass());
         params.put("code", tclassDTO.getCode());
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
-        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
+        params.put("hduration", tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + " ساعت " : "");
         params.put("page", page);
         params.put("pages", String.valueOf(pages));
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
@@ -180,25 +224,25 @@ public class ControlFormController {
 
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-        if (maxSessions>=1 && maxSessions<=3)
+        if (maxSessions >= 1 && maxSessions <= 3)
             reportUtil.export("/reports/attendanceData3.jasper", params, jsonDataSource, response);
 
-        else if (maxSessions==4)
+        else if (maxSessions == 4)
             reportUtil.export("/reports/attendanceData4.jasper", params, jsonDataSource, response);
 
         else
             reportUtil.export("/reports/attendanceData.jasper", params, jsonDataSource, response);
     }
 
-    protected HashMap<String, Object> print(List<ClassSessionDTO.AttendanceClearForm> sessionList,int maxSessions) {
+    protected HashMap<String, Object> print(List<ClassSessionDTO.AttendanceClearForm> sessionList, int maxSessions) {
         final HashMap<String, Object> params = new HashMap<>();
 
         String date = sessionList.get(0).getSessionDate();
         int d = 1;
         int se = 1;
-        int seTemp=1;
+        int seTemp = 1;
         params.put("d" + d, date);
-        boolean checkFirst=true;
+        boolean checkFirst = true;
         for (ClassSessionDTO.AttendanceClearForm session : sessionList) {
             if (session.getSessionDate().equals(date)) {
 
@@ -212,33 +256,33 @@ public class ControlFormController {
 
                         params.put("se" + strSe, "فاقد جلسه");
                     });
-                    checkFirst=!checkFirst;
+                    checkFirst = !checkFirst;
                 }
 
-                String strSe="";
-                if (se<=9)
-                    strSe="0"+se;
+                String strSe = "";
+                if (se <= 9)
+                    strSe = "0" + se;
                 else
-                    strSe=se+"";
+                    strSe = se + "";
 
-                params.put("se" +  strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
+                params.put("se" + strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
             } else {
-                checkFirst=false;
+                checkFirst = false;
                 date = session.getSessionDate();
                 d++;
                 params.put("d" + d, date);
-                seTemp+=maxSessions;
-                se=seTemp;
+                seTemp += maxSessions;
+                se = seTemp;
 
-                String strSe="";
-                if (se<=9)
-                    strSe="0"+se;
+                String strSe = "";
+                if (se <= 9)
+                    strSe = "0" + se;
                 else
-                    strSe=se+"";
+                    strSe = se + "";
 
                 params.put("se" + strSe, session.getSessionStartHour() + " - " + session.getSessionEndHour());
 
-                IntStream.rangeClosed(se+1, se+maxSessions-1).forEach(i -> {
+                IntStream.rangeClosed(se + 1, se + maxSessions - 1).forEach(i -> {
                     String strSe1 = "";
                     if (i <= 9)
                         strSe1 = "0" + i;
@@ -258,7 +302,8 @@ public class ControlFormController {
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
                                   @RequestParam(value = "classId") Long classId,
-                                  @RequestParam(value = "dataStatus") String dataStatus
+                                  @RequestParam(value = "dataStatus") String dataStatus,
+                                  @RequestParam(value = "fields") String fields
     ) throws Exception {
         //-------------------------------------
         Tclass tClass = tclassService.getTClass(classId);
@@ -271,7 +316,7 @@ public class ControlFormController {
         List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
         List<StudentDTO.scoreAttendance> studentArrayList = new ArrayList<>();
 
-        int i=0;
+        int i = 0;
         for (Long studentId : studentsId) {
             Student student = studentService.getStudent(studentId);
             StudentDTO.scoreAttendance st = modelMapper.map(student, StudentDTO.scoreAttendance.class);
@@ -279,17 +324,17 @@ public class ControlFormController {
             st.setFullName(st.getFirstName() + " " + st.getLastName());
             st.setScoreA(listClassStudents.get(i).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(i).getScore().toString() : "");
 
-            if (tclassDTO.getScoringMethod() != null &&  tclassDTO.getScoringMethod().equals("3"))
+            if (tclassDTO.getScoringMethod() != null && tclassDTO.getScoringMethod().equals("3"))
                 st.setScoreB(st.calScoreB(st.getScoreA()));
 
             studentArrayList.add(st);
             i++;
         }
 
-        final int threshold=23;
-        int remainSize=threshold-studentArrayList.size();
+        final int threshold = 23;
+        int remainSize = threshold - studentArrayList.size();
 
-        for (int l=0;l<remainSize;l++)
+        for (int l = 0; l < remainSize; l++)
             studentArrayList.add(new StudentDTO.scoreAttendance());
 
         Set<ClassSession> sessions = tClass.getClassSessions();
@@ -305,11 +350,23 @@ public class ControlFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
-        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
+        params.put("hduration", tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + " ساعت " : "");
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        if (type.equalsIgnoreCase("WORD")) {
+            Locale locale = LocaleContextHolder.getLocale();
+            Map titles = new TreeMap();
+            titles.put(messageSource.getMessage("class.days", null, locale), daysOnClass.toString());
+            titles.put(messageSource.getMessage("class.title", null, locale), tclassDTO.getTitleClass());
+            titles.put(messageSource.getMessage("class.code", null, locale), tclassDTO.getCode());
+            titles.put(messageSource.getMessage("start.date", null, locale), tclassDTO.getStartDate());
+            titles.put(messageSource.getMessage("end.date", null, locale), tclassDTO.getEndDate());
+            titles.put(messageSource.getMessage("teacher", null, locale), tclassDTO.getTeacher());
+            titles.put(messageSource.getMessage("duration", null, locale), (tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + " ساعت " : ""));
+            exportToFileService.exportToWord(response, fields, objectMapper.writeValueAsString(studentArrayList), null, null, titles);
+        } else
         reportUtil.export("/reports/scoreControl.jasper", params, jsonDataSource, response);
     }
 
@@ -317,7 +374,8 @@ public class ControlFormController {
     @PostMapping(value = {"/control-print/{type}"})
     public void printScoreWithCriteria(HttpServletResponse response,
                                        @PathVariable String type,
-                                       @RequestParam(value = "classId") Long classId
+                                       @RequestParam(value = "classId") Long classId,
+                                       @RequestParam String fields
     ) throws Exception {
         //-------------------------------------
         Tclass tClass = tclassService.getTClass(classId);
@@ -330,7 +388,7 @@ public class ControlFormController {
         List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
         List<StudentDTO.controlAttendance> studentArrayList = new ArrayList<>();
 
-        int i=0;
+        int i = 0;
         for (Long studentId : studentsId) {
             Student student = studentService.getStudent(studentId);
             StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
@@ -342,10 +400,10 @@ public class ControlFormController {
             i++;
         }
 
-        final int threshold=23;
-        int remainSize=threshold-studentArrayList.size();
+        final int threshold = 23;
+        int remainSize = threshold - studentArrayList.size();
 
-        for (int l=0;l<remainSize;l++)
+        for (int l = 0; l < remainSize; l++)
             studentArrayList.add(new StudentDTO.controlAttendance());
 
         Set<ClassSession> sessions = tClass.getClassSessions();
@@ -367,12 +425,24 @@ public class ControlFormController {
         params.put("startDate", tclassDTO.getStartDate());
         params.put("endDate", tclassDTO.getEndDate());
         params.put("teacher", tclassDTO.getTeacher());
-        params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+" ساعت " : "");
+        params.put("hduration", tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + " ساعت " : "");
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(studentArrayList) + "}";
         params.put("today", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, type);
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-        reportUtil.export("/reports/control.jasper", params, jsonDataSource, response);
+        if (type.equalsIgnoreCase("WORD")) {
+            Locale locale = LocaleContextHolder.getLocale();
+            Map titles = new TreeMap();
+            titles.put(messageSource.getMessage("class.days", null, locale), daysOnClass.toString());
+            titles.put(messageSource.getMessage("class.title", null, locale), tclassDTO.getTitleClass());
+            titles.put(messageSource.getMessage("class.code", null, locale), tclassDTO.getCode());
+            titles.put(messageSource.getMessage("start.date", null, locale), tclassDTO.getStartDate());
+            titles.put(messageSource.getMessage("end.date", null, locale), tclassDTO.getEndDate());
+            titles.put(messageSource.getMessage("teacher", null, locale), tclassDTO.getTeacher());
+            titles.put(messageSource.getMessage("duration", null, locale), (tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + " ساعت " : ""));
+            exportToFileService.exportToWord(response, fields, objectMapper.writeValueAsString(studentArrayList), null, null, titles);
+        } else
+            reportUtil.export("/reports/control.jasper", params, jsonDataSource, response);
     }
 
     @Transactional(readOnly = true)
@@ -381,12 +451,12 @@ public class ControlFormController {
                                       @RequestParam(value = "classId") String classId,
                                       @RequestParam(value = "dataStatus") String dataStatus
     ) throws IOException {
-        Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
-        List<Map<String, String>> listMaps=new ArrayList<>();
-        List<List<StudentDTO.clearAttendanceWithState>> listStudentArray=new ArrayList<>();
-        List<List<ClassSession>> listSessionList=new ArrayList<>();
+        Long[] idClasses = Arrays.stream(classId.split(",")).map(x -> Long.valueOf(x)).toArray(Long[]::new);
+        List<Map<String, String>> listMaps = new ArrayList<>();
+        List<List<StudentDTO.clearAttendanceWithState>> listStudentArray = new ArrayList<>();
+        List<List<ClassSession>> listSessionList = new ArrayList<>();
 
-        for (int m=0;m<idClasses.length;m++) {
+        for (int m = 0; m < idClasses.length; m++) {
             Tclass tClass = tclassService.getTClass(idClasses[m]);
             TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
             Set<ClassStudent> students = tClass.getClassStudents();
@@ -408,8 +478,8 @@ public class ControlFormController {
                 Student student = studentService.getStudent(studentId);
                 StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
 
-                st.setCcpAffairs(student.getDepartment() !=null ? student.getDepartment().getOmorTitle() : "");
-                st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() !=null ? student.getPost().getJob().getTitleFa() : "") : "");
+                st.setCcpAffairs(student.getDepartment() != null ? student.getDepartment().getOmorTitle() : "");
+                st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() != null ? student.getPost().getJob().getTitleFa() : "") : "");
 
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
@@ -429,7 +499,7 @@ public class ControlFormController {
                             z = ztemp;
                         }
 
-                        Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                        Optional<Attendance> attendance = attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
 
                         if (attendance.isPresent()) {
                             AttendanceDTO attendanceDTO = new AttendanceDTO();
@@ -466,13 +536,13 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
-            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
+            params.put("hduration", tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + "ساعت" : "");
 
             listMaps.add(params);
         }
 
         try {
-            controlReportService.exportToExcelAttendance(response,listMaps,listSessionList,listStudentArray);
+            controlReportService.exportToExcelAttendance(response, listMaps, listSessionList, listStudentArray);
         } catch (Exception ex) {
 
             Locale locale = LocaleContextHolder.getLocale();
@@ -486,12 +556,12 @@ public class ControlFormController {
                                  @RequestParam(value = "classId") String classId,
                                  @RequestParam(value = "dataStatus") String dataStatus
     ) throws IOException {
-        Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
-        List<List<StudentDTO.scoreAttendance>> listStudentArray=new ArrayList<>();
-        List<List<ClassSession>> listSessionList=new ArrayList<>();
-        List<Map<String, String>> listMaps=new ArrayList<>();
+        Long[] idClasses = Arrays.stream(classId.split(",")).map(x -> Long.valueOf(x)).toArray(Long[]::new);
+        List<List<StudentDTO.scoreAttendance>> listStudentArray = new ArrayList<>();
+        List<List<ClassSession>> listSessionList = new ArrayList<>();
+        List<Map<String, String>> listMaps = new ArrayList<>();
 
-        for (int m=0;m<idClasses.length;m++) {
+        for (int m = 0; m < idClasses.length; m++) {
             Tclass tClass = tclassService.getTClass(idClasses[m]);
             TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
             Set<ClassStudent> students = tClass.getClassStudents();
@@ -502,7 +572,7 @@ public class ControlFormController {
             List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
             List<StudentDTO.scoreAttendance> studentArrayList = new ArrayList<>();
 
-            int i=0;
+            int i = 0;
 
 
             for (Long studentId : studentsId) {
@@ -511,8 +581,8 @@ public class ControlFormController {
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
                 st.setScoreA(listClassStudents.get(i).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(i).getScore().toString() : "");
 
-                if (tclassDTO.getScoringMethod() != null &&  tclassDTO.getScoringMethod().equals("3"))
-                st.setScoreB(st.calScoreB(st.getScoreA()));
+                if (tclassDTO.getScoringMethod() != null && tclassDTO.getScoringMethod().equals("3"))
+                    st.setScoreB(st.calScoreB(st.getScoreA()));
 
                 studentArrayList.add(st);
                 i++;
@@ -535,13 +605,13 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
-            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
+            params.put("hduration", tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + "ساعت" : "");
 
             listMaps.add(params);
         }
 
         try {
-            controlReportService.exportToExcelScore(response,listMaps,listStudentArray);
+            controlReportService.exportToExcelScore(response, listMaps, listStudentArray);
         } catch (Exception ex) {
 
             Locale locale = LocaleContextHolder.getLocale();
@@ -555,12 +625,12 @@ public class ControlFormController {
                                    @RequestParam(value = "classId") String classId,
                                    @RequestParam(value = "dataStatus") String dataStatus
     ) throws IOException {
-        Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
-        List<List<StudentDTO.controlAttendance>> listStudentArray=new ArrayList<>();
-        List<List<ClassSession>> listSessionList=new ArrayList<>();
-        List<Map<String, String>> listMaps=new ArrayList<>();
+        Long[] idClasses = Arrays.stream(classId.split(",")).map(x -> Long.valueOf(x)).toArray(Long[]::new);
+        List<List<StudentDTO.controlAttendance>> listStudentArray = new ArrayList<>();
+        List<List<ClassSession>> listSessionList = new ArrayList<>();
+        List<Map<String, String>> listMaps = new ArrayList<>();
 
-        for (int m=0;m<idClasses.length;m++) {
+        for (int m = 0; m < idClasses.length; m++) {
             Tclass tClass = tclassService.getTClass(idClasses[m]);
             TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
             Set<ClassStudent> students = tClass.getClassStudents();
@@ -571,7 +641,7 @@ public class ControlFormController {
             List<Long> studentsId = students.stream().map(s -> s.getStudent().getId()).collect(Collectors.toList());
             List<StudentDTO.controlAttendance> studentArrayList = new ArrayList<>();
 
-            int i=0;
+            int i = 0;
 
 
             for (Long studentId : studentsId) {
@@ -579,7 +649,7 @@ public class ControlFormController {
                 StudentDTO.controlAttendance st = modelMapper.map(student, StudentDTO.controlAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
-                st.setCcpAffairs(student.getDepartment() !=null ? student.getDepartment().getOmorTitle() : "");
+                st.setCcpAffairs(student.getDepartment() != null ? student.getDepartment().getOmorTitle() : "");
 
                 studentArrayList.add(st);
                 i++;
@@ -606,13 +676,13 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
-            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
+            params.put("hduration", tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + "ساعت" : "");
 
             listMaps.add(params);
         }
 
         try {
-            controlReportService.exportToExcelControl(response,listMaps,listStudentArray);
+            controlReportService.exportToExcelControl(response, listMaps, listStudentArray);
         } catch (Exception ex) {
 
             Locale locale = LocaleContextHolder.getLocale();
@@ -626,12 +696,12 @@ public class ControlFormController {
                                @RequestParam(value = "classId") String classId,
                                @RequestParam(value = "dataStatus") String dataStatus
     ) throws IOException {
-        Long[] idClasses= Arrays.stream(classId.split(",")).map(x->Long.valueOf(x)).toArray(Long[]::new);
-        List<Map<String, String>> listMaps=new ArrayList<>();
-        List<List<StudentDTO.fullAttendance>> listStudentArray=new ArrayList<>();
-        List<List<ClassSession>> listSessionList=new ArrayList<>();
+        Long[] idClasses = Arrays.stream(classId.split(",")).map(x -> Long.valueOf(x)).toArray(Long[]::new);
+        List<Map<String, String>> listMaps = new ArrayList<>();
+        List<List<StudentDTO.fullAttendance>> listStudentArray = new ArrayList<>();
+        List<List<ClassSession>> listSessionList = new ArrayList<>();
 
-        for (int m=0;m<idClasses.length;m++) {
+        for (int m = 0; m < idClasses.length; m++) {
             Tclass tClass = tclassService.getTClass(idClasses[m]);
             TclassDTO.Info tclassDTO = modelMapper.map(tClass, TclassDTO.Info.class);
             Set<ClassStudent> students = tClass.getClassStudents();
@@ -642,11 +712,11 @@ public class ControlFormController {
             List<StudentDTO.fullAttendance> studentArrayList = new ArrayList<>();
 
             Set<ClassSession> sessions = tClass.getClassSessions();
-            boolean flag=true;
-            List<ClassSession> sessionList=new ArrayList<>();
+            boolean flag = true;
+            List<ClassSession> sessionList = new ArrayList<>();
 
             if (sessions == null || sessions.size() == 0)
-                flag=false;
+                flag = false;
 
             if (flag) {
                 sessionList = sessions.stream().sorted(Comparator.comparing(ClassSession::getSessionDate)
@@ -656,19 +726,19 @@ public class ControlFormController {
 
             listSessionList.add(sessionList);
 
-            int cnt=0;
+            int cnt = 0;
 
             for (Long studentId : studentsId) {
                 Student student = studentService.getStudent(studentId);
                 StudentDTO.fullAttendance st = modelMapper.map(student, StudentDTO.fullAttendance.class);
                 st.setFullName(st.getFirstName() + " " + st.getLastName());
 
-                st.setCcpAffairs(student.getDepartment() !=null ? student.getDepartment().getOmorTitle() : "");
-                st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() !=null ? student.getPost().getJob().getTitleFa() : "") : "");
+                st.setCcpAffairs(student.getDepartment() != null ? student.getDepartment().getOmorTitle() : "");
+                st.setJobTitle(student.getPost() != null ? (student.getPost().getJob() != null ? student.getPost().getJob().getTitleFa() : "") : "");
 
                 st.setScoreA(listClassStudents.get(cnt).getScore() != null && dataStatus.equals("true") ? listClassStudents.get(cnt).getScore().toString() : "");
 
-                if (tclassDTO.getScoringMethod() != null &&  tclassDTO.getScoringMethod().equals("3"))
+                if (tclassDTO.getScoringMethod() != null && tclassDTO.getScoringMethod().equals("3"))
                     st.setScoreB(st.calScoreB(st.getScoreA()));
 
                 String dayDate = "";
@@ -690,7 +760,7 @@ public class ControlFormController {
                                 z = ztemp;
                             }
 
-                            Optional<Attendance> attendance=attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
+                            Optional<Attendance> attendance = attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), studentId);
 
                             if (attendance.isPresent()) {
                                 AttendanceDTO attendanceDTO = new AttendanceDTO();
@@ -723,12 +793,12 @@ public class ControlFormController {
             params.put("startDate", tclassDTO.getStartDate());
             params.put("endDate", tclassDTO.getEndDate());
             params.put("teacher", tclassDTO.getTeacher());
-            params.put("hduration", tclassDTO.getHDuration()!=null ? tclassDTO.getHDuration().toString()+"ساعت" : "");
+            params.put("hduration", tclassDTO.getHDuration() != null ? tclassDTO.getHDuration().toString() + "ساعت" : "");
             listMaps.add(params);
         }
 
         try {
-            controlReportService.exportToExcelFull(response,listMaps,listSessionList,listStudentArray);
+            controlReportService.exportToExcelFull(response, listMaps, listSessionList, listStudentArray);
         } catch (Exception ex) {
 
             Locale locale = LocaleContextHolder.getLocale();

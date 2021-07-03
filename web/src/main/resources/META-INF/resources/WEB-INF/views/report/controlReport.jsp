@@ -18,6 +18,31 @@
             $("input[name='classCode']").attr("disabled","disabled");
         },0)}
     );
+
+    let showPrintType = function(callback, prs) {
+        let printTypeWindow = isc.MyYesNoDialog.create({
+            title: "",
+            message: "<spring:message code='report.type'/>",
+            buttons: [
+                isc.IButtonSave.create({title: "word",}),
+                isc.IButtonSave.create({title: "pdf",})],
+            buttonClick: function (button, index) {
+                debugger
+                if (index === 0) {
+                    callback("word",...prs);
+                } else {
+                    callback("pdf",...prs);
+                }
+                this.close();
+                return;
+            },
+            closeClick: function () {
+                this.close();
+            }
+        });
+        printTypeWindow.show();
+    }
+
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspControlReport = isc.TrDS.create({
         fields: [
@@ -161,13 +186,13 @@
                                 }
                                 page++;
                                 i=1;
-                                printClearForm(sessionList,page,record.idClass);
+                                showPrintType(printClearForm,[sessionList,page,record.idClass]);
                                 date = s.sessionDate;
                                 sessionList.length = 0;
                                 sessionList.push(s);
                             }
                             page++;
-                            printClearForm(sessionList,page,record.idClass);
+                            showPrintType(printClearForm,[sessionList,page,record.idClass]);
                         }//end if
                         }//end resp body function
                         ));
@@ -180,7 +205,7 @@
                     layoutAlign: "center",
                     title: "گزارش نمرات",
                     click: function () {
-                        printClearScoreForm(record.idClass);
+                        showPrintType(printClearScoreForm,[record.idClass]);
                     }//end click function
                 });
                 return button;
@@ -190,7 +215,7 @@
                     layoutAlign: "center",
                     title: "گزارش کنترل",
                     click: function () {
-                        printControlScoreForm(record.idClass);
+                        showPrintType(printControlScoreForm,[record.idClass]);
                     }//end click function
                 });
                 return button;
@@ -1004,10 +1029,34 @@
         items: [DynamicForm_CriteriaForm_JspControlReport]
     });
 
-    function printClearForm(list,page,id) {
+    function printClearForm(typ,list,page,id) {
+
+        let f = [
+            {
+                name: "fullName",
+                title: "<spring:message code='full.name'/>"
+            },
+            {
+                name: "personnelNo",
+                title: "<spring:message code='task.number'/>"
+            },
+            {
+                name: "jobTitle",
+                title: "<spring:message code='job'/>"
+            },
+            {
+                name: "ccpAffairs",
+                title: "<spring:message code='affairs'/>"
+            },
+            {
+                name: "educationMajorTitle",
+                title: "<spring:message code='education.degree'/>"
+            },
+        ];
+
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/controlForm/clear-print/pdf"/>",
+            action: baseUrl.concat("/controlForm/clear-print/").concat(typ),
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -1015,48 +1064,90 @@
                     {name: "classId", type: "hidden"},
                     {name: "list", type: "hidden"},
                     {name: "page", type: "hidden"},
-                    {name: "dataStatus", type: "hidden"}
+                    {name: "dataStatus", type: "hidden"},
+                    {name: "fields", type: "hidden"}
                 ]
         });
         criteriaForm.setValue("classId", id);
         criteriaForm.setValue("list", JSON.stringify(list));
         criteriaForm.setValue("page", page);
-        criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue() );
+        criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue());
+        criteriaForm.setValue("fields", JSON.stringify(f));
         criteriaForm.show();
         criteriaForm.submitForm();
     }
 
-    function printClearScoreForm(id) {
+    function printClearScoreForm(typ, id) {
+        let f = [
+            {
+                name: "fullName",
+                title: "<spring:message code='full.name'/>"
+            },
+            {
+                name: "personnelNo",
+                title: "<spring:message code='task.number'/>"
+            },
+            {
+                name: "scoreA",
+                title: "<spring:message code='score.number'/>"
+            },
+            {
+                name: "scoreB",
+                title: "<spring:message code='score.literal'/>"
+            },
+        ];
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/controlForm/score-print/pdf"/>",
+            action: baseUrl.concat("/controlForm/score-print/").concat(typ),
             target: "_Blank",
             canSubmit: true,
             fields:
                 [
                     {name: "classId", type: "hidden"},
-                    {name: "dataStatus", type: "hidden"}
+                    {name: "dataStatus", type: "hidden"},
+                    {name: "fields", type: "hidden"}
                 ]
         });
         criteriaForm.setValue("classId", id);
-        criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue() );
+        criteriaForm.setValue("dataStatus",DynamicForm_CriteriaForm_JspControlReport.getItem("dataStatus").getValue());
+        criteriaForm.setValue("fields", JSON.stringify(f));
         criteriaForm.show();
         criteriaForm.submitForm();
     }
 
-    function printControlScoreForm(id) {
+    function printControlScoreForm(typ, id) {
+        let f = [
+            {
+                name: "fullName",
+                title: "<spring:message code='full.name'/>"
+            },
+            {
+                name: "personnelNo",
+                title: "<spring:message code='task.number'/>"
+            },
+            {
+                name: "personnelNo2",
+                title: "<spring:message code='task.number.old'/>"
+            },
+            {
+                name: "ccpAffairs",
+                title: "<spring:message code='affairs'/>"
+            },
+        ];
+
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/controlForm/control-print/pdf"/>",
+            action: baseUrl.concat("/controlForm/control-print/").concat(typ),
             target: "_Blank",
             canSubmit: true,
             fields:
                 [
-                    {name: "classId", type: "hidden"}
+                    {name: "classId", type: "hidden"},
+                    {name: "fields", type: "hidden"}
                 ]
         });
         criteriaForm.setValue("classId", id);
-
+        criteriaForm.setValue("fields", JSON.stringify(f));
         criteriaForm.show();
         criteriaForm.submitForm();
     }

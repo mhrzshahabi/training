@@ -146,7 +146,7 @@ public class ExportToFileController {
                                       @RequestParam(value = "pageName") String pageName) throws IOException {
 
         try {
-            exportToFileService.exportToWord(response, fields, data, titr, pageName);
+            exportToFileService.exportToWord(response, fields, data, titr, pageName,null);
         } catch (Exception ex) {
 
             Locale locale = LocaleContextHolder.getLocale();
