@@ -26,6 +26,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -164,7 +166,7 @@ public class ExportToFileService implements IExportToFileService {
     }
 
     @Override
-    public void exportToWord(HttpServletResponse response, String fields, String data, String titr, String pageName) throws Exception {
+    public void exportToWord(HttpServletResponse response, String fields, String data, String titr, String pageName, Map<String, String> titles) throws Exception {
         Gson gson = new Gson();
         Type resultType = new TypeToken<List<HashMap<String, String>>>() {
         }.getType();
@@ -186,6 +188,41 @@ public class ExportToFileService implements IExportToFileService {
             run = paragraph.createRun();
             run.setFontSize(6);
             run.setText(pageName);
+            if (titles != null && !titles.isEmpty()) {
+                paragraph = doc.createParagraph();
+                paragraph.setFontAlignment(ParagraphAlignment.RIGHT.getValue());
+                XWPFTable table = paragraph.getBody().insertNewTbl(paragraph.getCTP().newCursor());
+                table.setTableAlignment(TableRowAlign.RIGHT);
+                table.setWidthType(TableWidthType.PCT);
+                table.setWidth(10000);
+                XWPFTableRow row = table.getRow(0);
+                if (row == null) row = table.createRow();
+                Set<String> keySet = titles.keySet();
+                int ix = 0;
+                for (String s : keySet) {
+                    XWPFTableCell cell = row.getCell(ix++);
+                    if (cell == null) cell = row.createCell();
+                    cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+                    cell.getParagraphs().get(0).setVerticalAlignment(TextAlignment.AUTO);
+                    run = cell.getParagraphs().get(0).createRun();
+                    run.setFontSize(4);
+                    run.setBold(true);
+                    run.setText(s);
+                }
+                row = table.createRow();
+                ix = 0;
+                for (String s : keySet) {
+                    XWPFTableCell cell = row.getCell(ix++);
+                    if (cell == null) cell = row.createCell();
+                    cell.setVerticalAlignment(XWPFTableCell.XWPFVertAlign.CENTER);
+                    cell.getParagraphs().get(0).setVerticalAlignment(TextAlignment.AUTO);
+                    run = cell.getParagraphs().get(0).createRun();
+                    run.setFontSize(3);
+                    run.setBold(false);
+                    run.setText(titles.get(s));
+                }
+            }
+
             String[] headers = new String[fields1.size()];
             String[] columns = new String[fields1.size()];
             for (int i = 0; i < fields1.size(); i++) {
@@ -197,7 +234,8 @@ public class ExportToFileService implements IExportToFileService {
             paragraph.setFontAlignment(ParagraphAlignment.RIGHT.getValue());
             XWPFTable table = paragraph.getBody().insertNewTbl(paragraph.getCTP().newCursor());
             table.setTableAlignment(TableRowAlign.RIGHT);
-            table.setWidthType(TableWidthType.AUTO);
+            table.setWidthType(TableWidthType.PCT);
+            table.setWidth(10000);
             XWPFTableRow row = table.getRow(0);
             if (row == null) row = table.createRow();
             for (int i = 0; i < headers.length; i++) {
