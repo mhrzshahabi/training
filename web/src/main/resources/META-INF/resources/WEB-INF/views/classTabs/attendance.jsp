@@ -595,7 +595,8 @@
                                             }
                                         }
                                         causeOfAbsence = data1[1];
-                                        // attendanceGrid.fetchData();
+                                        // zaza
+                                        attendanceGrid.fetchData();
                                         $.each(filterValues, function(i, el){
                                             if($.inArray(el, filterValuesUnique) === -1) filterValuesUnique.push(el);
                                         });
@@ -1120,7 +1121,10 @@
         gridComponents: [DynamicForm_Attendance, ToolStrip_Attendance_JspAttendance, "header", "filterEditor", "body",TrHLayoutButtons ],
         canHover:true,
         canEditCell(rowNum, colNum){
-            return colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh";
+            if (attendanceGrid.getSelectedRecord()!==null)
+            return (colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh");
+            else
+                return false;
         },
         saveAllEdits() {
             this.Super("saveAllEdits",arguments);
@@ -1138,6 +1142,7 @@
                             record.sessionId = b.substr(2);
                             record.state = a[b];
                             sendList.push(record);
+
                         });
                     });
                     causeOfAbsence.forEach(c=>{
@@ -1150,7 +1155,6 @@
                     //     console.log(record);
                     //     record.description = cause.description;
                     // }
-
                     sendObject.attendanceDtos = sendList;
                     isc.RPCManager.sendRequest({
                         actionURL: attendanceUrl + "/save-attendance",

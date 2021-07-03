@@ -160,7 +160,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     public Integer getTrainingReactionStatus(Long classId);
 
     @Transactional
-    @Query(value = "select tmp_table.class_id,count(*) from (select cs.class_id from tbl_class_student cs inner join (select st.*,inf.mobile from tbl_student st left join " +
+    @Query(value = "select tmp_table.class_id,count(*) from (select cs.class_id from tbl_class_student cs inner join (select st.id,inf.mobile from tbl_student st left join " +
             "(select case when n_mobile_for_sms is null then C_MOBILE " +
             "            when n_mobile_for_sms = 0 then C_MOBILE " +
             "            when n_mobile_for_sms = 1 then C_MOBILE2 " +
