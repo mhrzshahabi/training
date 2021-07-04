@@ -87,9 +87,8 @@ public class PersonnelDTO implements Serializable {
         private String ccpTitle;
         private String address;
         private String phone;
-        private String mobile;
-        private String email;
         private Long postId;
+        private ContactInfoDTO.Info contactInfo;
     }
 
     @Getter
@@ -197,8 +196,6 @@ public class PersonnelDTO implements Serializable {
         private String ccpTitle;
         private String address;
         private String phone;
-        private String mobile;
-        private String email;
         private String peopleType;
         private Long departmentId;
         private Long geoWorkId;
@@ -246,8 +243,6 @@ public class PersonnelDTO implements Serializable {
         private String complexTitle;
         private String address;
         private String phone;
-        private String mobile;
-        private String email;
         private Long postId;
         private Boolean isInNA;
         private Long scoreState;

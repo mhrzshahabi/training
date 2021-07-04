@@ -310,6 +310,7 @@
                                 editMobileForm.getValues().mobileForSMS = 1;
                         }
                     }
+                    editMobileForm.clearErrors();
                     Window_EditMobile.show();
                 }
             },

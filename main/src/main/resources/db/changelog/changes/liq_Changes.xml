@@ -1621,4 +1621,13 @@
             ]]>
         </sql>
     </changeSet>
+    <changeSet author="zare" id="abiz-2368">
+        <addColumn tableName="TBL_PERSONNEL_REGISTERED">
+            <column name="f_contact_info" type="number(19, 0)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseTableName="TBL_PERSONNEL_REGISTERED" baseColumnNames="f_contact_info"
+                                 constraintName="FK_tbl_personnel_reg_contact_info" referencedTableName="tbl_contact_info"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
 </databaseChangeLog>

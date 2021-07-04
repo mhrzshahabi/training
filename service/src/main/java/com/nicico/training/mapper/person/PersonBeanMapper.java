@@ -36,11 +36,11 @@ public abstract class PersonBeanMapper {
             }
         }
         personDTO.setNationalCode(personnelRegistered.getNationalCode());
-        personDTO.setMobile(checkMobileFormat(personnelRegistered.getMobile()));
+        personDTO.setMobile(checkMobileFormat(personnelRegistered.getContactInfo().getMobile()));
         personDTO.setEducationLevelTitle(personnelRegistered.getEducationLevel());
         personDTO.setEducationMajorTitle(personnelRegistered.getEducationMajor());
         personDTO.setPhone(personnelRegistered.getPhone());
-        personDTO.setEmail(personnelRegistered.getEmail());
+        personDTO.setEmail(personnelRegistered.getContactInfo().getEmail());
         personDTO.setPersonnelNo(personnelRegistered.getPersonnelNo());
 
     }
@@ -63,11 +63,11 @@ public abstract class PersonBeanMapper {
             }
         }
         personDTO.setNationalCode(personnel.getNationalCode());
-        personDTO.setMobile(checkMobileFormat(personnel.getMobile()));
+        personDTO.setMobile(checkMobileFormat(personnel.getContactInfo().getMobile()));
         personDTO.setEducationLevelTitle(personnel.getEducationLevelTitle());
         personDTO.setEducationMajorTitle(personnel.getEducationMajorTitle());
         personDTO.setPhone(personnel.getPhone());
-        personDTO.setEmail(personnel.getEmail());
+        personDTO.setEmail(personnel.getContactInfo().getEmail());
         personDTO.setPersonnelNo(personnel.getPersonnelNo());
         personDTO.setPersonnelNo2(personnel.getPersonnelNo2());
 

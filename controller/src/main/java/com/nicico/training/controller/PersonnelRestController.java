@@ -233,9 +233,9 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personnelService.inDepartmentIsPlanner(mojtameCode), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/fetchAndUpdateLastHrMobile/{id}")
-    public ResponseEntity fetchAndUpdateLastHrMobile(HttpServletRequest iscRq, @PathVariable Long id) {
-        Long infoId = contactInfoService.fetchAndUpdateLastHrMobile(id, iscRq.getHeader("Authorization"));
+    @GetMapping(value = "/fetchAndUpdateLastHrMobile/{type}/{id}")
+    public ResponseEntity fetchAndUpdateLastHrMobile(HttpServletRequest iscRq, @PathVariable Long id,@PathVariable String type) {
+        Long infoId = contactInfoService.fetchAndUpdateLastHrMobile(id, type, iscRq.getHeader("Authorization"));
         return new ResponseEntity(infoId, HttpStatus.OK);
     }
 

@@ -188,12 +188,6 @@ public class PersonnelRegistered extends Auditable {
     @Column(name = "fax")
     private String fax;
 
-    @Column(name = "mobile")
-    private String mobile;
-
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "account_number")
     private String accountNumber;
 
@@ -223,5 +217,12 @@ public class PersonnelRegistered extends Auditable {
 
     @Column(name = "c_username")
     private String userName;
+
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "f_contact_info")
+    private ContactInfo contactInfo;
+
+    @Column(name = "f_contact_info", insertable = false, updatable = false)
+    private Long contactInfoId;
 
 }

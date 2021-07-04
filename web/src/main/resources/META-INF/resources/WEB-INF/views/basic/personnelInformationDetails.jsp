@@ -103,7 +103,10 @@
                         }
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_ContactInfo") {
                         wait.show();
-                        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/fetchAndUpdateLastHrMobile/" + selectedPersonnel.id, "GET", null, function (resp) {
+                        let type_ = 'Personnel';
+                        if(PersonnelList_Tab.getSelectedTab().id == 'PersonnelList_Tab_RegisteredPersonnel')
+                            type_ = 'RegisteredPersonnel';
+                            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl.concat("/fetchAndUpdateLastHrMobile/").concat(type_).concat("/").concat(selectedPersonnel.id), "GET", null, function (resp) {
                             if (!selectedPersonnel.contactInfo || !selectedPersonnel.contactInfo.id) {
                                 selectedPersonnel.contactInfo = {id: Number(resp.data)}
                             }
@@ -111,8 +114,10 @@
                                                                         selectedPersonnel.contactInfo = contactInfo;
                                                                         selectedPersonnel.contactInfo.smSMobileNumber = sms;
                                                                         selectedPersonnel.contactInfo.cNMobileNumber = cn;
+                                                                        editMobileForm_Personnel.clearErrors();
                                                                         editMobileForm_Personnel.editRecord(selectedPersonnel.contactInfo);
                            };
+                            editMobileForm_Personnel.clearErrors();
                             editMobileForm_Personnel.editRecord(selectedPersonnel.contactInfo);
                             switch (selectedPersonnel.contactInfo.mobileForSMS) {
                                 case 2:
@@ -329,7 +334,6 @@
             }
 
             this.saveContact_CallBack = function saveContact_CallBack(r,data) {
-                debugger
                 let m = "";
                 switch (data.mobileForSMS) {
                     case 4: {m = data.mdmsMobile};break;
@@ -869,11 +873,6 @@
                             canEdit: false
                         },
                         {
-                            name: "mobile",
-                            title: "<spring:message code="cellPhone"/> : ",
-                            canEdit: false
-                        },
-                        {
                             name: "email",
                             title: "<spring:message code="email"/> : ",
                             canEdit: false
@@ -1224,6 +1223,10 @@
             height: "200",
             numCols: 6,
             colWidths: [30, 30, 30, 30, 60, 205],
+            showInlineErrors: true,
+            showErrorText: true,
+            showErrorStyle: false,
+            errorOrientation: "bottom",
             fields: [
                 {
                     name : "id", hidden: true
@@ -1244,6 +1247,8 @@
                             editMobileForm_Personnel.getItem('mdmsMobile_sms').setValue(null);
                             editMobileForm_Personnel.getItem('hrMobile_sms').setValue(null);
                             editMobileForm_Personnel.getValues().mobileForSMS = 1;
+                            if (!editMobileForm_Personnel.getValue("mobile"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1258,6 +1263,8 @@
                             editMobileForm_Personnel.getItem('mdmsMobile_cn').setValue(null);
                             editMobileForm_Personnel.getItem('hrMobile_cn').setValue(null);
                             editMobileForm_Personnel.getValues().mobileForCN = 1;
+                            if (!editMobileForm_Personnel.getValue("mobile"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1265,7 +1272,23 @@
                     name: "mobile",
                     title: "",
                     type: "text",
-                    keyPressFilter: "[0-9/+-_]",
+                    length: 11,
+                    keyPressFilter: "[0-9]",
+                    wrapHintText: false,
+                    validators: [{
+                        validateOnExit: true,
+                        type: "lengthRange",
+                        min: 11,
+                        max: 11,
+                        errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
+                    },
+                     {
+                        type: "regexp",
+                        expression: "^[0][9][0-9]*$",
+                        validateOnChange: true,
+                        errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
+                     }
+                    ],
                 },
                 {
                     name: "mobile2_sms",
@@ -1277,7 +1300,9 @@
                             editMobileForm_Personnel.getItem('mobile_sms').setValue(null);
                             editMobileForm_Personnel.getItem('mdmsMobile_sms').setValue(null);
                             editMobileForm_Personnel.getItem('hrMobile_sms').setValue(null);
-                            editMobileForm_Personnel.getValues().mobileForSMS = 2
+                            editMobileForm_Personnel.getValues().mobileForSMS = 2;
+                            if (!editMobileForm_Personnel.getValue("mobile2"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1291,7 +1316,9 @@
                             editMobileForm_Personnel.getItem('mobile_cn').setValue(null);
                             editMobileForm_Personnel.getItem('mdmsMobile_cn').setValue(null);
                             editMobileForm_Personnel.getItem('hrMobile_cn').setValue(null);
-                            editMobileForm_Personnel.getValues().mobileForCN = 2
+                            editMobileForm_Personnel.getValues().mobileForCN = 2;
+                            if (!editMobileForm_Personnel.getValue("mobile2"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1299,7 +1326,23 @@
                     name: "mobile2",
                     title: "",
                     type: "text",
-                    keyPressFilter: "[0-9/+-_]",
+                    length: 11,
+                    keyPressFilter: "[0-9]",
+                    wrapHintText: false,
+                    validators: [{
+                        validateOnExit: true,
+                        type: "lengthRange",
+                        min: 11,
+                        max: 11,
+                        errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
+                    },
+                        {
+                            type: "regexp",
+                            expression: "^[0][9][0-9]*$",
+                            validateOnChange: true,
+                            errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
+                        }
+                    ],
                 },
                 {
                     name: "hrMobile_sms",
@@ -1311,7 +1354,9 @@
                             editMobileForm_Personnel.getItem('mobile2_sms').setValue(null);
                             editMobileForm_Personnel.getItem('mdmsMobile_sms').setValue(null);
                             editMobileForm_Personnel.getItem('mobile_sms').setValue(null);
-                            editMobileForm_Personnel.getValues().mobileForSMS = 3
+                            editMobileForm_Personnel.getValues().mobileForSMS = 3;
+                            if (!editMobileForm_Personnel.getValue("hrMobile"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1325,7 +1370,9 @@
                             editMobileForm_Personnel.getItem('mobile2_cn').setValue(null);
                             editMobileForm_Personnel.getItem('mdmsMobile_cn').setValue(null);
                             editMobileForm_Personnel.getItem('mobile_cn').setValue(null);
-                            editMobileForm_Personnel.getValues().mobileForCN = 3
+                            editMobileForm_Personnel.getValues().mobileForCN = 3;
+                            if (!editMobileForm_Personnel.getValue("hrMobile"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1345,7 +1392,9 @@
                             editMobileForm_Personnel.getItem('mobile2_sms').setValue(null);
                             editMobileForm_Personnel.getItem('mobile_sms').setValue(null);
                             editMobileForm_Personnel.getItem('hrMobile_sms').setValue(null);
-                            editMobileForm_Personnel.getValues().mobileForSMS = 4
+                            editMobileForm_Personnel.getValues().mobileForSMS = 4;
+                            if (!editMobileForm_Personnel.getValue("mdmsMobile"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1359,7 +1408,9 @@
                             editMobileForm_Personnel.getItem('mobile2_cn').setValue(null);
                             editMobileForm_Personnel.getItem('mobile_cn').setValue(null);
                             editMobileForm_Personnel.getItem('hrMobile_cn').setValue(null);
-                            editMobileForm_Personnel.getValues().mobileForCN = 4
+                            editMobileForm_Personnel.getValues().mobileForCN = 4;
+                            if (!editMobileForm_Personnel.getValue("mdmsMobile"))
+                                createDialog("warning", "<spring:message code='student.edit.mobile.is.empty.warn'/>", "اخطار");
                         }
                     }
                 },
@@ -1456,7 +1507,6 @@
                                                 delete data.emobileForCN;
                                                 wait.show();
                                                 isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data),(r)=>{
-                                                debugger
                                                 let sms = "", cn = "";
                                                 switch (data.mobileForSMS) {
                                                 case 4:

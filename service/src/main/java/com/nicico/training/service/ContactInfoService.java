@@ -8,8 +8,10 @@ import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.model.Address;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.Personnel;
+import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.repository.ContactInfoDAO;
 import com.nicico.training.repository.PersonnelDAO;
+import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.service.hrm.HrmFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -32,6 +34,8 @@ public class ContactInfoService implements IContactInfoService {
     private final AddressService addressService;
     private final HrmFeignClient hrmClient;
     private final PersonnelDAO personnelDAO;
+    private final PersonnelRegisteredDAO personnelRegisteredDAO;
+
 
     @Transactional(readOnly = true)
     @Override
@@ -166,23 +170,44 @@ public class ContactInfoService implements IContactInfoService {
 
     @Transactional
     @Override
-    public Long fetchAndUpdateLastHrMobile(Long id, String token) {
-        Personnel personnel = personnelDAO.findById(id).get();
-        if (personnel.getNationalCode() == null)
-            return null;
-        ContactInfo contactInfo = personnel.getContactInfo();
-        if (personnel.getContactInfoId() == null) {
-            contactInfo = new ContactInfo();
-            contactInfoDAO.save(contactInfo);
-            personnel.setContactInfo(contactInfo);
-            personnelDAO.saveAndFlush(personnel);
+    public Long fetchAndUpdateLastHrMobile(Long id, String type, String token) {
+
+        String nationalCode;
+        ContactInfo contactInfo;
+        switch (type) {
+            case "Personnel":
+            Personnel personnel = personnelDAO.findById(id).get();
+            contactInfo = personnel.getContactInfo();
+            if (personnel.getContactInfoId() == null) {
+                contactInfo = new ContactInfo();
+                contactInfoDAO.save(contactInfo);
+                personnel.setContactInfo(contactInfo);
+                personnelDAO.saveAndFlush(personnel);
+            }
+            nationalCode = personnel.getNationalCode();
+            break;
+            case "RegisteredPersonnel":
+                PersonnelRegistered personnelRegistered = personnelRegisteredDAO.getOne(id);
+                contactInfo = personnelRegistered.getContactInfo();
+                if (personnelRegistered.getContactInfoId() == null) {
+                    contactInfo = new ContactInfo();
+                    contactInfoDAO.save(contactInfo);
+                    personnelRegistered.setContactInfo(contactInfo);
+                    personnelRegisteredDAO.saveAndFlush(personnelRegistered);
+                }
+                nationalCode = personnelRegistered.getNationalCode();
+                break;
+            default:
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
         }
+        if (nationalCode == null)
+            return contactInfo.getId();
         long now = new Date().getTime();
         long lastModified = contactInfo.getLastModifiedDate() == null ? 0 : contactInfo.getLastModifiedDate().getTime();
         String hrMobile;
         if ((now - lastModified) / 1000 / 60 / 60 > 12) {
             try {
-                HrmPersonDTO person = hrmClient.getPersonByNationalCode(personnel.getNationalCode(), token);
+                HrmPersonDTO person = hrmClient.getPersonByNationalCode(nationalCode, token);
                 hrMobile = person.getMobile();
                 final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfo.getId());
                 if (cById.isPresent()) {
