@@ -95,6 +95,19 @@ BEGIN
                     commit;
                     raise;
         END;
+        ----------------------------------------------------------------------------------------------------------------
+        BEGIN
+            PRC_MERGE_TBL_CONTACT_INFO_MDMS();
+        EXCEPTION
+            WHEN OTHERS
+                THEN
+                    err_code := SQLCODE;
+                    err_msg := SUBSTR(SQLERRM, 1, 300);
+                    insert into TBL_MDMS_PRC_LOG(id, DATE_, LOG_MSG, TABLE_NAME)
+                    values (SEQ_MDMS_PRC_LOG_ID.nextval, sysdate, err_msg, 'TBL_CONTACT_INFO');
+                    commit;
+                    raise;
+        END;
     END;
 END;
 /
