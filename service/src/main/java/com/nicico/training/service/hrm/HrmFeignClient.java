@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-@FeignClient(value = "hrmClient", url = "http://devapp01.icico.net.ir/hrm/api/v1")
+@FeignClient(value = "hrmClient", url ="${nicico.hrmClient}")
 public interface HrmFeignClient {
 
     @GetMapping("/persons/person/{nationalCode}")

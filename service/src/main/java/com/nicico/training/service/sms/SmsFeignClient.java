@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import response.BaseResponse;
 
 
-@FeignClient(value = "trainingClient", url = "http://devops01.icico.net.ir")
+@FeignClient(value = "trainingClient", url ="${nicico.sms}")
 public interface SmsFeignClient {
 
     @RequestMapping(method = RequestMethod.POST, value = "/message/api/sms/nimad")

@@ -10,7 +10,7 @@ import response.minio.CreateFmsGroupRes;
 import response.minio.UploadFmsRes;
 
 
-@FeignClient(value = "minIoClient", url = "http://devapp01.icico.net.ir/fms/")
+@FeignClient(value = "minIoClient", url ="${nicico.minioUrl}")
 public interface MinIoClient {
 
 

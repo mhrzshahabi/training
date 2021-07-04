@@ -228,6 +228,8 @@ nicico:
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
   minioUrl: 'http://devapp01.icico.net.ir/fms/'
   elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
+  hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
+  sms: 'http://devops01.icico.net.ir'
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
@@ -290,6 +292,8 @@ nicico:
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
   minioUrl: 'http://devapp01.icico.net.ir/fms/'
   elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
+  hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
+  sms: 'http://devops01.icico.net.ir'
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:
