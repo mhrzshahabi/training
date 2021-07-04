@@ -103,7 +103,19 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
                         if (!passedCourseIds.contains(needsAssessmentList.get(i).getSkill().getCourse().getId()) &&
                                 isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId()) != null
                                 && isPassed.get(needsAssessmentList.get(i).getSkill().getCourse().getId())) {
-                            courseStatus += " - دوره معادل گذرانده شده است ";
+                            courseStatus += " - دوره معادل گذرانده شده است.";
+                            Course course = needsAssessmentList.get(i).getSkill().getCourse().getEqualCourses().get(0).getEqualAndList().get(0);
+                            List<EqualCourse> equalCourses = course.getEqualCourses();
+                            if (equalCourses.size() > 0){
+                                for (EqualCourse equalCourse: equalCourses){
+                                    if (passedCourseIds.contains(equalCourse.getEqualAndList().get(0).getId())){
+                                        courseStatus += "(";
+                                        courseStatus += equalCourse.getEqualAndList().get(0).getTitleFa();
+                                        courseStatus += ")";
+                                        break;
+                                    }
+                                }
+                            }
                         }
                         mustPass.get(i).getSkill().getCourse().setScoresStatus(courseStatus);
                     }
