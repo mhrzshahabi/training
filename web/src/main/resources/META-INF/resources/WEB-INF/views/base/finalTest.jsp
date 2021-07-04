@@ -1607,7 +1607,8 @@ let inValidStudents = [];
         let record = FinalTestLG_finalTest.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("warning", "<spring:message code='msg.not.selected.record'/>", "<spring:message code="warning"/>");
-        } else  if (record.onlineFinalExamStatus && record.onlineExamDeadLineStatus){
+        // } else  if (record.onlineFinalExamStatus && record.onlineExamDeadLineStatus){
+        } else  if (record.onlineFinalExamStatus){
             createDialog("warning", "<spring:message code='msg.can.not.edit.selected.record'/>", "<spring:message code="warning"/>");
         }
         else{
