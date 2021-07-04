@@ -1,4 +1,4 @@
-create PROCEDURE PRC_MERGE_TBL_PERSONNEL_MDMS AS
+create or replace PROCEDURE PRC_MERGE_TBL_PERSONNEL_MDMS AS
 BEGIN------------UPDATE-------------------------------------------------------
 
 MERGE INTO TBL_PERSONNEL T
@@ -12,13 +12,11 @@ USING (
            emp.c_inc_dep_title         AS department_title,
            emp.c_edu_lvl_title         AS education_level_title,
            emp.c_area_of_study         AS education_field_title,
-           emp.c_email                 AS email,
            emp.c_emp_date              AS employment_date,
            emp.c_emp_status_id         AS employment_status_id,
            emp.c_father_name           AS father_name,
            emp.c_first_name            AS first_name,
            emp.c_last_name             AS last_name,
-           emp.c_mobile                AS mobile,
            emp.c_national_code         AS national_code,
            to_char(emp.c_em_number)    AS emp_no,
            emp.c_home_phone            AS phone,
@@ -108,9 +106,7 @@ USING (
                        e.C_OFFICIAL_POST_PURE_TITLE,
                        e.C_JOB_GRADE,
                        e.C_POST_ID,
-                       e.C_EMAIL,
                        e.C_ADDRESS,
-                       nvl(e.C_MOBILE ,po.c_mobile) as c_mobile,
                        e.P_TYPE,
                        e.C_PEOPLE_ID,
                        e.C_HOME_PHONE,
@@ -130,20 +126,20 @@ USING (
                                select e.*,
                                       row_number() over (partition by e.c_people_id
                                           order by c_id desc) as inx
-                               from MDMS_tbl_md_employee e
+                               from   MDMS_tbl_md_employee e
                            )
                       where inx = 1
                      ) e
-                         inner join MDMS_tbl_md_people po on po.c_id = e.c_people_id
+                         inner join  MDMS_tbl_md_people po on po.c_id = e.c_people_id
                ) emp
-                   LEFT JOIN MDMS_tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
+                   LEFT JOIN   MDMS_tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
                    LEFT JOIN tbl_department dep ON (mdms_dep.c_code = dep.c_code)
-                   LEFT JOIN MDMS_tbl_md_geo_work mdms_geo ON emp.c_geo_id = mdms_geo.c_id
+                   LEFT JOIN   MDMS_tbl_md_geo_work mdms_geo ON emp.c_geo_id = mdms_geo.c_id
                    LEFT JOIN TBL_GEO_WORK geo
                              on (geo.C_CODE = mdms_geo.c_code and geo.C_PEOPLE_TYPE = mdms_geo.C_PEOPLE_TYPE)
-                   LEFT JOIN MDMS_tbl_md_employee_STATUS stat ON emp.c_emp_status_id = stat.c_id
-                   LEFT JOIN MDMS_TBL_MD_EMPLOYMENT_TYPE type ON emp.c_emp_type_id = type.c_id
-                   LEFT JOIN MDMS_TBL_MD_POST mdms_post on mdms_post.c_id = emp.c_post_id
+                   LEFT JOIN   MDMS_tbl_md_employee_STATUS stat ON emp.c_emp_status_id = stat.c_id
+                   LEFT JOIN   MDMS_TBL_MD_EMPLOYMENT_TYPE type ON emp.c_emp_type_id = type.c_id
+                   LEFT JOIN   MDMS_TBL_MD_POST mdms_post on mdms_post.c_id = emp.c_post_id
                    LEFT JOIN TBL_POST post
                              on mdms_post.c_code = post.c_code and post.C_PEOPLE_TYPE = mdms_post.C_PEOPLE_TYPE
          ) emp
@@ -234,11 +230,6 @@ USING (
         AND emp.c_area_of_study IS NOT NULL)
        OR (TR_PERS.education_field_title IS NOT NULL
         AND emp.c_area_of_study IS NULL)
-       OR TR_PERS.email <> emp.c_email
-       OR (TR_PERS.email IS NULL
-        AND emp.c_email IS NOT NULL)
-       OR (TR_PERS.email IS NOT NULL
-        AND emp.c_email IS NULL)
        OR TR_PERS.employment_date <> emp.c_emp_date
        OR (TR_PERS.employment_date IS NULL
         AND emp.c_emp_date IS NOT NULL)
@@ -284,11 +275,6 @@ USING (
         AND emp.marital_status_title IS NOT NULL)
        OR (TR_PERS.marital_status_title IS NOT NULL
         AND emp.marital_status_title IS NULL)
-       OR TR_PERS.mobile <> emp.c_mobile
-       OR (TR_PERS.mobile IS NULL
-        AND emp.c_mobile IS NOT NULL)
-       OR (TR_PERS.mobile IS NOT NULL
-        AND emp.c_mobile IS NULL)
        OR TR_PERS.national_code <> emp.c_national_code
        OR (TR_PERS.national_code IS NULL
         AND emp.c_national_code IS NOT NULL)
@@ -375,7 +361,6 @@ WHEN MATCHED THEN
         t.department_title        = CHANGES_.department_title,
         t.education_level_title   = CHANGES_.education_level_title,
         t.education_field_title   = CHANGES_.education_field_title,
-        t.email                   = CHANGES_.email,
         t.employment_date         = CHANGES_.employment_date,
         t.employment_status_id    = CHANGES_.employment_status_id,
         t.EMPLOYMENT_STATUS_TITLE = CHANGES_.EMPLOYMENT_STATUS_TITLE,
@@ -385,7 +370,6 @@ WHEN MATCHED THEN
         t.gender_title            = CHANGES_.gender_title,
         t.last_name               = CHANGES_.last_name,
         t.marital_status_title    = CHANGES_.marital_status_title,
-        t.mobile                  = CHANGES_.mobile,
         t.emp_no                  = CHANGES_.emp_no,
         t.phone                   = CHANGES_.phone,
         t.post_code               = CHANGES_.post_code,
@@ -418,7 +402,6 @@ USING (
            emp.c_inc_dep_title            AS department_title,
            emp.c_edu_lvl_title            AS education_level_title,
            emp.c_area_of_study            AS education_field_title,
-           emp.c_email                    AS email,
            emp.c_emp_date                 AS employment_date,
            emp.c_emp_status_id            AS employment_status_id,
            emp.EMPLOYMENT_STATUS_TITLE,
@@ -426,7 +409,6 @@ USING (
            emp.c_father_name              AS father_name,
            emp.c_first_name               AS first_name,
            emp.c_last_name                AS last_name,
-           emp.c_mobile                   AS mobile,
            emp.c_national_code            AS national_code,
            to_char(emp.c_em_number)       AS emp_no,
            emp.c_home_phone               AS phone,
@@ -508,9 +490,7 @@ USING (
                        e.C_OFFICIAL_POST_PURE_TITLE,
                        e.C_JOB_GRADE,
                        e.C_POST_ID,
-                       e.C_EMAIL,
                        e.C_ADDRESS,
-                       nvl(e.C_MOBILE ,po.C_MOBILE) as c_mobile,
                        e.P_TYPE,
                        e.C_PEOPLE_ID,
                        e.C_HOME_PHONE,
@@ -530,18 +510,18 @@ USING (
                                select e.*,
                                       row_number() over (partition by e.c_people_id
                                           order by c_id desc) as inx
-                               from MDMS_tbl_md_employee e)
+                               from   MDMS_tbl_md_employee e)
                       where inx = 1) e
-                         inner join MDMS_tbl_md_people po on po.c_id = e.c_people_id
+                         inner join   MDMS_tbl_md_people po on po.c_id = e.c_people_id
                ) emp
-                   LEFT JOIN MDMS_tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
+                   LEFT JOIN   MDMS_tbl_md_department mdms_dep ON emp.c_inc_dep_id = mdms_dep.c_id
                    LEFT JOIN TBL_DEPARTMENT dep on mdms_dep.c_code = dep.C_CODE
-                   LEFT JOIN MDMS_tbl_md_geo_work mdms_geo ON emp.c_geo_id = mdms_geo.c_id
+                   LEFT JOIN   MDMS_tbl_md_geo_work mdms_geo ON emp.c_geo_id = mdms_geo.c_id
                    LEFT JOIN TBL_GEO_WORK geo
                              on (geo.C_CODE = mdms_geo.c_code and geo.C_PEOPLE_TYPE = mdms_geo.C_PEOPLE_TYPE)
-                   LEFT JOIN MDMS_tbl_md_employee_STATUS stat ON emp.c_emp_status_id = stat.c_id
-                   LEFT JOIN MDMS_TBL_MD_EMPLOYMENT_TYPE type ON emp.c_emp_type_id = type.c_id
-                   LEFT JOIN MDMS_TBL_MD_POST mdms_post on mdms_post.c_id = emp.c_post_id
+                   LEFT JOIN   MDMS_tbl_md_employee_STATUS stat ON emp.c_emp_status_id = stat.c_id
+                   LEFT JOIN   MDMS_TBL_MD_EMPLOYMENT_TYPE type ON emp.c_emp_type_id = type.c_id
+                   LEFT JOIN   MDMS_TBL_MD_POST mdms_post on mdms_post.c_id = emp.c_post_id
                    LEFT JOIN TBL_POST post
                              on mdms_post.c_code = post.c_code and post.C_PEOPLE_TYPE = mdms_post.C_PEOPLE_TYPE
          ) emp
@@ -570,7 +550,6 @@ WHEN NOT MATCHED THEN
             department_title,
             education_level_title,
             education_field_title,
-            email,
             employment_date,
             employment_status_id,
             EMPLOYMENT_STATUS_TITLE,
@@ -580,7 +559,6 @@ WHEN NOT MATCHED THEN
             gender_title,
             last_name,
             marital_status_title,
-            mobile,
             national_code,
             emp_no,
             phone,
@@ -613,7 +591,6 @@ WHEN NOT MATCHED THEN
             NEW_.department_title,
             NEW_.education_level_title,
             NEW_.education_field_title,
-            NEW_.email,
             NEW_.employment_date,
             NEW_.employment_status_id,
             NEW_.EMPLOYMENT_STATUS_TITLE,
@@ -623,7 +600,6 @@ WHEN NOT MATCHED THEN
             NEW_.gender_title,
             NEW_.last_name,
             NEW_.marital_status_title,
-            NEW_.mobile,
             NEW_.national_code,
             NEW_.emp_no,
             NEW_.phone,
@@ -641,7 +617,7 @@ WHEN NOT MATCHED THEN
 
 UPDATE TBL_PERSONNEL SET DELETED = 1 WHERE ID IN (SELECT PRS_EXIST_TR.ID
       FROM TBL_PERSONNEL PRS_EXIST_TR
-               LEFT JOIN  MDMS_tbl_md_employee PRS_MDMS ON PRS_MDMS.C_NATIONAL_CODE = PRS_EXIST_TR.NATIONAL_CODE
+               LEFT JOIN   MDMS_tbl_md_employee PRS_MDMS ON PRS_MDMS.C_NATIONAL_CODE = PRS_EXIST_TR.NATIONAL_CODE
       WHERE PRS_EXIST_TR.DELETED = 0 AND PRS_MDMS.C_ID IS NULL);
 
 
