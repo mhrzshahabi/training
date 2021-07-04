@@ -595,7 +595,7 @@
                                             }
                                         }
                                         causeOfAbsence = data1[1];
-                                        // zaza
+                                        //todo for fetch user data
                                         attendanceGrid.fetchData();
                                         $.each(filterValues, function(i, el){
                                             if($.inArray(el, filterValuesUnique) === -1) filterValuesUnique.push(el);
@@ -1112,6 +1112,7 @@
         dynamicProperties: true,
         autoSaveEdits: false,
         filterOnKeypress: true,
+        dataPageSize: 200,
         dataSource: "attendanceDS",
         modalEditing: true,
         editEvent: "none",
