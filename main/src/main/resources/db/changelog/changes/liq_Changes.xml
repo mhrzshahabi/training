@@ -2670,7 +2670,7 @@ end;
     <changeSet id="abiz-2368-VIEW_ACTIVE_PERSONNEL" author="zare">
         <createView viewName="VIEW_ACTIVE_PERSONNEL" replaceIfExists="true">
             <![CDATA[
-  SELECT prs.*,vw.c_mobile as mobile,vw.c_email as email
+  SELECT prs.*,prs.first_name || '  ' || prs.last_name as C_FULL_NAME ,vw.c_mobile as mobile,vw.c_email as email
         FROM tbl_personnel prs left join view_contact_info vw on vw.id = prs.f_contact_info
         WHERE prs.deleted=0
              ]]>
