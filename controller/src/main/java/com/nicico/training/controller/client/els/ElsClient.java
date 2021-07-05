@@ -56,4 +56,7 @@ public interface ElsClient {
     @GetMapping("/extendedList/{sourceExamId}")
     ResendExamTimes getResendExamTimes(@PathVariable Long sourceExamId);
 
+    @RequestMapping(method = RequestMethod.POST, value = "/importCourse")
+    BaseResponse sendClass(@RequestBody ElsExamRequest request);
+
 }

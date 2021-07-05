@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 
-import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -53,7 +52,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 
 @RestController
@@ -569,6 +567,25 @@ public class ElsRestController {
             evaluationAverageResultToInstructor.setStatus(HttpStatus.UNAUTHORIZED.value());
             return evaluationAverageResultToInstructor;
         }
+    }
+
+    @GetMapping("/classToEls/{classId}")
+    public BaseResponse sendClass(@PathVariable Long classId) {
+
+        BaseResponse response = new BaseResponse();
+        try {
+
+            ElsExamRequest elsExamRequest = evaluationBeanMapper.toElsExamRequest(classId);
+            response = client.sendClass(elsExamRequest);
+            if (response.getStatus() == HttpStatus.OK.value())
+                tclassService.changeClassToOnlineStatus(classId, true);
+
+        } catch (TrainingException ex) {
+
+            response.setMessage("اطلاعات به سیستم آزمون آنلاین ارسال نشد");
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        }
+        return response;
     }
 
 }

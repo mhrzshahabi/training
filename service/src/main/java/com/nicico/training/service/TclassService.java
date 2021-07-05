@@ -1849,4 +1849,9 @@ public class TclassService implements ITclassService {
         evalAverageResult.setTotalAverage(totalAverage / averagePerQuestions.size());
         return evalAverageResult;
     }
+
+    @Override
+    public void changeClassToOnlineStatus(Long classId, boolean state) {
+        tclassDAO.changeClassToOnlineStatus(classId, state);
+    }
 }

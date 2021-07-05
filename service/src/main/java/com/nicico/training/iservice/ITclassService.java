@@ -140,4 +140,7 @@ public interface ITclassService {
     BaseResponse changeClassStatusToInProcess(Long classId);
 
     EvalAverageResult getStudentsAverageGradeToTeacher(Set<ClassStudent> classStudents);
-}
+
+    void changeClassToOnlineStatus(Long classId, boolean state);
+
+    }

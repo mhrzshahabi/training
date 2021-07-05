@@ -10,6 +10,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.client.els.ElsClient;
+import request.exam.ElsExamRequest;
+import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.model.Institute;
@@ -24,7 +27,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.poi.ss.formula.functions.T;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -66,6 +68,8 @@ public class TclassRestController {
     private final PersonnelDAO personnelDAO;
     private final InstituteDAO instituteDAO;
     private final MessageSource messageSource;
+    private final ElsClient client;
+    private final EvaluationBeanMapper evaluationBeanMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -134,8 +138,17 @@ public class TclassRestController {
         TclassCreateResponse response = new TclassCreateResponse();
         try {
             response.setRecord(tClassService.update(id, request, cancelClassesIds));
+            if (request.getClassToOnlineStatus() != null && request.getClassToOnlineStatus()) {
+
+                ElsExamRequest elsExamRequest = evaluationBeanMapper.toElsExamRequest(id);
+                BaseResponse baseResponse = client.sendClass(elsExamRequest);
+                if (baseResponse.getStatus() == HttpStatus.OK.value())
+                    response.setMessage("عملیات ویرایش کلاس با موفقیت انجام و برای آزمون آنلاین ارسال شد");
+                else
+                    response.setMessage("عملیات ویرایش کلاس با موفقیت انجام شد ولی اطلاعات ویرایش شده برای آزمون آنلاین ارسال نشد");
+            } else
+                response.setMessage("عملیات ویرایش کلاس با موفقیت انجام شد.");
             response.setStatus(200);
-            response.setMessage("عملیات ویرایش کلاس با موفقیت انجام شد.");
         } catch (Exception e) {
             response.setStatus(409);
             response.setMessage("عملیات با مشکل مواجه شد.");
