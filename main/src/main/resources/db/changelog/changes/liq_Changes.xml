@@ -2504,4 +2504,176 @@ end;
             ]]>
         </sql>
     </changeSet>
+    <changeSet author="zare" id="abiz-2368-data-migration-drop-columns">
+        <sql>
+            <![CDATA[
+
+            alter table TBL_CONTACT_INFO add tmp_personnel_id number;
+            merge into TBL_CONTACT_INFO c_info
+            using (select * from TBL_PERSONNEL where ACTIVE = 1 and DELETED = 0 and f_contact_info is null) personnel
+            on (personnel.f_contact_info = c_info.id)
+            when not matched then
+            insert (id, c_mobile, c_email, C_CREATED_BY, D_CREATED_DATE, N_VERSION, tmp_personnel_id)
+            values (seq_contact_info_id.nextval, personnel.mobile,personnel.EMAIL, 'system(first mobile data from TBL_PERSONNEL)', sysdate, 0,
+            personnel.id);
+
+            merge into TBL_PERSONNEL personnel
+            using TBL_CONTACT_INFO c_info
+            on (personnel.id = c_info.tmp_personnel_id)
+            when matched then update set f_contact_info = c_info.id
+            where f_contact_info is null;
+
+            merge into TBL_PERSONNEL log_personnel
+            using (select * from TBL_PERSONNEL s where f_contact_info is not null) personnel
+            on (log_personnel.NATIONAL_CODE = personnel.NATIONAL_CODE)
+            when matched then
+            update set f_contact_info = personnel.F_CONTACT_INFO
+            where log_personnel.F_CONTACT_INFO is null;
+
+            ------------------------------    forever deleted personnel    -----------------------------
+
+            merge into TBL_CONTACT_INFO c_info
+            using (select * from TBL_PERSONNEL where  f_contact_info is null)  deleted_personnel
+            on (deleted_personnel.f_contact_info = c_info.id)
+            when not matched then
+            insert (id, c_mobile, c_email, C_CREATED_BY, D_CREATED_DATE, N_VERSION, tmp_personnel_id)
+            values (seq_contact_info_id.nextval, deleted_personnel.mobile,deleted_personnel.EMAIL, 'system(mobile from TBL_PERSONNEL(forever-deleted-person))', sysdate, 0,
+            deleted_personnel.id);
+
+            merge into TBL_PERSONNEL personnel
+            using TBL_CONTACT_INFO c_info
+            on (personnel.id = c_info.tmp_personnel_id)
+            when matched then update set f_contact_info = c_info.id
+            where f_contact_info is null;
+
+            alter table TBL_CONTACT_INFO drop column tmp_personnel_id;
+
+             ]]>
+        </sql>
+        <dropColumn tableName="TBL_PERSONNEL" columnName="MOBILE"/>
+        <dropColumn tableName="TBL_PERSONNEL" columnName="EMAIL"/>
+
+        <dropColumn tableName="TBL_PERSONNEL_REGISTERED" columnName="MOBILE"/>
+        <dropColumn tableName="TBL_PERSONNEL_REGISTERED" columnName="EMAIL"/>
+
+    </changeSet>
+
+    <changeSet author="zare" id="abiz-2368-CONTACT_INFO_MDMS">
+        <sql endDelimiter="/">
+            <![CDATA[
+     create OR REPLACE PROCEDURE PRC_MERGE_TBL_CONTACT_INFO_MDMS AS
+            BEGIN
+            -------------------------- NEW CONTACT-INFOS ---------------------------------------------------------------------------
+                DECLARE
+                    CURSOR NEW_PERSONNELS IS SELECT ID, F_CONTACT_INFO
+                                             FROM TBL_PERSONNEL
+                                             WHERE F_CONTACT_INFO IS NULL FOR UPDATE OF F_CONTACT_INFO;
+                    NEXT_ID NUMBER;
+                BEGIN
+                    FOR P IN NEW_PERSONNELS
+                        LOOP
+                            SELECT SEQ_CONTACT_INFO_ID.nextval INTO NEXT_ID FROM DUAL;
+                            INSERT INTO TBL_CONTACT_INFO(ID, C_CREATED_BY, D_CREATED_DATE, N_VERSION)
+                            VALUES (NEXT_ID, 'PRC_MERGE(NEW PERSONNEL)', SYSDATE, 0);
+                            UPDATE TBL_PERSONNEL SET F_CONTACT_INFO = NEXT_ID WHERE CURRENT OF NEW_PERSONNELS;
+                        END LOOP;
+                END;
+
+                DECLARE
+                    CURSOR NEW_PERSONNELS IS SELECT ID, F_CONTACT_INFO
+                                             FROM TBL_PERSONNEL_REGISTERED
+                                             WHERE F_CONTACT_INFO IS NULL FOR UPDATE OF F_CONTACT_INFO;
+                    NEXT_ID NUMBER;
+                BEGIN
+                    FOR P IN NEW_PERSONNELS
+                        LOOP
+                            SELECT SEQ_CONTACT_INFO_ID.nextval INTO NEXT_ID FROM DUAL;
+                            INSERT INTO TBL_CONTACT_INFO(ID, C_CREATED_BY, D_CREATED_DATE, N_VERSION)
+                            VALUES (NEXT_ID, 'PRC_MERGE(NEW PERSONNEL_REGISTERED)', SYSDATE, 0);
+                            UPDATE TBL_PERSONNEL_REGISTERED SET F_CONTACT_INFO = NEXT_ID WHERE CURRENT OF NEW_PERSONNELS;
+                        END LOOP;
+                END;
+
+            --------------------------- TBL_PERSONNEL ------------------------------------------------------------------------------
+                MERGE INTO TBL_CONTACT_INFO TR_CONTACT_INFO
+                USING (
+                    SELECT TR_PRS.F_CONTACT_INFO,
+                           C_NATIONAL_CODE,
+                           MDMS_CONTACT_INFO.C_MOBILE,
+                           MDMS_CONTACT_INFO.C_EMAIL
+                    FROM (
+                             SELECT NVL(E.C_MOBILE, P.C_MOBILE) AS C_MOBILE,
+                                    NVL(E.C_EMAIL, P.C_EMAIL)   AS C_EMAIL,
+                                    P.C_NATIONAL_CODE
+                             FROM MDMS_TBL_MD_PEOPLE P
+                                      FULL OUTER JOIN (SELECT C_EMAIL, C_MOBILE, C_NATIONAL_CODE
+                                                       FROM (
+                                                                SELECT E.*,
+                                                                       ROW_NUMBER() OVER (PARTITION BY E.C_PEOPLE_ID
+                                                                           ORDER BY C_ID DESC) AS INX
+                                                                FROM MDMS_TBL_MD_EMPLOYEE E
+                                                            )
+                                                       WHERE INX = 1
+                             ) E ON E.C_NATIONAL_CODE = P.C_NATIONAL_CODE
+                         ) MDMS_CONTACT_INFO
+                             INNER JOIN (SELECT F_CONTACT_INFO, NATIONAL_CODE
+                                         FROM TBL_PERSONNEL
+                                         WHERE DELETED = 0 AND NATIONAL_CODE IS NOT NULL) TR_PRS
+                                        ON TR_PRS.NATIONAL_CODE = MDMS_CONTACT_INFO.C_NATIONAL_CODE) MDMS_CONTACT_INFO
+                ON (MDMS_CONTACT_INFO.F_CONTACT_INFO = TR_CONTACT_INFO.ID)
+                WHEN MATCHED THEN
+                    UPDATE
+                    SET C_MDMS_MOBILE        = MDMS_CONTACT_INFO.C_MOBILE,
+                        C_EMAIL              = MDMS_CONTACT_INFO.C_EMAIL,
+                        D_LAST_MODIFIED_DATE = SYSDATE,
+                        C_LAST_MODIFIED_BY   = 'CHARGOON';
+
+            --------------------------- TBL_PERSONNEL_REGISTERED -------------------------------------------------------------------
+                MERGE INTO TBL_CONTACT_INFO TR_CONTACT_INFO
+                USING (
+                    SELECT TR_PRS.F_CONTACT_INFO,
+                           C_NATIONAL_CODE,
+                           MDMS_CONTACT_INFO.C_MOBILE,
+                           MDMS_CONTACT_INFO.C_EMAIL
+                    FROM (
+                             SELECT NVL(E.C_MOBILE, P.C_MOBILE) AS C_MOBILE,
+                                    NVL(E.C_EMAIL, P.C_EMAIL)   AS C_EMAIL,
+                                    P.C_NATIONAL_CODE
+                             FROM MDMS_TBL_MD_PEOPLE P
+                                      FULL OUTER JOIN (SELECT C_EMAIL, C_MOBILE, C_NATIONAL_CODE
+                                                       FROM (
+                                                                SELECT E.*,
+                                                                       ROW_NUMBER() OVER (PARTITION BY E.C_PEOPLE_ID
+                                                                           ORDER BY C_ID DESC) AS INX
+                                                                FROM MDMS_TBL_MD_EMPLOYEE E
+                                                            )
+                                                       WHERE INX = 1
+                             ) E ON E.C_NATIONAL_CODE = P.C_NATIONAL_CODE
+                         ) MDMS_CONTACT_INFO
+                             INNER JOIN (SELECT F_CONTACT_INFO, NATIONAL_CODE
+                                         FROM TBL_PERSONNEL_REGISTERED
+                                         WHERE NATIONAL_CODE IS NOT NULL) TR_PRS
+                                        ON TR_PRS.NATIONAL_CODE = MDMS_CONTACT_INFO.C_NATIONAL_CODE) MDMS_CONTACT_INFO
+                ON (MDMS_CONTACT_INFO.F_CONTACT_INFO = TR_CONTACT_INFO.ID)
+                WHEN MATCHED THEN
+                    UPDATE
+                    SET C_MDMS_MOBILE        = MDMS_CONTACT_INFO.C_MOBILE,
+                        C_EMAIL              = MDMS_CONTACT_INFO.C_EMAIL,
+                        D_LAST_MODIFIED_DATE = SYSDATE,
+                        C_LAST_MODIFIED_BY   = 'CHARGOON';
+
+            END ;
+            /
+             ]]>
+        </sql>
+    </changeSet>
+    <changeSet id="abiz-2368-VIEW_ACTIVE_PERSONNEL" author="zare">
+        <createView viewName="VIEW_ACTIVE_PERSONNEL" replaceIfExists="true">
+            <![CDATA[
+  SELECT prs.*,vw.c_mobile as mobile,vw.c_email as email
+        FROM tbl_personnel prs left join view_contact_info vw on vw.id = prs.f_contact_info
+        WHERE prs.deleted=0
+             ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>

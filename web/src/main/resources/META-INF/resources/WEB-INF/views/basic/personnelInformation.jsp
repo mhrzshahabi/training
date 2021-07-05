@@ -387,7 +387,7 @@
                         filterOperator: "iContains"
                     },
                     {
-                        name: "mobile",
+                        name: "contactInfo.mobile",
                         title: "<spring:message code="mobile"/>",
                         filterOperator: "iContains"
                     },
