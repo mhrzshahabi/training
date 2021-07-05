@@ -11,8 +11,10 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.PersonnelRegistered;
+import com.nicico.training.repository.ContactInfoDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
 
     private final ModelMapper modelMapper;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
+    private final ContactInfoDAO contactInfoDAO;
 
     //Unused
     @Transactional(readOnly = true)
@@ -56,6 +59,8 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     @Override
     public PersonnelRegisteredDTO.Info create(PersonnelRegisteredDTO.Create request) {
         final PersonnelRegistered personnelRegistered = modelMapper.map(request, PersonnelRegistered.class);
+        ContactInfo contactInfo = contactInfoDAO.save(new ContactInfo());
+        personnelRegistered.setContactInfo(contactInfo);
         personnelRegistered.setActive(1);
         return save(personnelRegistered);
     }
@@ -69,7 +74,10 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         modelMapper.map(personnelRegistered, updating);
         modelMapper.map(request, updating);
         updating.setActive(1);
-
+        if (updating.getContactInfo() == null) {
+            ContactInfo contactInfo = contactInfoDAO.save(new ContactInfo());
+            updating.setContactInfo(contactInfo);
+        }
         if (updating.getEnabled() == 494) {
             updating.setEnabled(null);
         }
@@ -143,6 +151,8 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     // ------------------------------
 
     private PersonnelRegisteredDTO.Info save(PersonnelRegistered personnelRegistered) {
+        ContactInfo contactInfo = contactInfoDAO.save(personnelRegistered.getContactInfo());
+        personnelRegistered.setContactInfo(contactInfo);
         final PersonnelRegistered saved = personnelRegisteredDAO.saveAndFlush(personnelRegistered);
         return modelMapper.map(saved, PersonnelRegisteredDTO.Info.class);
     }

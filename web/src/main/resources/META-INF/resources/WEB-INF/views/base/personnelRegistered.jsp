@@ -370,7 +370,7 @@
             {name: "address", title: "<spring:message code="home.address"/>", filterOperator: "iContains"},
             {name: "phone", title: "<spring:message code="telephone"/>", filterOperator: "iContains"},
             {name: "fax", title: "<spring:message code="fax"/>", filterOperator: "iContains"},
-            {name: "mobile", title: "<spring:message code="cellPhone"/>", filterOperator: "iContains"},
+            {name: "contactInfo.mobile", title: "<spring:message code="cellPhone"/>", filterOperator: "iContains"},
             {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
             {name: "accountNumber", title: "<spring:message code="account.number"/>", filterOperator: "iContains"},
 
@@ -651,22 +651,22 @@
             {name: "age", title: "<spring:message code='age'/>", keyPressFilter: "[0-9]",
                 length: "2"},
             {
-                name: "mobile",
+                name: "contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
                 keyPressFilter: "[0-9|-|+]",
                 length: "11",
                 required: true,
                 // validators: [TrValidators.MobileValidate],
                 changed: function () {
-                    DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("mobile", true);
+                    DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("contactInfo.mobile", true);
                     var mobileCheck;
-                    mobileCheck = checkMobilePerReg(DynamicForm_PersonnelReg_BaseInfo.getValue("mobile"));
+                    mobileCheck = checkMobilePerReg(DynamicForm_PersonnelReg_BaseInfo.getValue("contactInfo.mobile"));
                     cellPhoneCheckPerReg = mobileCheck;
                     if (mobileCheck === false)
-                        DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("mobile", "<spring:message
+                        DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("contactInfo.mobile", "<spring:message
                                                                            code='msg.mobile.validation'/>", true);
                     if (mobileCheck === true)
-                        DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("mobile", true);
+                        DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("contactInfo.mobile", true);
                 }
             },
             {name: "insuranceCode", title: "<spring:message code='insurance.code'/>",  keyPressFilter: "[0-9]",
@@ -1248,7 +1248,7 @@
                 return;
             }
             if (cellPhoneCheckPerReg === false) {
-                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("mobile", "<spring:message code='msg.mobile.validation'/>", true);
+                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("contactInfo.mobile", "<spring:message code='msg.mobile.validation'/>", true);
                 return;
             }
             if (mailCheckPerReg === false) {
@@ -1272,6 +1272,12 @@
                 if (typeof DynamicForm_PersonnelReg_BaseInfo.getItem('personnelNo').getValue() == "undefined")
                 { DynamicForm_PersonnelReg_BaseInfo.setValue('personnelNo',DynamicForm_PersonnelReg_BaseInfo.getItem('nationalCode').getValue())}
                 var data = PersonnelReg_vm.getValues();
+                delete data.contactInfo.emobileForSMS;
+                delete data.contactInfo.emobileForCN;
+                /*wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.contactInfo.id), "PUT", JSON.stringify(data.contactInfo),(r)=> {
+                    wait.close();
+                }));*/
                 var personnelRegSaveUrl = personnelRegUrl;
                 personnelRegWait = createDialog("wait");
                 if (personnelRegMethod.localeCompare("PUT") == 0) {
@@ -1279,7 +1285,7 @@
                     personnelRegSaveUrl += "/" + personnelRegRecord.id;
                 }
                 isc.RPCManager.sendRequest(TrDSRequest(personnelRegSaveUrl, personnelRegMethod, JSON.stringify(data), "callback: personnelReg_action_result(rpcResponse)"));
-                // Window_PersonnelReg_JspPersonnelReg.close();
+                    // Window_PersonnelReg_JspPersonnelReg.close();
             }
         }
     });

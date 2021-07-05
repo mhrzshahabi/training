@@ -160,16 +160,10 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     public Integer getTrainingReactionStatus(Long classId);
 
     @Transactional
-    @Query(value = "select tmp_table.class_id,count(*) from (select cs.class_id from tbl_class_student cs inner join (select st.id,inf.mobile from tbl_student st left join " +
-            "(select case when n_mobile_for_sms is null then C_MOBILE " +
-            "            when n_mobile_for_sms = 0 then C_MOBILE " +
-            "            when n_mobile_for_sms = 1 then C_MOBILE2 " +
-            "            when n_mobile_for_sms = 2 then c_hr_mobile " +
-            "            when n_mobile_for_sms = 3 then c_mdms_mobile " +
-            "      end as mobile,id " +
-            " from TBL_CONTACT_INFO) inf on st.f_contact_info = inf.id) st on st.id=cs.student_id where cs.class_id in (:classIds) and " +
+    @Query(value = "select tmp_table.class_id,count(*) from (select cs.class_id from tbl_class_student cs inner join (select st.id,INF.MOBILE_FOR_SMS MOBILE from tbl_student st left join " +
+            " VIEW_CONTACT_INFO inf on st.f_contact_info = inf.id) st on st.id=cs.student_id where cs.class_id in (:classIds) and " +
             " not EXISTS (select NULL from tbl_message_contact mc inner join tbl_message m on m.id=mc.f_message_id where mc.n_count_sent>0 and m.f_message_class = cs.class_id and " +
-            "m.f_message_user_type=679 and mc.c_object_mobile=st.mobile)) tmp_table group by tmp_table.class_id", nativeQuery = true)
+            "m.f_message_user_type=679 and mc.c_object_mobile=inf.mobile)) tmp_table group by tmp_table.class_id", nativeQuery = true)
     List<Object> checkClassesForSendMessage(List<Long> classIds);
 
     @Modifying
