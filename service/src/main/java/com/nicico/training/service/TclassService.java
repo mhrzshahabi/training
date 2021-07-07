@@ -1851,6 +1851,7 @@ public class TclassService implements ITclassService {
     }
 
     @Override
+    @Transactional
     public void changeClassToOnlineStatus(Long classId, boolean state) {
         tclassDAO.changeClassToOnlineStatus(classId, state);
     }
