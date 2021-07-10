@@ -526,6 +526,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
         if (nationalCode != null && !mustPass.isEmpty()) {
             try {
+                //1
                 PersonnelDTO.Info student = personnelService.getByPersonnelCodeAndNationalCode(nationalCode,personnelNumber);
                 if (student == null) {
                     throw new TrainingException(TrainingException.ErrorType.NotFound);

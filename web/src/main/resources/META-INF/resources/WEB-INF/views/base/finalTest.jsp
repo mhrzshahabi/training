@@ -1816,6 +1816,21 @@ let inValidStudents = [];
             ToolStrip_Actions_FinalTest.members[3].setDisabled(false);
             }
         }
+    function checkAllowToAddQuestion(record) {
+        if(record !== null) {
+                if (record.onlineFinalExamStatus === true){
+                    ToolStrip_Actions_FinalTest.members[0].setDisabled(true);
+                    ToolStrip_Actions_FinalTest.members[1].setDisabled(true);
+                }else {
+                    ToolStrip_Actions_FinalTest.members[0].setDisabled(false);
+                    ToolStrip_Actions_FinalTest.members[1].setDisabled(false);
+                }
+            }
+
+
+    }
+
+
 
     function loadTab(id) {
         if (FinalTestLG_finalTest.getSelectedRecord() === null) {
@@ -1842,7 +1857,10 @@ let inValidStudents = [];
                         checkHaveQuestion(res);
             });
                     TabSet_finalTest.enable();
+                    checkAllowToAddQuestion(FinalTestLG_finalTest.getSelectedRecord());
+
                     break;
+
                 }
 
             }
