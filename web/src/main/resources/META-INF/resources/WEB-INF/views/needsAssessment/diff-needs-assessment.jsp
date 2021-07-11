@@ -20,6 +20,8 @@
     var competenceTopData = [];
     var competenceBottomData = [];
     let oLoadAttachments_Job = null;
+    var cartablePostDescription = null;
+    var cartablePostType = null;
 
     let NeedsAssessmentTargetDS_DiffNeedsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_DiffNeedsAssessment",
@@ -477,6 +479,37 @@
         margin: 1,
         click(){
             Window_AddSkill_Diff.show();
+        }
+    });
+    var Button_post_JspDiffNeedsAssessment = isc.Button.create({
+        title:"جزییات پست",
+        margin: 1,
+        click(){
+             Window_Cartable_Post.show();
+            if (cartablePostType!==null) {
+                switch (cartablePostType) {
+                    case "Post" :
+                        Window_Cartable_Post.items[0].setValue("type", "پست انفرادی");
+                        break;
+                    case "TrainingPost" :
+                        Window_Cartable_Post.items[0].setValue("type", "پست");
+                        break;
+                    default:
+                        Window_Cartable_Post.items[0].setValue("type", "");
+                        break;
+
+                }
+            }else{
+                Window_Cartable_Post.items[0].setValue("type", "");
+            }
+
+
+            if (cartablePostDescription!==null) {
+                 Window_Cartable_Post.items[0].setValue("detail", cartablePostDescription);
+             }else{
+                 Window_Cartable_Post.items[0].setValue("detail", "");
+             }
+
         }
     });
     var Button_ShowAttachment_JspDiffNeedsAssessment = isc.Button.create({
@@ -1130,6 +1163,47 @@
                 ]
             })]
     });
+    let DynamicForm_Cartable_Post = isc.DynamicForm.create({
+        width: 600,
+        height: 120,
+        padding: 6,
+        titleAlign: "right",
+        fields: [
+            {
+                name: "type",
+                width: "100%",
+                canEdit: false,
+                title: "نوع پست : ",
+                editorType: 'text'
+            } , {
+                name: "detail",
+                width: "100%",
+                canEdit: false,
+                title: "توضیحات : ",
+                editorType: 'text'
+            }
+        ]
+    });
+
+    var Window_Cartable_Post = isc.Window.create({
+        width: 600,
+        height: 120,
+        numCols: 2,
+        title: "جزییات پست",
+        items: [
+            DynamicForm_Cartable_Post,
+            isc.MyHLayoutButtons.create({
+                members: [
+                    isc.IButtonCancel.create({
+                        title: "<spring:message code="close"/>",
+                        click: function () {
+                            Window_Cartable_Post.items[0].setValue("detail", "");
+                            Window_Cartable_Post.close();
+                        }
+                    })]
+            })]
+    });
+
 
     var NeedsAssessmentTargetDF_diffNeedsAssessment = isc.DynamicForm.create({
         ID: "NeedsAssessmentTargetDF_diffNeedsAssessment",
@@ -1196,6 +1270,7 @@
             // Button_CancelChange_JspDiffNeedsAssessment,
             Button_AddSkill_JspDiffNeedsAssessment,
             Button_ShowAttachment_JspDiffNeedsAssessment,
+            Button_post_JspDiffNeedsAssessment,
             Label_PlusData_JspDiffNeedsAssessment,
         ],
     });
@@ -1587,7 +1662,9 @@
     }
 
 
-    function loadDiffNeedsAssessment(objectId, type, state = "R&W") {
+    function loadDiffNeedsAssessment(objectId, type, objectDescription = null, state = "R&W") {
+        cartablePostType=type;
+        cartablePostDescription=objectDescription;
         if(state === "read"){
             NeedsAssessmentTargetDF_diffNeedsAssessment.disable()
             CompetenceTS_diffNeedsAssessment.disable();

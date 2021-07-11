@@ -485,7 +485,7 @@
         margin: 1,
         click: function () {
             wait.show();
-            showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"), true)
+            showWindowDiffNeedsAssessment(DynamicForm_JspEditNeedsAssessment.getValue("objectId"), DynamicForm_JspEditNeedsAssessment.getValue("objectType"), null,true)
         }
     });
 

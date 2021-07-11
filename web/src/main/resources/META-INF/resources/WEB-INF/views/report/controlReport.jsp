@@ -27,7 +27,6 @@
                 isc.IButtonSave.create({title: "word",}),
                 isc.IButtonSave.create({title: "pdf",})],
             buttonClick: function (button, index) {
-                debugger
                 if (index === 0) {
                     callback("word",...prs);
                 } else {

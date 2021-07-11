@@ -161,7 +161,8 @@ function defineWindowTreeNeedsAssessment() {
     });
 }
 
-function showWindowDiffNeedsAssessment(objectId, objectType, unchangeable = false) {
+function showWindowDiffNeedsAssessment(objectId, objectType, objectDescription = null, unchangeable = false) {
+    wait.show();
     let Window_NeedsAssessment_Diff = isc.Window.create({
         ID: "Window_NeedsAssessment_Diff",
         title: "اختلاف نیازسنجی",
@@ -172,7 +173,7 @@ function showWindowDiffNeedsAssessment(objectId, objectType, unchangeable = fals
         minWidth: 1024,
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
         showUs(id, type) {
-            loadDiffNeedsAssessment(id, type,"read");
+            loadDiffNeedsAssessment(id, type,objectDescription,"read");
             this.Super("show", arguments);
         },
     });
