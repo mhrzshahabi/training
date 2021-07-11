@@ -11,4 +11,6 @@ public class AveragePerQuestion {
 
     private String title;
     private Double score;
+    private Integer answeredStudentsNo;
+
 }

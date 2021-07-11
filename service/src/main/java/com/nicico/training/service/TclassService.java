@@ -1838,7 +1838,7 @@ public class TclassService implements ITclassService {
             for (Map.Entry<String, Double> entryAnswered : answeredStudentsNo.entrySet()) {
 
                 if (entry.getKey().equals(entryAnswered.getKey())) {
-                    averagePerQuestions.add(new AveragePerQuestion(entry.getKey(), entry.getValue()/entryAnswered.getValue()));
+                    averagePerQuestions.add(new AveragePerQuestion(entry.getKey(), entry.getValue() / entryAnswered.getValue(), entryAnswered.getValue().intValue()));
                     totalAverage += entry.getValue()/entryAnswered.getValue();
                 }
             }
