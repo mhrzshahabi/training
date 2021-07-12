@@ -419,21 +419,28 @@
 
                 ListGrid_AllQuestions_FinalTestJSP.dataSource=RestDataSource_All_FinalTest;
                 ListGrid_AllQuestions_FinalTestJSP.setFields([
+                    {name: "id", primaryKey: true, hidden: true},
                     {
                         name: "code",
                         title: "<spring:message code="code"/>",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        width: 40,
+                        sortNormalizer: function (record) {
+                            return parseInt(record.code);
+                        }
                     },
                     {
                         name: "question",
                         title: "<spring:message code="question.bank.question"/>",
+                        width: 350,
                         filterOperator: "iContains"
                     },
                     {name: "displayType.id",
                         optionDataSource: DisplayTypeDS_FinalTest,
                         title: "<spring:message code="question.bank.display.type"/>",
-                        filterOperator: "iContains", autoFitWidth: true,
+                        filterOperator: "equals",
+                        width: 120,
+                        autoFitWidth: true,
                         editorType: "SelectItem",
                         valueField: "id",
                         displayField: "title",
@@ -453,12 +460,16 @@
                             pickListFields: [
                                 {name: "title"}
                             ]
+                        },
+                        sortNormalizer: function (record) {
+                            return record.displayType?.title;
                         }
                     },
                     {name: "questionType.id",
                         optionDataSource: AnswerTypeDS_FinalTest,
                         title: "<spring:message code="question.bank.question.type"/>",
-                        filterOperator: "iContains", autoFitWidth: true,
+                        filterOperator: "equals",
+                        width: 90,
                         editorType: "SelectItem",
                         valueField: "id",
                         displayField: "title",
@@ -478,12 +489,16 @@
                             pickListFields: [
                                 {name: "title"}
                             ]
+                        },
+                        sortNormalizer: function (record) {
+                            return record.questionType?.title;
                         }},
                     {
                         name: "category.id",
                         optionDataSource: RestDataSource_category_FinalTest,
                         title: "<spring:message code="category"/>",
-                        filterOperator: "iContains", autoFitWidth: true,
+                        filterOperator: "equals",
+                        width: 130,
                         editorType: "SelectItem",
                         valueField: "id",
                         displayField: "titleFa",
@@ -503,13 +518,17 @@
                             pickListFields: [
                                 {name: "titleFa"}
                             ]
+                        },
+                        sortNormalizer: function (record) {
+                            return record.category?.titleFa;
                         }
                     },
                     {
                         name: "subCategory.id",
                         optionDataSource: RestDataSourceSubCategory_FinalTest,
                         title: "<spring:message code="subcategory"/>",
-                        filterOperator: "iContains", autoFitWidth: true,
+                        filterOperator: "equals",
+                        width: 120,
                         editorType: "SelectItem",
                         valueField: "id",
                         displayField: "titleFa",
@@ -529,42 +548,50 @@
                             pickListFields: [
                                 {name: "titleFa"}
                             ]
+                        },
+                        sortNormalizer: function (record) {
+                            return record.subCategory?.titleFa;
                         }
                     },
                     {
                         name: "teacher.fullNameFa",
                         title: "<spring:message code="teacher"/>",
-                        filterOperator: "iContains", autoFitWidth: true
+                        canFilter:false,
+                        width: 130
                     },
                     {
                         name: "course.titleFa",
                         title: "<spring:message code="course"/>",
-                        filterOperator: "iContains", autoFitWidth: true
+                        filterOperator: "iContains",
+                        width: 230,
                     },
                     {
                         name: "tclass.course.titleFa",
                         title: "<spring:message code="class"/>",
-                        filterOperator: "iContains", autoFitWidth: true},
+                        filterOperator: "iContains",
+                        width: 230,
+                    },
                     {
                         name: "tclass.code",
                         title: "<spring:message code='class.code'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        width: 110,
                     },
                     {
                         name: "tclass.startDate",
                         title: "<spring:message code='start.date'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        width: 80,
                     },
                     {
                         name: "tclass.endDate",
                         title: "<spring:message code='end.date'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true},
+                        width: 80,
+                    },
                     {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
                 ]);
 
@@ -615,6 +642,7 @@
                 ListGrid_AllQuestions_FinalTestJSP.dataSource=RestDataSource_All_FinalTest;
 
                 ListGrid_AllQuestions_FinalTestJSP.setFields([
+                    {name: "id", primaryKey: true, hidden: true},
                     {
                         name: "questionBank.code",
                         title: "<spring:message code="code"/>",
