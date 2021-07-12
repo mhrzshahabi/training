@@ -179,15 +179,18 @@
         sortField: "id",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-        allowAdvancedCriteria: false,
         filterOnKeypress: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
         gridComponents: [Lable_AllQuestions_FinalTest, "filterEditor", "header", "body"],
         dataArrived:function(){
             let lgIds = ListGrid_ForQuestions_FinalTestJSP.data.getAllCachedRows().map(function(item) {
+                console.log("injam hamintorrrrrrrrrrrrrrrr", item.questionBankId);
                 return item.questionBankId;
             });
 
             if(lgIds.length==0){
+                console.log("umadaaaaaaaaaaaaaaa");
                 return;
             }
 
@@ -196,6 +199,9 @@
             //     ListGrid_AllQuestions_FinalTestJSP.setSelectedState(findRows);
             //     findRows.setProperty("enabled", false);
             // }
+        },
+        filterEditorSubmit: function () {
+            ListGrid_AllQuestions_FinalTestJSP.invalidateCache();
         },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -419,12 +425,11 @@
 
                 ListGrid_AllQuestions_FinalTestJSP.dataSource=RestDataSource_All_FinalTest;
                 ListGrid_AllQuestions_FinalTestJSP.setFields([
-                    {name: "id", primaryKey: true, hidden: true},
                     {
                         name: "code",
                         title: "<spring:message code="code"/>",
                         filterOperator: "iContains",
-                        width: 40,
+                        autoFitWidth: true,
                         sortNormalizer: function (record) {
                             return parseInt(record.code);
                         }
@@ -432,14 +437,13 @@
                     {
                         name: "question",
                         title: "<spring:message code="question.bank.question"/>",
-                        width: 350,
+                        autoFitWidth: true,
                         filterOperator: "iContains"
                     },
                     {name: "displayType.id",
                         optionDataSource: DisplayTypeDS_FinalTest,
                         title: "<spring:message code="question.bank.display.type"/>",
                         filterOperator: "equals",
-                        width: 120,
                         autoFitWidth: true,
                         editorType: "SelectItem",
                         valueField: "id",
@@ -469,7 +473,7 @@
                         optionDataSource: AnswerTypeDS_FinalTest,
                         title: "<spring:message code="question.bank.question.type"/>",
                         filterOperator: "equals",
-                        width: 90,
+                        autoFitWidth: true,
                         editorType: "SelectItem",
                         valueField: "id",
                         displayField: "title",
@@ -498,7 +502,7 @@
                         optionDataSource: RestDataSource_category_FinalTest,
                         title: "<spring:message code="category"/>",
                         filterOperator: "equals",
-                        width: 130,
+                        autoFitWidth: true,
                         editorType: "SelectItem",
                         valueField: "id",
                         displayField: "titleFa",
@@ -528,7 +532,7 @@
                         optionDataSource: RestDataSourceSubCategory_FinalTest,
                         title: "<spring:message code="subcategory"/>",
                         filterOperator: "equals",
-                        width: 120,
+                        autoFitWidth: true,
                         editorType: "SelectItem",
                         valueField: "id",
                         displayField: "titleFa",
@@ -557,40 +561,46 @@
                         name: "teacher.fullNameFa",
                         title: "<spring:message code="teacher"/>",
                         canFilter:false,
-                        width: 130
+                        canSort: false,
+                        autoFitWidth: true
                     },
                     {
                         name: "course.titleFa",
                         title: "<spring:message code="course"/>",
                         filterOperator: "iContains",
-                        width: 230,
+                        autoFitWidth: true,
+                        sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }
                     },
                     {
                         name: "tclass.course.titleFa",
                         title: "<spring:message code="class"/>",
                         filterOperator: "iContains",
-                        width: 230,
+                        autoFitWidth: true,
+                        sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }
                     },
                     {
                         name: "tclass.code",
                         title: "<spring:message code='class.code'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        width: 110,
+                        autoFitWidth: true,
+                        sortNormalizer: function (record) { return record.tclass?.code; }
                     },
                     {
                         name: "tclass.startDate",
                         title: "<spring:message code='start.date'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        width: 80,
+                        autoFitWidth: true,
+                        sortNormalizer: function (record) { return record.tclass?.startDate; }
                     },
                     {
                         name: "tclass.endDate",
                         title: "<spring:message code='end.date'/>",
                         align: "center",
                         filterOperator: "iContains",
-                        width: 80,
+                        autoFitWidth: true,
+                        sortNormalizer: function (record) { return record.tclass?.endDate; }
                     },
                     {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
                 ]);
