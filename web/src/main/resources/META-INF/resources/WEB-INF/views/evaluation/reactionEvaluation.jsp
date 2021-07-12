@@ -1420,22 +1420,12 @@
 
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
-            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
             isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/evalResult/" + result[0].evaluationId, "GET", null, function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let results = JSON.parse(resp.data).data;
-                    var OK = isc.Dialog.create({
-                        message: "<spring:message code="msg.operation.successful"/>",
-                        icon: "[SKIN]say.png",
-                        title: "<spring:message code='message'/>"
-                    });
-                    setTimeout(function () {
-                        OK.close();
-                    }, 8000);
-
                     ListGrid_Result_evaluation.setData(results);
-
                     let Window_result_JspEvaluation = isc.Window.create({
                         width: 1024,
                         height: 768,

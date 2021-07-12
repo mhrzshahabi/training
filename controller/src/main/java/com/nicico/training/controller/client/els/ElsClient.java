@@ -59,4 +59,10 @@ public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/importCourse")
     BaseResponse sendClass(@RequestBody ElsExamRequest request);
 
+    @DeleteMapping( value = "/evaluations/remove/{sourceId}/{mobileNumber}")
+    BaseResponse deleteEvaluationForOnePerson(@PathVariable Long sourceId,@PathVariable String mobileNumber);
+
+    @DeleteMapping(value = "/evaluations/remove")
+    BaseResponse deleteEvaluationForOneClass(@RequestBody List<Long> sourceIds);
+
 }

@@ -89,7 +89,7 @@ abaspour 9803
             workflowRecordId = data.cId;
             switch(workFlowName){
                 case "NeedAssessment":
-                    showWindowDiffNeedsAssessment(workflowRecordId, data.cType);
+                    showWindowDiffNeedsAssessment(workflowRecordId, data.cType,data.rRRRobjectName,false);
                     break;
                 case "Competence":
                     isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/spec-list?id=" + workflowRecordId, "GET", null,(resp)=>{

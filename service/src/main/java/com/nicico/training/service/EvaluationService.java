@@ -361,25 +361,29 @@ public class EvaluationService implements IEvaluationService {
     public void updateClassStudentInfo(Evaluation evaluation,Integer version){
             if(evaluation.getQuestionnaireTypeId().equals(139L)){
                 Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatorId());
-                ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                classStudent.setEvaluationStatusReaction(version);
+                if (byId.isPresent()) {
+                    ClassStudent classStudent =byId.get();
+                    classStudent.setEvaluationStatusReaction(version) ;
+                }
             }
             else  if(evaluation.getQuestionnaireTypeId().equals(230L)){
                 Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatedId());
-                ClassStudent classStudent = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
-                       evaluation.getClassId(),evaluation.getEvaluatedId(), 188L,156L, 230L);
-                classStudent.setNumberOfSendedBehavioralForms(0);
-                classStudent.setNumberOfRegisteredBehavioralForms(0);
-                for (Evaluation evaluation1 : evaluations) {
-                    if(!evaluation1.getStatus())
-                        classStudent.setNumberOfSendedBehavioralForms(classStudent.getNumberOfSendedBehavioralForms()+1);
-                    else if(evaluation1.getStatus()) {
-                        classStudent.setNumberOfSendedBehavioralForms(classStudent.getNumberOfSendedBehavioralForms() + 1);
-                        classStudent.setNumberOfRegisteredBehavioralForms(classStudent.getNumberOfRegisteredBehavioralForms() + 1);
+                if (byId.isPresent()){
+                    ClassStudent classStudent = byId.get();
+                    List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+                            evaluation.getClassId(),evaluation.getEvaluatedId(), 188L,156L, 230L);
+                    classStudent.setNumberOfSendedBehavioralForms(0);
+                    classStudent.setNumberOfRegisteredBehavioralForms(0);
+                    for (Evaluation evaluation1 : evaluations) {
+                        if(!evaluation1.getStatus())
+                            classStudent.setNumberOfSendedBehavioralForms(classStudent.getNumberOfSendedBehavioralForms()+1);
+                        else if(evaluation1.getStatus()) {
+                            classStudent.setNumberOfSendedBehavioralForms(classStudent.getNumberOfSendedBehavioralForms() + 1);
+                            classStudent.setNumberOfRegisteredBehavioralForms(classStudent.getNumberOfRegisteredBehavioralForms() + 1);
+                        }
                     }
-                }
 
+                }
             }
     }
 

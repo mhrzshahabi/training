@@ -163,7 +163,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = "select tmp_table.class_id,count(*) from (select cs.class_id from tbl_class_student cs inner join (select st.id,INF.MOBILE_FOR_SMS MOBILE from tbl_student st left join " +
             " VIEW_CONTACT_INFO inf on st.f_contact_info = inf.id) st on st.id=cs.student_id where cs.class_id in (:classIds) and " +
             " not EXISTS (select NULL from tbl_message_contact mc inner join tbl_message m on m.id=mc.f_message_id where mc.n_count_sent>0 and m.f_message_class = cs.class_id and " +
-            "m.f_message_user_type=679 and mc.c_object_mobile=inf.mobile)) tmp_table group by tmp_table.class_id", nativeQuery = true)
+            "m.f_message_user_type=679 and mc.c_object_mobile=st.mobile)) tmp_table group by tmp_table.class_id", nativeQuery = true)
     List<Object> checkClassesForSendMessage(List<Long> classIds);
 
     @Modifying
