@@ -599,6 +599,7 @@
                     },
                 },
                 filterOnKeypress: true,
+                hidden: true
             },
             {name: "sendClassToOnlineBtn", canFilter: false, title: "ارسال به آزمون آنلاین", width: "145"},
             {name: "targetPopulationTypeId", hidden: true},
