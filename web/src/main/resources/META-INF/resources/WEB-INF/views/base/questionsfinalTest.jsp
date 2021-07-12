@@ -185,12 +185,10 @@
         gridComponents: [Lable_AllQuestions_FinalTest, "filterEditor", "header", "body"],
         dataArrived:function(){
             let lgIds = ListGrid_ForQuestions_FinalTestJSP.data.getAllCachedRows().map(function(item) {
-                console.log("injam hamintorrrrrrrrrrrrrrrr", item.questionBankId);
                 return item.questionBankId;
             });
 
             if(lgIds.length==0){
-                console.log("umadaaaaaaaaaaaaaaa");
                 return;
             }
 
