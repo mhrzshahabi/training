@@ -66,12 +66,13 @@
                 name: "classAlarmSelect",
                 title: "",
                 type: "radioGroup",
-                defaultValue: "4",
+                defaultValue: "5",
                 valueMap: {
                     "1": "لیست کلاسهایی که موعد ارزیابی واکنشی آنها امروز است",
                     "2": "لیست کلاسهایی که موعد ارزیابی یادگیری آنها امروز است",
                     "3": "لیست کلاسهایی که موعد ارزیابی رفتاری آنها امروز است",
-                    "4": "لیست همه ی کلاسها"
+                    "4": "لیست کلاسهایی که موعد ارزیابی آنها امروز است",
+                    "5": "لیست همه ی کلاسها"
                 },
                 vertical: false,
                 changed: function (form, item, value) {
@@ -121,6 +122,14 @@
                         ListGrid_class_Evaluation.fetchData(mainCriteria);
                     }
                     if (value === "4") {
+                        evalDateCriteria = createCriteria("tclassEndDate", "equals", todayDate);
+                        evalTypeCriteria = [];
+                        let mainCriteria = createMainCriteria();
+                        RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
+                        ListGrid_class_Evaluation.invalidateCache();
+                        ListGrid_class_Evaluation.fetchData(mainCriteria);
+                    }
+                    if (value === "5") {
                         evalDateCriteria = [];
                         evalTypeCriteria = [];
                         RestDataSource_class_Evaluation.fetchDataURL = viewClassDetailUrl + "/iscList";
