@@ -750,7 +750,7 @@
                     if (index === 0) {
                         evalWait_RE = createDialog("wait");
                         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteAllReactionEvaluationForms/" +
-                            classRecord_RE.id, "GET", null, function (resp) {
+                            classRecord_RE.id+"/true", "GET", null, function (resp) {
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                 ListGrid_student_RE.invalidateCache();
                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +

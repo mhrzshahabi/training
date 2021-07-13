@@ -326,29 +326,29 @@ public class EvaluationRestController {
     @PostMapping("/deleteEvaluation")
     public ResponseEntity deleteEvaluation(@RequestBody HashMap req) {
 
-//        if (req.get("alow") != null) {
-//            if (Boolean.parseBoolean(req.get("isTeacher").toString()))
-//            {
-//                EvalElsData data = evaluationService.GetTeacherElsData(req);
-//                BaseResponse response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
-//                if (response.getStatus() == 200)
-//                    return deleteEvaluationAfterEls(req, true);
-//                else
-//                    return deleteEvaluationAfterEls(req, false);
-//            }
-//            else{
-//                EvalElsData data = evaluationService.GetStudentElsData(req);
-//                BaseResponse response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
-//                if (response.getStatus() == 200)
-//                    return deleteEvaluationAfterEls(req, true);
-//                else
-//                    return deleteEvaluationAfterEls(req, false);
-//            }
-//
-//
-//        } else {
+        if (req.get("alow") != null) {
+            if (Boolean.parseBoolean(req.get("isTeacher").toString()))
+            {
+                EvalElsData data = evaluationService.GetTeacherElsData(req);
+                BaseResponse response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+                if (response.getStatus() == 200)
+                    return deleteEvaluationAfterEls(req, true);
+                else
+                    return deleteEvaluationAfterEls(req, false);
+            }
+            else{
+                EvalElsData data = evaluationService.GetStudentElsData(req);
+                BaseResponse response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+                if (response.getStatus() == 200)
+                    return deleteEvaluationAfterEls(req, true);
+                else
+                    return deleteEvaluationAfterEls(req, false);
+            }
+
+
+        } else {
             return deleteEvaluationAfterEls(req, false);
-//        }
+        }
 
 
     }
@@ -390,13 +390,25 @@ public class EvaluationRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}")
-    public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
-        evaluationService.deleteAllReactionEvaluationForms(classId);
-        if (classId != null) {
-            iTclassService.changeOnlineEvalStudentStatus(classId, false);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}/{deleteInEls}")
+    public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId,@PathVariable boolean deleteInEls, HttpServletRequest iscRq) throws IOException {
+//       if (deleteInEls)
+//       {
+//
+//           evaluationService.deleteAllReactionEvaluationForms(classId);
+//           if (classId != null) {
+//               iTclassService.changeOnlineEvalStudentStatus(classId, false);
+//           }
+//           return new ResponseEntity<>(HttpStatus.OK);
+//       }
+//       else{
+           evaluationService.deleteAllReactionEvaluationForms(classId);
+           if (classId != null) {
+               iTclassService.changeOnlineEvalStudentStatus(classId, false);
+           }
+           return new ResponseEntity<>(HttpStatus.OK);
+//       }
+
     }
 
     @Loggable

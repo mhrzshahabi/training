@@ -341,6 +341,13 @@ public class EvaluationService implements IEvaluationService {
         evaluationDAO.deleteAll(evaluations);
     }
 
+//    @Transactional
+//    @Override
+//    public List<Evaluation> getAllReactionEvaluationForms(Long classId){
+//        List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId,154L,139L);
+//      return evaluations;
+//    }
+
     //----------------------------------------------- evaluation updating ----------------------------------------------
     public void updateTclassInfo(Long classID,Integer reactionTrainingStatus, Integer reactionTeacherStatus){
         Optional<Tclass> byId = tclassDAO.findById(classID);
