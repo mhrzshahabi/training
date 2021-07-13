@@ -56,8 +56,8 @@ public interface ElsClient {
     @GetMapping("/extendedList/{sourceExamId}")
     ResendExamTimes getResendExamTimes(@PathVariable Long sourceExamId);
 
-    @DeleteMapping( value = "/evaluations/remove/{sourceId}/{mobileNumber}")
-    BaseResponse deleteEvaluationForOnePerson(@PathVariable Long sourceId,@PathVariable String mobileNumber);
+    @DeleteMapping( value = "/evaluations/remove/{sourceId}/{nationalCode}")
+    BaseResponse deleteEvaluationForOnePerson(@PathVariable Long sourceId,@PathVariable String nationalCode);
 
     @DeleteMapping(value = "/evaluations/remove")
     BaseResponse deleteEvaluationForOneClass(@RequestBody List<Long> sourceIds);

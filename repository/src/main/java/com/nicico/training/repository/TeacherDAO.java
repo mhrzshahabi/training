@@ -47,4 +47,8 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     String getTeacherFullName(Long teacherID);
 
     List<Teacher> findDistinctByTclasseCourseId(Long courseId);
+
+    @Transactional
+    @Query(value = "SELECT  p.c_national_code FROM tbl_teacher t  LEFT JOIN tbl_personal_info  p ON t.f_personality = p.id WHERE t.id = ?", nativeQuery = true)
+    String getTeacherNationalCode(Long teacherID);
 }

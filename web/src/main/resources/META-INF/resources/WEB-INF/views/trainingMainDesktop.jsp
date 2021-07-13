@@ -13,6 +13,7 @@
     <title><spring:message code="training.system"/></title>
     <link rel="shortcut icon" href="<spring:url value='/images/nicico.png' />"/>
 
+    <SCRIPT>var _set=Set; window.localStorage.setItem("ticketing-token",accessToken)</SCRIPT>
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Foundation.js></SCRIPT>
@@ -43,6 +44,7 @@
     <script src="<spring:url value='/js/loadjs.min.js' />"></script>
 
     <script>
+        // const set1 = new Set([1, 2, 3, 4, 5]);
 
         var sayBrowser = (function(){
             var ua= navigator.userAgent, tem,
@@ -1131,6 +1133,7 @@
             return true;
         }
     </script>
+    <script src="<spring:url value='/js/nicico-ticket.js' />"></script>
 
 
     <script src="<spring:url value='/js/dateReformat.js' />"></script>
@@ -1499,6 +1502,12 @@
         height: "100%",
         styleName: "header-logo",
         contents: "<div class='header-title-right'><div class='header-title-top'><h3><spring:message code='training.system.company'/></h3><h4><spring:message code='training.system'/></h4></div><div class='header-title-version'><h4><spring:message code='training.system.version'/></h4></div><img width='50' height='50' src='static/img/logo-23.svg'/></div>"
+    });
+    var ticket = isc.HTMLFlow.create({
+        width: 350,
+        height: "100%",
+        styleName: "header-logo",
+        contents: "<nicico-ticket></nicico-ticket>"
     });
 
     <%--var headerFlow = isc.HTMLFlow.create({--%>
@@ -2930,6 +2939,7 @@
         height: 50,
         styleName: "header-top",
         members: [headerLogo,
+            // ticket,
             // headerFlow,
             headerExitHLayout],
     });
@@ -4220,5 +4230,6 @@
     });
 
 </script>
+<nicico-ticket></nicico-ticket>
 </body>
 </html>

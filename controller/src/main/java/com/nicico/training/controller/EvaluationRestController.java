@@ -9,11 +9,13 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
+import dto.evaluuation.EvalElsData;
 import dto.evaluuation.EvalQuestionDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +30,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -62,7 +65,8 @@ public class EvaluationRestController {
     private final ClassEvaluationGoalsService classEvaluationGoalsService;
     private final ITclassService iTclassService;
     private final EvaluationAnswerService answerService;
-    private final MessageSource messageSource;
+    private final ElsClient client;
+
     @Loggable
     @PostMapping("/printWithCriteria")
     @Transactional
@@ -321,11 +325,40 @@ public class EvaluationRestController {
     @Loggable
     @PostMapping("/deleteEvaluation")
     public ResponseEntity deleteEvaluation(@RequestBody HashMap req) {
+
+        if (req.get("alow") != null) {
+            if (Boolean.parseBoolean(req.get("isTeacher").toString()))
+            {
+                EvalElsData data = evaluationService.GetTeacherElsData(req);
+                BaseResponse response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+                if (response.getStatus() == 200)
+                    return deleteEvaluationAfterEls(req, true);
+                else
+                    return deleteEvaluationAfterEls(req, false);
+            }
+            else{
+                EvalElsData data = evaluationService.GetStudentElsData(req);
+                BaseResponse response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+                if (response.getStatus() == 200)
+                    return deleteEvaluationAfterEls(req, true);
+                else
+                    return deleteEvaluationAfterEls(req, false);
+            }
+
+
+        } else {
+            return deleteEvaluationAfterEls(req, false);
+        }
+
+
+    }
+
+    private ResponseEntity deleteEvaluationAfterEls(HashMap req, boolean isDelete) {
         evaluationService.deleteEvaluation(req);
-        if (req.get("classId") != null && req.get("questionnaireTypeId")!= null && req.get("questionnaireTypeId").toString().equals("140")) {
+        if (req.get("classId") != null && req.get("questionnaireTypeId") != null && req.get("questionnaireTypeId").toString().equals("140")) {
             iTclassService.changeOnlineEvalTeacherStatus(Long.parseLong(req.get("classId").toString()), false);
         }
-        if (req.get("classId") != null && req.get("questionnaireTypeId")!= null && req.get("questionnaireTypeId").toString().equals("139")) {
+        if (req.get("classId") != null && req.get("questionnaireTypeId") != null && req.get("questionnaireTypeId").toString().equals("139")) {
             iTclassService.changeOnlineEvalStudentStatus(Long.parseLong(req.get("classId").toString()), false);
         }
         return new ResponseEntity<>(HttpStatus.OK);
@@ -357,19 +390,31 @@ public class EvaluationRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}")
-    public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, HttpServletRequest iscRq) throws IOException {
-        evaluationService.deleteAllReactionEvaluationForms(classId);
-        if (classId != null) {
-            iTclassService.changeOnlineEvalStudentStatus(classId, false);
-        }
-        return new ResponseEntity<>(HttpStatus.OK);
+    @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}/{deleteInEls}")
+    public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId,@PathVariable boolean deleteInEls, HttpServletRequest iscRq) throws IOException {
+//       if (deleteInEls)
+//       {
+//
+//           evaluationService.deleteAllReactionEvaluationForms(classId);
+//           if (classId != null) {
+//               iTclassService.changeOnlineEvalStudentStatus(classId, false);
+//           }
+//           return new ResponseEntity<>(HttpStatus.OK);
+//       }
+//       else{
+           evaluationService.deleteAllReactionEvaluationForms(classId);
+           if (classId != null) {
+               iTclassService.changeOnlineEvalStudentStatus(classId, false);
+           }
+           return new ResponseEntity<>(HttpStatus.OK);
+//       }
+
     }
 
     @Loggable
     @GetMapping(value = "/classHasEvaluationForm/{classId}")
     public ResponseEntity<Boolean> classHasEvaluationForm(@PathVariable Long classId) throws IOException {
-            return new ResponseEntity<>(evaluationService.classHasEvaluationForm(classId),HttpStatus.OK);
+        return new ResponseEntity<>(evaluationService.classHasEvaluationForm(classId), HttpStatus.OK);
     }
 
     //--------------------------------------------- Calender -----------------------------------------------------------
@@ -579,7 +624,7 @@ public class EvaluationRestController {
         }
 
         final ViewActivePersonnel personnel = viewActivePersonnelDAO.findPersonnelByPersonnelNo(String.valueOf(personnelId));
-            //        final ViewActivePersonnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        //        final ViewActivePersonnel personnel = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
         List<Evaluation> behavioralResultCoWorker = evaluationDAO.findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
                 personnelId,
@@ -900,7 +945,7 @@ public class EvaluationRestController {
 
     @GetMapping(value = "/getEvaluationQuestions/{evaluationId}")
     public ResponseEntity<List<EvalQuestionDto>> getEvaluationQuestions(@PathVariable Long evaluationId) {
-        List<EvalQuestionDto> questionDtos=    evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluationId));
+        List<EvalQuestionDto> questionDtos = evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluationId));
         return new ResponseEntity<>(questionDtos, HttpStatus.OK);
 
     }

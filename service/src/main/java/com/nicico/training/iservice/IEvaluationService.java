@@ -5,6 +5,7 @@ import com.nicico.training.dto.EvaluationAnswerDTO;
 import com.nicico.training.dto.EvaluationDTO;
 import com.nicico.training.model.Evaluation;
 import com.nicico.training.model.EvaluationAnswer;
+import dto.evaluuation.EvalElsData;
 import dto.evaluuation.EvalQuestionDto;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -52,5 +53,8 @@ public interface IEvaluationService {
     Evaluation getById(long id);
 
     List<EvalQuestionDto> getEvaluationQuestions(List<EvaluationAnswer> answers);
+
+    EvalElsData GetTeacherElsData( HashMap req);
+    EvalElsData GetStudentElsData( HashMap req);
 
 }
