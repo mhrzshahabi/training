@@ -357,7 +357,7 @@
                         if (record.evaluationStatusReaction == "0" || record.evaluationStatusReaction == null)
                             createDialog("info", "فرم ارزیابی واکنشی برای این فراگیر صادر نشده است");
                         else {
-                            let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
+                            let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟aaaa",
                                 "<spring:message code="verify.delete"/>");
                             Dialog_remove.addProperties({
                                 buttonClick: function (button, index) {
@@ -371,6 +371,10 @@
                                         data.evaluatedTypeId = 504;
                                         data.questionnaireTypeId = 139;
                                         data.evaluationLevelId = 154;
+                                        data.alow = true;
+                                        data.nationalCode = record.student.nationalCode;
+                                        data.isTeacher = false;
+
                                         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                 ListGrid_student_RE.invalidateCache();
@@ -890,7 +894,7 @@
                                                             if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
                                                                 createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
                                                             else {
-                                                                let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
+                                                                let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟aaaaaa",
                                                                     "<spring:message code="verify.delete"/>");
                                                                 Dialog_remove.addProperties({
                                                                     buttonClick: function (button, index) {
@@ -904,6 +908,9 @@
                                                                             data.evaluatedTypeId = 504;
                                                                             data.questionnaireTypeId = 140;
                                                                             data.evaluationLevelId = 154;
+                                                                            data.alow = true;
+                                                                            data.isTeacher = true;
+
                                                                             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
                                                                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");

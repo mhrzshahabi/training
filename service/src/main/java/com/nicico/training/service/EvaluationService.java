@@ -8,6 +8,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
+import dto.evaluuation.EvalElsData;
 import dto.evaluuation.EvalQuestionDto;
 import dto.evaluuation.EvalQuestionOptional;
 import dto.evaluuation.EvalQuestionType;
@@ -31,6 +32,7 @@ public class EvaluationService implements IEvaluationService {
     private final ParameterService parameterService;
     private final QuestionnaireDAO questionnaireDAO;
     private final TclassDAO tclassDAO;
+    private final TeacherDAO teacherDAO;
     private final DynamicQuestionService dynamicQuestionService;
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
@@ -308,16 +310,8 @@ public class EvaluationService implements IEvaluationService {
 
     @Transactional
     @Override
-    public Boolean deleteEvaluation(@RequestBody HashMap req) {
-
-        EvaluationDTO.Info evaluation = getEvaluationByData(
-                Long.parseLong(req.get("questionnaireTypeId").toString()),
-                Long.parseLong(req.get("classId").toString()),
-                Long.parseLong(req.get("evaluatorId").toString()),
-                Long.parseLong(req.get("evaluatorTypeId").toString()),
-                Long.parseLong(req.get("evaluatedId").toString()),
-                Long.parseLong(req.get("evaluatedTypeId").toString()),
-                Long.parseLong(req.get("evaluationLevelId").toString()));
+    public Boolean deleteEvaluation(HashMap req) {
+        EvaluationDTO.Info evaluation = getEvaluationByReq(req);
         if(evaluation != null) {
             evaluationDAO.deleteById(evaluation.getId());
 
@@ -937,6 +931,45 @@ public class EvaluationService implements IEvaluationService {
         final Optional<Evaluation> sById = evaluationDAO.findById(id);
         final Evaluation evaluation = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EvaluationNotFound));
         return evaluation.getTclass().getId();
+    }
+
+
+
+    @Transactional
+    @Override
+    public EvalElsData GetTeacherElsData( HashMap req) {
+        EvalElsData data=new EvalElsData();
+        EvaluationDTO.Info evaluation = getEvaluationByReq(req);
+        if(evaluation != null) {
+            data.setSourceId(evaluation.getId());
+           data.setMobile( teacherDAO.getTeacherNationalCode( Long.parseLong(req.get("evaluatorId").toString())));
+        }
+    return data;
+
+    }
+
+    @Override
+    @Transactional
+    public EvalElsData GetStudentElsData(HashMap req) {
+        EvalElsData data=new EvalElsData();
+        EvaluationDTO.Info evaluation = getEvaluationByReq(req);
+        if(evaluation != null) {
+            data.setSourceId(evaluation.getId());
+            data.setMobile( req.get("nationalCode").toString());
+        }
+        return data;
+    }
+
+    @Transactional
+    public EvaluationDTO.Info getEvaluationByReq(HashMap req) {
+        return    getEvaluationByData(
+                Long.parseLong(req.get("questionnaireTypeId").toString()),
+                Long.parseLong(req.get("classId").toString()),
+                Long.parseLong(req.get("evaluatorId").toString()),
+                Long.parseLong(req.get("evaluatorTypeId").toString()),
+                Long.parseLong(req.get("evaluatedId").toString()),
+                Long.parseLong(req.get("evaluatedTypeId").toString()),
+                Long.parseLong(req.get("evaluationLevelId").toString()));
     }
 
 }
