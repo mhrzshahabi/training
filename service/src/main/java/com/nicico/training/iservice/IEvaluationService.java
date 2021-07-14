@@ -57,4 +57,9 @@ public interface IEvaluationService {
     EvalElsData GetTeacherElsData( HashMap req);
     EvalElsData GetStudentElsData( HashMap req);
 
+    List<Long> getAllReactionEvaluationForms(Long classId);
+
+    Boolean classHasEvaluationForm(Long classId);
+
+    List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationForm(HashMap req);
 }

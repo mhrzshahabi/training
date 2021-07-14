@@ -11,6 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
@@ -23,8 +24,6 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,7 +51,6 @@ public class EvaluationRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ModelMapper modelMapper;
-    private final EvaluationService evaluationService;
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final EvaluationDAO evaluationDAO;
@@ -64,6 +62,7 @@ public class EvaluationRestController {
     private final ClassStudentDAO classStudentDAO;
     private final ClassEvaluationGoalsService classEvaluationGoalsService;
     private final ITclassService iTclassService;
+    private final IEvaluationService evaluationService;
     private final EvaluationAnswerService answerService;
     private final ElsClient client;
 
@@ -407,23 +406,35 @@ public class EvaluationRestController {
     @Loggable
     @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}/{deleteInEls}")
     public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId,@PathVariable boolean deleteInEls, HttpServletRequest iscRq) throws IOException {
-//       if (deleteInEls)
-//       {
-//
-//           evaluationService.deleteAllReactionEvaluationForms(classId);
-//           if (classId != null) {
-//               iTclassService.changeOnlineEvalStudentStatus(classId, false);
-//           }
-//           return new ResponseEntity<>(HttpStatus.OK);
-//       }
-//       else{
-           evaluationService.deleteAllReactionEvaluationForms(classId);
-           if (classId != null) {
-               iTclassService.changeOnlineEvalStudentStatus(classId, false);
+       if (deleteInEls)
+       {
+           BaseResponse response;
+           List<Long> allEvaluationIds=evaluationService.getAllReactionEvaluationForms(classId);
+           if (!allEvaluationIds.isEmpty())
+           {
+               response  =client.deleteEvaluationForOneClass(allEvaluationIds);
            }
-           return new ResponseEntity<>(HttpStatus.OK);
-//       }
+           else
+           {
+               return deleteAllEvaluationAfterEls(classId, false);
+           }
+           if (response.getStatus() == 200)
+               return deleteAllEvaluationAfterEls(classId, true);
+           else
+               return deleteAllEvaluationAfterEls(classId, false);
+       }
+       else{
+           return deleteAllEvaluationAfterEls(classId, false);
+       }
 
+    }
+
+    private ResponseEntity<Void> deleteAllEvaluationAfterEls(Long classId, boolean b) {
+        evaluationService.deleteAllReactionEvaluationForms(classId);
+        if (classId != null) {
+            iTclassService.changeOnlineEvalStudentStatus(classId, false);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable

@@ -435,7 +435,7 @@
                     {
                         name: "question",
                         title: "<spring:message code="question.bank.question"/>",
-                        autoFitWidth: true,
+                        // autoFitWidth: true,
                         filterOperator: "iContains"
                     },
                     {name: "displayType.id",

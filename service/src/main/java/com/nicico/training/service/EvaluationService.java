@@ -261,6 +261,7 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Transactional
+    @Override
     public List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationForm(@RequestBody HashMap req){
 
         EvaluationDTO.Info evaluation = getEvaluationByData(Long.parseLong(req.get("questionnaireTypeId").toString()),
@@ -341,12 +342,14 @@ public class EvaluationService implements IEvaluationService {
         evaluationDAO.deleteAll(evaluations);
     }
 
-//    @Transactional
-//    @Override
-//    public List<Evaluation> getAllReactionEvaluationForms(Long classId){
-//        List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId,154L,139L);
-//      return evaluations;
-//    }
+    @Transactional
+    @Override
+    public List<Long> getAllReactionEvaluationForms(Long classId){
+        List<Evaluation>evaluations=evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId,154L,139L);
+
+        return evaluations.parallelStream()
+                .map(Evaluation::getId).collect(Collectors.toList());
+    }
 
     //----------------------------------------------- evaluation updating ----------------------------------------------
     public void updateTclassInfo(Long classID,Integer reactionTrainingStatus, Integer reactionTeacherStatus){
@@ -920,6 +923,7 @@ public class EvaluationService implements IEvaluationService {
         }).collect(Collectors.toList());
     }
     @Transactional
+    @Override
     public Boolean classHasEvaluationForm(Long classId){
         Optional<Tclass> byId = tclassDAO.findById(classId);
         Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
