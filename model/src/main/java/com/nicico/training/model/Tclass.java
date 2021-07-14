@@ -277,4 +277,7 @@ public class Tclass extends Auditable {
     @Column(name = "f_teaching_method_id")
     private Long teachingMethodId;
 
+    @Column(name = "b_class_to_online_status")
+    private Boolean classToOnlineStatus;
+
 }

@@ -14,7 +14,6 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.model.Course;
-import com.nicico.training.model.TrainingPlace;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.repository.StudentClassReportViewDAO;
@@ -35,7 +34,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import response.course.dto.CourseDto;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
@@ -114,6 +112,7 @@ public class ExportToFileController {
     private final IInstituteService instituteService;
     private final ITrainingPlaceService trainingPlaceService;
     private final IInstituteAccountService accountService;
+    private final IPresenceReportViewService presenceReportViewService;
 
     private final ModelMapper modelMapper;
     private final MessageSource messageSource;
@@ -140,13 +139,30 @@ public class ExportToFileController {
     }
 
     @PostMapping(value = {"/exportWordFromClient"})
-    public void exportWordFromClient(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
-                                      @RequestParam(value = "data") String data,
-                                      @RequestParam(value = "titr") String titr,
-                                      @RequestParam(value = "pageName") String pageName) throws IOException {
+    public void exportWordFromClient(final HttpServletResponse response,
+                                     @RequestParam(value = "fields") String fields,
+                                     @RequestParam(value = "criteriaStr") String criteriaStr,
+                                     @RequestParam(value = "titr") String titr,
+                                     @RequestParam(value = "pageName") String pageName) throws IOException {
 
         try {
-            exportToFileService.exportToWord(response, fields, data, titr, pageName,null);
+
+            Gson gson = new Gson();
+            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+            searchRq.setStartIndex(0);
+            searchRq.setCount(100000);
+            searchRq.setDistinct(false);
+
+            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(objectMapper.readTree(criteriaStr).get("operator").asText()));
+            criteriaRq.setCriteria(objectMapper.readValue(objectMapper.readTree(criteriaStr).get("criteria").toString(), new TypeReference<List<SearchDTO.CriteriaRq>> () {}));
+            searchRq.setCriteria(criteriaRq);
+            ISC<Object> objectISC = ISC.convertToIscRs(presenceReportViewService.search(searchRq, o -> modelMapper.map(o, PresenceReportViewDTO.Grid.class)), searchRq.getStartIndex());
+            List data = objectISC.getResponse().getData();
+            String toJson = gson.toJson(data, new TypeToken<List<PersonnelCoursePassedNAReportViewDTO.Grid>>() {
+            }.getType());
+
+            exportToFileService.exportToWord(response, fields, toJson, titr, pageName,null);
         } catch (Exception ex) {
 
             Locale locale = LocaleContextHolder.getLocale();

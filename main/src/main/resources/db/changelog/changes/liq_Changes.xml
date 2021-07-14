@@ -2676,6 +2676,12 @@ end;
              ]]>
         </createView>
     </changeSet>
+    <changeSet author="MShahabi" id="1799887766557-022">
+        <addColumn tableName="tbl_class">
+            <column name="b_class_to_online_status" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
 
     <changeSet author="zare" id="abiz-2429">
         <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="NATIONAL_CODE" constraintName="unique_NATIONAL_CODE"/>

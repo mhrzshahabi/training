@@ -17,6 +17,8 @@
     var endDate2Check_JspStaticalUnitReport = true;
     var endDateCheck_Order_JspStaticalUnitReport = true;
 
+    let presenceReport_Criteria = null;
+
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_JspAttendanceReport = isc.TrDS.create({
         fields: [
@@ -199,13 +201,13 @@
                     [
                         {name: "myToken", type: "hidden"},
                         {name: "fields", type: "hidden"},
-                        {name: "data", type: "hidden"},
+                        {name: "criteriaStr", type: "hidden"},
                         {name: "titr", type: "hidden"},
                         {name: "pageName", type: "hidden"}
                     ]
             });
             downloadForm.setValue("fields", JSON.stringify(result.fields.toArray()));
-            downloadForm.setValue("data", JSON.stringify(result.data.toArray()));
+            downloadForm.setValue("criteriaStr", JSON.stringify(presenceReport_Criteria));
             downloadForm.setValue("titr", "");
             downloadForm.setValue("pageName", "گزارش حضور و غياب کلاس های آموزشي");
             downloadForm.show();
@@ -947,6 +949,9 @@
         title: "چاپ گزارش",
         width: 300,
         click: function () {
+
+            presenceReport_Criteria = null;
+
             if(DynamicForm_CriteriaForm_JspAttendanceReport.getValuesAsAdvancedCriteria()==null) {
                 createDialog("info","فیلتری انتخاب نشده است.");
                 return;
@@ -1064,6 +1069,7 @@
                      }
                 }
 
+                presenceReport_Criteria = data_values;
                 ListGrid_JspAttendanceReport.invalidateCache();
                 ListGrid_JspAttendanceReport.fetchData(data_values);
                 Window_JspAttendanceReport.show();

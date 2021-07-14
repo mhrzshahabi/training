@@ -142,6 +142,8 @@ public interface ITclassService {
 
     EvalAverageResult getStudentsAverageGradeToTeacher(Set<ClassStudent> classStudents);
 
+    void changeClassToOnlineStatus(Long classId, boolean state);
+
     Tclass getClassByCode(String classCode);
 
     ElsSessionResponse getClassSessionsByCode(String classCode);

@@ -1,13 +1,18 @@
 package com.nicico.training.mapper.evaluation;
 
 
-import com.nicico.training.dto.TestQuestionDTO;
+import com.nicico.training.TrainingException;
+import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.iservice.IAttachmentService;
+import com.nicico.training.iservice.IClassStudentService;
+import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.ITeacherService;
+import org.modelmapper.ModelMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.service.AttachmentService;
 import com.nicico.training.service.QuestionBankService;
 import com.nicico.training.utility.persianDate.PersianDate;
 import dto.Question.QuestionData;
@@ -18,8 +23,6 @@ import dto.evaluuation.EvalQuestionDto;
 import dto.evaluuation.EvalTargetUser;
 import dto.exam.*;
 import org.joda.time.DateTime;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
@@ -27,7 +30,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import request.evaluation.ElsEvalRequest;
 import request.exam.*;
-import response.BaseResponse;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
@@ -51,6 +53,14 @@ public abstract class EvaluationBeanMapper {
     protected QuestionBankService questionBankService;
     @Autowired
     protected IAttachmentService attachmentService;
+    @Autowired
+    protected ITclassService iTclassService;
+    @Autowired
+    protected ITeacherService iTeacherService;
+    @Autowired
+    protected IClassStudentService iClassStudentService;
+    @Autowired
+    protected ModelMapper modelMapper;
 
     private final Boolean hasDuplicateQuestion = true;
 
@@ -101,6 +111,62 @@ public abstract class EvaluationBeanMapper {
         request.setCourse(evalCourse);
         request.setCourseProtocol(evalCourseProtocol);
         return request;
+    }
+
+    public ElsExamRequest toElsExamRequest(Long classId) {
+
+        ElsExamRequest elsExamRequest = new ElsExamRequest();
+
+        ImportedCourseCategory importedCourseCategory = new ImportedCourseCategory();
+        ImportedCourseDto importedCourseDto = new ImportedCourseDto();
+        CourseProtocolImportDTO courseProtocolImportDTO = new CourseProtocolImportDTO();
+        ImportedUser instructor = new ImportedUser();
+        List<EvalTargetUser> users = new ArrayList<>();
+
+        if ( classId == null )
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+
+        try {
+
+            TclassDTO.Info info = iTclassService.get(classId);
+            TeacherDTO.Info teacherDTO = iTeacherService.get(info.getTeacherId());
+            List<ClassStudent> classStudents = iClassStudentService.getClassStudents(classId);
+            ExamClassData examClassData = modelMapper.map(info, ExamClassData.class);
+
+            importedCourseCategory.setName(info.getCourse().getCategory().getTitleFa());
+            importedCourseCategory.setCode(info.getCourse().getCategory().getCode());
+
+            importedCourseDto.setName(info.getCourse().getTitleFa());
+            importedCourseDto.setCode(info.getCourse().getCode());
+
+            instructor.setSurname(teacherDTO.getPersonality().getFirstNameFa());
+            instructor.setLastName(teacherDTO.getPersonality().getLastNameFa());
+            instructor.setCellNumber(teacherDTO.getPersonality().getContactInfo().getMobile());
+            instructor.setNationalCode(teacherDTO.getPersonality().getNationalCode());
+            instructor.setGender(teacherDTO.getPersonality().getEGender() != null ? teacherDTO.getPersonality().getEGender().getTitleFa() : null);
+
+            users.addAll(getClassUsers(classStudents));
+
+            courseProtocolImportDTO.setName(info.getTitleClass());
+            courseProtocolImportDTO.setCode(info.getCode());
+            courseProtocolImportDTO.setCapacity(Math.toIntExact(info.getMaxCapacity()));
+            courseProtocolImportDTO.setDuration(Math.toIntExact(info.getHDuration()));
+            courseProtocolImportDTO.setCourseStatus(CourseStatus.ACTIVE);
+            courseProtocolImportDTO.setClassType(ClassType.ATTENDANCE);
+            courseProtocolImportDTO.setCourseType(CourseType.IMPERETIVE);
+            courseProtocolImportDTO.setStartDate(getDateFromStringDate(info.getStartDate()).getTime());
+            courseProtocolImportDTO.setFinishDate(getDateFromStringDate(info.getEndDate()).getTime());
+
+            elsExamRequest.setCategory(importedCourseCategory);
+            elsExamRequest.setCourse(importedCourseDto);
+            elsExamRequest.setProtocol(courseProtocolImportDTO);
+            elsExamRequest.setPrograms(getPrograms(examClassData));
+            elsExamRequest.setInstructor(instructor);
+            elsExamRequest.setUsers(users);
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
+        return elsExamRequest;
     }
 
     @Mapping(source = "firstNameFa", target = "surname")
@@ -512,37 +578,37 @@ public abstract class EvaluationBeanMapper {
             if (null != (tclass.getFirst()) && tclass.getFirst()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SATURDAY");
-                program.setEndTime("8");
-                program.setStartTime("10");
+                program.setStartTime("8");
+                program.setEndTime("10");
                 programs.add(program);
 
             }
             if (null != (tclass.getSecond()) && tclass.getSecond()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SATURDAY");
-                program.setEndTime("10");
-                program.setStartTime("12");
+                program.setStartTime("10");
+                program.setEndTime("12");
                 programs.add(program);
             }
             if (null != (tclass.getThird()) && tclass.getThird()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SATURDAY");
-                program.setEndTime("12");
-                program.setStartTime("14");
+                program.setStartTime("12");
+                program.setEndTime("14");
                 programs.add(program);
             }
             if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SATURDAY");
-                program.setEndTime("14");
-                program.setStartTime("16");
+                program.setStartTime("14");
+                program.setEndTime("16");
                 programs.add(program);
             }
             if (null != (tclass.getFifth()) && tclass.getFifth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SATURDAY");
-                program.setEndTime("16");
-                program.setStartTime("18");
+                program.setStartTime("16");
+                program.setEndTime("18");
                 programs.add(program);
             }
 
@@ -554,37 +620,37 @@ public abstract class EvaluationBeanMapper {
             if (null != (tclass.getFirst()) && tclass.getFirst()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SUNDAY");
-                program.setEndTime("8");
-                program.setStartTime("10");
+                program.setStartTime("8");
+                program.setEndTime("10");
                 programs.add(program);
 
             }
             if (null != (tclass.getSecond()) && tclass.getSecond()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SUNDAY");
-                program.setEndTime("10");
-                program.setStartTime("12");
+                program.setStartTime("10");
+                program.setEndTime("12");
                 programs.add(program);
             }
             if (null != (tclass.getThird()) && tclass.getThird()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SUNDAY");
-                program.setEndTime("12");
-                program.setStartTime("14");
+                program.setStartTime("12");
+                program.setEndTime("14");
                 programs.add(program);
             }
             if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SUNDAY");
-                program.setEndTime("14");
-                program.setStartTime("16");
+                program.setStartTime("14");
+                program.setEndTime("16");
                 programs.add(program);
             }
             if (null != (tclass.getFifth()) && tclass.getFifth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("SUNDAY");
-                program.setEndTime("16");
-                program.setStartTime("18");
+                program.setStartTime("16");
+                program.setEndTime("18");
                 programs.add(program);
             }
 
@@ -596,37 +662,37 @@ public abstract class EvaluationBeanMapper {
             if (null != (tclass.getFirst()) && tclass.getFirst()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("MONDAY");
-                program.setEndTime("8");
-                program.setStartTime("10");
+                program.setStartTime("8");
+                program.setEndTime("10");
                 programs.add(program);
 
             }
             if (null != (tclass.getSecond()) && tclass.getSecond()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("MONDAY");
-                program.setEndTime("10");
-                program.setStartTime("12");
+                program.setStartTime("10");
+                program.setEndTime("12");
                 programs.add(program);
             }
             if (null != (tclass.getThird()) && tclass.getThird()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("MONDAY");
-                program.setEndTime("12");
-                program.setStartTime("14");
+                program.setStartTime("12");
+                program.setEndTime("14");
                 programs.add(program);
             }
             if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("MONDAY");
-                program.setEndTime("14");
-                program.setStartTime("16");
+                program.setStartTime("14");
+                program.setEndTime("16");
                 programs.add(program);
             }
             if (null != (tclass.getFifth()) && tclass.getFifth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("MONDAY");
-                program.setEndTime("16");
-                program.setStartTime("18");
+                program.setStartTime("16");
+                program.setEndTime("18");
                 programs.add(program);
             }
 
@@ -638,37 +704,37 @@ public abstract class EvaluationBeanMapper {
             if (null != (tclass.getFirst()) && tclass.getFirst()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("TUESDAY");
-                program.setEndTime("8");
-                program.setStartTime("10");
+                program.setStartTime("8");
+                program.setEndTime("10");
                 programs.add(program);
 
             }
             if (null != (tclass.getSecond()) && tclass.getSecond()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("TUESDAY");
-                program.setEndTime("10");
-                program.setStartTime("12");
+                program.setStartTime("10");
+                program.setEndTime("12");
                 programs.add(program);
             }
             if (null != (tclass.getThird()) && tclass.getThird()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("TUESDAY");
-                program.setEndTime("12");
-                program.setStartTime("14");
+                program.setStartTime("12");
+                program.setEndTime("14");
                 programs.add(program);
             }
             if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("TUESDAY");
-                program.setEndTime("14");
-                program.setStartTime("16");
+                program.setStartTime("14");
+                program.setEndTime("16");
                 programs.add(program);
             }
             if (null != (tclass.getFifth()) && tclass.getFifth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("TUESDAY");
-                program.setEndTime("16");
-                program.setStartTime("18");
+                program.setStartTime("16");
+                program.setEndTime("18");
                 programs.add(program);
             }
 
@@ -680,37 +746,37 @@ public abstract class EvaluationBeanMapper {
             if (null != (tclass.getFirst()) && tclass.getFirst()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("WEDNESDAY");
-                program.setEndTime("8");
-                program.setStartTime("10");
+                program.setStartTime("8");
+                program.setEndTime("10");
                 programs.add(program);
 
             }
             if (null != (tclass.getSecond()) && tclass.getSecond()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("WEDNESDAY");
-                program.setEndTime("10");
-                program.setStartTime("12");
+                program.setStartTime("10");
+                program.setEndTime("12");
                 programs.add(program);
             }
             if (null != (tclass.getThird()) && tclass.getThird()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("WEDNESDAY");
-                program.setEndTime("12");
-                program.setStartTime("14");
+                program.setStartTime("12");
+                program.setEndTime("14");
                 programs.add(program);
             }
             if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("WEDNESDAY");
-                program.setEndTime("14");
-                program.setStartTime("16");
+                program.setStartTime("14");
+                program.setEndTime("16");
                 programs.add(program);
             }
             if (null != (tclass.getFifth()) && tclass.getFifth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("WEDNESDAY");
-                program.setEndTime("16");
-                program.setStartTime("18");
+                program.setStartTime("16");
+                program.setEndTime("18");
                 programs.add(program);
             }
 
@@ -722,37 +788,37 @@ public abstract class EvaluationBeanMapper {
             if (null != (tclass.getFirst()) && tclass.getFirst()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("THURSDAY");
-                program.setEndTime("8");
-                program.setStartTime("10");
+                program.setStartTime("8");
+                program.setEndTime("10");
                 programs.add(program);
 
             }
             if (null != (tclass.getSecond()) && tclass.getSecond()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("THURSDAY");
-                program.setEndTime("10");
-                program.setStartTime("12");
+                program.setStartTime("10");
+                program.setEndTime("12");
                 programs.add(program);
             }
             if (null != (tclass.getThird()) && tclass.getThird()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("THURSDAY");
-                program.setEndTime("12");
-                program.setStartTime("14");
+                program.setStartTime("12");
+                program.setEndTime("14");
                 programs.add(program);
             }
             if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("THURSDAY");
-                program.setEndTime("14");
-                program.setStartTime("16");
+                program.setStartTime("14");
+                program.setEndTime("16");
                 programs.add(program);
             }
             if (null != (tclass.getFifth()) && tclass.getFifth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("THURSDAY");
-                program.setEndTime("16");
-                program.setStartTime("18");
+                program.setStartTime("16");
+                program.setEndTime("18");
                 programs.add(program);
             }
 
@@ -764,37 +830,37 @@ public abstract class EvaluationBeanMapper {
             if (null != (tclass.getFirst()) && tclass.getFirst()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("FRIDAY");
-                program.setEndTime("8");
-                program.setStartTime("10");
+                program.setStartTime("8");
+                program.setEndTime("10");
                 programs.add(program);
 
             }
             if (null != (tclass.getSecond()) && tclass.getSecond()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("FRIDAY");
-                program.setEndTime("10");
-                program.setStartTime("12");
+                program.setStartTime("10");
+                program.setEndTime("12");
                 programs.add(program);
             }
             if (null != (tclass.getThird()) && tclass.getThird()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("FRIDAY");
-                program.setEndTime("12");
-                program.setStartTime("14");
+                program.setStartTime("12");
+                program.setEndTime("14");
                 programs.add(program);
             }
             if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("FRIDAY");
-                program.setEndTime("14");
-                program.setStartTime("16");
+                program.setStartTime("14");
+                program.setEndTime("16");
                 programs.add(program);
             }
             if (null != (tclass.getFifth()) && tclass.getFifth()) {
                 ImportedCourseProgram program = new ImportedCourseProgram();
                 program.setDay("FRIDAY");
-                program.setEndTime("16");
-                program.setStartTime("18");
+                program.setStartTime("16");
+                program.setEndTime("18");
                 programs.add(program);
             }
 

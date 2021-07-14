@@ -54,6 +54,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
 @RestController
 @RequestMapping("/anonymous/els")
 @RequiredArgsConstructor
@@ -601,6 +602,25 @@ public class ElsRestController {
             elsSessionResponse.setMessage("کلاس موردنظر یافت نشد");
             return elsSessionResponse;
         }
+    }
+
+    @GetMapping("/classToEls/{classId}")
+    public BaseResponse sendClass(@PathVariable Long classId) {
+
+        BaseResponse response = new BaseResponse();
+        try {
+
+            ElsExamRequest elsExamRequest = evaluationBeanMapper.toElsExamRequest(classId);
+            response = client.sendClass(elsExamRequest);
+            if (response.getStatus() == HttpStatus.OK.value())
+                tclassService.changeClassToOnlineStatus(classId, true);
+
+        } catch (TrainingException ex) {
+
+            response.setMessage("اطلاعات به سیستم آزمون آنلاین ارسال نشد");
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        }
+        return response;
     }
 
 }

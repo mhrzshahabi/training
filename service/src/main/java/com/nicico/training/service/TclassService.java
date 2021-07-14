@@ -1885,4 +1885,10 @@ public class TclassService implements ITclassService {
             throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
 
+
+    @Override
+    @Transactional
+    public void changeClassToOnlineStatus(Long classId, boolean state) {
+        tclassDAO.changeClassToOnlineStatus(classId, state);
+    }
 }

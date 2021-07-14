@@ -82,7 +82,7 @@ public class TclassDTO {
     private Long targetPopulationTypeId;
     private Long holdingClassTypeId;
     private Long teachingMethodId;
-
+    private Boolean classToOnlineStatus;
 
 
     @Getter

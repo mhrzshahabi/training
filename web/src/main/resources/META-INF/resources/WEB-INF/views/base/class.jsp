@@ -124,7 +124,8 @@
             {name: "studentCostCurrency"},
             {name: "planner"},
             {name: "organizer"},
-            {name: "hasTest", type: "boolean"}
+            {name: "hasTest", type: "boolean"},
+            {name: "classToOnlineStatus", type: "boolean"}
         ]
     });
 
@@ -416,6 +417,8 @@
         dataPageSize: 15,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         showRollOver:false,
         selectionType: "single",
         autoFetchData: false,
@@ -596,7 +599,9 @@
                     },
                 },
                 filterOnKeypress: true,
+                hidden: true
             },
+            {name: "sendClassToOnlineBtn", canFilter: false, title: "ارسال به آزمون آنلاین", width: "145"},
             {name: "targetPopulationTypeId", hidden: true},
             {name: "holdingClassTypeId", hidden: true},
             {name: "teachingMethodId", hidden: true},
@@ -639,7 +644,8 @@
             {name: "behavioralLevel", hidden: true},
             {name: "studentCost", hidden: true},
             {name: "studentCostCurrency", hidden: true},
-            {name: "hasTest", hidden: true}
+            {name: "hasTest", hidden: true},
+            {name: "classToOnlineStatus", hidden: true}
         ],
         getCellCSSText: function (record, rowNum, colNum) {
             let style;
@@ -670,6 +676,24 @@
         dataArrived: function () {
             wait.close();
             selectWorkflowRecord();
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName == "sendClassToOnlineBtn") {
+                let sendBtn = isc.IButton.create({
+                    layoutAlign: "center",
+                    disabled: (record.classToOnlineStatus == true) || (record.classStatus === "1"),
+                    title: "ارسال به آزمون آنلاین",
+                    width: "145",
+                    margin: 3,
+                    click: function () {
+                        sendClassToOnline(record.id)
+                    }
+                });
+                return sendBtn;
+            } else {
+                return null;
+            }
         }
     });
 
@@ -4056,6 +4080,21 @@
 
     function setOrganize(institute) {
         DynamicForm_Class_JspClass.setValue("organizerId", institute.id)
+    }
+
+    function sendClassToOnline(classId) {
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/classToEls/" + classId, "GET", null, function (resp) {
+            if (resp.httpResponseCode === 200) {
+                wait.close();
+                createDialog("info", "ارسال اطلاعات کلاس به سیستم آزمون آنلاین با موفقیت انجام شد", "<spring:message code="message"/>")
+                ListGrid_Class_JspClass.invalidateCache();
+            } else {
+                wait.close();
+                createDialog("info", "اطلاعات کلاس به سیستم آزمون آنلاین ارسال نشد", "<spring:message code="message"/>")
+            }
+        }));
     }
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
