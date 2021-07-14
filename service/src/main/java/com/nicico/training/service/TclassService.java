@@ -1846,7 +1846,10 @@ public class TclassService implements ITclassService {
 
         evalAverageResult.setLimitScore(100L);
         evalAverageResult.setAveragePerQuestionList(averagePerQuestions);
-        evalAverageResult.setTotalAverage(totalAverage / averagePerQuestions.size());
+        if (averagePerQuestions.size() != 0)
+            evalAverageResult.setTotalAverage(totalAverage / averagePerQuestions.size());
+        else
+            evalAverageResult.setTotalAverage(0.0);
         return evalAverageResult;
     }
 }
