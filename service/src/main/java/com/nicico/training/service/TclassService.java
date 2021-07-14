@@ -884,6 +884,7 @@ public class TclassService implements ITclassService {
         Tclass tclass = getTClass(classId);
         Set<ClassStudent> classStudents = tclass.getClassStudents();
         Double teacherGradeToClass = getTeacherGradeToClass(classId, tclass.getTeacherId());
+        Double trainingGradeToTeacher = getTrainingGradeToTeacher(tclass.getId(), tclass.getSupervisorId(), tclass.getTeacherId());
         Map<String, Double> studentReactions = calculateStudentsReactionEvaluationResult(classStudents);
 
         if (studentReactions.get("studentsGradeToTeacher") != null)
@@ -898,8 +899,17 @@ public class TclassService implements ITclassService {
         if (studentReactions.get("evaluatedPercent") != null)
             reactionEvaluationFormulaResult.put("evaluatedPercent", studentReactions.get("evaluatedPercent"));
 
+        if (studentReactions.get("answeredStudentsNum") != null)
+            reactionEvaluationFormulaResult.put("answeredStudentsNum", studentReactions.get("answeredStudentsNum"));
+
+        if (studentReactions.get("allStudentsNum") != null)
+            reactionEvaluationFormulaResult.put("allStudentsNum", studentReactions.get("allStudentsNum"));
+
         if (teacherGradeToClass != null)
             reactionEvaluationFormulaResult.put("teacherGradeToClass", teacherGradeToClass);
+
+        if (trainingGradeToTeacher != null)
+            reactionEvaluationFormulaResult.put("trainingGradeToTeacher", trainingGradeToTeacher);
 
         return reactionEvaluationFormulaResult;
     }
@@ -999,6 +1009,8 @@ public class TclassService implements ITclassService {
         result.put("studentsGradeToFacility", studentsGradeToFacility_l);
         result.put("studentsGradeToGoals", studentsGradeToGoals_l);
         result.put("evaluatedPercent", (completeNum/Double.valueOf(classStudents.size())) * 100);
+        result.put("answeredStudentsNum", Double.valueOf(completeNum));
+        result.put("allStudentsNum", Double.valueOf(classStudents.size()));
         return result;
     }
 

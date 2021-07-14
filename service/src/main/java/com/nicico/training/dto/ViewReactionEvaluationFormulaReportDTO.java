@@ -33,6 +33,9 @@ public class ViewReactionEvaluationFormulaReportDTO implements Serializable {
         private Double studentsGradeToGoals;
         private Double studentsGradeToFacility;
         private Double teacherGradeToClass;
+        private Double trainingGradeToTeacher;
         private Double evaluatedPercent;
+        private Double answeredStudentsNum;
+        private Double allStudentsNum;
     }
 }
