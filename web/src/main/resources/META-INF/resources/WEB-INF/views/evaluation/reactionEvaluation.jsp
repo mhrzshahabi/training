@@ -374,9 +374,10 @@
                                         data.alow = true;
                                         data.nationalCode = record.student.nationalCode;
                                         data.isTeacher = false;
-
+                                         wait.show();
                                         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                 wait.close();
                                                 ListGrid_student_RE.invalidateCache();
                                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                                     classRecord_RE.id,"GET", null, null));
@@ -390,6 +391,7 @@
                                                     msg.close();
                                                 }, 3000);
                                             } else {
+                                                wait.close();
                                                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                             }
                                         }))
