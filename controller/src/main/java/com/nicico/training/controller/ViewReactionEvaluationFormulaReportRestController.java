@@ -40,7 +40,10 @@ public class ViewReactionEvaluationFormulaReportRestController {
             d.setStudentsGradeToGoals(formulaResult.get("studentsGradeToGoals"));
             d.setStudentsGradeToFacility(formulaResult.get("studentsGradeToFacility"));
             d.setTeacherGradeToClass(formulaResult.get("teacherGradeToClass"));
+            d.setTrainingGradeToTeacher(formulaResult.get("trainingGradeToTeacher"));
             d.setEvaluatedPercent(formulaResult.get("evaluatedPercent"));
+            d.setAnsweredStudentsNum(formulaResult.get("answeredStudentsNum"));
+            d.setAllStudentsNum(formulaResult.get("allStudentsNum"));
         });
 
         return new ResponseEntity<>(infoISC, HttpStatus.OK);

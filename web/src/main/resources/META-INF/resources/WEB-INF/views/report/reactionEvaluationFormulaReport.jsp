@@ -76,11 +76,14 @@
             {name: "courseTitleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name: "categoryTitleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
             {name: "subCategoryTitleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
-            {name: "studentsGradeToTeacher", title: "نمره ارزیابی واکنشی فراگیر به مدرس"},
-            {name: "studentsGradeToGoals", title: "نمره ارزیابی واکنشی فراگیر به محتوای کلاس"},
-            {name: "studentsGradeToFacility", title: "نمره ارزیابی واکنشی فراگیر به امکانات"},
-            {name: "teacherGradeToClass", title: "نمره ارزیابی واکنشی مدرس به کلاس"},
-            {name: "evaluatedPercent", title: "درصد پرسشنامه های تکمیل شده"}
+            {name: "studentsGradeToTeacher", title: "<spring:message code="reaction.formula.students.grade.to.teacher"/>"},
+            {name: "studentsGradeToGoals", title: "<spring:message code="reaction.formula.students.grade.to.goals"/>"},
+            {name: "studentsGradeToFacility", title: "<spring:message code="reaction.formula.students.grade.to.facility"/>"},
+            {name: "teacherGradeToClass", title: "<spring:message code="reaction.formula.teacher.grade.to.class"/>"},
+            {name: "trainingGradeToTeacher", title: "<spring:message code="reaction.formula.training.grade.to.teacher"/>"},
+            {name: "evaluatedPercent", title: "<spring:message code="reaction.formula.evaluated.percent"/>"},
+            {name: "answeredStudentsNum", title: "<spring:message code="reaction.formula.answered.students.num"/>"},
+            {name: "allStudentsNum", title: "<spring:message code="reaction.formula.all.students.num"/>"}
         ],
         fetchDataURL: viewReactionEvaluationFormulaReportUrl + "/iscList",
         transformResponse: function (dsResponse, dsRequest, data) {
@@ -107,6 +110,10 @@
                             courseTitleFa: records[j].courseTitleFa,
                             categoryTitleFa: records[j].categoryTitleFa,
                             subCategoryTitleFa: records[j].subCategoryTitleFa,
+                            studentsGradeToTeacher: records[j].studentsGradeToTeacher,
+                            trainingGradeToTeacher: records[j].trainingGradeToTeacher,
+                            answeredStudentsNum: records[j].answeredStudentsNum,
+                            allStudentsNum: records[j].allStudentsNum,
                             reactionEvaluationGrade: reactionGrade,
                             evaluatedPercent: records[j].evaluatedPercent === "NaN" ? 0 : records[j].evaluatedPercent,
                             evaluationStatus: records[j].evaluatedPercent >= minQusER && reactionGrade != null && reactionGrade >= minScoreER ? "ارزیابی نهایی شده" : "ارزیابی ناقص"
@@ -124,6 +131,10 @@
                             courseTitleFa: records[j].courseTitleFa,
                             categoryTitleFa: records[j].categoryTitleFa,
                             subCategoryTitleFa: records[j].subCategoryTitleFa,
+                            studentsGradeToTeacher: records[j].studentsGradeToTeacher,
+                            trainingGradeToTeacher: records[j].trainingGradeToTeacher,
+                            answeredStudentsNum: records[j].answeredStudentsNum,
+                            allStudentsNum: records[j].allStudentsNum,
                             reactionEvaluationGrade: "ارزیابی نشده",
                             evaluatedPercent: records[j].evaluatedPercent === "NaN" ? 0 : records[j].evaluatedPercent,
                             evaluationStatus: "ارزیابی ناقص"
@@ -370,9 +381,13 @@
                 courseTitleFa: "نام دوره",
                 categoryTitleFa: "گروه",
                 subCategoryTitleFa: "زیرگروه",
-                reactionEvaluationGrade: "نمره ارزیابی واکنشی کلاس",
-                evaluatedPercent: "درصد پرسشنامه های نکمیل شده",
-                evaluationStatus: "وضعیت ارزیابی"
+                studentsGradeToTeacher: "<spring:message code="reaction.formula.students.grade.to.teacher"/>",
+                trainingGradeToTeacher: "<spring:message code="reaction.formula.training.grade.to.teacher"/>",
+                answeredStudentsNum: "<spring:message code="reaction.formula.answered.students.num"/>",
+                allStudentsNum: "<spring:message code="reaction.formula.all.students.num"/>",
+                reactionEvaluationGrade: "<spring:message code="reaction.formula.reaction.evaluation.grade"/>",
+                evaluatedPercent: "<spring:message code="reaction.formula.evaluated.percent"/>",
+                evaluationStatus: "<spring:message code="reaction.formula.evaluation.status"/>"
             });
             reportCriteria_REFR = data_values;
             ListGrid_REFR.invalidateCache();
@@ -452,9 +467,12 @@
             {name: "studentsGradeToGoals", hidden: true},
             {name: "studentsGradeToFacility", hidden: true},
             {name: "teacherGradeToClass", hidden: true},
+            {name: "trainingGradeToTeacher", hidden: true},
+            {name: "answeredStudentsNum", hidden: true},
+            {name: "allStudentsNum", hidden: true},
             {
                 name: "reactionEvaluationGrade",
-                title: "نمره ارزیابی واکنشی کلاس",
+                title: "<spring:message code="reaction.formula.reaction.evaluation.grade"/>",
                 canSort: false,
                 canFilter: false,
                 formatCellValue: function (value, record) {
@@ -465,7 +483,7 @@
                         else
                             return "ارزیابی نشده";
                     } else
-                        return;
+                        return "";
                 }
             },
             {
@@ -481,7 +499,7 @@
             },
             {
                 name: "evaluationStatus",
-                title: "وضعیت ارزیابی",
+                title: "<spring:message code="reaction.formula.evaluation.status"/>",
                 canSort: false,
                 canFilter: false,
                 formatCellValue: function (value, record) {
@@ -493,7 +511,7 @@
                         else
                             return "ارزیابی ناقص";
                     } else
-                        return;
+                        return "";
                 }
             }
         ]
@@ -524,6 +542,10 @@
                 {name: "courseTitleFa"},
                 {name: "categoryTitleFa"},
                 {name: "subCategoryTitleFa"},
+                {name: "studentsGradeToTeacher"},
+                {name: "trainingGradeToTeacher"},
+                {name: "answeredStudentsNum"},
+                {name: "allStudentsNum"},
                 {name: "reactionEvaluationGrade"},
                 {name: "evaluatedPercent"},
                 {name: "evaluationStatus"}
