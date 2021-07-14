@@ -16,6 +16,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.mapper.ClassSession.SessionBeanMapper;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
@@ -40,11 +41,11 @@ import response.evaluation.dto.AveragePerQuestion;
 import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
 import response.evaluation.dto.TeacherEvaluationAnswer;
+import response.tclass.ElsSessionResponse;
 import response.tclass.dto.TclassDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.ParseException;
@@ -92,6 +93,7 @@ public class TclassService implements ITclassService {
     private final QuestionBankDAO questionBankDAO;
     private final QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
     private final TclassBeanMapper tclassBeanMapper;
+    private final SessionBeanMapper sessionBeanMapper;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
 
     @Transactional(readOnly = true)
@@ -1864,4 +1866,23 @@ public class TclassService implements ITclassService {
             evalAverageResult.setTotalAverage(0.0);
         return evalAverageResult;
     }
+
+    @Override
+    @Transactional
+    public Tclass getClassByCode(String classCode) {
+
+        return tclassDAO.findByCode(classCode);
+    }
+
+    @Override
+    @Transactional
+    public ElsSessionResponse getClassSessionsByCode(String classCode) {
+
+        Tclass tclass = getClassByCode(classCode);
+        if (tclass != null)
+            return sessionBeanMapper.toGetElsSessionResponse(tclass);
+        else
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
+
 }
