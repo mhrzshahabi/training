@@ -13,7 +13,7 @@
     <title><spring:message code="training.system"/></title>
     <link rel="shortcut icon" href="<spring:url value='/images/nicico.png' />"/>
 
-<%--    <SCRIPT>var _set=Set; window.localStorage.setItem("ticketing-token",accessToken)</SCRIPT>--%>
+    <SCRIPT>var _set=Set; localStorage.setItem("ticketing-token",accessToken)</SCRIPT>
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Foundation.js></SCRIPT>
@@ -1133,7 +1133,7 @@
             return true;
         }
     </script>
-<%--    <script src="<spring:url value='/js/nicico-ticket.js' />"></script>--%>
+    <script src="<spring:url value='/js/nicico-ticket.js' />"></script>
 
 
     <script src="<spring:url value='/js/dateReformat.js' />"></script>
@@ -4230,6 +4230,6 @@
     });
 
 </script>
-<%--<nicico-ticket></nicico-ticket>--%>
+<nicico-ticket></nicico-ticket>
 </body>
 </html>
