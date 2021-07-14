@@ -5,12 +5,10 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassSession;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Set;
 
 public interface IClassSession {
 
@@ -41,6 +39,8 @@ public interface IClassSession {
     void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement, HttpServletResponse response);
 
     List<ClassSessionDTO.Info> loadSessions(Long classId);
+
+    boolean getSessionPresenceState(ClassSession session);
 
     @Transactional
     SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode);

@@ -24,6 +24,8 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     List<Tclass> findByCourseIdAndTermId(Long courseId, Long termId);
 
+    Tclass findByCode (String code);
+
     @Modifying
     @Query(value = "update TBL_CLASS set C_WORKFLOW_ENDING_STATUS = :workflowEndingStatus, C_WORKFLOW_ENDING_STATUS_CODE = :workflowEndingStatusCode, C_STATUS_DATE = :statusDate where ID = :classId", nativeQuery = true)
     public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode, Date statusDate);

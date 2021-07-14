@@ -396,6 +396,24 @@ public class ClassSessionService implements IClassSession {
         }.getType());
     }
 
+    @Override
+    @Transactional
+    public boolean getSessionPresenceState(ClassSession session) {
+
+        List<Attendance> attendanceList = attendanceDAO.findPresenceAttendance(session.getId());
+        if (attendanceList.size() == 0)
+            return false;
+        else {
+
+            for (Attendance attendance : attendanceList) {
+                if (!attendance.getState().equals("0")) {
+                    return true;
+                }
+            }
+            return false;
+        }
+    }
+
 
     //*********************************
 

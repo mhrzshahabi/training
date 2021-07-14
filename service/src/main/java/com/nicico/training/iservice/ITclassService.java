@@ -14,6 +14,7 @@ import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
 import org.springframework.transaction.annotation.Transactional;
 import request.evaluation.TeacherEvaluationAnswerDto;
+import response.tclass.ElsSessionResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -140,4 +141,9 @@ public interface ITclassService {
     BaseResponse changeClassStatusToInProcess(Long classId);
 
     EvalAverageResult getStudentsAverageGradeToTeacher(Set<ClassStudent> classStudents);
-}
+
+    Tclass getClassByCode(String classCode);
+
+    ElsSessionResponse getClassSessionsByCode(String classCode);
+
+    }

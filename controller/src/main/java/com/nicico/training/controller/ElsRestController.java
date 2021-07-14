@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 
-import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -43,6 +42,7 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
+import response.tclass.ElsSessionResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,8 +53,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
-
 
 @RestController
 @RequestMapping("/anonymous/els")
@@ -568,6 +566,29 @@ public class ElsRestController {
         } else {
             evaluationAverageResultToInstructor.setStatus(HttpStatus.UNAUTHORIZED.value());
             return evaluationAverageResultToInstructor;
+        }
+    }
+
+    @GetMapping("/sessions/{classCode}")
+    public ElsSessionResponse getClassSessions(HttpServletRequest header, @PathVariable String classCode) {
+
+        ElsSessionResponse elsSessionResponse = new ElsSessionResponse();
+        try {
+
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                elsSessionResponse = tclassService.getClassSessionsByCode(classCode);
+                elsSessionResponse.setStatus(200);
+                return elsSessionResponse;
+            } else {
+                elsSessionResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                elsSessionResponse.setMessage("دسترسی موردنظر یافت نشد");
+                return elsSessionResponse;
+            }
+        } catch (Exception e) {
+
+            elsSessionResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            elsSessionResponse.setMessage("کلاس موردنظر یافت نشد");
+            return elsSessionResponse;
         }
     }
 
