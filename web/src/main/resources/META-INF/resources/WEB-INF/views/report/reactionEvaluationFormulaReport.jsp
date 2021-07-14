@@ -88,6 +88,23 @@
         fetchDataURL: viewReactionEvaluationFormulaReportUrl + "/iscList",
         transformResponse: function (dsResponse, dsRequest, data) {
             let records = dsResponse.data;
+            excelData = [];
+            excelData.add({
+                rowNum: "ردیف",
+                classCode: "کد کلاس",
+                classStartDate: "تاریخ شروع",
+                classEndDate: "تاریخ پایان",
+                courseTitleFa: "نام دوره",
+                categoryTitleFa: "گروه",
+                subCategoryTitleFa: "زیرگروه",
+                studentsGradeToTeacher: "<spring:message code="reaction.formula.students.grade.to.teacher"/>",
+                trainingGradeToTeacher: "<spring:message code="reaction.formula.training.grade.to.teacher"/>",
+                answeredStudentsNum: "<spring:message code="reaction.formula.answered.students.num"/>",
+                allStudentsNum: "<spring:message code="reaction.formula.all.students.num"/>",
+                reactionEvaluationGrade: "<spring:message code="reaction.formula.reaction.evaluation.grade"/>",
+                evaluatedPercent: "<spring:message code="reaction.formula.evaluated.percent"/>",
+                evaluationStatus: "<spring:message code="reaction.formula.evaluation.status"/>"
+            });
             if(records) {
                 for (var j = 0; j < records.length; j++) {
 
@@ -463,13 +480,13 @@
             {name: "courseTitleFa"},
             {name: "categoryTitleFa"},
             {name: "subCategoryTitleFa"},
-            {name: "studentsGradeToTeacher", hidden: true},
+            {name: "studentsGradeToTeacher", canFilter: false},
             {name: "studentsGradeToGoals", hidden: true},
             {name: "studentsGradeToFacility", hidden: true},
             {name: "teacherGradeToClass", hidden: true},
-            {name: "trainingGradeToTeacher", hidden: true},
-            {name: "answeredStudentsNum", hidden: true},
-            {name: "allStudentsNum", hidden: true},
+            {name: "trainingGradeToTeacher", canFilter: false},
+            {name: "answeredStudentsNum", canFilter: false},
+            {name: "allStudentsNum", canFilter: false},
             {
                 name: "reactionEvaluationGrade",
                 title: "<spring:message code="reaction.formula.reaction.evaluation.grade"/>",
