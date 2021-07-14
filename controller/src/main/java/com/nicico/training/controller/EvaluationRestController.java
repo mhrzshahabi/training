@@ -327,10 +327,19 @@ public class EvaluationRestController {
     public ResponseEntity deleteEvaluation(@RequestBody HashMap req) {
 
         if (req.get("alow") != null) {
+            BaseResponse response;
+
             if (Boolean.parseBoolean(req.get("isTeacher").toString()))
             {
                 EvalElsData data = evaluationService.GetTeacherElsData(req);
-                BaseResponse response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+                if (data.getSourceId()!=null && data.getMobile()!=null)
+                {
+                    response  = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+                }
+                else
+                {
+                    return deleteEvaluationAfterEls(req, false);
+                }
                 if (response.getStatus() == 200)
                     return deleteEvaluationAfterEls(req, true);
                 else
@@ -338,13 +347,19 @@ public class EvaluationRestController {
             }
             else{
                 EvalElsData data = evaluationService.GetStudentElsData(req);
-                BaseResponse response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+                if (data.getSourceId()!=null && data.getMobile()!=null)
+                {
+                      response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+                }
+                else
+                {
+                    return deleteEvaluationAfterEls(req, false);
+                }
                 if (response.getStatus() == 200)
                     return deleteEvaluationAfterEls(req, true);
                 else
                     return deleteEvaluationAfterEls(req, false);
             }
-
 
         } else {
             return deleteEvaluationAfterEls(req, false);

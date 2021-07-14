@@ -910,9 +910,11 @@
                                                                             data.evaluationLevelId = 154;
                                                                             data.alow = true;
                                                                             data.isTeacher = true;
+                                                                            wait.show();
 
                                                                             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteEvaluation", "POST", JSON.stringify(data), function (resp) {
                                                                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                                                    wait.close();
                                                                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                                                                     setTimeout(() => {
                                                                                         msg.close();
@@ -934,6 +936,7 @@
                                                                                     classRecord_RE.classTeacherOnlineEvalStatus= false;
                                                                                     ToolStrip_SendForms_RE.redraw();
                                                                                 } else {
+                                                                                    wait.close();
                                                                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                                                                 }
                                                                             }))
@@ -1271,10 +1274,10 @@
     function toElsRquest(data,type) {
         wait.show()
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
-            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
                 isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/teacherEval/" + result[0].evaluationId, "GET", null, function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var OK = isc.Dialog.create({
                             message: "<spring:message code="msg.operation.successful"/>",
                             icon: "[SKIN]say.png",
@@ -1338,7 +1341,7 @@
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                     let teacherInfo = JSON.parse(resp.httpResponseText);
-                        if (teacherInfo.personality.contactInfo != null && teacherInfo.personality != null)
+                        if (teacherInfo.personality.contactInfo !== null && teacherInfo.personality !== null)
                         {
                             let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, teacherInfo.personality.contactInfo.mobile, teacherInfo.personality.genderId);
                           if (!isValid) {

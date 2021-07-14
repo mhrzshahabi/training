@@ -98,6 +98,9 @@ public class ElsRestController {
                     BaseResponse baseResponse = client.sendEvaluation(request);
                     response.setMessage(baseResponse.getMessage());
                     response.setStatus(baseResponse.getStatus());
+                    if (baseResponse.getStatus()==200)
+                    iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
+
                 } else {
                     response.setMessage("دوره فراگیری با اطلاعات کامل ندارد.");
                     response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -112,9 +115,13 @@ public class ElsRestController {
                     return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
 
                 }
-
+                else
+                {
+                    response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+                }
             }
-            iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
             return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
         }
     }
@@ -129,6 +136,8 @@ public class ElsRestController {
             BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
+            if (baseResponse.getStatus()==200)
+            iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
         } catch (Exception r) {
 
             if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
@@ -137,9 +146,12 @@ public class ElsRestController {
                 return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
 
             }
-
+            else {
+                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+            }
         }
-        iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -147,7 +159,6 @@ public class ElsRestController {
     public ResponseEntity sendExam(@RequestBody ExamImportedRequest object, @PathVariable String type) {
         BaseResponse response = new BaseResponse();
         final ElsExamRequestResponse elsExamRequestResponse;
-
         try {
             ElsExamRequest request;
             PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
@@ -204,7 +215,7 @@ public class ElsRestController {
             response.setMessage("بروز خطا در سیستم");
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
 
-        }
+            }
     }
 
     @PostMapping("/resendExamToEls")
