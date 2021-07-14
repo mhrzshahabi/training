@@ -2676,4 +2676,10 @@ end;
              ]]>
         </createView>
     </changeSet>
+
+    <changeSet author="zare" id="abiz-2429">
+        <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="NATIONAL_CODE" constraintName="unique_NATIONAL_CODE"/>
+        <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="F_CONTACT_INFO" constraintName="unique_CONTACT_INFO"/>
+    </changeSet>
+
 </databaseChangeLog>
