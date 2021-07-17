@@ -1537,6 +1537,7 @@
                                                 editMobileForm_Personnel.clearValues();
                                                 editMobileForm_Personnel.callBack(data, sms, cn);
                                                 wait.close();
+                                                createDialog("info", "<spring:message code='msg.operation.successful'/>");
                                             } ));
                                             }
                                         })]
