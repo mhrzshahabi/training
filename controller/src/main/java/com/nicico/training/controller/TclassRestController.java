@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
@@ -15,6 +16,7 @@ import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IInstituteService;
+import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.model.Institute;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.repository.InstituteDAO;
@@ -70,6 +72,7 @@ public class TclassRestController {
     private final MessageSource messageSource;
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
+    private final ViewClassService viewClassService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -210,13 +213,13 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<TclassDTO.TclassSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "id", required = false) List<Long> ids,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
+    public ResponseEntity<ViewClassDTO.ViewClassSpecRs> lists(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                              @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                              @RequestParam(value = "_constructor", required = false) String constructor,
+                                                              @RequestParam(value = "operator", required = false) String operator,
+                                                              @RequestParam(value = "criteria", required = false) String criteria,
+                                                              @RequestParam(value = "id", required = false) List<Long> ids,
+                                                              @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -232,13 +235,11 @@ public class TclassRestController {
             request.setCriteria(criteriaRq);
         }
 
-        //criteriaRq=(SearchDTO.SearchRq[])request.getCriteria().getCriteria().stream().filter(p->p.getFieldName().equals("term.id")&&p.getValue().get(0).equals("[]")).toArray();
-
         if (request.getCriteria() != null) {
-            if (request.getCriteria().getCriteria().stream().filter(p -> (p.getFieldName() == null ? false : p.getFieldName().equals("term.id")) && p.getValue().size() == 0).toArray().length > 0) {
+            if (request.getCriteria().getCriteria().stream().filter(p -> (p.getFieldName() == null ? false : p.getFieldName().equals("termId")) && p.getValue().size() == 0).toArray().length > 0) {
                 ArrayList list = new ArrayList<>();
                 list.add("-1000");
-                ((SearchDTO.CriteriaRq) request.getCriteria().getCriteria().stream().filter(p -> p.getFieldName().equals("term.id") && p.getValue().size() == 0).toArray()[0]).setValue(list);
+                ((SearchDTO.CriteriaRq) request.getCriteria().getCriteria().stream().filter(p -> p.getFieldName().equals("termId") && p.getValue().size() == 0).toArray()[0]).setValue(list);
             }
         }
         if (StringUtils.isNotEmpty(sortBy)) {
@@ -256,80 +257,14 @@ public class TclassRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        request.setCriteria(workGroupService.addPermissionToCriteria("course.categoryId", request.getCriteria()));
+        SearchDTO.CriteriaRq filter = new SearchDTO.CriteriaRq();
+        filter.setFieldName("user_id").setOperator(EOperator.equals).setValue(SecurityUtil.getUserId());
+        request.getCriteria().getCriteria().add(filter);
 
-        SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
+        SearchDTO.SearchRs<ViewClassDTO> response = viewClassService.search(request);
 
-        List<Long> classIdForCheckMessage = new ArrayList<>();
-
-        for (TclassDTO.Info tclassDTO : response.getList()) {
-            tclassDTO.setPlannerFullName("");
-            tclassDTO.setSupervisorFullName("");
-            tclassDTO.setOrganizerName("");
-
-            if (tclassDTO.getPlannerId() != null) {
-                Optional<Personnel> planner = personnelDAO.findById(tclassDTO.getPlannerId());
-                if (planner.isPresent()) {
-                    tclassDTO.setPlannerFullName(planner.get().getFirstName() + " " + planner.get().getLastName());
-                }
-
-                Optional<Personnel> supervisor = personnelDAO.findById(tclassDTO.getSupervisorId());
-                if (supervisor.isPresent()) {
-                    tclassDTO.setSupervisorFullName(supervisor.get().getFirstName() + " " + supervisor.get().getLastName());
-                }
-            }
-            if (tclassDTO.getOrganizerId() != null) {
-                Optional<Institute> institute = instituteDAO.findById(tclassDTO.getOrganizerId());
-                if (institute.isPresent()) {
-                    tclassDTO.setOrganizerName(institute.get().getTitleFa());
-                }
-            }
-
-            if (tclassDTO.getStudentCount() > 0 && (tclassDTO.getClassStatus().equals("1") || tclassDTO.getClassStatus().equals("2"))) {
-                SearchDTO.SearchRq csSearchRq = new SearchDTO.SearchRq();
-                csSearchRq.setCount(1);
-                csSearchRq.setStartIndex(0);
-
-                List<String> csSortBy = new ArrayList<>();
-                csSortBy.add("sessionDate");
-                csSortBy.add("sessionStartHour");
-                csSearchRq.setSortBy(csSortBy);
-                SearchDTO.SearchRs<ClassSessionDTO.Info> result = classSessionService.searchWithCriteria(csSearchRq, tclassDTO.getId());
-
-                if (result.getList().size() > 0) {
-                    String str = DateUtil.convertKhToMi1(result.getList().get(0).getSessionDate());
-                    LocalDate date = LocalDate.parse(str);
-
-                    if ((date.isBefore(LocalDate.now().plusDays(7)) || date.equals(LocalDate.now().plusDays(7))) && (date.isAfter(LocalDate.now()) || date.equals(LocalDate.now()))) {
-                        classIdForCheckMessage.add(tclassDTO.getId());
-                    }
-                }
-            }
-        }
-
-        if (classIdForCheckMessage.size() > 0) {
-            Map<Long, Integer> classIds = tClassService.checkClassesForSendMessage(classIdForCheckMessage);
-
-            response.getList().forEach(p -> {
-                if (classIds != null && classIds.get(p.getId()) != null && classIds.get(p.getId()) > 0) {
-                    p.setIsSentMessage("alarm");
-                } else {
-                    p.setIsSentMessage("");
-                }
-            });
-        }
-        //*********************************
-        //******old code for alarms********
-////        for (TclassDTO.Info tclassDTO : response.getList()) {
-////            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
-////                tclassDTO.setHasWarning("alarm");
-////           else
-////              tclassDTO.setHasWarning("");
-////        }
-        //*********************************
-
-        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
-        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        final ViewClassDTO.SpecRs specResponse = new ViewClassDTO.SpecRs();
+        final ViewClassDTO.ViewClassSpecRs specRs = new ViewClassDTO.ViewClassSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
@@ -806,6 +741,12 @@ public class TclassRestController {
 
         BaseResponse response = tClassService.changeClassStatusToInProcess(classId);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/allClassHasMobileAlarm")
+    public List<Long> allClassHasMobileAlarm() {
+        return viewClassService.allClassHasMobileAlarm();
     }
 
 }
