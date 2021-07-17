@@ -13,5 +13,7 @@ public class EvalAverageResult extends BaseResponse implements Serializable {
 
     private Double totalAverage;
     private Long limitScore;
+    private Integer allStudentsNo;
+    private Integer answeredStudentsNo;
     private List<AveragePerQuestion> averagePerQuestionList;
 }
