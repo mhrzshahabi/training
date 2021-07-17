@@ -357,7 +357,7 @@
                         if (record.evaluationStatusReaction == "0" || record.evaluationStatusReaction == null)
                             createDialog("info", "فرم ارزیابی واکنشی برای این فراگیر صادر نشده است");
                         else {
-                            let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟aaaa",
+                            let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟در صورت حذف, ارزیابی از سیستم آنلاین هم حذف خواهد شد.",
                                 "<spring:message code="verify.delete"/>");
                             Dialog_remove.addProperties({
                                 buttonClick: function (button, index) {
@@ -896,7 +896,7 @@
                                                             if (classRecord_RE.teacherEvalStatus == "0" || classRecord_RE.teacherEvalStatus == null)
                                                                 createDialog("info", "فرم ارزیابی واکنشی برای مدرس صادر نشده است");
                                                             else {
-                                                                let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟aaaaaa",
+                                                                let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟در صورت حذف, ارزیابی از سیستم آنلاین هم حذف خواهد شد.",
                                                                     "<spring:message code="verify.delete"/>");
                                                                 Dialog_remove.addProperties({
                                                                     buttonClick: function (button, index) {
