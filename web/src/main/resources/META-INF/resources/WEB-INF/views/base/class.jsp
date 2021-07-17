@@ -625,13 +625,14 @@
             {
                 name: "isSentMessage",
                 title: "ارسال پيام قبل از شروع کلاس",
-                width: 190,
+                // width: 190,
                 type: "image",
                 imageURLPrefix: "",
                 imageURLSuffix: ".gif",
                 canEdit: false,
                 canSort: false,
-                canFilter: false
+                canFilter: false,
+                hidden: true
             },
             {name: "course.code", title: "", hidden: true},
             {name: "course.theoryDuration", title: "", hidden: true},
