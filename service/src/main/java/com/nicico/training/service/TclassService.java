@@ -1804,6 +1804,7 @@ public class TclassService implements ITclassService {
 
         Map<String, Double> answeredStudentsNo = new HashMap<>();
         Map<String, Double> questionsAverageGrade = new HashMap<>();
+        Integer answered = 0;
 
         for (ClassStudent classStudent : classStudents) {
 
@@ -1814,6 +1815,7 @@ public class TclassService implements ITclassService {
 
 
                 if (evaluation != null) {
+                    answered ++;
                     List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers = evaluationService.getEvaluationFormAnswerDetail(evaluation);
 
                     for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
@@ -1852,13 +1854,15 @@ public class TclassService implements ITclassService {
             for (Map.Entry<String, Double> entryAnswered : answeredStudentsNo.entrySet()) {
 
                 if (entry.getKey().equals(entryAnswered.getKey())) {
-                    averagePerQuestions.add(new AveragePerQuestion(entry.getKey(), entry.getValue() / entryAnswered.getValue(), entryAnswered.getValue().intValue()));
+                    averagePerQuestions.add(new AveragePerQuestion(entry.getKey(), entry.getValue()/entryAnswered.getValue()));
                     totalAverage += entry.getValue()/entryAnswered.getValue();
                 }
             }
         }
 
         evalAverageResult.setLimitScore(100L);
+        evalAverageResult.setAllStudentsNo(classStudents.size());
+        evalAverageResult.setAnsweredStudentsNo(answered);
         evalAverageResult.setAveragePerQuestionList(averagePerQuestions);
         if (averagePerQuestions.size() != 0)
             evalAverageResult.setTotalAverage(totalAverage / averagePerQuestions.size());
