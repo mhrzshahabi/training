@@ -625,7 +625,8 @@
             {
                 name: "isSentMessage",
                 title: "ارسال پيام قبل از شروع کلاس",
-                width: 190,
+                // width: 190,
+                hidden: true,
                 type: "image",
                 imageURLPrefix: "",
                 imageURLSuffix: ".gif",
