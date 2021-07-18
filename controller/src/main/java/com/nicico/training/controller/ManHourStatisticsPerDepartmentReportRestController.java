@@ -42,6 +42,7 @@ public class ManHourStatisticsPerDepartmentReportRestController {
         List<String> complexCodeList = null;
         List<String> moavenatCodeList = null;
         List<String> omorCodeList = null;
+        List<String> classStatusList = null;
         List<String> yearList = null;
         List<Long> termIdList = null;
         String termId = null;
@@ -71,6 +72,9 @@ public class ManHourStatisticsPerDepartmentReportRestController {
                     String[] termList = termId.substring(1, termId.length() - 1).split(",");
                     termIdList = Arrays.stream(termList).map(x -> Long.parseLong(x)).collect(Collectors.toList());
                 }
+                if (criterion.getFieldName().equals("classStatus")) {
+                    classStatusList = new ArrayList<String>(Arrays.asList(criterion.getValue().toString().replace("[", "").replace("]", "").split(", ")));
+                }
                 if (criterion.getValue().get(0).equals("true"))
                     criterion.setValue(true);
 
@@ -86,28 +90,28 @@ public class ManHourStatisticsPerDepartmentReportRestController {
                 endDate = info.getEndDate();
             } else if (yearList != null) {
                 startDate = yearList.get(0) + "/01/01";
-                endDate = yearList.get(0) + "/12/29";
+                endDate = yearList.get((yearList.size())-1) + "/12/29";
             }
         }
 
         List<ClassCourseSumByFeaturesAndDepartmentReportDTO> finalList = new ArrayList<>();
         if (omorCodeList != null && omorCodeList.size() > 0) {
             for (String affairCode : omorCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, affairCode);
+                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, affairCode, classStatusList);
                 finalList.addAll(tempList);
             }
         } else if (moavenatCodeList != null && moavenatCodeList.size() > 0) {
             for (String assistantCode : moavenatCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, assistantCode, null);
+                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, assistantCode, null, classStatusList);
                 finalList.addAll(tempList);
             }
         } else if (complexCodeList != null && complexCodeList.size() > 0) {
             for (String complexCode : complexCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, complexCode, null, null);
+                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, complexCode, null, null, classStatusList);
                 finalList.addAll(tempList);
             }
         } else {
-            List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, null);
+            List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, null, classStatusList);
             finalList.addAll(tempList);
         }
 
