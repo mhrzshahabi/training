@@ -654,7 +654,7 @@
         dataArrived: function () {
             wait.close();
             selectWorkflowRecord();
-            setMobileAlarms();
+            setMobileAlarms();if(todayStartFilterForm.getValue("todayStartFilter")){let cr = {"fieldName": "startDate","operator": "iContains","value": getTodayPersianStr()};ListGrid_Class_JspClass.setFilterEditorCriteria(cr)}
         },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -2923,12 +2923,32 @@
         members: [TabSet_Class]
     });
 
+    var todayStartFilterForm = isc.DynamicForm.create({
+        fields: [
+            {
+                name:"todayStartFilter",
+                title:"پیشفرض فیلتر تاریخ شروع امروز",
+                type:"checkbox",
+                value: true,
+                changed: function (form, item, value) {if(value)
+                    {let cr = {"operator": "and","_constructor": "AdvancedCriteria","criteria":[{"fieldName": "startDate","operator": "iContains","value": getTodayPersianStr()}]};ListGrid_Class_JspClass.setFilterEditorCriteria(cr);}else{if(ListGrid_Class_JspClass.getFilterEditorCriteria().criteria.filter(r=>r.fieldName=='startDate')[0].value==getTodayPersianStr())ListGrid_Class_JspClass.setFilterEditorCriteria(null);if(ListGrid_Class_JspClass.implicitCriteria&&ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c=>c.fieldName=="startDate")[0]&&ListGrid_Class_JspClass.implicitCriteria&&ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c=>c.fieldName=="startDate")[0].value == getTodayPersianStr()){ListGrid_Class_JspClass.implicitCriteria.criteria = ListGrid_Class_JspClass.implicitCriteria.criteria.filter(r=>r.fieldName!="startDate")}}
+                }
+            },
+        ]
+    });
+
     var VLayout_Body_Class_JspClass = isc.TrVLayout.create({
         width: "100%",
         height: "100%",
         overflow: "scroll",
+        align: "left",
         members: [
             HLayout_Actions_Class_JspClass,
+            isc.HLayout.create({
+                width: "100%",
+                height: "1%",
+                members: [todayStartFilterForm]
+            }),
             HLayout_Grid_Class_JspClass,
             HLayout_Tab_Class
         ]
@@ -4340,7 +4360,7 @@
             if (plannerCriteria.size() > 0) {
                 criteria.concat(plannerCriteria[0]);
             }
-        }
+        }if(todayStartFilterForm.getValue("todayStartFilter")){let cr = {"fieldName": "startDate","operator": "iContains","value": getTodayPersianStr()};criteria.concat(cr)}
         RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
         DynamicForm_Term_Filter.getItem("termFilter").fetchData();
     }
@@ -4376,7 +4396,7 @@
                 if (plannerCriteria.size() > 0) {
                     criteria.criteria.push(plannerCriteria[0]);
                 }
-            }
+            }if(todayStartFilterForm.getValue("todayStartFilter")){let cr = {"fieldName": "startDate","operator": "iContains","value": getTodayPersianStr()};criteria.criteria.push(cr);}
             RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
             ListGrid_Class_JspClass.implicitCriteria = criteria;
             ListGrid_Class_JspClass.invalidateCache();
@@ -4407,7 +4427,7 @@
                         if (termCriteria.size() > 0) {
                             criteria.criteria.push(termCriteria[0]);
                         }
-                    }
+                    }if(todayStartFilterForm.getValue("todayStartFilter")){let cr = {"fieldName": "startDate","operator": "iContains","value": getTodayPersianStr()};criteria.criteria.push(cr);}
                     RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
                     ListGrid_Class_JspClass.implicitCriteria = criteria;
                     ListGrid_Class_JspClass.invalidateCache();

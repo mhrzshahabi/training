@@ -653,6 +653,11 @@ function getTodayPersian() {
     return new Array(persian[0], persian[1], persian[2], t.getDay());
 }
 
+function getTodayPersianStr() {
+    let persianDateArray = getTodayPersian();
+    return persianDateArray[0].toString().concat("/").concat((persianDateArray[1]).toString().padStart(2,0)).concat("/").concat(persianDateArray[2].toString().padStart(2,0));
+}
+
 function CorrectDateEn(obj) {
     var errorChars = "qwertyuiop[]\asdfghjkl;'.,mnbvcxzZXCVBNMLKJHGFDSAQWERTYUIOP=-+_|}{:?><)(*&^%$#@!";
     var oldDate = obj;
