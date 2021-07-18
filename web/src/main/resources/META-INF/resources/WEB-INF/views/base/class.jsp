@@ -24,8 +24,6 @@
     let oLoadAttachments_class = null;
     let OJT = false;
     let lastDate = null;
-    var allClassHasMobileAlarm = [];
-    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "allClassHasMobileAlarm", "GET", null, classAlarmReceived));
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -84,12 +82,21 @@
             {name: "code", autoFitWidth: true},
             {name: "term.titleFa", autoFitWidth: true},
             {name: "courseId", autoFitWidth: true},
+            // {name: "teacher.personality.lastNameFa"},
+// {name: "course.code"},
             {name: "course.titleFa", autoFitWidth: true},
             {name: "course.id", autoFitWidth: true},
             {name: "teacherId", autoFitWidth: true},
             {
                 name: "teacher",
                 autoFitWidth: true
+                // valueField: "teacher.personality.lastNameFa",
+            },
+            {
+                name: "teacher.personality.lastNameFa",
+                autoFitWidth: true
+                // displayField: "teacher",
+                // type: "TextItem"
             },
             {name: "reason" , autoFitWidth: true},
             {name: "classStatus" , autoFitWidth: true},
@@ -459,9 +466,19 @@
             },
             {
                 name: "titleClass",
+                title: "titleClass",
+                align: "center",
+                filterOperator: "iContains",
+                hidden: true
+            },
+            {
+                name: "course.titleFa",
                 title: "<spring:message code='course.title'/>",
                 align: "center",
                 filterOperator: "iContains",
+                sortNormalizer: function (record) {
+                    return record.course.titleFa;
+                }
             },
             {
                 name: "term.titleFa",
@@ -502,11 +519,16 @@
             {
                 name: "teacher",
                 title: "<spring:message code='teacher'/>",
+                displayField: "teacher.personality.lastNameFa",
+                type: "TextItem",
+                sortNormalizer(record) {
+                    return record.teacher.personality.lastNameFa;
+                },
                 align: "center",
                 filterOperator: "iContains",
             },
             {
-                name: "planner",
+                name: "planner.lastName",
                 title: "<spring:message code="planner"/>",
                 canSort: false,
                 autoFitWidth: true,
@@ -514,7 +536,7 @@
                 filterOperator: "iContains",
             },
             {
-                name: "supervisor",
+                name: "supervisor.lastName",
                 title: "<spring:message code="supervisor"/>",
                 canSort: false,
                 align: "center",
@@ -522,7 +544,7 @@
                 filterOperator: "iContains",
             },
             {
-                name: "organizer",
+                name: "organizer.titleFa",
                 title: "<spring:message code="executer"/>",
                 canSort: false,
                 autoFitWidth: true,
@@ -655,7 +677,6 @@
         dataArrived: function () {
             wait.close();
             selectWorkflowRecord();
-            setMobileAlarms();
         },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -2066,17 +2087,6 @@
         }
     }
 
-    function setMobileAlarms() {
-        if (allClassHasMobileAlarm && ListGrid_Class_JspClass.data && ListGrid_Class_JspClass.data.localData) {
-            ListGrid_Class_JspClass.data.localData.filter(d => allClassHasMobileAlarm.contains(d.id)).forEach(d => d.isSentMessage = 'alarm');
-        }
-    }
-
-    function classAlarmReceived(rsp) {
-        allClassHasMobileAlarm = JSON.parse(rsp.data);
-        setMobileAlarms();
-    }
-
     var HLayOut_ClassSaveOrExit_JspClass = isc.TrHLayoutButtons.create({
         members: [IButton_Class_Save_JspClass, IButton_Class_Exit_JspClass]
     });
@@ -3045,9 +3055,7 @@
                     }
                 });*/
             } else {
-                fetch(classUrl.concat(record.id) ,{headers: {"Authorization": "Bearer <%= accessToken %>"}, method: "GET"})
-                    .then(response => response.json())
-                    .then(data => startEdit(data));
+                startEdit(record);
             }
 
             function startEdit(record) {
@@ -3134,11 +3142,11 @@
                         DynamicForm_Class_JspClass.getField("classStatus").getItem(2).enable();
                         DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
                         DynamicForm_Class_JspClass.itemChanged();
-                        if (record.scoringMethod === "1") {
-                            DynamicForm_Class_JspClass.setValue("acceptancelimit_a", record.acceptancelimit);
+                        if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
+                            DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
                         }
                         else {
-                            DynamicForm_Class_JspClass.setValue("acceptancelimit", record.acceptancelimit);
+                            DynamicForm_Class_JspClass.setValue("acceptancelimit", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
                         }
                         //================
                         DynamicForm1_Class_JspClass.setValue("autoValid", false);
@@ -3240,11 +3248,11 @@
 
                         DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
                         DynamicForm_Class_JspClass.itemChanged();
-                        if (record.scoringMethod === "1") {
-                            DynamicForm_Class_JspClass.setValue("acceptancelimit_a", record.acceptancelimit);
+                        if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod === "1") {
+                            DynamicForm_Class_JspClass.setValue("acceptancelimit_a", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
                         }
                         else {
-                            DynamicForm_Class_JspClass.setValue("acceptancelimit", record.acceptancelimit);
+                            DynamicForm_Class_JspClass.setValue("acceptancelimit", ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
                         }
 
                         if (record.evaluation === "1") {
@@ -3943,7 +3951,7 @@
             return true;
         }
     }
-
+    
     function getDaysOfClass(classId) {
         wait.show();
         isc.RPCManager.sendRequest({
@@ -4368,7 +4376,7 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [
-                    {fieldName: "termId", operator: "inSet", value: value}
+                    {fieldName: "term.id", operator: "inSet", value: value}
                 ]
             };
             if (ListGrid_Class_JspClass.implicitCriteria) {
