@@ -1182,8 +1182,7 @@
 
     };
 
-    function loadPage_checkList() {
-      var  classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+    function loadPage_checkList(classRecord) {
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + classRecord.id;
            // ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});

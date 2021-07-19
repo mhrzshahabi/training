@@ -1347,9 +1347,9 @@
         }
     }
 
-    function loadPage_Attendance() {
-        if(classRecord === null || classRecord !== ListGrid_Class_JspClass.getSelectedRecord()){
-            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+    function loadPage_Attendance(selectedRcrd) {
+        if(classRecord === null || classRecord !== selectedRcrd){
+            classRecord = selectedRcrd;
             isAttendanceDate = true;
         }
         refreshDate();

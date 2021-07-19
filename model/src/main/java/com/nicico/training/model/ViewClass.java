@@ -82,4 +82,7 @@ public class ViewClass {
     @Column(name = "b_class_to_online_status")
     private Boolean classToOnlineStatus;
 
+    @Column(name = "c_cancel_class_reason")
+    private String classCancelReason;
+
 }

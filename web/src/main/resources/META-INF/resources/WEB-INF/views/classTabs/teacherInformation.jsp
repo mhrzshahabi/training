@@ -173,8 +173,7 @@ let classRecord;
     //************************************************************************************
     //function
     //************************************************************************************
-    function  loadPage_teacherInformation() {
-        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+    function  loadPage_teacherInformation(classRecord) {
 
         if (!(classRecord == undefined || classRecord == null)) {
         RestDataSource_teacherInformation.fetchDataURL=teacherInformation +"/teacher-information-iscList" + "/"+classRecord.course.id;

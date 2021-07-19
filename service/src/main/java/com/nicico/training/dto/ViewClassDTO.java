@@ -32,7 +32,7 @@ public class ViewClassDTO {
     private String reason;
     private String workflowEndingStatus;
     private Boolean classToOnlineStatus;
-
+    private String classCancelReason;
 
     @Getter
     @Setter

@@ -165,8 +165,7 @@
         }
 
         //*****fetch alarms when select alarm tab*****
-        function loadPage_alarm() {
-            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        function loadPage_alarm(classRecord) {
 
             if (!(classRecord == undefined || classRecord == null)) {
                 RestDataSource_alarm.fetchDataURL = classAlarm + "list" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;

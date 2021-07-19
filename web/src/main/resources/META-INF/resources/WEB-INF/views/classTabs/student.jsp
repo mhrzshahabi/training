@@ -101,7 +101,7 @@
                 isc.ToolStripButtonExcel.create({
                     click: function () {
 
-                        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                        let classRecord = selectedRecordClass;
                         if (!(classRecord === undefined || classRecord == null)) {
                             ExportToFile.downloadExcelRestUrl(null, StudentsLG_student, tclassStudentUrl + "/students-iscList/" + classRecord.id, 0,
                                 ListGrid_Class_JspClass, '', "کلاس - فراگيران", StudentsLG_student.getCriteria(), null);
@@ -112,7 +112,7 @@
                     icon: "[SKIN]/RichTextEditor/print.png",
                     title: "<spring:message code='print'/>",
                     click: function () {
-                        var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                        var classRecord = selectedRecordClass;
 
                         let startDateStr = [...classRecord.startDate.split("/").reverse()].join("/");
                         let endDateStr = [...classRecord.endDate.split("/").reverse()].join("/");
@@ -218,7 +218,7 @@
                         if (data.length === 0) {
                             createDialog("info", " اطلاعات فراگیران این کلاس صحیح است.");
                         } else {
-                            let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                            let classRecord = selectedRecordClass;
                             let fileTitle = classRecord.code + " نواقص فراگیران کلاس با کد ";
                             ExportToFile.exportToExcelFromClient(sendFields, data, fileTitle, "اطلاعات ناقص فراگیران");
                         }
@@ -1021,7 +1021,7 @@
             /*dataChanged(){
                 if(checkRefresh === 0) {
                     checkRefresh = 1
-                    checkExistInNeedsAssessment(ListGrid_Class_JspClass.getSelectedRecord().courseId)
+                    checkExistInNeedsAssessment(selectedRecordClass.courseId)
                 }
             }*/
 
@@ -1645,7 +1645,7 @@
                                         title: 'اضافه کردن گروهي',
                                         click: function () {
                                             groupFilter("اضافه کردن گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true,
-                                                ListGrid_Class_JspClass.getSelectedRecord().courseId);
+                                                selectedRecordClass.courseId);
                                         }
                                     })
                                 ]
@@ -1676,7 +1676,7 @@
                                     title: 'اضافه کردن گروهي',
                                     click: function () {
                                         groupFilter("اضافه کردن گروهی", personnelRegUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true,
-                                            ListGrid_Class_JspClass.getSelectedRecord().courseId);
+                                            selectedRecordClass.courseId);
                                     }
                                 })
                             ]
@@ -1731,8 +1731,8 @@
                                         click: function () {
 
                                             SelectedPersonnelsLG_student.endEditing();
-                                            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                            let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
+                                            let classId = selectedRecordClass.id;
+                                            let courseId = selectedRecordClass.courseId;
                                             let equalCourseIds = [];
                                             equalCourseIds.add(courseId);
                                             if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
@@ -2002,7 +2002,7 @@
         }
 
         function addStudent_student() {
-            let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            let classRecord = selectedRecordClass;
             if (classRecord == null || classRecord.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
@@ -2028,7 +2028,7 @@
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                let classId = selectedRecordClass.id;
                 ClassStudentWin_student.close();
                 refreshLG(StudentsLG_student);
                 let messages = JSON.parse(resp.data);
@@ -2057,7 +2057,7 @@
 
         function removeStudent_student() {
             let studentIds = new Array();
-            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+            let classId = selectedRecordClass.id;
             let studentRecord = StudentsLG_student.getSelectedRecords();
 
             if (studentRecord.length < 1) {
@@ -2136,7 +2136,7 @@
 
         function class_student_update_student_result(resp) {
             wait.close();
-            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+            let classId = selectedRecordClass.id;
             if (resp.httpResponseCode === 200) {
                 refreshLG(StudentsLG_student);
             }
@@ -2378,8 +2378,7 @@
             }
         }
 
-        function loadPage_student() {
-            let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        function loadPage_student(classRecord) {
             if (!(classRecord === undefined || classRecord == null)) {
                 StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
 
@@ -2409,7 +2408,7 @@
 
         function checkStudentDuplicateNationalCode() {
             let record = PersonnelsRegLG_student.getSelectedRecord().getValue("nationalCode");
-            let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+            let classId = selectedRecordClass.id;
             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkStudentInClass/" + nationalCode + "/" + classId, "GET",
                 null, "callback: student_national_code_findOne_result(rpcResponse)"));
         }
@@ -2431,7 +2430,7 @@
         function evaluationStudent_student() {
 
             var studentId = StudentsLG_student.getSelectedRecord();
-            var classId = ListGrid_Class_JspClass.getSelectedRecord();
+            var classId = selectedRecordClass;
             if (studentId == null || studentId == undefined || classId == null || classId == undefined) {
                 var ERROR = isc.Dialog.create({
                     message: ("<spring:message code='global.grid.record.not.selected'/>"),
@@ -2460,10 +2459,10 @@
             } else {
                 evalData = resp.data;
                 // var studentId = StudentsLG_student.getSelectedRecord().student.id;
-                // var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+                // var classId = selectedRecordClass.id;
 
                 var studentRecord = StudentsLG_student.getSelectedRecord();
-                var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                var classRecord = selectedRecordClass;
                 switch (evalData) {
                     case "1": {
                         // evaluationViewloader.setViewURL("evaluation/reaction-form"+ studentId + "/" + classId);
@@ -2601,8 +2600,8 @@
                     if (students.getLength() > 0 /*allRowsOK*/ && insert) {
 
                         SelectedPersonnelsLG_student.endEditing();
-                        let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                        let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
+                        let classId = selectedRecordClass.id;
+                        let courseId = selectedRecordClass.courseId;
                         let equalCourseIds = [];
                         equalCourseIds.add(courseId);
                         SelectedPersonnelsLG_student.setData(students);

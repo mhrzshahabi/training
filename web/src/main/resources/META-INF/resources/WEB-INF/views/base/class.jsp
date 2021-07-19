@@ -26,7 +26,7 @@
     let lastDate = null;
     var allClassHasMobileAlarm = [];
     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "allClassHasMobileAlarm", "GET", null, classAlarmReceived));
-
+    var selectedRecordClass = null;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -77,7 +77,7 @@
 // {name: "lastModifiedDate",hidden:true},
 // {name: "createdBy",hidden:true},
 // {name: "createdDate",hidden:true,type:d},
-            {name: "titleClass", autoFitWidth: true},
+            {name: "titleClass", autoFitWidth: false},
             {name: "startDate", autoFitWidth: true},
             {name: "endDate", autoFitWidth: true},
             {name: "studentCount", canFilter: false, canSort: false, autoFitWidth: true},
@@ -100,7 +100,7 @@
             {name: "trainingPlaceIds"},
             {name: "instituteId"},
             {name: "workflowEndingStatusCode"},
-            {name: "workflowEndingStatus"},
+            {name: "workflowEndingStatus",autoFitWidth: false},
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
             {name: "course.theoryDuration"},
@@ -440,8 +440,7 @@
                         ToolStrip_SendForms_JspClass.getField("registerButtonTraining").hideIcon("ok");
                     }
                 }
-            }
-            refreshSelectedTab_class(tabSetClass.getSelectedTab());
+            }if(ListGrid_Class_JspClass.getSelectedRecord()){fetch(classUrl.concat(ListGrid_Class_JspClass.getSelectedRecord().id) ,{headers: {"Authorization": "Bearer <%= accessToken %>"}, method: "GET"}).then(response => response.json()).then(data => {refreshSelectedTab_class(data, tabSetClass.getSelectedTab());selectedRecordClass = data;});}else{refreshSelectedTab_class(null, tabSetClass.getSelectedTab());}
         },
         <sec:authorize access="hasAuthority('Tclass_U')">
         doubleClick: function () {
@@ -461,6 +460,7 @@
                 name: "titleClass",
                 title: "<spring:message code='course.title'/>",
                 align: "center",
+                width: 190,
                 filterOperator: "iContains",
             },
             {
@@ -497,7 +497,7 @@
                 name: "group",
                 title: "<spring:message code='group'/>",
                 align: "center",
-                filterOperator: "equals",
+                filterOperator: "equals",width: 50
             },
             {
                 name: "teacher",
@@ -561,7 +561,7 @@
                 showHover: true,
                 hoverWidth: 150,
                 hoverHTML(record) {
-                    return "<b>علت لغو: </b>" + record.classCancelReason.title;
+                    if(record.classCancelReason){return "<b>علت لغو: </b>" + record.classCancelReason;}else return null;
                 }
             },
             {
@@ -597,13 +597,13 @@
                 title: "<spring:message code="ending.class.status"/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                hidden: true
             },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {
                 name: "isSentMessage",
                 title: "ارسال پيام قبل از شروع کلاس",
-                width: 190,
+                width: 100,
                 type: "image",
                 imageURLPrefix: "",
                 imageURLSuffix: ".gif",
@@ -2049,7 +2049,7 @@
 
     //*****generate sessions callback*****
     function class_get_sessions_result(resp) {
-        refreshSelectedTab_class(tabSetClass.getSelectedTab());
+        refreshSelectedTab_class(selectedRecordClass, tabSetClass.getSelectedTab());
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             DynamicForm_Class_JspClass.setValue("group",JSON.parse(resp.data));
             classCode();
@@ -2284,20 +2284,19 @@
     var ToolStripButton_teacherEvaluation_JspClass = isc.ToolStripButton.create({
         title: "ثبت نتایج ارزیابی مسئول آموزش از مدرس کلاس",
         click: function () {
-            let record = ListGrid_Class_JspClass.getSelectedRecord();
-            if (record == null || record.id == null) {
+            if (selectedRecordClass == null || selectedRecordClass.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
-                if (record.classStatus == null || record.classStatus == 1)
+                if (selectedRecordClass.classStatus == null || selectedRecordClass.classStatus == 1)
                     createDialog("info", "این کلاس در وضعیت برنامه ریزی می باشد و قابل ارزیابی نمی باشد");
                 else {
-                    if (record.evaluationStatusReactionTraining == null || record.evaluationStatusReactionTraining == 0)
+                    if (selectedRecordClass.evaluationStatusReactionTraining == null || selectedRecordClass.evaluationStatusReactionTraining == 0)
                         createDialog("info", "برای مسئول آموزش این کلاس فرمی صادر نشده است");
                     else {
-                        if (record.supervisor == undefined || record.teacherId == undefined)
+                        if (selectedRecordClass.supervisor == undefined || selectedRecordClass.teacherId == undefined)
                             createDialog("info", "اطلاعات کلاس ناقص است!");
                         else
-                            register_Training_Reaction_Form_JspClass(record);
+                            register_Training_Reaction_Form_JspClass(selectedRecordClass);
 
                     }
                 }
@@ -2595,17 +2594,16 @@
                         baseStyle: "sendFile",
                         click: function () {
 
-                            let record = ListGrid_Class_JspClass.getSelectedRecord();
-                            if (record == null || record.id == null) {
+                            if (selectedRecordClass == null || selectedRecordClass.id == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else {
-                                if (record.evaluationStatusReactionTraining != "0" && record.evaluationStatusReactionTraining != null)
+                                if (selectedRecordClass.evaluationStatusReactionTraining != "0" && selectedRecordClass.evaluationStatusReactionTraining != null)
                                     createDialog("info", "قبلا فرم ارزیابی واکنشی برای مسئول آموزش صادر شده است");
                                 else {
-                                    if (record.supervisorId == undefined || record.teacherId == undefined)
+                                    if (selectedRecordClass.supervisorId == undefined || selectedRecordClass.teacherId == undefined)
                                         createDialog("info", "اطلاعات کلاس ناقص است!");
                                     else
-                                        Training_Reaction_Form_JspClass(record);
+                                        Training_Reaction_Form_JspClass(selectedRecordClass);
                                 }
                             }
                         },
@@ -2633,20 +2631,19 @@
                         baseStyle: "registerFile",
                         click: function () {
 
-                            let record = ListGrid_Class_JspClass.getSelectedRecord();
-                            if (record == null || record.id == null) {
+                            if (selectedRecordClass == null || selectedRecordClass.id == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else {
-                                if (record.classStatus == null || record.classStatus == 1)
+                                if (selectedRecordClass.classStatus == null || selectedRecordClass.classStatus == 1)
                                     createDialog("info", "این کلاس در وضعیت برنامه ریزی می باشد و قابل ارزیابی نمی باشد");
                                 else {
-                                    if (record.evaluationStatusReactionTraining == null || record.evaluationStatusReactionTraining == 0)
+                                    if (selectedRecordClass.evaluationStatusReactionTraining == null || selectedRecordClass.evaluationStatusReactionTraining == 0)
                                         createDialog("info", "برای مسئول آموزش این کلاس فرمی صادر نشده است");
                                     else {
-                                        if (record.supervisor == undefined || record.teacherId == undefined)
+                                        if (selectedRecordClass.supervisor == undefined || selectedRecordClass.teacherId == undefined)
                                             createDialog("info", "اطلاعات کلاس ناقص است!");
                                         else
-                                            register_Training_Reaction_Form_JspClass(record);
+                                            register_Training_Reaction_Form_JspClass(selectedRecordClass);
 
                                     }
                                 }
@@ -2673,11 +2670,10 @@
                                 prompt: "حذف فرم",
                                 click: function (form, item, icon) {
 
-                                    let record = ListGrid_Class_JspClass.getSelectedRecord();
-                                    if (record == null || record.id == null) {
+                                    if (selectedRecordClass == null || selectedRecordClass.id == null) {
                                         createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                                     } else {
-                                        if (record.evaluationStatusReactionTraining == "0" || record.evaluationStatusReactionTraining == null)
+                                        if (selectedRecordClass.evaluationStatusReactionTraining == "0" || selectedRecordClass.evaluationStatusReactionTraining == null)
                                             createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
                                         else {
                                             let Dialog_remove = createDialog("ask", "آیا از حذف فرم مطمئن هستید؟",
@@ -2687,10 +2683,10 @@
                                                     this.close();
                                                     if (index === 0) {
                                                         let data = {};
-                                                        data.classId = record.id;
-                                                        data.evaluatorId = record.supervisorId;
+                                                        data.classId = selectedRecordClass.id;
+                                                        data.evaluatorId = selectedRecordClass.supervisorId;
                                                         data.evaluatorTypeId = 454;
-                                                        data.evaluatedId = record.teacherId;
+                                                        data.evaluatedId = selectedRecordClass.teacherId;
                                                         data.evaluatedTypeId = 187;
                                                         data.questionnaireTypeId = 141;
                                                         data.evaluationLevelId = 154;
@@ -2704,8 +2700,8 @@
                                                                     msg.close();
                                                             }, 3000);
                                                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
-                                                                    record.id,"GET", null, null));
-                                                                record.evaluationStatusReactionTraining = 0;
+                                                                    selectedRecordClass.id,"GET", null, null));
+                                                                selectedRecordClass.evaluationStatusReactionTraining = 0;
                                                                 ToolStrip_SendForms_JspClass.getField("sendButtonTraining").hideIcon("ok");
                                                                 ToolStrip_SendForms_JspClass.getField("registerButtonTraining").hideIcon("ok");
                                                                 ToolStrip_SendForms_JspClass.redraw();
@@ -2731,14 +2727,13 @@
                                 prompt: "چاپ فرم",
                                 click: function (form, item, icon) {
 
-                                    let record = ListGrid_Class_JspClass.getSelectedRecord();
-                                    if (record == null || record.id == null)
+                                    if (selectedRecordClass == null || selectedRecordClass.id == null)
                                         createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                                     else {
-                                        if (record.evaluationStatusReactionTraining == "0" || record.evaluationStatusReactionTraining == null)
+                                        if (selectedRecordClass.evaluationStatusReactionTraining == "0" || selectedRecordClass.evaluationStatusReactionTraining == null)
                                             createDialog("info", "فرم ارزیابی واکنشی برای مسئول آموزش صادر نشده است");
                                         else
-                                            print_Training_Reaction_Form_JspClass(record);
+                                            print_Training_Reaction_Form_JspClass(selectedRecordClass);
                                     }
                                 }
                             }
@@ -2899,8 +2894,9 @@
             },
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            if (isc.Page.isLoaded())
-                refreshSelectedTab_class(tab);
+            if (isc.Page.isLoaded()) {
+                if(ListGrid_Class_JspClass.getSelectedRecord()){fetch(classUrl.concat(ListGrid_Class_JspClass.getSelectedRecord().id) ,{headers: {"Authorization": "Bearer <%= accessToken %>"}, method: "GET"}).then(response => response.json()).then(data => {selectedRecordClass = data;refreshSelectedTab_class(data, tab)});}else{refreshSelectedTab_class(null, tab);};
+            }
         }
     });
 
@@ -3306,7 +3302,7 @@
         setTimeout(function () {
             ListGrid_Class_JspClass.setSelectedState(gridState);
         }, 3000);
-        refreshSelectedTab_class(tabSetClass.getSelectedTab());
+        refreshSelectedTab_class(ListGrid_Class_JspClass.getSelectedRecord(), tabSetClass.getSelectedTab());
     }
 
     function ListGrid_Class_add() {
@@ -3360,6 +3356,9 @@
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: []
+        }
+        if (todayStartFilterForm.getValue("todayStartFilter")) {
+            cr.criteria.push({"fieldName": "startDate","operator": "iContains","value": getTodayPersianStr()});
         }
         if (ListGrid_Class_JspClass.getCriteria().criteria !== undefined) {
             cr = ListGrid_Class_JspClass.getCriteria();
@@ -3786,7 +3785,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-            refreshSelectedTab_class(tabSetClass.getSelectedTab());
+            refreshSelectedTab_class(selectedRecordClass, tabSetClass.getSelectedTab());
         } else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {
             createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");
         } else {
@@ -3821,25 +3820,24 @@
         }
     }
 
-    function refreshSelectedTab_class(tab) {
-        let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+    function refreshSelectedTab_class(classRecord, tab) {
         tabSet_class_status(classRecord);
         if (!(classRecord == undefined || classRecord == null)) {
             switch (tab.ID) {
                 case "classStudentsTab": {
                     if (typeof loadPage_student !== "undefined")
-                        loadPage_student();
+                        loadPage_student(classRecord);
                     break;
                 }
                 case "classSessionsTab": {
                     if (typeof loadPage_session !== "undefined")
-                        loadPage_session();
+                        loadPage_session(classRecord);
                     break;
                 }
                 case "classCheckListTab": {
                     if (typeof loadPage_checkList !== "undefined")
 
-                        loadPage_checkList();
+                        loadPage_checkList(classRecord);
                     break;
                 }
                 case "classAttachmentsTab": {
@@ -3855,60 +3853,56 @@
                 case "classScoresTab": {
 
                     if (typeof loadPage_Scores !== "undefined") {
-                        loadPage_Scores();
+                        loadPage_Scores(classRecord);
                     }
                     break;
                 }
                 case "costClassTab": {
 
                     if (typeof loadPage_costClass !== "undefined") {
-                        loadPage_costClass();
+                        loadPage_costClass(classRecord);
                     }
                     break;
                 }
 
                 case "classAttendanceTab": {
                     if (typeof loadPage_Attendance !== "undefined")
-                        loadPage_Attendance();
+                        loadPage_Attendance(classRecord);
                     break;
                 }
                 case "classAlarmsTab": {
                     if (typeof loadPage_alarm !== "undefined")
-                        loadPage_alarm();
+                        loadPage_alarm(classRecord);
                     break;
                 }
                 case "teacherInformationTab": {
                     if (typeof loadPage_teacherInformation !== "undefined")
-                        loadPage_teacherInformation();
+                        loadPage_teacherInformation(classRecord);
                     break;
                 }
                 case "classPreCourseTestQuestionsTab": {
                     if (typeof loadPage_preCourseTestQuestions !== "undefined")
-                        loadPage_preCourseTestQuestions(ListGrid_Class_JspClass.getSelectedRecord().id, isReadOnlyClass);
+                        loadPage_preCourseTestQuestions(classRecord.id, isReadOnlyClass);
                     break;
                 }
                 case "classDocumentsTab": {
                     if (typeof loadPage_classDocuments !== "undefined")
-                        loadPage_classDocuments(ListGrid_Class_JspClass.getSelectedRecord().id);
+                        loadPage_classDocuments(classRecord.id);
                     break;
                 }
                 case "classEvaluationInfo": {
                     if (typeof loadPage_classEvaluationInfo !== "undefined")
-                        loadPage_classEvaluationInfo(ListGrid_Class_JspClass.getSelectedRecord().id,
-                                                    ListGrid_Class_JspClass.getSelectedRecord().studentCount,
-                                                    ListGrid_Class_JspClass.getSelectedRecord().evaluation);
+                        loadPage_classEvaluationInfo(classRecord.id,classRecord.studentCount,classRecord.evaluation);
                     break;
                 }
                 case "classCosts": {
                     if (typeof loadPage_classCosts !== "undefined")
-                        loadPage_classCosts(ListGrid_Class_JspClass.getSelectedRecord().studentCost,
-                            ListGrid_Class_JspClass.getSelectedRecord().studentCostCurrency,
-                            ListGrid_Class_JspClass.getSelectedRecord().id);
+                        loadPage_classCosts(classRecord.studentCost,classRecord.studentCostCurrency,classRecord.id);
                     break;
                 }
                 case "classFinish": {
                     if (typeof loadPage_classCosts !== "undefined")
-                        loadPage_classFinish(ListGrid_Class_JspClass.getSelectedRecord().id);
+                        loadPage_classFinish(classRecord.id);
                     break;
                 }
             }

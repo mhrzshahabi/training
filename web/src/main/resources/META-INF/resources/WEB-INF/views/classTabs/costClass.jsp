@@ -89,8 +89,7 @@
 
 
 
-    function loadPage_costClass() {
-        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+    function loadPage_costClass(classRecord) {
 
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_cost_class_teacher_JspClass.fetchDataURL =teacherUrl+'fullName'+'/'+classRecord.teacherId
