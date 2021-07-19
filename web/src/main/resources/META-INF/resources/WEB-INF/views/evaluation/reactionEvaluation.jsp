@@ -401,7 +401,7 @@
                         }
                     }
                 });
-                recordCanvas.addMember(removeIcon);
+                // recordCanvas.addMember(removeIcon);
                 return recordCanvas;
             } else if (fieldName == "printForm") {
                 let recordCanvas = isc.HLayout.create({
