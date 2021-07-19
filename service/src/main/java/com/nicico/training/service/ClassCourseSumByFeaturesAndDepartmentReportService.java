@@ -32,7 +32,8 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
                                                                           String endDate,
                                                                           String mojtameCode,
                                                                           String moavenatCode,
-                                                                          String omorCode) {
+                                                                          String omorCode,
+                                                                          List<String> classStatusList) {
         StringBuffer departmentFilterCode = new StringBuffer();
         StringBuffer script = new StringBuffer("SELECT ");
         script.append(" CASE WHEN AL.presence + AL.absence = 0 THEN NULL");
@@ -102,13 +103,19 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("                          AND C_SESSION_DATE <= :TO_DATE ");
         script.append("                          )SESS ON(ATT.F_SESSION = SESS.ID)                          ");
         script.append("      ) )PIVOT(SUM (S_HOUR) FOR ATT_STATE IN('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))) SUM_");
-        script.append("                          INNER JOIN TBL_CLASS CLSS ON(CLSS.ID = SUM_.F_CLASS_ID)");
+        script.append("                          INNER JOIN TBL_CLASS CLSS ON (CLSS.ID = SUM_.F_CLASS_ID AND ");
+        if (classStatusList.size()>0){
+            script.append("  CLSS.C_STATUS IN (").append(classStatusList.stream().collect(Collectors.joining(","))).append("))");
+        } else {
+            script.append(" 1=1)");
+        }
         script.append("                          LEFT JOIN (SELECT CLASS_ID , COUNT(DISTINCT(STUDENT_ID)) AS STUDENT_COUNT FROM TBL_CLASS_STUDENT GROUP BY CLASS_ID) ST_COUNT ON(ST_COUNT.CLASS_ID = CLSS.ID)");
         script.append("                          INNER JOIN TBL_COURSE CRS ON(CRS.ID = CLSS.F_COURSE)");
+        script.append("                          LEFT JOIN TBL_PERSONNEL personnel on (personnel.ID = CLSS.F_PLANNER) ");
         script.append("                          INNER JOIN (");
         script.append("                          SELECT * FROM TBL_DEPARTMENT WHERE ");
         script.append(departmentFilterCode);
-        script.append("                          )DPRT ON(DPRT.ID = CLSS.F_PLANNER)");
+        script.append("                          )DPRT ON(DPRT.ID = personnel.F_DEPARTMENT_ID) ");
         script.append("                          LEFT JOIN (SELECT COUNT(*) COUNT_, F_DEPARTMENT_ID FROM TBL_PERSONNEL WHERE DELETED = 0 GROUP BY F_DEPARTMENT_ID) PRS ON DPRT.ID = PRS.F_DEPARTMENT_ID");
         script.append("              )GROUP BY ");
         if (omorCode != null) {
@@ -218,6 +225,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("                          INNER JOIN TBL_CLASS CLSS ON(CLSS.ID = SUM_.F_CLASS_ID)");
         script.append("                          LEFT JOIN (SELECT CLASS_ID , COUNT(DISTINCT(STUDENT_ID)) AS STUDENT_COUNT FROM TBL_CLASS_STUDENT GROUP BY CLASS_ID) ST_COUNT ON(ST_COUNT.CLASS_ID = CLSS.ID)");
         script.append("                          INNER JOIN TBL_COURSE CRS ON(CRS.ID = CLSS.F_COURSE)");
+        script.append("                          LEFT JOIN TBL_PERSONNEL personnel on (personnel.ID = CLSS.F_PLANNER) ");
         script.append("                          INNER JOIN (");
         script.append("                          SELECT * FROM TBL_DEPARTMENT WHERE ");
         if (omorCodes != null) {
@@ -229,7 +237,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         } else {
             script.append(" 1=1");
         }
-        script.append("                          )DPRT ON(DPRT.ID = CLSS.F_PLANNER)");
+        script.append("                          )DPRT ON (DPRT.ID = personnel.F_DEPARTMENT_ID)");
         script.append("                          LEFT JOIN (SELECT COUNT(*) COUNT_, F_DEPARTMENT_ID FROM TBL_PERSONNEL WHERE DELETED = 0 GROUP BY F_DEPARTMENT_ID) PRS ON DPRT.ID = PRS.F_DEPARTMENT_ID");
         script.append("              )GROUP BY ");
         addGroupByFeatureClause(groupBy, script);
@@ -331,6 +339,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("       INNER JOIN (SELECT * FROM TBL_CLASS PIVOT(COUNT(C_STATUS) FOR C_STATUS IN ( 1 AS PLANNING, 2 AS IN_PROGRESS, 3 AS FINISHED,4 AS CANCELED ,5 AS LOCKED_)))CLSS ON (CLSS.ID = SUM_.F_CLASS_ID)");
         script.append("                          LEFT JOIN (SELECT CLASS_ID , COUNT(DISTINCT(STUDENT_ID)) AS STUDENT_COUNT FROM TBL_CLASS_STUDENT GROUP BY CLASS_ID) ST_COUNT ON(ST_COUNT.CLASS_ID = CLSS.ID)");
         script.append("                          INNER JOIN TBL_COURSE CRS ON(CRS.ID = CLSS.F_COURSE)");
+        script.append("                          LEFT JOIN TBL_PERSONNEL personnel ON (personnel.ID = CLSS.F_PLANNER) ");
         script.append("                          INNER JOIN (");
         script.append("                          SELECT * FROM TBL_DEPARTMENT WHERE ");
         if (omorCodes != null) {
@@ -342,7 +351,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         } else {
             script.append(" 1=1");
         }
-        script.append("                          )DPRT ON(DPRT.ID = CLSS.F_PLANNER)");
+        script.append("                          )DPRT ON (DPRT.ID = personnel.F_DEPARTMENT_ID) ");
         script.append("                          LEFT JOIN (SELECT COUNT(*) COUNT_, F_DEPARTMENT_ID FROM TBL_PERSONNEL WHERE DELETED = 0 GROUP BY F_DEPARTMENT_ID) PRS ON DPRT.ID = PRS.F_DEPARTMENT_ID");
         script.append("              )GROUP BY CATEGORY_ID");
         script.append(" ) AL LEFT JOIN TBL_CATEGORY CAT ON (CAT.ID = AL.CATEGORY_ID)");
@@ -383,7 +392,9 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append(" FROM(SELECT * FROM (");
         script.append(" SELECT C_STATUS, F_COURSE, C_START_DATE, C_END_DATE FROM (");
         script.append(" SELECT CLZZ.C_STATUS, CLZZ.F_COURSE, CLZZ.C_START_DATE, CLZZ.C_END_DATE");
-        script.append(" FROM TBL_CLASS  CLZZ  LEFT JOIN TBL_DEPARTMENT   DPRT ON CLZZ.F_PLANNER = DPRT.ID WHERE ");
+        script.append(" FROM TBL_CLASS CLZZ ");
+        script.append(" LEFT JOIN TBL_PERSONNEL personnel on (personnel.ID = CLZZ.F_PLANNER)  ");
+        script.append(" LEFT JOIN TBL_DEPARTMENT DPRT ON (DPRT.ID = personnel.F_DEPARTMENT_ID) WHERE ");
         if (omorCodes != null) {
             script.append(" C_OMOR_CODE IN (").append(omorCodes.stream().collect(Collectors.joining(","))).append(")");
         } else if (moavenatCodes != null) {

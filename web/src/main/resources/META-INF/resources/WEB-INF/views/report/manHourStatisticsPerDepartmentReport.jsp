@@ -227,7 +227,7 @@
                 name: "classYear",
                 title: "سال کاری",
                 type: "SelectItem",
-                multiple: true,
+                // multiple: true,
                 optionDataSource: RestDataSource_Year_ManHourReport,
                 valueField: "year",
                 displayField: "year",
@@ -239,8 +239,8 @@
                     filterOperator: "iContains"
                 },
                 changed: function (form, item, value) {
-                    if (value != null && value != undefined && value.size() == 1) {
-                        RestDataSource_Term_ManHourReport.fetchDataURL = termUrl + "listByYear/" + value[0];
+                    if (value != null && value != undefined ) {
+                        RestDataSource_Term_ManHourReport.fetchDataURL = termUrl + "listByYear/" + value;
                         DynamicForm_CriteriaForm_ManHourReport.getField("termId").optionDataSource = RestDataSource_Term_ManHourReport;
                         DynamicForm_CriteriaForm_ManHourReport.getField("termId").fetchData();
                         DynamicForm_CriteriaForm_ManHourReport.getField("termId").enable();
@@ -339,6 +339,9 @@
                     } else if (data_values.criteria[i].fieldName == "termId") {
                         data_values.criteria[i].fieldName = "termId";
                         data_values.criteria[i].operator = "equals";
+                    } else if (data_values.criteria[i].fieldName == "classStatus") {
+                        data_values.criteria[i].fieldName = "classStatus";
+                        data_values.criteria[i].operator = "inSet";
                     }
                 }
 

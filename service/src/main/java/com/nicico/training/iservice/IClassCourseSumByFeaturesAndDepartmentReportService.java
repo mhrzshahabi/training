@@ -15,7 +15,8 @@ public interface IClassCourseSumByFeaturesAndDepartmentReportService {
                                                                    String endDate,
                                                                    String mojtameCode,
                                                                    String moavenatCode,
-                                                                   String omorCode);
+                                                                   String omorCode,
+                                                                   List<String> classStatusList);
 
     @Transactional(readOnly = true)
     List<ClassFeatures> getReportForMultipleDepartment(String startDate,
