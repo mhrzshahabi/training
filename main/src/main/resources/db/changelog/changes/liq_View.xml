@@ -9748,5 +9748,48 @@ LEFT JOIN (
         </createView>
     </changeSet>
 
+    <changeSet author="namdari" id="namdari-2444">
+        <createView viewName="VIEW_LMS_NEED_ASSESSMENT_PERSONNEL" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
 
+    tbl_personnel.personnel_no     AS per_num,
+    tbl_personnel.emp_no           AS empـnum,
+    tbl_personnel.post_code        AS post_code,
+    tbl_personnel.first_name       AS name,
+    tbl_personnel.last_name        AS lastname,
+    tbl_personnel.post_title       AS post,
+    tbl_personnel.national_code    AS national_code,
+      s.course_code                  AS course_code,
+    s.course_title                 AS course_title,
+    tbl_skill.c_title_fa           AS skill,
+    tbl_parameter_value.c_title    AS Priority
+FROM
+         tbl_personnel
+    INNER JOIN (
+        SELECT
+            tbl_needs_assessment.c_object_code                                  AS object_code,
+            tbl_needs_assessment.id                                             AS z,
+            tbl_needs_assessment.f_skill                                        AS skil_id,
+            tbl_needs_assessment.f_parameter_value_needs_assessment_priority    AS per,
+            tbl_needs_assessment.c_object_type                                  AS type,
+            tbl_course.c_code                                                   AS course_code,
+            tbl_course.c_title_fa                                               AS course_title
+        FROM
+                 tbl_needs_assessment
+            INNER JOIN tbl_skill ON tbl_needs_assessment.f_skill = tbl_skill.id
+            INNER JOIN tbl_course ON tbl_skill.f_course = tbl_course.id
+        WHERE
+            tbl_needs_assessment.e_deleted IS NULL
+    ) s ON ( ( tbl_personnel.post_code = s.object_code
+               OR regexp_substr(tbl_personnel.post_code, '\d*') = s.object_code ) )
+    INNER JOIN tbl_course ON tbl_course.c_code = s.course_code
+    INNER JOIN tbl_skill ON s.skil_id = tbl_skill.id
+    INNER JOIN tbl_parameter_value ON tbl_parameter_value.id = s.per
+WHERE
+    tbl_personnel.post_code IS NOT NULL
+    AND tbl_personnel.deleted != '1'
+             ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>
