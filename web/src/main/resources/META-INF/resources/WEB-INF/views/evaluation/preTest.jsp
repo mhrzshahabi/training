@@ -1358,7 +1358,20 @@
 
 
             let files="<span class=\"files\"></span>";
+            let answerFiles="<span class=\"files\"></span>";
 
+            if (answers[i].answerFiles!==null && answers[i].answerFiles!==undefined)
+            {
+                let token="<%=accessToken%>";
+                let answerFilesData=" ";
+
+                for(let key in answers[i].answerFiles)
+                {
+                    answerFilesData+=" "
+                    answerFilesData+="<a href=\""+downloadFiles+answers[i].answerFiles[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل جواب - </a>"
+                }
+                answerFiles=answerFilesData;
+            }
             if (answers[i].files!==null && answers[i].files!==undefined)
             {
                 let token="<%=accessToken%>";
@@ -1373,7 +1386,7 @@
             }
 
 
-            text_FormItem.title = (i+1)+"-"+ customSplit2(answers[i].question, 150)  +"   "+mark+" "+files+ "\n\n"+
+            text_FormItem.title = (i+1)+"-"+ customSplit2(answers[i].question, 150)  +"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+
                 " جواب استاد :"+ "\n"+ "  "+correctAnswer+ "\n";
 
                 // correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
@@ -1381,7 +1394,7 @@
                 text_FormItem.name = answers[i].answer;
 
                 if(answers[i].type == "چند گزینه ای") {
-                    radio_FormItem.title = (i+1)+"-"+customSplit2(answers[i].question, 150)+"   "+mark+" "+files+ "\n\n"+
+                    radio_FormItem.title = (i+1)+"-"+customSplit2(answers[i].question, 150)+"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+
                      " جواب استاد :"+  "\n"+ "  "+correctAnswer;
                     radio_FormItem.name = i+"";
                     if(answers[i].options.length > 0) {

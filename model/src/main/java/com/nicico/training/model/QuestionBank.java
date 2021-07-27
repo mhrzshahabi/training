@@ -106,5 +106,8 @@ public class QuestionBank extends Auditable {
     @OneToMany(mappedBy = "questionBank", fetch = FetchType.LAZY)
     private Set<QuestionBankTestQuestion> questionBankTestQuestion;
 
+    @Column(name = "has_attachment")
+    private Boolean hasAttachment;
+
 }
 

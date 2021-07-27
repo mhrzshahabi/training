@@ -59,6 +59,7 @@ public class QuestionBankDTO {
         private Long courseId;
         private Long tclassId;
         private Long teacherId;
+        private Boolean hasAttachment;
     }
 
     @Getter

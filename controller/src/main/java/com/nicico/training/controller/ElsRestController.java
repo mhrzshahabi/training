@@ -50,9 +50,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 
 @RestController
@@ -293,6 +291,20 @@ public class ElsRestController {
         ExamListResponse response = client.getExamResults(id);
         if (response.getData() != null)
             response = evaluationBeanMapper.toExamResult(response);
+
+//        //ToDo mock for test answer files
+//        Map<String,String> answerFiles=new HashMap<>();
+//        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef16","608fa5263cee3d76470c3d30");
+//        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef162","608fa5263cee3d76470c3d30");
+//        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef163","608fa5263cee3d76470c3d30");
+//        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef164","608fa5263cee3d76470c3d30");
+//        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef165","608fa5263cee3d76470c3d30");
+//        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef166","608fa5263cee3d76470c3d30");
+//        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef167","608fa5263cee3d76470c3d30");
+//        response.getData().get(0).getAnswers().get(0).setAnswerFiles(answerFiles);
+//        response.getData().get(0).getAnswers().get(0).setFiles(answerFiles);
+//        response.getData().get(0).getAnswers().get(1).setAnswerFiles(answerFiles);
+//        response.getData().get(0).getAnswers().get(1).setFiles(answerFiles);
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

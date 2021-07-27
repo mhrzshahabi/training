@@ -383,7 +383,7 @@ public abstract class EvaluationBeanMapper {
                         }
                     }
                     questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
-
+                    question.setHasAttachment(questionBank.getHasAttachment());
                 }
                 if (object.getQuestionData() != null) {
                     QuestionScores questionScore = object.getQuestionData().stream()

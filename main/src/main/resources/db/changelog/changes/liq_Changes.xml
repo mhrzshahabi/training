@@ -2688,4 +2688,10 @@ end;
         <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="F_CONTACT_INFO" constraintName="unique_CONTACT_INFO"/>
     </changeSet>
 
+    <changeSet author="namdari" id="namdari-2424">
+        <addColumn tableName="tbl_question_bank">
+            <column name="has_attachment" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

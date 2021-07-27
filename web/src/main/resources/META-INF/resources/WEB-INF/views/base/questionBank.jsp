@@ -887,7 +887,7 @@
                         QuestionBankDF_questionBank.getItem("lines").disable();
                         QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").enable();
 
-
+                        QuestionBankDF_questionBank.getItem("hasAttachment").disable();
                         //QuestionBankDF_questionBank.getItem("option1").setRequired(true);
                         //QuestionBankDF_questionBank.getItem("option2").setRequired(true);
                         QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(true);
@@ -899,11 +899,13 @@
                         //QuestionBankDF_questionBank.getItem("option1").setRequired(false);
                         //QuestionBankDF_questionBank.getItem("option2").setRequired(false);
                         QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(false);
+                         QuestionBankDF_questionBank.getItem("hasAttachment").enable();
 
                         QuestionBankDF_questionBank.getItem("option1").disable();
                         QuestionBankDF_questionBank.getItem("option2").disable();
                         QuestionBankDF_questionBank.getItem("option3").disable();
                         QuestionBankDF_questionBank.getItem("option4").disable();
+
 
                         QuestionBankDF_questionBank.getItem("descriptiveAnswer").enable();
                         QuestionBankDF_questionBank.getItem("lines").enable();
@@ -941,6 +943,14 @@
                 click: function (form, item) {
                     item.fetchData();
                 }
+            },
+   {
+                name: "hasAttachment",
+                title: "جواب کاربر نیاز به الصاق فایل دارد",
+                type: "checkbox",
+                titleOrientation: "left",
+                labelAsTitle: true,
+
             },
             {
                 name: "lines",

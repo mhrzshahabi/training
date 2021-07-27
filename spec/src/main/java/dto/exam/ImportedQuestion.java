@@ -43,5 +43,8 @@ public class ImportedQuestion {
         @ApiModelProperty
         private List<Map<String,String>> files;
 
+        @ApiModelProperty
+        private Boolean hasAttachment;
+
 
 }

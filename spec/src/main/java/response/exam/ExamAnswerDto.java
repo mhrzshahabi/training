@@ -17,5 +17,6 @@ public class ExamAnswerDto {
     private Double  mark;
     private String type;
     private Map<String,String> files;
+    private Map<String,String> answerFiles;
     private List<ImportedQuestionOption> options;
 }

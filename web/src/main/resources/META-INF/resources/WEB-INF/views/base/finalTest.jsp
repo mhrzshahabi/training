@@ -895,30 +895,43 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
 
             let files="<span class=\"files\"></span>";
+            let answerFiles="<span class=\"files\"></span>";
 
+            if (answers[i].answerFiles!==null && answers[i].answerFiles!==undefined)
+            {
+                let token="<%=accessToken%>";
+                 let answerFilesData=" ";
+
+                for(let key in answers[i].answerFiles)
+                {
+                    answerFilesData+=" "
+                    answerFilesData+="<a href=\""+downloadFiles+answers[i].answerFiles[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل جواب - </a>"
+                }
+                answerFiles=answerFilesData;
+            }
             if (answers[i].files!==null && answers[i].files!==undefined)
             {
                 let token="<%=accessToken%>";
-                 let filesData=" ";
+                let filesData=" ";
 
                 for(let key in answers[i].files)
                 {
                     filesData+=" "
-                    // filesData+="<a href=\"http://localhost:8080/training/anonymous/els/download/"+answers[i].files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل سوال - </a>"
                     filesData+="<a href=\""+downloadFiles+answers[i].files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل سوال - </a>"
                 }
                 files=filesData;
             }
 
 
-            text_FormItem.title = (i+1)+"-"+ customSplit(answers[i].question, 150)  +"   "+mark+" "+files+ "\n\n"+
+
+            text_FormItem.title = (i+1)+"-"+ customSplit(answers[i].question, 150)  +"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+
                  " جواب استاد :"+ "\n"+ "  "+correctAnswer+ "\n";
 
                 text_FormItem.value = answers[i].answer;
                 text_FormItem.name = answers[i].answer;
 
                 if(answers[i].type == "چند گزینه ای") {
-                    radio_FormItem.title = (i+1)+"-"+customSplit(answers[i].question, 150)+"   "+mark+" "+files+ "\n\n"+
+                    radio_FormItem.title = (i+1)+"-"+customSplit(answers[i].question, 150)+"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+
                      " جواب استاد :"+  "\n"+ "  "+correctAnswer;
                     radio_FormItem.name = i+"";
                     if(answers[i].options.length > 0) {
