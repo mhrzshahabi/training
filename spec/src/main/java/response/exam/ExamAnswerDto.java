@@ -16,7 +16,11 @@ public class ExamAnswerDto {
     private String examinerAnswer;
     private Double  mark;
     private String type;
-    private Map<String,String> files;
-    private Map<String,String> answerFiles;
+    private Map<String,String> files;//files for questions that admin or teacher upload them
+    private Map<String,String> answerFiles;//files that students upload them
+    private Map<String,String> option1Files;//
+    private Map<String,String> option2Files;//
+    private Map<String,String> option3Files;//
+    private Map<String,String> option4Files;//
     private List<ImportedQuestionOption> options;
 }

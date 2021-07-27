@@ -301,10 +301,12 @@ public class ElsRestController {
 //        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef165","608fa5263cee3d76470c3d30");
 //        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef166","608fa5263cee3d76470c3d30");
 //        answerFiles.put("61625136-4eff-41fc-99bc-e22e7aceef167","608fa5263cee3d76470c3d30");
-//        response.getData().get(0).getAnswers().get(0).setAnswerFiles(answerFiles);
+//        response.getData().get(0).getAnswers().get(0).setOption1Files(answerFiles);
+//        response.getData().get(0).getAnswers().get(0).setOption3Files(answerFiles);
+//        response.getData().get(0).getAnswers().get(0).setOption4Files(answerFiles);
 //        response.getData().get(0).getAnswers().get(0).setFiles(answerFiles);
-//        response.getData().get(0).getAnswers().get(1).setAnswerFiles(answerFiles);
-//        response.getData().get(0).getAnswers().get(1).setFiles(answerFiles);
+//        response.getData().get(0).getAnswers().get(0).setAnswerFiles(answerFiles);
+
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

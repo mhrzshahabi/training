@@ -896,10 +896,15 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
             let files="<span class=\"files\"></span>";
             let answerFiles="<span class=\"files\"></span>";
+            let option1Files="<span class=\"files\"></span>";
+            let option2Files="<span class=\"files\"></span>";
+            let option3Files="<span class=\"files\"></span>";
+            let option4Files="<span class=\"files\"></span>";
+            let token="<%=accessToken%>";
+
 
             if (answers[i].answerFiles!==null && answers[i].answerFiles!==undefined)
             {
-                let token="<%=accessToken%>";
                  let answerFilesData=" ";
 
                 for(let key in answers[i].answerFiles)
@@ -911,7 +916,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             }
             if (answers[i].files!==null && answers[i].files!==undefined)
             {
-                let token="<%=accessToken%>";
                 let filesData=" ";
 
                 for(let key in answers[i].files)
@@ -922,17 +926,71 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 files=filesData;
             }
 
+            if (answers[i].option1Files!==null && answers[i].option1Files!==undefined)
+            {
+                let option1FilesData=" ";
+
+                for(let key in answers[i].option1Files)
+                {
+                    option1FilesData+=" "
+                    option1FilesData+="<a href=\""+downloadFiles+answers[i].option1Files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل گزینه اول - </a>"
+                }
+                option1Files=option1FilesData;
+            }
+
+            ///
+
+            if (answers[i].option2Files!==null && answers[i].option2Files!==undefined)
+            {
+                let option2FilesData=" ";
+
+                for(let key in answers[i].option2Files)
+                {
+                    option2FilesData+=" "
+                    option2FilesData+="<a href=\""+downloadFiles+answers[i].option2Files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل گزینه دوم - </a>"
+                }
+                option2Files=option2FilesData;
+            }
+
+            ///
+
+            if (answers[i].option3Files!==null && answers[i].option3Files!==undefined)
+            {
+                let option3FilesData=" ";
+
+                for(let key in answers[i].option3Files)
+                {
+                    option3FilesData+=" "
+                    option3FilesData+="<a href=\""+downloadFiles+answers[i].option3Files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل گزینه سوم - </a>"
+                }
+                option3Files=option3FilesData;
+            }
+
+            ///
+
+            if (answers[i].option4Files!==null && answers[i].option4Files!==undefined)
+            {
+                let option4FilesData=" ";
+
+                for(let key in answers[i].option4Files)
+                {
+                    option4FilesData+=" "
+                    option4FilesData+="<a href=\""+downloadFiles+answers[i].option4Files[key] + "/"+ key + "/"+ token + "/\" target=\"_blank\"> فایل گزینه چهارم - </a>"
+                }
+                option4Files=option4FilesData;
+            }
 
 
-            text_FormItem.title = (i+1)+"-"+ customSplit(answers[i].question, 150)  +"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+
-                 " جواب استاد :"+ "\n"+ "  "+correctAnswer+ "\n";
+
+            text_FormItem.title = (i+1)+"-"+ customSplit(answers[i].question, 150)  +"   "+mark+" "+files+ "\n"+answerFiles+ "\n"
+            +" جواب استاد :"+ "\n"+ "  "+correctAnswer+ "\n";
 
                 text_FormItem.value = answers[i].answer;
                 text_FormItem.name = answers[i].answer;
 
-                if(answers[i].type == "چند گزینه ای") {
-                    radio_FormItem.title = (i+1)+"-"+customSplit(answers[i].question, 150)+"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+
-                     " جواب استاد :"+  "\n"+ "  "+correctAnswer;
+                if(answers[i].type === "چند گزینه ای") {
+                    debugger
+                    radio_FormItem.title = (i+1)+"-"+customSplit(answers[i].question, 150)+"   "+mark+" "+files+ "\n"+answerFiles+ "\n"+option1Files+ "\n"+option2Files+ "\n"+option3Files+ "\n"+option4Files+ "\n"+ " جواب استاد :"+  "\n"+ "  "+correctAnswer;
                     radio_FormItem.name = i+"";
                     if(answers[i].options.length > 0) {
                         for(let j = 0; j< answers[i].options.length; j++){
