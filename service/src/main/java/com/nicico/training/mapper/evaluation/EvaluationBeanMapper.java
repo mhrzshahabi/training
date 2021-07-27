@@ -7,6 +7,7 @@ import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
+import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.iservice.IClassStudentService;
 import com.nicico.training.iservice.ITclassService;
@@ -319,9 +320,11 @@ public abstract class EvaluationBeanMapper {
 
                 ImportedQuestion question = new ImportedQuestion();
 
+                QuestionAttachments attachments=  getFilesForQuestion(questionBank.getId());
                 question.setId(questionData.getQuestionBank().getId());
                 question.setTitle(questionData.getQuestionBank().getQuestion());
-                question.setFiles(getFilesForQuestion(questionBank.getId()));
+                if (attachments!=null && attachments.getFiles()!=null)
+                question.setFiles(attachments.getFiles());
                 question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
 
                 if (question.getType().equals(MULTI_CHOICES)) {
@@ -339,6 +342,9 @@ public abstract class EvaluationBeanMapper {
                         option1.setTitle(questionBank.getOption1());
                         option1.setLabel("الف");
                         options.add(option1);
+                        if (attachments!=null && attachments.getOption1Files()!=null)
+                            question.setOption1Files(attachments.getOption1Files());
+
 
                     }
                     if (questionBank.getOption2()!=null)
@@ -346,6 +352,8 @@ public abstract class EvaluationBeanMapper {
                         option2.setTitle(questionBank.getOption2());
                         option2.setLabel("ب");
                         options.add(option2);
+                        if (attachments!=null && attachments.getOption2Files()!=null)
+                            question.setOption2Files(attachments.getOption2Files());
 
                     }
                      if (questionBank.getOption3()!=null)
@@ -353,6 +361,8 @@ public abstract class EvaluationBeanMapper {
                         option3.setTitle(questionBank.getOption3());
                         option3.setLabel("ج");
                         options.add(option3);
+                        if (attachments!=null && attachments.getOption3Files()!=null)
+                            question.setOption3Files(attachments.getOption3Files());
 
                     }
                      if (questionBank.getOption4()!=null)
@@ -360,6 +370,8 @@ public abstract class EvaluationBeanMapper {
                         option4.setTitle(questionBank.getOption4());
                         option4.setLabel("د");
                         options.add(option4);
+                        if (attachments!=null && attachments.getOption4Files()!=null)
+                            question.setOption4Files(attachments.getOption4Files());
 
                     }
                     if (!findDuplicate) {
@@ -406,7 +418,7 @@ public abstract class EvaluationBeanMapper {
         /*return questionProtocols;*/
     }
 
-    private List<Map<String, String>> getFilesForQuestion(Long id) {
+    private QuestionAttachments getFilesForQuestion(Long id) {
         return   attachmentService.getFiles("QuestionBank",id);
      }
 

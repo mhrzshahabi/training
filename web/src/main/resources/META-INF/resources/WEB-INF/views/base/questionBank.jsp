@@ -1581,6 +1581,10 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
             oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", 0, "<spring:message code="document"/>", {
                 1: "صورت سوال",
                 2: "سوالات عملی",
+                3: "فایل گزینه اول",
+                4: "فایل گزینه دوم",
+                5: "فایل گزینه سوم",
+                6: "فایل گزینه چهارم",
             });
 
             return;
@@ -1589,6 +1593,10 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", QuestionBankLG_questionBank.getSelectedRecord().id, "<spring:message code="document"/>", {
             1: "صورت سوال",
             2: "سوالات عملی",
+            3: "فایل گزینه اول",
+            4: "فایل گزینه دوم",
+            5: "فایل گزینه سوم",
+            6: "فایل گزینه چهارم",
         });
 
         TabSet_questionBank.enable();

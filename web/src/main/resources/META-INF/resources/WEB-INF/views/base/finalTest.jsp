@@ -683,10 +683,10 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                         return item;
                                                         });
                                                     let isValid = await hasEvaluation(record.tclass.id);
-                                                    if (!isValid) {
-                                                        createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");
-                                                        return;
-                                                    }
+                                                    <%--if (!isValid) {--%>
+                                                    <%--    createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");--%>
+                                                    <%--    return;--%>
+                                                    <%--}--%>
                                                     isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
                                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 

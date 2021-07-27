@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.model.Attachment;
 import com.nicico.training.repository.AttachmentDAO;
@@ -134,21 +135,58 @@ public class AttachmentService implements IAttachmentService {
     }
 
     @Override
-    public List<Map<String, String>> getFiles(String questionBank, Long id) {
-        List< Map<String, String>> files=new ArrayList<>();
+    public QuestionAttachments getFiles(String questionBank, Long id) {
+
+
 
         List<Attachment> attachments=attachmentDAO.findAttachmentByObjectTypeAndObjectId(questionBank,id);
         if (attachments.isEmpty())
-        return files;
+        return null;
         else
         {
+            List< Map<String, String>> files=new ArrayList<>();
+            List< Map<String, String>> option1Files=new ArrayList<>();
+            List< Map<String, String>> option2Files=new ArrayList<>();
+            List< Map<String, String>> option3Files=new ArrayList<>();
+            List< Map<String, String>> option4Files=new ArrayList<>();
+            QuestionAttachments questionAttachments=new QuestionAttachments();
             for (Attachment attachment:attachments)
             {
                 Map<String, String> file = new HashMap<>();
-                file.put(attachment.getKey(),attachment.getGroup_id());
-                files.add(file);
+                Map<String, String> option1File = new HashMap<>();
+                Map<String, String> option2File = new HashMap<>();
+                Map<String, String> option3File = new HashMap<>();
+                Map<String, String> option4File = new HashMap<>();
+
+                switch (attachment.getFileTypeId()){
+                    case 1:
+                        file.put(attachment.getKey(),attachment.getGroup_id());
+                        files.add(file);
+                        break;
+                    case 3:
+                        option1File.put(attachment.getKey(),attachment.getGroup_id());
+                        option1Files.add(option1File);
+                        break;
+                    case 4:
+                        option2File.put(attachment.getKey(),attachment.getGroup_id());
+                        option2Files.add(option2File);
+                        break;
+                    case 5:
+                        option3File.put(attachment.getKey(),attachment.getGroup_id());
+                        option3Files.add(option3File);
+                        break;
+                    case 6:
+                        option4File.put(attachment.getKey(),attachment.getGroup_id());
+                        option4Files.add(option4File);
+                        break;
+                }
             }
-            return files;
+            questionAttachments.setFiles(files);
+            questionAttachments.setOption1Files(option1Files);
+            questionAttachments.setOption2Files(option2Files);
+            questionAttachments.setOption3Files(option3Files);
+            questionAttachments.setOption4Files(option4Files);
+            return questionAttachments;
         }
     }
 
