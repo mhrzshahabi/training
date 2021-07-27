@@ -683,10 +683,10 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                         return item;
                                                         });
                                                     let isValid = await hasEvaluation(record.tclass.id);
-                                                    <%--if (!isValid) {--%>
-                                                    <%--    createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");--%>
-                                                    <%--    return;--%>
-                                                    <%--}--%>
+                                                    if (!isValid) {
+                                                        createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");
+                                                        return;
+                                                    }
                                                     isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
                                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
@@ -926,6 +926,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 files=filesData;
             }
 
+            // show option1
             if (answers[i].option1Files!==null && answers[i].option1Files!==undefined)
             {
                 let option1FilesData=" ";
@@ -938,7 +939,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 option1Files=option1FilesData;
             }
 
-            ///
+            ///            // show option2
+
 
             if (answers[i].option2Files!==null && answers[i].option2Files!==undefined)
             {
@@ -952,7 +954,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 option2Files=option2FilesData;
             }
 
-            ///
+            ///            // show option3
+
 
             if (answers[i].option3Files!==null && answers[i].option3Files!==undefined)
             {
@@ -966,7 +969,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 option3Files=option3FilesData;
             }
 
-            ///
+            ///            // show option4
+
 
             if (answers[i].option4Files!==null && answers[i].option4Files!==undefined)
             {

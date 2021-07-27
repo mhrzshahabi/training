@@ -813,6 +813,7 @@
                     break;
                 }
                 case "TabPane_Results": {
+                    createDialog("info", "این تب فعلا مورد استفاده قرار نگرفته است")
                     break;
                 }
             }
