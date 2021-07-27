@@ -9,11 +9,15 @@ import com.nicico.training.dto.*;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
+import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
+import com.nicico.training.model.Attendance;
+import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Evaluation;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EGender;
@@ -30,11 +34,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import request.attendance.AttendanceListSaveRequest;
+import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.evaluation.ElsEvalRequest;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import response.BaseResponse;
+import response.attendance.AttendanceListSaveResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
 import response.evaluation.dto.EvalAverageResult;
@@ -53,6 +60,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @RestController
@@ -79,6 +87,9 @@ public class ElsRestController {
     private final EvaluationAnalysisService evaluationAnalysisService;
     private final Environment environment;
     private final ElsService elsService;
+    private final AttendanceBeanMapper attendanceMapper;
+    private final IAttendanceService attendanceService;
+    private final ClassSessionService classSessionService;
 
 
     @GetMapping("/eval/{id}")
@@ -564,6 +575,75 @@ public class ElsRestController {
             return null;
         }
 
+    }
+
+    /**
+     * the attendance from els which done by teacher
+     * the teacher can do attendance for a session when he has the permission
+     */
+    @PostMapping(value = {"/attendance/byTeacher"})
+    @Transactional
+    public ResponseEntity<AttendanceListSaveResponse> attendanceByTeacher(HttpServletRequest header, @RequestBody ElsTeacherAttendanceListSaveDto tAttendanceDtoRequest) {
+        AttendanceListSaveResponse response = new AttendanceListSaveResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+            List<Attendance> attendances = attendanceMapper.ElsToAttendanceList(tAttendanceDtoRequest);
+            if (attendances.size() > 0) {
+                if (attendances.get(0).getSessionId() != null && attendances.get(0).getStudentId() != null) {
+                    ClassSession currentClassSession = classSessionService.getClassSession(attendances.get(0).getSessionId());
+                    if (currentClassSession.getTeacherAttendancePermission()) {
+                        for (int i = 0; i < attendances.size(); i++) {
+                            Optional<Attendance> optionalAttendance = attendanceService.getAttendanceBySessionIdAndStudentId(
+                                    attendances.get(i).getSessionId(), attendances.get(i).getStudentId());
+                            if (optionalAttendance.isPresent()) {
+                                Attendance mainAttendance = optionalAttendance.get();
+                                switch (attendances.get(i).getState()) {
+                                    case "1": {
+                                        if (mainAttendance.getState().equals(2)) {
+                                            attendances.get(i).setState("2");
+                                        }
+                                        break;
+                                    }
+                                    case "3": {
+                                        if (mainAttendance.getState().equals("4")) {
+                                            attendances.get(i).setState("4");
+                                        }
+                                        break;
+                                    }
+                                }
+                            } else {
+                                response.setStatus(HttpStatus.NO_CONTENT.value());
+                                response.setMessage("رکورد حضور غیاب وجود ندارد");
+                                return new ResponseEntity<>(response, HttpStatus.CREATED);
+                            }
+                        }
+
+                        boolean status = attendanceService.saveOrUpdateList(attendances);
+                        if (status) {
+                            response.setStatus(HttpStatus.CREATED.value());
+                            response.setMessage("ثبت با موفقیت انجام شد");
+                        } else {
+                            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                            response.setMessage("اطلاعات ثبت نشد");
+                        }
+                        return new ResponseEntity<>(response, HttpStatus.CREATED);
+                    } else {
+                        response.setStatus(HttpStatus.FORBIDDEN.value());
+                        response.setMessage("امکان تغییر در حضور غیاب برای استاد وجود ندارد");
+                    }
+                } else {
+                    response.setStatus(HttpStatus.NO_CONTENT.value());
+                    response.setMessage("اطلاعات ارسالی معتبر نیست");
+                }
+            } else {
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+                response.setMessage("لیست حضور غیاب خالی است");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
+        }
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @GetMapping("/averageResult/{classId}")

@@ -9,6 +9,7 @@ import lombok.ToString;
 @ToString
 public class EvalTargetUser {
 
+    private Long studentId;
     private String surname;
     private String lastName;
     private String cellNumber;

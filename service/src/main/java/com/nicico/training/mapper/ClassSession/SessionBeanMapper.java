@@ -8,7 +8,7 @@ import com.nicico.training.model.Tclass;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
-import response.tclass.ElsSessionDetail;
+import response.tclass.ElsSessionDetailDto;
 import response.tclass.ElsSessionResponse;
 
 import java.text.ParseException;
@@ -28,7 +28,7 @@ public abstract class SessionBeanMapper {
     public ElsSessionResponse toGetElsSessionResponse(Tclass tclass) {
 
         ElsSessionResponse elsSessionResponse = new ElsSessionResponse();
-        List<ElsSessionDetail> elsSessionDetails = new ArrayList<>();
+        List<ElsSessionDetailDto> elsSessionDetailDtos = new ArrayList<>();
 
         tclass.getClassSessions().forEach(session -> {
 
@@ -36,18 +36,20 @@ public abstract class SessionBeanMapper {
             Date gregorianSessionDate = convertToGregorianDate(session.getSessionDate());
             calendar.setTime(gregorianSessionDate);
 
-            ElsSessionDetail elsSessionDetail = new ElsSessionDetail();
-            elsSessionDetail.setDay(session.getDayName());
-            elsSessionDetail.setStartTime(session.getSessionStartHour());
-            elsSessionDetail.setEndTime(session.getSessionEndHour());
-            elsSessionDetail.setDateOfHolding(calendar.getTime().getTime());
-            elsSessionDetail.setAttendances(iClassSession.getSessionPresenceState(session));
+            ElsSessionDetailDto elsSessionDetailDto = new ElsSessionDetailDto();
+            elsSessionDetailDto.setSessionId(session.getId());
+            elsSessionDetailDto.setDay(session.getDayName());
+            elsSessionDetailDto.setStartTime(session.getSessionStartHour());
+            elsSessionDetailDto.setEndTime(session.getSessionEndHour());
+            elsSessionDetailDto.setDateOfHolding(calendar.getTime().getTime());
+            elsSessionDetailDto.setAttendances(iClassSession.getSessionPresenceState(session));
+            elsSessionDetailDto.setTeacherAttendancePermission(session.getTeacherAttendancePermission());
 
-            elsSessionDetails.add(elsSessionDetail);
+            elsSessionDetailDtos.add(elsSessionDetailDto);
         });
 
         elsSessionResponse.setCode(tclass.getCode());
-        elsSessionResponse.setSessions(elsSessionDetails);
+        elsSessionResponse.setSessions(elsSessionDetailDtos);
         return elsSessionResponse;
     }
 

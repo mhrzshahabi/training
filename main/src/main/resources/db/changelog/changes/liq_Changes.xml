@@ -2687,5 +2687,14 @@ end;
         <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="NATIONAL_CODE" constraintName="unique_NATIONAL_CODE"/>
         <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="F_CONTACT_INFO" constraintName="unique_CONTACT_INFO"/>
     </changeSet>
+    <changeSet author="nick (generated)" id="1626690510501-534">
+        <sql>
+            <![CDATA[
+                ALTER TABLE tbl_session ADD b_teacher_attendance_permission number(1, 0);
+                UPDATE tbl_session SET b_teacher_attendance_permission = 0;
+                ALTER TABLE tbl_session MODIFY b_teacher_attendance_permission NOT NULL;
+            ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

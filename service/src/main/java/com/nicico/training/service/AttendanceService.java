@@ -389,8 +389,7 @@ public class AttendanceService implements IAttendanceService {
         List<Attendance> updateAttendanceList = new ArrayList<>();
         List<Attendance> newAttendanceList = new ArrayList<>();
         attendances.forEach(attendance -> {
-            Optional<Attendance> optional = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(),
-                    attendance.getStudentId());
+            Optional<Attendance> optional = getAttendanceBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
             if (optional.isPresent()) {
                 Attendance oldAttendance = optional.get();
                 oldAttendance.setState(attendance.getState());
@@ -422,5 +421,9 @@ public class AttendanceService implements IAttendanceService {
             return false;
         }
 
+    }
+
+    public Optional<Attendance> getAttendanceBySessionIdAndStudentId(Long sessionId, Long studentId) {
+        return attendanceDAO.findBySessionIdAndStudentId(sessionId, studentId);
     }
 }

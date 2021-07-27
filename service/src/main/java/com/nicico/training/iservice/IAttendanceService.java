@@ -10,6 +10,7 @@ import response.BaseResponse;
 import java.text.ParseException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface IAttendanceService {
 
@@ -71,4 +72,7 @@ public interface IAttendanceService {
     List<Student> studentAbsentSessionsInClass(Long classId);
 
     boolean saveOrUpdateList(List<Attendance> attendances);
+
+    Optional<Attendance> getAttendanceBySessionIdAndStudentId(Long sessionId, Long studentId);
+
 }
