@@ -103,7 +103,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("                          AND C_SESSION_DATE <= :TO_DATE ");
         script.append("                          )SESS ON(ATT.F_SESSION = SESS.ID)                          ");
         script.append("      ) )PIVOT(SUM (S_HOUR) FOR ATT_STATE IN('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))) SUM_");
-        script.append("                          INNER JOIN TBL_CLASS CLSS ON (CLSS.ID = SUM_.F_CLASS_ID AND ");
+        script.append("                          INNER JOIN (SELECT PV.C_TITLE AS C_TEACHING_TYPE, CLSS.ID, CLSS.C_CODE, CLSS.C_END_DATE, CLSS.C_START_DATE, CLSS.C_STATUS, CLSS.F_PLANNER, CLSS.F_COURSE FROM TBL_CLASS CLSS LEFT JOIN TBL_PARAMETER_VALUE PV ON CLSS.F_TEACHING_METHOD_ID = PV.ID) CLSS ON (CLSS.ID = SUM_.F_CLASS_ID AND ");
         if (classStatusList.size()>0){
             script.append("  CLSS.C_STATUS IN (").append(classStatusList.stream().collect(Collectors.joining(","))).append("))");
         } else {
@@ -222,7 +222,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("                          AND C_SESSION_DATE <= :TO_DATE ");
         script.append("                          )SESS ON(ATT.F_SESSION = SESS.ID)                          ");
         script.append("      ) )PIVOT(SUM (S_HOUR) FOR ATT_STATE IN('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))) SUM_");
-        script.append("                          INNER JOIN TBL_CLASS CLSS ON(CLSS.ID = SUM_.F_CLASS_ID)");
+        script.append("                          INNER JOIN (SELECT PV.C_TITLE AS C_TEACHING_TYPE, CLSS.ID, CLSS.C_CODE, CLSS.C_END_DATE, CLSS.C_START_DATE, CLSS.C_STATUS, CLSS.F_PLANNER, CLSS.F_COURSE FROM TBL_CLASS CLSS LEFT JOIN TBL_PARAMETER_VALUE PV ON CLSS.F_TEACHING_METHOD_ID = PV.ID) CLSS ON(CLSS.ID = SUM_.F_CLASS_ID)");
         script.append("                          LEFT JOIN (SELECT CLASS_ID , COUNT(DISTINCT(STUDENT_ID)) AS STUDENT_COUNT FROM TBL_CLASS_STUDENT GROUP BY CLASS_ID) ST_COUNT ON(ST_COUNT.CLASS_ID = CLSS.ID)");
         script.append("                          INNER JOIN TBL_COURSE CRS ON(CRS.ID = CLSS.F_COURSE)");
         script.append("                          LEFT JOIN TBL_PERSONNEL personnel on (personnel.ID = CLSS.F_PLANNER) ");
@@ -259,22 +259,23 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
                     .setUnknownManHour(record[5] == null ? null : Double.parseDouble(record[5].toString()))
                     .setStudentCount(record[6] == null ? null : Integer.parseInt(record[6].toString()));
 
+            String r7 = (record[7] == null ? null : record[7].toString());
             if (groupBy.equals(GroupBy.CLASS_TEACHING_TYPE))
-                dto.setClassTeachingType(record[7].toString());
+                dto.setClassTeachingType(r7);
             else if (groupBy.equals(GroupBy.CLASS_STATUS))
-                dto.setClassStatus(record[7].toString());
+                dto.setClassStatus(r7);
             else if (groupBy.equals(GroupBy.COURSE_LEVEL_TYPE)) {
-                if (record[7] != null)
-                    dto.setCourseLevelType(Arrays.stream(ELevelType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+                if (r7 != null)
+                    dto.setCourseLevelType(Arrays.stream(ELevelType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(r7))).findAny().get().getTitleFa());
             } else if (groupBy.equals(GroupBy.COURSE_RUN_TYPE)) {
-                if (record[7] != null)
-                    dto.setCourseRunType(Arrays.stream(ERunType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+                if (r7 != null)
+                    dto.setCourseRunType(Arrays.stream(ERunType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(r7))).findAny().get().getTitleFa());
             } else if (groupBy.equals(GroupBy.COURSE_TECHNICAL_TYPE)) {
-                if (record[7] != null)
-                    dto.setCourseTechnicalType(Arrays.stream(ETechnicalType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+                if (r7 != null)
+                    dto.setCourseTechnicalType(Arrays.stream(ETechnicalType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(r7))).findAny().get().getTitleFa());
             } else if (groupBy.equals(GroupBy.COURSE_THEO_TYPE)) {
-                if (record[7] != null)
-                    dto.setCourseTheoType(Arrays.stream(ETheoType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+                if (r7 != null)
+                    dto.setCourseTheoType(Arrays.stream(ETheoType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(r7))).findAny().get().getTitleFa());
             }
 
             list.add(dto);
@@ -336,7 +337,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("                          AND C_SESSION_DATE <= :TO_DATE ");
         script.append("                          )SESS ON(ATT.F_SESSION = SESS.ID)                          ");
         script.append("      ) )PIVOT(SUM (S_HOUR) FOR ATT_STATE IN('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))) SUM_");
-        script.append("       INNER JOIN (SELECT * FROM TBL_CLASS PIVOT(COUNT(C_STATUS) FOR C_STATUS IN ( 1 AS PLANNING, 2 AS IN_PROGRESS, 3 AS FINISHED,4 AS CANCELED ,5 AS LOCKED_)))CLSS ON (CLSS.ID = SUM_.F_CLASS_ID)");
+        script.append("       INNER JOIN (SELECT * FROM (SELECT PV.C_TITLE AS C_TEACHING_TYPE, CLSS.ID, CLSS.C_CODE, CLSS.C_END_DATE, CLSS.C_START_DATE, CLSS.C_STATUS, CLSS.F_PLANNER, CLSS.F_COURSE FROM TBL_CLASS CLSS LEFT JOIN TBL_PARAMETER_VALUE PV ON CLSS.F_TEACHING_METHOD_ID = PV.ID) PIVOT(COUNT(C_STATUS) FOR C_STATUS IN ( 1 AS PLANNING, 2 AS IN_PROGRESS, 3 AS FINISHED,4 AS CANCELED ,5 AS LOCKED_)))CLSS ON (CLSS.ID = SUM_.F_CLASS_ID)");
         script.append("                          LEFT JOIN (SELECT CLASS_ID , COUNT(DISTINCT(STUDENT_ID)) AS STUDENT_COUNT FROM TBL_CLASS_STUDENT GROUP BY CLASS_ID) ST_COUNT ON(ST_COUNT.CLASS_ID = CLSS.ID)");
         script.append("                          INNER JOIN TBL_COURSE CRS ON(CRS.ID = CLSS.F_COURSE)");
         script.append("                          LEFT JOIN TBL_PERSONNEL personnel ON (personnel.ID = CLSS.F_PLANNER) ");
