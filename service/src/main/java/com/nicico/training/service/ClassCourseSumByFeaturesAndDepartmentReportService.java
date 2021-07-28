@@ -259,22 +259,23 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
                     .setUnknownManHour(record[5] == null ? null : Double.parseDouble(record[5].toString()))
                     .setStudentCount(record[6] == null ? null : Integer.parseInt(record[6].toString()));
 
+            String r7 = (record[7] == null ? null : record[7].toString());
             if (groupBy.equals(GroupBy.CLASS_TEACHING_TYPE))
-                dto.setClassTeachingType(record[7].toString());
+                dto.setClassTeachingType(r7);
             else if (groupBy.equals(GroupBy.CLASS_STATUS))
-                dto.setClassStatus(record[7].toString());
+                dto.setClassStatus(r7);
             else if (groupBy.equals(GroupBy.COURSE_LEVEL_TYPE)) {
-                if (record[7] != null)
-                    dto.setCourseLevelType(Arrays.stream(ELevelType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+                if (r7 != null)
+                    dto.setCourseLevelType(Arrays.stream(ELevelType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(r7))).findAny().get().getTitleFa());
             } else if (groupBy.equals(GroupBy.COURSE_RUN_TYPE)) {
-                if (record[7] != null)
-                    dto.setCourseRunType(Arrays.stream(ERunType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+                if (r7 != null)
+                    dto.setCourseRunType(Arrays.stream(ERunType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(r7))).findAny().get().getTitleFa());
             } else if (groupBy.equals(GroupBy.COURSE_TECHNICAL_TYPE)) {
-                if (record[7] != null)
-                    dto.setCourseTechnicalType(Arrays.stream(ETechnicalType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+                if (r7 != null)
+                    dto.setCourseTechnicalType(Arrays.stream(ETechnicalType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(r7))).findAny().get().getTitleFa());
             } else if (groupBy.equals(GroupBy.COURSE_THEO_TYPE)) {
-                if (record[7] != null)
-                    dto.setCourseTheoType(Arrays.stream(ETheoType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(record[7].toString()))).findAny().get().getTitleFa());
+                if (r7 != null)
+                    dto.setCourseTheoType(Arrays.stream(ETheoType.values()).filter(eRunType -> eRunType.getId().equals(Integer.parseInt(r7))).findAny().get().getTitleFa());
             }
 
             list.add(dto);
