@@ -4090,7 +4090,7 @@
         isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/classToEls/" + classId, "GET", null, function (resp) {
             if (resp.httpResponseCode === 200) {
                 wait.close();
-                createDialog("info", "ارسال اطلاعات کلاس به سیستم آزمون آنلاین با موفقیت انجام شد", "<spring:message code="message"/>")
+                createDialog("info", "ارسال اطلاعات کلاس به سیستم آزمون آنلاین با موفقیت انجام شد(سیستم در حال توسعه می باشد)", "<spring:message code="message"/>")
                 ListGrid_Class_JspClass.invalidateCache();
             } else {
                 wait.close();
