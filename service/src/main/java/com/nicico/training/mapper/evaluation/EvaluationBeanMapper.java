@@ -12,6 +12,8 @@ import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.iservice.IClassStudentService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.enums.ETechnicalType;
+import org.mapstruct.Named;
 import org.modelmapper.ModelMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.service.QuestionBankService;
@@ -69,9 +71,24 @@ public abstract class EvaluationBeanMapper {
     @Mapping(source = "lastName", target = "lastName")
     @Mapping(source = "nationalCode", target = "nationalCode")
     @Mapping(source = "gender", target = "gender")
-    @Mapping(source = "contactInfo.mobile", target = "cellNumber")
+    @Mapping(source = "contactInfo", target = "cellNumber", qualifiedByName = "getLiveCellNumber")
     public abstract EvalTargetUser toTargetUser(Student student);
+    @Named("getLiveCellNumber")
+     String getLiveCellNumber(ContactInfo contactInfo) {
+            if (contactInfo.getEMobileForSMS() == null)
+                return contactInfo.getMobile();
+            switch (contactInfo.getEMobileForSMS()) {
+                case hrMobile:
+                    return contactInfo.getHrMobile();
+                case mdmsMobile:
+                    return contactInfo.getMdmsMobile();
+                case trainingSecondMobile:
+                    return contactInfo.getMobile2();
+                default:
+                    return contactInfo.getMobile();
+            }
 
+    }
     public ElsEvalRequest toElsEvalRequest(Evaluation evaluation, Questionnaire questionnaire, List<ClassStudent> classStudents,
                                            List<EvalQuestionDto> questionDtos, PersonalInfo teacher) {
         ElsEvalRequest request = new ElsEvalRequest();
