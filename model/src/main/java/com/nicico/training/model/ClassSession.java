@@ -82,6 +82,9 @@ public class ClassSession extends Auditable {
     @Column(name = "c_description")
     private String description;
 
+    @Column(name = "b_teacher_attendance_permission")
+    private Boolean teacherAttendancePermission;
+
     @OneToMany(mappedBy = "session", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Alarm> alarms;
 

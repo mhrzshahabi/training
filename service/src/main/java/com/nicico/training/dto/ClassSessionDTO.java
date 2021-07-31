@@ -60,6 +60,9 @@ public class ClassSessionDTO implements Serializable {
     private String sessionStateFa;
 
     @ApiModelProperty(required = true)
+    private Boolean teacherAttendancePermission;
+
+    @ApiModelProperty(required = true)
     private String description;
 
     //*********************************
