@@ -508,9 +508,17 @@
                     pane: PersonnelInfoListGrid_RegisteredPersonnelList
                 }
             ],
-            tabSelected: function () {
+            tabSelected: function (tabNum, tabPane, ID, tab) {
+                if (tab.title === "<spring:message code='personnel.tab.registered'/>") {
+                    if (oPersonnelInformationDetails != null)
+                        oPersonnelInformationDetails.PersonnelInfo_Tab.disableTab(oPersonnelInformationDetails.PersonnelInfo_Tab.tabs.filter(q => q.id === "PersonnelInfo_Tab_JobInfo").first());
+                } else {
+                    if (oPersonnelInformationDetails != null)
+                        oPersonnelInformationDetails.PersonnelInfo_Tab.enableTab(oPersonnelInformationDetails.PersonnelInfo_Tab.tabs.filter(q => q.id === "PersonnelInfo_Tab_JobInfo").first());
+                }
                 if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
-                    oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? PersonnelInfoListGrid_PersonnelList.getSelectedRecord() : PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord());
+                    oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedTab().id === "PersonnelList_Tab_Personnel" ?
+                        PersonnelInfoListGrid_PersonnelList.getSelectedRecord() : PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord());
                 }
             }
         });

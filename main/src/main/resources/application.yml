@@ -230,6 +230,7 @@ nicico:
   elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
   hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
+  masterDataUrl: 'http://devapp01.icico.net.ir/master-data/api/v3'
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
@@ -295,6 +296,7 @@ nicico:
   elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
   hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
+  masterDataUrl: 'http://devapp01.icico.net.ir/master-data/api/v3'
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:

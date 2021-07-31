@@ -149,6 +149,15 @@
                             }
                             wait.close();
                         }));
+                    } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_JobInfo") {
+
+                        if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
+                            RestDataSource_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + selectedPersonnel.nationalCode;
+                            ListGrid_PersonnelJobExperiences.fetchData();
+                            ListGrid_PersonnelJobExperiences.invalidateCache();
+                        } else {
+                            ListGrid_PersonnelJobExperiences.setData([]);
+                        }
                     }
                 } else {
                     this.DynamicForm_PersonnelInfo.clearValues();
@@ -518,6 +527,55 @@
                     this.tempListGrid_PersonnelTraining = this.ListGrid_PersonnelTraining.data.getAllRows();
                 }.bind(this)
             });
+
+        var RestDataSource_PersonnelJobExperiences = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true},
+                {name: "personnelNo", title: "شماره پرسنلی"},
+                {name: "ssn", title: "کدملی"},
+                {name: "assignmentDate", title: "تاریخ شروع"},
+                {name: "dismissalDate", title: "تاریخ پایان"},
+                {name: "postCode", title: "کد پست"},
+                {name: "postTitle", title: "عنوان پست"},
+                {name: "jobNo", title: "کد شغل"},
+                {name: "jobTitle", title: "عنوان شغل"},
+                {name: "departmentTitle", title: "نام دپارتمان"},
+                {name: "departmentCode", title: "کد دپارتمان"},
+                {name: "omur", title: "امور"},
+                {name: "ghesmat", title: "قسمت"},
+                {name: "companyName", title: "نام شرکت"}
+            ],
+            fetchDataURL: masterDataUrl + "/job/{nationalCode}"
+        });
+
+        var ListGrid_PersonnelJobExperiences = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_PersonnelJobExperiences,
+            selectionType: "single",
+            autoFetchData: false,
+            initialSort: [
+                {property: "assignmentDate", direction: "ascending"}
+            ],
+            fields: [
+                {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                {name: "personnelNo"},
+                {name: "ssn"},
+                {name: "assignmentDate"},
+                {name: "dismissalDate"},
+                {name: "postCode"},
+                {name: "postTitle"},
+                {name: "jobNo"},
+                {name: "jobTitle"},
+                {name: "departmentTitle"},
+                {name: "departmentCode", hidden: true},
+                {name: "omur"},
+                {name: "ghesmat"},
+                {name: "companyName"}
+
+            ],
+            gridComponents: ["filterEditor", "header", "body", "summaryRow"]
+        });
 
             this.RestDataSource_PersonnelInfo_class = isc.TrDS.create({
                 fields: [
@@ -1544,6 +1602,11 @@
                                 })
                             ]
                         })
+                    },
+                    {
+                        id: "PersonnelInfo_Tab_JobInfo",
+                        title: "<spring:message code="job.experiences"/>",
+                        pane: ListGrid_PersonnelJobExperiences
                     }
                 ],
                 tabSelected: function () {
