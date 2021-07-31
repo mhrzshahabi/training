@@ -328,6 +328,35 @@
         },
     });
 
+    RestDataSource_Post_PostInfo = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "personnelNo", title: "شماره پرسنلی"},
+            {name: "firstName", title: "نام"},
+            {name: "lastName", title: "نام خانوادگی"},
+            {name: "nationalCode", title: "کدملی"},
+            {name: "assignmentDate", title: "تاریخ شروع"},
+            {name: "dismissalDate", title: "تاریخ پایان"},
+            {name: "postCode", title: "کدپست"},
+            {name: "postTitle", title: "عنوان پست"},
+            {name: "jobNo", title: "کد شغل"},
+            {name: "jobTitle", title: "عنوان شغل"},
+            {name: "departmentTitle", title: "نام دپارتمان"},
+            {name: "departmentCode", title: "کد دپارتمان", hidden: true},
+            {name: "omur", title: "امور"},
+            {name: "ghesmat", title: "قسمت"},
+            {name: "companyName", title: "نام شرکت"}
+        ]
+    });
+    ListGrid_Post_PostInfo = isc.TrLG.create({
+        dataSource: RestDataSource_Post_PostInfo,
+        selectionType: "single",
+        autoFetchData: false,
+        initialSort: [
+            {property: "assignmentDate", direction: "ascending"}
+        ]
+    });
+
     defineWindowsEditNeedsAssessment(PostLG_post);
     defineWindowTreeNeedsAssessment();
 
@@ -741,12 +770,18 @@
         tabs: [
             {
                 ID:"Post_NeedAssesment",
-                title: "<spring:message code='need.assessment'/>", pane: CoursesLG_POST},
+                title: "<spring:message code='need.assessment'/>",
+                pane: CoursesLG_POST
+            },
             {
                 ID: "Post_AttachmentsTab",
                 title: "<spring:message code="attachments"/>",
             },
-
+            {
+                ID: "Post_PostInfoTab",
+                title: "<spring:message code="post.info"/>",
+                pane:ListGrid_Post_PostInfo
+            }
         ],
         tabSelected: function (){
             selectionUpdated_Post();
@@ -805,8 +840,12 @@
                    }, false);
                break;
            }
-
-
+           case "Post_PostInfoTab": {
+               RestDataSource_Post_PostInfo.fetchDataURL = masterDataUrl + "/post?postCode=" + post.code;
+               ListGrid_Post_PostInfo.fetchData();
+               ListGrid_Post_PostInfo.invalidateCache();
+               break;
+           }
        }
    }
     function closeToShowUnGroupedPosts_POST(){

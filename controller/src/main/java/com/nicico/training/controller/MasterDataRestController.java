@@ -8,11 +8,14 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.training.TrainingException;
+import com.nicico.training.controller.masterData.MasterDataClient;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.service.MasterDataService;
+import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -20,6 +23,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.masterData.JobExpResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -36,6 +40,8 @@ import java.util.Set;
 public class MasterDataRestController {
 
     private final MasterDataService masterDataService;
+    private final MasterDataClient masterDataClient;
+    private final PersonnelService personnelService;
     private final ModelMapper modelMapper;
 
 
@@ -154,5 +160,57 @@ public class MasterDataRestController {
 
         List<PersonnelDTO.Info> results=modelMapper.map(masterDataService.getSiblingsEmployee(tempResult.get(0).getId()), new TypeToken<List<PersonnelDTO.Info>>(){}.getType());
         return new ResponseEntity<>(results , HttpStatus.OK);
+    }
+
+    @GetMapping(value = "job/{nationalCode}")
+    public ResponseEntity<ISC<JobExpResponse>> getJobExperiences(HttpServletRequest request, @PathVariable String nationalCode) {
+        try {
+
+            List<JobExpResponse> jobExperiences = masterDataClient.getJobExperiences(nationalCode, request.getHeader("Authorization"));
+
+            ISC.Response response = new ISC.Response();
+            response.setData(jobExperiences);
+            response.setStartRow(0);
+            response.setEndRow(jobExperiences.size());
+            response.setTotalRows(jobExperiences.size());
+            response.setStatus(200);
+
+            ISC<JobExpResponse> isc = new ISC<>(response);
+            return new ResponseEntity<>(isc, HttpStatus.OK);
+
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @GetMapping(value = "post")
+    public ResponseEntity<ISC<JobExpResponse.postInfo>> getPostRecords(HttpServletRequest request) {
+        try {
+
+            String postCode = request.getParameter("postCode");
+            List<JobExpResponse> jobExperiences = masterDataClient.getPostRecords(postCode, request.getHeader("Authorization"));
+            List<JobExpResponse.postInfo> postInfoList = new ArrayList<>();
+            jobExperiences.forEach(item -> {
+                PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(item.getSsn());
+                JobExpResponse.postInfo postInfo = modelMapper.map(item, JobExpResponse.postInfo.class);
+                postInfo.setFirstName(personalityInfo.getFirstName());
+                postInfo.setLastName(personalityInfo.getLastName());
+                postInfo.setNationalCode(personalityInfo.getNationalCode());
+                postInfoList.add(postInfo);
+            });
+
+            ISC.Response response = new ISC.Response();
+            response.setData(postInfoList);
+            response.setStartRow(0);
+            response.setEndRow(postInfoList.size());
+            response.setTotalRows(postInfoList.size());
+            response.setStatus(200);
+
+            ISC<JobExpResponse.postInfo> isc = new ISC<>(response);
+            return new ResponseEntity<>(isc, HttpStatus.OK);
+
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
     }
 }
