@@ -598,7 +598,6 @@ public class ElsRestController {
      * the teacher can do attendance for a session when he has the permission
      */
     @PostMapping(value = {"/attendance/byTeacher"})
-    @Transactional
     public ResponseEntity<AttendanceListSaveResponse> attendanceByTeacher(HttpServletRequest header, @RequestBody ElsTeacherAttendanceListSaveDto tAttendanceDtoRequest) {
         AttendanceListSaveResponse response = new AttendanceListSaveResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
@@ -615,7 +614,7 @@ public class ElsRestController {
                                 Attendance mainAttendance = optionalAttendance.get();
                                 switch (attendances.get(i).getState()) {
                                     case "1": {
-                                        if (mainAttendance.getState().equals(2)) {
+                                        if (mainAttendance.getState().equals("2")) {
                                             attendances.get(i).setState("2");
                                         }
                                         break;
