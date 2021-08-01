@@ -9792,4 +9792,52 @@ WHERE
              ]]>
         </createView>
     </changeSet>
+    <changeSet author="namdari" id="namdari-2489-1">
+        <createView viewName="VIEW_ASSIGNEE_NEEDS_ASSESSMENTS_REPORT" replaceIfExists="true">
+            <![CDATA[
+  SELECT
+            substr(act_ru_task.description_, - least(length(act_ru_task.description_), 8)) AS code,
+            act_ru_task.description_ as des,
+            act_ru_task.assignee_ as assignee,
+            act_ru_task.create_time_ as time
+        FROM
+            act_ru_task
+        WHERE
+            act_ru_task.name_ = 'بررسی تایید کننده'
+             ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="namdari-2489-2">
+        <createView viewName="VIEW_ASSIGNEE_NEEDS_ASSESSMENTS_REPORT" replaceIfExists="true">
+            <![CDATA[
+  SELECT
+  act_ru_task.id_ as id,
+    substr(act_ru_task.description_, - least(length(act_ru_task.description_), 8)) AS code,
+    act_ru_task.description_,
+    act_ru_task.assignee_,
+    act_ru_task.create_time_
+FROM
+    act_ru_task
+WHERE
+    act_ru_task.name_ = 'بررسی تایید کننده'
+             ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="namdari" id="namdari-2489-3">
+        <createView viewName="VIEW_ASSIGNEE_NEEDS_ASSESSMENTS_REPORT" replaceIfExists="true">
+            <![CDATA[
+  SELECT
+  act_ru_task.id_ as id,
+    substr(act_ru_task.description_, - least(length(act_ru_task.description_), 8)) AS code,
+    act_ru_task.description_ as des,
+    act_ru_task.assignee_ as assignee,
+    act_ru_task.create_time_ as time
+FROM
+    act_ru_task
+WHERE
+    act_ru_task.name_ = 'بررسی تایید کننده'
+             ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>

@@ -191,7 +191,7 @@ public abstract class EvaluationBeanMapper {
     @Mapping(source = "lastNameFa", target = "lastName")
     @Mapping(source = "nationalCode", target = "nationalCode")
     @Mapping(source = "gender", target = "gender")
-    @Mapping(source = "contactInfo.mobile", target = "cellNumber")
+    @Mapping(source = "contactInfo", target = "cellNumber", qualifiedByName = "getLiveCellNumber")
     public abstract EvalTargetUser toTeacher(PersonalInfo teacher);
 
 
