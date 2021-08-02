@@ -22,8 +22,8 @@
 
 
 
-    var ListGrid_NeedAssessmentsPerformed = isc.TrLG.create({
-        ID: "NeedAssessmentsPerformedGrid",
+    var ListGrid_AssigneeNeedsAssessmentsReport = isc.TrLG.create({
+        ID: "AssigneeNeedsAssessmentsReport",
         filterOnKeypress: false,
         showFilterEditor: true,
         autoFetchData: true,

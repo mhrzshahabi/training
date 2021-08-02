@@ -31,13 +31,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/assigneeNeedsAssessmentsReport")
-public class assigneeNeedsAssessmentsReport {
+public class AssigneeNeedsAssessmentsReportController {
 
     private final IViewAssigneeNeedsAssessmentsReport iViewAssigneeNeedsAssessmentsReport;
     private final ModelMapper modelMapper;
 
     @GetMapping(value = "/iscList")
-    public ResponseEntity<ISC<ViewNeedAssessmentInRangeDTO.TrainingNeedAssessmentDTOSpecRs>> iscListReport(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<ViewAssigneeNeedsAssessmentsReportDTO.TrainingNeedAssessmentDTOSpecRs>> iscListReport(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
 
         SearchDTO.SearchRs result = iViewAssigneeNeedsAssessmentsReport.search(searchRq, o -> modelMapper.map(o, ViewAssigneeNeedsAssessmentsReportDTO.Info.class));

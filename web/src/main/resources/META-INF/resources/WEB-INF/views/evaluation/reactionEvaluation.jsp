@@ -6,7 +6,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
-//<script>
+// <script>
     //----------------------------------------- Variables --------------------------------------------------------------
     var evalWait_RE;
 
@@ -1342,8 +1342,10 @@
 
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                    let teacherInfo = JSON.parse(resp.httpResponseText);
-                        if (teacherInfo.personality.contactInfo !== null && teacherInfo.personality !== null)
+                    let teacherInfo = JSON.parse(resp.httpResponseText)
+                        if (teacherInfo.personality !== null && teacherInfo.personality.contactInfo !== null
+                          && teacherInfo.personality.contactInfo !== undefined
+)
                         {
                             let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, teacherInfo.personality.contactInfo.mobile, teacherInfo.personality.genderId);
                           if (!isValid) {
@@ -1548,7 +1550,7 @@
                             if (resp.httpResponseCode === 500)
                                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                             else if (resp.httpResponseCode === 406)
-                                createDialog("info", "<spring:message code="msg.check.teacher.mobile.ncode"/>"+" "+"<spring:message code="msg.check.teacher.mobile.ncode.message"/>", "<spring:message code="error"/>");
+                                createDialog("info",  JSON.parse(resp.httpResponseText).message, "<spring:message code="error"/>");
                             else if (resp.httpResponseCode === 408)
                                 createDialog("info", "<spring:message code="msg.els.timeOut"/>", "<spring:message code="error"/>");
                             else

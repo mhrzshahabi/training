@@ -98,12 +98,12 @@ public class ElsRestController {
         Evaluation evaluation = evaluationService.getById(id);
         ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
 
-//        if (!evaluationBeanMapper.validateTargetUser(request.getTeacher())) {
-//            response.setMessage("اطلاعات استاد تکمیل نیست");
-//            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-//
-//            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-//        } else {
+        if (!evaluationBeanMapper.validateTargetUser(request.getTeacher())) {
+            response.setMessage("اطلاعات استاد تکمیل نیست");
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+
+            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+        } else {
             try {
                 request = evaluationBeanMapper.removeInvalidUsers(request);
                 if (!request.getTargetUsers().isEmpty()) {
@@ -136,7 +136,7 @@ public class ElsRestController {
             }
             return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
         }
-//    }
+    }
 
     @GetMapping("/teacherEval/{id}")
     public ResponseEntity<SendEvalToElsResponse> sendEvalToElsForTeacher(@PathVariable long id) {

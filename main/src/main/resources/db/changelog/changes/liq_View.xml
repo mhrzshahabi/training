@@ -9840,4 +9840,33 @@ WHERE
              ]]>
         </createView>
     </changeSet>
+    <changeSet author="namdari" id="namdari-2489-4">
+        <createView viewName="VIEW_UN_ASSIGNEE_NEEDS_ASSESSMENTS_REPORT" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
+    tbl_needs_assessment_temp.c_object_code as code,
+    tbl_needs_assessment_temp.c_created_by as created_by,
+    tbl_needs_assessment_temp.f_object ,
+    tbl_needs_assessment_temp.c_object_type as type,
+    tbl_needs_assessment_temp.c_object_name as title
+FROM
+    tbl_needs_assessment_temp
+             ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="namdari-2489-5">
+        <createView viewName="VIEW_UN_ASSIGNEE_NEEDS_ASSESSMENTS_REPORT" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
+    tbl_needs_assessment_temp.c_object_code    AS code,
+    tbl_needs_assessment_temp.c_created_by     AS created_by,
+    tbl_needs_assessment_temp.f_object,
+    tbl_needs_assessment_temp.c_object_type    AS type,
+    tbl_needs_assessment_temp.c_object_name    AS title,
+    tbl_needs_assessment_temp.id
+FROM
+    tbl_needs_assessment_temp
+             ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>

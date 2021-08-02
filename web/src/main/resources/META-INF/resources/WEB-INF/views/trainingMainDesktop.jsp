@@ -1209,6 +1209,7 @@
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
     const needsAssessmentsPerformedUrl = rootUrl + "/needAssessmentInRange";
     const assigneeNeedsAssessmentsReport = rootUrl + "/assigneeNeedsAssessmentsReport";
+    const unAssigneeNeedsAssessmentsReport = rootUrl + "/unAssigneeNeedsAssessmentsReport";
     const personnelInformationUrl = rootUrl + "/personnelInformation";
     const unfinishedClasses = rootUrl + "/unfinishedClasses";
     const studentPortalUrl = rootUrl + "/student-portal";
@@ -2382,14 +2383,14 @@
                             },
                             </sec:authorize>
                             {isSeparator: true},
-<%--                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">--%>
-<%--                            {--%>
-<%--                                title: " نیازسنجی های بلاتکلیف",--%>
-<%--                                click: function () {--%>
-<%--                                    createTab(this.title, "<spring:url value="web/unAssigneeNeedsAssessments"/>");--%>
-<%--                                }--%>
-<%--                            },--%>
-<%--                            </sec:authorize>--%>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsNeedsAssessment_People')">
+                            {
+                                title: " نیازسنجی های بلاتکلیف",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/unAssigneeNeedsAssessments"/>");
+                                }
+                            },
+                            </sec:authorize>
                         ]
                 },
                 {isSeparator: true},

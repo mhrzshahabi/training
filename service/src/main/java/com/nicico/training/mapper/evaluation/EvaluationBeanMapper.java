@@ -75,6 +75,8 @@ public abstract class EvaluationBeanMapper {
     public abstract EvalTargetUser toTargetUser(Student student);
     @Named("getLiveCellNumber")
      String getLiveCellNumber(ContactInfo contactInfo) {
+        if (contactInfo==null)
+            return "";
             if (contactInfo.getEMobileForSMS() == null)
                 return contactInfo.getMobile();
             switch (contactInfo.getEMobileForSMS()) {

@@ -1,21 +1,23 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.copper.common.util.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class ViewAssigneeNeedsAssessmentsReportDTO implements Serializable {
+public class ViewUnAssigneeNeedsAssessmentsReportDTO implements Serializable {
 
     @ApiModelProperty
     private Long id;
@@ -24,30 +26,46 @@ public class ViewAssigneeNeedsAssessmentsReportDTO implements Serializable {
     private String code;
 
     @ApiModelProperty
-    private String des;
+    private String createdBy;
+
+    @Getter(AccessLevel.NONE)
+    @ApiModelProperty
+    private String type;
 
     @ApiModelProperty
-    private String assignee;
+    private String title;
 
     @ApiModelProperty
-    private Date time;
+    private String object;
+
+    public String getType() {
+        switch (type) {
+            case "TrainingPost":
+                return "پست";
+            case "Post":
+                return "پست انفرادی";
+            case "PostGroup":
+                return "پست گروهی";
+            default:
+                return type;
+        }
+    }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("AssigneeNeedsAssessmentsReportDTOInfo")
-    public static class Info extends ViewAssigneeNeedsAssessmentsReportDTO {
+    @ApiModel("UnAssigneeNeedsAssessmentsReportDTOInfo")
+    public static class Info extends ViewUnAssigneeNeedsAssessmentsReportDTO {
     }
-
 
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TrainingAssigneeNeedAssessmentDTOSpecRs")
+    @ApiModel("TrainingUnAssigneeNeedAssessmentDTOSpecRs")
     public static class TrainingNeedAssessmentDTOSpecRs {
-        private ViewAssigneeNeedsAssessmentsReportDTO.SpecRs response;
+        private ViewUnAssigneeNeedsAssessmentsReportDTO.SpecRs response;
     }
 
     @Getter
@@ -55,7 +73,7 @@ public class ViewAssigneeNeedsAssessmentsReportDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<ViewAssigneeNeedsAssessmentsReportDTO.Info> data;
+        private List<ViewUnAssigneeNeedsAssessmentsReportDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
