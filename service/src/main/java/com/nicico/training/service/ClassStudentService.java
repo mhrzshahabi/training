@@ -4,13 +4,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.iservice.IClassStudentService;
-import com.nicico.training.iservice.IEvaluationAnalysisService;
-import com.nicico.training.iservice.IPersonnelRegisteredService;
-import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +40,7 @@ public class ClassStudentService implements IClassStudentService {
     private final ModelMapper mapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
     private final PersonnelService personnelService;
+    private final ITeacherService iTeacherService;
 
 
     @Transactional(readOnly = true)
@@ -61,6 +61,18 @@ public class ClassStudentService implements IClassStudentService {
     public Map<String, String> registerStudents(List<ClassStudentDTO.Create> request, Long classId) {
         List<String> invalStudents = new ArrayList<>();
         Tclass tclass = tclassService.getTClass(classId);
+        TeacherDTO.Info teacher = iTeacherService.get(tclass.getTeacherId());
+        if (teacher.getTeacherCode()!=null)
+        {
+            //check for know students and teacher is equal or not
+            ClassStudentDTO.Create checkTeacher = request.stream()
+                    .filter(q -> teacher.getTeacherCode().equals(q.getNationalCode()))
+                    .findFirst()
+                    .orElse(null);
+            if (checkTeacher != null)
+                throw new TrainingException(TrainingException.ErrorType.registerNotAccepted);
+        }
+
 
         for (ClassStudentDTO.Create c : request) {
             List<Student> list = studentService.getStudentByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(c.getPostId(), c.getPersonnelNo(), c.getDepartmentId(), c.getFirstName(), c.getLastName());

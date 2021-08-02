@@ -102,7 +102,6 @@
                         ListGrid_class_Evaluation.fetchData(mainCriteria);
                     }
                     if (value === "3") {
-                        debugger
                         evalDateCriteria = createCriteria("behavioralDueDate", "equals", Date.create(new Date().setHours(0,0,0,0)).toUTCString());
                         evalTypeCriteria = createCriteria("evaluation", "equals", "3");
                         let mainCriteria = createMainCriteria();

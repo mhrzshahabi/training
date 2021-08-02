@@ -41,6 +41,7 @@ public class TrainingException extends NICICOException {
     public enum ErrorType implements IErrorCode {
 
         NotFound(404),
+        registerNotAccepted(406),
         QuestionBankNotFound(404),
         SkillLevelNotFound(404),
         SkillStandardNotFound(404),

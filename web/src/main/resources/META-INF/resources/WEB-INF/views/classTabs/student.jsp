@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-//<script>
+// <script>
     {
         var studentRemoveWait;
         var studentDefaultPresenceId = 103;
@@ -2047,11 +2047,22 @@
                     OK.close();
                 }, timeOut);
             } else {
-                let OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
-                    "<spring:message code="error"/>");
-                setTimeout(function () {
-                    OK.close();
-                }, 5000);
+                if (resp.httpResponseCode === 406)
+                {
+                    let OK = createDialog("info", "یکی از فراگیران  با استاد این کلاس یکی است",
+                        "<spring:message code="error"/>");
+                    setTimeout(function () {
+                        OK.close();
+                    }, 5000);
+                }
+                else
+                {
+                    let OK = createDialog("info", "<spring:message code="msg.operation.error"/>",
+                        "<spring:message code="error"/>");
+                    setTimeout(function () {
+                        OK.close();
+                    }, 5000);
+                }
             }
         }
 
