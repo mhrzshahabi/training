@@ -327,6 +327,11 @@
             let id = DynamicForm_JspEditNeedsAssessment.getValue("objectId");
             let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType");
             wait.show();
+
+            ListGrid_Knowledge_JspNeedsAssessment.unsort();
+            ListGrid_Ability_JspNeedsAssessment.unsort();
+            ListGrid_Attitude_JspNeedsAssessment.unsort();
+
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/rollBack/" + type + "/" + id, "PUT", null, (resp)=>{
                 wait.close();
                 if(resp.httpResponseCode === 200){
@@ -1853,6 +1858,11 @@
 
 
     function loadEditNeedsAssessment(objectId, type, state = "R&W") {
+
+        ListGrid_Knowledge_JspNeedsAssessment.unsort();
+        ListGrid_Ability_JspNeedsAssessment.unsort();
+        ListGrid_Attitude_JspNeedsAssessment.unsort();
+
         if (ListGrid_SkillAll_JspNeedsAssessment) {
             ListGrid_SkillAll_JspNeedsAssessment.clearFilterValues();
         }
