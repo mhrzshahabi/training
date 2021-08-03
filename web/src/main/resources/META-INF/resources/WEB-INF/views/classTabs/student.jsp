@@ -1823,21 +1823,7 @@
                     type: "text",
                     length: 11,
                     keyPressFilter: "[0-9]",
-                    wrapHintText: false,
-                    validators: [{
-                        validateOnExit: true,
-                        type: "lengthRange",
-                        min: 11,
-                        max: 11,
-                        errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
-                    },
-                        {
-                            type: "regexp",
-                            expression: "^[0][9][0-9]*$",
-                            validateOnChange: true,
-                            errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
-                        }
-                    ],
+                    wrapHintText: false
                 },
                 {
                     name: "mobile2_c",
@@ -1862,21 +1848,7 @@
                     type: "text",
                     length: 11,
                     keyPressFilter: "[0-9]",
-                    wrapHintText: false,
-                    validators: [{
-                        validateOnExit: true,
-                        type: "lengthRange",
-                        min: 11,
-                        max: 11,
-                        errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
-                    },
-                        {
-                            type: "regexp",
-                            expression: "^[0][9][0-9]*$",
-                            validateOnChange: true,
-                            errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
-                        }
-                    ],
+                    wrapHintText: false
                 },
                 {
                     name: "hrMobile_c",
@@ -1921,10 +1893,31 @@
                     title: "",
                     type: "text",
                     disabled: true,
-                },
-
+                }
             ]
         });
+
+        function mobileValidation(mobileNum) {
+
+            let isValid = true;
+
+            if (mobileNum === null || mobileNum === undefined)
+                isValid = true;
+
+            else {
+
+                if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
+                    isValid = false;
+
+                if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
+                    isValid = false;
+
+                if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
+                    isValid = false;
+            }
+
+            return isValid;
+        }
 
         let Window_EditMobile_class = isc.Window.create({
             width: "300",
@@ -1948,7 +1941,8 @@
                     members: [isc.IButtonSave.create({
                         top: 260,
                         click: function () {
-                            if (!editMobileForm_class.validate()) {
+                            if(!mobileValidation(editMobileForm_class.getValue("mobile")) || !mobileValidation(editMobileForm_class.getValue("mobile2"))) {
+                                createDialog("info", "<spring:message code="msg.invalid.mobile.number"/>");
                                 return;
                             }
                             var data = editMobileForm_class.getValues();
