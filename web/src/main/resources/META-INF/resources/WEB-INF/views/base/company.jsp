@@ -664,20 +664,25 @@
             }, 2000);
             Refresh_Company();
             Window_Company.close();
-        } else if(resp.httpResponseCode == 409)
+        } else
         {
-            createDialog("info", "شرکتی با کد پستی وارد شده قبلا ثبت شده است",
-                "<spring:message code="message"/>");
+            let respText = JSON.parse(resp.httpResponseText);
+            createDialog("info",respText.message, "<spring:message code="error"/>");
         }
-        else if(resp.httpResponseCode == 406)
-        {
-            createDialog("info", "اطلاعات مدیر تغییر کرده",
-                "<spring:message code="message"/>");
-        }
-        else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
-        }
+        <%--    if(resp.httpResponseCode === 409)--%>
+        <%--{--%>
+        <%--    createDialog("info", "شرکتی با کد پستی وارد شده قبلا ثبت شده است",--%>
+        <%--        "<spring:message code="message"/>");--%>
+        <%--}--%>
+        <%--else if(resp.httpResponseCode === 406)--%>
+        <%--{--%>
+        <%--    createDialog("info", "اطلاعات مدیر تغییر کرده",--%>
+        <%--        "<spring:message code="message"/>");--%>
+        <%--}--%>
+        <%--else {--%>
+        <%--    createDialog("info", "<spring:message code="msg.operation.error"/>",--%>
+        <%--        "<spring:message code="message"/>");--%>
+        <%--}--%>
     }
 
     function personalInfo_findOne_result_company(resp) {

@@ -73,20 +73,32 @@ public class CompanyService implements ICompanyService {
         modelMapper.map(currentCompany, company);
         modelMapper.map(request, company);
         try {
+            if (currentCompany.getManagerId()!=null)
             updateManager(request, currentCompany.getManagerId(), company);
+            else
+            {
+                setManager(request, company);
+            }
         } catch (Exception ex) {
-            throw new TrainingException(TrainingException.ErrorType.RecordAlreadyExists);
+            throw new TrainingException(TrainingException.ErrorType.conflictForManager);
         }
-        updateAccountInfo(request, currentCompany.getAccountInfoId(), company);
+        if (currentCompany.getAccountInfoId()!=null)
+            updateAccountInfo(request, currentCompany.getAccountInfoId(), company);
         try {
+            if (currentCompany.getAddressId()!=null)
             updateAddress(request, currentCompany.getAddressId(), company);
+            else
+            {
+                setAddress(request, company);
+            }
+
         } catch (Exception e) {
-            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            throw new TrainingException(TrainingException.ErrorType.conflictAddress);
         }
         try {
             return modelMapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            throw new TrainingException(TrainingException.ErrorType.conflict);
         }
     }
 
@@ -100,7 +112,7 @@ public class CompanyService implements ICompanyService {
     @Transactional
     public void updateAddress(CompanyDTO.Update request, Long id, Company company) throws Exception {
         Address address = addressDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        if (address.getPostalCode().equals(request.getAddress().getPostalCode())) {
+        if (address.getPostalCode()!= null && request.getAddress().getPostalCode()!= null && address.getPostalCode().equals(request.getAddress().getPostalCode())) {
             modelMapper.map(request.getAddress(), address);
             addressDAO.saveAndFlush(address);
 

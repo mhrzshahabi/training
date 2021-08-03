@@ -15,7 +15,8 @@
             {name: "code"},
             {name: "createdBy"},
             {name: "type"},
-            {name: "title"}
+            {name: "title"},
+            {name: "time"}
         ],
         fetchDataURL: unAssigneeNeedsAssessmentsReport + "/iscList?_endRow=10000"
     });
@@ -33,7 +34,16 @@
             {name: "code", title: "کد پست"},
             {name: "createdBy", title: "کاربر ایجاد کننده"},
             {name: "type", title: "نوع پست"},
-            {name: "title",title: "عنوان پست"}
+            {name: "title",title: "عنوان پست"},
+            {name: "time",title: "زمان درخواست",
+                canFilter: false,
+                formatCellValue: function (value) {
+                    if (value) {
+                        let d = new Date(value);
+                        return d.toLocaleString('fa',{ year: 'numeric', month: 'numeric', day: 'numeric' });
+                    }
+                }
+            }
         ]
     });
 

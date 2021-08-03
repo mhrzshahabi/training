@@ -38,6 +38,9 @@ public class ViewUnAssigneeNeedsAssessmentsReportDTO implements Serializable {
     @ApiModelProperty
     private String object;
 
+    @ApiModelProperty
+    private Date time;
+
     public String getType() {
         switch (type) {
             case "TrainingPost":

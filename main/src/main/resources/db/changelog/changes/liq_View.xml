@@ -9869,4 +9869,29 @@ FROM
              ]]>
         </createView>
     </changeSet>
+    <changeSet author="namdari" id="namdari-2489-6">
+        <createView viewName="VIEW_UN_ASSIGNEE_NEEDS_ASSESSMENTS_REPORT" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
+    tbl_needs_assessment_temp.c_object_code    AS code,
+    tbl_needs_assessment_temp.c_created_by     AS created_by,
+    tbl_needs_assessment_temp.f_object,
+    tbl_needs_assessment_temp.c_object_type    AS type,
+    tbl_needs_assessment_temp.c_object_name    AS title,
+    tbl_needs_assessment_temp.id,
+    tbl_needs_assessment_temp.d_created_date as time
+FROM
+    tbl_needs_assessment_temp
+WHERE
+    tbl_needs_assessment_temp.id IN (
+        SELECT
+            MAX(tbl_needs_assessment_temp.id)
+        FROM
+            tbl_needs_assessment_temp
+        GROUP BY
+            tbl_needs_assessment_temp.c_object_code
+    )
+             ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>

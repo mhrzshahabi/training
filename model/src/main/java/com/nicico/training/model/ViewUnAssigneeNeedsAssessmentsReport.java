@@ -40,6 +40,9 @@ public class ViewUnAssigneeNeedsAssessmentsReport implements Serializable{
     @Column(name = "title")
     private String title;
 
+    @Column(name = "time")
+    private Date time;
+
 
     @Column(name = "f_object")
     private String object;

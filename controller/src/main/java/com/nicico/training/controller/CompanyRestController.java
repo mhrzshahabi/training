@@ -15,6 +15,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -59,10 +60,28 @@ public class CompanyRestController {
         try {
             return new ResponseEntity<>(companyService.update(id, request), HttpStatus.OK);
         } catch (TrainingException e) {
-            if (e.getHttpStatusCode().equals(409))
-            return new ResponseEntity<>(TrainingException.ErrorType.DuplicateRecord.getHttpStatusCode(), HttpStatus.CONFLICT);
-            else
-             return new ResponseEntity<>(TrainingException.ErrorType.RecordAlreadyExists.getHttpStatusCode(),HttpStatus.NOT_ACCEPTABLE);
+            BaseResponse response = new BaseResponse();
+            response.setStatus(e.getHttpStatusCode());
+            switch (e.getHttpStatusCode()) {
+                case 409:
+                    response.setMessage("رکوردی با این اطلاعات در سیستم وجود دارد");
+                    break;
+                case 404:
+                    response.setMessage("شرکت مورد نظر یافت نشد");
+                    break;
+                case 405:
+                    response.setMessage("خطا در ویرایش مدیر شرکت صورت گرفت");
+                    break;
+                case 406:
+                    response.setMessage("خطا در ویرایش آدرس شرکت صورت گرفت");
+                    break;
+                default:
+                    response.setMessage("خطا در ویرایش شرکت صورت گرفت");
+            }
+            response.setStatus(e.getHttpStatusCode());
+
+            return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
+
         }
     }
 
