@@ -1,5 +1,6 @@
 package com.nicico.training.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.service.ParameterValueService;
@@ -14,6 +15,7 @@ import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 @Getter
 @Setter
@@ -116,5 +118,28 @@ public class ViewTrainingPostDTO implements Serializable {
     @ApiModel("PostReport")
     public static class Report extends Info {
         private String mojtameCode;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("PostSpecRs")
+    public static class PostSpecRs {
+        private ViewTrainingPostDTO.SpecRs response;
+    }
+
+    // ---------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRs<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }

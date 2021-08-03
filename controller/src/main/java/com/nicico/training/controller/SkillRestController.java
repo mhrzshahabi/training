@@ -15,6 +15,8 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.SkillDTO;
+import com.nicico.training.dto.ViewTrainingPostDTO;
+import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.service.SkillService;
 
 import com.nicico.training.service.WorkGroupService;
@@ -54,6 +56,7 @@ public class SkillRestController {
 
     private final ReportUtil reportUtil;
     private final SkillService skillService;
+    private final ISkillService iSkillService;
     private final WorkGroupService workGroupService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
@@ -498,5 +501,20 @@ public class SkillRestController {
         searchRq.setCriteria(criteriaRq);
         SearchDTO.SearchRs<T> searchRs = skillService.search(searchRq, infoType);
         return new ResponseEntity<ISC<T>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/postsWithSameSkill/{skillId}")
+    public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> getPostsContainsTheSkill(@PathVariable Long skillId) {
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Report> response = iSkillService.getPostsContainsTheSkill(skillId);
+
+        final ViewTrainingPostDTO.SpecRs specResponse = new ViewTrainingPostDTO.SpecRs();
+        final ViewTrainingPostDTO.PostSpecRs specRs = new ViewTrainingPostDTO.PostSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(0)
+                .setEndRow(response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 }

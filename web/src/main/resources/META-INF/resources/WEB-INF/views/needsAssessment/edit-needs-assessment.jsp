@@ -26,6 +26,7 @@
         "ContractorPersonal" : "پیمان کار"
     };
 
+    //----------------------------------------- DataSources ------------------------------------------------------------
     let NeedsAssessmentTargetDS_needsAssessment = isc.TrDS.create({
         ID: "NeedsAssessmentTargetDS_needsAssessment",
         fields: [
@@ -282,6 +283,31 @@
         clientOnly: true,
     });
 
+    var RestDataSource_TrainingPost_By_Skill_Jsp = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",}
+
+        ],
+        // fetchDataURL: needsAssessmentReportsUrl + "/postsWithSameSkill" +
+    });
+
+
+    //----------------------------------------- ToolStrips ------------------------------------------------------------
+
     let CompetenceTS_needsAssessment = isc.ToolStrip.create({
         ID: "CompetenceTS_needsAssessment",
         members: [
@@ -352,6 +378,7 @@
             buttonChangeCancel
         ]
     });
+
 
     var Window_CourseDetail_JspENA = isc.Window.create({
         title: "<spring:message code="course.plural.list"/>",
@@ -835,6 +862,91 @@
         ]
     });
 
+
+    var ListGrid_TrainingPost_By_Skill = isc.TrLG.create({
+        dataSource: RestDataSource_TrainingPost_By_Skill_Jsp,
+        autoFetchData: false,
+        sortField: 1,
+        fields: [
+            {
+                name: "peopleType",
+                filterOnKeypress: true,
+            },
+            {
+                name: "code",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "titleFa"},
+            {name: "job.titleFa"},
+            {name: "postGrade.titleFa"},
+            {name: "area"},
+            {name: "assistance"},
+            {name: "affairs"},
+            {name: "section"},
+            {name: "unit"},
+            {
+                name: "costCenterCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "costCenterTitleFa"},
+            {
+                name: "enabled",
+                valueMap: {
+                    // undefined : "فعال",
+                    74: "غیر فعال"
+                }, filterOnKeypress: true
+            }
+        ]
+    });
+
+
+    var Window_Show_Post_Used_This_Skill = isc.Window.create({
+        title: "لیست پست های که در نیازسنجی شامل این مهارت هستند",
+        align: "center",
+        placement: "fillScreen",
+        minWidth: 1024,
+        items: [
+            isc.VLayout.create({
+                width: "100%",
+                height: "100%",
+                members: [ListGrid_TrainingPost_By_Skill]
+            })
+        ]
+    });
+
+    var Menu_ListGrid_Skils_RightClick_Jsp = isc.Menu.create({
+        width: 150,
+        data: [
+            {
+                title: "لیست پست های شامل این مهارت", icon: "<spring:url value="post.png"/>", click: function () {
+                    let record = ListGrid_SkillAll_JspNeedsAssessment.getSelectedRecord();
+                    if (record == null || record.id == null) {
+
+                        isc.Dialog.create({
+
+                            message: "<spring:message code="msg.no.records.selected"/>",
+                            icon: "[SKIN]ask.png",
+                            title: "پیام",
+                            buttons: [isc.IButtonSave.create({title: "تائید"})],
+                            buttonClick: function (button, index) {
+                                this.close();
+                            }
+                        });
+                    } else {
+                        RestDataSource_TrainingPost_By_Skill_Jsp.fetchDataURL = skillUrl + "/postsWithSameSkill" + "/" + record.id;
+                        ListGrid_TrainingPost_By_Skill.invalidateCache();
+                        ListGrid_TrainingPost_By_Skill.fetchData();
+                        Window_Show_Post_Used_This_Skill.show();
+                    }
+                }
+            }
+        ]
+    });
+
     let ListGrid_AllCompetence_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_AllCompetence_JspNeedsAssessment",
         dataSource: RestDataSource_Competence_JspNeedsAssessment,
@@ -905,6 +1017,7 @@
             }),
             "filterEditor", "header", "body"],
     });
+
     let ListGrid_Competence_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_Competence_JspNeedsAssessment",
         dataSource: DataSource_Competence_JspNeedsAssessment,
@@ -1017,9 +1130,11 @@
             }));
         }
     });
+
     let ListGrid_SkillAll_JspNeedsAssessment = isc.TrLG.create({
         ID: "ListGrid_SkillAll_JspNeedsAssessment",
         dataSource: RestDataSource_Skill_JspNeedsAssessment,
+        contextMenu: Menu_ListGrid_Skils_RightClick_Jsp,
         autoFetchData: false,
         // selectionAppearance: "checkbox",
         // showRowNumbers: false,
