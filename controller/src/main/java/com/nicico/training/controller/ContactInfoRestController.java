@@ -49,6 +49,17 @@ public class ContactInfoRestController {
     }
 
     @Loggable
+    @PostMapping(value = "/createNewFor/{id}")
+//    @PreAuthorize("hasAuthority('c_address')")
+    public ResponseEntity createNewFor(@PathVariable Long id,@RequestBody String type) {
+        try {
+            return new ResponseEntity<>(contactInfoService.createNewFor(id, type), HttpStatus.CREATED);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_address')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody ContactInfoDTO.Update request) {

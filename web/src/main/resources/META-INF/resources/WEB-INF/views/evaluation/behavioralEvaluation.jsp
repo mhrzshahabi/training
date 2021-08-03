@@ -309,9 +309,18 @@
                                 editMobileForm.getItem('mobile_c').setValue(true);
                                 editMobileForm.getValues().mobileForSMS = 1;
                         }
+                        editMobileForm.clearErrors();
+                        Window_EditMobile.show();
+                    } else {
+                        isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/createNewFor/").concat(record.student.id), "POST", "Student", (r) => {
+                            editMobileForm.clearValues();
+                            editMobileForm.clearErrors();
+                            editMobileForm.editRecord(JSON.parse(r.data));
+                            editMobileForm.getItem('mobile_c').setValue(true);
+                            editMobileForm.getValues().mobileForSMS = 1;
+                            Window_EditMobile.show();
+                        }));
                     }
-                    editMobileForm.clearErrors();
-                    Window_EditMobile.show();
                 }
             },
 

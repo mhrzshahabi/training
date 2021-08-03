@@ -235,7 +235,7 @@ public class PersonnelRestController {
 
     @GetMapping(value = "/fetchAndUpdateLastHrMobile/{type}/{id}")
     public ResponseEntity fetchAndUpdateLastHrMobile(HttpServletRequest iscRq, @PathVariable Long id,@PathVariable String type) {
-        Long infoId = contactInfoService.fetchAndUpdateLastHrMobile(id, type, iscRq.getHeader("Authorization"));
+        Long infoId = contactInfoService.fetchAndUpdateLastHrMobile(id, type, iscRq.getHeader("Authorization")).getId();
         return new ResponseEntity(infoId, HttpStatus.OK);
     }
 
