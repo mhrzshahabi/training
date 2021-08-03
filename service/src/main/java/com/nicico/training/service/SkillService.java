@@ -15,6 +15,7 @@ import com.nicico.training.iservice.ICourseService;
 //import com.nicico.training.iservice.ISkillGroupService;
 import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,8 @@ public class SkillService implements ISkillService {
     private final CourseDAO courseDAO;
     private final ICourseService courseService;
     private final ResourceBundleMessageSource messageSource;
+    private final ViewTrainingPostDAO viewTrainingPostDAO;
+    private final ViewTrainingPostMapper trainingPostMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -368,6 +371,17 @@ public class SkillService implements ISkillService {
     @Override
     public <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Class<T> infoType) {
         return SearchUtil.search(skillDAO, request, e -> modelMapper.map(e, infoType));
+    }
+
+    @Override
+    public SearchDTO.SearchRs<ViewTrainingPostDTO.Report> getPostsContainsTheSkill(Long skillId) {
+        List<ViewTrainingPost> viewTrainingPosts = viewTrainingPostDAO.getPostsContainsTheSkill(skillId);
+
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Report> rs = new SearchDTO.SearchRs<>();
+        List<ViewTrainingPostDTO.Report> dtoList = new ArrayList<>();
+        rs.setTotalCount((long) viewTrainingPosts.size());
+        rs.setList(trainingPostMapper.changeToPostReportDTOList(viewTrainingPosts, dtoList));
+        return rs;
     }
 
 }

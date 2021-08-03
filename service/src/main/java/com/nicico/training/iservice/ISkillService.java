@@ -65,4 +65,7 @@ public interface ISkillService {
     List<Skill> skillList(Long courseId);
 
     <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Class<T> infoType);
+
+    SearchDTO.SearchRs<ViewTrainingPostDTO.Report> getPostsContainsTheSkill(Long skillId);
+
 }
