@@ -7,7 +7,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import request.attendance.AttendanceListSaveRequest;
-import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.attendance.dto.AttendanceDto;
 
 import java.util.List;
@@ -25,11 +24,6 @@ public interface AttendanceBeanMapper {
     default List<Attendance> ToAttendanceList(AttendanceListSaveRequest requestList) {
         return requestList.getAttendanceDtos().stream().map(this::toAttendance).collect(Collectors.toList());
     }
-
-    default List<Attendance> ElsToAttendanceList(ElsTeacherAttendanceListSaveDto requestList) {
-        return requestList.getAttendanceDtos().stream().map(this::toAttendance).collect(Collectors.toList());
-    }
-
 
     @Mapping(target = "surname", source = "firstName")
     @Mapping(target = "lastName", source = "lastName")
