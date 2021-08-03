@@ -13,6 +13,7 @@ import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
+import com.nicico.training.model.ContactInfo;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.CalendarTool;
@@ -125,7 +126,8 @@ public class ClassStudentRestController {
 
         List<ClassStudentDTO.ClassStudentInfo> tmplist = (List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData();
         for (ClassStudentDTO.ClassStudentInfo studentInfo : tmplist) {
-            contactInfoService.fetchAndUpdateLastHrMobile(studentInfo.getStudent().getNationalCode(), studentInfo.getStudent() ,iscRq.getHeader("Authorization"));
+            ContactInfo contactInfo = contactInfoService.fetchAndUpdateLastHrMobile(studentInfo.getStudentId(), "Student", iscRq.getHeader("Authorization"));
+            studentInfo.getStudent().setContactInfo(modelMapper.map(contactInfo, ContactInfoDTO.Info.class));
         }
 
         if (tmplist.size() > 0 && (tmplist.get(0).getTclass().getClassStatus().equals("1") || tmplist.get(0).getTclass().getClassStatus().equals("2"))) {

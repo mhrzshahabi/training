@@ -39,7 +39,7 @@ public class ClassStudentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassStudent - Info")
-    public static class ClassStudentInfo {
+    public static class ClassStudentInfo extends ClassStudentDTO {
         private Long id;
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;

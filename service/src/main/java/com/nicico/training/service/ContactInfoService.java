@@ -5,13 +5,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IContactInfoService;
-import com.nicico.training.model.Address;
-import com.nicico.training.model.ContactInfo;
-import com.nicico.training.model.Personnel;
-import com.nicico.training.model.PersonnelRegistered;
-import com.nicico.training.repository.ContactInfoDAO;
-import com.nicico.training.repository.PersonnelDAO;
-import com.nicico.training.repository.PersonnelRegisteredDAO;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.*;
 import com.nicico.training.service.hrm.HrmFeignClient;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -20,7 +15,6 @@ import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.nicico.training.dto.StudentDTO.ClassStudentInfo;
 
 import java.util.Date;
 import java.util.List;
@@ -35,7 +29,7 @@ public class ContactInfoService implements IContactInfoService {
     private final HrmFeignClient hrmClient;
     private final PersonnelDAO personnelDAO;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
-
+    private final StudentDAO studentDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -63,6 +57,33 @@ public class ContactInfoService implements IContactInfoService {
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
+    }
+
+
+    @Transactional
+    @Override
+    public ContactInfoDTO.Info createNewFor(Long id, String type) {
+        ContactInfo contactInfo = contactInfoDAO.saveAndFlush(new ContactInfo());
+        switch (type) {
+            case "Personnel":
+                Personnel personnel = personnelDAO.findById(id).get();
+                personnel.setContactInfo(contactInfo);
+                personnelDAO.saveAndFlush(personnel);
+                break;
+            case "RegisteredPersonnel":
+                PersonnelRegistered personnelRegistered = personnelRegisteredDAO.getOne(id);
+                personnelRegistered.setContactInfo(contactInfo);
+                personnelRegisteredDAO.saveAndFlush(personnelRegistered);
+                break;
+            case "Student":
+                Student student = studentDAO.getOne(id);
+                student.setContactInfo(contactInfo);
+                studentDAO.saveAndFlush(student);
+                break;
+            default:
+                throw new TrainingException(TrainingException.ErrorType.InvalidData);
+        }
+        return modelMapper.map(contactInfo, ContactInfoDTO.Info.class);
     }
 
     @Transactional
@@ -137,40 +158,9 @@ public class ContactInfoService implements IContactInfoService {
         }
     }
 
-    @Override
-    public String fetchAndUpdateLastHrMobile(String nationalCode, ClassStudentInfo classStudentInfo, String token) {
-        if (nationalCode == null)
-            return null;
-        long now = new Date().getTime();
-        ContactInfoDTO.Info contactInfo = classStudentInfo.getContactInfo();
-        if (contactInfo == null) {
-            ContactInfo info = contactInfoDAO.save(new ContactInfo());
-            contactInfo = new ContactInfoDTO.Info().setId(info.getId());
-            classStudentInfo.setContactInfo(contactInfo);
-        }
-        long lastModified = contactInfo.getLastModifiedDate() == null ? 0 : contactInfo.getLastModifiedDate().getTime();
-        String hrMobile = contactInfo.getHrMobile();
-        if ((now - lastModified) / 1000 / 60 / 60 > 12) {
-            try {
-                HrmPersonDTO person = hrmClient.getPersonByNationalCode(nationalCode, token);
-                hrMobile = person.getMobile();
-                final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfo.getId());
-                if (cById.isPresent()) {
-                    ContactInfo contact = cById.get();
-                    contact.setHrMobile(hrMobile);
-                    contactInfoDAO.saveAndFlush(contact);
-                } else
-                    hrMobile = null;
-            } catch (Exception ex) {
-            }
-        }
-        contactInfo.setHrMobile(hrMobile);
-        return hrMobile;
-    }
-
     @Transactional
     @Override
-    public Long fetchAndUpdateLastHrMobile(Long id, String type, String token) {
+    public ContactInfo fetchAndUpdateLastHrMobile(Long id, String type, String token) {
 
         String nationalCode;
         ContactInfo contactInfo;
@@ -197,11 +187,22 @@ public class ContactInfoService implements IContactInfoService {
                 }
                 nationalCode = personnelRegistered.getNationalCode();
                 break;
+            case "Student":
+                Student student = studentDAO.findById(id).get();
+                contactInfo = student.getContactInfo();
+                if (contactInfo == null) {
+                    contactInfo = new ContactInfo();
+                    contactInfoDAO.save(contactInfo);
+                    student.setContactInfo(contactInfo);
+                    studentDAO.saveAndFlush(student);
+                }
+                nationalCode = student.getNationalCode();
+                break;
             default:
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
         }
         if (nationalCode == null)
-            return contactInfo.getId();
+            return contactInfo;
         long now = new Date().getTime();
         long lastModified = contactInfo.getLastModifiedDate() == null ? 0 : contactInfo.getLastModifiedDate().getTime();
         String hrMobile;
@@ -218,7 +219,7 @@ public class ContactInfoService implements IContactInfoService {
             } catch (Exception ex) {
             }
         }
-        return contactInfo.getId();
+        return contactInfo;
     }
 
 }
