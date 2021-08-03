@@ -35,7 +35,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import request.attendance.AttendanceListSaveRequest;
-import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.evaluation.ElsEvalRequest;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
@@ -598,11 +597,11 @@ public class ElsRestController {
      * the teacher can do attendance for a session when he has the permission
      */
     @PostMapping(value = {"/attendance/byTeacher"})
-    public ResponseEntity<AttendanceListSaveResponse> attendanceByTeacher(HttpServletRequest header, @RequestBody ElsTeacherAttendanceListSaveDto tAttendanceDtoRequest) {
+    public ResponseEntity<AttendanceListSaveResponse> attendanceByTeacher(HttpServletRequest header, @RequestBody AttendanceListSaveRequest tAttendanceDtoRequest) {
         AttendanceListSaveResponse response = new AttendanceListSaveResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
-            List<Attendance> attendances = attendanceMapper.ElsToAttendanceList(tAttendanceDtoRequest);
+            List<Attendance> attendances = attendanceMapper.ToAttendanceList(tAttendanceDtoRequest);
             if (attendances.size() > 0) {
                 if (attendances.get(0).getSessionId() != null && attendances.get(0).getStudentId() != null) {
                     ClassSession currentClassSession = classSessionService.getClassSession(attendances.get(0).getSessionId());
