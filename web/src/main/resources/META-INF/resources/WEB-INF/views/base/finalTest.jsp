@@ -193,7 +193,7 @@
             {
                 name: "duration",
                 title: "<spring:message code="test.question.duration"/>",
-                filterOperator: "iContains", autoFitWidth: true
+                filterOperator: "equals", autoFitWidth: true
             },
             { name: "onlineFinalExamStatus",
                 title: "<spring:message code="test.question.status"/>",
