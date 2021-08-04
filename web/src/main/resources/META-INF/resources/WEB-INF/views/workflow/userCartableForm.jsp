@@ -132,6 +132,7 @@
     var TSB_Refresh_userCartableForm = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
+            ListGrid_UserTaskList.clearFilterValues();
             ListGrid_UserTaskList.invalidateCache();
             activitiRefreshButton.click();
         }
