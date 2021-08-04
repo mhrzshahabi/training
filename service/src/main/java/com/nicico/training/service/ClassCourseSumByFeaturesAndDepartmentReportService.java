@@ -405,7 +405,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         } else {
             script.append(" 1=1");
         }
-        script.append(") WHERE C_START_DATE <= :TO_DATE AND C_END_DATE >= :FROM_DATE) PIVOT (COUNT (C_STATUS) FOR C_STATUS IN (1 AS PLANNING, 2 AS IN_PROGRESS, 3 AS FINISHED, 4 AS CANCELED, 5 AS LOCKED_))) CLASS_");
+        script.append(") WHERE C_START_DATE <= :TO_DATE AND C_END_DATE <= :TO_DATE AND C_END_DATE >= :FROM_DATE AND C_START_DATE >= :FROM_DATE) PIVOT (COUNT (C_STATUS) FOR C_STATUS IN (1 AS PLANNING, 2 AS IN_PROGRESS, 3 AS FINISHED, 4 AS CANCELED, 5 AS LOCKED_))) CLASS_");
         script.append(" LEFT JOIN TBL_COURSE COURSE ON COURSE.ID = CLASS_.F_COURSE");
         script.append(" LEFT JOIN TBL_CATEGORY CAT ON CAT.ID = COURSE.CATEGORY_ID)GROUP BY C_TITLE_FA");
         List<Object[]> records = (List<Object[]>) entityManager.createNativeQuery(script.toString())
