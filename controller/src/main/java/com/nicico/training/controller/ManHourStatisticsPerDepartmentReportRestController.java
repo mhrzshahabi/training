@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/ManHourStatisticsPerDepartmentReport")
+@RequestMapping("/api/manHourStatisticsPerDepartmentReport")
 public class ManHourStatisticsPerDepartmentReportRestController {
 
     private final ITermService termService;
@@ -39,23 +39,23 @@ public class ManHourStatisticsPerDepartmentReportRestController {
 
         String startDate = null;
         String endDate = null;
-        List<String> complexCodeList = null;
-        List<String> moavenatCodeList = null;
-        List<String> omorCodeList = null;
+        String complexCode = null;
+        String moavenatCode = null;
+        String omorCode = null;
         List<String> classStatusList = null;
         List<String> yearList = null;
         List<Long> termIdList = null;
         String termId = null;
         if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null) {
             for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
-                if (criterion.getFieldName().equals("complexTitle")) {
-                    complexCodeList = new ArrayList<String>(Arrays.asList(criterion.getValue().toString().replace("[", "").replace("]", "").split(", ")));
+                if (criterion.getFieldName().equals("mojtameCode")) {
+                    complexCode = criterion.getValue().toString().replace("[", "").replace("]", "");
                 }
                 if (criterion.getFieldName().equals("ccpAssistant")) {
-                    moavenatCodeList = new ArrayList<String>(Arrays.asList(criterion.getValue().toString().replace("[", "").replace("]", "").split(", ")));
+                    moavenatCode = criterion.getValue().toString().replace("[", "").replace("]", "");
                 }
                 if (criterion.getFieldName().equals("ccpAffairs")) {
-                    omorCodeList = new ArrayList<String>(Arrays.asList(criterion.getValue().toString().replace("[", "").replace("]", "").split(", ")));
+                    omorCode = criterion.getValue().toString().replace("[", "").replace("]", "");
                 }
                 if (criterion.getFieldName().equals("startDate")) {
                     startDate = criterion.getValue().toString().replace("[", "").replace("]", "");
@@ -75,46 +75,30 @@ public class ManHourStatisticsPerDepartmentReportRestController {
                 if (criterion.getFieldName().equals("classStatus")) {
                     classStatusList = new ArrayList<String>(Arrays.asList(criterion.getValue().toString().replace("[", "").replace("]", "").split(", ")));
                 }
-                if (criterion.getValue().get(0).equals("true"))
-                    criterion.setValue(true);
-
-                else if (criterion.getValue().get(0).equals("false"))
-                    criterion.setValue(false);
             }
         }
 
         if (startDate == null) {
             if (termId != null) {
                 TermDTO info = termService.get(termIdList.get(0));
-                startDate = info.getStartDate();
-                endDate = info.getEndDate();
+                startDate = info.getStartDate().trim();
+                endDate = info.getEndDate().trim();
             } else if (yearList != null) {
                 startDate = yearList.get(0) + "/01/01";
-                endDate = yearList.get((yearList.size())-1) + "/12/29";
+                endDate = yearList.get((yearList.size()) - 1) + "/12/29";
             }
         }
 
-        List<ClassCourseSumByFeaturesAndDepartmentReportDTO> finalList = new ArrayList<>();
-        if (omorCodeList != null && omorCodeList.size() > 0) {
-            for (String affairCode : omorCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, affairCode, classStatusList);
-                finalList.addAll(tempList);
-            }
-        } else if (moavenatCodeList != null && moavenatCodeList.size() > 0) {
-            for (String assistantCode : moavenatCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, assistantCode, null, classStatusList);
-                finalList.addAll(tempList);
-            }
-        } else if (complexCodeList != null && complexCodeList.size() > 0) {
-            for (String complexCode : complexCodeList) {
-                List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, complexCode, null, null, classStatusList);
-                finalList.addAll(tempList);
-            }
+        List<ClassCourseSumByFeaturesAndDepartmentReportDTO> finalList;
+        if (omorCode != null) {
+            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, omorCode, classStatusList);
+        } else if (moavenatCode != null) {
+            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, moavenatCode, null, classStatusList);
+        } else if (complexCode != null) {
+            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, complexCode, null, null, classStatusList);
         } else {
-            List<ClassCourseSumByFeaturesAndDepartmentReportDTO> tempList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, null, classStatusList);
-            finalList.addAll(tempList);
+            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, null, classStatusList);
         }
-
 
         final ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs specResponse = new ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs();
         final ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassCourseSumByFeaturesAndDepartmentReportDTOSpecRs specRs = new ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassCourseSumByFeaturesAndDepartmentReportDTOSpecRs();

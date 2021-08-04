@@ -1245,7 +1245,7 @@
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
     const manHourStatisticsByClassCategoryReportUrl = rootUrl + "/manHourStatisticsByClassCategoryReport";
-    const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/ManHourStatisticsPerDepartmentReport";
+    const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/manHourStatisticsPerDepartmentReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
     const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
