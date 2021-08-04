@@ -304,6 +304,11 @@ public class ClassSessionDTO implements Serializable {
 
         @ApiModelProperty(required = true)
         private String description;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Boolean teacherAttendancePermission=true;
+
     }
 
     //*********************************
@@ -372,6 +377,10 @@ public class ClassSessionDTO implements Serializable {
         @ApiModelProperty(required = true)
         private String description;
 
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Boolean teacherAttendancePermission=true;
+
     }
 
     //*********************************
@@ -433,6 +442,10 @@ public class ClassSessionDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private String description;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Boolean teacherAttendancePermission=true;
 
     }
 
