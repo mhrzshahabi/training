@@ -85,7 +85,6 @@ public class ElsRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final EvaluationAnalysisService evaluationAnalysisService;
     private final Environment environment;
-    private final ElsService elsService;
     private final AttendanceBeanMapper attendanceMapper;
     private final IAttendanceService attendanceService;
     private final ClassSessionService classSessionService;
