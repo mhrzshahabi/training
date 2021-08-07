@@ -191,7 +191,8 @@ public class ClassSessionService implements IClassSession {
                         request.getTeacherId(),
                         request.getSessionState(),
                         request.getSessionStateFa(),
-                        request.getDescription()
+                        request.getDescription(),
+                        request.getTeacherAttendancePermission()
                 );
 
 
@@ -595,7 +596,8 @@ public class ClassSessionService implements IClassSession {
                                     autoSessionsRequirement.getTeacherId(),
                                     sessionState,
                                     "شروع نشده",
-                                    null
+                                    null,
+                                    true
                             ));
 
                         }
