@@ -204,4 +204,11 @@ public class PersonnelRegisteredRestController {
         reportUtil.export("/reports/PersonnelRegisteredByCriteria.jasper", params, jsonDataSource, response);
     }
 
+//    @Loggable
+//    @PostMapping(value = "/checkPersonnelNationalCodes")
+//    public ResponseEntity<List<PersonnelRegisteredDTO.InfoForStudent>> checkPersonnelNationalCodes(@RequestBody List<String> personnelNationalCodes) {
+//        List<PersonnelRegisteredDTO.InfoForStudent> list = personnelRegisteredService.checkPersonnelNationalCodes(personnelNationalCodes);
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//    }
+
 }

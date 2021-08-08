@@ -1352,6 +1352,13 @@
             ListGrid_personnelReg_add();
         }
     });
+    <%--var ToolStripButton_Add_List_JspPersonnelReg = isc.ToolStripButtonAdd.create({--%>
+
+    <%--     title: "<spring:message code='add.group'/>",--%>
+    <%--    click: function () {--%>
+    <%--        addRegisteredGroup();--%>
+    <%--    }--%>
+    <%--});--%>
 
     var ToolStripButton_Remove_JspPersonnelReg = isc.ToolStripButtonRemove.create({
         // icon: "[SKIN]/actions/remove.png",
@@ -1385,6 +1392,7 @@
             ToolStripButton_Remove_JspPersonnelReg,
             // ToolStripButton_Print_JspPersonnelReg
             ToolStripButton_Export2EXcel_JspPersonnelReg,
+            ToolStripButton_Add_List_JspPersonnelReg,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1604,6 +1612,473 @@
         tempNationalCode="";
         Window_PersonnelReg_JspPersonnelReg.show();
     };
+
+    function checkPersonnelRegisteredResponse(url, result, addStudentsInGroupInsert) {
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
+            , "callback: checkResultForAdd(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
+    }
+
+    function checkResultForAdd(resp, result, url, insert) {
+        // if (generalGetResp(resp)) {
+        //     if (resp.httpResponseCode === 200) {
+        //         //------------------------------------*/
+        //         let len = GroupSelectedPersonnelsLG_student.data.length;
+        //         let list = GroupSelectedPersonnelsLG_student.data;
+        //         let data = JSON.parse(resp.data);
+        //         let allRowsOK = true;
+        //         var students = [];
+        //
+        //         function checkIfAlreadyExist(currentVal) {
+        //             return SelectedPersonnelsLG_student.data.some(function (item) {
+        //                 return (item.nationalCode === currentVal.nationalCode);
+        //             });
+        //         }
+        //
+        //         for (let i = 0; i < len; i++) {
+        //             let personnelNo = list[i].personnelNo;
+        //
+        //             if (!result.includes(personnelNo)) {
+        //                 continue;
+        //             }
+        //
+        //             if (personnelNo != "" && personnelNo != null && typeof (personnelNo) != "undefined") {
+        //                 let person = data.filter(function (item) {
+        //                     return item.personnelNo == personnelNo || item.personnelNo2 == personnelNo;
+        //                 });
+        //
+        //                 if (person.length == 0) {
+        //                     allRowsOK = false;
+        //                     list[i].error = true;
+        //                     list[i].hasWarning = "warning";
+        //                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
+        //                 } else {
+        //                     person = person[0];
+        //
+        //                     if (person.nationalCode == "" || person.nationalCode == null || typeof (person.nationalCode) == "undefined") {
+        //                         allRowsOK = false;
+        //                         list[i].firstName = person.firstName;
+        //                         list[i].lastName = person.lastName;
+        //                         list[i].nationalCode = person.nationalCode;
+        //                         list[i].personnelNo1 = person.personnelNo;
+        //                         list[i].personnelNo2 = person.personnelNo2;
+        //                         list[i].isInNA = person.isInNA;
+        //                         list[i].scoreState = person.scoreState;
+        //                         list[i].error = true;
+        //                         list[i].hasWarning = "warning";
+        //                         list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
+        //                     } else if (nationalCodeExists(person.nationalCode)) {
+        //                         allRowsOK = false;
+        //                         list[i].firstName = person.firstName;
+        //                         list[i].lastName = person.lastName;
+        //                         list[i].nationalCode = person.nationalCode;
+        //                         list[i].personnelNo1 = person.personnelNo;
+        //                         list[i].personnelNo2 = person.personnelNo2;
+        //                         list[i].isInNA = person.isInNA;
+        //                         list[i].scoreState = person.scoreState;
+        //                         list[i].error = true;
+        //                         list[i].hasWarning = "warning";
+        //                         list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
+        //                     } else {
+        //                         list[i].firstName = person.firstName;
+        //                         list[i].lastName = person.lastName;
+        //                         list[i].nationalCode = person.nationalCode;
+        //                         list[i].personnelNo1 = person.personnelNo;
+        //                         list[i].personnelNo2 = person.personnelNo2;
+        //                         list[i].isInNA = person.isInNA;
+        //                         list[i].scoreState = person.scoreState;
+        //                         list[i].error = false;
+        //                         list[i].hasWarning = "check";
+        //                         list[i].description = "";
+        //
+        //                         if (!checkIfAlreadyExist(person)) {
+        //
+        //                             if (students.filter(function (item) {
+        //                                 return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
+        //                             }).length == 0) {
+        //                                 students.add({
+        //                                     "firstName": person.firstName,
+        //                                     "lastName": person.lastName,
+        //                                     "personnelNo": person.personnelNo,
+        //                                     "nationalCode": person.nationalCode,
+        //                                     "applicantCompanyName": person.companyName,
+        //                                     "presenceTypeId": studentDefaultPresenceId,
+        //                                     "employmentStatus": person.employmentStatus,
+        //                                     "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
+        //                                 });
+        //                             }
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //         if (students.getLength() > 0 /*allRowsOK*/ && insert) {
+        //
+        //             SelectedPersonnelsLG_student.endEditing();
+        //             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+        //             let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
+        //             let equalCourseIds = [];
+        //             equalCourseIds.add(courseId);
+        //             SelectedPersonnelsLG_student.setData(students);
+        //             wait.close();
+        //             addValidStudents(classId, courseId, equalCourseIds, students);
+        //             // SelectedPersonnelsLG_student.data.clearAll();
+        //             ClassStudentWin_student_GroupInsert.close();
+        //
+        //         } else {
+        //
+        //             GroupSelectedPersonnelsLG_student.invalidateCache();
+        //             GroupSelectedPersonnelsLG_student.fetchData();
+        //             wait.close();
+        //             if (insert) {
+        //                 createDialog('info', 'شخصي جهت اضافه شدن وجود ندارد.');
+        //             }
+        //         }
+        //
+        //     } else {
+        //         wait.close();
+        //     }
+        // } else {
+        //     wait.close();
+        // }
+    }
+
+
+    function addRegisteredGroup(inputURL,func, courseId=0){
+     let   TabSet_RegisteredGroupInsert_JspStudent=isc.TabSet.create({
+            ID:"leftTabSet",
+            autoDraw:false,
+            tabBarPosition: "top",
+            width: "100%",
+            height: 115,
+            tabs: [
+                // { title: "ورود  مستقیم",
+                //     pane: isc.DynamicForm.create({
+                //         height: "6%",
+                //         width:"100%",
+                //         left:0,
+                //         align:"left",
+                //         numCols: 5,
+                //         colWidths: ["0%","50%","10%","30%"],
+                //         fields: [
+                //             /*{
+                //                 title: "",
+                //                 type: "select",
+                //                 padding:50,
+                //                 margin:5,
+                //                 defaultValue: "کد پرسنلی 6 رقمی",
+                //                 valueMap: ["کد پرسنلی 6 رقمی", "کد پرسنلی 10 رقمی"]
+                //             },*/
+                //             {
+                //                 ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
+                //                 title:"",
+                //                 type: "TextItem",
+                //                 length: 10000,
+                //                 controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false,
+                //                 transformPastedValue:function(item, form, pastedValue)
+                //                 {
+                //                     item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
+                //                 }
+                //
+                //             },
+                //             {
+                //                 type: "button",
+                //                 title: "اضافه کردن به لیست",
+                //                 startRow: false,
+                //                 click:function () {
+                //                     let value=DynamicForm_GroupInsert_Textbox_JspStudent.getValue();
+                //                     if(value != null&& value != "" && typeof(value) != "undefined")
+                //                     {
+                //                         value=value.toEnglishDigit();
+                //                         value=value.replace(/،/g,',');
+                //
+                //                         let personnels=value.split(',');
+                //                         let records=[];
+                //                         let len=personnels.size();
+                //
+                //                         for (let i=0;i<len;i++){
+                //                             if(isNaN(personnels[i])){
+                //                                 continue;
+                //                             }
+                //                             else if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
+                //                                 return item.personnelNo==personnels[i];
+                //                             }).length==0){
+                //
+                //                                 let current={personnelNo:personnels[i]};
+                //                                 records.push(current);
+                //                             }
+                //                         }
+                //
+                //                         let uniqueRecords = [];
+                //
+                //                         for (let i=0; i < records.length; i++) {
+                //                             if (uniqueRecords.filter(function (item) {return item.personnelNo == records[i].personnelNo;}).length==0) {
+                //                                 uniqueRecords.push(records[i]);
+                //                             }
+                //                         }
+                //
+                //                         GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(uniqueRecords));
+                //
+                //                         GroupSelectedPersonnelsLG_student.invalidateCache();
+                //                         GroupSelectedPersonnelsLG_student.fetchData();
+                //
+                //                         if(uniqueRecords.length > 0 && isCheck){
+                //                             func(inputURL+"/"+courseId,uniqueRecords.map(function(item) {return item.personnelNo;}),false);
+                //                         }
+                //
+                //                         DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
+                //                         if(uniqueRecords.length > 0){
+                //                             createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
+                //                         }
+                //                         else{
+                //                             createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                //                         }
+                //
+                //                     }
+                //                 }
+                //             }
+                //         ]
+                //     })
+                // },
+                {title: "فایل اکسل", width:200, overflow:"hidden",
+                    pane: isc.DynamicForm.create({
+                        height: "100%",
+                        width:"100%",
+                        numCols: 4,
+                        colWidths: ["10%","40%","20%","20%"],
+                        fields: [
+                            {
+                                ID:"DynamicForm_GroupInsert_FileUploader_JspRegisterd",
+                                name:"DynamicForm_GroupInsert_FileUploader_JspRegisterd",
+                                type:"imageFile",
+                                title:"مسیر فایل",
+                            },
+                            {
+                                type: "button",
+                                startRow:false,
+                                title: "آپلود فايل",
+                                click:function () {
+                                    let address=DynamicForm_GroupInsert_FileUploader_JspRegisterd.getValue();
+
+                                    if(address==null){
+                                        createDialog("info", "فايل خود را انتخاب نماييد.");
+                                    }else{
+                                        var ExcelToJSON = function() {
+
+                                            this.parseExcel = function(file) {
+                                                var reader = new FileReader();
+                                                var records = [];
+
+                                                reader.onload = function(e) {
+                                                    var data = e.target.result;
+                                                    var workbook = XLSX.read(data, {
+                                                        type: 'binary'
+                                                    });
+                                                    var isEmpty=true;
+
+                                                    workbook.SheetNames.forEach(function(sheetName) {
+                                                        // Here is your object
+                                                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                                                        //var json_object = JSON.stringify(XL_row_object);
+
+                                                        for(let i=0;i<XL_row_object.length;i++){
+                                                            if(isNaN(Object.values(XL_row_object[i])[0])){
+                                                                continue;
+                                                            }
+                                                            else if(GroupSelectedPersonnelRegisterLG.data.filter(function (item) {
+                                                                return item.nationalCode==Object.values(XL_row_object[i])[0];
+                                                            }).length==0){
+                                                                let current={
+                                                                    nationalCode:Object.values(XL_row_object[i])[0],
+                                                                    firstName:Object.values(XL_row_object[i])[1],
+                                                                    lastName:Object.values(XL_row_object[i])[2],
+                                                                    birthCertificateNo:Object.values(XL_row_object[i])[3],
+                                                                    gender:Object.values(XL_row_object[i])[4],
+                                                                    company:Object.values(XL_row_object[i])[5],
+
+                                                                };
+                                                                records.add(current);
+                                                                isEmpty=false;
+
+                                                                continue;
+                                                            }
+                                                            else{
+                                                                isEmpty=false;
+
+                                                                continue;
+                                                            }
+                                                        }
+
+                                                        DynamicForm_GroupInsert_FileUploader_JspRegisterd.setValue('');
+                                                    });
+
+                                                    if(records.length > 0){
+
+                                                        let uniqueRecords = [];
+
+                                                        for (let i=0; i < records.length; i++) {
+                                                            if (uniqueRecords.filter(function (item) {return item.nationalCode == records[i].nationalCode;}).length==0) {
+                                                                uniqueRecords.push(records[i]);
+                                                            }
+                                                        }
+
+
+                                                        GroupSelectedPersonnelRegisterLG.setData(GroupSelectedPersonnelRegisterLG.data.concat(uniqueRecords));
+                                                        GroupSelectedPersonnelRegisterLG.invalidateCache();
+                                                        GroupSelectedPersonnelRegisterLG.fetchData();
+
+
+                                                        checkPersonnelRegisteredResponse(checkPersonnelNationalCodes,uniqueRecords.map(function(item) {return item.personnelNo;}),false);
+
+
+                                                        createDialog("info", "فایل به لیست اضافه شد.");
+                                                    }else{
+                                                        if(isEmpty){
+                                                            createDialog("info", "خطا در محتویات فایل");
+                                                        }else{
+                                                            createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
+                                                        }
+
+                                                    }
+
+                                                };
+
+                                                reader.onerror = function(ex) {
+                                                    createDialog("info", "خطا در باز کردن فایل");
+                                                };
+
+                                                reader.readAsBinaryString(file);
+                                            };
+                                        };
+                                        let split=$('[name="DynamicForm_GroupInsert_FileUploader_JspRegisterd"]')[0].files[0].name.split('.');
+
+                                        if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
+                                            var xl2json = new ExcelToJSON();
+                                            xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_JspRegisterd"]')[0].files[0]);
+                                        }else{
+                                            createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+                                        }
+
+                                    }
+                                }
+                            },
+                            {
+                                type: "button",
+                                title: "فرمت فايل ورودی",
+                                click:function () {
+                                    window.open("excel/sample-personel-excel.xlsx");
+                                }
+                            },
+                        ]
+                    })
+                }
+            ]
+        });
+
+    let    Win_student_GroupInsert = isc.Window.create({
+            width: 1050,
+            height: 750,
+            minWidth: 700,
+            minHeight: 500,
+            autoSize: false,
+            overflow:"hidden",
+            title:"اضافه کردن گروهی",
+            items: [isc.HLayout.create({
+                width:1050,
+                height: "88%",
+                autoDraw: false,
+                overflow:"auto",
+                align: "center",
+                members: [
+                    isc.TrLG.create({
+                        ID: "GroupSelectedPersonnelRegisterLG",
+                        showFilterEditor: false,
+                        editEvent: "click",
+                        //listEndEditAction: "next",
+                        enterKeyEditAction: "nextRowStart",
+                        canSort:false,
+                        canEdit:true,
+                        filterOnKeypress: true,
+                        selectionType: "single",
+                        fields: [
+                            {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true,width:"10%"},
+                            {name: "nationalCode", title: "<spring:message code="national.code"/>", canEdit: false ,autoFithWidth:true},
+                            {name: "firstName", title: "<spring:message code="firstName"/>", canEdit: false ,autoFithWidth:true},
+                            {name: "lastName", title: "<spring:message code="lastName"/>", canEdit: false ,autoFithWidth:true},
+                            {name: "birthCertificateNo", title: "<spring:message code="birth.certificate.no"/>", canEdit: false ,autoFithWidth:true},
+                            {name: "gender", title: "<spring:message code="gender"/>", canEdit: false ,autoFithWidth:true},
+                            {name: "company", title: "<spring:message code="company"/>", canEdit: false ,autoFithWidth:true}
+                        ],
+                        gridComponents: [TabSet_RegisteredGroupInsert_JspStudent, "header", "body"],
+                        canRemoveRecords: true,
+                        deferRemoval:true,
+                        removeRecordClick:function (rowNum){
+                            GroupSelectedPersonnelRegisterLG.data.removeAt(rowNum);
+                        }
+                    })
+                ]
+            }),
+                isc.TrHLayoutButtons.create({
+                    members: [
+                        isc.IButtonSave.create({
+                            top: 260,
+                            title: "<spring:message code='save'/>",
+                            align: "center",
+                            icon: "[SKIN]/actions/save.png",
+                            click: function () {
+
+                                let getEditCells=GroupSelectedPersonnelRegisterLG.getAllEditCells();
+
+
+                                if(getEditCells.size()!=0){
+                                    let value=GroupSelectedPersonnelRegisterLG.getEditValue(getEditCells[0][0],getEditCells[0][1]);
+
+                                    if(value == "" || value == null || typeof(value) == "undefined"){
+                                        GroupSelectedPersonnelRegisterLG.cancelEditing(getEditCells[0][0]);
+                                    }else{
+                                        if(GroupSelectedPersonnelRegisterLG.data.filter(function (item) {
+                                            return item.personnelNo==value;
+                                        }).length==0){
+                                            GroupSelectedPersonnelRegisterLG.saveAndEditNextRow();
+                                        }
+                                        else{
+                                            GroupSelectedPersonnelRegisterLG.cancelEditing(getEditCells[0][0]);
+                                        }
+                                    }
+                                }
+
+                                let len=GroupSelectedPersonnelRegisterLG.data.length;
+                                let list=GroupSelectedPersonnelRegisterLG.data;
+                                let result=[];
+
+                                for (let index = 0; index < len; index++) {
+                                    if(list[index].nationalCode != "" && list[index].nationalCode != null && typeof(list[index].nationalCode) != "undefined")
+                                    {
+                                        if (result.filter(function (item) {return (item.firstName && item.firstName == GroupSelectedPersonnelsLG_student.data[index].firstName) || (item.lastName && item.lastName == GroupSelectedPersonnelsLG_student.data[index].lastName);}).length==0) {
+                                            result.push(list[index].nationalCode)
+                                        }
+                                    }
+                                }
+
+                                    checkPersonnelRegisteredResponse(checkPersonnelNationalCodes,result,true);
+
+                            }
+                        }), isc.IButtonCancel.create({
+                            top: 260,
+                            title: "<spring:message code='cancel'/>",
+                            align: "center",
+                            icon: "[SKIN]/actions/cancel.png",
+                            click: function () {
+                                Win_student_GroupInsert.close();
+                            }
+                        })
+                    ]
+                })
+            ]
+        });
+        TabSet_RegisteredGroupInsert_JspStudent.selectTab(0);
+        Win_student_GroupInsert.show();
+    }
 
     function ListGrid_personnelReg_print(type) {
         var advancedCriteria = ListGrid_PersonnelReg_JspPersonnelReg.getCriteria();
