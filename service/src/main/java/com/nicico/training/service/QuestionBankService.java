@@ -98,9 +98,8 @@ public class QuestionBankService implements IQuestionBankService {
         final Optional<QuestionBank> cById = questionBankDAO.findById(id);
         final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
 
-        request.setCategoryId(model.getCategoryId());
-        request.setSubCategoryId(model.getSubCategoryId());
-        request.setCode(model.getCode());
+        model.setCategoryId(request.getCategoryId());
+        model.setSubCategoryId(request.getSubCategoryId());
 
         QuestionBank updating = new QuestionBank();
         modelMapper.map(model, updating);
