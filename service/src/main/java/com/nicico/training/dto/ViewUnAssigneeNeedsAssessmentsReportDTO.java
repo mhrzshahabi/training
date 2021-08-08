@@ -49,6 +49,8 @@ public class ViewUnAssigneeNeedsAssessmentsReportDTO implements Serializable {
                 return "پست انفرادی";
             case "PostGroup":
                 return "پست گروهی";
+            case "Job":
+                return "شغل";
             default:
                 return type;
         }
