@@ -64,7 +64,7 @@ public class ManHourStatisticsPerDepartmentReportRestController {
                 if (criterion.getFieldName().equals("endDate")) {
                     endDate = criterion.getValue().toString().replace("[", "").replace("]", "");
                 }
-                if (criterion.getFieldName().equals("classYear")) {
+                if (criterion.getFieldName().equals("year")) {
                     yearList = new ArrayList<String>(Arrays.asList(criterion.getValue().toString().replace("[", "").replace("]", "").split(", ")));
                 }
                 if (criterion.getFieldName().equals("termId")) {

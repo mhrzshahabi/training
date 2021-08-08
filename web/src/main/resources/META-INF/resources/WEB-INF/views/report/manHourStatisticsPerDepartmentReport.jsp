@@ -118,6 +118,7 @@
                         form.getField("termId").optionDataSource = RestDataSource_Term_JspManHourReport;
                         form.getField("termId").fetchData();
                         form.getField("termId").enable();
+                        form.getField("termId").clearValue();
                     } else {
                         form.getField("termId").disabled = true;
                         form.getField("termId").clearValue();
