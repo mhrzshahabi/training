@@ -10,6 +10,7 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.tclass.ElsSessionDetailDto;
 import response.tclass.ElsSessionResponse;
+import response.tclass.dto.ElsSessionUsersDto;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -28,7 +29,18 @@ public abstract class SessionBeanMapper {
     public ElsSessionResponse toGetElsSessionResponse(Tclass tclass) {
 
         ElsSessionResponse elsSessionResponse = new ElsSessionResponse();
+        List<ElsSessionUsersDto> elsSessionUsersDtos = new ArrayList<>();
         List<ElsSessionDetailDto> elsSessionDetailDtos = new ArrayList<>();
+
+        tclass.getClassStudents().forEach(student -> {
+
+            ElsSessionUsersDto elsSessionUsersDto = new ElsSessionUsersDto();
+            elsSessionUsersDto.setUserId(student.getStudentId());
+            elsSessionUsersDto.setNationalCode(student.getStudent().getNationalCode());
+            elsSessionUsersDto.setFullName(student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
+
+            elsSessionUsersDtos.add(elsSessionUsersDto);
+        });
 
         tclass.getClassSessions().forEach(session -> {
 
@@ -49,6 +61,7 @@ public abstract class SessionBeanMapper {
         });
 
         elsSessionResponse.setCode(tclass.getCode());
+        elsSessionResponse.setUsers(elsSessionUsersDtos);
         elsSessionResponse.setSessions(elsSessionDetailDtos);
         return elsSessionResponse;
     }
