@@ -148,6 +148,9 @@ public class ElsRestController {
             response.setStatus(baseResponse.getStatus());
             if (baseResponse.getStatus()==200)
             iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
+            else
+                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+
         } catch (Exception r) {
 
             if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
