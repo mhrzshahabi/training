@@ -1672,7 +1672,12 @@
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             classTimeInfo_print += "تاریخ شروع کلاس: از " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("startDate1").getDisplayValue();
+            var classTimeStartDate = DynamicForm_CriteriaForm_JspTClassReport.getField("startDate1").getDisplayValue();
+            let classTimeStartDateArray =  classTimeStartDate.split("/");
+            if (classTimeStartDateArray.length>0) {
+                classTimeStartDate = classTimeStartDateArray[2] + "/" + classTimeStartDateArray[1] + "/" + classTimeStartDateArray[0];
+            }
+            classTimeInfo_print +=classTimeStartDate;
             classTimeInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("startDate2").getValue() != undefined) {
@@ -1682,7 +1687,12 @@
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             classTimeInfo_print +=   "تاریخ شروع کلاس: تا ";
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("startDate2");
+            var classTimeStartDate2 = DynamicForm_CriteriaForm_JspTClassReport.getField("startDate2").getDisplayValue()
+            let classTimeStartDateArray2 =  classTimeStartDate2.split("/");
+            if (classTimeStartDateArray2.length>0) {
+                classTimeStartDate2 = classTimeStartDateArray2[2] + "/" + classTimeStartDateArray2[1] + "/" + classTimeStartDateArray2[0];
+            }
+            classTimeInfo_print +=classTimeStartDate2;
             classTimeInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("endDate1").getValue() != undefined) {
@@ -1692,7 +1702,12 @@
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             classTimeInfo_print +=  "تاریخ پایان کلاس: از " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("endDate1") ;
+            var classTimeEndDate = DynamicForm_CriteriaForm_JspTClassReport.getField("endDate1").getDisplayValue()
+            let classTimeEndDateArray =  classTimeEndDate.split("/");
+            if (classTimeEndDateArray.length>0) {
+                classTimeEndDate = classTimeEndDateArray[2] + "/" + classTimeEndDateArray[1] + "/" + classTimeEndDateArray[0];
+            }
+            classTimeInfo_print +=classTimeEndDate;
             classTimeInfo_print +=  ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getValue() != undefined) {
@@ -1702,7 +1717,12 @@
             classTimeInfo.contents += "<span style='color:#050505; font-size:12px;'>" + ", " + "</span>";
 
             classTimeInfo_print += "تاریخ پایان کلاس: تا " ;
-            classTimeInfo_print += DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getDisplayValue();
+            var classTimeEndDate2 = DynamicForm_CriteriaForm_JspTClassReport.getField("endDate2").getDisplayValue()
+            let classTimeEndDateArray2 =  classTimeEndDate2.split("/");
+            if (classTimeEndDateArray2.length>0) {
+                classTimeEndDate2 = classTimeEndDateArray2[2] + "/" + classTimeEndDateArray2[1] + "/" + classTimeEndDateArray2[0];
+            }
+            classTimeInfo_print +=classTimeEndDate2;
             classTimeInfo_print += ", " ;
         }
         if (DynamicForm_CriteriaForm_JspTClassReport.getField("tclassYear").getValue() != null &&
