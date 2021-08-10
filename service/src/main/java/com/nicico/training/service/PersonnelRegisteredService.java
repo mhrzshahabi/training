@@ -8,11 +8,9 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.model.ContactInfo;
-import com.nicico.training.model.Personnel;
 import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.repository.ContactInfoDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
@@ -24,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -63,6 +60,17 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         personnelRegistered.setContactInfo(contactInfo);
         personnelRegistered.setActive(1);
         return save(personnelRegistered);
+    }
+
+    @Override
+    public void createList(List<PersonnelRegistered> requests) {
+        for (PersonnelRegistered personnelRegistered : requests) {
+            ContactInfo contactInfo = contactInfoDAO.save(modelMapper.map(personnelRegistered.getContactInfo(), ContactInfo.class));
+            personnelRegistered.setContactInfo(contactInfo);
+            personnelRegistered.setActive(1);
+            save(personnelRegistered);
+        }
+
     }
 
     @Transactional
@@ -200,9 +208,20 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         return modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class);
     }
 
+
     @Override
-    public Optional<PersonnelRegistered[]> getByNationalCode(String nationalCode) {
+    public Optional<PersonnelRegistered> getByNationalCode(String nationalCode) {
         return personnelRegisteredDAO.findOneByNationalCode(nationalCode);
+    }
+
+    @Override
+    public List<PersonnelRegistered> checkPersonnelNationalCodes(List<String> personnelNationalCodes) {
+        List<PersonnelRegistered> list = new ArrayList<>();
+        for (String person : personnelNationalCodes) {
+            Optional<PersonnelRegistered> optionalPersonnelReg = getByNationalCode(person);
+            optionalPersonnelReg.ifPresent(list::add);
+        }
+        return list;
     }
 
 }

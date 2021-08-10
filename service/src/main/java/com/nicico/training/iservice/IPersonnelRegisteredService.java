@@ -9,7 +9,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.model.PersonnelRegistered;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +19,7 @@ public interface IPersonnelRegisteredService {
     List<PersonnelRegisteredDTO.Info> list();
 
     PersonnelRegisteredDTO.Info create(PersonnelRegisteredDTO.Create request);
+    void createList(List<PersonnelRegistered> requests);
 
     PersonnelRegisteredDTO.Info update(Long id, PersonnelRegisteredDTO.Update request);
 
@@ -39,5 +39,7 @@ public interface IPersonnelRegisteredService {
 
     PersonnelRegisteredDTO.Info getByPersonnelCodeAndNationalCode(String nationalCode, String personnelNo);
 
-    Optional<PersonnelRegistered[]> getByNationalCode(String nationalCode);
+    Optional<PersonnelRegistered> getByNationalCode(String nationalCode);
+
+    List<PersonnelRegistered> checkPersonnelNationalCodes(List<String> personnelNationalCodes);
 }

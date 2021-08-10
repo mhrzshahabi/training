@@ -3357,6 +3357,8 @@
     const classAlarm = rootUrl + "/classAlarm/";
     const monthlyStatistical = rootUrl + "/monthlyStatistical/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
+    const checkPersonnelNationalCodes = rootUrl + "/personnelRegistered/checkPersonnelNationalCodes";
+    const addPerssonelRegisteredList = rootUrl + "/personnelRegistered/addList";
     const provinceUrl = rootUrl + "/province/";
     const polisUrl = rootUrl + "/polis/";
     const classDocumentUrl = rootUrl + "/classDocument/"

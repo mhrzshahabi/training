@@ -10,22 +10,25 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.dto.StudentClassReportViewDTO;
+import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.mapper.person.PersonnelRegisterBeanMapper;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.repository.PersonnelDAO;
-import com.nicico.training.repository.PersonnelRegisteredDAO;
-import com.nicico.training.service.PersonnelRegisteredService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -42,11 +45,9 @@ import java.util.Optional;
 @RequestMapping(value = "/api/personnelRegistered")
 public class PersonnelRegisteredRestController {
 
-//    private final PersonnelRegisteredService personnelRegisteredService;
     private final IPersonnelRegisteredService personnelRegisteredService;
+    private final PersonnelRegisterBeanMapper personnelRegisterBeanMapper;
     private final IPersonnelService iPersonnelService;
-    private final PersonnelRegisteredDAO personnelRegisteredDAO;
-    private final PersonnelDAO personnelDAO;
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
@@ -81,8 +82,8 @@ public class PersonnelRegisteredRestController {
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<PersonnelRegisteredDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
 
-        Optional<PersonnelRegistered[]> optionalPersonnelReg = personnelRegisteredService.getByNationalCode(nationalCode);
-        Optional<Personnel[]> optionalPersonnel = iPersonnelService.getOneByNationalCodeAndDeleted(nationalCode,0);
+        Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredService.getByNationalCode(nationalCode);
+        Optional<Personnel[]> optionalPersonnel = iPersonnelService.getOneByNationalCodeAndDeleted(nationalCode, 0);
 
         if (((optionalPersonnel.map(personalInfo -> modelMapper.map(personalInfo, PersonnelDTO.Info.class)).orElse(null)) != null)
                 || ((optionalPersonnelReg.map(personalInfo -> modelMapper.map(personalInfo, PersonnelRegisteredDTO.Info.class)).orElse(null)) != null)) {
@@ -204,11 +205,21 @@ public class PersonnelRegisteredRestController {
         reportUtil.export("/reports/PersonnelRegisteredByCriteria.jasper", params, jsonDataSource, response);
     }
 
-//    @Loggable
-//    @PostMapping(value = "/checkPersonnelNationalCodes")
-//    public ResponseEntity<List<PersonnelRegisteredDTO.InfoForStudent>> checkPersonnelNationalCodes(@RequestBody List<String> personnelNationalCodes) {
-//        List<PersonnelRegisteredDTO.InfoForStudent> list = personnelRegisteredService.checkPersonnelNationalCodes(personnelNationalCodes);
-//        return new ResponseEntity<>(list, HttpStatus.OK);
-//    }
+    @Loggable
+    @PostMapping(value = "/checkPersonnelNationalCodes")
+    public ResponseEntity<List<PersonnelRegisteredDTO>> checkPersonnelNationalCodes(@RequestBody List<String> personnelNationalCodes) {
+         List<PersonnelRegistered> list = personnelRegisteredService.checkPersonnelNationalCodes(personnelNationalCodes);
+        List<PersonnelRegisteredDTO> registeredDTOS=personnelRegisterBeanMapper.toPersonnelRegisteredDTOList(list);
+        return new ResponseEntity<>(registeredDTOS, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping(value = "/addList")
+//    @PreAuthorize("hasAuthority('c_personnelRegistered')")
+    public ResponseEntity<String> createList( @RequestBody List<PersonnelRegisteredDTO> requests) {
+        List<PersonnelRegistered> list=personnelRegisterBeanMapper.toPersonnelRegisteredList(requests);
+        personnelRegisteredService.createList(list);
+        return new ResponseEntity<>("added successful", HttpStatus.CREATED);
+    }
 
 }

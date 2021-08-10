@@ -1352,13 +1352,13 @@
             ListGrid_personnelReg_add();
         }
     });
-    <%--var ToolStripButton_Add_List_JspPersonnelReg = isc.ToolStripButtonAdd.create({--%>
+    var ToolStripButton_Add_List_JspPersonnelReg = isc.ToolStripButtonAdd.create({
 
-    <%--     title: "<spring:message code='add.group'/>",--%>
-    <%--    click: function () {--%>
-    <%--        addRegisteredGroup();--%>
-    <%--    }--%>
-    <%--});--%>
+         title: "<spring:message code='add.group'/>",
+        click: function () {
+            addRegisteredGroup();
+        }
+    });
 
     var ToolStripButton_Remove_JspPersonnelReg = isc.ToolStripButtonRemove.create({
         // icon: "[SKIN]/actions/remove.png",
@@ -1613,233 +1613,16 @@
         Window_PersonnelReg_JspPersonnelReg.show();
     };
 
-    function checkPersonnelRegisteredResponse(url, result, addStudentsInGroupInsert) {
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
-            , "callback: checkResultForAdd(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
-    }
-
-    function checkResultForAdd(resp, result, url, insert) {
-        // if (generalGetResp(resp)) {
-        //     if (resp.httpResponseCode === 200) {
-        //         //------------------------------------*/
-        //         let len = GroupSelectedPersonnelsLG_student.data.length;
-        //         let list = GroupSelectedPersonnelsLG_student.data;
-        //         let data = JSON.parse(resp.data);
-        //         let allRowsOK = true;
-        //         var students = [];
-        //
-        //         function checkIfAlreadyExist(currentVal) {
-        //             return SelectedPersonnelsLG_student.data.some(function (item) {
-        //                 return (item.nationalCode === currentVal.nationalCode);
-        //             });
-        //         }
-        //
-        //         for (let i = 0; i < len; i++) {
-        //             let personnelNo = list[i].personnelNo;
-        //
-        //             if (!result.includes(personnelNo)) {
-        //                 continue;
-        //             }
-        //
-        //             if (personnelNo != "" && personnelNo != null && typeof (personnelNo) != "undefined") {
-        //                 let person = data.filter(function (item) {
-        //                     return item.personnelNo == personnelNo || item.personnelNo2 == personnelNo;
-        //                 });
-        //
-        //                 if (person.length == 0) {
-        //                     allRowsOK = false;
-        //                     list[i].error = true;
-        //                     list[i].hasWarning = "warning";
-        //                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد پرسنلی وارد شده وجود ندارد.</span>";
-        //                 } else {
-        //                     person = person[0];
-        //
-        //                     if (person.nationalCode == "" || person.nationalCode == null || typeof (person.nationalCode) == "undefined") {
-        //                         allRowsOK = false;
-        //                         list[i].firstName = person.firstName;
-        //                         list[i].lastName = person.lastName;
-        //                         list[i].nationalCode = person.nationalCode;
-        //                         list[i].personnelNo1 = person.personnelNo;
-        //                         list[i].personnelNo2 = person.personnelNo2;
-        //                         list[i].isInNA = person.isInNA;
-        //                         list[i].scoreState = person.scoreState;
-        //                         list[i].error = true;
-        //                         list[i].hasWarning = "warning";
-        //                         list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.</span>";
-        //                     } else if (nationalCodeExists(person.nationalCode)) {
-        //                         allRowsOK = false;
-        //                         list[i].firstName = person.firstName;
-        //                         list[i].lastName = person.lastName;
-        //                         list[i].nationalCode = person.nationalCode;
-        //                         list[i].personnelNo1 = person.personnelNo;
-        //                         list[i].personnelNo2 = person.personnelNo2;
-        //                         list[i].isInNA = person.isInNA;
-        //                         list[i].scoreState = person.scoreState;
-        //                         list[i].error = true;
-        //                         list[i].hasWarning = "warning";
-        //                         list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
-        //                     } else {
-        //                         list[i].firstName = person.firstName;
-        //                         list[i].lastName = person.lastName;
-        //                         list[i].nationalCode = person.nationalCode;
-        //                         list[i].personnelNo1 = person.personnelNo;
-        //                         list[i].personnelNo2 = person.personnelNo2;
-        //                         list[i].isInNA = person.isInNA;
-        //                         list[i].scoreState = person.scoreState;
-        //                         list[i].error = false;
-        //                         list[i].hasWarning = "check";
-        //                         list[i].description = "";
-        //
-        //                         if (!checkIfAlreadyExist(person)) {
-        //
-        //                             if (students.filter(function (item) {
-        //                                 return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
-        //                             }).length == 0) {
-        //                                 students.add({
-        //                                     "firstName": person.firstName,
-        //                                     "lastName": person.lastName,
-        //                                     "personnelNo": person.personnelNo,
-        //                                     "nationalCode": person.nationalCode,
-        //                                     "applicantCompanyName": person.companyName,
-        //                                     "presenceTypeId": studentDefaultPresenceId,
-        //                                     "employmentStatus": person.employmentStatus,
-        //                                     "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
-        //                                 });
-        //                             }
-        //                         }
-        //                     }
-        //                 }
-        //             }
-        //         }
-        //         if (students.getLength() > 0 /*allRowsOK*/ && insert) {
-        //
-        //             SelectedPersonnelsLG_student.endEditing();
-        //             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-        //             let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
-        //             let equalCourseIds = [];
-        //             equalCourseIds.add(courseId);
-        //             SelectedPersonnelsLG_student.setData(students);
-        //             wait.close();
-        //             addValidStudents(classId, courseId, equalCourseIds, students);
-        //             // SelectedPersonnelsLG_student.data.clearAll();
-        //             ClassStudentWin_student_GroupInsert.close();
-        //
-        //         } else {
-        //
-        //             GroupSelectedPersonnelsLG_student.invalidateCache();
-        //             GroupSelectedPersonnelsLG_student.fetchData();
-        //             wait.close();
-        //             if (insert) {
-        //                 createDialog('info', 'شخصي جهت اضافه شدن وجود ندارد.');
-        //             }
-        //         }
-        //
-        //     } else {
-        //         wait.close();
-        //     }
-        // } else {
-        //     wait.close();
-        // }
-    }
 
 
-    function addRegisteredGroup(inputURL,func, courseId=0){
-     let   TabSet_RegisteredGroupInsert_JspStudent=isc.TabSet.create({
+    function addRegisteredGroup(){
+        let   TabSet_RegisteredGroupInsert_JspStudent=isc.TabSet.create({
             ID:"leftTabSet",
             autoDraw:false,
             tabBarPosition: "top",
             width: "100%",
             height: 115,
             tabs: [
-                // { title: "ورود  مستقیم",
-                //     pane: isc.DynamicForm.create({
-                //         height: "6%",
-                //         width:"100%",
-                //         left:0,
-                //         align:"left",
-                //         numCols: 5,
-                //         colWidths: ["0%","50%","10%","30%"],
-                //         fields: [
-                //             /*{
-                //                 title: "",
-                //                 type: "select",
-                //                 padding:50,
-                //                 margin:5,
-                //                 defaultValue: "کد پرسنلی 6 رقمی",
-                //                 valueMap: ["کد پرسنلی 6 رقمی", "کد پرسنلی 10 رقمی"]
-                //             },*/
-                //             {
-                //                 ID:"DynamicForm_GroupInsert_Textbox_JspStudent",
-                //                 title:"",
-                //                 type: "TextItem",
-                //                 length: 10000,
-                //                 controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false,
-                //                 transformPastedValue:function(item, form, pastedValue)
-                //                 {
-                //                     item.setValue(pastedValue.split('\n').filter(p=>p!='').join(',')) ;
-                //                 }
-                //
-                //             },
-                //             {
-                //                 type: "button",
-                //                 title: "اضافه کردن به لیست",
-                //                 startRow: false,
-                //                 click:function () {
-                //                     let value=DynamicForm_GroupInsert_Textbox_JspStudent.getValue();
-                //                     if(value != null&& value != "" && typeof(value) != "undefined")
-                //                     {
-                //                         value=value.toEnglishDigit();
-                //                         value=value.replace(/،/g,',');
-                //
-                //                         let personnels=value.split(',');
-                //                         let records=[];
-                //                         let len=personnels.size();
-                //
-                //                         for (let i=0;i<len;i++){
-                //                             if(isNaN(personnels[i])){
-                //                                 continue;
-                //                             }
-                //                             else if(GroupSelectedPersonnelsLG_student.data.filter(function (item) {
-                //                                 return item.personnelNo==personnels[i];
-                //                             }).length==0){
-                //
-                //                                 let current={personnelNo:personnels[i]};
-                //                                 records.push(current);
-                //                             }
-                //                         }
-                //
-                //                         let uniqueRecords = [];
-                //
-                //                         for (let i=0; i < records.length; i++) {
-                //                             if (uniqueRecords.filter(function (item) {return item.personnelNo == records[i].personnelNo;}).length==0) {
-                //                                 uniqueRecords.push(records[i]);
-                //                             }
-                //                         }
-                //
-                //                         GroupSelectedPersonnelsLG_student.setData(GroupSelectedPersonnelsLG_student.data.concat(uniqueRecords));
-                //
-                //                         GroupSelectedPersonnelsLG_student.invalidateCache();
-                //                         GroupSelectedPersonnelsLG_student.fetchData();
-                //
-                //                         if(uniqueRecords.length > 0 && isCheck){
-                //                             func(inputURL+"/"+courseId,uniqueRecords.map(function(item) {return item.personnelNo;}),false);
-                //                         }
-                //
-                //                         DynamicForm_GroupInsert_Textbox_JspStudent.setValue('');
-                //                         if(uniqueRecords.length > 0){
-                //                             createDialog("info", "کدهای پرسنلی به لیست اضافه شدند.");
-                //                         }
-                //                         else{
-                //                             createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
-                //                         }
-                //
-                //                     }
-                //                 }
-                //             }
-                //         ]
-                //     })
-                // },
                 {title: "فایل اکسل", width:200, overflow:"hidden",
                     pane: isc.DynamicForm.create({
                         height: "100%",
@@ -1895,6 +1678,7 @@
                                                                     birthCertificateNo:Object.values(XL_row_object[i])[3],
                                                                     gender:Object.values(XL_row_object[i])[4],
                                                                     company:Object.values(XL_row_object[i])[5],
+                                                                    mobile:Object.values(XL_row_object[i])[6],
 
                                                                 };
                                                                 records.add(current);
@@ -1928,7 +1712,7 @@
                                                         GroupSelectedPersonnelRegisterLG.fetchData();
 
 
-                                                        checkPersonnelRegisteredResponse(checkPersonnelNationalCodes,uniqueRecords.map(function(item) {return item.personnelNo;}),false);
+                                                        checkPersonnelRegisteredResponse(checkPersonnelNationalCodes,uniqueRecords.map(function(item) {return item.nationalCode;}),false);
 
 
                                                         createDialog("info", "فایل به لیست اضافه شد.");
@@ -1968,14 +1752,16 @@
                                 click:function () {
                                     window.open("excel/sample-personel-excel.xlsx");
                                 }
-                            },
+                            }
                         ]
                     })
                 }
             ]
         });
 
-    let    Win_student_GroupInsert = isc.Window.create({
+        let    Win_student_GroupInsert = isc.Window.create({
+            ID: "Win_student_GroupInsert",
+
             width: 1050,
             height: 750,
             minWidth: 700,
@@ -2007,7 +1793,11 @@
                             {name: "lastName", title: "<spring:message code="lastName"/>", canEdit: false ,autoFithWidth:true},
                             {name: "birthCertificateNo", title: "<spring:message code="birth.certificate.no"/>", canEdit: false ,autoFithWidth:true},
                             {name: "gender", title: "<spring:message code="gender"/>", canEdit: false ,autoFithWidth:true},
-                            {name: "company", title: "<spring:message code="company"/>", canEdit: false ,autoFithWidth:true}
+                            {name: "company", title: "<spring:message code="company"/>", canEdit: false ,autoFithWidth:true},
+                            {name: "mobile", title: "<spring:message code="mobile"/>", canEdit: false ,autoFithWidth:true},
+                            {name: "description", title: "<spring:message code="description"/>", canEdit: false ,width:300, align: "left"},
+                            {name: "error", canEdit: false ,hidden:true,autoFithWidth:true},
+                            {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
                         ],
                         gridComponents: [TabSet_RegisteredGroupInsert_JspStudent, "header", "body"],
                         canRemoveRecords: true,
@@ -2027,25 +1817,25 @@
                             icon: "[SKIN]/actions/save.png",
                             click: function () {
 
-                                let getEditCells=GroupSelectedPersonnelRegisterLG.getAllEditCells();
-
-
-                                if(getEditCells.size()!=0){
-                                    let value=GroupSelectedPersonnelRegisterLG.getEditValue(getEditCells[0][0],getEditCells[0][1]);
-
-                                    if(value == "" || value == null || typeof(value) == "undefined"){
-                                        GroupSelectedPersonnelRegisterLG.cancelEditing(getEditCells[0][0]);
-                                    }else{
-                                        if(GroupSelectedPersonnelRegisterLG.data.filter(function (item) {
-                                            return item.personnelNo==value;
-                                        }).length==0){
-                                            GroupSelectedPersonnelRegisterLG.saveAndEditNextRow();
-                                        }
-                                        else{
-                                            GroupSelectedPersonnelRegisterLG.cancelEditing(getEditCells[0][0]);
-                                        }
-                                    }
-                                }
+                                // let getEditCells=GroupSelectedPersonnelRegisterLG.getAllEditCells();
+                                //
+                                //
+                                // if(getEditCells.size()!=0){
+                                //     let value=GroupSelectedPersonnelRegisterLG.getEditValue(getEditCells[0][0],getEditCells[0][1]);
+                                //
+                                //     if(value == "" || value == null || typeof(value) == "undefined"){
+                                //         GroupSelectedPersonnelRegisterLG.cancelEditing(getEditCells[0][0]);
+                                //     }else{
+                                //         if(GroupSelectedPersonnelRegisterLG.data.filter(function (item) {
+                                //             return item.personnelNo==value;
+                                //         }).length==0){
+                                //             GroupSelectedPersonnelRegisterLG.saveAndEditNextRow();
+                                //         }
+                                //         else{
+                                //             GroupSelectedPersonnelRegisterLG.cancelEditing(getEditCells[0][0]);
+                                //         }
+                                //     }
+                                // }
 
                                 let len=GroupSelectedPersonnelRegisterLG.data.length;
                                 let list=GroupSelectedPersonnelRegisterLG.data;
@@ -2054,13 +1844,13 @@
                                 for (let index = 0; index < len; index++) {
                                     if(list[index].nationalCode != "" && list[index].nationalCode != null && typeof(list[index].nationalCode) != "undefined")
                                     {
-                                        if (result.filter(function (item) {return (item.firstName && item.firstName == GroupSelectedPersonnelsLG_student.data[index].firstName) || (item.lastName && item.lastName == GroupSelectedPersonnelsLG_student.data[index].lastName);}).length==0) {
+                                        if (result.filter(function (item) {return (item.firstName && item.firstName == GroupSelectedPersonnelRegisterLG.data[index].firstName) || (item.lastName && item.lastName == GroupSelectedPersonnelRegisterLG.data[index].lastName);}).length==0) {
                                             result.push(list[index].nationalCode)
                                         }
                                     }
                                 }
 
-                                    checkPersonnelRegisteredResponse(checkPersonnelNationalCodes,result,true);
+                                checkPersonnelRegisteredResponse(checkPersonnelNationalCodes,result,true);
 
                             }
                         }), isc.IButtonCancel.create({
@@ -2223,5 +2013,184 @@
             }
         };
 
+    function checkPersonnelRegisteredResponse(url, result, addStudentsInGroupInsert) {
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
+            , "callback: checkResultForAdd(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
+    }
 
-// </script>
+    function addValidRegisterdStudents(students) {
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(addPerssonelRegisteredList, "POST", JSON.stringify(students), function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                wait.close();
+                GroupSelectedPersonnelRegisterLG.data.clearAll();
+                Win_student_GroupInsert.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>", "<spring:message code="error"/>");
+            } else {
+                wait.close();
+                createDialog("info", "<spring:message code="exception.data-validation"/>", "<spring:message code="error"/>");
+            }
+        }));
+
+
+    }
+
+    function checkResultForAdd(resp, result, url, insert) {
+
+        if (generalGetResp(resp)) {
+            if (resp.httpResponseCode === 200) {
+                //------------------------------------*/
+
+                let len = GroupSelectedPersonnelRegisterLG.data.length;
+                let list = GroupSelectedPersonnelRegisterLG.data;
+                let data = JSON.parse(resp.data);
+                let allRowsOK = true;
+                let students = [];
+
+                function checkIfAlreadyExist(currentVal,data) {
+                    return data.some(function (item) {
+                        return (item.nationalCode === currentVal.nationalCode);
+                    });
+                }
+
+                for (let i = 0; i < len; i++) {
+
+                    let nationalCode = list[i].nationalCode;
+                    let mobile = list[i].mobile;
+
+                    if (!result.includes(nationalCode)) {
+                        continue;
+                    }
+
+
+                    if (nationalCode !== "" && nationalCode != null && typeof (nationalCode) != "undefined") {
+                        let person = data.filter(function (item) {
+                            return item.nationalCode === nationalCode ;
+                        });
+
+
+
+
+                        if (person.length === 0) {
+                            if (insert && !checkIfAlreadyExist(list[i],students) && checkCodeMeliPerReg(list[i].nationalCode)
+                                && mobile !== "" && mobile != null && typeof (mobile) != "undefined"
+                            ) {
+                                let mobile = {};
+                                mobile.mobile =  list[i].mobile;
+
+
+                                students.add({
+                                    "personnelNo": list[i].nationalCode,
+                                    "firstName": list[i].firstName,
+                                    "lastName": list[i].lastName,
+                                    "nationalCode": list[i].nationalCode,
+                                    "birthCertificateNo": list[i].birthCertificateNo,
+                                    "gender": list[i].gender,
+                                    "companyName": list[i].company,
+                                    "contactInfo":mobile,
+                                });
+
+                            }
+                            allRowsOK = false;
+                            list[i].error = false;
+                            list[i].hasWarning = "warning";
+                            if (checkCodeMeliPerReg(list[i].nationalCode) &&  mobile !== "" && mobile != null && typeof (mobile) != "undefined")
+                            list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد ملی وارد شده در سیستم وجود ندارد.</span>";
+                            else
+                            {
+                                if (  mobile !== "" && mobile != null && typeof (mobile) != "undefined")
+                                    list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">کد ملی وارد شده فرمت صحیحی ندارد.</span>";
+                                  else
+                                    list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شماره تلفن وارد نشده است.</span>";
+
+                            }
+
+                        } else {
+                            person = person[0];
+
+                            if (person.nationalCode === ""
+                                || person.nationalCode == null
+                                || typeof (person.nationalCode) == "undefined"
+                                || person.firstName === ""
+                                || person.firstName == null
+                                || typeof (person.firstName) == "undefined"
+                                || person.lastName === ""
+                                || person.lastName == null
+                                || typeof (person.lastName) == "undefined"
+                                || person.contactInfo.mobile === ""
+                                || person.contactInfo.mobile == null
+                                || typeof (person.contactInfo.mobile) == "undefined"
+                                || person.gender === ""
+                                || person.gender == null
+                                || typeof (person.gender) == "undefined"
+                            ) {
+                                allRowsOK = false;
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode = person.nationalCode;
+                                list[i].birthCertificateNo = person.birthCertificateNo;
+                                list[i].gender = person.gender;
+                                list[i].company = person.companyName;
+                                list[i].mobile = person.contactInfo.mobile;
+
+                                list[i].error = true;
+                                list[i].hasWarning = "warning";
+                                list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ثبت شده است ولی ناقص است.</span>";
+                            } else if (checkIfAlreadyExist(person,GroupSelectedPersonnelRegisterLG.data)) {
+                                allRowsOK = false;
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode = person.nationalCode;
+                                list[i].birthCertificateNo = person.birthCertificateNo;
+                                list[i].gender = person.gender;
+                                list[i].company = person.companyName;
+                                list[i].mobile = person.contactInfo.mobile;
+                                list[i].error = true;
+                                list[i].hasWarning = "check";
+                                list[i].description = "<span style=\"color:white !important;background-color:#11b40b !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
+                            } else {
+                                list[i].firstName = person.firstName;
+                                list[i].lastName = person.lastName;
+                                list[i].nationalCode = person.nationalCode;
+                                list[i].error = false;
+                                list[i].birthCertificateNo = person.birthCertificateNo;
+                                list[i].gender = person.gender;
+                                list[i].company = person.companyName;
+                                list[i].mobile = person.contactInfo.mobile;
+                                list[i].hasWarning = "check";
+                                list[i].description = "";
+                            }
+                        }
+                    }
+                }
+
+                if (students.getLength() > 0 /*allRowsOK*/ && insert) {
+
+                    GroupSelectedPersonnelRegisterLG.endEditing();
+
+                    wait.close();
+                    addValidRegisterdStudents( students);
+
+
+                } else {
+
+                    GroupSelectedPersonnelRegisterLG.invalidateCache();
+                    GroupSelectedPersonnelRegisterLG.fetchData();
+                    wait.close();
+                    if (insert) {
+                        createDialog('info', 'شخصي جهت اضافه شدن وجود ندارد.');
+                    }
+                }
+
+            } else {
+                wait.close();
+            }
+        } else {
+            wait.close();
+        }
+    }
+
+
+
+    // </script>
