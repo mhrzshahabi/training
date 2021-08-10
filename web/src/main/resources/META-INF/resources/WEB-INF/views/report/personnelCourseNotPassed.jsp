@@ -7,8 +7,8 @@
     $(document).ready(()=>{
         setTimeout(()=>{
         $("input[name='personnelNo']").attr("disabled","disabled");
-        $("input[name='courseCode']").attr("disabled","disabled");
-        $("input[name='postGrade']").attr("disabled","disabled");
+    $("input[name='courseCode']").attr("disabled","disabled");
+    $("input[name='postGrade']").attr("disabled","disabled");
     },0)}
     );
 
@@ -153,9 +153,8 @@
                 filterOperator: "equals",
                 autoFitWidth: true,
                 autoFitWidthApproach: "both",
-                valueMap:{
-                    74 : "غیر فعال"
-                },filterOnKeypress: true,
+                valueMap: {"undefined": "فعال", "74": "غیرفعال"},
+                filterOnKeypress: true,
             },
         ],
         fetchDataURL: viewPostGradeUrl + "/iscList"
@@ -175,8 +174,8 @@
         selectionType: "single",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-	    border: "1px solid #4a4444",
-	    margin: 5
+        border: "1px solid #4a4444",
+        margin: 5
     });
 
     IButton_JspCoursesNotPassedPersonnel_FullExcel = isc.IButtonSave.create({
@@ -530,69 +529,63 @@
         titleWidth: 0,
         titleAlign: "center",
         width: 500,
-        height: 300,
+        height: 120,
         fields: [
             {
                 name: "PostGrade.code",
                 align: "center",
                 title: "",
-                editorType: "MultiComboBoxItem",
+                editorType: "SelectItem",
                 multiple: true,
                 defaultValue: null,
-                changeOnKeypress: true,
                 showHintInField: true,
                 displayField: "titleFa",
-                comboBoxWidth: 500,
                 valueField: "id",
-                layoutStyle: initialLayoutStyle,
                 optionDataSource: RestDataSource_PostGradeLvl_PCNR,
-            },
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "titleFa", title: "<spring:message code="post.grade.title"/>", width: "30%", filterOperator: "iContains"},
+                    {name: "peopleType",  title: "نوع فراگیر", width: "30%", filterOperator: "iContains"},
+                    {name: "enabled",  title: "فعال/غیرفعال", width: "30%", filterOperator: "iContains"}
+                ],
+                icons: [{
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "پاک کردن",
+                    click: function (form) {
+                        form.getField("PostGrade.code").setValue([]);
+                    }
+                }]
+            }
         ]
     });
-
-    DynamicForm_SelectPostGrade_JspCoursesNotPassed.getField("PostGrade.code").comboBox.setHint("رده پستی مورد نظر را انتخاب کنید");
-    DynamicForm_SelectPostGrade_JspCoursesNotPassed.getField("PostGrade.code").comboBox.pickListFields =
-        [
-            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
-            {name: "peopleType",  title: "نوع فراگیر",valueMap: {"personnel_registered": "متفرقه", "Personal": "شرکتی", "ContractorPersonal": "پیمانکار"}},
-            {name: "enabled", title: "فعال/غیرفعال", valueMap: {"undefined": "فعال", "74": "غیرفعال"}}
-        ];
-    DynamicForm_SelectPostGrade_JspCoursesNotPassed.getField("PostGrade.code").comboBox.filterFields = ["titleFa","peopleType","enabled"];
+    DynamicForm_SelectPostGrade_JspCoursesNotPassed.getField("PostGrade.code").setHint("رده پستی مورد نظر را انتخاب کنید");
 
     IButton_ConfirmPostGradeSelections_JspCoursesNotPassed = isc.IButtonSave.create({
         top: 260,
         title: "تائید",
-        width: 300,
+        width: 150,
         click: function () {
-            let criteriaDisplayValues = "";
-            let selectorDisplayValues = DynamicForm_SelectPostGrade_JspCoursesNotPassed.getItem("PostGrade.code").getValue();
-            if (DynamicForm_SelectPostGrade_JspCoursesNotPassed.getField("PostGrade.code").getValue() != undefined && DynamicForm_SelectPostGrade_JspCoursesNotPassed.getField("PostGrade.code").getValue() != "") {
-                criteriaDisplayValues = DynamicForm_SelectPostGrade_JspCoursesNotPassed.getField("PostGrade.code").getValue().join(",");
-                let ALength = criteriaDisplayValues.length;
-                let lastChar = criteriaDisplayValues.charAt(ALength - 1);
-                if (lastChar != ";")
-                    criteriaDisplayValues += ",";
-            }
-            if (selectorDisplayValues != undefined) {
-                for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
-                    criteriaDisplayValues += selectorDisplayValues [i] + ",";
-                }
-                criteriaDisplayValues += selectorDisplayValues [selectorDisplayValues.size() - 1];
+
+            var selectorDisplayValues = DynamicForm_SelectPostGrade_JspCoursesNotPassed.getItem("PostGrade.code").getValue();
+            criteriaDisplayValuesPostGrade = selectorDisplayValues;
+
+            if (selectorDisplayValues != null) {
+                DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("postGrade").setValue(selectorDisplayValues);
+            } else {
+                DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("postGrade").setValue([]);
             }
 
-            if (typeof criteriaDisplayValues != "undefined") {
-                let uniqueNames = [];
-
-                $.each(criteriaDisplayValues.split(","), function (i, el) {
-                    if ($.inArray(el, uniqueNames) === -1) uniqueNames.push(el);
-                });
-                criteriaDisplayValues = uniqueNames.join(",");
-            }
-
-            criteriaDisplayValues = criteriaDisplayValues == "undefined" ? "" : criteriaDisplayValues;
-
-            criteriaDisplayValuesPostGrade=criteriaDisplayValues;
             DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("postGrade").setValue(DynamicForm_SelectPostGrade_JspCoursesNotPassed.getItem("PostGrade.code").getDisplayValue().join(","));
+            Window_SelectPostGrade_JspCoursesNotPassed.close();
+        }
+    });
+    IButton_CancelPostGradeSelections_JspCoursesNotPassed = isc.IButtonCancel.create({
+        top: 260,
+        title: "انصراف",
+        width: 150,
+        click: function () {
             Window_SelectPostGrade_JspCoursesNotPassed.close();
         }
     });
@@ -605,12 +598,19 @@
         autoDraw: false,
         border: "2px solid gray",
         width: 500,
-        height: 300,
+        height: 150,
         items: [
             isc.TrVLayout.create({
                 members: [
                     DynamicForm_SelectPostGrade_JspCoursesNotPassed,
-                    IButton_ConfirmPostGradeSelections_JspCoursesNotPassed,
+                    isc.HLayout.create({
+                        align: "center",
+                        membersMargin: 10,
+                        members: [
+                            IButton_ConfirmPostGradeSelections_JspCoursesNotPassed,
+                            IButton_CancelPostGradeSelections_JspCoursesNotPassed
+                        ]
+                    })
                 ]
             })
         ]
@@ -750,18 +750,9 @@
                     }
 
                     else if (data_values.criteria[i].fieldName == "postGrade") {
-                        var codesString = criteriaDisplayValuesPostGrade;
-                        var codesArray;
-                        codesArray = codesString.split(",");
-                        for (var j = 0; j < codesArray.length; j++) {
-                            if (codesArray[j] == "" || codesArray[j] == " ") {
-                                codesArray.remove(codesArray[j]);
-                            }
-                        }
-
                         data_values.criteria[i].fieldName = "pgId";
                         data_values.criteria[i].operator = "inSet";
-                        data_values.criteria[i].value = codesArray;
+                        data_values.criteria[i].value = criteriaDisplayValuesPostGrade;
                     }
 
                     else if (data_values.criteria[i].fieldName == "companyName") {
@@ -806,7 +797,7 @@
     //----------------------------------- layOut -----------------------------------------------------------------------
     var HLayOut_CriteriaForm_JspCoursesNotPassedPersonnel = isc.TrHLayoutButtons.create({
         showEdges: false,
-	    margin:20,
+        margin:20,
         edgeImage: "",
         width: "100%",
         height: "100%",
