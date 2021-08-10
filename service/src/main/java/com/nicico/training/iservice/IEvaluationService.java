@@ -8,9 +8,11 @@ import com.nicico.training.model.EvaluationAnswer;
 import dto.evaluuation.EvalElsData;
 import dto.evaluuation.EvalQuestionDto;
 import org.springframework.web.bind.annotation.RequestBody;
+import response.BaseResponse;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
 
 public interface IEvaluationService {
 
@@ -62,4 +64,5 @@ public interface IEvaluationService {
     Boolean classHasEvaluationForm(Long classId);
 
     List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationForm(HashMap req);
-}
+
+ }

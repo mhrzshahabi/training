@@ -1,6 +1,8 @@
 package com.nicico.training.mapper.evaluation;
 
 
+import com.nicico.training.dto.EvaluationDTO;
+import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.*;
 import com.nicico.training.service.QuestionBankService;
@@ -49,8 +51,18 @@ public interface EvaluationMapper {
     }
 
 
-    TrainingEvaluationDto toEvaluation(Evaluation evaluation);
+    TrainingEvaluationDto toEvaluationTraining(Evaluation evaluation);
 
 
     Set<TrainingEvaluationDto> toEvaluations(Set<Evaluation> evaluations);
+
+
+
+    Evaluation toEvaluation (EvaluationDTO evaluationDTO);
+
+//    default List<PersonnelRegisteredDTO> toPersonnelRegisteredDTOList(List<PersonnelRegistered> list){
+//        return list.stream().map(this::toPersonnelRegisteredDTO).collect(Collectors.toList());
+//    }
+
+
 }

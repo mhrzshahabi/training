@@ -125,10 +125,10 @@ public class ClassStudentRestController {
         ResponseEntity<ISC<ClassStudentDTO.ClassStudentInfo>> list = search1(iscRq, makeNewCriteria("tclassId", classId, EOperator.equals, null), c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
         List<ClassStudentDTO.ClassStudentInfo> tmplist = (List<ClassStudentDTO.ClassStudentInfo>) list.getBody().getResponse().getData();
-        for (ClassStudentDTO.ClassStudentInfo studentInfo : tmplist) {
-            ContactInfo contactInfo = contactInfoService.fetchAndUpdateLastHrMobile(studentInfo.getStudentId(), "Student", iscRq.getHeader("Authorization"));
-            studentInfo.getStudent().setContactInfo(modelMapper.map(contactInfo, ContactInfoDTO.Info.class));
-        }
+//        for (ClassStudentDTO.ClassStudentInfo studentInfo : tmplist) {
+//            ContactInfo contactInfo = contactInfoService.fetchAndUpdateLastHrMobile(studentInfo.getStudentId(), "Student", iscRq.getHeader("Authorization"));
+//            studentInfo.getStudent().setContactInfo(modelMapper.map(contactInfo, ContactInfoDTO.Info.class));
+//        }
 
         if (tmplist.size() > 0 && (tmplist.get(0).getTclass().getClassStatus().equals("1") || tmplist.get(0).getTclass().getClassStatus().equals("2"))) {
 
