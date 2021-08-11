@@ -9,17 +9,11 @@ import com.nicico.training.dto.*;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
-import com.nicico.training.iservice.IAttendanceService;
-import com.nicico.training.iservice.IPersonnelRegisteredService;
-import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
-import com.nicico.training.model.Attendance;
-import com.nicico.training.model.ClassSession;
-import com.nicico.training.model.Evaluation;
-import com.nicico.training.model.PersonalInfo;
+import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
@@ -56,10 +50,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 
 @RestController
@@ -88,6 +79,7 @@ public class ElsRestController {
     private final AttendanceBeanMapper attendanceMapper;
     private final IAttendanceService attendanceService;
     private final ClassSessionService classSessionService;
+    private final IAttachmentService iAttachmentService;
 
 
     @GetMapping("/eval/{id}")
@@ -719,6 +711,24 @@ public class ElsRestController {
         } catch (TrainingException ex) {
 
             response.setMessage("اطلاعات به سیستم آزمون آنلاین ارسال نشد");
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        }
+        return response;
+    }
+
+    @PostMapping("/sessionAttachment/{sessionId}/{fileName}")
+    public BaseResponse saveSessionAttachment(@PathVariable long sessionId, @PathVariable String fileName, @RequestBody Map<String, String> file) {
+
+        BaseResponse response = new BaseResponse();
+        try {
+
+            iAttachmentService.saveSessionAttachment(sessionId, file, fileName);
+            response.setMessage("ذخیره محتوای جلسه با موفقیت انجام شد");
+            response.setStatus(HttpStatus.OK.value());
+
+        } catch (Exception e) {
+
+            response.setMessage("مشکلی در ذخیره محتوای جلسه رخ داده است");
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
         }
         return response;
