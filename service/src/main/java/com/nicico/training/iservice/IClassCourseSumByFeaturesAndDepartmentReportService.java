@@ -19,6 +19,14 @@ public interface IClassCourseSumByFeaturesAndDepartmentReportService {
                                                                    List<String> classStatusList);
 
     @Transactional(readOnly = true)
+    List<ClassCourseSumByFeaturesAndDepartmentReportDTO> getReportGroupByStudentDepartment(String startDate,
+                                                                   String endDate,
+                                                                   String mojtameCode,
+                                                                   String moavenatCode,
+                                                                   String omorCode,
+                                                                   List<String> classStatusList);
+
+    @Transactional(readOnly = true)
     List<ClassFeatures> getReportForMultipleDepartment(String startDate,
                                                                                                       String endDate,
                                                                                                       List<String> mojtameCodes,
