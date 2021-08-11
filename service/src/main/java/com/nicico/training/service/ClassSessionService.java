@@ -9,10 +9,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
-import com.nicico.training.model.Attendance;
-import com.nicico.training.model.ClassSession;
-import com.nicico.training.model.IClassSessionDTO;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
@@ -781,4 +778,5 @@ public class ClassSessionService implements IClassSession {
         ClassSession classSession = classSessionDAO.getClassSessionById(sessionId);
         return classSession.getClassId();
     }
+
 }

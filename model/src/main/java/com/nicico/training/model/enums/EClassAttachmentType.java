@@ -12,7 +12,9 @@ import lombok.ToString;
 public enum EClassAttachmentType {
     Booklet(1, "جزوه"),
     ScoreList(2, "لیست نمرات"),
-    AttendanceList(3, "لیست حضور و غیاب");
+    AttendanceList(3, "لیست حضور و غیاب"),
+    AbsenceLetter(4, "نامه غیبت موجه"),
+    SessionContent(5, "محتوای جلسات");
 
     private final Integer id;
     private final String titleFa;

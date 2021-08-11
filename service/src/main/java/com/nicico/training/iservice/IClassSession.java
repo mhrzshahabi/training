@@ -46,4 +46,5 @@ public interface IClassSession {
     SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode);
 
     ClassSessionDTO.DeleteStatus deleteSessions(Long classId, @RequestBody List<Long> studentIds);
+
 }
