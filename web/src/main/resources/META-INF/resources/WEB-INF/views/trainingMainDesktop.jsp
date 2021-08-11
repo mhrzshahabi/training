@@ -1245,7 +1245,7 @@
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
     const manHourStatisticsByClassCategoryReportUrl = rootUrl + "/manHourStatisticsByClassCategoryReport";
-    const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/ManHourStatisticsPerDepartmentReport";
+    const manHourStatisticsPerDepartmentReportUrl = rootUrl + "/manHourStatisticsPerDepartmentReport";
     const questionBankUrl = rootUrl + "/question-bank";
     const viewPersonnelTrainingStatusReportUrl = rootUrl + "/view-personnel-training-status-report";
     const viewCoursesPassedPersonnelReportUrl = rootUrl + "/view-courses-passed-personnel-report";
@@ -3756,56 +3756,6 @@
 
         if (hideCompanyFilter === true)
             filterDF.getFields()[0].hide();
-
-        filterDF.getFields()[0].criteriaField = companyFieldName;
-        filterDF.getFields()[1].criteriaField = mojtameFieldName;
-        filterDF.getFields()[2].criteriaField = moavenatFieldName;
-        filterDF.getFields()[3].criteriaField = omorFieldName;
-        filterDF.getFields()[4].criteriaField = ghesmatFieldName;
-        filterDF.getFields()[5].criteriaField = vahedFieldName;
-
-        filterDF.getFields()[1].organSegmentFilterFieldName = useNameInCriteria ? "mojtameTitle" : "mojtameCode";
-        filterDF.getFields()[2].organSegmentFilterFieldName = useNameInCriteria ? "moavenatTitle" : "moavenatCode";
-        filterDF.getFields()[3].organSegmentFilterFieldName = useNameInCriteria ? "omorTitle" : "omorCode";
-        filterDF.getFields()[4].organSegmentFilterFieldName = useNameInCriteria ? "ghesmatTitle" : "ghesmatCode";
-
-        return filterDF;
-    }
-
-    function init_OrganSegmentFilterDF_optional(useNameInCriteria = false,
-                                                hideCompanyFilter = false,
-                                                companyFieldName = "companyName",
-                                                mojtameFieldName = "department.mojtameCode",
-                                                moavenatFieldName = "department.moavenatCode",
-                                                omorFieldName = "department.omorCode",
-                                                ghesmatFieldName = "department.ghesmatCode",
-                                                vahedFieldName = "department.vahedCode",
-                                                hideMojtameFilter = false,
-                                                hideMoavenatFilter = false,
-                                                hideOmorFilter = false,
-                                                hideGhesmatFilter = false,
-                                                hideVahedFilter = false,
-    ) {
-
-        let filterDF;
-
-        if (useNameInCriteria)
-            filterDF = isc.OrganSegmentFilterDF_title.create({});
-        else
-            filterDF = isc.OrganSegmentFilterDF_code.create({});
-
-        if (hideCompanyFilter === true)
-            filterDF.getFields()[0].hide();
-        if (hideMojtameFilter === true)
-            filterDF.getFields()[1].hide();
-        if (hideMoavenatFilter === true)
-            filterDF.getFields()[2].hide();
-        if (hideOmorFilter === true)
-            filterDF.getFields()[3].hide();
-        if (hideGhesmatFilter === true)
-            filterDF.getFields()[4].hide();
-        if (hideVahedFilter === true)
-            filterDF.getFields()[5].hide();
 
         filterDF.getFields()[0].criteriaField = companyFieldName;
         filterDF.getFields()[1].criteriaField = mojtameFieldName;

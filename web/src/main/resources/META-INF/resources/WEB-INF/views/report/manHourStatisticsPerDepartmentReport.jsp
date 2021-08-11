@@ -5,52 +5,7 @@
 //<script>
 
 
-    //----------------------------------------------------Rest DataSource-----------------------------------------------
-
-    CompanyDS_PresenceReport = isc.TrDS.create({
-        fields: [
-            {
-                name: "value",
-                title: "<spring:message code="company"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                primaryKey: true
-            },
-        ],
-        cacheAllData: true,
-        fetchDataURL: personnelUrl + "/all-field-values?fieldName=companyName"
-    });
-
-    ComplexDS_PresenceReport = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=complexTitle"
-    });
-
-    AssistantDS_PresenceReport = isc.TrDS.create({
-        fields: [
-            {
-                name: "value",
-                title: "<spring:message code="assistance"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAssistant"
-    });
-
-    AffairsDS_PresenceReport = isc.TrDS.create({
-        fields: [
-            {name: "value", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-        ],
-        cacheAllData: true,
-        fetchDataURL: departmentUrl + "/all-field-values?fieldName=ccpAffairs"
-    });
-
-    var RestDataSource_Term_ManHourReport = isc.TrDS.create({
+    var RestDataSource_Term_JspManHourReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -59,191 +14,111 @@
         ]
     });
 
-    var RestDataSource_Year_ManHourReport = isc.TrDS.create({
+    RestDataSource_ManHourReport = isc.TrDS.create({
         fields: [
-            {name: "year", primaryKey: true}
+            {
+                name: "mojtameTitle",
+                title: "<spring:message code="complex"/>",
+                filterOperator: "iContains",
+            },
+            {
+                name: "presenceManHour",
+                title: "<spring:message code='report.presence.man.hour'/>", filterOperator: "iContains",
+            },
+            {
+                name: "absenceManHour",
+                title: "<spring:message code='report.absence.man.hour'/>", filterOperator: "equals",
+            },
+            {
+                name: "personnelCount",
+                title: "<spring:message code='report.department.personnel.count'/>",
+                filterOperator: "iContains",
+            },
+            {
+                name: "participationPercent",
+                format: "00.00",
+                title: "<spring:message code='report.participation.percent'/>", filterOperator: "iContains",
+            },
+            {
+                name: "presencePerPerson",
+                title: "<spring:message code='report.presence.per.person'/>", filterOperator: "iContains",
+            },
         ],
-        fetchDataURL: termUrl + "yearList"
+        transformResponse: function (dsResponse, dsRequest, data) {
+            criteriaInHeader = data.response.criteriaStr;
+            return this.Super("transformResponse", arguments);
+        },
+        fetchDataURL: manHourStatisticsPerDepartmentReportUrl
     });
-
-
-    //---------------------------------------------------- variables -----------------------------------------------
-    var organizationFilter = init_OrganSegmentFilterDF_optional(false, true, null, "complexTitle", "ccpAssistant", "ccpAffairs", null, null, false, false, false, true, true);
-
-    var startDate1Check_JspStaticalUnitReport = true;
-    var startDate2Check_JspStaticalUnitReport = true;
-    var startDateCheck_Order_JspStaticalUnitReport = true;
-    var criteriaInHeader = "";
-
-    //----------------------------------------------------Criteria Form------------------------------------------------
-
     var DynamicForm_CriteriaForm_ManHourReport = isc.DynamicForm.create({
-        align: "right",
-        titleWidth: 0,
-        titleAlign: "center",
-        showInlineErrors: true,
-        showErrorText: false,
-        numCols: 4,
-        colWidths: ["5%", "25%", "5%", "25%", "5%", "25%"],
+        numCols: 8,
+        padding: 10,
+        titleAlign: "left",
         fields: [
             {
                 name: "timeStatus",
-                title: "<spring:message code="man.hour.report.time.type"/>",
-                type: "SelectItem",
-                operator: "inSet",
-                required: true,
-                multiple: false,
+                title: "<spring:message code='date.selection.type'/>",
+                defaultValue: 1,
                 valueMap: {
-                    "1": "گزارش بر اساس تاریخ شروع و پایان",
-                    "2": "گزارش بر اساس سال و ترم",
+                    "1": "<spring:message code='date.from.to.date'/>",
+                    "2": "<spring:message code='date.year.month'/>"
                 },
-                pickListProperties: {
-                    showFilterEditor: false
+                changed: function (form, item, value) {
+                    if (value == 2) {
+                        form.getItem("year").show();
+                        form.getItem("termId").show();
+                        form.getItem("startDate").hide();
+                        form.getItem("endDate").hide();
+                        form.setValue("startDate", null);
+                        form.setValue("endDate", null);
+                    } else {
+                        form.getItem("year").hide();
+                        form.getItem("termId").hide();
+                        form.setValue("year", null);
+                        form.setValue("termId", null);
+                        form.getItem("startDate").show();
+                        form.getItem("endDate").show();
+                    }
+                }
+            },
+            {
+                name: "year",
+                hidden: true,
+                required: true,
+                title: "<spring:message code='year'/>",
+                displayField: "year",
+                valueField: "year",
+                optionDataSource: isc.TrDS.create({
+                    fields: [
+                        {name: "year"}
+                    ],
+                    fetchDataURL: termUrl + "years",
+                    autoFetchData: true
+                }),
+                filterFields: ["year"],
+                sortField: ["year"],
+                sortDirection: "descending",
+                useClientFiltering: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
                 },
-                defaultValue: ["1"],
+                pickListFields: [
+                    {
+                        name: "year",
+                        title: "<spring:message code='year'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    }
+                ],
                 changed: function (form, item, value) {
                     if (value != null && value != undefined) {
-                        if (value == 2) {
-                            DynamicForm_CriteriaForm_ManHourReport.getField("fromDate").hide();
-                            DynamicForm_CriteriaForm_ManHourReport.getField("toDate").hide();
-                            DynamicForm_CriteriaForm_ManHourReport.setValue("fromDate", "");
-                            DynamicForm_CriteriaForm_ManHourReport.setValue("toDate", "");
-                            DynamicForm_CriteriaForm_ManHourReport.getField("classYear").show();
-                            DynamicForm_CriteriaForm_ManHourReport.getField("termId").show();
-                        } else if (value == 1) {
-                            DynamicForm_CriteriaForm_ManHourReport.getField("classYear").hide();
-                            DynamicForm_CriteriaForm_ManHourReport.getField("termId").hide();
-                            DynamicForm_CriteriaForm_ManHourReport.getField("classYear").clearValue();
-                            DynamicForm_CriteriaForm_ManHourReport.getField("termId").clearValue();
-                            DynamicForm_CriteriaForm_ManHourReport.setValue("fromDate", oneMonthBeforeToday);
-                            DynamicForm_CriteriaForm_ManHourReport.setValue("toDate", todayDate);
-                            DynamicForm_CriteriaForm_ManHourReport.getField("fromDate").show();
-                            DynamicForm_CriteriaForm_ManHourReport.getField("toDate").show();
-                        }
-                    } else {
-                        DynamicForm_CriteriaForm_ManHourReport.getField("classYear").hide();
-                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").hide();
-                        DynamicForm_CriteriaForm_ManHourReport.getField("classYear").clearValue();
-                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").clearValue();
-                        DynamicForm_CriteriaForm_ManHourReport.setValue("fromDate", oneMonthBeforeToday);
-                        DynamicForm_CriteriaForm_ManHourReport.setValue("toDate", todayDate);
-                        DynamicForm_CriteriaForm_ManHourReport.getField("fromDate").show();
-                        DynamicForm_CriteriaForm_ManHourReport.getField("toDate").show();
-                    }
-                }
-            },
-            {type: "SpacerItem"},
-            {
-                name: "fromDate",
-                ID: "fromDate_ManHourStatisticReport",
-                title: "از تاریخ: ",
-                hint: oneMonthBeforeToday,
-                defaultValue: oneMonthBeforeToday,
-                keyPressFilter: "[0-9/]",
-                length: 10,
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('fromDate_ManHourStatisticReport', this, 'ymd', '/', 'right');
-                    }
-                }],
-                editorExit: function (form, item, value) {
-                    if (value == undefined || value == null) {
-                        form.clearFieldErrors("toDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        form.clearFieldErrors("fromDate", true);
-                        startDateCheck_Order_JspStaticalUnitReport = true;
-                        startDate1Check_JspStaticalUnitReport = true;
-                        return;
-                    }
-
-                    var dateCheck;
-                    var endDate = form.getValue("toDate");
-                    dateCheck = checkDate(value);
-                    if (dateCheck === false) {
-                        startDate1Check_JspStaticalUnitReport = false;
-                        startDateCheck_Order_JspStaticalUnitReport = true;
-                        form.clearFieldErrors("fromDate", true);
-                        form.addFieldErrors("fromDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else if (endDate < value) {
-                        startDateCheck_Order_JspStaticalUnitReport = false;
-                        startDate1Check_JspStaticalUnitReport = true;
-                        form.clearFieldErrors("fromDate", true);
-                        form.addFieldErrors("fromDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                    } else {
-                        startDate1Check_JspStaticalUnitReport = true;
-                        startDateCheck_Order_JspStaticalUnitReport = true;
-                        form.clearFieldErrors("fromDate", true);
-                    }
-                }
-            },
-            {
-                name: "toDate",
-                ID: "toDate_ManHourStatisticReport",
-                title: "تا",
-                hint: todayDate,
-                defaultValue: todayDate,
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                length: 10,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
-                        closeCalendarWindow();
-                        displayDatePicker('toDate_ManHourStatisticReport', this, 'ymd', '/', 'right');
-                    }
-                }],
-                editorExit: function (form, item, value) {
-                    if (value == undefined || value == null) {
-                        form.clearFieldErrors("fromDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                        form.clearFieldErrors("toDate", true);
-                        startDateCheck_Order_JspStaticalUnitReport = true;
-                        startDate2Check_JspStaticalUnitReport = true;
-                        return;
-                    }
-
-                    var dateCheck;
-                    dateCheck = checkDate(value);
-                    var startDate = form.getValue("fromDate");
-                    if (dateCheck === false) {
-                        startDate2Check_JspStaticalUnitReport = false;
-                        startDateCheck_Order_JspStaticalUnitReport = true;
-                        form.clearFieldErrors("toDate", true);
-                        form.addFieldErrors("toDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else if (startDate != undefined && value < startDate) {
-                        form.clearFieldErrors("toDate", true);
-                        form.addFieldErrors("toDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        startDate2Check_JspStaticalUnitReport = true;
-                        startDateCheck_Order_JspStaticalUnitReport = false;
-                    } else {
-                        form.clearFieldErrors("toDate", true);
-                        startDate2Check_JspStaticalUnitReport = true;
-                        startDateCheck_Order_JspStaticalUnitReport = true;
-                    }
-                }
-            },
-            {
-                name: "classYear",
-                title: "سال کاری",
-                type: "SelectItem",
-                // multiple: true,
-                optionDataSource: RestDataSource_Year_ManHourReport,
-                valueField: "year",
-                displayField: "year",
-                filterFields: ["year"],
-                hidden: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                changed: function (form, item, value) {
-                    if (value != null && value != undefined ) {
-                        RestDataSource_Term_ManHourReport.fetchDataURL = termUrl + "listByYear/" + value;
-                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").optionDataSource = RestDataSource_Term_ManHourReport;
-                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").fetchData();
-                        DynamicForm_CriteriaForm_ManHourReport.getField("termId").enable();
+                        RestDataSource_Term_JspManHourReport.fetchDataURL = termUrl + "listByYear/" + value;
+                        form.getField("termId").optionDataSource = RestDataSource_Term_JspManHourReport;
+                        form.getField("termId").fetchData();
+                        form.getField("termId").enable();
+                        form.getField("termId").clearValue();
                     } else {
                         form.getField("termId").disabled = true;
                         form.getField("termId").clearValue();
@@ -254,13 +129,77 @@
                 name: "termId",
                 title: "ترم",
                 type: "SelectItem",
-                // multiple: true,
+                hidden: true,
+                multiple: false,
                 filterOperator: "equals",
                 disabled: true,
-                hidden: true,
                 valueField: "id",
                 displayField: "titleFa",
-                filterLocally: true
+                filterLocally: true,
+                cachePickListResults: true
+            },
+            {
+                name: "startDate",
+                hidden: false,
+                width: 200,
+                titleColSpan: 1,
+                title: "<spring:message code='from.date'/>",
+                ID: "startDate_jspManHourByDep",
+                required: true,
+                hint: "--/--/----",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('startDate_jspManHourByDep', this, 'ymd', '/');
+                    }
+                }],
+                textAlign: "center",
+                changed: function (form, item, value) {
+                    var dateCheck;
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else {
+                        form.clearFieldErrors("startDate", true);
+                    }
+                }
+            },
+            {
+                name: "endDate",
+                hidden: false,
+                titleColSpan: 1,
+                width: 200,
+                title: "<spring:message code='to.date'/>",
+                ID: "endDate_jspManHourByDep",
+                type: 'text', required: true,
+                hint: "--/--/----",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate_jspManHourByDep', this, 'ymd', '/');
+                    }
+                }],
+                textAlign: "center",
+                changed: function (form, item, value) {
+                    let dateCheck;
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        form.clearFieldErrors("endDate", true);
+                        form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                    } else {
+                        form.clearFieldErrors("endDate", true);
+                    }
+                }
+            },
+            {
+                type: "SpacerItem",
+                colSpan: 2
             },
             {
                 name: "classStatus",
@@ -270,241 +209,364 @@
                 required: true,
                 multiple: true,
                 valueMap: {
-                  "1": "برنامه ریزی",
-                  "2": "در حال اجرا",
-                  "3": "پایان یافته",
-                  "4": "لغو شده",
-                  "5": "اختتام",
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                    "4": "لغو شده",
+                    "5": "اختتام",
                 },
                 pickListProperties: {
                     showFilterEditor: false
                 },
                 defaultValue: ["1", "2", "3", "4", "5"]
             },
-
-        ]
-    });
-
-
-    IButton_ManHourReport = isc.IButtonSave.create({
-        top: 260,
-        title: "چاپ گزارش",
-        width: 300,
-        click: function () {
-
-            if (DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria().criteria.size() <= 1 ||
-                (organizationFilter.getCriteria(DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria())).criteria.length <= 1) {
-                createDialog("info", "فیلتری انتخاب نشده است.");
-                return;
-            }
-
-            DynamicForm_CriteriaForm_ManHourReport.validate();
-            if (DynamicForm_CriteriaForm_ManHourReport.hasErrors() || organizationFilter.hasErrors()) {
-                return;
-            } else {
-                data_values = organizationFilter.getCriteria(DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria());
-                ListGrid_ManHourReport.showField("moavenatTitle");
-                ListGrid_ManHourReport.showField("mojtameTitle");
-                for (var i = 0; i < data_values.criteria.size(); i++) {
-                    if (data_values.criteria[i].fieldName == "complexTitle") {
-                        data_values.criteria[i].fieldName = "complexTitle";
-                        data_values.criteria[i].operator = "inSet";
-                        ListGrid_ManHourReport.hideField("mojtameTitle");
-                        criteriaInHeader += DynamicForm_CriteriaForm_ManHourReport.getField("termId");
-                    } else if (data_values.criteria[i].fieldName == "applicantCompanyName") {
-                        data_values.criteria[i].fieldName = "applicantCompanyName";
-                        data_values.criteria[i].operator = "iContains";
-                    } else if (data_values.criteria[i].fieldName == "ccpAssistant") {
-                        data_values.criteria[i].fieldName = "ccpAssistant";
-                        data_values.criteria[i].operator = "inSet";
-                        ListGrid_ManHourReport.hideField("moavenatTitle");
-                        ListGrid_ManHourReport.hideField("mojtameTitle");
-
-                    } else if (data_values.criteria[i].fieldName == "ccpAffairs") {
-                        data_values.criteria[i].fieldName = "ccpAffairs";
-                        data_values.criteria[i].operator = "inSet";
-                        ListGrid_ManHourReport.hideField("moavenatTitle");
-                        ListGrid_ManHourReport.hideField("mojtameTitle");
-                    } else if (data_values.criteria[i].fieldName == "fromDate") {
-                        //todo change the parameter for class sections
-                        data_values.criteria[i].fieldName = "startDate";
-                        data_values.criteria[i].operator = "greaterOrEqual";
-                    } else if (data_values.criteria[i].fieldName == "toDate") {
-                        //todo change the parameter for class sections
-                        data_values.criteria[i].fieldName = "endDate";
-                        data_values.criteria[i].operator = "lessOrEqual";
-                    } else if (data_values.criteria[i].fieldName == "year") {
-                        data_values.criteria[i].fieldName = "year";
-                        data_values.criteria[i].operator = "iContains";
-                    } else if (data_values.criteria[i].fieldName == "termId") {
-                        data_values.criteria[i].fieldName = "termId";
-                        data_values.criteria[i].operator = "equals";
-                    } else if (data_values.criteria[i].fieldName == "classStatus") {
-                        data_values.criteria[i].fieldName = "classStatus";
-                        data_values.criteria[i].operator = "inSet";
+            {
+                type: "SpacerItem",
+                colSpan: 2
+            },
+            {
+                name: "searchBtn",
+                ID: "searchBtnJspManHourByDep",
+                title: "<spring:message code="search"/>",
+                type: "ButtonItem",
+                width: "*",
+                startRow: false,
+                endRow: false,
+                width: 200,
+                click(form) {
+                    form.validate();
+                    if (form.hasErrors()) {
+                        return
                     }
+                    var ManHour_Report_wait = createDialog("wait");
+                    setTimeout(function () {
+                        if (DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria().criteria.size() <= 1) {
+                            createDialog("info", "فیلتری انتخاب نشده است.");
+                            return;
+                        }
+
+                        DynamicForm_CriteriaForm_ManHourReport.validate();
+                        if (DynamicForm_CriteriaForm_ManHourReport.hasErrors()) {
+                            return;
+                        } else {
+                            data_values = DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria();
+                            for (var i = 0; i < data_values.criteria.size(); i++) {
+                                if (data_values.criteria[i].fieldName == "startDate") {
+                                    data_values.criteria[i].fieldName = "startDate";
+                                    data_values.criteria[i].operator = "greaterOrEqual";
+                                } else if (data_values.criteria[i].fieldName == "endDate") {
+                                    data_values.criteria[i].fieldName = "endDate";
+                                    data_values.criteria[i].operator = "lessOrEqual";
+                                } else if (data_values.criteria[i].fieldName == "year") {
+                                    data_values.criteria[i].fieldName = "year";
+                                    data_values.criteria[i].operator = "iContains";
+                                } else if (data_values.criteria[i].fieldName == "termId") {
+                                    data_values.criteria[i].fieldName = "termId";
+                                    data_values.criteria[i].operator = "equals";
+                                } else if (data_values.criteria[i].fieldName == "classStatus") {
+                                    data_values.criteria[i].fieldName = "classStatus";
+                                    data_values.criteria[i].operator = "inSet";
+                                }
+                            }
+
+                            ListGrid_ManHourMojtameReport.invalidateCache();
+                            ListGrid_ManHourMojtameReport.fetchData(data_values);
+                        }
+                        ManHour_Report_wait.close();
+                    }, 100);
                 }
-
-                ListGrid_ManHourReport.invalidateCache();
-                ListGrid_ManHourReport.fetchData(data_values);
-                Window_ManHourReport.show();
-
-            }
-        }
+            },
+            {
+                name: "clearBtn",
+                title: "<spring:message code="clear"/>",
+                type: "ButtonItem",
+                width: "*",
+                startRow: false,
+                endRow: false,
+                width: 200,
+                click(form, item) {
+                    form.clearValues();
+                    form.clearErrors();
+                    ListGrid_ManHourMojtameReport.setData([]);
+                    form.setValue("timeStatus", 1);
+                    form.getItem("year").hide();
+                    form.getItem("termId").hide();
+                    form.setValue("year", null);
+                    form.setValue("termId", null);
+                    form.getItem("startDate").show();
+                    form.getItem("endDate").show();
+                }
+            },
+            {
+                type: "SpacerItem",
+                colSpan: 2
+            },
+        ],
     });
-
-    //----------------------------------------------------Rest DataSource-----------------------------------------------
-    RestDataSource_ManHourReport = isc.TrDS.create({
+    var ListGrid_ManHourMojtameReport = isc.TrLG.create({
+        ID: "ManHourByDepReportGrid",
+        height: "100%",
+        overflow: "auto",
+        filterOnKeypress: false,
+        showFilterEditor: false,
+        gridComponents: [
+            isc.HLayout.create({
+                alignment: 'right',
+                align: "right",
+                members: [
+                    isc.ToolStripButtonExcel.create({
+                        click: function () {
+                            exportExcelBy("complex", Object.assign([], ListGrid_ManHourMojtameReport.data.localData));
+                        }
+                    }),
+                ]
+            })
+            , "header", "filterEditor", "body"],
+        dataSource: RestDataSource_ManHourReport,
+        canExpandRecords: true,
+        canExpandMultipleRecords: false,
         fields: [
             {
                 name: "mojtameTitle",
                 title: "<spring:message code="complex"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
-            {
-                name: "moavenatTitle",
-                title: "<spring:message code='assistance'/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "omorTitle",
-                title: "<spring:message code="affairs"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-
             {
                 name: "presenceManHour",
-                title: "نفرساعت حضور", filterOperator: "iContains", autoFitWidth: true
+                title: "<spring:message code='report.presence.man.hour'/>", filterOperator: "iContains",
             },
             {
                 name: "absenceManHour",
-                title: "نفرساعت حذف و غیبت", filterOperator: "equals", autoFitWidth: true
+                title: "<spring:message code='report.absence.man.hour'/>", filterOperator: "equals",
             },
             {
                 name: "personnelCount",
-                title: "تعداد کل پرسنل دپارتمان",
+                title: "<spring:message code='report.department.personnel.count'/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {
                 name: "participationPercent",
                 format: "00.00",
-                title: "درصد مشارکت", filterOperator: "iContains", autoFitWidth: true
+                title: "<spring:message code='report.participation.percent'/>", filterOperator: "iContains",
             },
             {
                 name: "presencePerPerson",
-                title: "سرانه", filterOperator: "iContains", autoFitWidth: true
+                title: "<spring:message code='report.presence.per.person'/>", filterOperator: "iContains",
             },
-
         ],
-        transformResponse: function (dsResponse, dsRequest, data) {
-            criteriaInHeader = data.response.criteriaStr;
-            return this.Super("transformResponse", arguments);
+        getExpansionComponent: function (record, rowNum, colNum) {
+            if (record.mojtameCode) {
+                let crit = Object.assign({}, DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria());
+                crit.criteria.push({fieldName: "mojtameCode", operator: "equals", value: record.mojtameCode});
+                return getCcpAssistantGrid(crit);
+            } else return isc.VLayout.create({
+                padding: 8,
+                backgroundColor: "#92aaba",
+                members: []
+            });
+            ;
         },
-        fetchDataURL: manHourStatisticsPerDepartmentReportUrl
+
     });
 
-    //----------------------------------------------------ListGrid Result-----------------------------------------------
+    function getCcpAssistantGrid(crit) {
+        let assistanceDetail = isc.TrLG.create({
+            height: "400",
+            padding: 4,
+            backgroundColor: "#acd1e8",
+            canExpandRecords: true,
+            canExpandMultipleRecords: false,
+            gridComponents: [
+                isc.HLayout.create({
+                    alignment: 'right',
+                    align: "right",
+                    members: [
+                        isc.ToolStripButtonExcel.create({
+                            click: function () {
+                                exportExcelBy("assistant", Object.assign([], this.parentElement.parentElement.data.localData));
+                            }
+                        }),
+                    ]
+                })
+                , "header", "filterEditor", "body"],
+            getCellCSSText: function () {
+                return "background-color:#acd1e8;color:black;font-size: 12px;";
+            },
+            filterOnKeypress: false,
+            showFilterEditor: false,
+            fields: [
+                {
+                    name: "moavenatTitle",
+                    title: "<spring:message code='assistance'/>",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "presenceManHour",
+                    title: "<spring:message code='report.presence.man.hour'/>", filterOperator: "iContains",
+                },
+                {
+                    name: "absenceManHour",
+                    title: "<spring:message code='report.absence.man.hour'/>", filterOperator: "equals",
+                },
+                {
+                    name: "personnelCount",
+                    title: "<spring:message code='report.department.personnel.count'/>",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "participationPercent",
+                    format: "00.00",
+                    title: "<spring:message code='report.participation.percent'/>", filterOperator: "iContains",
+                },
+                {
+                    name: "presencePerPerson",
+                    title: "<spring:message code='report.presence.per.person'/>", filterOperator: "iContains",
+                },
+            ],
+            dataSource: isc.TrDS.create({fetchDataURL: manHourStatisticsPerDepartmentReportUrl}),
+            getExpansionComponent: function (record, rowNum, colNum) {
+                let crit = Object.assign({}, DynamicForm_CriteriaForm_ManHourReport.getValuesAsAdvancedCriteria());
+                crit.criteria.push({fieldName: "ccpAssistant", operator: "equals", value: record.moavenatCode});
+                return getCcpAffairsGrid(crit);
+            },
+        });
+        assistanceDetail.invalidateCache();
+        assistanceDetail.fetchData(crit);
+        return isc.VLayout.create({
+            padding: 4,
+            backgroundColor: "#92aaba",
+            members: [assistanceDetail]
+        });
+    }
 
-    var ListGrid_ManHourReport = isc.TrLG.create({
+    function getCcpAffairsGrid(crit) {
+        let affairsDetail = isc.TrLG.create({
+            height: "250",
+            padding: 4,
+            filterOnKeypress: false,
+            showFilterEditor: false,
+            backgroundColor: "#d7b5dc",
+            dataSource: isc.TrDS.create({fetchDataURL: manHourStatisticsPerDepartmentReportUrl}),
+            gridComponents: [
+                isc.HLayout.create({
+                    alignment: 'right',
+                    align: "right",
+                    members: [
+                        isc.ToolStripButtonExcel.create({
+                            click: function () {
+                                exportExcelBy("affairs", Object.assign([], this.parentElement.parentElement.data.localData));
+                            }
+                        }),
+                    ]
+                })
+                , "header", "filterEditor", "body"],
+            getCellCSSText: function () {
+                return "background-color:#d7b5dc;color:black;font-size: 12px;";
+            },
+            fields: [
+                {
+                    name: "omorTitle",
+                    title: "<spring:message code="affairs"/>",
+                },
+                {
+                    name: "presenceManHour",
+                    title: "<spring:message code='report.presence.man.hour'/>", filterOperator: "iContains",
+                },
+                {
+                    name: "absenceManHour",
+                    title: "<spring:message code='report.absence.man.hour'/>", filterOperator: "equals",
+                },
+                {
+                    name: "personnelCount",
+                    title: "<spring:message code='report.department.personnel.count'/>",
+                    filterOperator: "iContains",
+                },
+                {
+                    name: "participationPercent",
+                    format: "00.00",
+                    title: "<spring:message code='report.participation.percent'/>", filterOperator: "iContains",
+                },
+                {
+                    name: "presencePerPerson",
+                    title: "<spring:message code='report.presence.per.person'/>", filterOperator: "iContains",
+                },
+            ],
+        });
+        affairsDetail.invalidateCache();
+        affairsDetail.fetchData(crit);
+        return isc.VLayout.create({
+            padding: 4,
+            backgroundColor: "#a491a7",
+            members: [affairsDetail]
+        });
+    }
+
+    var VLayout_Body_ByCat = isc.VLayout.create({
         width: "100%",
-        height: "100%",
-        dataSource: RestDataSource_ManHourReport,
-        gridComponents: [
-            "filterEditor", "header", "body"
-        ],
-        cellHeight: 43,
-        sortField: 0,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        selectionType: "single",
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        initialSort: [
-            {property: "studentId", direction: "ascending", primarySort: true}
-        ],
-    });
-
-    IButton_ManHourReport_FullExcel = isc.IButtonSave.create({
-        top: 260,
-        title: "گزارش اکسل",
-        width: 300,
-        click: function () {
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_ManHourReport, manHourStatisticsPerDepartmentReportUrl, 0, null, '', "گزارش آمار نفر ساعت بر اساس دپارتمان", ListGrid_ManHourReport.data.getCriteria(), null);
-        }
-    });
-
-    var HLayOut_CriteriaForm_ManHourReport_Details = isc.TrHLayoutButtons.create({
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        height: "100%",
-        alignLayout: "center",
         members: [
-            ListGrid_ManHourReport
-        ]
-    });
-    var HLayOut_Confirm_ManHourReport_UnitExcel = isc.TrHLayoutButtons.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "70%",
-        height: "10%",
-        alignLayout: "center",
-        padding: 10,
-        members: [
-            IButton_ManHourReport_FullExcel
-        ]
-    });
-
-    var Window_ManHourReport = isc.Window.create({
-        placement: "fillScreen",
-        title: "گزارش آمار نفر ساعت بر اساس دپارتمان",
-        canDragReposition: true,
-        align: "center",
-        autoDraw: false,
-        border: "1px solid gray",
-        minWidth: 1024,
-        items: [
-            isc.TrVLayout.create({
+            DynamicForm_CriteriaForm_ManHourReport,
+            isc.VLayout.create({
+                width: "100%",
+                overflow: "auto",
+                align: "top",
                 members: [
-                    HLayOut_CriteriaForm_ManHourReport_Details, HLayOut_Confirm_ManHourReport_UnitExcel
+                    ListGrid_ManHourMojtameReport,
                 ]
             })
-        ],
-        closeClick: function () {
-            this.close();
-        },
-        close: function () {
-            this.Super("close", arguments);
+        ]
+    });
 
+    function exportExcelBy(by, listData) {
+        let detailFields = (by == "complex" ? "mojtameTitle" : (by == "assistant" ? "moavenatTitle" : "omorTitle"));
+        let detailHeaders = (by == "complex" ? '<spring:message code="complex"/>' : (by == "assistant" ? '<spring:message code="assistance"/>' : '<spring:message code="affairs"/>'));
+
+        let masterData = {};
+        let timeStatus = DynamicForm_CriteriaForm_ManHourReport.getItem('timeStatus').getValue();
+        if (timeStatus == 2) {
+            let terms = DynamicForm_CriteriaForm_ManHourReport.getItem('termId').getValueMap();
+            masterData['<spring:message code="year"/>'] = DynamicForm_CriteriaForm_ManHourReport.getItem('year').getValue();
+            masterData['<spring:message code="term"/>'] = terms[DynamicForm_CriteriaForm_ManHourReport.getItem('termId').getValue()];
+        } else {
+            masterData['<spring:message code="to.date"/>'] = DynamicForm_CriteriaForm_ManHourReport.getItem('endDate').getValue();
+            masterData['<spring:message code="from.date"/>'] = DynamicForm_CriteriaForm_ManHourReport.getItem('startDate').getValue();
         }
-    });
 
-    //----------------------------------- layOut -----------------------------------------------------------------------
+        detailFields = detailFields.concat(",presenceManHourStr,absenceManHourStr,unknownManHourStr,personnelCount,studentCount,participationPercentStr,presencePerPersonStr");
+        detailHeaders = detailHeaders.concat(',<spring:message code="report.presence.man.hour"/>,<spring:message code="report.absence.man.hour"/>,<spring:message code="report.unknown.man.hour"/>,<spring:message code="report.department.personnel.count"/>');
+        detailHeaders = detailHeaders.concat(',<spring:message code="report.student.count"/>,<spring:message code="report.participation.percent"/>,<spring:message code="report.presence.per.person"/>');
 
-    var HLayOut_Confirm_ManHourReport = isc.TrHLayoutButtons.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "70%",
-        height: "10%",
-        alignLayout: "center",
-        padding: 10,
-        members: [
-            IButton_ManHourReport
-        ]
-    });
+        let title = '<spring:message code="man.hour.statistics.per.department.report"/>';
+        let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/reportsToExcel/masterDetail",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "masterData", type: "hidden"},
+                    {name: "detailFields", type: "hidden"},
+                    {name: "detailHeaders", type: "hidden"},
+                    {name: "detailDto", type: "hidden"},
+                    {name: "title", type: "hidden"},
+                    {name: "detailData", type: "hidden"},
+                ]
+        });
+        listData.forEach(d => d.participationPercentStr = d.participationPercent);
+        listData.forEach(d => d.presenceManHourStr = d.presenceManHour);
+        listData.forEach(d => d.absenceManHourStr = d.absenceManHour);
+        listData.forEach(d => d.unknownManHourStr = d.unknownManHour);
+        listData.forEach(d => d.presencePerPersonStr = d.presencePerPerson);
+        listData.forEach(d => d.providedTaughtPercentStr = d.providedTaughtPercent);
 
-    var VLayout_Body_JspUnitReport = isc.TrVLayout.create({
-        members: [
-            organizationFilter,
-            DynamicForm_CriteriaForm_ManHourReport,
-            HLayOut_Confirm_ManHourReport
-        ]
-    });
+        downloadForm.setValue("masterData", JSON.stringify(masterData));
+        downloadForm.setValue("detailFields", detailFields);
+        downloadForm.setValue("detailHeaders", detailHeaders);
+        downloadForm.setValue("detailData", JSON.stringify(listData));
+        downloadForm.setValue("title", title);
+        downloadForm.setValue("detailDto", "com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO$ClassSumByStatus");
+        downloadForm.show();
+        downloadForm.submitForm();
 
-//</script>
+    }
+
+    //</script>
