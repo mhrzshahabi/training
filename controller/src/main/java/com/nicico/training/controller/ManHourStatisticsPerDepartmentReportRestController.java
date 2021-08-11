@@ -85,19 +85,19 @@ public class ManHourStatisticsPerDepartmentReportRestController {
                 endDate = info.getEndDate().trim();
             } else if (yearList != null) {
                 startDate = yearList.get(0) + "/01/01";
-                endDate = yearList.get((yearList.size()) - 1) + "/12/29";
+                endDate = yearList.get((yearList.size()) - 1) + "/12/30";
             }
         }
 
         List<ClassCourseSumByFeaturesAndDepartmentReportDTO> finalList;
         if (omorCode != null) {
-            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, omorCode, classStatusList);
+            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, null, omorCode, classStatusList);
         } else if (moavenatCode != null) {
-            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, moavenatCode, null, classStatusList);
+            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, moavenatCode, null, classStatusList);
         } else if (complexCode != null) {
-            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, complexCode, null, null, classStatusList);
+            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, complexCode, null, null, classStatusList);
         } else {
-            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReport(startDate, endDate, null, null, null, classStatusList);
+            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, null, null, classStatusList);
         }
 
         final ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs specResponse = new ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs();

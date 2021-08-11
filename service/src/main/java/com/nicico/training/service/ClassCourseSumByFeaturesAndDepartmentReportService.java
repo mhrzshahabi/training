@@ -104,7 +104,7 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
         script.append("                          )SESS ON(ATT.F_SESSION = SESS.ID)                          ");
         script.append("      ) )PIVOT(SUM (S_HOUR) FOR ATT_STATE IN('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))) SUM_");
         script.append("                          INNER JOIN (SELECT PV.C_TITLE AS C_TEACHING_TYPE, CLSS.ID, CLSS.C_CODE, CLSS.C_END_DATE, CLSS.C_START_DATE, CLSS.C_STATUS, CLSS.F_PLANNER, CLSS.F_COURSE FROM TBL_CLASS CLSS LEFT JOIN TBL_PARAMETER_VALUE PV ON CLSS.F_TEACHING_METHOD_ID = PV.ID) CLSS ON (CLSS.ID = SUM_.F_CLASS_ID AND ");
-        if (classStatusList.size()>0){
+        if (classStatusList.size() > 0) {
             script.append("  CLSS.C_STATUS IN (").append(classStatusList.stream().collect(Collectors.joining(","))).append("))");
         } else {
             script.append(" 1=1)");
@@ -166,6 +166,170 @@ public class ClassCourseSumByFeaturesAndDepartmentReportService implements IClas
             list.add(dto);
         }
         return list;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ClassCourseSumByFeaturesAndDepartmentReportDTO> getReportGroupByStudentDepartment(String startDate,
+                                                                                                  String endDate,
+                                                                                                  String mojtameCode,
+                                                                                                  String moavenatCode,
+                                                                                                  String omorCode,
+                                                                                                  List<String> classStatusList) {
+        StringBuffer departmentFilterCode = new StringBuffer();
+        if (omorCode != null) {
+            departmentFilterCode.append(" C_OMOR_CODE='").append(omorCode).append("'");
+        } else if (moavenatCode != null) {
+            departmentFilterCode.append(" C_MOAVENAT_CODE='").append(moavenatCode).append("'");
+        } else if (mojtameCode != null) {
+            departmentFilterCode.append(" C_MOJTAME_CODE='").append(mojtameCode).append("'");
+        } else {
+            departmentFilterCode.append(" 1=1");
+        }
+        StringBuffer script = new StringBuffer("SELECT ");
+        script.append(" CASE WHEN AL.presence + AL.absence = 0 THEN NULL");
+        script.append("     ELSE ROUND(100*AL.presence /(AL.presence + AL.absence) ,2) END AS participationPercent,");
+        script.append(" CASE WHEN PRS.count_prs = 0 THEN NULL");
+        script.append(" ELSE ROUND(AL.presence / PRS.count_prs , 2) END AS presencePerPerson,");
+        script.append(" AL.STUDENT_COUNT,ROUND(AL.ABSENCE, 2) AS ABSENCE,ROUND(AL.PRESENCE, 2) AS PRESENCE,ROUND(AL.UNKNOWN, 2) AS UNKNOWN,PRS.COUNT_PRS, ");
+        appendGroupQuery(script, mojtameCode, moavenatCode, omorCode, "AL.");
+        script.append(" FROM (SELECT");
+        script.append("       SUM(PRESENCE) PRESENCE,");
+        script.append("       SUM(ABSENCE) ABSENCE,");
+        script.append("       SUM(UNKNOWN) UNKNOWN,");
+        script.append("       SUM(STUDENT_COUNT) STUDENT_COUNT,");
+        appendGroupQuery(script, mojtameCode, moavenatCode, omorCode, "");
+        script.append(" FROM (SELECT SUM_.*, ");
+        appendGroupQuery(script, mojtameCode, moavenatCode, omorCode, "");
+        script.append(" FROM (SELECT COUNT(*)       AS STUDENT_COUNT,");
+        script.append("       F_DEPARTMENT_ID,");
+        script.append("       SUM(NVL(ABSENCE, 0))  AS ABSENCE,");
+        script.append("       SUM(NVL(PRESENCE, 0)) AS PRESENCE,");
+        script.append("       SUM(NVL(UNKNOWN, 0))  AS UNKNOWN");
+        script.append("         FROM (");
+        script.append("                SELECT ATT.F_STUDENT, ATT.F_CLASS_ID, ATT.ABSENCE, ATT.PRESENCE, ATT.UNKNOWN, PRSN.F_DEPARTMENT_ID");
+        script.append(" FROM (");
+        script.append(" SELECT * FROM (");
+        script.append(" SELECT F_STUDENT, ATT_STATE, F_CLASS_ID, S_HOUR FROM (");
+        script.append("SELECT CASE ");
+        script.append("                                                       WHEN (ATT.C_STATE = 1 OR ATT.C_STATE = 2)");
+        script.append("                                                           THEN 'PRESENCE'");
+        script.append("                                                       WHEN (ATT.C_STATE = 3 OR ATT.C_STATE = 4) THEN 'ABSENCE'");
+        script.append("                                                       ELSE 'UNKNOWN' END AS ATT_STATE,");
+        script.append("                                                   ATT.F_SESSION,");
+        script.append("                                                   ATT.F_STUDENT,");
+        script.append("                                                   SESS.F_CLASS_ID,");
+        script.append("                                                   SESS.S_HOUR");
+        script.append("                                            FROM TBL_ATTENDANCE ATT");
+        script.append("                                                     INNER JOIN (SELECT (TO_NUMBER(REGEXP_SUBSTR(C_SESSION_END_HOUR, '[^:]+', 3, 1)) +");
+        script.append("                                                                         60 * TO_NUMBER(REGEXP_SUBSTR(C_SESSION_END_HOUR, '[^:]+', 1, 1)) -");
+        script.append("                                                                         (TO_NUMBER(REGEXP_SUBSTR(C_SESSION_START_HOUR, '[^:]+', 3, 1)) +");
+        script.append("                                                                          60 * TO_NUMBER(REGEXP_SUBSTR(C_SESSION_START_HOUR, '[^:]+', 1, 1)))) /");
+        script.append("                                                                        60 AS S_HOUR,");
+        script.append("                                                                        ID,");
+        script.append("                                                                        F_CLASS_ID");
+        script.append("                                                                 FROM TBL_SESSION");
+        script.append("                                                                 WHERE C_SESSION_DATE >= :FROM_DATE");
+        script.append("                                                                   AND C_SESSION_DATE <= :TO_DATE) SESS");
+        script.append("                                                                ON (ATT.F_SESSION = SESS.ID))");
+        script.append("                               ) PIVOT (SUM(S_HOUR) FOR ATT_STATE IN ('PRESENCE' AS PRESENCE,'ABSENCE' AS ABSENCE,'UNKNOWN' AS UNKNOWN))");
+        script.append("                           ) ATT");
+        script.append("                               INNER JOIN TBL_STUDENT STD ON STD.ID = ATT.F_STUDENT");
+        script.append("                               INNER JOIN (SELECT F_DEPARTMENT_ID, PERSONNEL_NO");
+        script.append("                                           FROM (SELECT PR.F_DEPARTMENT_ID,");
+        script.append("                                                        PR.PERSONNEL_NO,");
+        script.append("                                                        ROW_NUMBER() OVER (PARTITION BY PERSONNEL_NO ORDER BY DELETED ASC) RW");
+        script.append("                                                 FROM TBL_PERSONNEL PR");
+        script.append("                                                 WHERE F_DEPARTMENT_ID IS NOT NULL)");
+        script.append("                                           WHERE RW = 1) PRSN ON PRSN.PERSONNEL_NO = STD.PERSONNEL_NO");
+        script.append("                               INNER JOIN (SELECT ID,");
+        script.append("                                                  C_STATUS");
+        script.append("                                           FROM TBL_CLASS");
+        script.append("                                           WHERE ");
+        if (classStatusList.size() > 0) {
+            script.append("  C_STATUS IN (").append(classStatusList.stream().collect(Collectors.joining(","))).append("))");
+        } else {
+            script.append(" 1=1)");
+        }
+        script.append("                   CLSS ON CLSS.ID = ATT.F_CLASS_ID)");
+        script.append("             GROUP BY F_DEPARTMENT_ID) SUM_");
+        script.append("               INNER JOIN (SELECT ID,C_MOAVENAT_CODE,C_MOJTAME_CODE,C_OMOR_CODE,C_GHESMAT_CODE,C_MOJTAME_TITLE,C_MOAVENAT_TITLE,C_OMOR_TITLE,C_GHESMAT_TITLE  FROM TBL_DEPARTMENT WHERE ");
+        script.append(departmentFilterCode);
+        script.append(" )DEP ON DEP.ID = SUM_.F_DEPARTMENT_ID )");
+        script.append("GROUP BY ");
+        appendGroupQuery(script, mojtameCode, moavenatCode, omorCode, "");
+        script.append(") AL LEFT JOIN ( select count(*) as COUNT_PRS,");
+        appendGroupQueryCode(script, mojtameCode, moavenatCode, omorCode);
+        script.append(" FROM (SELECT DEP.* FROM ( SELECT * FROM TBL_PERSONNEL PRS WHERE DELETED = 0) PRS INNER JOIN TBL_DEPARTMENT DEP ON DEP.ID = PRS.F_DEPARTMENT_ID ) GROUP BY ");
+        appendGroupQueryCode(script, mojtameCode, moavenatCode, omorCode);
+        script.append(") PRS ON PRS.");
+        if (omorCode != null) {
+            script.append("C_GHESMAT_CODE = AL.C_GHESMAT_CODE ");
+        } else if (moavenatCode != null) {
+            script.append("C_OMOR_CODE = AL.C_OMOR_CODE ");
+        } else if (mojtameCode != null) {
+            script.append("C_MOAVENAT_CODE = AL.C_MOAVENAT_CODE ");
+        } else {
+            script.append("C_MOJTAME_CODE = AL.C_MOJTAME_CODE ");
+        }
+        List<Object[]> records = (List<Object[]>) entityManager.createNativeQuery(script.toString())
+                .setParameter("FROM_DATE", startDate)
+                .setParameter("TO_DATE", endDate)
+                .getResultList();
+        List<ClassCourseSumByFeaturesAndDepartmentReportDTO> list = new ArrayList<>();
+
+        for (Object[] record : records) {
+            ClassFeatures dto = new ClassFeatures();
+            dto
+                    .setParticipationPercent(record[0] == null ? null : Double.parseDouble(record[0].toString()))
+                    .setPresencePerPerson(record[1] == null ? null : Double.parseDouble(record[1].toString()))
+                    .setStudentCount(record[2] == null ? null : Integer.parseInt(record[2].toString()))
+                    .setAbsenceManHour(record[3] == null ? null : Double.parseDouble(record[3].toString()))
+                    .setPresenceManHour(record[4] == null ? null : Double.parseDouble(record[4].toString()))
+                    .setUnknownManHour(record[5] == null ? null : Double.parseDouble(record[5].toString()))
+                    .setPersonnelCount(record[6] == null ? null : Integer.parseInt(record[6].toString()));
+
+            if (omorCode != null) {
+                dto.setGhesmatCode(record[7] == null ? null : record[7].toString());
+                dto.setGhesmatTitle(record[8] == null ? null : record[8].toString());
+            } else if (moavenatCode != null) {
+                dto.setOmorCode(record[7] == null ? null : record[7].toString());
+                dto.setOmorTitle(record[8] == null ? null : record[8].toString());
+            } else if (mojtameCode != null) {
+                dto.setMoavenatCode(record[7] == null ? null : record[7].toString());
+                dto.setMoavenatTitle(record[8] == null ? null : record[8].toString());
+            } else {
+                dto.setMojtameCode(record[7] == null ? null : record[7].toString());
+                dto.setMojtameTitle(record[8] == null ? null : record[8].toString());
+            }
+
+            list.add(dto);
+        }
+        return list;
+    }
+
+    private void appendGroupQuery(StringBuffer script, String mojtameCode, String moavenatCode, String omorCode, String prfx) {
+        if (omorCode != null) {
+            script.append(" ").append(prfx).append("C_GHESMAT_CODE,").append(prfx).append("C_GHESMAT_TITLE ");
+        } else if (moavenatCode != null) {
+            script.append(" ").append(prfx).append("C_OMOR_CODE,").append(prfx).append("C_OMOR_TITLE ");
+        } else if (mojtameCode != null) {
+            script.append(" ").append(prfx).append("C_MOAVENAT_CODE,").append(prfx).append("C_MOAVENAT_TITLE ");
+        } else {
+            script.append(" ").append(prfx).append("C_MOJTAME_CODE,").append(prfx).append("C_MOJTAME_TITLE ");
+        }
+    }
+
+    private void appendGroupQueryCode(StringBuffer script, String mojtameCode, String moavenatCode, String omorCode) {
+        if (omorCode != null) {
+            script.append(" C_GHESMAT_CODE ");
+        } else if (moavenatCode != null) {
+            script.append(" C_OMOR_CODE ");
+        } else if (mojtameCode != null) {
+            script.append(" C_MOAVENAT_CODE");
+        } else {
+            script.append(" C_MOJTAME_CODE");
+        }
     }
 
     @Override
