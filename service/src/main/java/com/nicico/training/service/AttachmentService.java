@@ -190,6 +190,28 @@ public class AttachmentService implements IAttachmentService {
         }
     }
 
-    // ------------------------------
+    @Transactional
+    @Override
+    public void saveSessionAttachment(Long sessionId, Map<String, String> file, String fileName) {
+
+        AttachmentDTO.Create createDTO = new AttachmentDTO.Create();
+        createDTO.setObjectId(sessionId);
+        createDTO.setObjectType("ClassSession");
+        createDTO.setFileTypeId(5L);
+        createDTO.setFileName(fileName);
+        Optional<Map.Entry<String, String>> first = file.entrySet().stream().findFirst();
+        if (first.isPresent()) {
+
+            createDTO.setKey(first.get().getKey());
+            createDTO.setGroup_id(first.get().getValue());
+            try {
+                Attachment attachment = modelMapper.map(createDTO, Attachment.class);
+                attachmentDAO.saveAndFlush(attachment);
+            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            }
+        } else
+            throw new TrainingException(TrainingException.ErrorType.InvalidData);
+    }
 
 }

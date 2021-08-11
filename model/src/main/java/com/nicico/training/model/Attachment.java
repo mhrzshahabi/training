@@ -45,6 +45,7 @@ public class Attachment<E> extends Auditable {
                     @MetaValue(targetEntity = Tclass.class, value = "Tclass"),
                     @MetaValue(targetEntity = Teacher.class, value = "Teacher"),
                     @MetaValue(targetEntity = ClassContract.class, value = "ClassContract"),
+                    @MetaValue(targetEntity = ClassSession.class, value = "ClassSession"),
                     @MetaValue(targetEntity = Job.class, value = "Job"),
                     @MetaValue(targetEntity = JobGroup.class, value = "JobGroup"),
                     @MetaValue(targetEntity = PostGrade.class, value = "PostGrade"),
