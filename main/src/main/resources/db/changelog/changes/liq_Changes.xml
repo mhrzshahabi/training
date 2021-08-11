@@ -1,5 +1,6 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
     <changeSet author="haeri_am (generated)" id="1590226268948-430">
@@ -63,7 +64,10 @@
         </addColumn>
     </changeSet>
     <changeSet author="razmnoosh (generated)" id="1591500872119-454">
-        <addForeignKeyConstraint baseColumnNames="scores_state_id" baseTableName="tbl_class_student" constraintName="FKi20ys074wah6o8u0qd58fnrog" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="scores_state_id" baseTableName="tbl_class_student"
+                                 constraintName="FKi20ys074wah6o8u0qd58fnrog" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
     <changeSet author="razmnoosh (generated)" id="1591505253286-513">
         <dropColumn columnName="FAILURE_REASON" tableName="TBL_CLASS_STUDENT"/>
@@ -74,11 +78,14 @@
         </addColumn>
     </changeSet>
     <changeSet author="razmnoosh (generated)" id="1591505253286-455">
-        <addForeignKeyConstraint baseColumnNames="failure_reason_id" baseTableName="tbl_class_student" constraintName="FK1or54xgtirawjuvxh0vtgqqxv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="failure_reason_id" baseTableName="tbl_class_student"
+                                 constraintName="FK1or54xgtirawjuvxh0vtgqqxv" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-<!--    <changeSet author="razmnoosh (generated)" id="1591506188197-402">-->
-<!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
-<!--    </changeSet>-->
+    <!--    <changeSet author="razmnoosh (generated)" id="1591506188197-402">-->
+    <!--        <addNotNullConstraint columnDataType="number(19,0)" columnName="scores_state_id" tableName="tbl_class_student"/>-->
+    <!--    </changeSet>-->
     <changeSet author="poursalehi_mos (generated)" id="1591589590264-473">
         <dropUniqueConstraint constraintName="UC_TBL_JOB_GROUPC_TITLE_FA_COL" tableName="TBL_JOB_GROUP"/>
     </changeSet>
@@ -102,7 +109,8 @@
     </changeSet>
 
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-440">
-        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED" constraintName="FK1AIMHPRI3C7JQYXF61MUUE8SB"/>
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED"
+                                  constraintName="FK1AIMHPRI3C7JQYXF61MUUE8SB"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-441">
         <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_NEW" constraintName="FK3B29TW8BISELXUSO9MTS6WJ81"/>
@@ -120,25 +128,31 @@
         <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT" constraintName="FK76PAHJAKRKWESQEHD2MSDMIKH"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-446">
-        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST" constraintName="FK79NQ7K3F70JFUYQ0XJQ3MOJOC"/>
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST"
+                                  constraintName="FK79NQ7K3F70JFUYQ0XJQ3MOJOC"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-447">
-        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED" constraintName="FKAYI7AD3MM6G5L1U43KOYY766C"/>
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED"
+                                  constraintName="FKAYI7AD3MM6G5L1U43KOYY766C"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-448">
         <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT" constraintName="FKBEFRJW4GC5J8B47LJIO9BYJ8W"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-449">
-        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_SKILL_GROUP" constraintName="FKBO4REUEW9XFMENAAU57DY10OY"/>
+        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_SKILL_GROUP"
+                                  constraintName="FKBO4REUEW9XFMENAAU57DY10OY"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-450">
-        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST" constraintName="FKBQM78OSP274THFOJK9IT78HXE"/>
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST"
+                                  constraintName="FKBQM78OSP274THFOJK9IT78HXE"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-451">
-        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED" constraintName="FKCS9A7KJN1LOLDGUOTA8L3YGKQ"/>
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_BASED"
+                                  constraintName="FKCS9A7KJN1LOLDGUOTA8L3YGKQ"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-452">
-        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST" constraintName="FKDR3XVM2NOFKKL0TCP6YX1E3TH"/>
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST"
+                                  constraintName="FKDR3XVM2NOFKKL0TCP6YX1E3TH"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-453">
         <dropForeignKeyConstraint baseTableName="TBL_POLIS" constraintName="FKE0AR9DPTLPVR12R35RA2JFTGA"/>
@@ -171,13 +185,15 @@
         <dropForeignKeyConstraint baseTableName="TBL_POLIS" constraintName="FKR88EACJBYRS3U0B0W6V7VXYYD"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-463">
-        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST" constraintName="FKRJPK0A9FPN167CYKP4KJJJ56X"/>
+        <dropForeignKeyConstraint baseTableName="TBL_NEED_ASSESSMENT_SKILL_POST"
+                                  constraintName="FKRJPK0A9FPN167CYKP4KJJJ56X"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-464">
         <dropForeignKeyConstraint baseTableName="TBL_SKILL_GROUP" constraintName="FKSFFQSY6ICDJNIO2O99SHS3NSL"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-465">
-        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_SKILL_GROUP" constraintName="FKTBTB7RMOQN6G8UE0PYJTV2GD5"/>
+        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_SKILL_GROUP"
+                                  constraintName="FKTBTB7RMOQN6G8UE0PYJTV2GD5"/>
     </changeSet>
 
     <changeSet author="poursalehi_mos (generated)" id="1592301837609-468">
@@ -265,17 +281,21 @@
         <createIndex indexName="IX_tbl_equal_coursePK" tableName="tbl_equal_course" unique="true">
             <column name="id"/>
         </createIndex>
-        <addPrimaryKey columnNames="id" constraintName="tbl_equal_coursePK" forIndexName="IX_tbl_equal_coursePK" tableName="tbl_equal_course"/>
+        <addPrimaryKey columnNames="id" constraintName="tbl_equal_coursePK" forIndexName="IX_tbl_equal_coursePK"
+                       tableName="tbl_equal_course"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592371635355-215">
-        <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l" referencedColumnNames="id" referencedTableName="tbl_equal_course"/>
+        <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course"
+                                 constraintName="FKkwqxqkpp78dcrvd4b8d52972l" referencedColumnNames="id"
+                                 referencedTableName="tbl_equal_course"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592371635355-504">
         <dropColumn columnName="EQUAL_COURSE_ID" tableName="tbl_equal_course"/>
     </changeSet>
 
     <changeSet author="mosta (generated)" id="1592557743650-372">
-        <addNotNullConstraint columnDataType="number(19,0)" columnName="list_equal_and_course" tableName="tbl_equal_and_course"/>
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="list_equal_and_course"
+                              tableName="tbl_equal_and_course"/>
     </changeSet>
 
     <changeSet author="poursalehi_mos (generated)" id="1592578568485-507">
@@ -355,19 +375,24 @@
         <addNotNullConstraint columnDataType="number(19,0)" columnName="f_competence" tableName="tbl_needs_assessment"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592801274835-385">
-        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_competence" tableName="tbl_needs_assessment_temp"/>
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_competence"
+                              tableName="tbl_needs_assessment_temp"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592801274835-386">
-        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_domain" tableName="tbl_needs_assessment"/>
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_domain"
+                              tableName="tbl_needs_assessment"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592801274835-387">
-        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_domain" tableName="tbl_needs_assessment_temp"/>
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_domain"
+                              tableName="tbl_needs_assessment_temp"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592801274835-388">
-        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_priority" tableName="tbl_needs_assessment"/>
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_priority"
+                              tableName="tbl_needs_assessment"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592801274835-389">
-        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_priority" tableName="tbl_needs_assessment_temp"/>
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_needs_assessment_priority"
+                              tableName="tbl_needs_assessment_temp"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1592801274835-390">
         <addNotNullConstraint columnDataType="number(19,0)" columnName="f_skill" tableName="tbl_needs_assessment"/>
@@ -709,7 +734,8 @@
         <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa" tableName="tbl_post_grade"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1595043204072-408">
-        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa" tableName="tbl_training_post"/>
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_fa"
+                               tableName="tbl_training_post"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1595043204072-409">
         <addNotNullConstraint columnDataType="number(10,0)" columnName="n_version" tableName="tbl_department"/>
@@ -789,7 +815,8 @@
         <createIndex indexName="IX_tbl_personnelPK" tableName="tbl_personnel" unique="true">
             <column name="id"/>
         </createIndex>
-        <addPrimaryKey columnNames="id" constraintName="tbl_personnelPK" forIndexName="IX_tbl_personnelPK" tableName="tbl_personnel"/>
+        <addPrimaryKey columnNames="id" constraintName="tbl_personnelPK" forIndexName="IX_tbl_personnelPK"
+                       tableName="tbl_personnel"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1595070690461-449">
         <createTable tableName="tbl_committee_personnel">
@@ -802,10 +829,16 @@
         </createTable>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1595070690461-462">
-        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_personnel" constraintName="FK65ehy840fg2dj3e1qyklvr0x6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_personnel"
+                                 constraintName="FK65ehy840fg2dj3e1qyklvr0x6" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_committee" validate="true"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1595070690461-463">
-        <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_committee_personnel" constraintName="FK7wmqnnkyqaytki3imc2gqu6m7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_committee_personnel"
+                                 constraintName="FK7wmqnnkyqaytki3imc2gqu6m7" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_personnel" validate="true"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1595070690461-450">
         <addColumn tableName="tbl_class_contract">
@@ -815,7 +848,10 @@
         </addColumn>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1595070690461-464">
-        <addForeignKeyConstraint baseColumnNames="f_accountable_id" baseTableName="tbl_class_contract" constraintName="FKihwfaifcmcci1efmafvm6iwj8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_accountable_id" baseTableName="tbl_class_contract"
+                                 constraintName="FKihwfaifcmcci1efmafvm6iwj8" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_personnel" validate="true"/>
     </changeSet>
 
     <changeSet author="matin_ar (generated)" id="1595146299877-450">
@@ -986,7 +1022,8 @@
         <dropColumn columnName="C_CODE_ID" tableName="TBL_QUESTION_BANK"/>
     </changeSet>
     <changeSet author="golrokhi (generated)" id="1595387736873-417">
-        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_question_display_type" tableName="tbl_question_bank"/>
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="f_parameter_value_question_display_type"
+                               tableName="tbl_question_bank"/>
     </changeSet>
 
     <changeSet author="golrokhi (generated)" id="1595660685513-461">
@@ -1243,7 +1280,8 @@
         </addColumn>
     </changeSet>
     <changeSet author="golrokhi (generated)" id="1600570520012-448">
-        <addNotNullConstraint columnDataType="number(19,0)" columnName="category_id" tableName="tbl_annual_statistical"/>
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="category_id"
+                              tableName="tbl_annual_statistical"/>
     </changeSet>
     <changeSet author="golrokhi (generated)" id="1600570520012-453">
         <dropPrimaryKey tableName="tbl_annual_statistical"/>
@@ -1251,7 +1289,8 @@
             <column name="category_id"/>
             <column name="institute_id"/>
         </createIndex>
-        <addPrimaryKey columnNames="category_id, institute_id" constraintName="tbl_annual_statisticalPK" forIndexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical"/>
+        <addPrimaryKey columnNames="category_id, institute_id" constraintName="tbl_annual_statisticalPK"
+                       forIndexName="IX_tbl_annual_statisticalPK" tableName="tbl_annual_statistical"/>
     </changeSet>
     <changeSet author="golrokhi (generated)" id="1600506065252-644">
         <dropColumn columnName="C_CONTEXT_HTML" tableName="TBL_MESSAGE_CONTACT"/>
@@ -1295,7 +1334,7 @@
     </changeSet>
 
     <changeSet author="golrokhi" id="ManualModifiedParameterValue-001">
-        <modifyDataType tableName="tbl_parameter_value" columnName="c_description" newDataType="VARCHAR2(600 CHAR)" />
+        <modifyDataType tableName="tbl_parameter_value" columnName="c_description" newDataType="VARCHAR2(600 CHAR)"/>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1601702370446-516">
         <addColumn tableName="tbl_department">
@@ -1308,7 +1347,7 @@
         </addColumn>
     </changeSet>
     <changeSet author="razmnoosh" id="ManualModifiedEvaluation-002">
-        <modifyDataType tableName="tbl_evaluation" columnName="c_description" newDataType="VARCHAR2(600 CHAR)" />
+        <modifyDataType tableName="tbl_evaluation" columnName="c_description" newDataType="VARCHAR2(600 CHAR)"/>
     </changeSet>
     <changeSet author="ASUS (generated)" id="1608547682490-521">
         <addColumn tableName="tbl_class">
@@ -1360,7 +1399,8 @@
         </addColumn>
     </changeSet>
     <changeSet author="MShahabi" id="1799887766557-015">
-        <modifyDataType tableName="tbl_question_bank" columnName="c_descriptive_answer" newDataType="VARCHAR2(4000 CHAR)"/>
+        <modifyDataType tableName="tbl_question_bank" columnName="c_descriptive_answer"
+                        newDataType="VARCHAR2(4000 CHAR)"/>
     </changeSet>
     <changeSet author="MShahabi" id="1799887766557-016">
         <addColumn tableName="tbl_class">
@@ -1375,7 +1415,10 @@
                 ALTER TABLE tbl_class MODIFY f_target_population_type_id NOT NULL;
             ]]>
         </sql>
-        <addForeignKeyConstraint baseColumnNames="f_target_population_type_id" baseTableName="tbl_class" constraintName="FKfsvy7pf9o912i84vkmi88cw7k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_target_population_type_id" baseTableName="tbl_class"
+                                 constraintName="FKfsvy7pf9o912i84vkmi88cw7k" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_parameter_value" validate="true"/>
 
     </changeSet>
 
@@ -1394,7 +1437,10 @@
                 ALTER TABLE tbl_class MODIFY f_holding_class_type_id NOT NULL;
             ]]>
         </sql>
-        <addForeignKeyConstraint baseColumnNames="f_holding_class_type_id" baseTableName="tbl_class" constraintName="FKakayi0tf9no2id2um3y1wxgin" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_holding_class_type_id" baseTableName="tbl_class"
+                                 constraintName="FKakayi0tf9no2id2um3y1wxgin" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
     <changeSet author="nick (generated)" id="1623819623743-526">
         <sql>
@@ -1409,7 +1455,10 @@
                 ALTER TABLE tbl_class MODIFY f_teaching_method_id NOT NULL;
             ]]>
         </sql>
-        <addForeignKeyConstraint baseColumnNames="f_teaching_method_id" baseTableName="tbl_class" constraintName="FKbla0dcn5qssm14l5foq53ax6v" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_teaching_method_id" baseTableName="tbl_class"
+                                 constraintName="FKbla0dcn5qssm14l5foq53ax6v" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
     <changeSet author="zare" id="abiz-2283">
@@ -1461,7 +1510,7 @@
     </changeSet>
     <changeSet author="zare" id="abiz-2340">
         <sql>
-        <![CDATA[
+            <![CDATA[
 
         merge into TBL_CONTACT_INFO c_info
         using (select * from TBL_STUDENT st where ACTIVE = 1 and DELETED = 0) student
@@ -1626,7 +1675,8 @@
             <column name="f_contact_info" type="number(19, 0)"/>
         </addColumn>
         <addForeignKeyConstraint baseTableName="TBL_PERSONNEL_REGISTERED" baseColumnNames="f_contact_info"
-                                 constraintName="FK_tbl_personnel_reg_contact_info" referencedTableName="tbl_contact_info"
+                                 constraintName="FK_tbl_personnel_reg_contact_info"
+                                 referencedTableName="tbl_contact_info"
                                  referencedColumnNames="id"/>
     </changeSet>
     <changeSet author="zare" id="abiz-2368-data-migration">
@@ -2684,8 +2734,10 @@ end;
 
 
     <changeSet author="zare" id="abiz-2429">
-        <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="NATIONAL_CODE" constraintName="unique_NATIONAL_CODE"/>
-        <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="F_CONTACT_INFO" constraintName="unique_CONTACT_INFO"/>
+        <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="NATIONAL_CODE"
+                             constraintName="unique_NATIONAL_CODE"/>
+        <addUniqueConstraint tableName="TBL_PERSONNEL_REGISTERED" columnNames="F_CONTACT_INFO"
+                             constraintName="unique_CONTACT_INFO"/>
     </changeSet>
     <changeSet author="nick (generated)" id="1626690510501-534">
         <sql>
@@ -2702,5 +2754,69 @@ end;
             <column name="has_attachment" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+
+    <changeSet author="namdari" id="namdari-2521">
+        <createView viewName="VIEW_REACTION_EVALUATION_FORMULA_REPORT" replaceIfExists="true">
+            <![CDATA[
+               SELECT
+    ROWNUM                 AS id,
+    tclass.id              AS class_id,
+    tclass.c_code          AS class_code,
+    tclass.c_status        AS class_status,
+    tclass.c_start_date    AS class_start_date,
+    tclass.c_end_date      AS class_end_date,
+    course.id              AS course_id,
+    course.c_code          AS course_code,
+    course.c_title_fa      AS course_titlefa,
+    cat.c_title_fa         AS category_titlefa,
+    sucat.c_title_fa       AS sub_category_titlefa,
+    tbl_personal_info.c_first_name_fa as teacherName,
+
+    tbl_personal_info.c_last_name_fa as teacherFamily ,
+        tbl_personal_info.c_national_code as teacherNationalCode
+FROM
+         tbl_class tclass
+    INNER JOIN tbl_course        course ON tclass.f_course = course.id
+    INNER JOIN tbl_category      cat ON cat.id = course.category_id
+    INNER JOIN tbl_sub_category  sucat ON sucat.id = course.subcategory_id
+    INNER JOIN tbl_teacher ON tclass.f_teacher = tbl_teacher.id
+    INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+WHERE
+    tclass.c_status != '1'
+             ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="namdari-2521-2">
+        <createView viewName="VIEW_REACTION_EVALUATION_FORMULA_REPORT" replaceIfExists="true">
+            <![CDATA[
+        SELECT
+    ROWNUM                 AS id,
+    tclass.id              AS class_id,
+    tclass.c_code          AS class_code,
+    tclass.c_status        AS class_status,
+    tclass.c_start_date    AS class_start_date,
+    tclass.c_end_date      AS class_end_date,
+    course.id              AS course_id,
+    course.c_code          AS course_code,
+    course.c_title_fa      AS course_titlefa,
+    cat.c_title_fa         AS category_titlefa,
+    sucat.c_title_fa       AS sub_category_titlefa,
+    tbl_personal_info.c_first_name_fa as teacher_name,
+
+    tbl_personal_info.c_last_name_fa as teacher_family ,
+        tbl_personal_info.c_national_code as teacher_national_code
+FROM
+         tbl_class tclass
+    INNER JOIN tbl_course        course ON tclass.f_course = course.id
+    INNER JOIN tbl_category      cat ON cat.id = course.category_id
+    INNER JOIN tbl_sub_category  sucat ON sucat.id = course.subcategory_id
+    INNER JOIN tbl_teacher ON tclass.f_teacher = tbl_teacher.id
+    INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+WHERE
+    tclass.c_status != '1'
+             ]]>
+        </createView>
+    </changeSet>
+
 
 </databaseChangeLog>

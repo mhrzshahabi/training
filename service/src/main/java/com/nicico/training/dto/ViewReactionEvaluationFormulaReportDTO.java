@@ -24,6 +24,9 @@ public class ViewReactionEvaluationFormulaReportDTO implements Serializable {
         private String classStatus;
         private String classStartDate;
         private String classEndDate;
+        private String teacherName;
+        private String teacherFamily;
+        private String teacherNationalCode;
         private Long courseId;
         private String courseCode;
         private String courseTitleFa;

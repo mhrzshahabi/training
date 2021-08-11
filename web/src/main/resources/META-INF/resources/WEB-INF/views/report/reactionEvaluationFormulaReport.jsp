@@ -59,6 +59,9 @@
             { name: "id", title: "id", primaryKey: true, hidden: true},
             {name: "classId", title: "classId", filterOperator: "iContains"},
             {name: "classCode", title: "<spring:message code="class.code"/>", filterOperator: "iContains"},
+            {name: "teacherNationalCode", title: "<spring:message code="teacher.national"/>", filterOperator: "iContains"},
+            {name: "teacherName", title: "<spring:message code="teacher.name"/>", filterOperator: "iContains"},
+            {name: "teacherFamily", title: "<spring:message code="teacher.last.name"/>", filterOperator: "iContains"},
             {name: "classStatus", title: "<spring:message code="class.status"/>", filterOperator: "iContains",
                 valueMap: {
 
@@ -92,6 +95,10 @@
             excelData.add({
                 rowNum: "ردیف",
                 classCode: "کد کلاس",
+                teacherNationalCode: "کد ملی استاد",
+                teacherName: "نام استاد",
+                teacherFamily: "نام خانوادگی استاد",
+
                 classStartDate: "تاریخ شروع",
                 classEndDate: "تاریخ پایان",
                 courseTitleFa: "نام دوره",
@@ -122,6 +129,9 @@
                         excelData.add({
                             rowNum: j+1,
                             classCode: records[j].classCode,
+                            teacherNationalCode: records[j].teacherNationalCode,
+                            teacherName:records[j].teacherName,
+                            teacherFamily: records[j].teacherFamily,
                             classStartDate: records[j].classStartDate,
                             classEndDate: records[j].classEndDate,
                             courseTitleFa: records[j].courseTitleFa,
@@ -143,6 +153,9 @@
                         excelData.add({
                             rowNum: j+1,
                             classCode: records[j].classCode,
+                            teacherNationalCode: records[j].teacherNationalCode,
+                            teacherName:records[j].teacherName,
+                            teacherFamily: records[j].teacherFamily,
                             classStartDate: records[j].classStartDate,
                             classEndDate: records[j].classEndDate,
                             courseTitleFa: records[j].courseTitleFa,
@@ -393,6 +406,9 @@
             excelData.add({
                 rowNum: "ردیف",
                 classCode: "کد کلاس",
+                teacherNationalCode: "کد ملی استاد",
+                teacherName: "نام استاد",
+                teacherFamily: "نام خانوادگی استاد",
                 classStartDate: "تاریخ شروع",
                 classEndDate: "تاریخ پایان",
                 courseTitleFa: "نام دوره",
@@ -474,6 +490,9 @@
         dataSource: RestDataSource_REFR,
         fields: [
             {name: "classCode"},
+            {name: "teacherNationalCode"},
+            {name: "teacherName"},
+            {name: "teacherFamily"},
             {name: "classStatus"},
             {name: "classStartDate"},
             {name: "classEndDate"},
@@ -554,6 +573,9 @@
             let fields = [
                 {name: "rowNum"},
                 {name: "classCode"},
+                {name: "teacherNationalCode"},
+                {name: "teacherName"},
+                {name: "teacherFamily"},
                 {name: "classStartDate"},
                 {name: "classEndDate"},
                 {name: "courseTitleFa"},

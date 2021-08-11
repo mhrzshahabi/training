@@ -55,4 +55,13 @@ public class ViewReactionEvaluationFormulaReport implements Serializable {
     @Column(name = "sub_category_titlefa")
     private String subCategoryTitleFa;
 
+    @Column(name = "teacher_name")
+    private String teacherName;
+
+    @Column(name = "teacher_family")
+    private String teacherFamily;
+
+    @Column(name = "teacher_national_code")
+    private String teacherNationalCode;
+
 }
