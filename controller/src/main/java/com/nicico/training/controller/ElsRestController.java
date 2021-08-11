@@ -664,7 +664,7 @@ public class ElsRestController {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("خطای شناسایی");
         }
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/averageResult/{classId}")
