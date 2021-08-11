@@ -1989,6 +1989,9 @@
     };
 
     function checkMobilePerReg(mobile) {
+        if (mobile === undefined || mobile === null || mobile === "")
+            return false;
+        else
         return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
     };
 
@@ -2083,7 +2086,7 @@
                         if (person.length === 0) {
                             if (insert && !checkIfAlreadyExist(list[i],students) && checkCodeMeliPerReg(list[i].nationalCode)
                                     && checkGender(list[i].gender)
-                                && mobile !== "" && mobile != null && typeof (mobile) != "undefined"
+                                    && checkMobilePerReg(list[i].mobile)
                             ) {
                                 let mobile = {};
                                 mobile.mobile =  list[i].mobile;
@@ -2104,14 +2107,14 @@
                             allRowsOK = false;
                             list[i].error = false;
                             list[i].hasWarning = "warning";
-                            if (checkCodeMeliPerReg(list[i].nationalCode) &&  mobile !== "" && mobile != null && typeof (mobile) != "undefined" && checkGender(list[i].gender))
+                            if (checkCodeMeliPerReg(list[i].nationalCode) &&  checkMobilePerReg(list[i].mobile) && checkGender(list[i].gender))
                             list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد ملی وارد شده در سیستم وجود ندارد.</span>";
                             else
                             {
                                 if (  !checkCodeMeliPerReg(list[i].nationalCode))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">کد ملی وارد شده فرمت صحیحی ندارد.</span>";
-                                  if(mobile === "" || mobile == null  || typeof (mobile) == "undefined")
-                                    list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شماره تلفن وارد نشده است.</span>";
+                                  if(!checkMobilePerReg(list[i].mobile) )
+                                    list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شماره تلفن درست وارد نشده است.</span>";
                                 if (  !checkGender(list[i].gender))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">جنسیت درست وارد نشده است.</span>";
                             }
