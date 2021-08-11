@@ -1975,6 +1975,14 @@
         s = s % 11;
         return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
     };
+    function checkGender(gender) {
+        if (gender === undefined || gender === null || gender === "")
+            return false;
+       if (gender==="مرد" || gender==="زن")
+           return true;
+       else
+           return false;
+    };
 
     function checkEmailPerReg(email) {
         return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
@@ -2074,6 +2082,7 @@
 
                         if (person.length === 0) {
                             if (insert && !checkIfAlreadyExist(list[i],students) && checkCodeMeliPerReg(list[i].nationalCode)
+                                    && checkGender(list[i].gender)
                                 && mobile !== "" && mobile != null && typeof (mobile) != "undefined"
                             ) {
                                 let mobile = {};
@@ -2095,15 +2104,16 @@
                             allRowsOK = false;
                             list[i].error = false;
                             list[i].hasWarning = "warning";
-                            if (checkCodeMeliPerReg(list[i].nationalCode) &&  mobile !== "" && mobile != null && typeof (mobile) != "undefined")
+                            if (checkCodeMeliPerReg(list[i].nationalCode) &&  mobile !== "" && mobile != null && typeof (mobile) != "undefined" && checkGender(list[i].gender))
                             list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد ملی وارد شده در سیستم وجود ندارد.</span>";
                             else
                             {
-                                if (  mobile !== "" && mobile != null && typeof (mobile) != "undefined")
+                                if (  !checkCodeMeliPerReg(list[i].nationalCode))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">کد ملی وارد شده فرمت صحیحی ندارد.</span>";
-                                  else
+                                  if(mobile === "" || mobile == null  || typeof (mobile) == "undefined")
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شماره تلفن وارد نشده است.</span>";
-
+                                if (  !checkGender(list[i].gender))
+                                    list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">جنسیت درست وارد نشده است.</span>";
                             }
 
                         } else {
