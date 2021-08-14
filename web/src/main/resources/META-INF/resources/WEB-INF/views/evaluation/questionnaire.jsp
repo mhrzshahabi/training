@@ -322,8 +322,8 @@
                 sortField: ["domain.id"],
                 sortDirection: "descending",
             },
-            {name: "weight", title: "<spring:message code="weight"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
-            {name: "order", title: "<spring:message code="order"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
+            {name: "weight", title: "<spring:message code="weight"/>", type: "Integer", keyPressFilter: "[0-9]", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
+            {name: "order", title: "<spring:message code="order"/>", type: "Integer", keyPressFilter: "[0-9]", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
         ]
     });
 
