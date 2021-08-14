@@ -21,7 +21,7 @@ public class QuestionnaireQuestionDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Long evaluationQuestionId;
     @ApiModelProperty(required = true)
-    private Float weight;
+    private Integer weight;
     @ApiModelProperty(required = true)
     private Integer order;
 
