@@ -16,9 +16,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -161,65 +160,119 @@ public class ContactInfoService implements IContactInfoService {
     @Transactional
     @Override
     public ContactInfo fetchAndUpdateLastHrMobile(Long id, String type, String token) {
+        HrmMobileListDTO.Response response = hrmClient.getMobilesByNationalCodes(new HrmMobileListDTO.Request().setNationalCodes(Collections.singletonList("0016351339")), token);
+        Map[] maps = getOrCreateContactInfos(Collections.singletonList(id), type);
+        Map<String, ContactInfo> fromHr = updateContactInfosWithHR(maps[0], token);
+        ContactInfo hr = fromHr.get(maps[1].get(id));
+        if (hr != null)
+            return hr;
+        else
+            return (ContactInfo) maps[0].values().iterator().next();
+    }
 
-        String nationalCode;
-        ContactInfo contactInfo;
+
+    @Transactional
+    @Override
+    public Map<Long, ContactInfo> fetchAndUpdateLastHrMobile(List<Long> ids, String type, String token) {
+        Map[] maps = getOrCreateContactInfos(ids, type);
+        Map<String, ContactInfo> ncToContact = new HashMap<>();
+        for (Long id : ids) {
+            ncToContact.put(((String) maps[1].get(id)), ((ContactInfo) maps[0].get(id)));
+        }
+        Map<String, ContactInfo> fromHr = updateContactInfosWithHR(ncToContact, token);
+        Map<Long, ContactInfo> result = new HashMap<>();
+        for (Long id : ids) {
+            ContactInfo hr = fromHr.get(maps[1].get(id));
+            if (hr != null)
+                result.put(id, hr);
+            else
+                result.put(id, (ContactInfo) maps[0].get(id));
+        }
+        return result;
+    }
+
+    private Map[] getOrCreateContactInfos(List<Long> ids, String type) {
+        Map<Long, ContactInfo> contactInfos = new HashMap<>();
+        Map<Long, String> idToNationalCode = new HashMap<>();
+        Map[] maps = new Map[]{contactInfos, idToNationalCode};
         switch (type) {
             case "Personnel":
-            Personnel personnel = personnelDAO.findById(id).get();
-            contactInfo = personnel.getContactInfo();
-            if (personnel.getContactInfoId() == null) {
-                contactInfo = new ContactInfo();
-                contactInfoDAO.save(contactInfo);
-                personnel.setContactInfo(contactInfo);
-                personnelDAO.saveAndFlush(personnel);
-            }
-            nationalCode = personnel.getNationalCode();
-            break;
-            case "RegisteredPersonnel":
-                PersonnelRegistered personnelRegistered = personnelRegisteredDAO.getOne(id);
-                contactInfo = personnelRegistered.getContactInfo();
-                if (personnelRegistered.getContactInfoId() == null) {
-                    contactInfo = new ContactInfo();
-                    contactInfoDAO.save(contactInfo);
-                    personnelRegistered.setContactInfo(contactInfo);
-                    personnelRegisteredDAO.saveAndFlush(personnelRegistered);
+                for (Long id : ids) {
+                    Personnel personnel = personnelDAO.findById(id).get();
+                    ContactInfo contactInfo = personnel.getContactInfo();
+                    if (personnel.getContactInfoId() == null) {
+                        contactInfo = new ContactInfo();
+                        contactInfoDAO.save(contactInfo);
+                        personnel.setContactInfo(contactInfo);
+                        personnelDAO.saveAndFlush(personnel);
+                    }
+                    String nationalCode = personnel.getNationalCode();
+                    contactInfos.put(id, contactInfo);
+                    idToNationalCode.put(id, nationalCode);
                 }
-                nationalCode = personnelRegistered.getNationalCode();
+                break;
+            case "RegisteredPersonnel":
+                for (Long id : ids) {
+                    PersonnelRegistered personnelRegistered = personnelRegisteredDAO.getOne(id);
+                    ContactInfo contactInfo = personnelRegistered.getContactInfo();
+                    if (personnelRegistered.getContactInfoId() == null) {
+                        contactInfo = new ContactInfo();
+                        contactInfoDAO.save(contactInfo);
+                        personnelRegistered.setContactInfo(contactInfo);
+                        personnelRegisteredDAO.saveAndFlush(personnelRegistered);
+                    }
+                    String nationalCode = personnelRegistered.getNationalCode();
+                    contactInfos.put(id, contactInfo);
+                    idToNationalCode.put(id, nationalCode);
+                }
                 break;
             case "Student":
-                Student student = studentDAO.findById(id).get();
-                contactInfo = student.getContactInfo();
-                if (contactInfo == null) {
-                    contactInfo = new ContactInfo();
-                    contactInfoDAO.save(contactInfo);
-                    student.setContactInfo(contactInfo);
-                    studentDAO.saveAndFlush(student);
+                for (Long id : ids) {
+                    Student student = studentDAO.findById(id).get();
+                    ContactInfo contactInfo = student.getContactInfo();
+                    if (contactInfo == null) {
+                        contactInfo = new ContactInfo();
+                        contactInfoDAO.save(contactInfo);
+                        student.setContactInfo(contactInfo);
+                        studentDAO.saveAndFlush(student);
+                    }
+                    String nationalCode = student.getNationalCode();
+                    contactInfos.put(id, contactInfo);
+                    idToNationalCode.put(id, nationalCode);
                 }
-                nationalCode = student.getNationalCode();
                 break;
             default:
                 throw new TrainingException(TrainingException.ErrorType.InvalidData);
         }
-        if (nationalCode == null)
-            return contactInfo;
+        return maps;
+    }
+
+    private Map<String, ContactInfo> updateContactInfosWithHR(Map<String, ContactInfo> contactInfos, String token) {
+        Map<String, ContactInfo> map = new HashMap<>();
+        if (contactInfos.size() == 0)
+            return map;
         long now = new Date().getTime();
-        long lastModified = contactInfo.getLastModifiedDate() == null ? 0 : contactInfo.getLastModifiedDate().getTime();
-        String hrMobile;
-        if ((now - lastModified) / 1000 / 60 / 60 > 12) {
+        ContactInfo anyContact = contactInfos.values().stream().findAny().get();
+        long lastModified = anyContact.getLastModifiedDate() == null ? 0 : anyContact.getLastModifiedDate().getTime();
+        if ((now - lastModified) / 1000 / 60 > 5) {
+            List<String> nationalCodes = contactInfos.keySet().stream().collect(Collectors.toList());
             try {
-                HrmPersonDTO person = hrmClient.getPersonByNationalCode(nationalCode, token);
-                hrMobile = person.getMobile();
-                final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfo.getId());
-                if (cById.isPresent()) {
-                    ContactInfo contact = cById.get();
-                    contact.setHrMobile(hrMobile);
-                    contactInfoDAO.saveAndFlush(contact);
+                HrmMobileListDTO.Response mobilesByNationalCodes = hrmClient.getMobilesByNationalCodes(new HrmMobileListDTO.Request().setNationalCodes(nationalCodes), token);
+                Map<String, String> result = mobilesByNationalCodes.getResult();
+                for (String nc : result.keySet()) {
+                    final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfos.get(nc).getId());
+                    if (cById.isPresent()) {
+                        ContactInfo contact = cById.get();
+                        contact.setHrMobile(result.get(nc));
+                        contactInfoDAO.saveAndFlush(contact);
+                        map.put(nc, contact);
+                    }
                 }
             } catch (Exception ex) {
+                System.err.println("HRM API Error");
             }
         }
-        return contactInfo;
+        return map;
     }
 
 }
