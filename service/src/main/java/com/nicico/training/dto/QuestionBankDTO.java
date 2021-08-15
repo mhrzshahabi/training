@@ -60,6 +60,7 @@ public class QuestionBankDTO {
         private Long tclassId;
         private Long teacherId;
         private Boolean hasAttachment;
+        private Integer questionLevelId;
     }
 
     @Getter

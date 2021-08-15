@@ -137,4 +137,9 @@ public class EnumsRestController {
         return new ResponseEntity<>(new EPublicationSubjectTypeDTO.EPublicationSubjectTypeSpecRs(), HttpStatus.OK);
     }
 
+    @GetMapping("eQuestionLevel/spec-list")
+    public ResponseEntity<EQuestionLevelDTO.EQuestionLevelSpecRs> getEQuestionLevel() {
+        return new ResponseEntity<>(new EQuestionLevelDTO.EQuestionLevelSpecRs(), HttpStatus.OK);
+    }
+
 }
