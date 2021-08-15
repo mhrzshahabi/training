@@ -6,6 +6,7 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import response.tclass.ElsSessionAttendanceResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -46,5 +47,7 @@ public interface IClassSession {
     SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchWeeklyTrainingSchedule(SearchDTO.SearchRq request, String userNationalCode);
 
     ClassSessionDTO.DeleteStatus deleteSessions(Long classId, @RequestBody List<Long> studentIds);
+
+    ElsSessionAttendanceResponse sessionStudentsBySessionId(Long sessionId);
 
 }

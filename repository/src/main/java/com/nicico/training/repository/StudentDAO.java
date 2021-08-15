@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -33,5 +34,20 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id\n" +
             "    where tbl_student.national_code =:nationalCode and tbl_class_student.class_id =:classId", nativeQuery = true)
     Long findOneByNationalCode(@Param("nationalCode") String nationalCode, @Param("classId") Long classId);
+
+
+    /**
+     * @param sessionId
+     * @return a map which contains list of students of a sesssion with their attendance info
+     */
+    @Query(value = "select " +
+            "       CONCAT(CONCAT(student.FIRST_NAME, ' '), student.LAST_NAME) as fullName, " +
+            "       student.NATIONAL_CODE                                      as nationalCode, " +
+            "       student.ID                                                 as studentId, " +
+            "       attendance.C_STATE                                         as attendanceStateId " +
+            "from TBL_STUDENT student " +
+            "         inner join TBL_ATTENDANCE attendance on student.ID = attendance.F_STUDENT " +
+            "where attendance.F_SESSION =:sessionId", nativeQuery = true)
+    List<Map<String,Object>> sessionStudentsBySessionId(@Param("sessionId")Long sessionId);
 
 }

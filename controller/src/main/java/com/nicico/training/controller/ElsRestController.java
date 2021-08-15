@@ -42,6 +42,7 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
+import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 
 import javax.servlet.http.HttpServletRequest;
@@ -79,6 +80,7 @@ public class ElsRestController {
     private final AttendanceBeanMapper attendanceMapper;
     private final IAttendanceService attendanceService;
     private final ClassSessionService classSessionService;
+    private final IClassSession iClassSessionService;
     private final IAttachmentService iAttachmentService;
 
 
@@ -694,6 +696,37 @@ public class ElsRestController {
             elsSessionResponse.setStatus(HttpStatus.NOT_FOUND.value());
             elsSessionResponse.setMessage("کلاس موردنظر یافت نشد");
             return elsSessionResponse;
+        }
+    }
+
+    /**
+     * @param header
+     * @param sessionId
+     * @return a response with a list of students of a session with their attendance information
+     */
+    @GetMapping("/sessionAttendancesInfo/bySessionId/{sessionId}")
+    public ElsSessionAttendanceResponse getAttendanceListPerSession(HttpServletRequest header, @PathVariable Long sessionId) {
+        ElsSessionAttendanceResponse elsSessionAttendanceResponse = new ElsSessionAttendanceResponse();
+        try {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                elsSessionAttendanceResponse = iClassSessionService.sessionStudentsBySessionId(sessionId);
+                if (elsSessionAttendanceResponse.getStudentAttendanceInfos() != null &&
+                        elsSessionAttendanceResponse.getStudentAttendanceInfos().size() != 0) {
+                    elsSessionAttendanceResponse.setStatus(HttpStatus.OK.value());
+                } else {
+                    elsSessionAttendanceResponse.setStatus(HttpStatus.NO_CONTENT.value());
+                    elsSessionAttendanceResponse.setMessage("لیست حضور غیاب خالی است");
+                }
+                return elsSessionAttendanceResponse;
+            } else {
+                elsSessionAttendanceResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                elsSessionAttendanceResponse.setMessage("دسترسی موردنظر یافت نشد");
+                return elsSessionAttendanceResponse;
+            }
+        } catch (Exception ex) {
+            elsSessionAttendanceResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            elsSessionAttendanceResponse.setMessage("جلسه ی موردنظر یافت نشد");
+            return elsSessionAttendanceResponse;
         }
     }
 

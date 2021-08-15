@@ -10,10 +10,7 @@ import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.AttendanceDAO;
-import com.nicico.training.repository.ClassSessionDAO;
-import com.nicico.training.repository.HolidayDAO;
-import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.DateTimeComparator;
@@ -23,6 +20,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.tclass.ElsSessionAttendanceResponse;
+import response.tclass.dto.ElsSessionAttendanceUserInfoDto;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormatSymbols;
@@ -46,6 +45,7 @@ public class ClassSessionService implements IClassSession {
     private final TclassDAO tclassDAO;
     private final ClassAlarmService classAlarmService;
     private final ParameterValueService parameterValueService;
+    private final StudentDAO studentDAO;
 
     //********************************
 
@@ -331,6 +331,34 @@ public class ClassSessionService implements IClassSession {
         deleteStatus.setTotalSizes(totalSize);
 
         return deleteStatus;
+    }
+
+    @Override
+    public ElsSessionAttendanceResponse sessionStudentsBySessionId(Long sessionId) {
+        List<Map<String, Object>> result = studentDAO.sessionStudentsBySessionId(sessionId);
+        ElsSessionAttendanceResponse elsSessionAttendanceResponse = new ElsSessionAttendanceResponse();
+        if (result.size() > 0) {
+            List<ElsSessionAttendanceUserInfoDto> ElsSessionAttendanceUserInfoDtos = new ArrayList<>();
+            for (Map<String, Object> map : result) {
+                ElsSessionAttendanceUserInfoDto userInfoDto = new ElsSessionAttendanceUserInfoDto();
+                map.forEach((key, value) -> {
+                    if (key.equals("STUDENTID")) {
+                        userInfoDto.setStudentId(Long.parseLong(String.valueOf(value)));
+                    } else if (key.equals("FULLNAME")) {
+                        userInfoDto.setFullName(String.valueOf(value));
+                    } else if (key.equals("NATIONALCODE")) {
+                        userInfoDto.setNationalCode(String.valueOf(value));
+                    } else if (key.equals("ATTENDANCESTATEID")) {
+                        userInfoDto.setAttendanceStateId(Long.parseLong(String.valueOf(value)));
+                    }
+//                    System.out.println("Key: " + key + " Value: " + value);
+                });
+                ElsSessionAttendanceUserInfoDtos.add(userInfoDto);
+            }
+            elsSessionAttendanceResponse.setStudentAttendanceInfos(ElsSessionAttendanceUserInfoDtos);
+            elsSessionAttendanceResponse.setSessionId(sessionId);
+        }
+        return elsSessionAttendanceResponse;
     }
 
     //*********************************
