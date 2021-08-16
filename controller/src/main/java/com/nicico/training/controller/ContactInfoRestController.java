@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.iservice.IContactInfoService;
+import com.nicico.training.model.Student;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -14,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,7 +53,7 @@ public class ContactInfoRestController {
     @Loggable
     @PostMapping(value = "/createNewFor/{id}")
 //    @PreAuthorize("hasAuthority('c_address')")
-    public ResponseEntity createNewFor(@PathVariable Long id,@RequestBody String type) {
+    public ResponseEntity createNewFor(@PathVariable Long id, @RequestBody String type) {
         try {
             return new ResponseEntity<>(contactInfoService.createNewFor(id, type), HttpStatus.CREATED);
         } catch (TrainingException ex) {
