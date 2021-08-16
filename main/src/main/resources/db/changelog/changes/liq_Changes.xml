@@ -2818,5 +2818,12 @@ WHERE
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-023">
+        <addColumn tableName="tbl_question_bank">
+            <column name="e_question_level" type="NUMBER(10, 0)" defaultValueNumeric="1"/>
+        </addColumn>
+    </changeSet>
+
+
 
 </databaseChangeLog>
