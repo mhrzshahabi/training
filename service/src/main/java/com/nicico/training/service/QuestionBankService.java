@@ -3,35 +3,19 @@ package com.nicico.training.service;
 @Author:Mehran Golrokhi
 */
 
-import com.nicico.copper.common.domain.criteria.NICICOPageable;
-import com.nicico.copper.common.domain.criteria.NICICOSpecification;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.dto.search.EOperator;
+
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.IQuestionBankService;
-import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
+import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.net.URLEncoder;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -43,6 +27,8 @@ public class QuestionBankService implements IQuestionBankService {
     private final QuestionBankDAO questionBankDAO;
     private final CategoryDAO categoryDAO;
     private final SubcategoryDAO subcategoryDAO;
+    private final EnumsConverter.EQuestionLevelConverter eQuestionLevelConverter = new EnumsConverter.EQuestionLevelConverter();
+
 
     @Transactional(readOnly = true)
     @Override
@@ -65,7 +51,9 @@ public class QuestionBankService implements IQuestionBankService {
         final Optional<QuestionBank> cById = questionBankDAO.findById(id);
         final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
 
-        return modelMapper.map(model, QuestionBankDTO.FullInfo.class);
+        QuestionBankDTO.FullInfo map = modelMapper.map(model, QuestionBankDTO.FullInfo.class);
+        map.setQuestionLevelId(model.getEQuestionLevel().getId());
+        return map;
     }
 
 
@@ -88,6 +76,7 @@ public class QuestionBankService implements IQuestionBankService {
         else
             model.setCodeId(1);
         model.setCode(model.getCodeId().toString());
+        model.setEQuestionLevel(eQuestionLevelConverter.convertToEntityAttribute(request.getQuestionLevelId()));
         return save(model);
     }
 
@@ -100,6 +89,7 @@ public class QuestionBankService implements IQuestionBankService {
 
         model.setCategoryId(request.getCategoryId());
         model.setSubCategoryId(request.getSubCategoryId());
+        model.setEQuestionLevel(eQuestionLevelConverter.convertToEntityAttribute(request.getQuestionLevelId()));
 
         QuestionBank updating = new QuestionBank();
         modelMapper.map(model, updating);

@@ -427,4 +427,24 @@ public abstract class EnumsConverter {
         }
     }
 
+    @Converter(autoApply = true)
+    public static class EQuestionLevelConverter implements AttributeConverter<EQuestionLevel, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(EQuestionLevel entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EQuestionLevel convertToEntityAttribute(Integer id) {
+
+            for (EQuestionLevel entry : EQuestionLevel.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
 }

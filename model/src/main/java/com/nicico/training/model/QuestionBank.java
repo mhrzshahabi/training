@@ -1,6 +1,6 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.enums.EPublicationSubjectType;
+import com.nicico.training.model.enums.EQuestionLevel;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -108,6 +108,9 @@ public class QuestionBank extends Auditable {
 
     @Column(name = "has_attachment")
     private Boolean hasAttachment;
+
+    @Column(name = "e_question_level")
+    private EQuestionLevel eQuestionLevel;
 
 }
 
