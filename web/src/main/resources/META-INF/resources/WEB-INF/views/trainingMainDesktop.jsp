@@ -5,6 +5,7 @@
 <%@ taglib prefix="s" uri="http://www.springframework.org/security/tags" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
+<%@ page import="static com.nicico.copper.core.SecurityUtil.hasAuthority" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
@@ -61,6 +62,16 @@
             if((tem= ua.match(/version\/(\d+)/i))!= null) M.splice(1, 1, tem[1]);
             return M;
         })();
+
+        var userRoles={};
+        let acsess= "<%= hasAuthority("ROLE.Training.shahre_babak_role") %>"
+        userRoles.shahreBabak = acsess;
+         acsess= "<%= hasAuthority("ROLE.Training.sarcheshme_role") %>"
+        userRoles.sarcheshme = acsess;
+        acsess= "<%= hasAuthority("ROLE.Training.rafsanjan_role") %>"
+        userRoles.rafsanjan = acsess;
+        acsess= "<%= hasAuthority("ROLE.Training.songon_role") %>"
+        userRoles.songon = acsess;
 
 
        /* jQuery.loadScript = function (url, callback) {

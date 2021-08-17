@@ -239,15 +239,15 @@
             {name: "objectName"},
             {name: "objectCode"},
             {name: "course"},
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
-                showHover:true,
-                hoverWidth: 200,
-                hoverHTML(record) {
-                    if(record.hasWarning == "alarm"){
-                        return "دوره ای به مهارت اختصاص نیافته است";
-                    }
-                },
-            },
+            // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
+            //     showHover:true,
+            //     hoverWidth: 200,
+            //     hoverHTML(record) {
+            //         if(record.hasWarning == "alarm"){
+            //             return "دوره ای به مهارت اختصاص نیافته است";
+            //         }
+            //     },
+            // },
         ],
         testData: skillTopData,
         clientOnly: true,
@@ -704,7 +704,7 @@
         fields: [
             {name: "titleFa"},
             {name: "objectType"},
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
 
             // {
             //     name: "needsAssessmentPriorityId",
@@ -729,28 +729,28 @@
             "filterEditor", "header", "body"
         ],
         // width: "25%",
-        canAcceptDroppedRecords: true,
+        canAcceptDroppedRecords: false,
         // canHover: true,
         showHoverComponents: true,
         // hoverMode: "detailField",
-        canRemoveRecords:true,
+        canRemoveRecords:false,
         showHeaderContextMenu: false,
         showFilterEditor:false,
-        removeRecordClick(rowNum){
-            removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
-        },
-        recordDrop(dropRecords, targetRecord, index, sourceWidget) {
-            let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();
-            if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
-                if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
-                    for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 108));
-                        // fetchDataDomainsTopGrid_diff();
-                        // this.fetchData();
-                    }
-                }
-            }
-        },
+        // removeRecordClick(rowNum){
+        //     removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
+        // },
+        <%--recordDrop(dropRecords, targetRecord, index, sourceWidget) {--%>
+        <%--    let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();--%>
+        <%--    if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {--%>
+        <%--        if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {--%>
+        <%--            for (let i = 0; i < dropRecords.length; i++) {--%>
+        <%--                createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 108));--%>
+        <%--                // fetchDataDomainsTopGrid_diff();--%>
+        <%--                // this.fetchData();--%>
+        <%--            }--%>
+        <%--        }--%>
+        <%--    }--%>
+        <%--},--%>
         dataChanged(){
             editing = true;
             this.Super("dataChanged",arguments);
@@ -767,9 +767,9 @@
         getCellCSSText(record) {
             return priorityColor(record);
         },
-        recordDoubleClick(viewer, record){
-            updatePriority_JspDiffNeedsAssessment(viewer, record);
-        }
+        // recordDoubleClick(viewer, record){
+        //     updatePriority_JspDiffNeedsAssessment(viewer, record);
+        // }
     });
     var ListGridTop_Ability_JspDiffNeedsAssessment = isc.NaLG.create({
         ID: "ListGridTop_Ability_JspDiffNeedsAssessment",
@@ -780,7 +780,7 @@
         fields: [
             {name: "titleFa"},
             {name: "objectType"},
-            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
             // {
             //     name: "needsAssessmentPriorityId",
             //     canEdit:true,
@@ -803,31 +803,31 @@
         ],
         // width: "25%",
         showHeaderContextMenu: false,
-        canAcceptDroppedRecords: true,
+        canAcceptDroppedRecords: false,
         // canHover: true,
         showHoverComponents: true,
         autoSaveEdits:false,
         // hoverMode: "details",
-        canRemoveRecords:true,
+        canRemoveRecords:false,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":109},
-        removeRecordClick(rowNum){
-            removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
-        },
-        recordDrop(dropRecords, targetRecord, index, sourceWidget) {
-            let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();
-            if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
-                if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
-                    for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 109));
-                        // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
-                        // createNeedsAssessmentRecords_Diff(data);
-                        // this.fetchData();
-                        // fetchDataDomainsTopGrid_diff();
-                    }
-                }
-            }
-        },
+        // removeRecordClick(rowNum){
+        //     removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
+        // },
+        <%--recordDrop(dropRecords, targetRecord, index, sourceWidget) {--%>
+        <%--    let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();--%>
+        <%--    if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {--%>
+        <%--        if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {--%>
+        <%--            for (let i = 0; i < dropRecords.length; i++) {--%>
+        <%--                createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 109));--%>
+        <%--                // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);--%>
+        <%--                // createNeedsAssessmentRecords_Diff(data);--%>
+        <%--                // this.fetchData();--%>
+        <%--                // fetchDataDomainsTopGrid_diff();--%>
+        <%--            }--%>
+        <%--        }--%>
+        <%--    }--%>
+        <%--},--%>
         dataChanged(){
             editing = true;
             this.Super("dataChanged",arguments);
@@ -844,9 +844,9 @@
         getCellCSSText: function (record) {
             return priorityColor(record);
         },
-        recordDoubleClick(viewer, record){
-            updatePriority_JspDiffNeedsAssessment(viewer, record);
-        }
+        // recordDoubleClick(viewer, record){
+        //     updatePriority_JspDiffNeedsAssessment(viewer, record);
+        // }
     });
     var ListGridTop_Attitude_JspDiffNeedsAssessment = isc.NaLG.create({
         ID: "ListGridTop_Attitude_JspDiffNeedsAssessment",
@@ -858,7 +858,7 @@
         fields: [
             {name: "titleFa"},
             {name: "objectType"},
-            {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
+            // {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
             // {
             //     name: "needsAssessmentPriorityId",
             //     canEdit:true,
@@ -880,31 +880,31 @@
             "filterEditor", "header", "body"
         ],
         // width: "25%",
-        canAcceptDroppedRecords: true,
+        canAcceptDroppedRecords: false,
         // canHover: true,
         autoSaveEdits:false,
         showHoverComponents: true,
         // hoverMode: "details",
-        canRemoveRecords:true,
+        canRemoveRecords:false,
         showFilterEditor:false,
         implicitCriteria:{"needsAssessmentDomainId":110},
-        removeRecordClick(rowNum){
-            removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
-        },
-        recordDrop(dropRecords, targetRecord, index, sourceWidget) {
-            let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();
-            if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
-                if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {
-                    for (let i = 0; i < dropRecords.length; i++) {
-                        createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 110));
-                        // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);
-                        // createNeedsAssessmentRecords_Diff(data);
-                        // this.fetchData();
-                        // fetchDataDomainsTopGrid_diff()
-                    }
-                }
-            }
-        },
+        // removeRecordClick(rowNum){
+        //     removeRecord_JspDiffNeedsAssessment(this.getRecord(rowNum));
+        // },
+        <%--recordDrop(dropRecords, targetRecord, index, sourceWidget) {--%>
+        <%--    let record = ListGridTop_Competence_JspDiffNeedsAssessment.getSelectedRecord();--%>
+        <%--    if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {--%>
+        <%--        if (sourceWidget.ID === 'ListGrid_SkillAll_JspDiffNeedsAssessment') {--%>
+        <%--            for (let i = 0; i < dropRecords.length; i++) {--%>
+        <%--                createNeedsAssessmentRecords_Diff(createData_JspDiffNeedsAssessment(dropRecords[i], 110));--%>
+        <%--                // DataSource_Skill_Top_JspDiffNeedsAssessment.addData(data);--%>
+        <%--                // createNeedsAssessmentRecords_Diff(data);--%>
+        <%--                // this.fetchData();--%>
+        <%--                // fetchDataDomainsTopGrid_diff()--%>
+        <%--            }--%>
+        <%--        }--%>
+        <%--    }--%>
+        <%--},--%>
         dataChanged(){
             editing = true;
             this.Super("dataChanged",arguments);
@@ -921,9 +921,9 @@
         getCellCSSText: function (record) {
             return priorityColor(record);
         },
-        recordDoubleClick(viewer, record){
-            updatePriority_JspDiffNeedsAssessment(viewer, record);
-        }
+        // recordDoubleClick(viewer, record){
+        //     updatePriority_JspDiffNeedsAssessment(viewer, record);
+        // }
     });
     var ListGridBottom_Competence_JspDiffNeedsAssessment = isc.TrLG.create({
         ID: "ListGridBottom_Competence_JspDiffNeedsAssessment",
@@ -1668,9 +1668,9 @@
         if(state === "read"){
             NeedsAssessmentTargetDF_diffNeedsAssessment.disable()
             CompetenceTS_diffNeedsAssessment.disable();
-            ListGridTop_Knowledge_JspDiffNeedsAssessment.disable();
-            ListGridTop_Ability_JspDiffNeedsAssessment.disable();
-            ListGridTop_Attitude_JspDiffNeedsAssessment.disable();
+            // ListGridTop_Knowledge_JspDiffNeedsAssessment.disable();
+            // ListGridTop_Ability_JspDiffNeedsAssessment.disable();
+            // ListGridTop_Attitude_JspDiffNeedsAssessment.disable();
         }
         updateObjectIdLG_Diff(NeedsAssessmentTargetDF_diffNeedsAssessment, type);
         NeedsAssessmentTargetDF_diffNeedsAssessment.setValue("objectType", type);
