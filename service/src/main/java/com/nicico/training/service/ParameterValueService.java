@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -55,5 +56,13 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
 
     public ParameterValue getEntityId(String code) {
         return dao.findByCode(code);
+    }
+
+    @Transactional
+    public String getParameterValueCodeById (Long id) {
+        Optional<ParameterValue> byId = dao.findById(id);
+        ParameterValue parameterValue = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return parameterValue.getCode();
+
     }
 }
