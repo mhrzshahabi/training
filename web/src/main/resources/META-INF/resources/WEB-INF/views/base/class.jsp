@@ -2984,15 +2984,6 @@
         } else {
             if ((a===0)&&(record.classStatus === "4")) {
                 createDialog("info", "کلاس انتخاب شده لغو شده است و امکان ویرایش آن وجود ندارد.", "هشدار");
-/*                let dialog = createDialog("ask", "کلاس انتخاب شده لغو شده است در صورت ویرایش وضعیت کلاس به حالت برنامه ریزی برمیگردد. از ویرایش کلاس مطمئن هستید؟", "هشدار");
-                dialog.addProperties({
-                    buttonClick: function (button, index) {
-                        this.close();
-                        if (index === 0) {
-                            startEdit(record)
-                        }
-                    }
-                });*/
             } else {
                 startEdit(record);
             }
@@ -3684,19 +3675,6 @@
     }
     function class_finish_result(resp) {
         wait.close();
-        <%--if (resp.httpResponseCode === 200) {--%>
-        <%--    ListGrid_Class_JspClass.invalidateCache();--%>
-        <%--    var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",--%>
-        <%--        "<spring:message code="msg.command.done"/>");--%>
-        <%--    setTimeout(function () {--%>
-        <%--        OK.close();--%>
-        <%--    }, 3000);--%>
-        <%--    refreshSelectedTab_class(tabSetClass.getSelectedTab());--%>
-        <%--} else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {--%>
-        <%--    createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");--%>
-        <%--} else {--%>
-        <%--    createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));--%>
-        <%--}--%>
     }
 
     function GetScoreState(resp) {
@@ -3817,14 +3795,6 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            <%--if (lastDate > classEnd.trim()) {--%>
-            <%--    createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
-            <%--    return false;--%>
-            <%--}--%>
-            <%--if (termStart.trim() > classStart.trim()) {--%>
-            <%--    createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
-            <%--    return false;--%>
-            <%--}--%>
             if (termEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;

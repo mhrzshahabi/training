@@ -280,4 +280,13 @@ public class Tclass extends Auditable {
     @Column(name = "b_class_to_online_status")
     private Boolean classToOnlineStatus;
 
+    @Column(name = "complex_id")
+    private Long complexId;
+
+    @Column(name = "assistant_id")
+    private Long assistantId;
+
+    @Column(name = "affairs_id")
+    private Long affairsId;
+
 }
