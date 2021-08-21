@@ -2824,6 +2824,12 @@ WHERE
         </addColumn>
     </changeSet>
 
-
+    <changeSet author="namdari (generated)" id="2532-1">
+        <addColumn tableName="tbl_class">
+            <column name="complex_id" type="number(19, 0)"/>
+            <column name="assistant_id" type="number(19, 0)"/>
+            <column name="affairs_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
