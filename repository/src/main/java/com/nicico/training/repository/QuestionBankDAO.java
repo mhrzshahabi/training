@@ -38,4 +38,6 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
 
     List<QuestionBank> findByTclassId(Long id);
 
+    List<QuestionBank> findByTeacherId(Long teacherId);
+
 }

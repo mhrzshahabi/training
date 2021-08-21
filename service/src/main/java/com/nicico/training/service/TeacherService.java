@@ -884,4 +884,9 @@ public class TeacherService implements ITeacherService {
         List<Teacher> teachers = teacherDAO.findDistinctByTclasseCourseId(courseId);
         return teacherBeanMapper.toTeacherInCourseDtoList(teachers);
     }
+
+    @Transactional
+    public Long getTeacherIdByNationalCode(String nationalCode) {
+        return teacherDAO.getTeacherId(nationalCode);
+    }
 }

@@ -119,4 +119,10 @@ public class QuestionBankService implements IQuestionBankService {
             return maxId + 1;
         return 1;
     }
+
+    @Transactional
+    public List<QuestionBank> getQuestionBankByTeacherId(Long teacherId) {
+        return questionBankDAO.findByTeacherId(teacherId);
+    }
+
 }
