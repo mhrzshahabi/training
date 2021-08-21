@@ -72,6 +72,8 @@
         userRoles.rafsanjan = acsess;
         acsess= "<%= hasAuthority("ROLE.Training.songon_role") %>"
         userRoles.songon = acsess;
+        acsess= "<%= hasAuthority("ROLE.Training.admin_role") %>"
+        userRoles.admin = acsess;
 
 
        /* jQuery.loadScript = function (url, callback) {
