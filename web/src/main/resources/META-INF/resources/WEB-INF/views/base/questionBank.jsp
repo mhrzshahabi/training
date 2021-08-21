@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-//<script>
+// <script>
 
     let questionBankMethod_questionBank;
     let forceToCloseWindow=true;
@@ -226,6 +226,11 @@
         fetchDataURL: courseUrl + "spec-list",
     });
 
+    EQuestionLevelDS_questionBank = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
+        ],
+        fetchDataURL: enumUrl + "eQuestionLevel/spec-list"
+    });
 
     ClassDS_questionBank = isc.TrDS.create({
         fields: [
@@ -944,13 +949,25 @@
                     item.fetchData();
                 }
             },
-   {
+            {
                 name: "hasAttachment",
                 title: "جواب کاربر نیاز به الصاق فایل دارد",
                 type: "checkbox",
                 titleOrientation: "left",
-                labelAsTitle: true,
-
+                labelAsTitle: true
+            },
+            {
+                name: "eQuestionLevel.id",
+                title: "درجه سختی سوال",
+                required: true,
+                textAlign: "center",
+                optionDataSource: EQuestionLevelDS_questionBank,
+                valueField: "id",
+                displayField: "titleFa",
+                sortField: ["id"],
+                pickListProperties:{
+                    showFilterEditor: false
+                }
             },
             {
                 name: "lines",
@@ -1332,6 +1349,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 }
 
                 QuestionBankDF_questionBank.editRecord(record);
+                QuestionBankDF_questionBank.getItem("eQuestionLevel.id").setValue(record.questionLevelId);
 
                 if (record.questionTypeId == 520) {
                     QuestionBankDF_questionBank.getItem("displayTypeId").enable();
@@ -1477,7 +1495,11 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
             questionBankSaveUrl += "/" + record.id;
             questionBankAction = '<spring:message code="edited"/>';
         }
+
         let data = QuestionBankDF_questionBank.getValues();
+        delete data["eQuestionLevel"];
+        data.questionLevelId = QuestionBankDF_questionBank.getField("eQuestionLevel.id").getValue();
+
         isc.RPCManager.sendRequest(
             TrDSRequest(questionBankSaveUrl, questionBankMethod_questionBank, JSON.stringify(data), function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
