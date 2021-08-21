@@ -14,5 +14,7 @@ public class ElsAttachmentDto {
     private String attachment;
     @ApiModelProperty
     private String groupId;
+    @ApiModelProperty
+    private String fileName;
 
 }
