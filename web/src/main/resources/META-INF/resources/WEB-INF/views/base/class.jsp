@@ -502,6 +502,7 @@
                 name: "group",
                 title: "<spring:message code='group'/>",
                 align: "center",
+                width: 40,
                 filterOperator: "equals",
             },
             {
@@ -607,15 +608,13 @@
                 title: "<spring:message code="ending.class.status"/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true
-            },
+                width: 40            },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {
                 name: "isSentMessage",
                 title: "ارسال پيام قبل از شروع کلاس",
-                // width: 190,
-                hidden: true,
-                // width: 190,
+                width: 40,
+                // hidden: true,
                 type: "image",
                 imageURLPrefix: "",
                 imageURLSuffix: ".gif",
@@ -2233,15 +2232,7 @@
         }
     });
     </sec:authorize>
-<%--    <sec:authorize access="hasAuthority('Tclass_C')">--%>
-<%--    var ToolStripButton_finish = isc.ToolStripButton.create({--%>
-<%--        title: "اختتام",--%>
-<%--        click: function () {--%>
-<%--            TabSet_Class.disableTab(TabSet_Class.tabs[11]);--%>
-<%--     // ListGrid_class_finish()--%>
-<%--        }--%>
-<%--    });--%>
-<%--    </sec:authorize>--%>
+
 
     var ToolStripButton_teacherEvaluation_JspClass = isc.ToolStripButton.create({
         title: "ثبت نتایج ارزیابی مسئول آموزش از مدرس کلاس",
@@ -3512,30 +3503,12 @@
                                 multiple: true,
                                 required: true,
                                 textAlign: "center",
-                                // icons: [
-                                //     {
-                                //         name: "clear",
-                                //         src: "[SKIN]actions/remove.png",
-                                //         width: 15,
-                                //         height: 15,
-                                //         inline: true,
-                                //         prompt: "پاک کردن",
-                                //         click: function (form, item, icon) {
-                                //             item.clearValue();
-                                //             item.focusInItem();
-                                //         }
-                                //     }
-                                // ],
-                                // hidden: true,
                                 width: "280",
                                 // editorType: "MultiSelectItem",
                                 pickListWidth: 700,
                                 optionDataSource: RestDataSource_Class_JspClass,
                                 displayField: "titleClass",
                                 valueField: "id",
-                                // addUnknownValues: false,
-                                // textMatchStyle: "substring",
-                                // generateExactMatchCriteria: true,
                                 filterFields: ["titleClass", "code"],
                                 pickListFields: [
                                     {name: "code", title: "کد کلاس", autoFitWidth: true},

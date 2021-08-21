@@ -50,4 +50,8 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "where attendance.F_SESSION =:sessionId", nativeQuery = true)
     List<Map<String,Object>> sessionStudentsBySessionId(@Param("sessionId")Long sessionId);
 
+    Optional<Student> findByContactInfoId(Long id);
+
+    @Query(value = "select * from TBL_STUDENT where f_contact_info IN(:ids)" , nativeQuery = true)
+    List<Student> findAllByContactInfoIds(List<Long> ids);
 }

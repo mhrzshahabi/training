@@ -30,4 +30,9 @@ public interface IContactInfoService {
 
     Map<Long, ContactInfo> fetchAndUpdateLastHrMobile(List<Long> ids, String type, String token);
 
+    Map<String, Object> nationalCodeOfMobile(String mobile);
+
+    Object getCorrespondingRecordOfContactInfo(Long id);
+
+    //Boolean has
 }
