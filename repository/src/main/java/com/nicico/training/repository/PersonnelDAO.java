@@ -1,6 +1,7 @@
 package com.nicico.training.repository;
 
 import com.nicico.training.model.Personnel;
+import com.nicico.training.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -75,4 +76,9 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     @Query(value = "select pr.id from TBL_PERSONNEL pr inner join (select distinct(f_planner) as f_planner from tbl_class) cls on pr.id = f_planner inner join tbl_department dpr on dpr.id = pr.f_department_id where c_mojtame_code = :mojtameCode", nativeQuery = true)
     List<Long> inDepartmentIsPlanner(@Param("mojtameCode")String mojtameCode);
+
+    Optional<Personnel> findByContactInfoId(Long id);
+
+    @Query(value = "select * from TBL_PERSONNEL where f_contact_info IN(:ids)" , nativeQuery = true)
+    List<Personnel> findAllByContactInfoIds(List<Long> ids);
 }

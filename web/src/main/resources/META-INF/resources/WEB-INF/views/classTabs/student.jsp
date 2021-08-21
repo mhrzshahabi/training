@@ -1949,6 +1949,16 @@
                             delete data.emobileForSMS;
                             wait.show();
                             isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data), (r) => {
+                                debugger
+                                if (r.httpResponseCode == 406) {
+                                    let str = r.httpResponseText;
+                                    let msg = str.substring(str.lastIndexOf("[") + 1, str.lastIndexOf("]"));
+                                    createDialog("warning", msg);
+                                    editMobileForm_class.clearValues();
+                                    Window_EditMobile_class.close();
+                                    wait.close();
+                                    return;
+                                }
                                 let m = "";
                                 switch (data.mobileForSMS) {
                                     case 4:
