@@ -1,6 +1,5 @@
 package response.question.dto;
 
-import dto.exam.EQuestionType;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,9 +16,9 @@ public class ElsQuestionDto {
     @ApiModelProperty(required = false)
     private String description;
     @ApiModelProperty(required = true)
-    private EQuestionType type;
+    private String type;
     @ApiModelProperty
-    private ElsQuestionLevel questionLevel;
+    private String questionLevel;
     @ApiModelProperty
     private Long categoryId;
     @ApiModelProperty
