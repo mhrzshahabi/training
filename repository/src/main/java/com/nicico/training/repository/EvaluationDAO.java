@@ -7,6 +7,8 @@ package com.nicico.training.repository;/* com.nicico.training.repository
 import com.nicico.training.model.Evaluation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -61,4 +63,24 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
     Optional<Evaluation> findTopByClassIdAndQuestionnaireTypeId(Long ClassId, Long typeId);
     List<Evaluation> findAllByClassIdAndQuestionnaireTypeId(Long ClassId, Long typeId);
     Set<Evaluation> findByClassId(Long ClassId);
+
+    @Query(value = "SELECT eval.* " +
+            "FROM tbl_EVALUATION eval " +
+            "         INNER JOIN TBL_TEACHER teacher ON eval.F_EVALUATOR_ID = teacher.ID " +
+            "         INNER JOIN TBL_PERSONAL_INFO personal ON teacher.F_PERSONALITY = personal.ID " +
+            "         INNER JOIN TBL_CLASS class ON eval.F_CLASS_ID = class.ID " +
+            "WHERE personal.C_NATIONAL_CODE =:evaluatorNationalCode " +
+            "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId " +
+            "  AND class.TEACHER_ONLINE_EVAL_STATUS = 1 ", nativeQuery = true)
+    List<Evaluation> getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
+
+    @Query(value = "SELECT eval.*  " +
+            "FROM tbl_EVALUATION eval  " +
+            "         INNER JOIN TBL_CLASS_STUDENT cs ON eval.F_EVALUATOR_ID = cs.ID  " +
+            "         INNER JOIN TBL_STUDENT student ON cs.STUDENT_ID = student.ID  " +
+            "         INNER JOIN TBL_CLASS class ON eval.F_CLASS_ID = class.ID  " +
+            "WHERE student.NATIONAL_CODE =:evaluatorNationalCode  " +
+            "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId  " +
+            "  AND class.STUDENT_ONLINE_EVAL_STATUS = 1 ", nativeQuery = true)
+    List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode,@Param("evaluatorTypeId") Long evaluatorTypeId);
 }

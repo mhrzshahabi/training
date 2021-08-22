@@ -8,11 +8,9 @@ import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.dto.question.QuestionAttachments;
-import com.nicico.training.iservice.IAttachmentService;
-import com.nicico.training.iservice.IClassStudentService;
-import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.enums.ETechnicalType;
+import com.nicico.training.service.TeacherService;
 import org.mapstruct.Named;
 import org.modelmapper.ModelMapper;
 import com.nicico.training.model.*;
@@ -33,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import request.evaluation.ElsEvalRequest;
 import request.exam.*;
+import response.evaluation.dto.ElsContactEvaluationDto;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
@@ -64,6 +63,10 @@ public abstract class EvaluationBeanMapper {
     protected IClassStudentService iClassStudentService;
     @Autowired
     protected ModelMapper modelMapper;
+    @Autowired
+    protected IPersonalInfoService iPersonalInfoService;
+    @Autowired
+    protected TeacherService teacherService;
 
     private final Boolean hasDuplicateQuestion = true;
 
@@ -131,6 +134,36 @@ public abstract class EvaluationBeanMapper {
         request.setCourse(evalCourse);
         request.setCourseProtocol(evalCourseProtocol);
         return request;
+    }
+
+    public List<ElsContactEvaluationDto> toElsContactEvaluationDTOList(List<Evaluation> evaluations) {
+        List<ElsContactEvaluationDto> elsContactEvaluationDtos = new ArrayList<>();
+        for (Evaluation evaluation : evaluations) {
+            ElsContactEvaluationDto dto = new ElsContactEvaluationDto();
+            EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
+            dto.setId(evaluation.getId());
+            dto.setClassId(evaluation.getClassId());
+            dto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
+            dto.setPlanner((evaluation.getTclass().getPlanner().getFirstName() + " " +
+                    evaluation.getTclass().getPlanner().getLastName()));
+            PersonalInfo teacher = iPersonalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId());
+            dto.setTeacherFullName(teacher.getFirstNameFa() + " " +
+                    teacher.getLastNameFa());
+
+            evalCourseProtocol.setCode(evaluation.getTclass().getCode());
+            if (evaluation.getTclass().getDDuration() != null) {
+                evalCourseProtocol.setDuration(evaluation.getTclass().getDDuration() + "/d");
+            } else
+                evalCourseProtocol.setDuration(evaluation.getTclass().getHDuration() + "/h");
+
+            evalCourseProtocol.setFinishDate(evaluation.getTclass().getEndDate());
+            evalCourseProtocol.setStartDate(evaluation.getTclass().getStartDate());
+            evalCourseProtocol.setTitle(evaluation.getTclass().getTitleClass());
+            dto.setCourseProtocol(evalCourseProtocol);
+
+            elsContactEvaluationDtos.add(dto);
+        }
+        return elsContactEvaluationDtos;
     }
 
     public ElsExamRequest toElsExamRequest(Long classId) {
