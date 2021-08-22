@@ -3,7 +3,9 @@ package com.nicico.training.mapper.QuestionBank;
 
 import com.nicico.training.model.QuestionBank;
 import com.nicico.training.service.AttachmentService;
+import com.nicico.training.service.CategoryService;
 import com.nicico.training.service.ParameterValueService;
+import com.nicico.training.service.SubcategoryService;
 import dto.exam.EQuestionType;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -23,6 +25,12 @@ public abstract class QuestionBankBeanMapper {
 
     @Autowired
     protected ParameterValueService parameterValueService;
+
+    @Autowired
+    protected CategoryService categoryService;
+
+    @Autowired
+    protected SubcategoryService subcategoryService;
 
     public ElsQuestionBankDto toElsQuestionBank(List<QuestionBank> questionBankList, String nationalCode) {
 
@@ -92,7 +100,9 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setType(mapAnswerType(questionBank.getQuestionTypeId()));
             elsQuestionDto.setQuestionLevel(questionBank.getEQuestionLevel().getTitleFa());
             elsQuestionDto.setCategoryId(questionBank.getCategoryId());
+            elsQuestionDto.setCategoryName(questionBank.getCategoryId() != null ? categoryService.get(questionBank.getCategoryId()).getTitleFa() : null);
             elsQuestionDto.setSubCategory(questionBank.getSubCategoryId());
+            elsQuestionDto.setSubCategoryName(questionBank.getSubCategoryId() != null ? subcategoryService.get(questionBank.getSubCategoryId()).getTitleFa() : null);
             elsQuestionDto.setOptionList(elsQuestionOptionDtoList);
             elsQuestionDto.setCorrectOption(questionBank.getMultipleChoiceAnswer());
             elsQuestionDto.setCorrectAnswer(questionBank.getDescriptiveAnswer());

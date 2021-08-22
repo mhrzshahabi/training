@@ -24,7 +24,11 @@ public class ElsQuestionDto {
     @ApiModelProperty
     private Long categoryId;
     @ApiModelProperty
-    private  Long subCategory;
+    private String categoryName;
+    @ApiModelProperty
+    private Long subCategory;
+    @ApiModelProperty
+    private String subCategoryName;
     @ApiModelProperty
     private List<ElsQuestionOptionDto> optionList;
     @ApiModelProperty
