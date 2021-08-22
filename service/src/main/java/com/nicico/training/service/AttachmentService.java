@@ -17,6 +17,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
+import response.question.dto.ElsAttachmentDto;
 
 import java.io.File;
 import java.util.*;
@@ -187,6 +188,70 @@ public class AttachmentService implements IAttachmentService {
             questionAttachments.setOption3Files(option3Files);
             questionAttachments.setOption4Files(option4Files);
             return questionAttachments;
+        }
+    }
+
+    @Transactional
+    public List<Map<String, List<ElsAttachmentDto>>> getFilesToEls(String questionBank, Long id) {
+
+        List<Attachment> attachments=attachmentDAO.findAttachmentByObjectTypeAndObjectId(questionBank,id);
+        if (attachments.isEmpty())
+            return null;
+        else {
+
+            List<Map<String, List<ElsAttachmentDto>>> elsFiles = new ArrayList<>();
+
+            List<ElsAttachmentDto> elsAttachmentDtoFilesList = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoOption1List = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoOption2List = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoOption3List = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoOption4List = new ArrayList<>();
+
+            for (Attachment attachment:attachments) {
+
+                switch (attachment.getFileTypeId()){
+                    case 1:
+                        ElsAttachmentDto elsAttachmentDtoFile = new ElsAttachmentDto(attachment.getKey(), attachment.getGroup_id(), attachment.getFileName());
+                        elsAttachmentDtoFilesList.add(elsAttachmentDtoFile);
+                        break;
+                    case 3:
+                        ElsAttachmentDto elsAttachmentDtoOption1 = new ElsAttachmentDto(attachment.getKey(), attachment.getGroup_id(), attachment.getFileName());
+                        elsAttachmentDtoOption1List.add(elsAttachmentDtoOption1);
+                        break;
+                    case 4:
+                        ElsAttachmentDto elsAttachmentDtoOption2 = new ElsAttachmentDto(attachment.getKey(), attachment.getGroup_id(), attachment.getFileName());
+                        elsAttachmentDtoOption2List.add(elsAttachmentDtoOption2);
+                        break;
+                    case 5:
+                        ElsAttachmentDto elsAttachmentDtoOption3 = new ElsAttachmentDto(attachment.getKey(), attachment.getGroup_id(), attachment.getFileName());
+                        elsAttachmentDtoOption3List.add(elsAttachmentDtoOption3);
+                        break;
+                    case 6:
+                        ElsAttachmentDto elsAttachmentDtoOption4 = new ElsAttachmentDto(attachment.getKey(), attachment.getGroup_id(), attachment.getFileName());
+                        elsAttachmentDtoOption4List.add(elsAttachmentDtoOption4);
+                        break;
+                }
+            }
+
+            Map<String, List<ElsAttachmentDto>> file = new HashMap<>();
+            Map<String, List<ElsAttachmentDto>> option1 = new HashMap<>();
+            Map<String, List<ElsAttachmentDto>> option2 = new HashMap<>();
+            Map<String, List<ElsAttachmentDto>> option3 = new HashMap<>();
+            Map<String, List<ElsAttachmentDto>> option4 = new HashMap<>();
+
+            file.put("file", elsAttachmentDtoFilesList);
+            option1.put("option1", elsAttachmentDtoOption1List);
+            option2.put("option2", elsAttachmentDtoOption2List);
+            option3.put("option3", elsAttachmentDtoOption3List);
+            option4.put("option4", elsAttachmentDtoOption4List);
+
+            elsFiles.add(file);
+            elsFiles.add(option1);
+            elsFiles.add(option2);
+            elsFiles.add(option3);
+            elsFiles.add(option4);
+
+            return elsFiles;
         }
     }
 

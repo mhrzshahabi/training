@@ -10,6 +10,6 @@ import java.util.List;
 public class ElsQuestionBankDto {
 
     private String nationalCode;
-    private List<ElsQuestionDto> question;
+    private List<ElsQuestionDto> questions;
 
 }
