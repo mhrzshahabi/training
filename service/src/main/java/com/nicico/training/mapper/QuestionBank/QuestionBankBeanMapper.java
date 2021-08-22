@@ -89,7 +89,7 @@ public abstract class QuestionBankBeanMapper {
 
             elsQuestionDto.setTitle(questionBank.getQuestion());
             elsQuestionDto.setType(mapAnswerType(questionBank.getQuestionTypeId()));
-            elsQuestionDto.setQuestionLevel(mapQuestionLevel(questionBank.getEQuestionLevel().getTitleFa()));
+            elsQuestionDto.setQuestionLevel(questionBank.getEQuestionLevel().getTitleFa());
             elsQuestionDto.setCategoryId(questionBank.getCategoryId());
             elsQuestionDto.setSubCategory(questionBank.getSubCategoryId());
             elsQuestionDto.setOptionList(elsQuestionOptionDtoList);
@@ -108,28 +108,14 @@ public abstract class QuestionBankBeanMapper {
         return elsQuestionBankDto;
     }
 
-    protected EQuestionType mapAnswerType(Long answerTypeId) {
+    protected String mapAnswerType(Long answerTypeId) {
 
         String answerTypeCode = parameterValueService.getParameterValueCodeById(answerTypeId);
         switch (answerTypeCode) {
             case "MultipleChoiceAnswer":
-                return EQuestionType.MULTI_CHOICES;
+                return EQuestionType.MULTI_CHOICES.getValue();
             case "Descriptive":
-                return EQuestionType.DESCRIPTIVE;
-            default:
-                return null;
-        }
-    }
-
-    protected ElsQuestionLevel mapQuestionLevel(String title) {
-
-        switch (title) {
-            case "آسان":
-                return ElsQuestionLevel.EASY;
-            case "متوسط":
-                return ElsQuestionLevel.MODERATE;
-            case "سخت":
-                return ElsQuestionLevel.DIFFICULT;
+                return EQuestionType.DESCRIPTIVE.getValue();
             default:
                 return null;
         }
