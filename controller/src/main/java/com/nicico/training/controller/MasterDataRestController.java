@@ -166,7 +166,11 @@ public class MasterDataRestController {
     public ResponseEntity<ISC<JobExpResponse>> getJobExperiences(HttpServletRequest request, @PathVariable String nationalCode) {
         try {
 
-            List<JobExpResponse> jobExperiences = masterDataClient.getJobExperiences(nationalCode, request.getHeader("Authorization"));
+            String token= request.getHeader("Authorization");
+            if (token!=null && !token.contains("Bearer "))
+                token= "Bearer " +token;
+
+            List<JobExpResponse> jobExperiences = masterDataClient.getJobExperiences(nationalCode, token);
 
             ISC.Response response = new ISC.Response();
             response.setData(jobExperiences);
@@ -188,7 +192,11 @@ public class MasterDataRestController {
         try {
 
             String postCode = request.getParameter("postCode");
-            List<JobExpResponse> jobExperiences = masterDataClient.getPostRecords(postCode, request.getHeader("Authorization"));
+            String token= request.getHeader("Authorization");
+            if (token!=null && !token.contains("Bearer "))
+                token= "Bearer " +token;
+
+            List<JobExpResponse> jobExperiences = masterDataClient.getPostRecords(postCode, token);
             List<JobExpResponse.postInfo> postInfoList = new ArrayList<>();
             jobExperiences.forEach(item -> {
                 PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(item.getSsn());
