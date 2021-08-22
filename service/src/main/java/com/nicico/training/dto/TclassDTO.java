@@ -83,6 +83,9 @@ public class TclassDTO {
     private Long holdingClassTypeId;
     private Long teachingMethodId;
     private Boolean classToOnlineStatus;
+    private Long complexId;
+    private Long assistantId;
+    private Long affairsId;
 
 
     @Getter
