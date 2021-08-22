@@ -11,6 +11,8 @@ import java.util.List;
 @Setter
 public class ElsQuestionDto {
 
+    @ApiModelProperty
+    private Long questionId;
     @ApiModelProperty(required = true)
     private String title;
     @ApiModelProperty(required = false)
