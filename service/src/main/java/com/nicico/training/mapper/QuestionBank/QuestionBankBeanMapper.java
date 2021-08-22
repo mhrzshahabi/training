@@ -87,6 +87,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, option3HasAttachment));
             elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, option4HasAttachment));
 
+            elsQuestionDto.setQuestionId(questionBank.getId());
             elsQuestionDto.setTitle(questionBank.getQuestion());
             elsQuestionDto.setType(mapAnswerType(questionBank.getQuestionTypeId()));
             elsQuestionDto.setQuestionLevel(questionBank.getEQuestionLevel().getTitleFa());
