@@ -64,14 +64,20 @@
         })();
 
         var userRoles={};
-        let acsess= "<%= hasAuthority("ROLE.Training.shahre_babak_role") %>"
-        userRoles.shahreBabak = acsess;
-         acsess= "<%= hasAuthority("ROLE.Training.sarcheshme_role") %>"
-        userRoles.sarcheshme = acsess;
-        acsess= "<%= hasAuthority("ROLE.Training.rafsanjan_role") %>"
-        userRoles.rafsanjan = acsess;
-        acsess= "<%= hasAuthority("ROLE.Training.songon_role") %>"
-        userRoles.songon = acsess;
+        let access= "<%= hasAuthority("shahreBabakAccess") %>"
+        userRoles.shahreBabak = access;
+         access= "<%= hasAuthority("sarcheshmeAccess") %>"
+        userRoles.sarcheshme = access;
+        access= "<%= hasAuthority("rafsanjanAccess") %>"
+        userRoles.rafsanjan = access;
+        access= "<%= hasAuthority("azarbayejanAccess") %>"
+        userRoles.azarbayejan = access;
+        access= "<%= hasAuthority("tehranManagementAccess") %>"
+        userRoles.tehranRetirement = access;
+        access= "<%= hasAuthority("tehranRetirementAccess") %>"
+        userRoles.tehranRetirement = access;
+        access= "<%= hasAuthority("ROLE.Training.admin_role") %>"
+        userRoles.admin = access;
 
 
        /* jQuery.loadScript = function (url, callback) {

@@ -10,6 +10,7 @@ import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.iservice.*;
+import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
@@ -44,6 +45,7 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
+import response.question.dto.ElsQuestionBankDto;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 
@@ -86,6 +88,8 @@ public class ElsRestController {
     private final IClassSession iClassSessionService;
     private final IAttachmentService iAttachmentService;
     private final ParameterValueService parameterValueService;
+    private final QuestionBankService questionBankService;
+    private final QuestionBankBeanMapper questionBankBeanMapper;
 
 
     @GetMapping("/eval/{id}")
@@ -138,13 +142,7 @@ public class ElsRestController {
     public ResponseEntity<SendEvalToElsResponse> sendEvalToElsForTeacher(@PathVariable long id) {
         SendEvalToElsResponse response = new SendEvalToElsResponse();
         Evaluation evaluation = evaluationService.getById(id);
-        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation,
-                questionnaireService.get(evaluation.getQuestionnaireId()),
-                classStudentService.getClassStudents(evaluation.getClassId()),
-                evaluationService.getEvaluationQuestions(
-                        answerService.getAllByEvaluationId(evaluation.getId())),
-                personalInfoService.getPersonalInfo(
-                        teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
         try {
             request = evaluationBeanMapper.removeInvalidUsers(request);
             BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
@@ -811,6 +809,24 @@ public class ElsRestController {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
         }
         return response;
+    }
+
+    @GetMapping("/questionBank/{nationalCode}")
+    public ElsQuestionBankDto getQuestionBank(HttpServletRequest header, @PathVariable String nationalCode) {
+
+        try {
+
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
+                return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
+
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            }
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
     }
 
 }

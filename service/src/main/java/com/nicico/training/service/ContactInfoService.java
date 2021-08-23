@@ -12,10 +12,13 @@ import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,6 +32,7 @@ public class ContactInfoService implements IContactInfoService {
     private final PersonnelDAO personnelDAO;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
     private final StudentDAO studentDAO;
+    private final MessageSource messageSource;
 
     @Transactional(readOnly = true)
     @Override
@@ -89,6 +93,39 @@ public class ContactInfoService implements IContactInfoService {
     @Override
     public ContactInfoDTO.Info update(Long id, ContactInfoDTO.Update request) {
 
+        Map<String, Object> map = new HashMap<>();
+        if (request.getMobile() != null && !request.getMobile().trim().isEmpty())
+            map.putAll(nationalCodeOfMobile(request.getMobile()));
+        if (request.getMobile2() != null && !request.getMobile2().trim().isEmpty())
+            map.putAll(nationalCodeOfMobile(request.getMobile2()));
+        Object record = getCorrespondingRecordOfContactInfo(id);
+        String msg = "";
+        final Locale locale = LocaleContextHolder.getLocale();
+        for (String nc : map.keySet()) {
+            Object already = map.get(nc);
+            String alreadyNc = "";
+            String recordNc = "";
+            if (already instanceof Student) {
+                alreadyNc = ((Student) already).getNationalCode();
+                msg = messageSource.getMessage("msg.duplicate.mobile.number.student", new Object[]{alreadyNc}, locale);
+            } else if (already instanceof Personnel) {
+                alreadyNc = ((Personnel) already).getNationalCode();
+                msg = messageSource.getMessage("msg.duplicate.mobile.number.Personnel", new Object[]{alreadyNc}, locale);
+            } else if (already instanceof PersonnelRegistered) {
+                alreadyNc = ((PersonnelRegistered) already).getNationalCode();
+                msg = messageSource.getMessage("msg.duplicate.mobile.number.RegisteredPersonnel", new Object[]{alreadyNc}, locale);
+            }
+            if (record instanceof Student) {
+                recordNc = ((Student) record).getNationalCode();
+            } else if (record instanceof Personnel) {
+                recordNc = ((Personnel) record).getNationalCode();
+            } else if (record instanceof PersonnelRegistered) {
+                recordNc = ((PersonnelRegistered) record).getNationalCode();
+            }
+            if ((alreadyNc == null && recordNc != null) || !alreadyNc.equals(recordNc)) {
+                throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, msg, msg);
+            }
+        }
         final Optional<ContactInfo> cById = contactInfoDAO.findById(id);
         ContactInfo contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         ContactInfo cUpdating = new ContactInfo();
@@ -274,5 +311,46 @@ public class ContactInfoService implements IContactInfoService {
         }
         return map;
     }
+
+    @Override
+    public Map<String, Object> nationalCodeOfMobile(String mobile) {
+        Map<String, Object> result = new HashMap<>();
+        List<ContactInfo> contactInfos = new ArrayList<>();
+        if (mobile.startsWith("0")) {
+            contactInfos.addAll(contactInfoDAO.findAllByMobiles(mobile));
+            contactInfos.addAll(contactInfoDAO.findAllByMobiles(mobile.substring(1)));
+        } else {
+            contactInfos.addAll(contactInfoDAO.findAllByMobiles(mobile));
+            contactInfos.addAll(contactInfoDAO.findAllByMobiles("0" + mobile));
+        }
+        if (!contactInfos.isEmpty()) {
+            List<Student> students = studentDAO.findAllByContactInfoIds(contactInfos.stream().map(ContactInfo::getId).collect(Collectors.toList()));
+            students.forEach(student -> result.put(student.getNationalCode(), student));
+            if (!students.isEmpty())
+                return result;
+            List<Personnel> personnels = personnelDAO.findAllByContactInfoIds(contactInfos.stream().map(ContactInfo::getId).collect(Collectors.toList()));
+            personnels.forEach(personnel -> result.put(personnel.getNationalCode(), personnel));
+            if (!personnels.isEmpty())
+                return result;
+            List<PersonnelRegistered> personnelRegistereds = personnelRegisteredDAO.findAllByContactInfoIds(contactInfos.stream().map(ContactInfo::getId).collect(Collectors.toList()));
+            personnelRegistereds.forEach(personnelRegistered -> result.put(personnelRegistered.getNationalCode(), personnelRegistered));
+        }
+        return result;
+    }
+
+    @Override
+    public Object getCorrespondingRecordOfContactInfo(Long id) {
+        Optional optional = studentDAO.findByContactInfoId(id);
+        if (optional.isPresent())
+            return optional.get();
+        optional = personnelDAO.findByContactInfoId(id);
+        if (optional.isPresent())
+            return optional.get();
+        optional = personnelRegisteredDAO.findByContactInfoId(id);
+        if (optional.isPresent())
+            return optional.get();
+        return null;
+    }
+
 
 }

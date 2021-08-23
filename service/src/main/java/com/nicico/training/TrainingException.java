@@ -88,6 +88,7 @@ public class TrainingException extends NICICOException {
         BankBranchNotFound(404),
         NotEditable(404),
         DuplicateRecord(404),
+        DuplicateMobile(404),
         NotDeletable(404),
         JobGroupNotFound(404),
         DCCNotFound(404),

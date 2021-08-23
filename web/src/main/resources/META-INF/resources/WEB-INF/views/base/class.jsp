@@ -192,6 +192,31 @@
         ],
         fetchDataURL: parameterValueUrl + "/listByCode/HoldingClassType"
     });
+    var RestDataSource_class_complex_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
+    var RestDataSource_class_assistant_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/moavenat"
+    });
+
+    var RestDataSource_class_affairs_List = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/omor"
+    });
 
     var RestDataSource_intraOrganizational_Holding_Class_Type_List = isc.TrDS.create({
         fields: [
@@ -502,6 +527,7 @@
                 name: "group",
                 title: "<spring:message code='group'/>",
                 align: "center",
+                width: 40,
                 filterOperator: "equals",
             },
             {
@@ -607,15 +633,13 @@
                 title: "<spring:message code="ending.class.status"/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true
-            },
+                width: 40            },
             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},
             {
                 name: "isSentMessage",
                 title: "ارسال پيام قبل از شروع کلاس",
-                // width: 190,
-                hidden: true,
-                // width: 190,
+                width: 40,
+                // hidden: true,
                 type: "image",
                 imageURLPrefix: "",
                 imageURLSuffix: ".gif",
@@ -1542,6 +1566,87 @@
                 calSpan: 1,
                 defaultValue: " _ ",
                 type: "StaticTextItem",
+            },
+            {
+                name: "complexId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="reports.need.assessment.select.complex"/>:",
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_class_complex_List,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                changed: function (form, item, value) {
+                    DynamicForm_Class_JspClass.getItem("assistantId").setValue(null);
+                    DynamicForm_Class_JspClass.getItem("affairsId").setValue(null);
+                    DynamicForm_Class_JspClass.getItem("assistantId").enable();
+                    DynamicForm_Class_JspClass.getItem("affairsId").disable();
+                    let myCriteria='{"fieldName":"mojtameTitle","operator":"inSet","value":"' + form.getItem("complexId").getSelectedRecord().title + '"}';
+                    RestDataSource_class_assistant_List.fetchDataURL = departmentUrl + "/organ-segment-iscList/moavenat" + "?operator=and&_constructor=AdvancedCriteria&criteria=" + myCriteria;
+                    form.getItem("assistantId").fetchData();
+                },
+            },
+            {
+                name: "assistantId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="reports.need.assessment.select.assistant"/>:",
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_class_assistant_List,
+                displayField: "title",
+                autoFetchData: false,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                changed: function (form, item, value) {
+                    DynamicForm_Class_JspClass.getItem("affairsId").setValue(null);
+                    DynamicForm_Class_JspClass.getItem("affairsId").enable();
+                    let myCriteria='{"fieldName":"moavenatTitle","operator":"inSet","value":"' + form.getItem("assistantId").getSelectedRecord().title + '"}';
+                    RestDataSource_class_affairs_List.fetchDataURL = departmentUrl + "/organ-segment-iscList/omor" + "?operator=and&_constructor=AdvancedCriteria&criteria=" + myCriteria;
+                    form.getItem("affairsId").fetchData();
+                },
+            },
+            {
+                name: "affairsId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="reports.need.assessment.select.affairs"/>:",
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_class_affairs_List,
+                displayField: "title",
+                autoFetchData: false,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                colSpan: 2,
+                rowSpan: 1,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                // changed: function (form, item, value) {
+                //
+                // },
             }
             //------------------------ DONE BY ROYA---------------------------------------------------------------------
         ],
@@ -2233,15 +2338,7 @@
         }
     });
     </sec:authorize>
-<%--    <sec:authorize access="hasAuthority('Tclass_C')">--%>
-<%--    var ToolStripButton_finish = isc.ToolStripButton.create({--%>
-<%--        title: "اختتام",--%>
-<%--        click: function () {--%>
-<%--            TabSet_Class.disableTab(TabSet_Class.tabs[11]);--%>
-<%--     // ListGrid_class_finish()--%>
-<%--        }--%>
-<%--    });--%>
-<%--    </sec:authorize>--%>
+
 
     var ToolStripButton_teacherEvaluation_JspClass = isc.ToolStripButton.create({
         title: "ثبت نتایج ارزیابی مسئول آموزش از مدرس کلاس",
@@ -2993,15 +3090,6 @@
         } else {
             if ((a===0)&&(record.classStatus === "4")) {
                 createDialog("info", "کلاس انتخاب شده لغو شده است و امکان ویرایش آن وجود ندارد.", "هشدار");
-/*                let dialog = createDialog("ask", "کلاس انتخاب شده لغو شده است در صورت ویرایش وضعیت کلاس به حالت برنامه ریزی برمیگردد. از ویرایش کلاس مطمئن هستید؟", "هشدار");
-                dialog.addProperties({
-                    buttonClick: function (button, index) {
-                        this.close();
-                        if (index === 0) {
-                            startEdit(record)
-                        }
-                    }
-                });*/
             } else {
                 startEdit(record);
             }
@@ -3038,6 +3126,8 @@
                     if (a === 0) {
                         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").disable();
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
+                        DynamicForm_Class_JspClass.getItem("assistantId").disable();
+                        DynamicForm_Class_JspClass.getItem("affairsId").disable();
                         DynamicForm_Class_JspClass.getItem("holdingClassTypeId").disable();
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(null);
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").setValueMap(null);
@@ -3134,7 +3224,12 @@
                         classMethod = "POST";
                         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
                         DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
+
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
+
+                        DynamicForm_Class_JspClass.getItem("complexId").enable();
+                        DynamicForm_Class_JspClass.getItem("assistantId").disable();
+                        DynamicForm_Class_JspClass.getItem("affairsId").disable();
                         url = classUrl;
                         DynamicForm_Class_JspClass.setValue("course.id", record.course.id);
                         DynamicForm_Class_JspClass.setValue("course.theoryDuration", record.course.theoryDuration);
@@ -3234,6 +3329,10 @@
         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
         DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
+        DynamicForm_Class_JspClass.getItem("complexId").enable();
+        DynamicForm_Class_JspClass.getItem("assistantId").disable();
+        DynamicForm_Class_JspClass.getItem("affairsId").disable();
+
         classMethod = "POST";
         url = classUrl;
         VM_JspClass.clearErrors();
@@ -3512,30 +3611,12 @@
                                 multiple: true,
                                 required: true,
                                 textAlign: "center",
-                                // icons: [
-                                //     {
-                                //         name: "clear",
-                                //         src: "[SKIN]actions/remove.png",
-                                //         width: 15,
-                                //         height: 15,
-                                //         inline: true,
-                                //         prompt: "پاک کردن",
-                                //         click: function (form, item, icon) {
-                                //             item.clearValue();
-                                //             item.focusInItem();
-                                //         }
-                                //     }
-                                // ],
-                                // hidden: true,
                                 width: "280",
                                 // editorType: "MultiSelectItem",
                                 pickListWidth: 700,
                                 optionDataSource: RestDataSource_Class_JspClass,
                                 displayField: "titleClass",
                                 valueField: "id",
-                                // addUnknownValues: false,
-                                // textMatchStyle: "substring",
-                                // generateExactMatchCriteria: true,
                                 filterFields: ["titleClass", "code"],
                                 pickListFields: [
                                     {name: "code", title: "کد کلاس", autoFitWidth: true},
@@ -3711,19 +3792,6 @@
     }
     function class_finish_result(resp) {
         wait.close();
-        <%--if (resp.httpResponseCode === 200) {--%>
-        <%--    ListGrid_Class_JspClass.invalidateCache();--%>
-        <%--    var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",--%>
-        <%--        "<spring:message code="msg.command.done"/>");--%>
-        <%--    setTimeout(function () {--%>
-        <%--        OK.close();--%>
-        <%--    }, 3000);--%>
-        <%--    refreshSelectedTab_class(tabSetClass.getSelectedTab());--%>
-        <%--} else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {--%>
-        <%--    createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");--%>
-        <%--} else {--%>
-        <%--    createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));--%>
-        <%--}--%>
     }
 
     function GetScoreState(resp) {
@@ -3844,14 +3912,6 @@
                 createDialog("info", "تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
             }
-            <%--if (lastDate > classEnd.trim()) {--%>
-            <%--    createDialog("info", "تاریخ پایان کلاس قبل از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
-            <%--    return false;--%>
-            <%--}--%>
-            <%--if (termStart.trim() > classStart.trim()) {--%>
-            <%--    createDialog("info", "تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.", "<spring:message code='message'/>");--%>
-            <%--    return false;--%>
-            <%--}--%>
             if (termEnd.trim() < classStart.trim()) {
                 createDialog("info", "تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.", "<spring:message code='message'/>");
                 return false;
