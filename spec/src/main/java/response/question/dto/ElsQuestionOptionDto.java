@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @AllArgsConstructor
@@ -14,5 +16,6 @@ public class ElsQuestionOptionDto {
     private String title;
     private Integer optionNumber;
     private Boolean hasAttachment;
+    private List<ElsAttachmentDto> optionFiles;
 
 }

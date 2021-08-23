@@ -39,7 +39,12 @@ public abstract class QuestionBankBeanMapper {
 
         questionBankList.forEach(questionBank -> {
 
-            List<ElsAttachmentDto> elsAttachmentDtoList = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoFiles = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoOption1Files = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoOption2Files = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoOption3Files = new ArrayList<>();
+            List<ElsAttachmentDto> elsAttachmentDtoOption4Files = new ArrayList<>();
+
             List<ElsQuestionOptionDto> elsQuestionOptionDtoList = new ArrayList<>();
             ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
 
@@ -69,31 +74,31 @@ public abstract class QuestionBankBeanMapper {
                 attachments.forEach(fileType -> {
                     if (fileType.containsKey("file")) {
                         List<ElsAttachmentDto> file = fileType.get("file");
-                        elsAttachmentDtoList.addAll(file);
+                        elsAttachmentDtoFiles.addAll(file);
                     }
                     if (fileType.containsKey("option1")) {
                         List<ElsAttachmentDto> option1 = fileType.get("option1");
-                        elsAttachmentDtoList.addAll(option1);
+                        elsAttachmentDtoOption1Files.addAll(option1);
                     }
                     if (fileType.containsKey("option2")) {
                         List<ElsAttachmentDto> option2 = fileType.get("option2");
-                        elsAttachmentDtoList.addAll(option2);
+                        elsAttachmentDtoOption2Files.addAll(option2);
                     }
                     if (fileType.containsKey("option3")) {
                         List<ElsAttachmentDto> option3 = fileType.get("option3");
-                        elsAttachmentDtoList.addAll(option3);
+                        elsAttachmentDtoOption3Files.addAll(option3);
                     }
                     if (fileType.containsKey("option4")) {
                         List<ElsAttachmentDto> option4 = fileType.get("option4");
-                        elsAttachmentDtoList.addAll(option4);
+                        elsAttachmentDtoOption4Files.addAll(option4);
                     }
                 });
             }
 
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption1(), 1, option1HasAttachment));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption2(), 2, option2HasAttachment));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, option3HasAttachment));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, option4HasAttachment));
+            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption1(), 1, option1HasAttachment, elsAttachmentDtoOption1Files));
+            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption2(), 2, option2HasAttachment, elsAttachmentDtoOption2Files));
+            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, option3HasAttachment, elsAttachmentDtoOption3Files));
+            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, option4HasAttachment, elsAttachmentDtoOption4Files));
 
             elsQuestionDto.setQuestionId(questionBank.getId());
             elsQuestionDto.setTitle(questionBank.getQuestion());
@@ -107,7 +112,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setCorrectOption(questionBank.getMultipleChoiceAnswer());
             elsQuestionDto.setCorrectAnswer(questionBank.getDescriptiveAnswer());
             elsQuestionDto.setHasAttachment(questionHasAttachment);
-            elsQuestionDto.setFiles(elsAttachmentDtoList);
+            elsQuestionDto.setFiles(elsAttachmentDtoFiles);
 //            elsQuestionDto.setDescription();
 //            elsQuestionDto.setAnswerTime();
 
