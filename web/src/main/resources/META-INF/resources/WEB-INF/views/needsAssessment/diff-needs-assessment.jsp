@@ -481,6 +481,29 @@
             Window_AddSkill_Diff.show();
         }
     });
+
+
+
+    let Button_total_top = isc.Button.create({
+        title:" مجموع ساعات تایید نشده",
+        margin: 1,
+        width: "160",
+        click(){
+            showTopTimes(ListGridTop_Knowledge_JspDiffNeedsAssessment.data.localData,
+                ListGridTop_Ability_JspDiffNeedsAssessment.data.localData,
+                ListGridTop_Attitude_JspDiffNeedsAssessment.data.localData);
+        }
+    });
+    let Button_total_Bottom = isc.Button.create({
+        title:" مجموع ساعات موجود",
+        margin: 1,
+        width: "140",
+        click(){
+            showTopTimes(ListGridBottom_Knowledge_JspDiffNeedsAssessment.data.localData,
+                ListGridBottom_Ability_JspDiffNeedsAssessment.data.localData,
+                ListGridBottom_Attitude_JspDiffNeedsAssessment.data.localData);
+        }
+    });
     var Button_post_JspDiffNeedsAssessment = isc.Button.create({
         title:"جزییات پست",
         margin: 1,
@@ -1184,6 +1207,39 @@
             }
         ]
     });
+    let DynamicForm_diff_total_courses_times = isc.DynamicForm.create({
+        width: 600,
+        height: 120,
+        padding: 6,
+        titleAlign: "right",
+        fields: [
+            {
+                name: "servingPriority",
+                width: "100%",
+                canEdit: false,
+                title: "مجموع ساعات دوره های ضروری ضمن خدمت    ",
+                editorType: 'text'
+            } , {
+                name: "improvementPriority",
+                width: "100%",
+                canEdit: false,
+                title: "مجموع ساعات دوره های عملکردی بهبود   ",
+                editorType: 'text'
+            } , {
+                name: "developmentPriority",
+                width: "100%",
+                canEdit: false,
+                title: "مجموع ساعات دوره های توسعه ای    ",
+                editorType: 'text'
+            } , {
+                name: "positionPriority",
+                width: "100%",
+                canEdit: false,
+                title: "مجموع ساعات دوره های ضروری انتصاب سمت    ",
+                editorType: 'text'
+            }
+        ]
+    });
 
     var Window_Cartable_Post = isc.Window.create({
         width: 600,
@@ -1204,6 +1260,28 @@
             })]
     });
 
+    let Window_diff_total_courses_times = isc.Window.create({
+        width: 600,
+        height: 120,
+        numCols: 2,
+        title: "محاسبه مجموع ساعات",
+        items: [
+            DynamicForm_diff_total_courses_times,
+            isc.MyHLayoutButtons.create({
+                members: [
+                    isc.IButtonCancel.create({
+                        title: "<spring:message code="close"/>",
+                        click: function () {
+                            DynamicForm_diff_total_courses_times.items[0].setValue("");
+                            DynamicForm_diff_total_courses_times.items[1].setValue("");
+                            DynamicForm_diff_total_courses_times.items[2].setValue("");
+                            DynamicForm_diff_total_courses_times.items[3].setValue("");
+
+                            Window_diff_total_courses_times.close();
+                        }
+                    })]
+            })]
+    });
 
     var NeedsAssessmentTargetDF_diffNeedsAssessment = isc.DynamicForm.create({
         ID: "NeedsAssessmentTargetDF_diffNeedsAssessment",
@@ -1270,6 +1348,8 @@
             // Button_CancelChange_JspDiffNeedsAssessment,
             Button_AddSkill_JspDiffNeedsAssessment,
             Button_ShowAttachment_JspDiffNeedsAssessment,
+            Button_total_top,
+            Button_total_Bottom,
             Button_post_JspDiffNeedsAssessment,
             Label_PlusData_JspDiffNeedsAssessment,
         ],
@@ -1687,5 +1767,60 @@
             this.Super("hide", arguments);
         }
     })
+
+    function showTopTimes(knowledgeLG,abilityLG,attitudeLG) {
+        if (knowledgeLG!== undefined
+            && abilityLG!== undefined
+            && attitudeLG!== undefined)
+        {
+            Window_diff_total_courses_times.show();
+            let servingTime=0;
+            let improvementTime=0;
+            let developmentTime=0;
+            let positionTime=0;
+
+            let data = knowledgeLG.toArray();
+            data.addAll(abilityLG.toArray());
+            data.addAll(attitudeLG.toArray());
+
+            if (data.length!==0)
+            {
+                for (let i = 0; i < data.length; i++) {
+                    switch (data[i].needsAssessmentPriorityId) {
+                        case 111: {
+                            if (data[i].course!=null && data[i].course!==undefined)
+                                servingTime+=data[i].course.theoryDuration
+                            break;
+                        }
+                        case 112: {
+                            if (data[i].course!=null && data[i].course!==undefined)
+                                improvementTime+=data[i].course.theoryDuration
+                            break;
+                        }
+                        case 113: {
+                            if (data[i].course!=null && data[i].course!==undefined)
+                                developmentTime+=data[i].course.theoryDuration
+                            break;
+                        }
+                        case 574: {
+                            if (data[i].course!=null && data[i].course!==undefined)
+                                positionTime+=data[i].course.theoryDuration
+                            break;
+                        }
+                    }
+                }
+                DynamicForm_diff_total_courses_times.items[0].setValue(servingTime);
+                DynamicForm_diff_total_courses_times.items[1].setValue(improvementTime);
+                DynamicForm_diff_total_courses_times.items[2].setValue(developmentTime);
+                DynamicForm_diff_total_courses_times.items[3].setValue(positionTime);
+            }
+            else
+                createDialog("info", "مهارتی برای  محاسبه در لیست وجود ندارد ")
+
+
+        }
+        else
+            createDialog("info", "مهارتی برای  محاسبه در لیست وجود ندارد ")
+    }
 
     // </script>

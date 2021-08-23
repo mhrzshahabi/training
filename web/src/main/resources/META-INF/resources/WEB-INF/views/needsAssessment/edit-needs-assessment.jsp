@@ -379,6 +379,62 @@
         ]
     });
 
+    let DynamicForm_total_courses_times = isc.DynamicForm.create({
+        width: 600,
+        height: 120,
+        padding: 6,
+        titleAlign: "right",
+        fields: [
+            {
+                name: "servingPriority",
+                width: "100%",
+                canEdit: false,
+                title: "مجموع ساعات دوره های ضروری ضمن خدمت    ",
+                editorType: 'text'
+            } , {
+                name: "improvementPriority",
+                width: "100%",
+                canEdit: false,
+                title: "مجموع ساعات دوره های عملکردی بهبود   ",
+                editorType: 'text'
+            } , {
+                name: "developmentPriority",
+                width: "100%",
+                canEdit: false,
+                title: "مجموع ساعات دوره های توسعه ای    ",
+                editorType: 'text'
+            } , {
+                name: "positionPriority",
+                width: "100%",
+                canEdit: false,
+                title: "مجموع ساعات دوره های ضروری انتصاب سمت    ",
+                editorType: 'text'
+            }
+        ]
+    });
+
+    let Window_total_courses_times = isc.Window.create({
+        width: 600,
+        height: 120,
+        numCols: 2,
+        title: "محاسبه مجموع ساعات",
+        items: [
+            DynamicForm_total_courses_times,
+            isc.MyHLayoutButtons.create({
+                members: [
+                    isc.IButtonCancel.create({
+                        title: "<spring:message code="close"/>",
+                        click: function () {
+                            DynamicForm_total_courses_times.items[0].setValue("");
+                            DynamicForm_total_courses_times.items[1].setValue("");
+                            DynamicForm_total_courses_times.items[2].setValue("");
+                            DynamicForm_total_courses_times.items[3].setValue("");
+
+                            Window_total_courses_times.close();
+                        }
+                    })]
+            })]
+    });
 
     var Window_CourseDetail_JspENA = isc.Window.create({
         title: "<spring:message code="course.plural.list"/>",
@@ -1643,6 +1699,7 @@
                             isc.Button.create({
                                 width: "140",
                                 align: "left",
+                                margin: 2,
                                 title: "مرتب سازی براساس رنگ",
                                 click: function () {
 
@@ -1654,6 +1711,69 @@
 
                                     ListGrid_Attitude_JspNeedsAssessment.unsort();
                                     ListGrid_Attitude_JspNeedsAssessment.sort("needsAssessmentPriorityId", "ascending");
+                                }
+                            }),
+                            isc.Button.create({
+                                width: "140",
+                                margin: 2,
+                                align: "left",
+                                title: "محاسبه مجموع ساعات",
+                                click: function () {
+
+                                    if (ListGrid_Knowledge_JspNeedsAssessment.data.localData!== undefined
+                                    && ListGrid_Attitude_JspNeedsAssessment.data.localData!== undefined
+                                    && ListGrid_Ability_JspNeedsAssessment.data.localData!== undefined)
+                                    {
+                                        Window_total_courses_times.show();
+                                        let servingTime=0;
+                                        let improvementTime=0;
+                                        let developmentTime=0;
+                                        let positionTime=0;
+
+                                        let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
+                                        data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
+                                        data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
+
+                                        if (data.length!==0)
+                                        {
+                                            for (let i = 0; i < data.length; i++) {
+                                                switch (data[i].needsAssessmentPriorityId) {
+                                                    case 111: {
+                                                        if (data[i].course!=null && data[i].course!==undefined)
+                                                            servingTime+=data[i].course.theoryDuration
+                                                        break;
+                                                    }
+                                                    case 112: {
+                                                        if (data[i].course!=null && data[i].course!==undefined)
+                                                            improvementTime+=data[i].course.theoryDuration
+                                                        break;
+                                                    }
+                                                    case 113: {
+                                                        if (data[i].course!=null && data[i].course!==undefined)
+                                                            developmentTime+=data[i].course.theoryDuration
+                                                        break;
+                                                    }
+                                                    case 574: {
+                                                        if (data[i].course!=null && data[i].course!==undefined)
+                                                            positionTime+=data[i].course.theoryDuration
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            DynamicForm_total_courses_times.items[0].setValue(servingTime);
+                                            DynamicForm_total_courses_times.items[1].setValue(improvementTime);
+                                            DynamicForm_total_courses_times.items[2].setValue(developmentTime);
+                                            DynamicForm_total_courses_times.items[3].setValue(positionTime);
+                                        }
+                                        else
+                                            createDialog("info", "مهارتی برای  محاسبه در لیست وجود ندارد ")
+
+
+                                    }
+                                    else
+                                        createDialog("info", "مهارتی برای  محاسبه در لیست وجود ندارد ")
+
+
                                 }
                             })
                         ]
