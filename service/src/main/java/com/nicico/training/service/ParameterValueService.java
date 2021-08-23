@@ -58,6 +58,10 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
         return dao.findByCode(code);
     }
 
+    public ParameterValue getByTitle(String title) {
+        return dao.findByTitle(title);
+    }
+
     @Transactional
     public String getParameterValueCodeById (Long id) {
         Optional<ParameterValue> byId = dao.findById(id);

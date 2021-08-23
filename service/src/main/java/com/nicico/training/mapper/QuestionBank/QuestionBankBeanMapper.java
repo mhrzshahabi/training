@@ -1,20 +1,30 @@
 package com.nicico.training.mapper.QuestionBank;
 
 
-import com.nicico.training.model.QuestionBank;
+import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.QuestionBankDTO;
+import com.nicico.training.iservice.ICategoryService;
+import com.nicico.training.iservice.IQuestionBankService;
+import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.service.AttachmentService;
-import com.nicico.training.service.CategoryService;
 import com.nicico.training.service.ParameterValueService;
-import com.nicico.training.service.SubcategoryService;
+import com.nicico.training.service.TeacherService;
+import com.nicico.training.model.ParameterValue;
+import com.nicico.training.model.QuestionBank;
+import com.nicico.training.model.enums.EQuestionLevel;
 import dto.exam.EQuestionType;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
-import response.question.dto.*;
+import response.question.dto.ElsAttachmentDto;
+import response.question.dto.ElsQuestionBankDto;
+import response.question.dto.ElsQuestionDto;
+import response.question.dto.ElsQuestionOptionDto;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
@@ -27,10 +37,16 @@ public abstract class QuestionBankBeanMapper {
     protected ParameterValueService parameterValueService;
 
     @Autowired
-    protected CategoryService categoryService;
+    protected ICategoryService categoryService;
 
     @Autowired
-    protected SubcategoryService subcategoryService;
+    protected ISubcategoryService subcategoryService;
+
+    @Autowired
+    protected TeacherService teacherService;
+
+    @Autowired
+    protected IQuestionBankService questionBankService;
 
     public ElsQuestionBankDto toElsQuestionBank(List<QuestionBank> questionBankList, String nationalCode) {
 
@@ -59,16 +75,11 @@ public abstract class QuestionBankBeanMapper {
 
                 for (int i = 0; i < attachments.size(); i++) {
                     Map<String, List<ElsAttachmentDto>> map = attachments.get(i);
-                    if (map.containsKey("file") && map.get("file").size() != 0)
-                        questionHasAttachment = true;
-                    if (map.containsKey("option1") && map.get("option1").size() != 0)
-                        option1HasAttachment = true;
-                    if (map.containsKey("option2") && map.get("option2").size() != 0)
-                        option2HasAttachment = true;
-                    if (map.containsKey("option3") && map.get("option3").size() != 0)
-                        option3HasAttachment = true;
-                    if (map.containsKey("option4") && map.get("option4").size() != 0)
-                        option4HasAttachment = true;
+                    if (map.containsKey("file") && map.get("file").size() != 0) questionHasAttachment = true;
+                    if (map.containsKey("option1") && map.get("option1").size() != 0) option1HasAttachment = true;
+                    if (map.containsKey("option2") && map.get("option2").size() != 0) option2HasAttachment = true;
+                    if (map.containsKey("option3") && map.get("option3").size() != 0) option3HasAttachment = true;
+                    if (map.containsKey("option4") && map.get("option4").size() != 0) option4HasAttachment = true;
                 }
 
                 attachments.forEach(fileType -> {
@@ -124,6 +135,98 @@ public abstract class QuestionBankBeanMapper {
         return elsQuestionBankDto;
     }
 
+    public List<QuestionBankDTO.Create> toQuestionBankCreate(ElsQuestionBankDto elsQuestionBankDto) {
+
+        List<QuestionBankDTO.Create> questionBankDtoList = new ArrayList<>();
+
+        String nationalCode = elsQuestionBankDto.getNationalCode();
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        List<ElsQuestionDto> elsQuestionDtos = elsQuestionBankDto.getQuestions();
+        elsQuestionDtos.forEach(elsQuestionDto -> {
+
+            QuestionBankDTO.Create create = new QuestionBankDTO.Create();
+
+            List<ElsAttachmentDto> files = elsQuestionDto.getFiles();
+            List<ElsAttachmentDto> option1Files = new ArrayList<>();
+            List<ElsAttachmentDto> option2Files = new ArrayList<>();
+            List<ElsAttachmentDto> option3Files = new ArrayList<>();
+            List<ElsAttachmentDto> option4Files = new ArrayList<>();
+
+            create.setQuestion(elsQuestionDto.getTitle());
+            create.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
+            create.setCategoryId(null);
+//            create.setCategoryId(elsQuestionDto.getCategoryId());
+            create.setSubCategoryId(null);
+//            create.setSubCategoryId(elsQuestionDto.getSubCategory());
+            create.setTeacherId(teacherId);
+            create.setLines(1);
+            create.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());
+            create.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
+            create.setHasAttachment(elsQuestionDto.getFiles().size() != 0);
+            create.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
+
+            List<ElsQuestionOptionDto> optionList = elsQuestionDto.getOptionList();
+            if (optionList.size() != 0) {
+
+                Optional<ElsQuestionOptionDto> option1 = optionList.stream().filter(option -> option.getOptionNumber() == 1).findFirst();
+                if (option1.isPresent()) {
+                    create.setOption1(option1.get().getTitle());
+                    option1Files.addAll(option1.get().getOptionFiles());
+                }
+                Optional<ElsQuestionOptionDto> option2 = optionList.stream().filter(option -> option.getOptionNumber() == 2).findFirst();
+                if (option2.isPresent()) {
+                    create.setOption2(option2.get().getTitle());
+                    option2Files.addAll(option2.get().getOptionFiles());
+                }
+                Optional<ElsQuestionOptionDto> option3 = optionList.stream().filter(option -> option.getOptionNumber() == 3).findFirst();
+                if (option3.isPresent()) {
+                    create.setOption3(option3.get().getTitle());
+                    option3Files.addAll(option3.get().getOptionFiles());
+                }
+                Optional<ElsQuestionOptionDto> option4 = optionList.stream().filter(option -> option.getOptionNumber() == 4).findFirst();
+                if (option4.isPresent()) {
+                    create.setOption4(option4.get().getTitle());
+                    option4Files.addAll(option4.get().getOptionFiles());
+                }
+            }
+
+            QuestionBankDTO.Info info = questionBankService.create(create);
+            if (files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "file");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+            if (option1Files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : option1Files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "option1");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+            if (option2Files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : option2Files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "option2");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+            if (option3Files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : option3Files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "option3");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+            if (option4Files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : option4Files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "option4");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+
+            questionBankDtoList.add(create);
+        });
+        return questionBankDtoList;
+    }
+
     protected String mapAnswerType(Long answerTypeId) {
 
         String answerTypeCode = parameterValueService.getParameterValueCodeById(answerTypeId);
@@ -135,6 +238,57 @@ public abstract class QuestionBankBeanMapper {
             default:
                 return null;
         }
+    }
+
+    protected Long reMapAnswerType(String type) {
+
+        ParameterValue parameterValue = parameterValueService.getByTitle(type);
+        return parameterValue.getId();
+    }
+
+    protected Integer mapQuestionLevel(String questionLevel) {
+
+        switch (questionLevel) {
+            case "آسان":
+                return EQuestionLevel.EASY.getId();
+            case "متوسط":
+                return EQuestionLevel.MODERATE.getId();
+            case "سخت":
+                return EQuestionLevel.DIFFICULT.getId();
+            default:
+                return null;
+        }
+    }
+
+    protected AttachmentDTO.Create mapElsAttachmentToAttachmentCreate(ElsAttachmentDto elsAttachmentDto, Long objectId, String fileType) {
+
+        AttachmentDTO.Create create = new AttachmentDTO.Create();
+
+        switch (fileType) {
+            case "file":
+                create.setFileTypeId(1L);
+                break;
+            case "option1":
+                create.setFileTypeId(3L);
+                break;
+            case "option2":
+                create.setFileTypeId(4L);
+                break;
+            case "option3":
+                create.setFileTypeId(5L);
+                break;
+            case "option4":
+                create.setFileTypeId(6L);
+                break;
+            default:
+                break;
+        }
+        create.setFileName(elsAttachmentDto.getFileName());
+        create.setObjectId(objectId);
+        create.setObjectType("QuestionBank");
+        create.setKey(elsAttachmentDto.getAttachment());
+        create.setGroup_id(elsAttachmentDto.getGroupId());
+        return create;
     }
 
 }
