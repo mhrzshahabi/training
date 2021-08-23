@@ -336,6 +336,14 @@ public class DepartmentService extends GenericService<Department, Long, Departme
         return new ArrayList<>(departments);
     }
 
+    @Override
+    public DepartmentDTO.Info getByCode(String code) {
+        Optional<Department> optional = departmentDAO.getByCode(code);
+        if (optional.isPresent())
+            return modelMapper.map(optional.get(), DepartmentDTO.Info.class);
+        return null;
+    }
+
 
     private List<DepartmentDTO.TSociety> findDeparmentAnccestor(Long anccestorId, Long parentId) {
         List<DepartmentDTO.TSociety> parents = new ArrayList<>();

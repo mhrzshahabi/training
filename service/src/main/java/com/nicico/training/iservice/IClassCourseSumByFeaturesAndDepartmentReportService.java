@@ -11,28 +11,36 @@ import java.util.List;
 public interface IClassCourseSumByFeaturesAndDepartmentReportService {
 
     @Transactional(readOnly = true)
-    List<ClassCourseSumByFeaturesAndDepartmentReportDTO> getReport(String startDate,
-                                                                   String endDate,
-                                                                   String mojtameCode,
-                                                                   String moavenatCode,
-                                                                   String omorCode,
-                                                                   List<String> classStatusList);
+    List<ClassCourseSumByFeaturesAndDepartmentReportDTO> getReportGroupByPlannerDepartment(String startDate,
+                                                                                           String endDate,
+                                                                                           String mojtameCode,
+                                                                                           String moavenatCode,
+                                                                                           String omorCode,
+                                                                                           List<String> classStatusList);
 
     @Transactional(readOnly = true)
     List<ClassCourseSumByFeaturesAndDepartmentReportDTO> getReportGroupByStudentDepartment(String startDate,
-                                                                   String endDate,
-                                                                   String mojtameCode,
-                                                                   String moavenatCode,
-                                                                   String omorCode,
-                                                                   List<String> classStatusList);
+                                                                                           String endDate,
+                                                                                           String mojtameCode,
+                                                                                           String moavenatCode,
+                                                                                           String omorCode,
+                                                                                           List<String> classStatusList);
+
+    @Transactional(readOnly = true)
+    List<ClassCourseSumByFeaturesAndDepartmentReportDTO> getReportGroupByClassDepartment(String startDate,
+                                                                                         String endDate,
+                                                                                         String mojtameCode,
+                                                                                         String moavenatCode,
+                                                                                         String omorCode,
+                                                                                         List<String> classStatusList);
 
     @Transactional(readOnly = true)
     List<ClassFeatures> getReportForMultipleDepartment(String startDate,
-                                                                                                      String endDate,
-                                                                                                      List<String> mojtameCodes,
-                                                                                                      List<String> moavenatCodes,
-                                                                                                      List<String> omorCodes,
-                                                                                                      GroupBy groupBy);
+                                                       String endDate,
+                                                       List<String> mojtameCodes,
+                                                       List<String> moavenatCodes,
+                                                       List<String> omorCodes,
+                                                       GroupBy groupBy);
 
     @Transactional(readOnly = true)
     List<ClassSumByStatus> getSumReportByClassStatus(String startDate,

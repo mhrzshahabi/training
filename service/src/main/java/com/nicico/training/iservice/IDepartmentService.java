@@ -11,6 +11,8 @@ public interface IDepartmentService {
 
     DepartmentDTO.Info get(Long id);
 
+    DepartmentDTO.Info getByCode(String code);
+
     List<DepartmentDTO.Info> getAll(List<Long> ids);
 
     List<DepartmentDTO.Info> list();
