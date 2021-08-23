@@ -149,8 +149,10 @@ public class DepartmentService extends GenericService<Department, Long, Departme
     public SearchDTO.SearchRs<DepartmentDTO.OrganSegment> getOrganSegmentList(String fieldName, SearchDTO.SearchRq request) {
         switch (fieldName) {
             case "complexTitle":
-            case "mojtame":
+            case "mojtame":{
+                BaseService.combineRoleToCriteriaComplex(request);
                 return SearchUtil.search(complexDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
+            }
 
             case "ccpAssistant":
             case "moavenat":
