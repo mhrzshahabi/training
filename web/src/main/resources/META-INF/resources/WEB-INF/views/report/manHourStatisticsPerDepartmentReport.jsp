@@ -221,8 +221,19 @@
                 defaultValue: ["1", "2", "3", "4", "5"]
             },
             {
-                type: "SpacerItem",
-                colSpan: 2
+                name: "reportType",
+                title: "<spring:message code="report.based.on"/>",
+                type: "SelectItem",
+                required: true,
+                valueMap: {
+                    "student": "<spring:message code='report.by.student.department'/>",
+                    "class": "<spring:message code='report.by.class.department'/>",
+                    "planner": "<spring:message code='report.by.planner.department'/>"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                defaultValue: "student"
             },
             {
                 name: "searchBtn",
@@ -519,8 +530,21 @@
     function exportExcelBy(by, listData) {
         let detailFields = (by == "complex" ? "mojtameTitle" : (by == "assistant" ? "moavenatTitle" : "omorTitle"));
         let detailHeaders = (by == "complex" ? '<spring:message code="complex"/>' : (by == "assistant" ? '<spring:message code="assistance"/>' : '<spring:message code="affairs"/>'));
+        let reportType = "<spring:message code='report.by.student.department'/>";
+        switch (DynamicForm_CriteriaForm_ManHourReport.getItem('reportType').getValue()) {
+            case 'class':
+                reportType = "<spring:message code='report.by.class.department'/>";
+                break;
+            case 'planner':
+                reportType = "<spring:message code='report.by.planner.department'/>";
+                break;
+        }
 
-        let masterData = {};
+        let masterData = {
+            '<spring:message code="report.based.on"/>': reportType,
+            '<spring:message code="class.status"/>': DynamicForm_CriteriaForm_ManHourReport.getItem('classStatus').getValue().map(d => DynamicForm_CriteriaForm_ManHourReport.getItem('classStatus').getValueMap()[d]).toString()
+        };
+
         let timeStatus = DynamicForm_CriteriaForm_ManHourReport.getItem('timeStatus').getValue();
         if (timeStatus == 2) {
             let terms = DynamicForm_CriteriaForm_ManHourReport.getItem('termId').getValueMap();

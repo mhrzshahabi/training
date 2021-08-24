@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.iservice.IBaseService;
 import com.nicico.training.repository.BaseDAO;
@@ -25,6 +26,7 @@ import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
 
 @Transactional
@@ -232,4 +234,44 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
             criteria.getCriteria().add(request.getCriteria());
         request.setCriteria(criteria);
     }
+
+    public static void combineCriteria(SearchDTO.SearchRq request,SearchDTO.CriteriaRq addCriteria) {
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteria.getCriteria().add(addCriteria);
+        if (request.getCriteria() != null)
+            criteria.getCriteria().add(request.getCriteria());
+        request.setCriteria(criteria);
+    }
+
+
+    public static void combineRoleToCriteriaComplex(SearchDTO.SearchRq request) {
+        Set<String> authorities = SecurityUtil.getAuthorities();
+        SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        SearchDTO.CriteriaRq icCriteria = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
+        if (authorities.contains("tehranManagementAccess")){
+            SearchDTO.CriteriaRq tempReq = makeNewCriteria("code", "110000000000", EOperator.equals, null);
+            icCriteria.getCriteria().add(tempReq);
+        }
+        if (authorities.contains("tehranRetirementAccess")){
+            SearchDTO.CriteriaRq tempReq = makeNewCriteria("code", "111000000000", EOperator.equals, null);
+            icCriteria.getCriteria().add(tempReq);
+        }
+        if (authorities.contains("sarcheshmeAccess")){
+            SearchDTO.CriteriaRq tempReq = makeNewCriteria("code", "121000000000", EOperator.equals, null);
+            icCriteria.getCriteria().add(tempReq);
+        }
+        if (authorities.contains("shahreBabakAccess")){
+            SearchDTO.CriteriaRq tempReq = makeNewCriteria("code", "122000000000", EOperator.equals, null);
+            icCriteria.getCriteria().add(tempReq);
+        }
+        if (authorities.contains("azarbayejanAccess")){
+            SearchDTO.CriteriaRq tempReq = makeNewCriteria("code", "130000000000", EOperator.equals, null);
+            icCriteria.getCriteria().add(tempReq);
+        }
+        criteria.getCriteria().add(icCriteria);
+        if (request.getCriteria() != null)
+            criteria.getCriteria().add(request.getCriteria());
+        request.setCriteria(criteria);
+    }
+
 }

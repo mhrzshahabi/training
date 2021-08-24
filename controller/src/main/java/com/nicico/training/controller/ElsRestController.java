@@ -91,6 +91,7 @@ public class ElsRestController {
     private final ParameterValueService parameterValueService;
     private final QuestionBankService questionBankService;
     private final QuestionBankBeanMapper questionBankBeanMapper;
+    private final ParameterValueService parameterValueService;
 
 
     @GetMapping("/eval/{id}")
@@ -856,6 +857,28 @@ public class ElsRestController {
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.NotFound);
         }
+    }
+
+    @PostMapping("/sendQuestions")
+    public BaseResponse sendQuestions(HttpServletRequest header, @RequestBody ElsQuestionBankDto elsQuestionBankDto) {
+
+        BaseResponse response = new BaseResponse();
+        try {
+
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                questionBankBeanMapper.toQuestionBankCreate(elsQuestionBankDto);
+                response.setMessage("ذخیره سوالات با موفقیت انجام شد");
+                response.setStatus(HttpStatus.OK.value());
+                return response;
+
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            }
+        } catch (Exception e) {
+            response.setMessage("مشکلی در ذخیره سوالات رخ داده است");
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        }
+        return response;
     }
 
 }

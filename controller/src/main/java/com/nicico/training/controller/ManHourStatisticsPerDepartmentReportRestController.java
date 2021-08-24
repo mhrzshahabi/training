@@ -46,6 +46,7 @@ public class ManHourStatisticsPerDepartmentReportRestController {
         List<String> yearList = null;
         List<Long> termIdList = null;
         String termId = null;
+        String reportType = "";
         if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null) {
             for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
                 if (criterion.getFieldName().equals("mojtameCode")) {
@@ -75,6 +76,9 @@ public class ManHourStatisticsPerDepartmentReportRestController {
                 if (criterion.getFieldName().equals("classStatus")) {
                     classStatusList = new ArrayList<String>(Arrays.asList(criterion.getValue().toString().replace("[", "").replace("]", "").split(", ")));
                 }
+                if (criterion.getFieldName().equals("reportType")) {
+                    reportType = criterion.getValue().toString().replace("[", "").replace("]", "");
+                }
             }
         }
 
@@ -91,13 +95,33 @@ public class ManHourStatisticsPerDepartmentReportRestController {
 
         List<ClassCourseSumByFeaturesAndDepartmentReportDTO> finalList;
         if (omorCode != null) {
-            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, null, omorCode, classStatusList);
+            if (reportType.equalsIgnoreCase("class"))
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByClassDepartment(startDate, endDate, null, null, omorCode, classStatusList);
+            else if (reportType.equalsIgnoreCase("planner"))
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByPlannerDepartment(startDate, endDate, null, null, omorCode, classStatusList);
+            else
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, null, omorCode, classStatusList);
         } else if (moavenatCode != null) {
-            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, moavenatCode, null, classStatusList);
+            if (reportType.equalsIgnoreCase("class"))
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByClassDepartment(startDate, endDate, null, moavenatCode, null, classStatusList);
+            else if (reportType.equalsIgnoreCase("planner"))
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByPlannerDepartment(startDate, endDate, null, moavenatCode, null, classStatusList);
+            else
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, moavenatCode, null, classStatusList);
         } else if (complexCode != null) {
-            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, complexCode, null, null, classStatusList);
+            if (reportType.equalsIgnoreCase("class"))
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByClassDepartment(startDate, endDate, complexCode, null, null, classStatusList);
+            else if (reportType.equalsIgnoreCase("planner"))
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByPlannerDepartment(startDate, endDate, complexCode, null, null, classStatusList);
+            else
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, complexCode, null, null, classStatusList);
         } else {
-            finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, null, null, classStatusList);
+            if (reportType.equalsIgnoreCase("class"))
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByClassDepartment(startDate, endDate, null, null, null, classStatusList);
+            else if (reportType.equalsIgnoreCase("planner"))
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByPlannerDepartment(startDate, endDate, null, null, null, classStatusList);
+            else
+                finalList = classCourseSumByFeaturesAndDepartmentReportService.getReportGroupByStudentDepartment(startDate, endDate, null, null, null, classStatusList);
         }
 
         final ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs specResponse = new ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs();
