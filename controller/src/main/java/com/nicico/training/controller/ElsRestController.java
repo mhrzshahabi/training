@@ -31,6 +31,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.evaluation.ElsEvalRequest;
+import request.evaluation.ElsUserEvaluationListResponseDto;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
@@ -170,7 +171,35 @@ public class ElsRestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping("/examToEls/{type}")
+    @GetMapping("/evaluations/userEval/{evalId}")
+    public ElsUserEvaluationListResponseDto sendUserEvalToElsById(HttpServletRequest header, @PathVariable long evalId) {
+        ElsUserEvaluationListResponseDto response = new ElsUserEvaluationListResponseDto();
+        try {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                Evaluation evaluation = iEvaluationService.getById(evalId);
+                response = evaluationBeanMapper.toElsEvalResponseDto(evaluation,
+                        questionnaireService.get(evaluation.getQuestionnaireId()),
+                        evaluationService.getEvaluationQuestions(
+                                answerService.getAllByEvaluationId(evaluation.getId())),
+                        personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+                response.setStatus(HttpStatus.OK.value());
+            } else {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                response.setMessage("خطای شناسایی");
+            }
+        } catch (Exception ex) {
+            if (ex.getMessage().equals("No value present")) {
+                response.setMessage("ارزیابی با این اطلاعات وجود ندارد");
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+            } else {
+                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            }
+        }
+        return response;
+    }
+
+        @PostMapping("/examToEls/{type}")
     public ResponseEntity sendExam(@RequestBody ExamImportedRequest object, @PathVariable String type) {
         BaseResponse response = new BaseResponse();
         final ElsExamRequestResponse elsExamRequestResponse;
