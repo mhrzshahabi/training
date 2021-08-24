@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpecificationExecutor<Department> {
@@ -38,4 +39,5 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
     @Query(value = "select * from tbl_department where id = f_parent and e_enabled is null", nativeQuery = true)
     List<Department> getRoot();
 
+    Optional<Department> getByCode(String code);
 }
