@@ -1110,7 +1110,7 @@
                 name: "descriptiveAnswer",
                 title: "<spring:message code="question.bank.descriptive.answer"/>",
                 type: "TextAreaItem",
-                height: 300,
+                height: 100,
                 width: "100%",
                 length: 5000,
                 colSpan: 4,
