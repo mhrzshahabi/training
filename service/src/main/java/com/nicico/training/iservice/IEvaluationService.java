@@ -65,4 +65,6 @@ public interface IEvaluationService {
 
     List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationForm(HashMap req);
 
+    List<Evaluation> getEvaluationsByEvaluatorNationalCode(String evaluatorNationalCode, Long EvaluatorTypeId , String evaluatorType);
+
  }

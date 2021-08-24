@@ -37,7 +37,9 @@ import request.exam.*;
 import response.BaseResponse;
 import response.attendance.AttendanceListSaveResponse;
 import response.evaluation.EvalListResponse;
+import response.evaluation.ElsEvaluationsListResponse;
 import response.evaluation.SendEvalToElsResponse;
+import response.evaluation.dto.ElsContactEvaluationDto;
 import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
@@ -67,6 +69,7 @@ public class ElsRestController {
     private final EvaluationAnswerService answerService;
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
+    private final IEvaluationService iEvaluationService;
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final TeacherService teacherService;
@@ -86,6 +89,7 @@ public class ElsRestController {
     private final IAttachmentService iAttachmentService;
     private final QuestionBankService questionBankService;
     private final QuestionBankBeanMapper questionBankBeanMapper;
+    private final ParameterValueService parameterValueService;
 
 
     @GetMapping("/eval/{id}")
@@ -138,7 +142,13 @@ public class ElsRestController {
     public ResponseEntity<SendEvalToElsResponse> sendEvalToElsForTeacher(@PathVariable long id) {
         SendEvalToElsResponse response = new SendEvalToElsResponse();
         Evaluation evaluation = evaluationService.getById(id);
-        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation,
+                questionnaireService.get(evaluation.getQuestionnaireId()),
+                classStudentService.getClassStudents(evaluation.getClassId()),
+                evaluationService.getEvaluationQuestions(
+                        answerService.getAllByEvaluationId(evaluation.getId())),
+                personalInfoService.getPersonalInfo(
+                        teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
         try {
             request = evaluationBeanMapper.removeInvalidUsers(request);
             BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
@@ -731,6 +741,42 @@ public class ElsRestController {
             elsSessionAttendanceResponse.setStatus(HttpStatus.NOT_FOUND.value());
             elsSessionAttendanceResponse.setMessage("جلسه ی موردنظر یافت نشد");
             return elsSessionAttendanceResponse;
+        }
+    }
+
+    @GetMapping("/evaluations/listByNationalCode/{nationalCode}/{evaluatorType}")
+    public ElsEvaluationsListResponse getEvaluationListByNationalCode(HttpServletRequest header,
+                                                                      @PathVariable String nationalCode,
+                                                                      @PathVariable String evaluatorType) {
+        ElsEvaluationsListResponse elsEvaluationsListResponse = new ElsEvaluationsListResponse();
+        try {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                Long evaluatorTypeId = null;
+                switch (evaluatorType) {
+                    case "student": {
+                        evaluatorTypeId = parameterValueService.getId("32");
+                        break;
+                    }
+                    case "teacher": {
+                        evaluatorTypeId = parameterValueService.getId("11");
+                    }
+                }
+                List<Evaluation> evaluationList = iEvaluationService.getEvaluationsByEvaluatorNationalCode(nationalCode, evaluatorTypeId, evaluatorType);
+                List<ElsContactEvaluationDto> ElsContactEvaluationDtos = evaluationBeanMapper.toElsContactEvaluationDTOList(evaluationList);
+                elsEvaluationsListResponse.setNationalCode(nationalCode);
+                elsEvaluationsListResponse.setElsContactEvaluationDtos(ElsContactEvaluationDtos);
+                elsEvaluationsListResponse.setStatus(HttpStatus.OK.value());
+
+                return elsEvaluationsListResponse;
+            } else {
+                elsEvaluationsListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                elsEvaluationsListResponse.setMessage("دسترسی موردنظر یافت نشد");
+                return elsEvaluationsListResponse;
+            }
+        } catch (Exception ex) {
+            elsEvaluationsListResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            elsEvaluationsListResponse.setMessage("اطلاعات موردنظر یافت نشد");
+            return elsEvaluationsListResponse;
         }
     }
 

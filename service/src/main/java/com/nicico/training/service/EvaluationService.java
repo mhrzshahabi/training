@@ -301,6 +301,17 @@ public class EvaluationService implements IEvaluationService {
 
     }
 
+    @Override
+    public List<Evaluation> getEvaluationsByEvaluatorNationalCode(String evaluatorNationalCode, Long EvaluatorTypeId, String evaluatorType) {
+        if (evaluatorType.equals("teacher")) {
+            return evaluationDAO.getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
+        } else if (evaluatorType.equals("student")) {
+            return evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
+        } else {
+            return null;
+        }
+    }
+
     @Transactional
     @Override
     public Boolean deleteEvaluation(HashMap req) {
