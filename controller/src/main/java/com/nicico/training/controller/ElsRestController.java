@@ -88,7 +88,6 @@ public class ElsRestController {
     private final ClassSessionService classSessionService;
     private final IClassSession iClassSessionService;
     private final IAttachmentService iAttachmentService;
-    private final ParameterValueService parameterValueService;
     private final QuestionBankService questionBankService;
     private final QuestionBankBeanMapper questionBankBeanMapper;
     private final ParameterValueService parameterValueService;
