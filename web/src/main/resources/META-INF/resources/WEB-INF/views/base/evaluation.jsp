@@ -344,7 +344,7 @@
         height: "100%",
         dataSource: RestDataSource_class_Evaluation,
         canAddFormulaFields: false,
-        autoFetchData: true,
+        autoFetchData: false,
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
