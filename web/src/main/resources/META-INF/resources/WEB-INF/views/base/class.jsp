@@ -4369,6 +4369,9 @@
             mainTermCriteria = criteria;
             let mainCriteria = createMainCriteria();
             ListGrid_Class_JspClass.invalidateCache();
+            if(departmentCriteria.criteria===undefined)
+                wait.close();
+            else
             ListGrid_Class_JspClass.fetchData(mainCriteria);
         } else {
             createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
