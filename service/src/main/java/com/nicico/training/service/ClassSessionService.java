@@ -9,6 +9,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.IForeignLangKnowledgeService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -336,14 +338,19 @@ public class ClassSessionService implements IClassSession {
     @Override
     public ElsSessionAttendanceResponse sessionStudentsBySessionId(Long sessionId) {
         List<Map<String, Object>> result = studentDAO.sessionStudentsBySessionId(sessionId);
+        List<Student> sessionsStudents = studentDAO.getSessionStudents(sessionId);
+        Map<Long, Student> studentMap = convertListToMap(sessionsStudents);
         ElsSessionAttendanceResponse elsSessionAttendanceResponse = new ElsSessionAttendanceResponse();
+        List<ElsSessionAttendanceUserInfoDto> ElsSessionAttendanceUserInfoDtos = new ArrayList<>();
         if (result.size() > 0) {
-            List<ElsSessionAttendanceUserInfoDto> ElsSessionAttendanceUserInfoDtos = new ArrayList<>();
             for (Map<String, Object> map : result) {
                 ElsSessionAttendanceUserInfoDto userInfoDto = new ElsSessionAttendanceUserInfoDto();
                 map.forEach((key, value) -> {
                     if (key.equals("STUDENTID")) {
                         userInfoDto.setStudentId(Long.parseLong(String.valueOf(value)));
+                        if (studentMap.get(userInfoDto.getStudentId()) != null) {
+                            sessionsStudents.remove(studentMap.get(userInfoDto.getStudentId()));
+                        }
                     } else if (key.equals("FULLNAME")) {
                         userInfoDto.setFullName(String.valueOf(value));
                     } else if (key.equals("NATIONALCODE")) {
@@ -355,10 +362,28 @@ public class ClassSessionService implements IClassSession {
                 });
                 ElsSessionAttendanceUserInfoDtos.add(userInfoDto);
             }
+        }
+
+        if (sessionsStudents.size() > 0) {
+            for (Student stu : sessionsStudents) {
+                ElsSessionAttendanceUserInfoDto userInfoDto = new ElsSessionAttendanceUserInfoDto();
+                userInfoDto.setFullName(stu.getFirstName() + " " + stu.getLastName());
+                userInfoDto.setStudentId(stu.getId());
+                userInfoDto.setNationalCode(stu.getNationalCode());
+                userInfoDto.setAttendanceStateId(0L);
+                ElsSessionAttendanceUserInfoDtos.add(userInfoDto);
+            }
+        }
+        if (ElsSessionAttendanceUserInfoDtos.size() > 0) {
             elsSessionAttendanceResponse.setStudentAttendanceInfos(ElsSessionAttendanceUserInfoDtos);
             elsSessionAttendanceResponse.setSessionId(sessionId);
         }
         return elsSessionAttendanceResponse;
+    }
+
+    private Map<Long, Student> convertListToMap(List<Student> list) {
+        Map<Long, Student> map = list.stream().collect(Collectors.toMap(Student::getId, Function.identity()));
+        return map;
     }
 
     //*********************************
