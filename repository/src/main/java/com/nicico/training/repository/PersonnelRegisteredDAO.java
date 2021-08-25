@@ -31,6 +31,7 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
 
     List<PersonnelRegistered> findAllByPersonnelNoOrderByIdDesc(String personnelNo);
 
+    @Query(value = "select * from tbl_personnel_registered where f_contact_info = :id and active = 1 and deleted = 0" , nativeQuery = true)
     Optional<PersonnelRegistered> findByContactInfoId(Long id);
 
     @Query(value = "select * from tbl_personnel_registered where f_contact_info IN(:ids)" , nativeQuery = true)

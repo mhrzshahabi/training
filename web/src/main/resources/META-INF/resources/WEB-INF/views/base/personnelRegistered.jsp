@@ -1,3 +1,4 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -14,7 +15,7 @@
     var mailCheckPerReg = true;
     var cellPhoneCheckPerReg = true;
     var duplicateCodePerReg = false;
-    var tempNationalCode="";
+    var tempNationalCode = "";
 
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -465,8 +466,7 @@
                     if (codeCheckPerReg === false) {
                         DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message
                                                                         code='msg.national.code.validation'/>", true);
-                    }
-                   else if (codeCheckPerReg === true) {
+                    } else if (codeCheckPerReg === true) {
                         DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
                         checkPersonalRegNationalCode(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
                     }
@@ -522,12 +522,12 @@
                     else if (dateCheck === true)
                         DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("birthDate", true);
                 },
-                editorExit:function(){
-                    let result=reformat(DynamicForm_PersonnelReg_BaseInfo.getValue("birthDate"));
-                    if (result){
+                editorExit: function () {
+                    let result = reformat(DynamicForm_PersonnelReg_BaseInfo.getValue("birthDate"));
+                    if (result) {
                         DynamicForm_PersonnelReg_BaseInfo.getItem("birthDate").setValue(result);
                         DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("birthDate", true);
-                        persianRegDateCheck=true;
+                        persianRegDateCheck = true;
                     }
                 }
             },
@@ -574,7 +574,8 @@
                 valueMap:
                     {
                         "ایرانی": "<spring:message code='nationality.iranian'/>",
-                        "غیر ایرانی": "<spring:message code='nationality.notIranian'/>"}
+                        "غیر ایرانی": "<spring:message code='nationality.notIranian'/>"
+                    }
             },
             {
                 name: "religion",
@@ -584,10 +585,12 @@
                 showHintInField: true
                 ,
                 valueMap:
-                    { "اسلام شیعه اثنی عشری": "<spring:message code='religion.shiite'/>",
+                    {
+                        "اسلام شیعه اثنی عشری": "<spring:message code='religion.shiite'/>",
                         "اسلام شیعه": "<spring:message code='religion.shia'/>",
                         "اسلام سنی": "<spring:message code='religion.sunni'/>",
-                        "زرتشتی": "<spring:message code='religion.zoroastrianism'/>"}
+                        "زرتشتی": "<spring:message code='religion.zoroastrianism'/>"
+                    }
             },
 
             {
@@ -641,15 +644,21 @@
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
 
-            {name: "personnelNo2", title: "<spring:message code='personnel.no.6.digits'/>", keyPressFilter: "[0-9]",
-                length: "6"},
+            {
+                name: "personnelNo2", title: "<spring:message code='personnel.no.6.digits'/>", keyPressFilter: "[0-9]",
+                length: "6"
+            },
 
-            {name: "fatherName", title: "<spring:message code='father.name'/>",
+            {
+                name: "fatherName", title: "<spring:message code='father.name'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "50" },
+                length: "50"
+            },
 
-            {name: "age", title: "<spring:message code='age'/>", keyPressFilter: "[0-9]",
-                length: "2"},
+            {
+                name: "age", title: "<spring:message code='age'/>", keyPressFilter: "[0-9]",
+                length: "2"
+            },
             {
                 name: "contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
@@ -669,8 +678,10 @@
                         DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("contactInfo.mobile", true);
                 }
             },
-            {name: "insuranceCode", title: "<spring:message code='insurance.code'/>",  keyPressFilter: "[0-9]",
-                length: "10"},
+            {
+                name: "insuranceCode", title: "<spring:message code='insurance.code'/>", keyPressFilter: "[0-9]",
+                length: "10"
+            },
             {name: "postAssignmentDate", title: "version", canEdit: false, hidden: true},
             {name: "educationLicenseTypeTitle", title: "version", canEdit: false, hidden: true},
             {name: "departmentTitle", title: "version", canEdit: false, hidden: true},
@@ -729,7 +740,8 @@
                     }
                 ]
             },
-            {name: "employmentDate", title: "<spring:message code='employment.date'/>",
+            {
+                name: "employmentDate", title: "<spring:message code='employment.date'/>",
                 ID: "employmentDate_jspPersonnelReg",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -751,23 +763,25 @@
                     else if (dateCheck === true)
                         DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
                 },
-                editorExit:function(){
-                    let result=reformat(DynamicForm_PersonnelReg_EmployEdu.getValue("employmentDate"));
-                    if (result){
+                editorExit: function () {
+                    let result = reformat(DynamicForm_PersonnelReg_EmployEdu.getValue("employmentDate"));
+                    if (result) {
                         DynamicForm_PersonnelReg_EmployEdu.getItem("employmentDate").setValue(result);
                         DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
-                        persianRegEmpDateCheck=true;
+                        persianRegEmpDateCheck = true;
                     }
                 }
-                },
+            },
 
-            {name: "employmentStatus", title: "<spring:message code='employment.status'/>" , valueMap:
+            {
+                name: "employmentStatus", title: "<spring:message code='employment.status'/>", valueMap:
                     {
                         "اشتغال": "<spring:message code='employmentStatus.employment'/>",
                         "بازنشسته": "<spring:message code='employmentStatus.retired'/>",
                         "فوت": "<spring:message code='employmentStatus.death'/>",
-                        "اخراج": "<spring:message code='employmentStatus.layingOff'/>"}
-                        },
+                        "اخراج": "<spring:message code='employmentStatus.layingOff'/>"
+                    }
+            },
             {
                 name: "employmentType",
                 title: "<spring:message code='employment.type'/>",
@@ -779,15 +793,20 @@
                         "دائم": "<spring:message code='employmentTypeTitle.permanent'/>",
                         "قراردادی": "<spring:message code='employmentTypeTitle.contractual'/>",
                         "موقت": "<spring:message code='employmentTypeTitle.temporary'/>",
-                        "حق الزحمه": "<spring:message code='employmentTypeTitle.wage'/>"}
+                        "حق الزحمه": "<spring:message code='employmentTypeTitle.wage'/>"
+                    }
             },
 
-            {name: "contractNo", title: "<spring:message code='contract.no'/>", keyPressFilter: "[0-9]",
-                length: "10"},
+            {
+                name: "contractNo", title: "<spring:message code='contract.no'/>", keyPressFilter: "[0-9]",
+                length: "10"
+            },
 
-            {name: "contractDescription", title: "<spring:message code='contract.description'/>",
+            {
+                name: "contractDescription", title: "<spring:message code='contract.description'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "150"},
+                length: "150"
+            },
 
             {
                 name: "educationLevel",
@@ -846,7 +865,8 @@
                 ]
             },
 
-            {name: "jobNo",  title: "<spring:message code='job.code'/>",
+            {
+                name: "jobNo", title: "<spring:message code='job.code'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",
@@ -876,8 +896,10 @@
                         width: "30%",
                         filterOperator: "iContains"
                     }
-                ],},
-            {name: "jobTitle", title: "<spring:message code='job.title'/>",
+                ],
+            },
+            {
+                name: "jobTitle", title: "<spring:message code='job.title'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",
@@ -977,7 +999,7 @@
                 //     DynamicForm_PersonnelReg_EmployEdu.setValue("postCode", RestDataSource_Post_PerReg.getSelectedRecord().code);
                 // },
 
-                },
+            },
             {
                 name: "postGradeTitle",
                 title: "<spring:message code='post.grade'/>",
@@ -1007,45 +1029,56 @@
                     }
                 ]
             },
-            {name: "workPlace", title: "<spring:message code='work.place'/>" , valueMap:
+            {
+                name: "workPlace", title: "<spring:message code='work.place'/>", valueMap:
                     {
                         "سرچشمه": "<spring:message code='workPlaceTitle.sarcheshmeh'/>",
                         "شهربابک": "<spring:message code='workPlaceTitle.shahrbabak'/>",
                         "سونگون": "<spring:message code='workPlaceTitle.songoon'/>",
-                        "تهرات": "<spring:message code='workPlaceTitle.tehran'/>"}
-                    },
+                        "تهرات": "<spring:message code='workPlaceTitle.tehran'/>"
+                    }
+            },
             {
                 name: "workTurn",
                 title: "<spring:message code='work.turn'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30",
-                showHintInField: true , valueMap:
+                showHintInField: true, valueMap:
                     {
                         "عادیکار": "<spring:message code='workTurn.normal'/>",
                         "شیفت دو نوبتی منظم": "<spring:message code='workTurn.regularTwo'/>",
                         "شیفت 24/48": "<spring:message code='workTurn.shift24_48'/>",
-                        "شبکار دائم": "<spring:message code='workTurn.nightmare'/>"}
+                        "شبکار دائم": "<spring:message code='workTurn.nightmare'/>"
+                    }
             },
 
-            {name: "workYears", title: "<spring:message code='work.years'/>",  keyPressFilter: "[0-9]",
-                length: "2"},
+            {
+                name: "workYears", title: "<spring:message code='work.years'/>", keyPressFilter: "[0-9]",
+                length: "2"
+            },
 
-            {name: "workMonths", title: "<spring:message code='work.months'/>",  keyPressFilter: "[0-9]",
-                length: "2"},
+            {
+                name: "workMonths", title: "<spring:message code='work.months'/>", keyPressFilter: "[0-9]",
+                length: "2"
+            },
 
-            {name: "workDays", title: "<spring:message code='work.days'/>",  keyPressFilter: "[0-9]",
-                length: "2"},
-            {name: "enabled", title: "<spring:message code='active.status'/>",  valueMap:
+            {
+                name: "workDays", title: "<spring:message code='work.days'/>", keyPressFilter: "[0-9]",
+                length: "2"
+            },
+            {
+                name: "enabled", title: "<spring:message code='active.status'/>", valueMap:
                     {"494": "<spring:message code='active'/>", "74": "<spring:message code='deActive'/>"}
             },
-            {name: "deleted", title: "<spring:message code='delete.status'/>",  valueMap:
+            {
+                name: "deleted", title: "<spring:message code='delete.status'/>", valueMap:
                     {"75": "<spring:message code='deleted'/>", "76": "<spring:message code='notDeleted'/>"}
             }
         ]
 
     });
 
-    var DynamicForm_PersonnelReg_OperationalUnit= isc.DynamicForm.create({
+    var DynamicForm_PersonnelReg_OperationalUnit = isc.DynamicForm.create({
         valuesManager: PersonnelReg_vm,
         width: "800",
         titleWidth: "120",
@@ -1103,7 +1136,7 @@
 
     });
 
-    var DynamicForm_PersonnelReg_ContactInfo= isc.DynamicForm.create({
+    var DynamicForm_PersonnelReg_ContactInfo = isc.DynamicForm.create({
         valuesManager: PersonnelReg_vm,
         width: "800",
         titleWidth: "120",
@@ -1197,9 +1230,9 @@
         showTabScroller: false,
         tabs: [
             {
-            title: "<spring:message code='personnelReg.baseInfo'/>",
-            pane: DynamicForm_PersonnelReg_BaseInfo
-        },
+                title: "<spring:message code='personnelReg.baseInfo'/>",
+                pane: DynamicForm_PersonnelReg_BaseInfo
+            },
             {
                 title: "<spring:message code='personnelReg.employEdu'/>",
                 pane: DynamicForm_PersonnelReg_EmployEdu
@@ -1230,7 +1263,7 @@
         title: "<spring:message code='save'/>",
         align: "center",
         icon: "[SKIN]/actions/save.png",
-        click: function () {
+        click: async function () {
             if (codeMeliCheckPerReg === false) {
                 DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message  code='msg.national.code.validation'/>", true);
                 return;
@@ -1258,26 +1291,34 @@
             DynamicForm_PersonnelReg_BaseInfo.validate();
             DynamicForm_PersonnelReg_EmployEdu.validate();
             DynamicForm_PersonnelReg_ContactInfo.validate();
+            let this_mobile = DynamicForm_PersonnelReg_BaseInfo.getItem('contactInfo.mobile').getValue();
+            wait.show();
+            let resp = await fetch(rootUrl.concat("/contactInfo/nationalCodeOfMobile/").concat(this_mobile), {headers: {"Authorization": "Bearer <%= (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN) %>"}});
+            const r = await resp.json();
+            wait.close();
+            let alreadyNCs = r.filter(d => d != DynamicForm_PersonnelReg_BaseInfo.getItem('nationalCode').getValue());
+            if (alreadyNCs.size() > 0) {
+                let msg = "<spring:message  code='msg.duplicate.mobile.number.SomeOne'/>".replace("{0}", alreadyNCs[0]);
+                createDialog("warning", msg);
+                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("contactInfo.mobile", msg, true);
+                return;
+            }
             if (DynamicForm_PersonnelReg_BaseInfo.hasErrors()) {
                 personnelRegTabs.selectTab(0);
                 return;
             } else if (DynamicForm_PersonnelReg_EmployEdu.hasErrors()) {
                 personnelRegTabs.selectTab(1);
                 return;
-            }else if (DynamicForm_PersonnelReg_ContactInfo.hasErrors()) {
+            } else if (DynamicForm_PersonnelReg_ContactInfo.hasErrors()) {
                 personnelRegTabs.selectTab(3);
                 return;
-            }
-            else {
-                if (typeof DynamicForm_PersonnelReg_BaseInfo.getItem('personnelNo').getValue() == "undefined")
-                { DynamicForm_PersonnelReg_BaseInfo.setValue('personnelNo',DynamicForm_PersonnelReg_BaseInfo.getItem('nationalCode').getValue())}
+            } else {
+                if (typeof DynamicForm_PersonnelReg_BaseInfo.getItem('personnelNo').getValue() == "undefined") {
+                    DynamicForm_PersonnelReg_BaseInfo.setValue('personnelNo', DynamicForm_PersonnelReg_BaseInfo.getItem('nationalCode').getValue())
+                }
                 var data = PersonnelReg_vm.getValues();
                 delete data.contactInfo.emobileForSMS;
                 delete data.contactInfo.emobileForCN;
-                /*wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.contactInfo.id), "PUT", JSON.stringify(data.contactInfo),(r)=> {
-                    wait.close();
-                }));*/
                 var personnelRegSaveUrl = personnelRegUrl;
                 personnelRegWait = createDialog("wait");
                 if (personnelRegMethod.localeCompare("PUT") == 0) {
@@ -1285,7 +1326,7 @@
                     personnelRegSaveUrl += "/" + personnelRegRecord.id;
                 }
                 isc.RPCManager.sendRequest(TrDSRequest(personnelRegSaveUrl, personnelRegMethod, JSON.stringify(data), "callback: personnelReg_action_result(rpcResponse)"));
-                    // Window_PersonnelReg_JspPersonnelReg.close();
+                // Window_PersonnelReg_JspPersonnelReg.close();
             }
         }
     });
@@ -1354,7 +1395,7 @@
     });
     var ToolStripButton_Add_List_JspPersonnelReg = isc.ToolStripButtonAdd.create({
 
-         title: "<spring:message code='add.group'/>",
+        title: "<spring:message code='add.group'/>",
         click: function () {
             addRegisteredGroup();
         }
@@ -1378,7 +1419,7 @@
 
     var ToolStripButton_Export2EXcel_JspPersonnelReg = isc.ToolStripButtonExcel.create({
         click: function () {
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_PersonnelReg_JspPersonnelReg,  personnelRegUrl + "/spec-list" , 0, null, '',"لیست فراگیران متفرقه", null, null, 0, true);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_PersonnelReg_JspPersonnelReg, personnelRegUrl + "/spec-list", 0, null, '', "لیست فراگیران متفرقه", null, null, 0, true);
         }
     });
 
@@ -1573,7 +1614,7 @@
         DynamicForm_PersonnelReg_EmployEdu.clearValues();
         DynamicForm_PersonnelReg_OperationalUnit.clearValues();
         DynamicForm_PersonnelReg_ContactInfo.clearValues();
-        duplicateCodePerReg=false;
+        duplicateCodePerReg = false;
         var record = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
@@ -1590,7 +1631,7 @@
             PersonnelReg_vm.editRecord(record);
             // DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode").disabled = true;
             personnelRegTabs.selectTab(0);
-            tempNationalCode=DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode");
+            tempNationalCode = DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode");
             Window_PersonnelReg_JspPersonnelReg.show();
         }
     };
@@ -1609,85 +1650,83 @@
         DynamicForm_PersonnelReg_ContactInfo.clearValues();
         // DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode").disabled = false;
         personnelRegTabs.selectTab(0);
-        tempNationalCode="";
+        tempNationalCode = "";
         Window_PersonnelReg_JspPersonnelReg.show();
     };
 
 
-
-    function addRegisteredGroup(){
-        let   TabSet_RegisteredGroupInsert_JspStudent=isc.TabSet.create({
-            ID:"leftTabSet",
-            autoDraw:false,
+    function addRegisteredGroup() {
+        let TabSet_RegisteredGroupInsert_JspStudent = isc.TabSet.create({
+            ID: "leftTabSet",
+            autoDraw: false,
             tabBarPosition: "top",
             width: "100%",
             height: 115,
             tabs: [
-                {title: "فایل اکسل", width:200, overflow:"hidden",
+                {
+                    title: "فایل اکسل", width: 200, overflow: "hidden",
                     pane: isc.DynamicForm.create({
                         height: "100%",
-                        width:"100%",
+                        width: "100%",
                         numCols: 4,
-                        colWidths: ["10%","40%","20%","20%"],
+                        colWidths: ["10%", "40%", "20%", "20%"],
                         fields: [
                             {
-                                ID:"DynamicForm_GroupInsert_FileUploader_JspRegisterd",
-                                name:"DynamicForm_GroupInsert_FileUploader_JspRegisterd",
-                                type:"imageFile",
-                                title:"مسیر فایل",
+                                ID: "DynamicForm_GroupInsert_FileUploader_JspRegisterd",
+                                name: "DynamicForm_GroupInsert_FileUploader_JspRegisterd",
+                                type: "imageFile",
+                                title: "مسیر فایل",
                             },
                             {
                                 type: "button",
-                                startRow:false,
+                                startRow: false,
                                 title: "آپلود فايل",
-                                click:function () {
-                                    let address=DynamicForm_GroupInsert_FileUploader_JspRegisterd.getValue();
+                                click: function () {
+                                    let address = DynamicForm_GroupInsert_FileUploader_JspRegisterd.getValue();
 
-                                    if(address==null){
+                                    if (address == null) {
                                         createDialog("info", "فايل خود را انتخاب نماييد.");
-                                    }else{
-                                        var ExcelToJSON = function() {
+                                    } else {
+                                        var ExcelToJSON = function () {
 
-                                            this.parseExcel = function(file) {
+                                            this.parseExcel = function (file) {
                                                 var reader = new FileReader();
                                                 var records = [];
 
-                                                reader.onload = function(e) {
+                                                reader.onload = function (e) {
                                                     var data = e.target.result;
                                                     var workbook = XLSX.read(data, {
                                                         type: 'binary'
                                                     });
-                                                    var isEmpty=true;
+                                                    var isEmpty = true;
 
-                                                    workbook.SheetNames.forEach(function(sheetName) {
+                                                    workbook.SheetNames.forEach(function (sheetName) {
                                                         // Here is your object
                                                         var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
                                                         //var json_object = JSON.stringify(XL_row_object);
 
-                                                        for(let i=0;i<XL_row_object.length;i++){
-                                                            if(isNaN(Object.values(XL_row_object[i])[0])){
+                                                        for (let i = 0; i < XL_row_object.length; i++) {
+                                                            if (isNaN(Object.values(XL_row_object[i])[0])) {
                                                                 continue;
-                                                            }
-                                                            else if(GroupSelectedPersonnelRegisterLG.data.filter(function (item) {
-                                                                return item.nationalCode==Object.values(XL_row_object[i])[0];
-                                                            }).length==0){
-                                                                let current={
-                                                                    nationalCode:Object.values(XL_row_object[i])[0],
-                                                                    firstName:Object.values(XL_row_object[i])[1],
-                                                                    lastName:Object.values(XL_row_object[i])[2],
-                                                                    birthCertificateNo:Object.values(XL_row_object[i])[3],
-                                                                    gender:Object.values(XL_row_object[i])[4],
-                                                                    company:Object.values(XL_row_object[i])[5],
-                                                                    mobile:Object.values(XL_row_object[i])[6],
+                                                            } else if (GroupSelectedPersonnelRegisterLG.data.filter(function (item) {
+                                                                return item.nationalCode == Object.values(XL_row_object[i])[0];
+                                                            }).length == 0) {
+                                                                let current = {
+                                                                    nationalCode: Object.values(XL_row_object[i])[0],
+                                                                    firstName: Object.values(XL_row_object[i])[1],
+                                                                    lastName: Object.values(XL_row_object[i])[2],
+                                                                    birthCertificateNo: Object.values(XL_row_object[i])[3],
+                                                                    gender: Object.values(XL_row_object[i])[4],
+                                                                    company: Object.values(XL_row_object[i])[5],
+                                                                    mobile: Object.values(XL_row_object[i])[6],
 
                                                                 };
                                                                 records.add(current);
-                                                                isEmpty=false;
+                                                                isEmpty = false;
 
                                                                 continue;
-                                                            }
-                                                            else{
-                                                                isEmpty=false;
+                                                            } else {
+                                                                isEmpty = false;
 
                                                                 continue;
                                                             }
@@ -1696,12 +1735,14 @@
                                                         DynamicForm_GroupInsert_FileUploader_JspRegisterd.setValue('');
                                                     });
 
-                                                    if(records.length > 0){
+                                                    if (records.length > 0) {
 
                                                         let uniqueRecords = [];
 
-                                                        for (let i=0; i < records.length; i++) {
-                                                            if (uniqueRecords.filter(function (item) {return item.nationalCode == records[i].nationalCode;}).length==0) {
+                                                        for (let i = 0; i < records.length; i++) {
+                                                            if (uniqueRecords.filter(function (item) {
+                                                                return item.nationalCode == records[i].nationalCode;
+                                                            }).length == 0) {
                                                                 uniqueRecords.push(records[i]);
                                                             }
                                                         }
@@ -1712,14 +1753,16 @@
                                                         GroupSelectedPersonnelRegisterLG.fetchData();
 
 
-                                                        checkPersonnelRegisteredResponse(checkPersonnelNationalCodes,uniqueRecords.map(function(item) {return item.nationalCode;}),false);
+                                                        checkPersonnelRegisteredResponse(checkPersonnelNationalCodes, uniqueRecords.map(function (item) {
+                                                            return item.nationalCode;
+                                                        }), false);
 
 
                                                         createDialog("info", "فایل به لیست اضافه شد.");
-                                                    }else{
-                                                        if(isEmpty){
+                                                    } else {
+                                                        if (isEmpty) {
                                                             createDialog("info", "خطا در محتویات فایل");
-                                                        }else{
+                                                        } else {
                                                             createDialog("info", "پرسنل جدیدی برای اضافه کردن وجود ندارد.");
                                                         }
 
@@ -1727,19 +1770,19 @@
 
                                                 };
 
-                                                reader.onerror = function(ex) {
+                                                reader.onerror = function (ex) {
                                                     createDialog("info", "خطا در باز کردن فایل");
                                                 };
 
                                                 reader.readAsBinaryString(file);
                                             };
                                         };
-                                        let split=$('[name="DynamicForm_GroupInsert_FileUploader_JspRegisterd"]')[0].files[0].name.split('.');
+                                        let split = $('[name="DynamicForm_GroupInsert_FileUploader_JspRegisterd"]')[0].files[0].name.split('.');
 
-                                        if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
+                                        if (split[split.length - 1] == 'xls' || split[split.length - 1] == 'csv' || split[split.length - 1] == 'xlsx') {
                                             var xl2json = new ExcelToJSON();
                                             xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_JspRegisterd"]')[0].files[0]);
-                                        }else{
+                                        } else {
                                             createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
                                         }
 
@@ -1749,7 +1792,7 @@
                             {
                                 type: "button",
                                 title: "فرمت فايل ورودی",
-                                click:function () {
+                                click: function () {
                                     window.open("excel/sample-personel-excel.xlsx");
                                 }
                             }
@@ -1759,7 +1802,7 @@
             ]
         });
 
-        let    Win_student_GroupInsert = isc.Window.create({
+        let Win_student_GroupInsert = isc.Window.create({
             ID: "Win_student_GroupInsert",
 
             width: 1050,
@@ -1767,13 +1810,13 @@
             minWidth: 700,
             minHeight: 500,
             autoSize: false,
-            overflow:"hidden",
-            title:"اضافه کردن گروهی",
+            overflow: "hidden",
+            title: "اضافه کردن گروهی",
             items: [isc.HLayout.create({
-                width:1050,
+                width: 1050,
                 height: "88%",
                 autoDraw: false,
-                overflow:"auto",
+                overflow: "auto",
                 align: "center",
                 members: [
                     isc.TrLG.create({
@@ -1782,27 +1825,27 @@
                         editEvent: "click",
                         //listEndEditAction: "next",
                         enterKeyEditAction: "nextRowStart",
-                        canSort:false,
-                        canEdit:true,
+                        canSort: false,
+                        canEdit: true,
                         filterOnKeypress: true,
                         selectionType: "single",
                         fields: [
-                            {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true,width:"10%"},
-                            {name: "nationalCode", title: "<spring:message code="national.code"/>", canEdit: false ,autoFithWidth:true},
-                            {name: "firstName", title: "<spring:message code="firstName"/>", canEdit: false ,autoFithWidth:true},
-                            {name: "lastName", title: "<spring:message code="lastName"/>", canEdit: false ,autoFithWidth:true},
-                            {name: "birthCertificateNo", title: "<spring:message code="birth.certificate.no"/>", canEdit: false ,autoFithWidth:true},
-                            {name: "gender", title: "<spring:message code="gender"/>", canEdit: false ,autoFithWidth:true},
-                            {name: "company", title: "<spring:message code="company"/>", canEdit: false ,autoFithWidth:true},
-                            {name: "mobile", title: "<spring:message code="mobile"/>", canEdit: false ,autoFithWidth:true},
-                            {name: "description", title: "<spring:message code="description"/>", canEdit: false ,width:300, align: "left"},
-                            {name: "error", canEdit: false ,hidden:true,autoFithWidth:true},
+                            {name: "remove", tile: "<spring:message code="remove"/>", isRemoveField: true, width: "10%"},
+                            {name: "nationalCode", title: "<spring:message code="national.code"/>", canEdit: false, autoFithWidth: true},
+                            {name: "firstName", title: "<spring:message code="firstName"/>", canEdit: false, autoFithWidth: true},
+                            {name: "lastName", title: "<spring:message code="lastName"/>", canEdit: false, autoFithWidth: true},
+                            {name: "birthCertificateNo", title: "<spring:message code="birth.certificate.no"/>", canEdit: false, autoFithWidth: true},
+                            {name: "gender", title: "<spring:message code="gender"/>", canEdit: false, autoFithWidth: true},
+                            {name: "company", title: "<spring:message code="company"/>", canEdit: false, autoFithWidth: true},
+                            {name: "mobile", title: "<spring:message code="mobile"/>", canEdit: false, autoFithWidth: true},
+                            {name: "description", title: "<spring:message code="description"/>", canEdit: false, width: 300, align: "left"},
+                            {name: "error", canEdit: false, hidden: true, autoFithWidth: true},
                             {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".png", canEdit: false}
                         ],
                         gridComponents: [TabSet_RegisteredGroupInsert_JspStudent, "header", "body"],
                         canRemoveRecords: true,
-                        deferRemoval:true,
-                        removeRecordClick:function (rowNum){
+                        deferRemoval: true,
+                        removeRecordClick: function (rowNum) {
                             GroupSelectedPersonnelRegisterLG.data.removeAt(rowNum);
                         }
                     })
@@ -1837,20 +1880,21 @@
                                 //     }
                                 // }
 
-                                let len=GroupSelectedPersonnelRegisterLG.data.length;
-                                let list=GroupSelectedPersonnelRegisterLG.data;
-                                let result=[];
+                                let len = GroupSelectedPersonnelRegisterLG.data.length;
+                                let list = GroupSelectedPersonnelRegisterLG.data;
+                                let result = [];
 
                                 for (let index = 0; index < len; index++) {
-                                    if(list[index].nationalCode != "" && list[index].nationalCode != null && typeof(list[index].nationalCode) != "undefined")
-                                    {
-                                        if (result.filter(function (item) {return (item.firstName && item.firstName == GroupSelectedPersonnelRegisterLG.data[index].firstName) || (item.lastName && item.lastName == GroupSelectedPersonnelRegisterLG.data[index].lastName);}).length==0) {
+                                    if (list[index].nationalCode != "" && list[index].nationalCode != null && typeof (list[index].nationalCode) != "undefined") {
+                                        if (result.filter(function (item) {
+                                            return (item.firstName && item.firstName == GroupSelectedPersonnelRegisterLG.data[index].firstName) || (item.lastName && item.lastName == GroupSelectedPersonnelRegisterLG.data[index].lastName);
+                                        }).length == 0) {
                                             result.push(list[index].nationalCode)
                                         }
                                     }
                                 }
 
-                                checkPersonnelRegisteredResponse(checkPersonnelNationalCodes,result,true);
+                                checkPersonnelRegisteredResponse(checkPersonnelNationalCodes, result, true);
 
                             }
                         }), isc.IButtonCancel.create({
@@ -1975,13 +2019,14 @@
         s = s % 11;
         return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
     };
+
     function checkGender(gender) {
         if (gender === undefined || gender === null || gender === "")
             return false;
-       if (gender==="مرد" || gender==="زن")
-           return true;
-       else
-           return false;
+        if (gender === "مرد" || gender === "زن")
+            return true;
+        else
+            return false;
     };
 
     function checkEmailPerReg(email) {
@@ -1992,7 +2037,7 @@
         if (mobile === undefined || mobile === null || mobile === "")
             return false;
         else
-        return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
+            return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
     };
 
     function checkPhonePerReg(phone) {
@@ -2009,20 +2054,20 @@
     };
 
     function personalReg_findOne_result(rpcResponse) {
-            // dummy = rpcResponse;
-            // if (rpcResponse === null ||  rpcResponse === undefined || rpcResponse.data === "") {
-                if (rpcResponse.status != 0 ) {
-                duplicateCodePerReg = true;
-                var ERROR = isc.Dialog.create({
-                    message: ("<spring:message code='msg.national.code.personalReg.duplicate'/>"),
-                    icon: "[SKIN]stop.png",
-                    title: "<spring:message code='message'/>"
-                });
-                setTimeout(function () {
-                    ERROR.close();
-                    }, 3000);
-            }
-        };
+        // dummy = rpcResponse;
+        // if (rpcResponse === null ||  rpcResponse === undefined || rpcResponse.data === "") {
+        if (rpcResponse.status != 0) {
+            duplicateCodePerReg = true;
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='msg.national.code.personalReg.duplicate'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+    };
 
     function checkPersonnelRegisteredResponse(url, result, addStudentsInGroupInsert) {
         wait.show();
@@ -2059,7 +2104,7 @@
                 let allRowsOK = true;
                 let students = [];
 
-                function checkIfAlreadyExist(currentVal,data) {
+                function checkIfAlreadyExist(currentVal, data) {
                     return data.some(function (item) {
                         return (item.nationalCode === currentVal.nationalCode);
                     });
@@ -2077,19 +2122,17 @@
 
                     if (nationalCode !== "" && nationalCode != null && typeof (nationalCode) != "undefined") {
                         let person = data.filter(function (item) {
-                            return item.nationalCode === nationalCode ;
+                            return item.nationalCode === nationalCode;
                         });
 
 
-
-
                         if (person.length === 0) {
-                            if (insert && !checkIfAlreadyExist(list[i],students) && checkCodeMeliPerReg(list[i].nationalCode)
-                                    && checkGender(list[i].gender)
-                                    && checkMobilePerReg(list[i].mobile)
+                            if (insert && !checkIfAlreadyExist(list[i], students) && checkCodeMeliPerReg(list[i].nationalCode)
+                                && checkGender(list[i].gender)
+                                && checkMobilePerReg(list[i].mobile)
                             ) {
                                 let mobile = {};
-                                mobile.mobile =  list[i].mobile;
+                                mobile.mobile = list[i].mobile;
 
 
                                 students.add({
@@ -2100,22 +2143,21 @@
                                     "birthCertificateNo": list[i].birthCertificateNo,
                                     "gender": list[i].gender,
                                     "companyName": list[i].company,
-                                    "contactInfo":mobile,
+                                    "contactInfo": mobile,
                                 });
 
                             }
                             allRowsOK = false;
                             list[i].error = false;
                             list[i].hasWarning = "warning";
-                            if (checkCodeMeliPerReg(list[i].nationalCode) &&  checkMobilePerReg(list[i].mobile) && checkGender(list[i].gender))
-                            list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد ملی وارد شده در سیستم وجود ندارد.</span>";
-                            else
-                            {
-                                if (  !checkCodeMeliPerReg(list[i].nationalCode))
+                            if (checkCodeMeliPerReg(list[i].nationalCode) && checkMobilePerReg(list[i].mobile) && checkGender(list[i].gender))
+                                list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد ملی وارد شده در سیستم وجود ندارد.</span>";
+                            else {
+                                if (!checkCodeMeliPerReg(list[i].nationalCode))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">کد ملی وارد شده فرمت صحیحی ندارد.</span>";
-                                  if(!checkMobilePerReg(list[i].mobile) )
+                                if (!checkMobilePerReg(list[i].mobile))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شماره تلفن درست وارد نشده است.</span>";
-                                if (  !checkGender(list[i].gender))
+                                if (!checkGender(list[i].gender))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">جنسیت درست وارد نشده است.</span>";
                             }
 
@@ -2150,7 +2192,7 @@
                                 list[i].error = true;
                                 list[i].hasWarning = "warning";
                                 list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ثبت شده است ولی ناقص است.</span>";
-                            } else if (checkIfAlreadyExist(person,GroupSelectedPersonnelRegisterLG.data)) {
+                            } else if (checkIfAlreadyExist(person, GroupSelectedPersonnelRegisterLG.data)) {
                                 allRowsOK = false;
                                 list[i].firstName = person.firstName;
                                 list[i].lastName = person.lastName;
@@ -2183,7 +2225,7 @@
                     GroupSelectedPersonnelRegisterLG.endEditing();
 
                     wait.close();
-                    addValidRegisterdStudents( students);
+                    addValidRegisterdStudents(students);
 
 
                 } else {
@@ -2203,7 +2245,6 @@
             wait.close();
         }
     }
-
 
 
     // </script>

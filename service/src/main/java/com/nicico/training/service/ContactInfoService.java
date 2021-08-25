@@ -197,9 +197,8 @@ public class ContactInfoService implements IContactInfoService {
     @Transactional
     @Override
     public ContactInfo fetchAndUpdateLastHrMobile(Long id, String type, String token) {
-        HrmMobileListDTO.Response response = hrmClient.getMobilesByNationalCodes(new HrmMobileListDTO.Request().setNationalCodes(Collections.singletonList("0016351339")), token);
         Map[] maps = getOrCreateContactInfos(Collections.singletonList(id), type);
-        Map<String, ContactInfo> fromHr = updateContactInfosWithHR(maps[0], token);
+        Map<String, ContactInfo> fromHr = updateContactInfosWithHR(Collections.singletonMap(((String) maps[1].get(id)), ((ContactInfo) maps[0].get(id))), token);
         ContactInfo hr = fromHr.get(maps[1].get(id));
         if (hr != null)
             return hr;
@@ -292,22 +291,23 @@ public class ContactInfoService implements IContactInfoService {
         ContactInfo anyContact = contactInfos.values().stream().findAny().get();
         long lastModified = anyContact.getLastModifiedDate() == null ? 0 : anyContact.getLastModifiedDate().getTime();
         if ((now - lastModified) / 1000 / 60 > 5) {
-            List<String> nationalCodes = contactInfos.keySet().stream().collect(Collectors.toList());
-            try {
-                HrmMobileListDTO.Response mobilesByNationalCodes = hrmClient.getMobilesByNationalCodes(new HrmMobileListDTO.Request().setNationalCodes(nationalCodes), token);
-                Map<String, String> result = mobilesByNationalCodes.getResult();
-                for (String nc : result.keySet()) {
-                    final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfos.get(nc).getId());
-                    if (cById.isPresent()) {
-                        ContactInfo contact = cById.get();
-                        contact.setHrMobile(result.get(nc));
-                        contactInfoDAO.saveAndFlush(contact);
-                        map.put(nc, contact);
+            List<String> nationalCodes = contactInfos.keySet().stream().filter(Objects::nonNull).collect(Collectors.toList());
+            if (!nationalCodes.isEmpty())
+                try {
+                    HrmMobileListDTO.Response mobilesByNationalCodes = hrmClient.getMobilesByNationalCodes(new HrmMobileListDTO.Request().setNationalCodes(nationalCodes), token);
+                    Map<String, String> result = mobilesByNationalCodes.getResult();
+                    for (String nc : result.keySet()) {
+                        final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfos.get(nc).getId());
+                        if (cById.isPresent()) {
+                            ContactInfo contact = cById.get();
+                            contact.setHrMobile(result.get(nc));
+                            contactInfoDAO.saveAndFlush(contact);
+                            map.put(nc, contact);
+                        }
                     }
+                } catch (Exception ex) {
+                    System.err.println("HRM API Error");
                 }
-            } catch (Exception ex) {
-                System.err.println("HRM API Error");
-            }
         }
         return map;
     }
