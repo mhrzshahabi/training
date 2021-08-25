@@ -9,7 +9,6 @@ import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.*;
-import com.nicico.training.model.enums.ETechnicalType;
 import com.nicico.training.service.TeacherService;
 import org.mapstruct.Named;
 import org.modelmapper.ModelMapper;
@@ -30,6 +29,7 @@ import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import request.evaluation.ElsEvalRequest;
+import request.evaluation.ElsUserEvaluationListResponseDto;
 import request.exam.*;
 import response.evaluation.dto.ElsContactEvaluationDto;
 import response.exam.ExamListResponse;
@@ -134,6 +134,45 @@ public abstract class EvaluationBeanMapper {
         request.setCourse(evalCourse);
         request.setCourseProtocol(evalCourseProtocol);
         return request;
+    }
+
+
+    public ElsUserEvaluationListResponseDto toElsEvalResponseDto(Evaluation evaluation, Questionnaire questionnaire,
+                                                                 List<EvalQuestionDto> questionDtos, PersonalInfo teacher) {
+        ElsUserEvaluationListResponseDto responseDto = new ElsUserEvaluationListResponseDto();
+
+        EvalCourse evalCourse = new EvalCourse();
+        EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
+        responseDto.setId(evaluation.getId());
+        responseDto.setClassId(evaluation.getTclass().getId());
+        responseDto.setTitle(questionnaire.getTitle());
+        try {
+            responseDto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
+            responseDto.setPlanner(evaluation.getTclass().getPlanner().getFirstName() + " " +
+                    evaluation.getTclass().getPlanner().getLastName());
+        } catch (NullPointerException ignored) {
+        }
+        responseDto.setQuestions(questionDtos);
+
+        evalCourse.setTitle(evaluation.getTclass().getCourse().getTitleFa());
+        evalCourse.setCode(evaluation.getTclass().getCourse().getCode());
+
+        evalCourseProtocol.setCode(evaluation.getTclass().getCode());
+
+        if (evaluation.getTclass().getDDuration() != null) {
+            evalCourseProtocol.setDuration(evaluation.getTclass().getDDuration() + "/d");
+        } else
+            evalCourseProtocol.setDuration(evaluation.getTclass().getHDuration() + "/h");
+
+        evalCourseProtocol.setFinishDate(evaluation.getTclass().getEndDate());
+        evalCourseProtocol.setStartDate(evaluation.getTclass().getStartDate());
+        evalCourseProtocol.setTitle(evaluation.getTclass().getTitleClass());
+
+
+        responseDto.setTeacher(toTeacher(teacher));
+        responseDto.setCourse(evalCourse);
+        responseDto.setCourseProtocol(evalCourseProtocol);
+        return responseDto;
     }
 
     public List<ElsContactEvaluationDto> toElsContactEvaluationDTOList(List<Evaluation> evaluations) {
