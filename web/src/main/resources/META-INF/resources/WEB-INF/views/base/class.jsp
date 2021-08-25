@@ -2628,9 +2628,11 @@
                 if (criteria.criteria == null) {
                     criteria.criteria = [];
                 }
-                criteria.criteria.add({...ListGrid_Class_JspClass.implicitCriteria.criteria.filter(p => p.fieldName == "term.id")[0]});
+                if (ListGrid_Class_JspClass.implicitCriteria)
+                    criteria.criteria.add({...ListGrid_Class_JspClass.implicitCriteria.criteria.filter(p => p.fieldName == "term.id")[0]});
             } else {
-                criteria = {
+                if (ListGrid_Class_JspClass.implicitCriteria)
+                    criteria = {
                     _constructor: "AdvancedCriteria",
                     criteria:
                         [
@@ -2639,7 +2641,19 @@
                     operator: "and"
                 };
             }
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "spec-list", 0, null, '', "اجرا - کلاس", criteria, null);
+
+         let   newCriteria = {
+                _constructor: "AdvancedCriteria",
+                criteria:
+                    [],
+                operator: "and"
+            };
+            for (let i = 0; i < criteria.criteria.length; i++)
+            {
+                if (criteria.criteria[i].fieldName!==undefined)
+                    newCriteria.criteria.add(criteria.criteria[i])
+            }
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "spec-list", 0, null, '', "اجرا - کلاس", newCriteria, null);
         }
     });
 
@@ -3395,7 +3409,19 @@
                 value: DynamicForm_Term_Filter.getValue("termFilter")
             });
         }
-        printWithCriteria(cr, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
+
+        let   newCriteria = {
+            _constructor: "AdvancedCriteria",
+            criteria:
+                [],
+            operator: "and"
+        };
+        for (let i = 0; i < cr.criteria.length; i++)
+        {
+            if (cr.criteria[i].fieldName!==undefined)
+                newCriteria.criteria.add(cr.criteria[i])
+        }
+        printWithCriteria(newCriteria, {}, "ClassByCriteria.jasper", type, direction + ListGrid_Class_JspClass.getSort()[0]["property"]);
     }
 
     function cancelClass_JspClass(record) {
