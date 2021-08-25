@@ -674,24 +674,24 @@
                                 changed: function (form, item, value) {
                                     load_classList_by_department(value);
                                 },
-                                icons: [
-                                    {
-                                        name: "clear",
-                                        src: "[SKIN]actions/remove.png",
-                                        width: 15,
-                                        height: 15,
-                                        inline: true,
-                                        prompt: "پاک کردن",
-                                        click: function (form, item) {
-                                            item.clearValue();
-                                            item.focusInItem();
-                                            departmentCriteria = [];
-                                            let mainCriteria = createMainCriteria();
-                                            ListGrid_class_Evaluation.invalidateCache();
-                                            ListGrid_class_Evaluation.fetchData(mainCriteria);
-                                        }
-                                    }
-                                ],
+                                // icons: [
+                                //     {
+                                //         name: "clear",
+                                //         src: "[SKIN]actions/remove.png",
+                                //         width: 15,
+                                //         height: 15,
+                                //         inline: true,
+                                //         prompt: "پاک کردن",
+                                //         click: function (form, item) {
+                                //             item.clearValue();
+                                //             item.focusInItem();
+                                //             departmentCriteria = [];
+                                //             let mainCriteria = createMainCriteria();
+                                //             ListGrid_class_Evaluation.invalidateCache();
+                                //             ListGrid_class_Evaluation.fetchData(mainCriteria);
+                                //         }
+                                //     }
+                                // ],
                             }]
                     })]
             }),

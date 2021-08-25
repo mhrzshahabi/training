@@ -2564,24 +2564,24 @@
                 changed: function (form, item, value) {
                     load_classes_by_department(value);
                 },
-                icons: [
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click: function (form, item) {
-                            item.clearValue();
-                            item.focusInItem();
-                            departmentCriteria = [];
-                            let mainCriteria = createMainCriteria();
-                            ListGrid_Class_JspClass.invalidateCache();
-                            ListGrid_Class_JspClass.fetchData(mainCriteria);
-                        }
-                    }
-                ],
+                // icons: [
+                //     {
+                //         name: "clear",
+                //         src: "[SKIN]actions/remove.png",
+                //         width: 15,
+                //         height: 15,
+                //         inline: true,
+                //         prompt: "پاک کردن",
+                //         click: function (form, item) {
+                //             item.clearValue();
+                //             item.focusInItem();
+                //             departmentCriteria = [];
+                //             let mainCriteria = createMainCriteria();
+                //             ListGrid_Class_JspClass.invalidateCache();
+                //             ListGrid_Class_JspClass.fetchData(mainCriteria);
+                //         }
+                //     }
+                // ],
            },
         ]
     });
