@@ -5,6 +5,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.iservice.IContactInfoService;
+import com.nicico.training.model.Personnel;
+import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.model.Student;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -125,6 +128,24 @@ public class ContactInfoRestController {
 //    @PreAuthorize("hasAuthority('r_address')")
     public ResponseEntity<SearchDTO.SearchRs<ContactInfoDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(contactInfoService.search(request), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/nationalCodeOfMobile/{mobile}")
+    public List<String> nationalCodeOfMobile(@PathVariable String mobile) {
+        Map<String, Object> map = contactInfoService.nationalCodeOfMobile(mobile);
+        List<String> list = new ArrayList<>();
+        for (String nc : map.keySet()) {
+            Object already = map.get(nc);
+            if (already instanceof Student) {
+                list.add(((Student) already).getNationalCode());
+            } else if (already instanceof Personnel) {
+                list.add(((Personnel) already).getNationalCode());
+            } else if (already instanceof PersonnelRegistered) {
+                list.add(((PersonnelRegistered) already).getNationalCode());
+            }
+        }
+        return list;
     }
 
 }
