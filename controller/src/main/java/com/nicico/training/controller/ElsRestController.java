@@ -643,26 +643,30 @@ public class ElsRestController {
                             for (int i = 0; i < attendances.size(); i++) {
                                 Optional<Attendance> optionalAttendance = attendanceService.getAttendanceBySessionIdAndStudentId(
                                         attendances.get(i).getSessionId(), attendances.get(i).getStudentId());
-                                if (optionalAttendance.isPresent()) {
-                                    Attendance mainAttendance = optionalAttendance.get();
-                                    switch (attendances.get(i).getState()) {
-                                        case "1": {
-                                            if (mainAttendance.getState().equals("2")) {
-                                                attendances.get(i).setState("2");
+                                if (attendances.get(i).getState() != null
+                                        && attendances.get(i).getState().length() == 1
+                                        && "01234".contains(attendances.get(i).getState())) {
+                                    if (optionalAttendance.isPresent()) {
+                                        Attendance mainAttendance = optionalAttendance.get();
+                                        switch (attendances.get(i).getState()) {
+                                            case "1": {
+                                                if (mainAttendance.getState().equals("2")) {
+                                                    attendances.get(i).setState("2");
+                                                }
+                                                break;
                                             }
-                                            break;
-                                        }
-                                        case "3": {
-                                            if (mainAttendance.getState().equals("4")) {
-                                                attendances.get(i).setState("4");
+                                            case "3": {
+                                                if (mainAttendance.getState().equals("4")) {
+                                                    attendances.get(i).setState("4");
+                                                }
+                                                break;
                                             }
-                                            break;
                                         }
                                     }
                                 } else {
-                                    response.setStatus(HttpStatus.NO_CONTENT.value());
-                                    response.setMessage("رکورد حضور غیاب وجود ندارد");
-                                    return new ResponseEntity<>(response, HttpStatus.CREATED);
+                                    response.setStatus(HttpStatus.BAD_REQUEST.value());
+                                    response.setMessage("اطلاعات حضور غیاب معتبر نیست");
+                                    return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
                                 }
                             }
 
@@ -674,7 +678,6 @@ public class ElsRestController {
                                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                                 response.setMessage("اطلاعات ثبت نشد");
                             }
-                            return new ResponseEntity<>(response, HttpStatus.CREATED);
                         } else {
                             response.setStatus(HttpStatus.FORBIDDEN.value());
                             response.setMessage("امکان تغییر در حضور غیاب برای استاد وجود ندارد");
@@ -695,7 +698,7 @@ public class ElsRestController {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("خطای شناسایی");
         }
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
     @GetMapping("/averageResult/{classId}")
