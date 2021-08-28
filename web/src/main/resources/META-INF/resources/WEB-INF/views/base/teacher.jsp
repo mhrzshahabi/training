@@ -1044,6 +1044,7 @@
     }
 
     function ListGrid_teacher_add() {
+        selected_record = null;
         ListGrid_Teacher_JspTeacher.invalidateCache();
         vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValues();
