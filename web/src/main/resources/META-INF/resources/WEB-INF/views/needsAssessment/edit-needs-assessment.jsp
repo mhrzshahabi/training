@@ -233,7 +233,7 @@
         ID: "DataSource_Skill_JspNeedsAssessment",
         fields: [
             {name: "id", hidden:true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains",
+            {name: "titleFa", title: "<spring:message code="skill.title"/>", filterOperator: "iContains",
                 showHover:true,
                 canEdit: false,
                 hoverWidth: 250,
@@ -266,6 +266,8 @@
             {name: "objectName"},
             {name: "objectCode"},
             {name: "course"},
+            {name: "course.code", title: "کد دوره", filterOperator: "iContains"},
+            {name: "course.titleFa", title: "عنوان دوره", filterOperator: "iContains"},
             {name: "skill"},
             {name: "skill.code", title: "کد مهارت", filterOperator: "iContains"},
             {name: "mainWorkflowStatus"},
@@ -1248,6 +1250,8 @@
         contextMenu: Menu_ListGrid_JspENA,
         fields: [
             {name: "id", hidden: true},
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa", align: "center"},
             {name: "skill.code", align: "center",
                 sortNormalizer: function (record) {
@@ -1260,7 +1264,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType", "skill.code"],
+                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="knowledge"/>"
             }],
         headerHeight: 50,
@@ -1313,6 +1317,8 @@
         sortDirection: "descending",
         fields: [
             {name: "id", hidden: true},
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa", align: "center"},
             {name: "skill.code", align: "center",
                 sortNormalizer: function (record) {
@@ -1325,7 +1331,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType", "skill.code"],
+                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
@@ -1379,6 +1385,8 @@
         sortDirection: "descending",
         fields: [
             {name: "id", hidden: true},
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa", align: "center"},
             {name: "skill.code", align: "center",
                 sortNormalizer: function (record) {
@@ -1391,7 +1399,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType", "skill.code"],
+                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="attitude"/>"
             }],
         headerHeight: 50,
