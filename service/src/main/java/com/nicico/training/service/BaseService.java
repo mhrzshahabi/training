@@ -268,6 +268,11 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
             SearchDTO.CriteriaRq tempReq = makeNewCriteria("code", "130000000000", EOperator.equals, null);
             icCriteria.getCriteria().add(tempReq);
         }
+        //for delete all complex
+        if (icCriteria.getCriteria().isEmpty()){
+            SearchDTO.CriteriaRq tempReq = makeNewCriteria("code", "123", EOperator.equals, null);
+            icCriteria.getCriteria().add(tempReq);
+        }
         criteria.getCriteria().add(icCriteria);
         if (request.getCriteria() != null)
             criteria.getCriteria().add(request.getCriteria());
