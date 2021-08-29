@@ -69,7 +69,8 @@ public class ContactInfoRestController {
 //    @PreAuthorize("hasAuthority('u_address')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody ContactInfoDTO.Update request) {
         try {
-            return new ResponseEntity<>(contactInfoService.update(id, request), HttpStatus.OK);
+            return new ResponseEntity<>(contactInfoService.
+                    update(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }

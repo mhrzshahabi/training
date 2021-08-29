@@ -294,6 +294,7 @@
                 editMobileForm.callBack = (contactInfo ,m) => {record.student.contactInfo = contactInfo;record.student.contactInfo.smSMobileNumber = m;};
                 if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber") {
                     if (record.student.contactInfo) {
+                        record.student.contactInfo.parentId = record.student.id;
                         editMobileForm.editRecord(record.student.contactInfo);
                         switch (record.student.contactInfo.mobileForSMS) {
                             case 2:

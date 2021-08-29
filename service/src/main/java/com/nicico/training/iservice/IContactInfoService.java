@@ -32,7 +32,7 @@ public interface IContactInfoService {
 
     Map<String, Object> nationalCodeOfMobile(String mobile);
 
-    Object getCorrespondingRecordOfContactInfo(Long id);
+    Object getCorrespondingRecordOfContactInfo(Long id, Long parentId);
 
     //Boolean has
 }
