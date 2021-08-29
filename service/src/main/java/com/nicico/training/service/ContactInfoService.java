@@ -98,7 +98,7 @@ public class ContactInfoService implements IContactInfoService {
             map.putAll(nationalCodeOfMobile(request.getMobile()));
         if (request.getMobile2() != null && !request.getMobile2().trim().isEmpty())
             map.putAll(nationalCodeOfMobile(request.getMobile2()));
-        Object record = getCorrespondingRecordOfContactInfo(id);
+        Object record = getCorrespondingRecordOfContactInfo(id, request.getParentId());
         String msg = "";
         final Locale locale = LocaleContextHolder.getLocale();
         for (String nc : map.keySet()) {
@@ -339,8 +339,8 @@ public class ContactInfoService implements IContactInfoService {
     }
 
     @Override
-    public Object getCorrespondingRecordOfContactInfo(Long id) {
-        Optional optional = studentDAO.findByContactInfoId(id);
+    public Object getCorrespondingRecordOfContactInfo(Long id, Long parentId) {
+        Optional optional = studentDAO.findByContactInfoId(id, parentId);
         if (optional.isPresent())
             return optional.get();
         optional = personnelDAO.findByContactInfoId(id);

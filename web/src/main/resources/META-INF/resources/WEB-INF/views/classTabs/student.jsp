@@ -787,6 +787,7 @@
                         record.student.contactInfo.smSMobileNumber = m;
                     };
                     if (record.student.contactInfo) {
+                        record.student.contactInfo.parentId = record.student.id;
                         editMobileForm_class.editRecord(record.student.contactInfo);
                         switch (record.student.contactInfo.mobileForSMS) {
                             case 2:
@@ -1792,6 +1793,9 @@
             showErrorStyle: false,
             errorOrientation: "bottom",
             fields: [
+                {
+                    type:"hidden",name:"parentId"
+                },
                 {
                     type: "staticText",
                     title: "<spring:message code='student.edit.mobile.default.for.sms'/>",

@@ -29,7 +29,7 @@ public class ContactInfoDTO {
     private EMobileForSMS eMobileForSMS;
     private EMobileForSMS eMobileForCN;
     private Date lastModifiedDate;
-
+    private Long parentId;
 
     @Getter
     @Setter

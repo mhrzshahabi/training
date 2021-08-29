@@ -152,6 +152,9 @@
         errorOrientation: "bottom",
         fields: [
             {
+                type:"hidden",name:"parentId"
+            },
+            {
                 type: "staticText",
                 title: "<spring:message code='student.edit.mobile.default.for.sms'/>",
             },
