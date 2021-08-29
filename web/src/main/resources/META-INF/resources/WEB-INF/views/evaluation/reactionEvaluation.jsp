@@ -1709,7 +1709,7 @@
                 for (let i = 0; i < gridData.length; i++) {
 
                     let studentData = gridData[i].student;
-                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.mobile, studentData.gender)) {
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
 
                         inValidStudents.add({
                             firstName: studentData.firstName,
@@ -1818,7 +1818,7 @@
 
                     let studentData = gridData[i].student;
 
-                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.mobile, studentData.gender)) {
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
 
                         inValidStudents.add({
                             firstName: studentData.firstName,
