@@ -60,6 +60,7 @@
     function loadPage_classEvaluationInfo(classId, studentCount, evaluation) {
 
         // Wait_JspClassEvaluationInfo = createDialog("wait");
+        DynamicForm_JspClassEvaluationInfo.getItem("teacherTotalGrade").show();
         if (studentCount == 0 || studentCount == undefined || evaluation == null || evaluation == undefined) {
             let msg1 = "تعداد فراگیران این کلاس صفر است یا کلاس فاقد نوع ارزیابی می باشد";
             let val1 = getFormulaMessage(msg1 , "2", "red", "b");
@@ -78,8 +79,10 @@
                 (resp) => {
                     let result = JSON.parse(resp.httpResponseText);
 
-                    if(result.teacherGradeToClass == undefined)
+                    if(result.teacherGradeToClass == undefined) {
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", val2);
+                        DynamicForm_JspClassEvaluationInfo.getItem("teacherTotalGrade").hide();
+                    }
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", getFormulaMessage(result.teacherGradeToClass , "2", "black", "b"));
                     if(result.trainingGradeToTeacher == undefined)
