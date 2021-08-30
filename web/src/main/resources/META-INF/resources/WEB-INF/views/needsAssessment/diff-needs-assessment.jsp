@@ -209,7 +209,7 @@
         ID: "DataSource_Skill_Top_JspDiffNeedsAssessment",
         fields: [
             {name: "id", hidden:true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains",
+            {name: "titleFa", title: "<spring:message code="skill.title"/>", filterOperator: "iContains",
                 showHover:true,
                 canEdit: false,
                 hoverWidth: 250,
@@ -239,6 +239,8 @@
             {name: "objectName"},
             {name: "objectCode"},
             {name: "course"},
+            {name: "course.code", title: "کد دوره", filterOperator: "iContains"},
+            {name: "course.titleFa", title: "عنوان دوره", filterOperator: "iContains"},
             // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
             //     showHover:true,
             //     hoverWidth: 200,
@@ -256,7 +258,7 @@
         ID: "DataSource_Skill_Bottom_JspDiffNeedsAssessment",
         fields: [
             {name: "id", hidden:true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains",
+            {name: "titleFa", title: "<spring:message code="skill.title"/>", filterOperator: "iContains",
                 showHover:true,
                 canEdit: false,
                 hoverWidth: 250,
@@ -286,6 +288,8 @@
             {name: "objectName"},
             {name: "objectCode"},
             {name: "course"},
+            {name: "course.code", title: "کد دوره", filterOperator: "iContains"},
+            {name: "course.titleFa", title: "عنوان دوره", filterOperator: "iContains"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
                 showHover:true,
                 hoverWidth: 200,
@@ -725,6 +729,8 @@
         autoSaveEdits:false,
         implicitCriteria:{"needsAssessmentDomainId":108},
         fields: [
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -744,7 +750,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
                 title: "<spring:message code="knowledge"/>"
             }],
         headerHeight: 50,
@@ -801,6 +807,8 @@
         showRowNumbers: false,
         selectionType:"single",
         fields: [
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -817,7 +825,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
@@ -879,6 +887,8 @@
         autoFetchData:false,
         selectionType:"single",
         fields: [
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             // {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -895,7 +905,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
                 title: "<spring:message code="attitude"/>"
             }],
         headerHeight: 50,
@@ -960,6 +970,7 @@
         headerHeight: 50,
         headerSpans: [
             {
+
                 fields: ["title", "competenceType.title"],
                 title: "<spring:message code="competence.list"/>"
             }],
@@ -1015,6 +1026,8 @@
         autoSaveEdits:false,
         implicitCriteria:{"needsAssessmentDomainId":108},
         fields: [
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1034,7 +1047,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
                 title: "<spring:message code="knowledge"/>"
             }],
         headerHeight: 50,
@@ -1061,6 +1074,8 @@
         showRowNumbers: false,
         selectionType:"single",
         fields: [
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1077,7 +1092,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
@@ -1107,6 +1122,8 @@
         autoFetchData:false,
         selectionType:"single",
         fields: [
+            {name: "course.code", align: "center"},
+            {name: "course.titleFa", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1123,7 +1140,7 @@
         ],
         headerSpans: [
             {
-                fields: ["titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
                 title: "<spring:message code="attitude"/>"
             }],
         headerHeight: 50,
