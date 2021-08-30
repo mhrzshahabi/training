@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.model.Student;
+import response.tclass.ElsStudentAttendanceListResponse;
 
 import java.util.List;
 
@@ -31,4 +32,6 @@ public interface IStudentService {
     SearchDTO.SearchRs<StudentDTO.Info> search(SearchDTO.SearchRq request);
 
     List<Student> getStudentList(List<Long> absentStudents);
+
+    ElsStudentAttendanceListResponse getStudentAttendanceList(String classCode, String nationalCode);
 }
