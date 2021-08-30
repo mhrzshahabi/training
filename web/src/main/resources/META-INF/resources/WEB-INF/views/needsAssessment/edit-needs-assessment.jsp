@@ -1964,7 +1964,7 @@
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
             return;
         }
-        DataSource_Skill_JspNeedsAssessment.addData(data);
+        DataSource_Skill_JspNeedsAssessment.cacheData.unshift(data);
         fetchDataDomainsGrid();
         hasChanged = true;
         canSendToWorkFlowNA = true;
