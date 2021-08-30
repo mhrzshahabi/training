@@ -870,6 +870,78 @@
                     }
                 }
             },
+            {isSeparator: true},
+            {
+                title: "تغییر اولویت به ضمن خدمت",
+                click: function () {
+                    let records;
+
+                    if(ListGrid_Knowledge_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecords();
+                    if(ListGrid_Ability_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Ability_JspNeedsAssessment.getSelectedRecords();
+                    if(ListGrid_Attitude_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Attitude_JspNeedsAssessment.getSelectedRecords();
+
+                    updatePriority_AllSelectedRecords(records, 111);
+                    hasChanged = true;
+                    canSendToWorkFlowNA = true;
+                }
+            },
+            {isSeparator: true},
+            {
+                title: "تغییر اولویت به عملکردی بهبود",
+                click: function () {
+                    let records;
+
+                    if(ListGrid_Knowledge_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecords();
+                    if(ListGrid_Ability_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Ability_JspNeedsAssessment.getSelectedRecords();
+                    if(ListGrid_Attitude_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Attitude_JspNeedsAssessment.getSelectedRecords();
+
+                    updatePriority_AllSelectedRecords(records, 112);
+                    hasChanged = true;
+                    canSendToWorkFlowNA = true;
+                }
+            },
+            {isSeparator: true},
+            {
+                title: "تغییر اولویت به توسعه ای",
+                click: function () {
+                    let records;
+
+                    if(ListGrid_Knowledge_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecords();
+                    if(ListGrid_Ability_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Ability_JspNeedsAssessment.getSelectedRecords();
+                    if(ListGrid_Attitude_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Attitude_JspNeedsAssessment.getSelectedRecords();
+
+                    updatePriority_AllSelectedRecords(records, 113);
+                    hasChanged = true;
+                    canSendToWorkFlowNA = true;
+                }
+            },
+            {isSeparator: true},
+            {
+                title: "تغییر اولویت به انتصاب سمت",
+                click: function () {
+                    let records;
+
+                    if(ListGrid_Knowledge_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Knowledge_JspNeedsAssessment.getSelectedRecords();
+                    if(ListGrid_Ability_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Ability_JspNeedsAssessment.getSelectedRecords();
+                    if(ListGrid_Attitude_JspNeedsAssessment.containsFocus())
+                        records  = ListGrid_Attitude_JspNeedsAssessment.getSelectedRecords();
+
+                    updatePriority_AllSelectedRecords(records, 574);
+                    hasChanged = true;
+                    canSendToWorkFlowNA = true;
+                }
+            }
         ]
     });
     let Menu_LG_Competence_JspENA = isc.Menu.create({
@@ -1237,12 +1309,12 @@
         },
     });
 
-    let ListGrid_Knowledge_JspNeedsAssessment = isc.TrLG.create({
+    let ListGrid_Knowledge_JspNeedsAssessment = isc.ListGrid.create({
         ID: "ListGrid_Knowledge_JspNeedsAssessment",
         autoFetchData:false,
         dataSource: DataSource_Skill_JspNeedsAssessment,
         showRowNumbers: false,
-        selectionType:"single",
+        selectionType:"multiple",
         autoSaveEdits:false,
         sortField: 0,
         sortDirection: "descending",
@@ -1306,13 +1378,13 @@
             }
         }
     });
-    let ListGrid_Ability_JspNeedsAssessment = isc.TrLG.create({
+    let ListGrid_Ability_JspNeedsAssessment = isc.ListGrid.create({
         ID: "ListGrid_Ability_JspNeedsAssessment",
         dataSource: DataSource_Skill_JspNeedsAssessment,
         autoFetchData:false,
         showRowNumbers: false,
         contextMenu: Menu_ListGrid_JspENA,
-        selectionType:"single",
+        selectionType:"multiple",
         sortField: 0,
         sortDirection: "descending",
         fields: [
@@ -1373,14 +1445,14 @@
                 selectedRecord = record;
             }
         }});
-    let ListGrid_Attitude_JspNeedsAssessment = isc.TrLG.create({
+    let ListGrid_Attitude_JspNeedsAssessment = isc.ListGrid.create({
         ID: "ListGrid_Attitude_JspNeedsAssessment",
         dataSource: DataSource_Skill_JspNeedsAssessment,
         showHeaderContextMenu: false,
         showRowNumbers: false,
         autoFetchData:false,
         contextMenu: Menu_ListGrid_JspENA,
-        selectionType:"single",
+        selectionType:"multiple",
         sortField: 0,
         sortDirection: "descending",
         fields: [
@@ -2308,6 +2380,43 @@
             viewer.endEditing();
         }));
 
+    }
+
+    function updatePriority_AllSelectedRecords(records, priorityId) {
+
+        wait.show();
+        records.forEach(rec => {
+
+            let dataForNewSkill= {};
+            dataForNewSkill.list=DataSource_Skill_JspNeedsAssessment.cacheData;
+            dataForNewSkill.skillId=rec.skillId;
+            if (dataForNewSkill.list.length !== 0) {
+                isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl+"/createOrUpdateListForNewSkill" , "POST", JSON.stringify(dataForNewSkill), function (resp) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                        let updating = {
+                            objectId: rec.objectId,
+                            objectType: rec.objectType,
+                            needsAssessmentPriorityId: priorityId
+                        };
+
+                        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl+ "/"+ resp.httpResponseText, "PUT", JSON.stringify(updating), function (resp) {
+                            if (resp.httpResponseCode === 409) {
+                                createDialog("info", resp.httpResponseText);
+                                return;
+                            } else if (resp.httpResponseCode !== 200) {
+                                createDialog("info", "<spring:message code='error'/>");
+                                return;
+                            }
+                            rec.needsAssessmentPriorityId = priorityId;
+                            DataSource_Skill_JspNeedsAssessment.updateData(rec);
+                        }));
+                    }
+                }));
+            }
+
+        });
+        wait.close();
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
