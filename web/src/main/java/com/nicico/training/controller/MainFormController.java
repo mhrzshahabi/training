@@ -432,6 +432,11 @@ public class MainFormController {
         return "report/reactionEvaluationFormulaReport";
     }
 
+    @RequestMapping("/reactionEvaluationCommentsReport")
+    public String reactionEvaluationCommentsReport() {
+        return "report/reactionEvaluationCommentsReport";
+    }
+
     @RequestMapping("/coursesEvaluationReport")
     public String coursesEvaluationReport() {
         return "report/coursesEvaluationReport";
