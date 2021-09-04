@@ -940,18 +940,37 @@ public class ElsRestController {
 
     @GetMapping("/questionBankById/{id}")
     public ElsQuestionDto getQuestionBankById(HttpServletRequest header, @PathVariable long id) {
-
+        ElsQuestionDto response=new ElsQuestionDto();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 QuestionBank questionBank = questionBankService.getById(id);
                 ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
                 return questionBankDto.getQuestions().get(0);
             } catch (Exception e) {
-                throw new TrainingException(TrainingException.ErrorType.NotFound);
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("سوال یافت نشد");
             }
         } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
         }
+        return response;
 
     }
+//    @DeleteMapping("/delete/questionBank/{nationalCode}/{id}")
+//    public ElsQuestionDto deleteQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id) {
+//
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//            try {
+//                QuestionBank questionBank = questionBankService.getById(id);
+//
+//                return null;
+//            } catch (Exception e) {
+//                throw new TrainingException(TrainingException.ErrorType.NotFound);
+//            }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
+//
+//    }
 }
