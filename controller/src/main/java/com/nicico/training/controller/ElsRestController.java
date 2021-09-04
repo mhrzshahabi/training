@@ -874,19 +874,19 @@ public class ElsRestController {
     @GetMapping("/questionBank/{nationalCode}")
     public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
 
-//        try {
+        try {
 
-//            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
         List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
         return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
 
-//            } else {
-//                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-//            }
-//        } catch (Exception e) {
-//            throw new TrainingException(TrainingException.ErrorType.NotFound);
-//        }
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            }
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
     }
 
     @PostMapping("/sendQuestions")
