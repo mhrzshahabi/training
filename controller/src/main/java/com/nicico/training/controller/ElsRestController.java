@@ -98,6 +98,7 @@ public class ElsRestController {
     private final QuestionBankBeanMapper questionBankBeanMapper;
     private final ParameterValueService parameterValueService;
     private final IStudentService iStudentService;
+    private final QuestionBankTestQuestionService questionBankTestQuestionService;
 
 
     @GetMapping("/eval/{id}")
@@ -957,20 +958,39 @@ public class ElsRestController {
         return response;
 
     }
-//    @DeleteMapping("/delete/questionBank/{nationalCode}/{id}")
-//    public ElsQuestionDto deleteQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id) {
-//
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-//            try {
-//                QuestionBank questionBank = questionBankService.getById(id);
-//
-//                return null;
-//            } catch (Exception e) {
-//                throw new TrainingException(TrainingException.ErrorType.NotFound);
-//            }
-//        } else {
-//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-//        }
-//
-//    }
+    @DeleteMapping("/delete/questionBank/{nationalCode}/{id}")
+    public BaseResponse deleteQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                QuestionBankDTO.FullInfo questionBankDto = questionBankService.get(id);
+                if (questionBankDto.getTeacherId()==null|| teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)){
+                    if (!questionBankTestQuestionService.usedQuestion(id))
+                    {
+                        questionBankService.delete(id);
+                        response.setStatus(HttpStatus.OK.value());
+                    }
+                    else
+                    {
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        response.setMessage("سوال قابل حذف نیست");
+                    }
+                    return response;
+
+                }else {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.setMessage("این استاد دسترسی حذف این سوال را ندارد");
+                }
+
+                return response;
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("خطا در حذف سوال");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
+        return response;
+    }
 }
