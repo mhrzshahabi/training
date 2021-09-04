@@ -154,10 +154,8 @@ public abstract class QuestionBankBeanMapper {
 
             create.setQuestion(elsQuestionDto.getTitle());
             create.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
-            create.setCategoryId(null);
-//            create.setCategoryId(elsQuestionDto.getCategoryId());
-            create.setSubCategoryId(null);
-//            create.setSubCategoryId(elsQuestionDto.getSubCategory());
+            create.setCategoryId(elsQuestionDto.getCategoryId());
+            create.setSubCategoryId(elsQuestionDto.getSubCategory());
             create.setTeacherId(teacherId);
             create.setLines(1);
             create.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());

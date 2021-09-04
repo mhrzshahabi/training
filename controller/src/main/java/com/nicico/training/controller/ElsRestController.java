@@ -926,11 +926,11 @@ public class ElsRestController {
 
         try {
 
-//            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             return categoryService.getCategoriesForEls();
-//            } else {
-//                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-//            }
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            }
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.NotFound);
         }
@@ -941,11 +941,11 @@ public class ElsRestController {
 
         try {
 
-//            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             return subcategoryService.getSubCategoriesForEls();
-//            } else {
-//                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-//            }
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            }
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.NotFound);
         }

@@ -129,17 +129,6 @@ public class SubcategoryService implements ISubcategoryService {
 
         List<ElsSubCategoryDto> subCategoryDtoList = new ArrayList<>();
 
-//        List<Subcategory> subCategories = subCategoryDAO.findAllByCategoryId(categoryId);
-//        subCategories.forEach(subcategory -> {
-//            ElsSubCategoryDto elsSubCategoryDto = new ElsSubCategoryDto();
-//            elsSubCategoryDto.setSubCategoryId(subcategory.getId());
-//            elsSubCategoryDto.setSubCategoryCode(subcategory.getCode());
-//            elsSubCategoryDto.setSubCategoryName(subcategory.getTitleFa());
-//            elsSubCategoryDto.setSubCategoryNameEn(subcategory.getTitleEn());
-//            elsSubCategoryDto.setCategoryId(categoryId);
-//            subCategoryDtoList.add(elsSubCategoryDto);
-//        });
-
         List<SubcategoryDTO.Info> subCategories = list();
         subCategories.forEach(subcategory -> {
             ElsSubCategoryDto elsSubCategoryDto = new ElsSubCategoryDto();
