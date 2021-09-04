@@ -877,19 +877,16 @@ public class ElsRestController {
 
     @GetMapping("/questionBank/{nationalCode}")
     public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
-
-        try {
-
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-        List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
-        return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
-
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
+                return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
-        } catch (Exception e) {
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
 
@@ -897,70 +894,64 @@ public class ElsRestController {
     public BaseResponse addQuestions(HttpServletRequest header, @RequestBody ElsQuestionBankDto elsQuestionBankDto) {
 
         BaseResponse response = new BaseResponse();
-        try {
-
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
                 questionBankBeanMapper.toQuestionBankCreate(elsQuestionBankDto);
                 response.setMessage("ذخیره سوالات با موفقیت انجام شد");
                 response.setStatus(HttpStatus.OK.value());
                 return response;
-
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            } catch (Exception e) {
+                response.setMessage("مشکلی در ذخیره سوالات رخ داده است");
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             }
-        } catch (Exception e) {
-            response.setMessage("مشکلی در ذخیره سوالات رخ داده است");
-            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
         return response;
     }
 
     @GetMapping("/categoryList")
     public List<ElsCategoryDto> getCategories(HttpServletRequest header) {
-
-        try {
-
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            return categoryService.getCategoriesForEls();
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return categoryService.getCategoriesForEls();
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
-        } catch (Exception e) {
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
 
     @GetMapping("/subCategoryList/{categoryId}")
     public List<ElsSubCategoryDto> getSubCategories(HttpServletRequest header, @PathVariable Long categoryId) {
 
-        try {
-
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            return subcategoryService.getSubCategoriesForEls(categoryId);
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return subcategoryService.getSubCategoriesForEls(categoryId);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
-        } catch (Exception e) {
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
 
 
     @GetMapping("/questionBankById/{id}")
     public ElsQuestionDto getQuestionBankById(HttpServletRequest header, @PathVariable long id) {
-        try {
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            QuestionBank questionBank = questionBankService.getById(id);
-            ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
-           if (!questionBankDto.getQuestions().isEmpty())
-            return questionBankDto.getQuestions().get(0);
-           else
-               throw new TrainingException(TrainingException.ErrorType.NotFound);
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                QuestionBank questionBank = questionBankService.getById(id);
+                ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
+                return questionBankDto.getQuestions().get(0);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
-        } catch (Exception e) {
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
+
     }
 }
