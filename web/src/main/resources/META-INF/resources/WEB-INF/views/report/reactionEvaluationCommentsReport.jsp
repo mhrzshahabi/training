@@ -8,30 +8,8 @@
     //----------------------------------------------------Variables-----------------------------------------------------
     var isCriteriaCategoriesChanged_Comment_REFR = false;
     let reportCriteria_Comment_REFR = null;
-    let minScoreER = null;
-    let minQusER = null;
-    let stdToContent = null;
-    let stdToTeacher = null;
-    let stdToFacility = null;
-    let teachToClass = null;
-    let recordsEvalData = [];
     let excelData = [];
-
-
     //----------------------------------------------------Default Rest--------------------------------------------------
-    // isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FER", "GET", null, function (resp) {
-    //     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-    //
-    //         // let result = (JSON.parse(resp.data)).response.data;
-    //         // minScoreER = Number(result.filter(q => q.code === "minScoreER").first().value);
-    //         // minQusER = Number(result.filter(q => q.code === "minQusER").first().value);
-    //         // stdToContent = Number(result.filter(q => q.code === "z3").first().value);
-    //         // stdToTeacher = Number(result.filter(q => q.code === "z4").first().value);
-    //         // stdToFacility = Number(result.filter(q => q.code === "z6").first().value);
-    //         // teachToClass = Number(result.filter(q => q.code === "z5").first().value);
-    //
-    //     }
-    // }));
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_Category_Comment_REFR = isc.TrDS.create({
@@ -67,87 +45,10 @@
 
         ],
         fetchDataURL: viewReactionEvaluationCommentUrl + "/list/"+"teacher",
-        transformResponse: function (dsResponse, dsRequest, data) {
-            let records = dsResponse.data;
-            excelData = [];
-            excelData.add({
-                classCode: "کد کلاس",
-                classTitle: "عنوان کلاس",
-                firstName: "نام ",
-                lastName: "نام خانوادگی ",
-                startDate: "تاریخ شروع",
-                endDate: "تاریخ پایان",
-                titleCategory: "گروه",
-                titleSubCategory: "زیرگروه",
-                description: "نظرات",
-            });
-            // if(records) {
-            //     for (var j = 0; j < records.length; j++) {
-            //
-            //         if (records[j].studentsGradeToFacility != null && records[j].studentsGradeToGoals != null && records[j].studentsGradeToTeacher != null
-            //             && records[j].teacherGradeToClass != null) {
-            //             let stdGradeFac = NumberUtil.format(records[j].studentsGradeToFacility, "0.00");
-            //             let stdGradeCon = NumberUtil.format(records[j].studentsGradeToGoals, "0.00");
-            //             let stdGradeTea = NumberUtil.format(records[j].studentsGradeToTeacher, "0.00");
-            //             let TeaGradeCla = NumberUtil.format(records[j].teacherGradeToClass, "0.00");
-            //             let reactionGrade = (stdGradeFac * stdToFacility)/100 + (stdGradeCon * stdToContent)/100 + (stdGradeTea * stdToTeacher)/100 + (TeaGradeCla * teachToClass)/100;
-            //             recordsEvalData.add({
-            //                     classId: records[j].classId,
-            //                     reactionScore: reactionGrade
-            //                 });
-            //             excelData.add({
-            //                 rowNum: j+1,
-            //                 classCode: records[j].classCode,
-            //                 teacherNationalCode: records[j].teacherNationalCode,
-            //                 teacherName:records[j].teacherName,
-            //                 teacherFamily: records[j].teacherFamily,
-            //                 classStartDate: records[j].classStartDate,
-            //                 classEndDate: records[j].classEndDate,
-            //                 courseTitleFa: records[j].courseTitleFa,
-            //                 categoryTitleFa: records[j].categoryTitleFa,
-            //                 subCategoryTitleFa: records[j].subCategoryTitleFa,
-            //                 studentsGradeToTeacher: records[j].studentsGradeToTeacher,
-            //                 trainingGradeToTeacher: records[j].trainingGradeToTeacher,
-            //                 answeredStudentsNum: records[j].answeredStudentsNum,
-            //                 allStudentsNum: records[j].allStudentsNum,
-            //                 reactionEvaluationGrade: reactionGrade,
-            //                 evaluatedPercent: records[j].evaluatedPercent === "NaN" ? 0 : records[j].evaluatedPercent,
-            //                 evaluationStatus: records[j].evaluatedPercent >= minQusER && reactionGrade != null && reactionGrade >= minScoreER ? "ارزیابی نهایی شده" : "ارزیابی ناقص"
-            //             });
-            //         } else {
-            //             recordsEvalData.add({
-            //                 classId: records[j].classId,
-            //                 reactionScore: null
-            //             });
-            //             excelData.add({
-            //                 rowNum: j+1,
-            //                 classCode: records[j].classCode,
-            //                 teacherNationalCode: records[j].teacherNationalCode,
-            //                 teacherName:records[j].teacherName,
-            //                 teacherFamily: records[j].teacherFamily,
-            //                 classStartDate: records[j].classStartDate,
-            //                 classEndDate: records[j].classEndDate,
-            //                 courseTitleFa: records[j].courseTitleFa,
-            //                 categoryTitleFa: records[j].categoryTitleFa,
-            //                 subCategoryTitleFa: records[j].subCategoryTitleFa,
-            //                 studentsGradeToTeacher: records[j].studentsGradeToTeacher,
-            //                 trainingGradeToTeacher: records[j].trainingGradeToTeacher,
-            //                 answeredStudentsNum: records[j].answeredStudentsNum,
-            //                 allStudentsNum: records[j].allStudentsNum,
-            //                 reactionEvaluationGrade: "ارزیابی نشده",
-            //                 evaluatedPercent: records[j].evaluatedPercent === "NaN" ? 0 : records[j].evaluatedPercent,
-            //                 evaluationStatus: "ارزیابی ناقص"
-            //             });
-            //         }
-            //     }
-            // }
-            return this.Super("transformResponse", arguments);
-        }
     });
 
     //----------------------------------------------------Criteria Form------------------------------------------------
     ToolStripButton_Excel_Comment_REFR = isc.ToolStripButtonExcel.create({
-
         click: function () {
             makeExcelComments();
         }
@@ -341,7 +242,6 @@
         numCols: 6,
         colWidths: ["10%", "25%", "25%", "10%", "25%", "25%"],
         fields: [
-
             {
                 name: "reportTypeComments",
                 title: "انتقادات و پیشنهادات توسط : ",
@@ -497,27 +397,49 @@
         if (ListGrid_Comment_REFR.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else {
+            let records = ListGrid_Comment_REFR.data.localData.toArray();
+            excelData = [];
+            excelData.add({
+                classCode: "کد کلاس",
+                classTitle: "عنوان کلاس",
+                firstName: "نام ",
+                lastName: "نام خانوادگی ",
+                startDate: "تاریخ شروع",
+                endDate: "تاریخ پایان",
+                titleCategory: "گروه",
+                titleSubCategory: "زیرگروه",
+                description: "نظرات",
+            });
+            if(records) {
+                for (let j = 0; j < records.length; j++) {
+                    excelData.add({
+                        rowNum: j+1,
+                        classCode: records[j].classCode,
+                        classTitle: records[j].classTitle,
+                        firstName: records[j].firstName,
+                        lastName: records[j].lastName,
+                        startDate: records[j].startDate,
+                        endDate: records[j].endDate,
+                        titleCategory: records[j].titleCategory,
+                        titleSubCategory: records[j].titleSubCategory,
+                        description: records[j].description
+                    });
+
+                }
+            }
             let fields = [
                 {name: "rowNum"},
                 {name: "classCode"},
-                {name: "teacherNationalCode"},
-                {name: "teacherName"},
-                {name: "teacherFamily"},
-                {name: "classStartDate"},
-                {name: "classEndDate"},
-                {name: "courseTitleFa"},
-                {name: "categoryTitleFa"},
-                {name: "subCategoryTitleFa"},
-                {name: "studentsGradeToTeacher"},
-                {name: "trainingGradeToTeacher"},
-                {name: "answeredStudentsNum"},
-                {name: "allStudentsNum"},
-                {name: "reactionEvaluationGrade"},
-                {name: "evaluatedPercent"},
-                {name: "evaluationStatus"}
+                {name: "classTitle"},
+                {name: "firstName"},
+                {name: "lastName"},
+                {name: "startDate"},
+                {name: "endDate"},
+                {name: "titleCategory"},
+                {name: "titleSubCategory"},
+                {name: "description"}
             ];
-            ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش ارزیابی واکنشی", null);
+            ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش نظرات ارزیابی ", null);
         }
     }
-
     // </script>
