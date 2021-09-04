@@ -46,8 +46,9 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
+import response.question.dto.ElsCategoryDto;
 import response.question.dto.ElsQuestionBankDto;
-import response.question.dto.ElsQuestionDto;
+import response.question.dto.ElsSubCategoryDto;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
@@ -76,6 +77,8 @@ public class ElsRestController {
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final TeacherService teacherService;
+    private final CategoryService categoryService;
+    private final SubcategoryService subcategoryService;
     private final ITclassService iTclassService;
     private final PersonalInfoService personalInfoService;
     private final ElsClient client;
@@ -909,6 +912,36 @@ public class ElsRestController {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
         }
         return response;
+    }
+
+    @GetMapping("/categoryList")
+    public List<ElsCategoryDto> getCategories(HttpServletRequest header) {
+
+        try {
+
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            return categoryService.getCategoriesForEls();
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            }
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
+    }
+
+    @GetMapping("/subCategoryList/{categoryId}")
+    public List<ElsSubCategoryDto> getSubCategories(HttpServletRequest header, @PathVariable Long categoryId) {
+
+        try {
+
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            return subcategoryService.getSubCategoriesForEls(categoryId);
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            }
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
     }
 
 

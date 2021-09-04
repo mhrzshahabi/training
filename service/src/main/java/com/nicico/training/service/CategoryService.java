@@ -21,6 +21,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.question.dto.ElsCategoryDto;
 
 import java.util.*;
 import java.util.function.Function;
@@ -135,4 +136,21 @@ public class CategoryService implements ICategoryService {
 
         return subCategoryInfoSet;
     }
+
+    @Transactional(readOnly = true)
+    public List<ElsCategoryDto> getCategoriesForEls() {
+
+        List<ElsCategoryDto> categoryDtoList = new ArrayList<>();
+        List<CategoryDTO.Info> categories = list();
+        categories.forEach(category -> {
+            ElsCategoryDto elsCategoryDto = new ElsCategoryDto();
+            elsCategoryDto.setCategoryId(category.getId());
+            elsCategoryDto.setCategoryCode(category.getCode());
+            elsCategoryDto.setCategoryName(category.getTitleFa());
+            elsCategoryDto.setCategoryNameEn(category.getTitleEn());
+            categoryDtoList.add(elsCategoryDto);
+        });
+        return categoryDtoList;
+    }
+
 }
