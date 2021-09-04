@@ -51,6 +51,7 @@ import response.question.dto.ElsQuestionBankDto;
 import response.question.dto.ElsSubCategoryDto;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
+import response.tclass.ElsStudentAttendanceListResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -95,6 +96,7 @@ public class ElsRestController {
     private final QuestionBankService questionBankService;
     private final QuestionBankBeanMapper questionBankBeanMapper;
     private final ParameterValueService parameterValueService;
+    private final IStudentService iStudentService;
 
 
     @GetMapping("/eval/{id}")
@@ -703,6 +705,38 @@ public class ElsRestController {
             response.setMessage("خطای شناسایی");
         }
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    }
+
+    /**
+     * An Api for Els to return a student's attendances list by the class code and national code
+     * @param header
+     * @param classCode
+     * @param nationalCode
+     * @return List of student's attendances [ElsStudentAttendanceListResponse]
+     */
+    @GetMapping("/attendance/studentAttendanceList/{classCode}/{nationalCode}/")
+    public ElsStudentAttendanceListResponse getStudentAttendanceListByClassCode(HttpServletRequest header,
+                                                                                @PathVariable String classCode,
+                                                                                @PathVariable String nationalCode) {
+        ElsStudentAttendanceListResponse elsStudentAttendanceListResponse = new ElsStudentAttendanceListResponse();
+        try {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                if (classCode != null && nationalCode != null && nationalCode.matches("\\d+")) {
+                    elsStudentAttendanceListResponse = iStudentService.getStudentAttendanceList(classCode, nationalCode);
+                } else {
+                    elsStudentAttendanceListResponse.setMessage("اطلاعات ارسالی فاقد محتوای صحیح ست");
+                    elsStudentAttendanceListResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+                }
+            } else {
+                elsStudentAttendanceListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                elsStudentAttendanceListResponse.setMessage("دسترسی موردنظر یافت نشد");
+            }
+        } catch (Exception ex) {
+            elsStudentAttendanceListResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            elsStudentAttendanceListResponse.setMessage("عملیات با خطا مواجه شد");
+        }
+
+        return elsStudentAttendanceListResponse;
     }
 
     @GetMapping("/averageResult/{classId}")
