@@ -48,6 +48,7 @@ import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
 import response.question.dto.ElsCategoryDto;
 import response.question.dto.ElsQuestionBankDto;
+import response.question.dto.ElsQuestionDto;
 import response.question.dto.ElsSubCategoryDto;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
