@@ -936,13 +936,13 @@ public class ElsRestController {
         }
     }
 
-    @GetMapping("/subCategoryList")
-    public List<ElsSubCategoryDto> getSubCategories(HttpServletRequest header) {
+    @GetMapping("/subCategoryList/{categoryId}")
+    public List<ElsSubCategoryDto> getSubCategories(HttpServletRequest header, @PathVariable Long categoryId) {
 
         try {
 
             if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            return subcategoryService.getSubCategoriesForEls();
+            return subcategoryService.getSubCategoriesForEls(categoryId);
             } else {
                 throw new TrainingException(TrainingException.ErrorType.Unauthorized);
             }

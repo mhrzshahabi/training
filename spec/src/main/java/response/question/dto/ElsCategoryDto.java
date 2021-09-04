@@ -13,7 +13,7 @@ public class ElsCategoryDto {
     @ApiModelProperty
     private String categoryCode;
     @ApiModelProperty
-    private String CategoryName;
+    private String categoryName;
     @ApiModelProperty
-    private String CategoryNameEn;
+    private String categoryNameEn;
 }

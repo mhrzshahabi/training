@@ -125,21 +125,21 @@ public class SubcategoryService implements ISubcategoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<ElsSubCategoryDto> getSubCategoriesForEls() {
+    public List<ElsSubCategoryDto> getSubCategoriesForEls(Long categoryId) {
 
         List<ElsSubCategoryDto> subCategoryDtoList = new ArrayList<>();
 
-        List<SubcategoryDTO.Info> subCategories = list();
+        List<Subcategory> subCategories = subCategoryDAO.findAllByCategoryId(categoryId);
         subCategories.forEach(subcategory -> {
             ElsSubCategoryDto elsSubCategoryDto = new ElsSubCategoryDto();
             elsSubCategoryDto.setSubCategoryId(subcategory.getId());
             elsSubCategoryDto.setSubCategoryCode(subcategory.getCode());
             elsSubCategoryDto.setSubCategoryName(subcategory.getTitleFa());
             elsSubCategoryDto.setSubCategoryNameEn(subcategory.getTitleEn());
-            elsSubCategoryDto.setCategoryId(subcategory.getCategoryId());
+            elsSubCategoryDto.setCategoryId(categoryId);
             subCategoryDtoList.add(elsSubCategoryDto);
         });
-        return subCategoryDtoList;
 
+        return subCategoryDtoList;
     }
 }
