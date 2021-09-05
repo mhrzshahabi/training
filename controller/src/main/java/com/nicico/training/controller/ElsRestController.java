@@ -946,7 +946,9 @@ public class ElsRestController {
             try {
                 QuestionBank questionBank = questionBankService.getById(id);
                 ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
-                return questionBankDto.getQuestions().get(0);
+                ElsQuestionDto questionDto=questionBankDto.getQuestions().get(0);
+                questionDto.setStatus(200);
+                return questionDto;
             } catch (Exception e) {
                 response.setStatus(HttpStatus.NOT_FOUND.value());
                 response.setMessage("سوال یافت نشد");
@@ -993,4 +995,44 @@ public class ElsRestController {
         }
         return response;
     }
+
+//    @PutMapping("/edit/questionBank/{nationalCode}/{id}")
+//    public BaseResponse editQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id,
+//    @RequestBody ElsQuestionDto elsQuestionDto) {
+//        BaseResponse response = new BaseResponse();
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//            try {
+//                QuestionBankDTO.FullInfo questionBankDto = questionBankService.get(id);
+//                if (questionBankDto.getTeacherId()==null|| teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)){
+//                    if (!questionBankTestQuestionService.usedQuestion(id))
+//                    {
+//
+//                        questionBankBeanMapper.toQuestionBankCreate(elsQuestionDtoelsQuestionDto);
+//
+//                        response.setStatus(HttpStatus.OK.value());
+//                    }
+//                    else
+//                    {
+//                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+//                        response.setMessage("سوال قابل ویرایش نیست");
+//                    }
+//                    return response;
+//
+//                }else {
+//                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//                    response.setMessage("این استاد دسترسی ویرایش این سوال را ندارد");
+//                }
+//
+//                return response;
+//            } catch (Exception e) {
+//                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+//                response.setMessage("خطا در ویرایش سوال");
+//            }
+//        } else {
+//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            response.setMessage("خطای دسترسی");
+//        }
+//        return response;
+//    }
+
 }
