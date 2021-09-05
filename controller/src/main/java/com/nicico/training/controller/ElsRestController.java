@@ -879,13 +879,13 @@ public class ElsRestController {
     @GetMapping("/questionBank/{nationalCode}")
     public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
 //        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            try {
-                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
-                return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
-            } catch (Exception e) {
-                throw new TrainingException(TrainingException.ErrorType.NotFound);
-            }
+        try {
+            Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+            List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
+            return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
 //        } else {
 //            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
 //        }
@@ -941,12 +941,12 @@ public class ElsRestController {
 
     @GetMapping("/questionBankById/{id}")
     public ElsQuestionDto getQuestionBankById(HttpServletRequest header, @PathVariable long id) {
-        ElsQuestionDto response=new ElsQuestionDto();
+        ElsQuestionDto response = new ElsQuestionDto();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 QuestionBank questionBank = questionBankService.getById(id);
                 ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
-                ElsQuestionDto questionDto=questionBankDto.getQuestions().get(0);
+                ElsQuestionDto questionDto = questionBankDto.getQuestions().get(0);
                 questionDto.setStatus(200);
                 return questionDto;
             } catch (Exception e) {
@@ -960,26 +960,24 @@ public class ElsRestController {
         return response;
 
     }
+
     @DeleteMapping("/delete/questionBank/{nationalCode}/{id}")
     public BaseResponse deleteQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id) {
         BaseResponse response = new BaseResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 QuestionBankDTO.FullInfo questionBankDto = questionBankService.get(id);
-                if (questionBankDto.getTeacherId()==null|| teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)){
-                    if (!questionBankTestQuestionService.usedQuestion(id))
-                    {
+                if (questionBankDto.getTeacherId() == null || teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)) {
+                    if (!questionBankTestQuestionService.usedQuestion(id)) {
                         questionBankService.delete(id);
                         response.setStatus(HttpStatus.OK.value());
-                    }
-                    else
-                    {
+                    } else {
                         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                         response.setMessage("سوال قابل حذف نیست");
                     }
                     return response;
 
-                }else {
+                } else {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setMessage("این استاد دسترسی حذف این سوال را ندارد");
                 }
@@ -997,28 +995,26 @@ public class ElsRestController {
     }
 
     @PutMapping("/edit/questionBank/{nationalCode}/{id}")
-    public BaseResponse editQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id,
-    @RequestBody ElsQuestionDto elsQuestionDto) {
-        BaseResponse response = new BaseResponse();
+    public ElsQuestionDto editQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id,
+                                           @RequestBody ElsQuestionDto elsQuestionDto) {
+        ElsQuestionDto response = new ElsQuestionDto();
+
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 QuestionBankDTO.FullInfo questionBankDto = questionBankService.get(id);
-                if (questionBankDto.getTeacherId()==null|| teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)){
-                    if (!questionBankTestQuestionService.usedQuestion(id))
-                    {
+                if (questionBankDto.getTeacherId() == null || teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)) {
+                    if (!questionBankTestQuestionService.usedQuestion(id)) {
 
-                        questionBankBeanMapper.toQuestionBankEdit(elsQuestionDto,id,questionBankDto.getTeacherId());
-
+                        response = questionBankBeanMapper.toQuestionBankEdit(elsQuestionDto, id, questionBankDto.getTeacherId());
                         response.setStatus(HttpStatus.OK.value());
-                    }
-                    else
-                    {
+
+                    } else {
                         response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                         response.setMessage("سوال قابل ویرایش نیست");
                     }
                     return response;
 
-                }else {
+                } else {
                     response.setStatus(HttpStatus.UNAUTHORIZED.value());
                     response.setMessage("این استاد دسترسی ویرایش این سوال را ندارد");
                 }

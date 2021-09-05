@@ -226,11 +226,7 @@ public abstract class QuestionBankBeanMapper {
         });
         return questionBankDtoList;
     }
-    public QuestionBankDTO.Update toQuestionBankEdit(ElsQuestionDto elsQuestionDto, long id, Long teacherId) {
-
-
-
-
+    public ElsQuestionDto toQuestionBankEdit(ElsQuestionDto elsQuestionDto, long id, Long teacherId) {
             QuestionBankDTO.Update update = new QuestionBankDTO.Update();
 
             List<ElsAttachmentDto> files = elsQuestionDto.getFiles();
@@ -315,8 +311,10 @@ public abstract class QuestionBankBeanMapper {
             }
 
 
-        return update;
+        return elsQuestionDto;
     }
+
+
 
     protected String mapAnswerType(Long answerTypeId) {
 
