@@ -3,6 +3,7 @@ package com.nicico.training.mapper.QuestionBank;
 
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.QuestionBankDTO;
+import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ISubcategoryService;
@@ -158,6 +159,7 @@ public abstract class QuestionBankBeanMapper {
             create.setSubCategoryId(elsQuestionDto.getSubCategory());
             create.setTeacherId(teacherId);
             create.setLines(1);
+            create.setDisplayTypeId(521L);
             create.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());
             create.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
             create.setHasAttachment(elsQuestionDto.getFiles().size() != 0);
@@ -223,6 +225,97 @@ public abstract class QuestionBankBeanMapper {
             questionBankDtoList.add(create);
         });
         return questionBankDtoList;
+    }
+    public QuestionBankDTO.Update toQuestionBankEdit(ElsQuestionDto elsQuestionDto, long id, Long teacherId) {
+
+
+
+
+            QuestionBankDTO.Update update = new QuestionBankDTO.Update();
+
+            List<ElsAttachmentDto> files = elsQuestionDto.getFiles();
+            List<ElsAttachmentDto> option1Files = new ArrayList<>();
+            List<ElsAttachmentDto> option2Files = new ArrayList<>();
+            List<ElsAttachmentDto> option3Files = new ArrayList<>();
+            List<ElsAttachmentDto> option4Files = new ArrayList<>();
+
+        update.setQuestion(elsQuestionDto.getTitle());
+        update.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
+        update.setCategoryId(elsQuestionDto.getCategoryId());
+        update.setSubCategoryId(elsQuestionDto.getSubCategory());
+        update.setLines(1);
+        update.setDisplayTypeId(521L);
+        update.setTeacherId(teacherId);
+        update.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());
+        update.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
+        update.setHasAttachment(elsQuestionDto.getFiles().size() != 0);
+        update.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
+
+            List<ElsQuestionOptionDto> optionList = elsQuestionDto.getOptionList();
+            if (optionList.size() != 0) {
+
+                Optional<ElsQuestionOptionDto> option1 = optionList.stream().filter(option -> option.getOptionNumber() == 1).findFirst();
+                if (option1.isPresent()) {
+                    update.setOption1(option1.get().getTitle());
+                    option1Files.addAll(option1.get().getOptionFiles());
+                }
+                Optional<ElsQuestionOptionDto> option2 = optionList.stream().filter(option -> option.getOptionNumber() == 2).findFirst();
+                if (option2.isPresent()) {
+                    update.setOption2(option2.get().getTitle());
+                    option2Files.addAll(option2.get().getOptionFiles());
+                }
+                Optional<ElsQuestionOptionDto> option3 = optionList.stream().filter(option -> option.getOptionNumber() == 3).findFirst();
+                if (option3.isPresent()) {
+                    update.setOption3(option3.get().getTitle());
+                    option3Files.addAll(option3.get().getOptionFiles());
+                }
+                Optional<ElsQuestionOptionDto> option4 = optionList.stream().filter(option -> option.getOptionNumber() == 4).findFirst();
+                if (option4.isPresent()) {
+                    update.setOption4(option4.get().getTitle());
+                    option4Files.addAll(option4.get().getOptionFiles());
+                }
+            }
+
+            QuestionBankDTO.Info info = questionBankService.update(id,update);
+
+        List<Long> questionAttachments=attachmentService.getFileIds("QuestionBank",id);
+        questionAttachments.forEach(questionAttachmentId->{
+            attachmentService.delete(questionAttachmentId);
+        });
+
+            if (files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "file");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+            if (option1Files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : option1Files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "option1");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+            if (option2Files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : option2Files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "option2");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+            if (option3Files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : option3Files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "option3");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+            if (option4Files.size() != 0) {
+                for (ElsAttachmentDto elsAttachmentDto : option4Files) {
+                    AttachmentDTO.Create attachmentDTO = mapElsAttachmentToAttachmentCreate(elsAttachmentDto, info.getId(), "option4");
+                    attachmentService.create(attachmentDTO);
+                }
+            }
+
+
+        return update;
     }
 
     protected String mapAnswerType(Long answerTypeId) {

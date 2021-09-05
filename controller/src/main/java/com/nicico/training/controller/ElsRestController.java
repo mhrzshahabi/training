@@ -878,7 +878,7 @@ public class ElsRestController {
 
     @GetMapping("/questionBank/{nationalCode}")
     public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
                 List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
@@ -886,9 +886,9 @@ public class ElsRestController {
             } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     @PostMapping("/sendQuestions")
@@ -996,43 +996,43 @@ public class ElsRestController {
         return response;
     }
 
-//    @PutMapping("/edit/questionBank/{nationalCode}/{id}")
-//    public BaseResponse editQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id,
-//    @RequestBody ElsQuestionDto elsQuestionDto) {
-//        BaseResponse response = new BaseResponse();
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-//            try {
-//                QuestionBankDTO.FullInfo questionBankDto = questionBankService.get(id);
-//                if (questionBankDto.getTeacherId()==null|| teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)){
-//                    if (!questionBankTestQuestionService.usedQuestion(id))
-//                    {
-//
-//                        questionBankBeanMapper.toQuestionBankCreate(elsQuestionDtoelsQuestionDto);
-//
-//                        response.setStatus(HttpStatus.OK.value());
-//                    }
-//                    else
-//                    {
-//                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-//                        response.setMessage("سوال قابل ویرایش نیست");
-//                    }
-//                    return response;
-//
-//                }else {
-//                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//                    response.setMessage("این استاد دسترسی ویرایش این سوال را ندارد");
-//                }
-//
-//                return response;
-//            } catch (Exception e) {
-//                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-//                response.setMessage("خطا در ویرایش سوال");
-//            }
-//        } else {
-//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//            response.setMessage("خطای دسترسی");
-//        }
-//        return response;
-//    }
+    @PutMapping("/edit/questionBank/{nationalCode}/{id}")
+    public BaseResponse editQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id,
+    @RequestBody ElsQuestionDto elsQuestionDto) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                QuestionBankDTO.FullInfo questionBankDto = questionBankService.get(id);
+                if (questionBankDto.getTeacherId()==null|| teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)){
+                    if (!questionBankTestQuestionService.usedQuestion(id))
+                    {
+
+                        questionBankBeanMapper.toQuestionBankEdit(elsQuestionDto,id,questionBankDto.getTeacherId());
+
+                        response.setStatus(HttpStatus.OK.value());
+                    }
+                    else
+                    {
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        response.setMessage("سوال قابل ویرایش نیست");
+                    }
+                    return response;
+
+                }else {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.setMessage("این استاد دسترسی ویرایش این سوال را ندارد");
+                }
+
+                return response;
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("خطا در ویرایش سوال");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
+        return response;
+    }
 
 }
