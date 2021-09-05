@@ -2839,4 +2839,10 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="2563-1">
+        <addColumn tableName="tbl_question_bank">
+            <column name="question_target" type="NUMBER(10, 0)" />
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
