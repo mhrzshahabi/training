@@ -2833,7 +2833,7 @@ WHERE
         </addColumn>
     </changeSet>
 
-    <changeSet author="nima (generated)" id="15926446194875-45454">
+    <changeSet author="nima (generated)" id="15926446194875-454214">
         <addColumn tableName="tbl_class_student">
             <column name="EXAM_STATE" type="varchar2(255 CHAR)"/>
         </addColumn>
