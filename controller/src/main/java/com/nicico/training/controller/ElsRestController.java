@@ -994,7 +994,7 @@ public class ElsRestController {
         return response;
     }
 
-    @PutMapping("/edit/questionBank/{nationalCode}/{id}")
+    @PostMapping("/edit/questionBank/{nationalCode}/{id}")
     public ElsQuestionDto editQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id,
                                            @RequestBody ElsQuestionDto elsQuestionDto) {
         ElsQuestionDto response = new ElsQuestionDto();
