@@ -310,6 +310,7 @@
             <column name="account_number" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+
     <changeSet author="golrokhi (generated)" id="1592644619220-419">
         <addColumn tableName="tbl_student">
             <column name="address" type="varchar2(255 CHAR)"/>
@@ -2829,6 +2830,12 @@ WHERE
             <column name="complex_id" type="number(19, 0)"/>
             <column name="assistant_id" type="number(19, 0)"/>
             <column name="affairs_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="nima (generated)" id="15926446194875-45454">
+        <addColumn tableName="tbl_class_student">
+            <column name="EXAM_STATE" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
 
