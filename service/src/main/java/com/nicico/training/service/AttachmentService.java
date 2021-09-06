@@ -21,6 +21,7 @@ import response.question.dto.ElsAttachmentDto;
 
 import java.io.File;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -189,6 +190,15 @@ public class AttachmentService implements IAttachmentService {
             questionAttachments.setOption4Files(option4Files);
             return questionAttachments;
         }
+    }
+
+    @Override
+    public List<Long> getFileIds(String questionBank, Long id) {
+        List<Long> ids;
+        ids=attachmentDAO.findAttachmentByObjectTypeAndObjectId(questionBank,id).stream()
+                .map(Attachment::getId).collect(Collectors.toList());;
+
+        return ids;
     }
 
     @Transactional

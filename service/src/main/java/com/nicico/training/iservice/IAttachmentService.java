@@ -27,6 +27,7 @@ public interface IAttachmentService {
     BaseResponse saveFmsFile(Attachment fmsUploadDto);
 
     QuestionAttachments getFiles(String questionBank, Long id);
+    List<Long> getFileIds(String questionBank, Long id);
 
     void saveSessionAttachment(Long sessionId, Map<String, String> file, String fileName);
 }

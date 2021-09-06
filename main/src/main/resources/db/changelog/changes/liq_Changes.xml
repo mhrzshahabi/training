@@ -2839,6 +2839,12 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="2563-1">
+        <addColumn tableName="tbl_question_bank">
+            <column name="question_target" type="NUMBER(10, 0)" />
+        </addColumn>
+    </changeSet>
+
     <changeSet author="nima (generated)" id="1630923062507-536">
         <createSequence sequenceName="seq_login_log_id"/>
     </changeSet>
