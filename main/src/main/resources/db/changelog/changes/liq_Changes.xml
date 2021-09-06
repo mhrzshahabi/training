@@ -2845,4 +2845,24 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="nima (generated)" id="1630923062507-536">
+        <createSequence sequenceName="seq_login_log_id"/>
+    </changeSet>
+    <changeSet author="nima (generated)" id="163092362507-537">
+        <createTable tableName="tbl_login_log">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_login_logPK"/>
+            </column>
+            <column name="CREATE_DATE" type="date"/>
+            <column name="FIRST_NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="HASH_TOKEN" type="VARCHAR2(255 CHAR)"/>
+            <column name="LAST_NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="NATIONAL_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="LOGIN_STATE" type="VARCHAR2(255 CHAR)"/>
+            <column name="USER_NAME" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
+
+
 </databaseChangeLog>
