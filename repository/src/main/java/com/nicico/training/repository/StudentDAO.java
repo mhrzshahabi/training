@@ -89,4 +89,13 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "  and student.NATIONAL_CODE = :nationalCode " +
             "order by tempSession.C_SESSION_DATE, tempSession.C_SESSION_START_HOUR ", nativeQuery = true)
     List<Map<String, Object>> getStudentAttendanceList(@Param("classCode") String classCode, @Param("nationalCode") String nationalCode);
+
+
+    @Query(value = "SELECT * FROM TBL_STUDENT ts\n" +
+            "INNER JOIN TBL_CLASS_STUDENT tcs ON ts.ID = tcs.STUDENT_ID \n" +
+            "INNER JOIN TBL_CLASS tc ON tc.ID = tcs.CLASS_ID \n" +
+            "INNER JOIN TBL_TEST_QUESTION ttq ON ttq.F_CLASS = tc.ID \n" +
+            "INNER JOIN TBL_COURSE tc2 ON tc.F_COURSE = tc2.ID \n" +
+            "WHERE ts.NATIONAL_CODE = :nationalCode",nativeQuery = true)
+    List<Map<String,Object>> findAllExamsByNationalCode(@Param("nationalCode") String nationalCode);
 }
