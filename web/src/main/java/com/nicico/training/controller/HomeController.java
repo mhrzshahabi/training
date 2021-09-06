@@ -31,6 +31,7 @@ public class HomeController {
     @Value("${nicico.rest-api.url}")
     private String restApiUrl;
 
+
     @GetMapping(value = {"/", "/home"})
     public String showHomePage(HttpSession session) {
         String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
