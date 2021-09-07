@@ -6,7 +6,6 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.model.Student;
@@ -14,11 +13,15 @@ import com.nicico.training.repository.StudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.tclass.ElsStudentAttendanceListResponse;
+import response.tclass.dto.ElsStudentAttendanceInfoDto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -114,6 +117,63 @@ public class StudentService implements IStudentService {
             students.add(getStudent(id));
         }
         return students;
+    }
+
+    @Override
+    public ElsStudentAttendanceListResponse getStudentAttendanceList(String classCode, String nationalCode) {
+        List<Map<String, Object>> result = studentDAO.getStudentAttendanceList(classCode, nationalCode);
+        List<ElsStudentAttendanceInfoDto> elsStudentAttendanceInfoDtos = new ArrayList<>();
+        ElsStudentAttendanceListResponse elsStudentAttendanceListResponse = new ElsStudentAttendanceListResponse();
+        if (result.size() > 0) {
+            for (Map<String, Object> map: result) {
+                ElsStudentAttendanceInfoDto studentAttInfoDto = new ElsStudentAttendanceInfoDto();
+                map.forEach((key, value) -> {
+                    if (key.equals("SESSION_DATE")){
+                        studentAttInfoDto.setSessionDate(String.valueOf(value));
+                    } else if (key.equals("DAY_NAME")){
+                        studentAttInfoDto.setSessionWeekDayName(String.valueOf(value));
+                    } else if (key.equals("SESSION_START_HOUR")){
+                        studentAttInfoDto.setSessionStartHour(String.valueOf(value));
+                    } else if (key.equals("SESSION_END_HOUR")){
+                        studentAttInfoDto.setSessionEndHour(String.valueOf(value));
+                    } else if (key.equals("ATTENDANCE_STATE")){
+                        studentAttInfoDto.setAttendanceStateId(Long.parseLong(String.valueOf(value)));
+                        switch (String.valueOf(value)){
+                            case "0": {
+                                studentAttInfoDto.setAttendanceStateTitle("نامشخص");
+                                break;
+                            }
+                            case "1": {
+                                studentAttInfoDto.setAttendanceStateTitle("حاضر");
+                                break;
+                            }
+                            case "2": {
+                                studentAttInfoDto.setAttendanceStateTitle("حاضر و اضافه کار");
+                                break;
+                            }
+                            case "3": {
+                                studentAttInfoDto.setAttendanceStateTitle("غیبت غیر موجه");
+                                break;
+                            }
+                            case "4": {
+                                studentAttInfoDto.setAttendanceStateTitle("غیبت موجه");
+                                break;
+                            }
+
+                        }
+                    }
+                });
+                elsStudentAttendanceInfoDtos.add(studentAttInfoDto);
+            }
+            elsStudentAttendanceListResponse.setClassCode(classCode);
+            elsStudentAttendanceListResponse.setNationalCode(nationalCode);
+            elsStudentAttendanceListResponse.setStudentAttendanceInfoDtoList(elsStudentAttendanceInfoDtos);
+            elsStudentAttendanceListResponse.setStatus(HttpStatus.OK.value());
+        } else {
+            elsStudentAttendanceListResponse.setMessage("اطلاعات حضور غیاب برای این کلاس وجود ندارد");
+            elsStudentAttendanceListResponse.setStatus(HttpStatus.NO_CONTENT.value());
+        }
+            return elsStudentAttendanceListResponse;
     }
 
     // ------------------------------

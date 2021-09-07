@@ -20,7 +20,9 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.question.dto.ElsSubCategoryDto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -120,5 +122,24 @@ public class SubcategoryService implements ISubcategoryService {
         final Subcategory subCategory = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
 
         return modelMapper.map(subCategory.getCategory(), CategoryDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ElsSubCategoryDto> getSubCategoriesForEls(Long categoryId) {
+
+        List<ElsSubCategoryDto> subCategoryDtoList = new ArrayList<>();
+
+        List<Subcategory> subCategories = subCategoryDAO.findAllByCategoryId(categoryId);
+        subCategories.forEach(subcategory -> {
+            ElsSubCategoryDto elsSubCategoryDto = new ElsSubCategoryDto();
+            elsSubCategoryDto.setSubCategoryId(subcategory.getId());
+            elsSubCategoryDto.setSubCategoryCode(subcategory.getCode());
+            elsSubCategoryDto.setSubCategoryName(subcategory.getTitleFa());
+            elsSubCategoryDto.setSubCategoryNameEn(subcategory.getTitleEn());
+            elsSubCategoryDto.setCategoryId(categoryId);
+            subCategoryDtoList.add(elsSubCategoryDto);
+        });
+
+        return subCategoryDtoList;
     }
 }

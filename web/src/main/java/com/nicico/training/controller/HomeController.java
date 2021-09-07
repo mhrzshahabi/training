@@ -1,6 +1,11 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.activiti.domain.iservice.IBusinessWorkflowEngine;
+import com.nicico.copper.oauth.common.model.OAUser;
+import com.nicico.copper.oauth.common.repository.OAUserDAO;
+import com.nicico.training.model.LoginLog;
+import com.nicico.training.model.enums.LoginState;
+import com.nicico.training.repository.LoginLogDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,15 +25,28 @@ import javax.servlet.http.HttpSession;
 public class HomeController {
 
     private final IBusinessWorkflowEngine businessWorkflowEngine;
+    private final LoginLogDAO loginLogDAO;
+    private final OAUserDAO userDAO;
 
     @Value("${nicico.rest-api.url}")
     private String restApiUrl;
 
+
     @GetMapping(value = {"/", "/home"})
     public String showHomePage(HttpSession session) {
+        String currentUsername = SecurityContextHolder.getContext().getAuthentication().getName();
+        OAUser user = userDAO.findByUsername(currentUsername).orElse(new OAUser());
+        if (user.getUsername() != null) {
+            LoginLog loginLog = new LoginLog();
+            loginLog.setNationalCode(user.getNationalCode());
+            loginLog.setFirstName(user.getFirstName());
+            loginLog.setLastName(user.getLastName());
+            loginLog.setState(LoginState.LOGIN);
+            loginLog.setUsername(currentUsername);
+            loginLogDAO.save(loginLog);
+        }
         final String username = SecurityContextHolder.getContext().getAuthentication().getName();
         session.setAttribute("cartableCount", businessWorkflowEngine.getUserTasks(username).size());
-
         return "trainingMainDesktop";
     }
 

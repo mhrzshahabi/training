@@ -68,4 +68,34 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
 
     @Query(value = "select * from TBL_STUDENT where f_contact_info IN(:ids)" , nativeQuery = true)
     List<Student> findAllByContactInfoIds(List<Long> ids);
+
+    /**
+     * it returns a student's attendance list in a class for an Api for Els
+     * @param classCode
+     * @param nationalCode
+     * @return
+     */
+    @Query(value = "select tempSession.C_SESSION_DATE       as SESSION_DATE, " +
+            "       tempSession.C_DAY_NAME           as DAY_NAME, " +
+            "       tempSession.C_SESSION_START_HOUR as SESSION_START_HOUR, " +
+            "       tempSession.C_SESSION_END_HOUR   as SESSION_END_HOUR, " +
+            "       nvl(attendance.C_STATE, 0)       as ATTENDANCE_STATE " +
+            "from TBL_SESSION tempSession " +
+            "         inner join TBL_CLASS tClass on tClass.ID = tempSession.F_CLASS_ID " +
+            "         left join TBL_ATTENDANCE attendance on tempSession.ID = attendance.F_SESSION " +
+            "         inner join TBL_CLASS_STUDENT classStudent on tClass.ID = classStudent.CLASS_ID " +
+            "         inner join TBL_STUDENT student on classStudent.STUDENT_ID = student.ID " +
+            "where tClass.C_CODE = :classCode " +
+            "  and student.NATIONAL_CODE = :nationalCode " +
+            "order by tempSession.C_SESSION_DATE, tempSession.C_SESSION_START_HOUR ", nativeQuery = true)
+    List<Map<String, Object>> getStudentAttendanceList(@Param("classCode") String classCode, @Param("nationalCode") String nationalCode);
+
+
+    @Query(value = "SELECT * FROM TBL_STUDENT ts\n" +
+            "INNER JOIN TBL_CLASS_STUDENT tcs ON ts.ID = tcs.STUDENT_ID \n" +
+            "INNER JOIN TBL_CLASS tc ON tc.ID = tcs.CLASS_ID \n" +
+            "INNER JOIN TBL_TEST_QUESTION ttq ON ttq.F_CLASS = tc.ID \n" +
+            "INNER JOIN TBL_COURSE tc2 ON tc.F_COURSE = tc2.ID \n" +
+            "WHERE ts.NATIONAL_CODE = :nationalCode",nativeQuery = true)
+    List<Map<String,Object>> findAllExamsByNationalCode(@Param("nationalCode") String nationalCode);
 }

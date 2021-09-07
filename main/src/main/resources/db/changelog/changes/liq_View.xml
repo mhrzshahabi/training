@@ -9894,4 +9894,94 @@ WHERE
              ]]>
         </createView>
     </changeSet>
+    <changeSet author="namdari" id="namdari-2484-1-1">
+        <createView viewName="VIEW_EVALUATION_TEACHER_COMMENTS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    tbl_class.c_code as class_code,
+    tbl_class.c_title_class as class_title,
+    tbl_class.c_start_date as start_date,
+    tbl_class.c_end_date as end_date,
+    tbl_personal_info.c_first_name_fa as first_name,
+    tbl_personal_info.c_last_name_fa as last_name,
+    tbl_evaluation.c_description as des,
+    tbl_category.c_title_fa  AS title_category,
+    tbl_category.id  AS id_category,
+    tbl_sub_category.id              AS id_sub_category,
+    tbl_sub_category.c_title_fa      AS title_sub_category,
+    tbl_evaluation.id                            AS id
+FROM
+         tbl_evaluation
+    INNER JOIN tbl_class ON tbl_evaluation.f_class_id = tbl_class.id
+    INNER JOIN tbl_teacher ON tbl_evaluation.f_evaluator_id = tbl_teacher.id
+    INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+    INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+    INNER JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id
+WHERE
+    tbl_evaluation.c_description IS NOT NULL
+    AND tbl_evaluation.f_evaluator_type_id = '187'
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="namdari-2484-2-1">
+        <createView viewName="VIEW_EVALUATION_STUDENT_COMMENTS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    tbl_evaluation.c_description as des,
+    tbl_class.c_code as class_code,
+    tbl_class.c_title_class as class_title,
+    tbl_class.c_start_date as start_date,
+    tbl_class.c_end_date as end_date,
+    tbl_category.c_title_fa          AS title_category,
+    tbl_category.id                  AS id_category,
+    tbl_sub_category.id              AS id_sub_category,
+    tbl_sub_category.c_title_fa      AS title_sub_category,
+    tbl_evaluation.id                            AS id,
+    tbl_student.last_name as last_name,
+    tbl_student.first_name as first_name
+FROM
+         tbl_evaluation
+    INNER JOIN tbl_class ON tbl_evaluation.f_class_id = tbl_class.id
+    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+    INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+    INNER JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id
+    INNER JOIN tbl_class_student ON tbl_evaluation.f_evaluator_id = tbl_class_student.id
+    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+WHERE
+    tbl_evaluation.c_description IS NOT NULL
+    AND tbl_evaluation.f_evaluator_type_id = '188'
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="namdari-2484-3-1">
+        <createView viewName="VIEW_EVALUATION_PERSONNEL_COMMENTS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    tbl_evaluation.c_description as des,
+    tbl_class.c_code as class_code,
+    tbl_class.c_title_class as class_title,
+    tbl_class.c_start_date as start_date,
+    tbl_class.c_end_date as end_date,
+    tbl_personnel.first_name,
+    tbl_personnel.last_name,
+        tbl_category.c_title_fa  AS title_category,
+    tbl_category.id  AS id_category,
+    tbl_sub_category.id              AS id_sub_category,
+    tbl_sub_category.c_title_fa      AS title_sub_category,
+    tbl_evaluation.id                            AS id
+FROM
+         tbl_evaluation
+    INNER JOIN tbl_class ON tbl_evaluation.f_class_id = tbl_class.id
+    INNER JOIN tbl_personnel ON tbl_evaluation.f_evaluator_id = tbl_personnel.id
+    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+    INNER JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+    INNER JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id
+WHERE
+    tbl_evaluation.c_description IS NOT NULL
+    AND tbl_evaluation.f_evaluator_type_id = '454'
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>

@@ -231,6 +231,14 @@
         ],
         fetchDataURL: enumUrl + "eQuestionLevel/spec-list"
     });
+    questionTargetDS_questionBank = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/questionTarget"
+    });
 
     ClassDS_questionBank = isc.TrDS.create({
         fields: [
@@ -964,6 +972,19 @@
                 optionDataSource: EQuestionLevelDS_questionBank,
                 valueField: "id",
                 displayField: "titleFa",
+                sortField: ["id"],
+                pickListProperties:{
+                    showFilterEditor: false
+                }
+            },
+            {
+                name: "questionTarget",
+                title: "تعیین هدف سوال",
+                required: true,
+                textAlign: "center",
+                optionDataSource: questionTargetDS_questionBank,
+                valueField: "id",
+                displayField: "title",
                 sortField: ["id"],
                 pickListProperties:{
                     showFilterEditor: false

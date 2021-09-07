@@ -1795,6 +1795,10 @@
             let improvementTime=0;
             let developmentTime=0;
             let positionTime=0;
+            let servingArray=[];
+            let improvementArray=[];
+            let developmentArray=[];
+            let positionArray=[];
 
             let data = knowledgeLG.toArray();
             data.addAll(abilityLG.toArray());
@@ -1805,23 +1809,31 @@
                 for (let i = 0; i < data.length; i++) {
                     switch (data[i].needsAssessmentPriorityId) {
                         case 111: {
-                            if (data[i].course!=null && data[i].course!==undefined)
-                                servingTime+=data[i].course.theoryDuration
+                            if (data[i].course!=null && data[i].course!==undefined && !servingArray.contains(data[i].course.id) ){
+                                servingTime+=data[i].course.theoryDuration;
+                                servingArray.push(data[i].course.id);
+                            }
                             break;
                         }
                         case 112: {
-                            if (data[i].course!=null && data[i].course!==undefined)
-                                improvementTime+=data[i].course.theoryDuration
+                            if (data[i].course!=null && data[i].course!==undefined && !improvementArray.contains(data[i].course.id) ){
+                                improvementTime+=data[i].course.theoryDuration;
+                                improvementArray.push(data[i].course.id);
+                            }
                             break;
                         }
                         case 113: {
-                            if (data[i].course!=null && data[i].course!==undefined)
-                                developmentTime+=data[i].course.theoryDuration
+                            if (data[i].course!=null && data[i].course!==undefined && !developmentArray.contains(data[i].course.id) ){
+                                developmentTime+=data[i].course.theoryDuration;
+                                developmentArray.push(data[i].course.id);
+                            }
                             break;
                         }
                         case 574: {
-                            if (data[i].course!=null && data[i].course!==undefined)
-                                positionTime+=data[i].course.theoryDuration
+                            if (data[i].course!=null && data[i].course!==undefined && !positionArray.contains(data[i].course.id) ){
+                                positionTime+=data[i].course.theoryDuration;                                                            servingArray.push(data[i].course.id)
+                                positionArray.push(data[i].course.id);
+                            }
                             break;
                         }
                     }

@@ -46,9 +46,13 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
+import response.question.dto.ElsCategoryDto;
 import response.question.dto.ElsQuestionBankDto;
+import response.question.dto.ElsQuestionDto;
+import response.question.dto.ElsSubCategoryDto;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
+import response.tclass.ElsStudentAttendanceListResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,6 +78,8 @@ public class ElsRestController {
     private final ClassStudentService classStudentService;
     private final TclassService tclassService;
     private final TeacherService teacherService;
+    private final CategoryService categoryService;
+    private final SubcategoryService subcategoryService;
     private final ITclassService iTclassService;
     private final PersonalInfoService personalInfoService;
     private final ElsClient client;
@@ -91,6 +97,8 @@ public class ElsRestController {
     private final QuestionBankService questionBankService;
     private final QuestionBankBeanMapper questionBankBeanMapper;
     private final ParameterValueService parameterValueService;
+    private final IStudentService iStudentService;
+    private final QuestionBankTestQuestionService questionBankTestQuestionService;
 
 
     @GetMapping("/eval/{id}")
@@ -111,8 +119,8 @@ public class ElsRestController {
                     BaseResponse baseResponse = client.sendEvaluation(request);
                     response.setMessage(baseResponse.getMessage());
                     response.setStatus(baseResponse.getStatus());
-                    if (baseResponse.getStatus()==200)
-                    iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
+                    if (baseResponse.getStatus() == 200)
+                        iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
 
                 } else {
                     response.setMessage("دوره فراگیری با اطلاعات کامل ندارد.");
@@ -127,9 +135,7 @@ public class ElsRestController {
                     response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                     return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
 
-                }
-                else
-                {
+                } else {
                     response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                     response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                     return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
@@ -149,8 +155,8 @@ public class ElsRestController {
             BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
             response.setMessage(baseResponse.getMessage());
             response.setStatus(baseResponse.getStatus());
-            if (baseResponse.getStatus()==200)
-            iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
+            if (baseResponse.getStatus() == 200)
+                iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
             else
                 return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
 
@@ -161,8 +167,7 @@ public class ElsRestController {
                 response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                 return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
 
-            }
-            else {
+            } else {
                 response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                 return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
@@ -199,7 +204,7 @@ public class ElsRestController {
         return response;
     }
 
-        @PostMapping("/examToEls/{type}")
+    @PostMapping("/examToEls/{type}")
     public ResponseEntity sendExam(@RequestBody ExamImportedRequest object, @PathVariable String type) {
         BaseResponse response = new BaseResponse();
         final ElsExamRequestResponse elsExamRequestResponse;
@@ -218,9 +223,8 @@ public class ElsRestController {
                         evaluationBeanMapper.validateTeacherExam(request.getInstructor())) {
                     try {
                         request = evaluationBeanMapper.removeInvalidUsersForExam(request);
-                        if (object.isDeleteAbsentUsers())
-                        {
-                            request = evaluationBeanMapper.removeAbsentUsersForExam(request,object.getAbsentUsers());
+                        if (object.isDeleteAbsentUsers()) {
+                            request = evaluationBeanMapper.removeAbsentUsersForExam(request, object.getAbsentUsers());
                         }
                         if (request.getUsers() != null && !request.getUsers().isEmpty()) {
                             response = client.sendExam(request);
@@ -259,7 +263,7 @@ public class ElsRestController {
             response.setMessage("بروز خطا در سیستم");
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
 
-            }
+        }
     }
 
     @PostMapping("/resendExamToEls")
@@ -589,18 +593,14 @@ public class ElsRestController {
     }
 
     @GetMapping(value = "/extendedList/{sourceExamId}")
-    public ResponseEntity<ResendExamTimes> getResendExamTimes(@PathVariable long sourceExamId){
-        ResendExamTimes resendExamTimes=client.getResendExamTimes(sourceExamId);
+    public ResponseEntity<ResendExamTimes> getResendExamTimes(@PathVariable long sourceExamId) {
+        ResendExamTimes resendExamTimes = client.getResendExamTimes(sourceExamId);
 
-        if (resendExamTimes.getStatus()== HttpStatus.OK.value())
-        {
+        if (resendExamTimes.getStatus() == HttpStatus.OK.value()) {
             return new ResponseEntity<>(resendExamTimes, HttpStatus.OK);
 
-        }
-        else
+        } else
             return new ResponseEntity<>(resendExamTimes, HttpStatus.NOT_ACCEPTABLE);
-
-
 
 
     }
@@ -613,12 +613,12 @@ public class ElsRestController {
             , @PathVariable String token
     ) throws IOException {
 
-        ByteArrayResource file= client2.downloadFile("Bearer " +token ,group,key);
+        ByteArrayResource file = client2.downloadFile("Bearer " + token, group, key);
         try {
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +file.getFilename()+  "\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
                     .body(file);
-        } catch ( Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return null;
         }
@@ -699,6 +699,39 @@ public class ElsRestController {
             response.setMessage("خطای شناسایی");
         }
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    }
+
+    /**
+     * An Api for Els to return a student's attendances list by the class code and national code
+     *
+     * @param header
+     * @param classCode
+     * @param nationalCode
+     * @return List of student's attendances [ElsStudentAttendanceListResponse]
+     */
+    @GetMapping("/attendance/studentAttendanceList/{classCode}/{nationalCode}/")
+    public ElsStudentAttendanceListResponse getStudentAttendanceListByClassCode(HttpServletRequest header,
+                                                                                @PathVariable String classCode,
+                                                                                @PathVariable String nationalCode) {
+        ElsStudentAttendanceListResponse elsStudentAttendanceListResponse = new ElsStudentAttendanceListResponse();
+        try {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+                if (classCode != null && nationalCode != null && nationalCode.matches("\\d+")) {
+                    elsStudentAttendanceListResponse = iStudentService.getStudentAttendanceList(classCode, nationalCode);
+                } else {
+                    elsStudentAttendanceListResponse.setMessage("اطلاعات ارسالی فاقد محتوای صحیح ست");
+                    elsStudentAttendanceListResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+                }
+            } else {
+                elsStudentAttendanceListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                elsStudentAttendanceListResponse.setMessage("دسترسی موردنظر یافت نشد");
+            }
+        } catch (Exception ex) {
+            elsStudentAttendanceListResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            elsStudentAttendanceListResponse.setMessage("عملیات با خطا مواجه شد");
+        }
+
+        return elsStudentAttendanceListResponse;
     }
 
     @GetMapping("/averageResult/{classId}")
@@ -844,41 +877,156 @@ public class ElsRestController {
     }
 
     @GetMapping("/questionBank/{nationalCode}")
-    public ElsQuestionBankDto getQuestionBank(HttpServletRequest header, @PathVariable String nationalCode) {
-
+    public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
         try {
-
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
-                return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
-
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-            }
+            Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+            List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
+            return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.NotFound);
         }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     @PostMapping("/sendQuestions")
-    public BaseResponse sendQuestions(HttpServletRequest header, @RequestBody ElsQuestionBankDto elsQuestionBankDto) {
+    public BaseResponse addQuestions(HttpServletRequest header, @RequestBody ElsQuestionBankDto elsQuestionBankDto) {
 
         BaseResponse response = new BaseResponse();
-        try {
-
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
                 questionBankBeanMapper.toQuestionBankCreate(elsQuestionBankDto);
                 response.setMessage("ذخیره سوالات با موفقیت انجام شد");
                 response.setStatus(HttpStatus.OK.value());
                 return response;
-
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            } catch (Exception e) {
+                response.setMessage("مشکلی در ذخیره سوالات رخ داده است");
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             }
-        } catch (Exception e) {
-            response.setMessage("مشکلی در ذخیره سوالات رخ داده است");
-            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+        return response;
+    }
+
+    @GetMapping("/categoryList")
+    public List<ElsCategoryDto> getCategories(HttpServletRequest header) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return categoryService.getCategoriesForEls();
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @GetMapping("/subCategoryList/{categoryId}")
+    public List<ElsSubCategoryDto> getSubCategories(HttpServletRequest header, @PathVariable Long categoryId) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return subcategoryService.getSubCategoriesForEls(categoryId);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+
+    @GetMapping("/questionBankById/{id}")
+    public ElsQuestionDto getQuestionBankById(HttpServletRequest header, @PathVariable long id) {
+        ElsQuestionDto response = new ElsQuestionDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                QuestionBank questionBank = questionBankService.getById(id);
+                ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
+                ElsQuestionDto questionDto = questionBankDto.getQuestions().get(0);
+                questionDto.setStatus(200);
+                return questionDto;
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage("سوال یافت نشد");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
+        return response;
+
+    }
+
+    @DeleteMapping("/delete/questionBank/{nationalCode}/{id}")
+    public BaseResponse deleteQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                QuestionBankDTO.FullInfo questionBankDto = questionBankService.get(id);
+                if (questionBankDto.getTeacherId() == null || teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)) {
+                    if (!questionBankTestQuestionService.usedQuestion(id)) {
+                        questionBankService.delete(id);
+                        response.setStatus(HttpStatus.OK.value());
+                    } else {
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        response.setMessage("سوال قابل حذف نیست");
+                    }
+                    return response;
+
+                } else {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.setMessage("این استاد دسترسی حذف این سوال را ندارد");
+                }
+
+                return response;
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("خطا در حذف سوال");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
+        return response;
+    }
+
+    @PostMapping("/edit/questionBank/{nationalCode}/{id}")
+    public ElsQuestionDto editQuestionBank(HttpServletRequest header, @PathVariable String nationalCode, @PathVariable long id,
+                                           @RequestBody ElsQuestionDto elsQuestionDto) {
+        ElsQuestionDto response = new ElsQuestionDto();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                QuestionBankDTO.FullInfo questionBankDto = questionBankService.get(id);
+                if (questionBankDto.getTeacherId() == null || teacherService.getTeacher(questionBankDto.getTeacherId()).getTeacherCode().equals(nationalCode)) {
+                    if (!questionBankTestQuestionService.usedQuestion(id)) {
+
+                        response = questionBankBeanMapper.toQuestionBankEdit(elsQuestionDto, id, questionBankDto.getTeacherId());
+                        response.setStatus(HttpStatus.OK.value());
+
+                    } else {
+                        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        response.setMessage("سوال قابل ویرایش نیست");
+                    }
+                    return response;
+
+                } else {
+                    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+                    response.setMessage("این استاد دسترسی ویرایش این سوال را ندارد");
+                }
+
+                return response;
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("خطا در ویرایش سوال");
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
         }
         return response;
     }

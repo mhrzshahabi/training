@@ -356,10 +356,6 @@
             let type = DynamicForm_JspEditNeedsAssessment.getValue("objectType");
             wait.show();
 
-            ListGrid_Knowledge_JspNeedsAssessment.unsort();
-            ListGrid_Ability_JspNeedsAssessment.unsort();
-            ListGrid_Attitude_JspNeedsAssessment.unsort();
-
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/rollBack/" + type + "/" + id, "PUT", null, (resp)=>{
                 wait.close();
                 if(resp.httpResponseCode === 200){
@@ -414,6 +410,7 @@
             }
         ]
     });
+
 
     let Window_total_courses_times = isc.Window.create({
         width: 600,
@@ -1750,6 +1747,164 @@
             Label_PlusData_JspNeedsAssessment,
         ],
     });
+
+    let Window_show_sort_grids = isc.Window.create({
+        width: "80%",
+        height: "50%",
+        minWidth: 1024,
+        keepInParentRect: true,
+        isModal: true,
+        title:"نمایش لیست مهارت ها بر اساس رنگ اولویت",
+        // autoSize: false,
+        autoSize: false,
+        show(){
+            ListGrid_Knowledge_sort.invalidateCache();
+            ListGrid_Knowledge_sort.fetchData();
+            ListGrid_Ability_sort.invalidateCache();
+            ListGrid_Ability_sort.fetchData();
+            ListGrid_Attitude_sort.invalidateCache();
+            ListGrid_Attitude_sort.fetchData();
+            ListGrid_Knowledge_sort.sort("needsAssessmentPriorityId", "ascending");
+            ListGrid_Ability_sort.sort("needsAssessmentPriorityId", "ascending");
+            ListGrid_Attitude_sort.sort("needsAssessmentPriorityId", "ascending");
+            this.Super("show", arguments);
+        },
+        items: [
+            isc.TrHLayout.create({
+                members: [
+                    isc.TrLG.create({
+                        ID: "ListGrid_Knowledge_sort",
+                        autoFetchData:false,
+                        dataSource: DataSource_Skill_JspNeedsAssessment,
+                        showRowNumbers: false,
+                        selectionType:"single",
+                        autoSaveEdits:false,
+                        sortField: 0,
+                        sortDirection: "descending",
+                        implicitCriteria:{"needsAssessmentDomainId":108},
+                        fields: [
+                            {name: "id", hidden: true},
+                            {name: "course.code", align: "center"},
+                            {name: "course.titleFa", align: "center"},
+                            {name: "titleFa", align: "center"},
+                            {name: "skill.code", align: "center",
+                                sortNormalizer: function (record) {
+                                    return record.skill.code;
+                                }
+                            },
+                            {name: "objectType"},
+                            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false},
+                            {name: "needsAssessmentPriorityId", hidden: true}
+                        ],
+                        headerSpans: [
+                            {
+                                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
+                                title: "<spring:message code="knowledge"/>"
+                            }],
+                        headerHeight: 50,
+                        gridComponents: [
+                            "filterEditor", "header", "body"
+                        ],
+                        canAcceptDroppedRecords: true,
+                        showHoverComponents: true,
+                        canRemoveRecords:false,
+                        showHeaderContextMenu: false,
+                        showFilterEditor:true,
+                        getCellCSSText(record) {
+                            return priorityColor(record);
+                        }
+                    }),
+                    isc.TrLG.create({
+                        ID: "ListGrid_Ability_sort",
+                        autoFetchData:false,
+                        dataSource: DataSource_Skill_JspNeedsAssessment,
+                        showRowNumbers: false,
+                        selectionType:"single",
+                        autoSaveEdits:false,
+                        sortField: 0,
+                        sortDirection: "descending",
+                        implicitCriteria:{"needsAssessmentDomainId":109},
+                        contextMenu: Menu_ListGrid_JspENA,
+                        fields: [
+                            {name: "id", hidden: true},
+                            {name: "course.code", align: "center"},
+                            {name: "course.titleFa", align: "center"},
+                            {name: "titleFa", align: "center"},
+                            {name: "skill.code", align: "center",
+                                sortNormalizer: function (record) {
+                                    return record.skill.code;
+                                }
+                            },
+                            {name: "objectType"},
+                            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false},
+                            {name: "needsAssessmentPriorityId", hidden: true}
+                        ],
+                        headerSpans: [
+                            {
+                                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
+                                title: "<spring:message code="knowledge"/>"
+                            }],
+                        headerHeight: 50,
+                        gridComponents: [
+                            "filterEditor", "header", "body"
+                        ],
+                        canAcceptDroppedRecords: true,
+                        showHoverComponents: true,
+                        canRemoveRecords:false,
+                        showHeaderContextMenu: false,
+                        showFilterEditor:true,
+                        getCellCSSText(record) {
+                            return priorityColor(record);
+                        }
+                    }),
+                    isc.TrLG.create({
+                        ID: "ListGrid_Attitude_sort",
+                        autoFetchData:false,
+                        dataSource: DataSource_Skill_JspNeedsAssessment,
+                        showRowNumbers: false,
+                        selectionType:"single",
+                        autoSaveEdits:false,
+                        sortField: 0,
+                        sortDirection: "descending",
+                        implicitCriteria:{"needsAssessmentDomainId":110},
+                        contextMenu: Menu_ListGrid_JspENA,
+                        fields: [
+                            {name: "id", hidden: true},
+                            {name: "course.code", align: "center"},
+                            {name: "course.titleFa", align: "center"},
+                            {name: "titleFa", align: "center"},
+                            {name: "skill.code", align: "center",
+                                sortNormalizer: function (record) {
+                                    return record.skill.code;
+                                }
+                            },
+                            {name: "objectType"},
+                            {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, canFilter: false},
+                            {name: "needsAssessmentPriorityId", hidden: true}
+                        ],
+                        headerSpans: [
+                            {
+                                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
+                                title: "<spring:message code="knowledge"/>"
+                            }],
+                        headerHeight: 50,
+                        gridComponents: [
+                            "filterEditor", "header", "body"
+                        ],
+                        canAcceptDroppedRecords: true,
+                        showHoverComponents: true,
+                        canRemoveRecords:false,
+                        showHeaderContextMenu: false,
+                        showFilterEditor:true,
+                        getCellCSSText(record) {
+                            return priorityColor(record);
+                        }
+                    }),
+                ]
+            })]
+    });
+
+
     let HLayout_Bottom = isc.TrHLayout.create({
         members: [
             isc.TrVLayout.create({
@@ -1780,17 +1935,9 @@
                                 width: "140",
                                 align: "left",
                                 margin: 2,
-                                title: "مرتب سازی براساس رنگ",
+                                title: "نمایش براساس رنگ",
                                 click: function () {
-
-                                    ListGrid_Knowledge_JspNeedsAssessment.unsort();
-                                    ListGrid_Knowledge_JspNeedsAssessment.sort("needsAssessmentPriorityId", "ascending");
-
-                                    ListGrid_Ability_JspNeedsAssessment.unsort();
-                                    ListGrid_Ability_JspNeedsAssessment.sort("needsAssessmentPriorityId", "ascending");
-
-                                    ListGrid_Attitude_JspNeedsAssessment.unsort();
-                                    ListGrid_Attitude_JspNeedsAssessment.sort("needsAssessmentPriorityId", "ascending");
+                                    Window_show_sort_grids.show();
                                 }
                             }),
                             isc.Button.create({
@@ -1809,6 +1956,10 @@
                                         let improvementTime=0;
                                         let developmentTime=0;
                                         let positionTime=0;
+                                        let servingArray=[];
+                                        let improvementArray=[];
+                                        let developmentArray=[];
+                                        let positionArray=[];
 
                                         let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
                                         data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
@@ -1819,23 +1970,37 @@
                                             for (let i = 0; i < data.length; i++) {
                                                 switch (data[i].needsAssessmentPriorityId) {
                                                     case 111: {
-                                                        if (data[i].course!=null && data[i].course!==undefined)
+                                                        if (data[i].course!=null && data[i].course!==undefined && !servingArray.contains(data[i].course.id) )
+                                                        {
+                                                            servingArray.push(data[i].course.id)
                                                             servingTime+=data[i].course.theoryDuration
+
+                                                        }
                                                         break;
                                                     }
                                                     case 112: {
-                                                        if (data[i].course!=null && data[i].course!==undefined)
+                                                        if (data[i].course!=null && data[i].course!==undefined && !improvementArray.contains(data[i].course.id))
+                                                        {
+                                                            improvementArray.push(data[i].course.id)
                                                             improvementTime+=data[i].course.theoryDuration
+
+                                                        }
                                                         break;
                                                     }
                                                     case 113: {
-                                                        if (data[i].course!=null && data[i].course!==undefined)
+                                                        if (data[i].course!=null && data[i].course!==undefined && !developmentArray.contains(data[i].course.id)){
+                                                            developmentArray.push(data[i].course.id)
                                                             developmentTime+=data[i].course.theoryDuration
+
+                                                        }
                                                         break;
                                                     }
                                                     case 574: {
-                                                        if (data[i].course!=null && data[i].course!==undefined)
+                                                        if (data[i].course!=null && data[i].course!==undefined && !positionArray.contains(data[i].course.id)){
+                                                            positionArray.push(data[i].course.id)
                                                             positionTime+=data[i].course.theoryDuration
+
+                                                        }
                                                         break;
                                                     }
                                                 }
@@ -2173,10 +2338,10 @@
 
 
     function loadEditNeedsAssessment(objectId, type, state = "R&W") {
-
         ListGrid_Knowledge_JspNeedsAssessment.unsort();
         ListGrid_Ability_JspNeedsAssessment.unsort();
         ListGrid_Attitude_JspNeedsAssessment.unsort();
+
 
         if (ListGrid_SkillAll_JspNeedsAssessment) {
             ListGrid_SkillAll_JspNeedsAssessment.clearFilterValues();
