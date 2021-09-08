@@ -879,17 +879,18 @@ public class ElsRestController {
 
     @GetMapping("/questionBank/{nationalCode}")
     public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-        try {
-            Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-            List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
-            return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
-        } catch (Exception e) {
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
+                return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
-//        } else {
-//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-//        }
     }
 
     @PostMapping("/sendQuestions")
@@ -914,6 +915,7 @@ public class ElsRestController {
 
     @GetMapping("/categoryList")
     public List<ElsCategoryDto> getCategories(HttpServletRequest header) {
+
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 return categoryService.getCategoriesForEls();
@@ -938,7 +940,6 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
-
 
     @GetMapping("/questionBankById/{id}")
     public ElsQuestionDto getQuestionBankById(HttpServletRequest header, @PathVariable long id) {
