@@ -68,7 +68,7 @@ public interface IAttendanceService {
 
     void studentAttendanceSave(List<List<Map<String, String>>> maps);
 
-    String studentUnknownSessionsInClass(Long classId);
+    AttendanceDTO.permissionDto studentUnknownSessionsInClass(Long classId);
     List<Student> studentAbsentSessionsInClass(Long classId);
 
     boolean saveOrUpdateList(List<Attendance> attendances);

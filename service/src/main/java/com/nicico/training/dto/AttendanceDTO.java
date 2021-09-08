@@ -111,6 +111,18 @@ public class AttendanceDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("AttendanceDeleteRq")
+    public static class permissionDto {
+
+        private String date;
+        private boolean hasPermission;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AttendanceSpecRs")
     public static class AttendanceSpecRs {

@@ -378,7 +378,7 @@
                     printFullClearForm()
                 }
             }),
-            isc.IButtonCancel.create({
+            isc.ToolStripButtonRefresh.create({
                     ID: "teacherAttendancePermission",
                     layoutAlign: "center",
                     // disabled: isEnableBtn(),
@@ -410,10 +410,7 @@
                                     callback: function (resp) {
 
                                         if (resp.httpResponseText=='true') {
-                                            // DynamicForm_Attendance.getItem("sessionDate").changed(DynamicForm_Attendance, DynamicForm_Attendance.getItem("sessionDate"), resp.httpResponseText);
-                                            // DynamicForm_Attendance.setValue("sessionDate", resp.httpResponseText);
-                                            ToolStrip_Attendance_JspAttendance.getItem("teacherAttendancePermission").setDisabled(true);
-
+                                            ToolStrip_Attendance_JspAttendance.getMember("teacherAttendancePermission").setDisabled(true);
                                         }
                                         else{
 
@@ -1328,9 +1325,19 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseText) {
-                        DynamicForm_Attendance.getItem("sessionDate").changed(DynamicForm_Attendance, DynamicForm_Attendance.getItem("sessionDate"), resp.httpResponseText);
-                        DynamicForm_Attendance.setValue("sessionDate", resp.httpResponseText);
+
+                    if (resp.httpResponseText!=undefined && resp.httpResponseText!=null) {
+                        let data= JSON.parse(resp.data);
+                        if (data.date!=null && data.date!=undefined && data.date.length!=0) {
+                            DynamicForm_Attendance.getItem("sessionDate").changed(DynamicForm_Attendance, DynamicForm_Attendance.getItem("sessionDate"), data.date);
+                            DynamicForm_Attendance.setValue("sessionDate", data.date);
+                        }
+                        else{
+                            ListGrid_Attendance_AttendanceJSP.setData([]);
+                        }
+                        ToolStrip_Attendance_JspAttendance.getMember("teacherAttendancePermission").setDisabled(!data.hasPermission);
+
+
                     }
                     else{
                         ListGrid_Attendance_AttendanceJSP.setData([]);

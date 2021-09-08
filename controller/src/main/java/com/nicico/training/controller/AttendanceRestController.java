@@ -287,7 +287,7 @@ public class AttendanceRestController {
     @Loggable
     @GetMapping(value = "/studentUnknownSessionsInClass")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-    public ResponseEntity<String> studentUnknownSessionsInClass(@RequestParam("classId") Long classId) {
+    public ResponseEntity<AttendanceDTO.permissionDto> studentUnknownSessionsInClass(@RequestParam("classId") Long classId) {
         return new ResponseEntity<>(attendanceService.studentUnknownSessionsInClass(classId), HttpStatus.OK);
     }
     @Loggable
