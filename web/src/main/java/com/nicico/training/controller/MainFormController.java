@@ -161,6 +161,11 @@ public class MainFormController {
         return "security/config";
     }
 
+    @RequestMapping("/usersLoginReport")
+    public String showUsersLoginReportForm() {
+        return "security/usersLoginReport";
+    }
+
     @RequestMapping("/config-questionnaire")
     public String showConfigQuestionnaireForm() {
         return "base/configQuestionnaire";
