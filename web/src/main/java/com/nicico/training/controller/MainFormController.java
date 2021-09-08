@@ -76,6 +76,11 @@ public class MainFormController {
         return "report/needsAssessmentReports";
     }
 
+    @RequestMapping("/needsAssessment-reports-pi")
+    public String showNeedsAssessmentReportsPIForm() {
+        return "report/needsAssessmentReportsPI";
+    }
+
     @RequestMapping("/calenderCurrentTerm")
     public String showCalenderCurrentTerm() {
         return "report/calenderCurrentTerm";
