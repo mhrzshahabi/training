@@ -23,7 +23,9 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
     Optional<Student> findByPersonnelNo(@Param("personnelNo") String personnelNo);
 
     List<Student> findByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(Long postId, String personnelNo, Long depId, String fName, String lName);
+
     List<Student> findByNationalCode(String nationalCode);
+
     @Query(value = "SELECT\n" +
             "    tbl_evaluation.f_evaluator_id,\n" +
             "    tbl_student.national_code,\n" +
@@ -48,10 +50,11 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "from TBL_STUDENT student " +
             "         inner join TBL_ATTENDANCE attendance on student.ID = attendance.F_STUDENT " +
             "where attendance.F_SESSION =:sessionId", nativeQuery = true)
-    List<Map<String,Object>> sessionStudentsBySessionId(@Param("sessionId")Long sessionId);
+    List<Map<String, Object>> sessionStudentsBySessionId(@Param("sessionId") Long sessionId);
 
     /**
      * returns list of student of a class by session Id
+     *
      * @param sessionId
      * @return list of students List<Student>
      */
@@ -63,14 +66,15 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "where session1.ID = :sessionId ", nativeQuery = true)
     List<Student> getSessionStudents(@Param("sessionId") Long sessionId);
 
-    @Query(value = "select * from TBL_STUDENT where f_contact_info = :id  and id = :parentId" , nativeQuery = true)
-    Optional<Student> findByContactInfoId(Long id ,Long parentId);
+    @Query(value = "select * from TBL_STUDENT where f_contact_info = :id  and id = :parentId", nativeQuery = true)
+    Optional<Student> findByContactInfoId(Long id, Long parentId);
 
-    @Query(value = "select * from TBL_STUDENT where f_contact_info IN(:ids)" , nativeQuery = true)
+    @Query(value = "select * from TBL_STUDENT where f_contact_info IN(:ids)", nativeQuery = true)
     List<Student> findAllByContactInfoIds(List<Long> ids);
 
     /**
      * it returns a student's attendance list in a class for an Api for Els
+     *
      * @param classCode
      * @param nationalCode
      * @return
@@ -91,11 +95,65 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
     List<Map<String, Object>> getStudentAttendanceList(@Param("classCode") String classCode, @Param("nationalCode") String nationalCode);
 
 
-    @Query(value = "SELECT * FROM TBL_STUDENT ts\n" +
-            "INNER JOIN TBL_CLASS_STUDENT tcs ON ts.ID = tcs.STUDENT_ID \n" +
-            "INNER JOIN TBL_CLASS tc ON tc.ID = tcs.CLASS_ID \n" +
-            "INNER JOIN TBL_TEST_QUESTION ttq ON ttq.F_CLASS = tc.ID \n" +
-            "INNER JOIN TBL_COURSE tc2 ON tc.F_COURSE = tc2.ID \n" +
-            "WHERE ts.NATIONAL_CODE = :nationalCode",nativeQuery = true)
-    List<Map<String,Object>> findAllExamsByNationalCode(@Param("nationalCode") String nationalCode);
+    @Query(value = "SELECT\n" +
+            "    tc.c_code                     AS " +"\"examCode\""+
+            " ,   tc.c_title_class              AS "+ "\"examName\""+
+            " ,   ttq.c_date                    AS " +"\"startDate\""+
+            " ,   ttq.c_time                    AS " +"\"startTime\""+
+            " ,   ttq.c_end_date                AS " +"\"endDate\""+
+            " ,   ttq.c_end_time                AS " +"\"endTime\""+
+            " ,   ttq.n_duration                AS " +"\"duration\""+
+            " ,   ttq.b_is_pre_test_question    AS " +"\"isPresent\""+
+            " ,   ttq.id    AS " +"\"examId\""+
+            "FROM\n" +
+            "         tbl_student ts\n" +
+            "    INNER JOIN tbl_class_student  tcs ON ts.id = tcs.student_id\n" +
+            "    INNER JOIN tbl_class          tc ON tc.id = tcs.class_id\n" +
+            "    INNER JOIN tbl_test_question  ttq ON ttq.f_class = tc.id\n" +
+            "    INNER JOIN tbl_course         tc2 ON tc.f_course = tc2.id\n" +
+            "WHERE\n" +
+            "    ts.national_code = :nationalCode AND (ttq.c_end_date < :endDate OR (ttq.c_end_date = :endDate AND ttq.c_end_time < :endTime)) AND ttq.b_is_pre_test_question = 0 ", nativeQuery = true)
+    List<Map<String, Object>> findAllExpiredExamsByNationalCode(@Param("nationalCode") String nationalCode, @Param("endDate") String endDate, @Param("endTime") String endTime);
+
+
+    @Query(value = "SELECT\n" +
+            "    tc.c_code                     AS " +"\"examCode\""+
+            " ,   tc.c_title_class              AS "+ "\"examName\""+
+            " ,   ttq.c_date                    AS " +"\"startDate\""+
+            " ,   ttq.c_time                    AS " +"\"startTime\""+
+            " ,   ttq.c_end_date                AS " +"\"endDate\""+
+            " ,   ttq.c_end_time                AS " +"\"endTime\""+
+            " ,   ttq.n_duration                AS " +"\"duration\""+
+            " ,   ttq.b_is_pre_test_question    AS " +"\"isPresent\""+
+            " ,   ttq.id    AS " +"\"examId\""+
+            "FROM\n" +
+            "         tbl_student ts\n" +
+            "    INNER JOIN tbl_class_student  tcs ON ts.id = tcs.student_id\n" +
+            "    INNER JOIN tbl_class          tc ON tc.id = tcs.class_id\n" +
+            "    INNER JOIN tbl_test_question  ttq ON ttq.f_class = tc.id\n" +
+            "    INNER JOIN tbl_course         tc2 ON tc.f_course = tc2.id\n" +
+            "WHERE\n" +
+            "    ts.national_code = :nationalCode AND (ttq.c_end_date > :endDate OR ttq.b_is_pre_test_question = 1)", nativeQuery = true)
+    List<Map<String, Object>> findAllNextExamsByNationalCode(@Param("nationalCode") String nationalCode, @Param("endDate") String endDate);
+
+
+    @Query(value = "SELECT\n" +
+            "    tc.c_code                     AS " +"\"examCode\""+
+            " ,   tc.c_title_class              AS "+ "\"examName\""+
+            " ,   ttq.c_date                    AS " +"\"startDate\""+
+            " ,   ttq.c_time                    AS " +"\"startTime\""+
+            " ,   ttq.c_end_date                AS " +"\"endDate\""+
+            " ,   ttq.c_end_time                AS " +"\"endTime\""+
+            " ,   ttq.n_duration                AS " +"\"duration\""+
+            " ,   ttq.b_is_pre_test_question    AS " +"\"isPresent\""+
+            " ,   ttq.id    AS " +"\"examId\""+
+            "FROM\n" +
+            "         tbl_student ts\n" +
+            "    INNER JOIN tbl_class_student  tcs ON ts.id = tcs.student_id\n" +
+            "    INNER JOIN tbl_class          tc ON tc.id = tcs.class_id\n" +
+            "    INNER JOIN tbl_test_question  ttq ON ttq.f_class = tc.id\n" +
+            "    INNER JOIN tbl_course         tc2 ON tc.f_course = tc2.id\n" +
+            "WHERE\n" +
+            "    ts.national_code = :nationalCode AND (ttq.c_date = :startDate OR ttq.b_is_pre_test_question = 1)", nativeQuery = true)
+    List<Map<String, Object>> findAllThisDateExamsByNationalCode(@Param("nationalCode") String nationalCode, @Param("startDate") String startDate);
 }
