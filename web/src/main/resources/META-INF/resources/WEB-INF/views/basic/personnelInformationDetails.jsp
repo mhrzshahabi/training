@@ -1536,7 +1536,7 @@
                     {
                         id: "PersonnelInfo_Tab_NeedAssessment",
                         title: "<spring:message code="competence"/>",
-                        pane: isc.ViewLoader.create({autoDraw: false, viewURL: "web/needsAssessment-reports"}),
+                        pane: isc.ViewLoader.create({autoDraw: false, viewURL: "web/needsAssessment-reports-pi"}),
                     },
                     {
                         id: "PersonnelInfo_Tab_ContactInfo",
