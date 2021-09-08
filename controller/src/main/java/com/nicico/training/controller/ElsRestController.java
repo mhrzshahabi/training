@@ -6,6 +6,7 @@ import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.dto.*;
+import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
@@ -1029,6 +1030,11 @@ public class ElsRestController {
             response.setMessage("خطای دسترسی");
         }
         return response;
+    }
+
+    @GetMapping("/exam/findByType")
+    public List<Map<String,Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type){
+        return iStudentService.findAllExamsByNationalCode(nationalCode,type);
     }
 
 }

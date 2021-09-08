@@ -5,8 +5,10 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.StudentDTO;
+import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.model.Student;
 import com.nicico.training.repository.StudentDAO;
@@ -19,10 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 import response.tclass.ElsStudentAttendanceListResponse;
 import response.tclass.dto.ElsStudentAttendanceInfoDto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
+import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +33,7 @@ public class StudentService implements IStudentService {
 
     private final ModelMapper modelMapper;
     private final StudentDAO studentDAO;
+    private final DateUtil dateUtil;
 
     @Transactional(readOnly = true)
     @Override
@@ -183,4 +187,28 @@ public class StudentService implements IStudentService {
         return modelMapper.map(saved, StudentDTO.Info.class);
     }
 
+
+    @Override
+    public List<Map<String, Object>> findAllExamsByNationalCode(String nationalCode, ExamsType type) {
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+        if (Boolean.TRUE.equals(type.equals(ExamsType.NOW))){
+            String startDate = convertMiToKh(year, month, day);
+            return studentDAO.findAllThisDateExamsByNationalCode(nationalCode,startDate);
+        }
+        if (Boolean.TRUE.equals(type.equals(ExamsType.EXPIRED))){
+            String dateCurrent = convertMiToKh(year, month, day);
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+            Date date = new Date();
+            String hour = dateFormat.format(date);
+            return studentDAO.findAllExpiredExamsByNationalCode(nationalCode,dateCurrent,hour);
+        }
+        if (Boolean.TRUE.equals(type.equals(ExamsType.FUTURE))){
+            String startDate = convertMiToKh(year, month, day);
+            return studentDAO.findAllNextExamsByNationalCode(nationalCode,startDate);
+        }
+        throw new TrainingException(TrainingException.ErrorType.InvalidData);
+    }
 }
