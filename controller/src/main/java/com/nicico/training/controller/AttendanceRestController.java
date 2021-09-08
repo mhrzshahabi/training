@@ -305,4 +305,11 @@ public class AttendanceRestController {
         }
 
     }
+    @Loggable
+    @GetMapping(value = "/finalApprovalClass")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<Boolean> setFinalApprovalClass(@RequestParam("classId") Long classId) {
+       Boolean isDelete= attendanceService.FinalApprovalClass(classId);
+        return new ResponseEntity<>(isDelete,HttpStatus.OK);
+    }
 }

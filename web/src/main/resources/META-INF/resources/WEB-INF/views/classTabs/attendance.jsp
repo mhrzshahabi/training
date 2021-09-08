@@ -378,10 +378,53 @@
                     printFullClearForm()
                 }
             }),
-            isc.ToolStripButton.create({
-                title: "تایید نهایی حضور و غیاب",
+            isc.IButtonCancel.create({
+                    ID: "teacherAttendancePermission",
+                    layoutAlign: "center",
+                    // disabled: isEnableBtn(),
+                    title: "<spring:message code="verify.change.permission"/>",
+                    width: "150",
+                    margin: 3,
                 click: function () {
+                    let Dialog_Delete = isc.Dialog.create({
+                        message: "<spring:message code='msg.permission.class'/>",
+                        icon: "[SKIN]ask.png",
+                        title: "<spring:message code="verify.change.permission"/>",
+                        buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({
+                            title: "<spring:message
+        code='global.no'/>"
+                        })],
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index == 0) {
+                                // wait.show()
+                                wait.show();
+                                isc.RPCManager.sendRequest({
+                                    actionURL: attendanceUrl + "/finalApprovalClass?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id,
+                                    httpMethod: "GET",
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    showPrompt: false,
+                                    serverOutputAsString: false,
+                                    callback: function (resp) {
 
+                                        if (resp.httpResponseText=='true') {
+                                            // DynamicForm_Attendance.getItem("sessionDate").changed(DynamicForm_Attendance, DynamicForm_Attendance.getItem("sessionDate"), resp.httpResponseText);
+                                            // DynamicForm_Attendance.setValue("sessionDate", resp.httpResponseText);
+                                            ToolStrip_Attendance_JspAttendance.getItem("teacherAttendancePermission").setDisabled(true);
+
+                                        }
+                                        else{
+
+                                        }
+                                        wait.close();
+                                    }
+                                });
+
+                            }
+                        }
+                    });
                 }
             }),
             isc.ToolStrip.create({

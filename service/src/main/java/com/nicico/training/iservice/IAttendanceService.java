@@ -75,4 +75,5 @@ public interface IAttendanceService {
 
     Optional<Attendance> getAttendanceBySessionIdAndStudentId(Long sessionId, Long studentId);
 
+    boolean FinalApprovalClass(Long classId);
 }

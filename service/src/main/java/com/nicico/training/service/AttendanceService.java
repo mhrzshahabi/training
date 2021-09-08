@@ -426,4 +426,23 @@ public class AttendanceService implements IAttendanceService {
     public Optional<Attendance> getAttendanceBySessionIdAndStudentId(Long sessionId, Long studentId) {
         return attendanceDAO.findBySessionIdAndStudentId(sessionId, studentId);
     }
+
+    @Transactional
+    @Override
+    public boolean FinalApprovalClass(Long classId) {
+        try {
+            List<ClassSessionDTO.Info> sessions = classSessionService.getSessions(classId);
+            for (ClassSessionDTO.Info sessionDTO:sessions){
+                ClassSession classSession=classSessionDAO.getClassSessionById(sessionDTO.getId());
+                classSession.setTeacherAttendancePermission(true);
+                classSessionDAO.save(classSession);
+            }
+            return true;
+
+        }catch (Exception e){
+            return false;
+        }
+
+
+    }
 }
