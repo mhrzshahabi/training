@@ -335,6 +335,10 @@
       "code": "Menu_Security_Settings",
       "title": "منوی امنیت - تنظيمات"
     },
+    {
+      "code": "Menu_Security_UsersLoginReport",
+      "title": "منوی امنیت - گزارش لاگین کاربران"
+    },
 
     {"code": "AccountInfo_C", "title": "ایجاد اطلاعات حساب"},
     {"code": "AccountInfo_R", "title": "مشاهده اطلاعات حساب"},
