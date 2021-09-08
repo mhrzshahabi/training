@@ -99,7 +99,9 @@
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
                         if (this.nationalCode_Need !== nationalCode) {
                             this.nationalCode_Need = nationalCode;
-                            call_needsAssessmentReports("0", true, selectedPersonnel);
+                            setTimeout(function () {
+                                call_needsAssessmentReports("0", true, selectedPersonnel);
+                            }, 100);
                         }
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_ContactInfo") {
                         wait.show();
