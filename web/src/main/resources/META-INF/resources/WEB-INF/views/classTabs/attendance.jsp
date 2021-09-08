@@ -135,51 +135,51 @@
         members:[],
     });
     var Window_Attach = isc.Window.create({
-            ID:"attachWindow",
-            title: "علت غیبت",
-            autoSize: false,
-            width: "70%",
-            height:"60%",
-            items:[
-                VLayout_Attachment_JspAttendance,
-                isc.TrHLayoutButtons.create({
-                    members:[
-                        isc.IButton.create({
-                            title:"ارسال شماره نامه",
-                            click:function () {
-                                if(oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord() == undefined){
-                                    createDialog("info", "لطفاً رکوردی را انتخاب نمایید.", "پیغام");
-                                }
-                                if(trTrim(oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord().description) != null) {
-                                    absenceForm.setValue("cause", oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord().description);
-                                    attachWindow.close();
-                                    return;
-                                }
-                                createDialog("info", "لطفاً شماره نامه را مشخص نمایید.", "پیغام");
+        ID:"attachWindow",
+        title: "علت غیبت",
+        autoSize: false,
+        width: "70%",
+        height:"60%",
+        items:[
+            VLayout_Attachment_JspAttendance,
+            isc.TrHLayoutButtons.create({
+                members:[
+                    isc.IButton.create({
+                        title:"ارسال شماره نامه",
+                        click:function () {
+                            if(oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord() == undefined){
+                                createDialog("info", "لطفاً رکوردی را انتخاب نمایید.", "پیغام");
                             }
-                        })
-                    ]
-                })
-            ],
-            hide() {
-                oAttendanceLoadAttachments_Job.VLayout_Body_JspAttachment.addMembers([
-                    oAttendanceLoadAttachments_Job.HLayout_Actions_JspAttachment,
-                    oAttendanceLoadAttachments_Job.HLayout_Grid_JspAttachment
-                ]);
-                oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.setShowFilterEditor(true);
-                this.Super("hide",arguments);
-                oAttendanceLoadAttachments_Job.DynamicForm_JspAttachments.getItem("description").title = "<spring:message code="description"/>";
-                oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getField("description").title = "<spring:message code="description"/>";
-            },
-            show(){
-                VLayout_Attachment_JspAttendance.addMembers([
-                    oAttendanceLoadAttachments_Job. HLayout_Actions_JspAttachment,
-                    oAttendanceLoadAttachments_Job.HLayout_Grid_JspAttachment
-                ]);
-                oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getField("description").title = "شماره نامه";
-                this.Super("show",arguments);
-                oAttendanceLoadAttachments_Job.DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
-            }
+                            if(trTrim(oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord().description) != null) {
+                                absenceForm.setValue("cause", oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getSelectedRecord().description);
+                                attachWindow.close();
+                                return;
+                            }
+                            createDialog("info", "لطفاً شماره نامه را مشخص نمایید.", "پیغام");
+                        }
+                    })
+                ]
+            })
+        ],
+        hide() {
+            oAttendanceLoadAttachments_Job.VLayout_Body_JspAttachment.addMembers([
+                oAttendanceLoadAttachments_Job.HLayout_Actions_JspAttachment,
+                oAttendanceLoadAttachments_Job.HLayout_Grid_JspAttachment
+            ]);
+            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.setShowFilterEditor(true);
+            this.Super("hide",arguments);
+            oAttendanceLoadAttachments_Job.DynamicForm_JspAttachments.getItem("description").title = "<spring:message code="description"/>";
+            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getField("description").title = "<spring:message code="description"/>";
+        },
+        show(){
+            VLayout_Attachment_JspAttendance.addMembers([
+                oAttendanceLoadAttachments_Job. HLayout_Actions_JspAttachment,
+                oAttendanceLoadAttachments_Job.HLayout_Grid_JspAttachment
+            ]);
+            oAttendanceLoadAttachments_Job.ListGrid_JspAttachment.getField("description").title = "شماره نامه";
+            this.Super("show",arguments);
+            oAttendanceLoadAttachments_Job.DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
+        }
     });
     <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
     var ToolStrip_Attendance_JspAttendance = isc.ToolStrip.create({
@@ -273,33 +273,33 @@
                     isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/" + classGridRecordInAttendanceJsp.id, "GET", null,(resp)=>{
                         wait.close();
                         if(resp.httpResponseCode == 200){
-                        const sessions = JSON.parse(resp.data);
-                        let date = sessions[0].sessionDate;
-                        let sessionList = [];
-                        let i = 1;
-                        let page = 0;
-                        for(let s of sessions){
-                            if(s.sessionDate == date){
-                                sessionList.push(s);
-                                continue;
-                            }
-                            else if(i<5){
-                                i++;
+                            const sessions = JSON.parse(resp.data);
+                            let date = sessions[0].sessionDate;
+                            let sessionList = [];
+                            let i = 1;
+                            let page = 0;
+                            for(let s of sessions){
+                                if(s.sessionDate == date){
+                                    sessionList.push(s);
+                                    continue;
+                                }
+                                else if(i<5){
+                                    i++;
+                                    date = s.sessionDate;
+                                    sessionList.push(s);
+                                    continue;
+                                }
+                                page++;
+                                i=1;
+                                printClearForm(sessionList,page);
                                 date = s.sessionDate;
+                                sessionList.length = 0;
                                 sessionList.push(s);
-                                continue;
                             }
                             page++;
-                            i=1;
                             printClearForm(sessionList,page);
-                            date = s.sessionDate;
-                            sessionList.length = 0;
-                            sessionList.push(s);
                         }
-                        page++;
-                        printClearForm(sessionList,page);
-                    }
-                }));
+                    }));
                 }
             }),
             isc.ToolStripButtonExcel.create({
@@ -378,6 +378,12 @@
                     printFullClearForm()
                 }
             }),
+            isc.ToolStripButton.create({
+                title: "تایید نهایی حضور و غیاب",
+                click: function () {
+
+                }
+            }),
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -421,56 +427,56 @@
                     2:"حضور و غیاب براساس فراگیر:"
                 },
                 changed: function (form, item, value) {
-                  if(attendanceGrid.getAllEditRows().length>0){
+                    if(attendanceGrid.getAllEditRows().length>0){
                         if(value==1){
                             item.setValue(2);
                         }
                         else{
                             item.setValue(1);
                         }
-                      createDialog("[SKIN]error","حضور و غیاب ذخیره نشده است.","یادآوری");
-                      return;
-                  }
-                  if(value == 1){
-                      form.getItem("sessionDate").pickListFields = [
-                          {name: "dayName", title: "روز هفته"},
-                          {name: "sessionDate", title: "تاریخ"},
-                          {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif",
-                              showHover:true,
-                              hoverWidth:200,
-                              hoverHTML(record){
-                                  if (record.hasWarning=="alarm")
-                                  {
-                                      return "جلسه کامل حضور و غياب نشده است"
-                                  }
-                              }
-                          }
-                      ];
-                      form.getItem("sessionDate").displayField = "sessionDate";
-                      form.getItem("sessionDate").valueField = "sessionDate";
-                      form.getItem("sessionDate").optionDataSource = RestData_SessionDate_AttendanceJSP;
-                      form.getItem("sessionDate").pickListWidth = 250;
-                      isAttendanceDate=false;//true
-                  }
-                  if(value == 2){
-                      form.getItem("sessionDate").pickListFields = [
-                          {name: "firstName", title: "نام"},
-                          {name: "lastName", title: "نام خانوادگی"},
-                          {name: "nationalCode", title: "کد ملی"},
-                          {name: "companyName", title: "شرکت"},
-                          {name: "personnelNo", title: "شماره پرسنلی"},
-                          {name: "personnelNo2", title: "شماره پرسنلی"},
-                      ];
-                      form.getItem("sessionDate").displayField = "lastName";
-                      form.getItem("sessionDate").valueField = "id";
-                      form.getItem("sessionDate").optionDataSource = RestData_Student_AttendanceJSP;
-                      form.getItem("sessionDate").pickListWidth = 600;
-                      isAttendanceDate=false;
-                  }
-                  sessionsForStudent.length = 0;
-                  sessionInOneDate.length = 0;
-                  ListGrid_Attendance_AttendanceJSP.invalidateCache();
-                  form.setValue("sessionDate","");
+                        createDialog("[SKIN]error","حضور و غیاب ذخیره نشده است.","یادآوری");
+                        return;
+                    }
+                    if(value == 1){
+                        form.getItem("sessionDate").pickListFields = [
+                            {name: "dayName", title: "روز هفته"},
+                            {name: "sessionDate", title: "تاریخ"},
+                            {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif",
+                                showHover:true,
+                                hoverWidth:200,
+                                hoverHTML(record){
+                                    if (record.hasWarning=="alarm")
+                                    {
+                                        return "جلسه کامل حضور و غياب نشده است"
+                                    }
+                                }
+                            }
+                        ];
+                        form.getItem("sessionDate").displayField = "sessionDate";
+                        form.getItem("sessionDate").valueField = "sessionDate";
+                        form.getItem("sessionDate").optionDataSource = RestData_SessionDate_AttendanceJSP;
+                        form.getItem("sessionDate").pickListWidth = 250;
+                        isAttendanceDate=false;//true
+                    }
+                    if(value == 2){
+                        form.getItem("sessionDate").pickListFields = [
+                            {name: "firstName", title: "نام"},
+                            {name: "lastName", title: "نام خانوادگی"},
+                            {name: "nationalCode", title: "کد ملی"},
+                            {name: "companyName", title: "شرکت"},
+                            {name: "personnelNo", title: "شماره پرسنلی"},
+                            {name: "personnelNo2", title: "شماره پرسنلی"},
+                        ];
+                        form.getItem("sessionDate").displayField = "lastName";
+                        form.getItem("sessionDate").valueField = "id";
+                        form.getItem("sessionDate").optionDataSource = RestData_Student_AttendanceJSP;
+                        form.getItem("sessionDate").pickListWidth = 600;
+                        isAttendanceDate=false;
+                    }
+                    sessionsForStudent.length = 0;
+                    sessionInOneDate.length = 0;
+                    ListGrid_Attendance_AttendanceJSP.invalidateCache();
+                    form.setValue("sessionDate","");
                 },
                 pickListProperties: {showFilterEditor: false},
             },
@@ -488,13 +494,13 @@
                     {name: "dayName", title: "روز هفته"},
                     {name: "sessionDate", title: "تاریخ"},
                     {name: "hasWarning", title: "کامل", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif",
-                    showHover:true,
-                    hoverWidth:200,
+                        showHover:true,
+                        hoverWidth:200,
                         hoverHTML(record){
-                         if (record.hasWarning=="alarm")
-                         {
-                             return "جلسه کامل حضور و غياب نشده است"
-                         }
+                            if (record.hasWarning=="alarm")
+                            {
+                                return "جلسه کامل حضور و غياب نشده است"
+                            }
                         }
                     },
                 ],
@@ -1019,9 +1025,9 @@
     });
     </sec:authorize>
 
- <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
-  var TrHLayoutButtons= isc.TrHLayoutButtons.create({
-       members: [
+    <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
+    var TrHLayoutButtons= isc.TrHLayoutButtons.create({
+        members: [
             isc.IButtonSave.create({
                 ID: "saveBtn",
                 click: function () {
@@ -1073,8 +1079,8 @@
                                         checkFinalSave();
                                     }
                                 }
+                            });
                         });
-                  });
                     }
 
                     if(attendanceGrid.getAllEditRows().length <= 0){
@@ -1123,7 +1129,7 @@
         canHover:true,
         canEditCell(rowNum, colNum){
             if (attendanceGrid.getSelectedRecord()!==null)
-            return (colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh");
+                return (colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh");
             else
                 return false;
         },
@@ -1400,9 +1406,9 @@
             target: "_Blank",
             canSubmit: true,
             fields:[
-                    {name: "classId", type: "hidden"},
-                    {name: "list", type: "hidden"},
-                    {name: "page", type: "hidden"},
+                {name: "classId", type: "hidden"},
+                {name: "list", type: "hidden"},
+                {name: "page", type: "hidden"},
             ]
         });
         criteriaForm.setValue("classId", classGridRecordInAttendanceJsp.id);
