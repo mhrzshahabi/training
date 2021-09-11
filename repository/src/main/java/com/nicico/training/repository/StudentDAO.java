@@ -103,7 +103,7 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             " ,   ttq.c_end_date                AS " +"\"endDate\""+
             " ,   ttq.c_end_time                AS " +"\"endTime\""+
             " ,   ttq.n_duration                AS " +"\"duration\""+
-            " ,   ttq.b_is_pre_test_question    AS " +"\"isPresent\""+
+            " ,   ttq.b_is_pre_test_question    AS " +"\"isPreTest\""+
             " ,   ttq.id    AS " +"\"examId\""+
             "FROM\n" +
             "         tbl_student ts\n" +
@@ -124,7 +124,7 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             " ,   ttq.c_end_date                AS " +"\"endDate\""+
             " ,   ttq.c_end_time                AS " +"\"endTime\""+
             " ,   ttq.n_duration                AS " +"\"duration\""+
-            " ,   ttq.b_is_pre_test_question    AS " +"\"isPresent\""+
+            " ,   ttq.b_is_pre_test_question    AS " +"\"isPreTest\""+
             " ,   ttq.id    AS " +"\"examId\""+
             "FROM\n" +
             "         tbl_student ts\n" +
@@ -145,7 +145,7 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             " ,   ttq.c_end_date                AS " +"\"endDate\""+
             " ,   ttq.c_end_time                AS " +"\"endTime\""+
             " ,   ttq.n_duration                AS " +"\"duration\""+
-            " ,   ttq.b_is_pre_test_question    AS " +"\"isPresent\""+
+            " ,   ttq.b_is_pre_test_question    AS " +"\"isPreTest\""+
             " ,   ttq.id    AS " +"\"examId\""+
             "FROM\n" +
             "         tbl_student ts\n" +
