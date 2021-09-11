@@ -177,7 +177,7 @@
         width: 300,
         click: function () {
 
-            ListGrid_ULR.fetchData();
+            ListGrid_ULR.setData([]);
             DynamicForm_CriteriaForm_ULR.clearValues();
             DynamicForm_CriteriaForm_ULR.clearErrors();
             ListGrid_ULR.setFilterEditorCriteria(null);
@@ -204,7 +204,7 @@
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_ULR,
         initialSort: [
-            {property: "createDate", direction: "ascending"}
+            {property: "createDate", direction: "descending"}
         ],
         fields: [
             {name: "username"},
