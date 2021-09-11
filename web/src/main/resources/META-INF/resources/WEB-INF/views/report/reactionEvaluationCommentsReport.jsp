@@ -414,9 +414,6 @@
 
             if(records) {
                 for (let j = 0; j < records.length; j++) {
-                    if (records[j]==undefined||records[j].classCode==undefined){
-                        debugger
-                    }
                     excelData.add({
                         rowNum: j+1,
                         classCode: records[j].classCode,
