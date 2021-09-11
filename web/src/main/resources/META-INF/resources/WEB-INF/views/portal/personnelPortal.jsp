@@ -25,7 +25,7 @@
                 {
                     title: "<spring:message code="training.file"/>",
                     click: function () {
-                        createTab_SP(this.title, "<spring:url value="/web/trainingFile"/>", "call_trainingFile(person_SP)");
+                        createTab_SP(this.title, "<spring:url value="/web/trainingFile"/>");
                     }
                 },
                 {isSeparator: true},
