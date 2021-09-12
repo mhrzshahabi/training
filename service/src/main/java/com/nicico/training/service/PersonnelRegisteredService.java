@@ -236,4 +236,9 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
 
     }
 
+    @Override
+    public boolean isPresent(String nationalCode) {
+        PersonnelRegistered[] allByNationalCode = personnelRegisteredDAO.findAllByNationalCode(nationalCode);
+        return allByNationalCode.length > 0;
+    }
 }

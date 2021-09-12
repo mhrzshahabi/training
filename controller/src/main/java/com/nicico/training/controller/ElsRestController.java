@@ -1035,8 +1035,8 @@ public class ElsRestController {
     }
 
     @GetMapping("/exam/findByType")
-    public List<Map<String,Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type){
-        return iStudentService.findAllExamsByNationalCode(nationalCode,type);
+    public List<Map<String, Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type) {
+        return iStudentService.findAllExamsByNationalCode(nationalCode, type);
     }
 
     @GetMapping(value = "/trainingFileByNationalCode/{nationalCode}")
@@ -1044,6 +1044,11 @@ public class ElsRestController {
         return new ResponseEntity(new ViewTrainingFileDTO
                 .ViewTrainingFileSpecRs()
                 .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
+    }
+
+    @GetMapping("/role/findBy-nationalCode")
+    public ResponseEntity<Set<String>> findAllByNationalCode(@RequestParam String nationalCode) {
+        return ResponseEntity.ok(iStudentService.findAllRoleByNationalCode(nationalCode));
     }
 
 }

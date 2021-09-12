@@ -436,4 +436,10 @@ public class PersonnelService implements IPersonnelService {
 //        return optPersonnel.map(converter).orElse(personnelRegisteredDAO.findOneByPersonnelNo(personnelNo).map(converter).orElse(null));
 //    }
 
+
+    @Override
+    public boolean isPresent(String nationalCode) {
+        Personnel[] personnels = personnelDAO.findByNationalCode(nationalCode);
+        return personnels.length > 0;
+    }
 }

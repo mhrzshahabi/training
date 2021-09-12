@@ -286,4 +286,12 @@
     <changeSet author="namdari (generated)" id="1614681515816-433">
         <createSequence sequenceName="seq_fms_id"/>
     </changeSet>
+
+    <changeSet author="nima (generated)" id="1631430089965-537">
+        <createSequence sequenceName="seq_role_id"/>
+    </changeSet>
+
+    <changeSet author="nima (generated)" id="1631430089965-538">
+        <createSequence sequenceName="seq_teacher_role_id"/>
+    </changeSet>
 </databaseChangeLog>
