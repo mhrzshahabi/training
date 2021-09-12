@@ -1,6 +1,8 @@
 package com.nicico.training.controller;
 
 
+import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -29,6 +31,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.evaluation.ElsEvalRequest;
@@ -101,6 +104,7 @@ public class ElsRestController {
     private final IStudentService iStudentService;
     private final QuestionBankTestQuestionService questionBankTestQuestionService;
     private final ViewTrainingFileService viewTrainingFileService;
+    private final ParameterService parameterService;
 
 
     @GetMapping("/eval/{id}")
@@ -1040,10 +1044,37 @@ public class ElsRestController {
     }
 
     @GetMapping(value = "/trainingFileByNationalCode/{nationalCode}")
-    public ResponseEntity<ViewTrainingFileDTO.ViewTrainingFileSpecRs> trainingFileByNationalCode(@PathVariable String nationalCode) {
-        return new ResponseEntity(new ViewTrainingFileDTO
-                .ViewTrainingFileSpecRs()
-                .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
+    public ResponseEntity<ViewTrainingFileDTO.ViewTrainingFileSpecRs> trainingFileByNationalCode(HttpServletRequest header,@PathVariable String nationalCode) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return new ResponseEntity(new ViewTrainingFileDTO
+                        .ViewTrainingFileSpecRs()
+                        .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        }else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+
+
+    }
+
+    @Loggable
+    @GetMapping("/parameter/listByCode/{parameterCode}")
+    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getParametersValueListByCode(HttpServletRequest header,@PathVariable String parameterCode) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                //for see all question target the parameterCode must be :=questionTarget
+                return new ResponseEntity<>(parameterService.getByCode(parameterCode), HttpStatus.OK);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        }else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+
     }
 
 }
