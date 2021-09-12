@@ -76,6 +76,11 @@ public class MainFormController {
         return "report/needsAssessmentReports";
     }
 
+    @RequestMapping("/need.assessment-group-job-promotion-report")
+    public String showNeedAssessmentGroupJobPromotionReportForm() {
+        return "report/needAssessmentGroupJobPromotionReport";
+    }
+
     @RequestMapping("/calenderCurrentTerm")
     public String showCalenderCurrentTerm() {
         return "report/calenderCurrentTerm";

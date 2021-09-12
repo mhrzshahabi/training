@@ -271,6 +271,10 @@
       "title": "منوی گزارش - گزارشات نيازسنجي - گزارشات نيازسنجي"
     },
     {
+      "code": "Menu_Report_ReportsGroupJobPromotionNeedsAssessment_ReportsNeedsAssessment",
+      "title": "منوی گزارش - گزارشات نيازسنجي - گزارش نیازسنجی انتصاب سمت گروهی"
+    },
+    {
       "code": "Menu_Report_ReportsNeedsAssessment_People",
       "title": "منوی گزارش - گزارشات نيازسنجي - آمار دوره هاي نيازسنجي افراد"
     },
