@@ -182,7 +182,7 @@ public abstract class EvaluationBeanMapper {
             ElsContactEvaluationDto dto = new ElsContactEvaluationDto();
             EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
             dto.setId(evaluation.getId());
-            dto.setId(evaluation.getQuestionnaireId());
+            dto.setQuestionnaireId(evaluation.getQuestionnaireId());
             dto.setClassId(evaluation.getClassId());
             dto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
             dto.setPlanner((evaluation.getTclass().getPlanner().getFirstName() + " " +
