@@ -39,6 +39,23 @@ public class NeedsAssessmentReportsDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentDTO - ReportGroupInfo")
+    public static class ReportGroupInfo {
+        private Long id;
+        private Long postCode;
+        private String personnelName;
+        private String personnelNo;
+        private String personnelAffairsName;
+        private Long courseCode;
+        private String courseTitle;
+        private String competenceTitle;
+        private String skillTitle;
+        private String scoreState;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - CourseNAS")
     public static class CourseNAS {
         private Long needsAssessmentPriorityId;

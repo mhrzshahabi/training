@@ -5,27 +5,29 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.minio.MinIoClient;
+import com.nicico.training.dto.NeedsAssessmentReportsDTO;
+import com.nicico.training.iservice.IExportToFileService;
 import com.nicico.training.service.NeedsAssessmentReportsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import request.needsassessment.NeedAssessmentGroupJobPromotionRequestDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -36,6 +38,11 @@ public class NeedsAssessmentReportsRestController {
     private final NeedsAssessmentReportsService needsAssessmentReportsService;
     private final ReportUtil reportUtil;
     private final MessageSource messageSource;
+    private final IExportToFileService iExportToFileService;
+    private final MinIoClient minIoClient;
+
+    @Value("${nicico.minioQuestionsGroup}")
+    private String groupId;
 
     @GetMapping
     public ResponseEntity fullList(HttpServletRequest iscRq,
@@ -52,6 +59,27 @@ public class NeedsAssessmentReportsRestController {
             String message = e.getMessage().equals("PostNotFound") ? messageSource.getMessage("needsAssessmentReport.postCode.not.Found", null, locale) : e.getMessage();
             return new ResponseEntity<>(message, HttpStatus.OK);
         }
+    }
+
+    @Loggable
+    @PostMapping(value = "/getGroupJobPromotions")
+    public ResponseEntity groupJobPromotionReport(@RequestBody NeedAssessmentGroupJobPromotionRequestDto requestDto, @RequestHeader("Authorization") String token) throws IOException {
+
+//        List<NeedsAssessmentReportsDTO.ReportInfo> needAssessmentResultGroup = needsAssessmentReportsService.createNeedAssessmentResultGroup(requestDto);
+//
+//
+//        Map<String, Object[]> data = new TreeMap<String, Object[]>();
+//        data.put("1", new Object[]{"ID", "NAME", "LASTNAME"});
+//        data.put("2", new Object[]{needAssessmentResultGroup.get(0).getId(), needAssessmentResultGroup.get(0).getSkill().getCode(),
+//                needAssessmentResultGroup.get(0).getNeedsAssessmentDomainId()});
+//
+//
+//        XSSFWorkbook sheets = iExportToFileService.exportToExcel(data);
+
+        //minIoClient.uploadFile(token,is,groupId);
+
+        return null;
+
     }
 
     @GetMapping(value = "/courseNA")

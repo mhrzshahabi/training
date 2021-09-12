@@ -2336,7 +2336,15 @@
                             },
                             {isSeparator: true},
                             </sec:authorize>
-
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsGroupJobPromotionNeedsAssessment_ReportsNeedsAssessment')">
+                            {
+                                title: "<spring:message code="reports.need.assessment.group.job.promotion"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/need.assessment-group-job-promotion-report"/>");
+                                }
+                            },
+                            {isSeparator: true},
+                            </sec:authorize>
                             <sec:authorize access="hasAuthority('Menu_Designing_NeedsAssessmentReportCourse')">
                             {
                                 title: "<spring:message code='needsAssessment.report.course'/>",
