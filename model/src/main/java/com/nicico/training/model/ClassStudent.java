@@ -1,5 +1,6 @@
 package com.nicico.training.model;
 
+import com.nicico.training.model.enums.ExamState;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -90,4 +91,8 @@ public class ClassStudent extends Auditable {
 
     @Column(name = "number_of_registered_behavioral_forms")
     private Integer numberOfRegisteredBehavioralForms;
+
+    @Column(name = "EXAM_STATE")
+    @Enumerated(EnumType.STRING)
+    private ExamState examState;
 }

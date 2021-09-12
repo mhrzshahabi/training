@@ -362,6 +362,7 @@
     });
     var ListGrid_Comment_REFR = isc.TrLG.create({
         height: "70%",
+        dataPageSize: 1000,
         filterOnKeypress: false,
         showFilterEditor: true,
         gridComponents: ["filterEditor", "header", "body"],
@@ -410,6 +411,7 @@
                 titleSubCategory: "زیرگروه",
                 description: "نظرات",
             });
+
             if(records) {
                 for (let j = 0; j < records.length; j++) {
                     excelData.add({

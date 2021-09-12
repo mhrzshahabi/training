@@ -7,17 +7,7 @@
     //Amin HK
     let hideRadioButtons=false;
 
-    $(document).ready(()=>{
-        let nameTab=mainTabSet.tabs[mainTabSet.selectedTab].title;
-        if (nameTab=="اطلاعات پرسنل" || nameTab=="کلاس"){
-            hideRadioButtons=true;
-
-            [...Array(3).keys()].slice(1).forEach(idx=> {
-                ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(true);
-                ReportTypeDF_NABOP.getItem("personnelId").hide();
-            });
-        }
-        else if (nameTab=="گزارشات نیازسنجی"){
+    $(document).ready(() => {
             [...Array(4).keys()].slice(1).forEach(idx=> {
                 if (ReportTypeDF_NABOP.getItem("reportType").getItem(idx)) {
                     ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(false);
@@ -25,19 +15,16 @@
                 }
             });
             hideRadioButtons=false;
-        }
     });
     ////////////////////////////////////
 
     let titleReportExcel;
-    var postCode_NABOP = null;
     var passedStatusId_NABOP = 216;
     var priorities_NABOP;
     var wait_NABOP;
     var selectedPerson_NABOP = null;
     var selectedObject_NABOP = null;
     var reportType_NABOP = "0";
-    var objectType_NABOP;
     var changeablePerson_NABOP = true;
     var changeableObject_NABOP = true;
     var chartData_NABOP = [
@@ -590,7 +577,7 @@
                 refreshLG_NABOP(CourseDS_NABOP);
             }
         }, {
-            title: "نمایش نمودار", click: function () {
+            title: "<spring:message code="show.chart"/>", click: function () {
                 showChart_NABOP();
             }
         },{
@@ -876,7 +863,7 @@
         }
     });
     ToolStripButton_ShowChart_NABOP = isc.ToolStripButton.create({
-        title: "نمایش نمودار",
+        title: "<spring:message code='show.chart'/>",
         click: function () {
             showChart_NABOP();
         }
@@ -1372,34 +1359,4 @@
         };
     }
 
-    //*************this function calls from personnelInformation page**************
-    function call_needsAssessmentReports(reportType, changeableReportType, selected_Person, changeablePerson, selectedObject, changeableObject, objectType) {
-
-        CourseDS_NABOP.invalidateCache();
-
-        if (reportType != null)
-            ReportTypeDF_NABOP.getItem("reportType").setValue(reportType);
-        if (objectType != null)
-            Tabset_Object_NABOP.selectTab(objectType);
-        if (changeablePerson != null)
-            changeablePerson_NABOP = changeablePerson;
-        if (changeableObject != null)
-            changeableObject_NABOP = changeableObject;
-        if (changeableReportType === false)
-            ReportTypeDF_NABOP.getItem("reportType").hide();
-
-        setReportType_NABOP();
-
-        if (selected_Person != null)
-            selectedPerson_NABOP = selected_Person;
-        if (selectedObject != null)
-            selectedObject_NABOP = selectedObject;
-
-        if (selectedObject != null && selected_Person == null)
-            Select_Post_NABOP(selectedObject);
-        else if (selected_Person != null )
-            Select_Person_NABOP(selected_Person);
-
-    }
-
-    //</script>
+    // //</script>

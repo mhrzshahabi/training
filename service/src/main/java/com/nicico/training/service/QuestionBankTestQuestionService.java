@@ -24,6 +24,7 @@ import request.exam.ExamImportedRequest;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -199,5 +200,11 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
 
         questionBankTestQuestionDAO.deleteAllByTestQuestionIdAndQuestionBankId(testQuestion.getId(), questionIds);
 
+    }
+
+    @Override
+    public boolean usedQuestion(Long questionBankId) {
+        List<QuestionBankTestQuestion> optionalQuestionBank=questionBankTestQuestionDAO.findAllByQuestionBankId(questionBankId);
+        return !optionalQuestionBank.isEmpty();
     }
 }

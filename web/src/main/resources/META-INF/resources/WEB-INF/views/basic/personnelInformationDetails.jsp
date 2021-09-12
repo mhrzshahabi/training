@@ -99,7 +99,9 @@
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_NeedAssessment") {
                         if (this.nationalCode_Need !== nationalCode) {
                             this.nationalCode_Need = nationalCode;
-                            call_needsAssessmentReports("0", true, selectedPersonnel);
+                            setTimeout(function () {
+                                call_needsAssessmentReports("0", true, selectedPersonnel);
+                            }, 100);
                         }
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_ContactInfo") {
                         wait.show();
@@ -1536,7 +1538,7 @@
                     {
                         id: "PersonnelInfo_Tab_NeedAssessment",
                         title: "<spring:message code="competence"/>",
-                        pane: isc.ViewLoader.create({autoDraw: false, viewURL: "web/needsAssessment-reports"}),
+                        pane: isc.ViewLoader.create({autoDraw: false, viewURL: "web/needsAssessment-reports-pi"}),
                     },
                     {
                         id: "PersonnelInfo_Tab_ContactInfo",

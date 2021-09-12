@@ -103,6 +103,7 @@ public abstract class EvaluationBeanMapper {
         EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
         request.setId(evaluation.getId());
         request.setClassId(evaluation.getTclass().getId());
+        request.setQuestionnaireId(evaluation.getQuestionnaireId());
         request.setTitle(questionnaire.getTitle());
         try {
             request.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
@@ -181,6 +182,7 @@ public abstract class EvaluationBeanMapper {
             ElsContactEvaluationDto dto = new ElsContactEvaluationDto();
             EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
             dto.setId(evaluation.getId());
+            dto.setQuestionnaireId(evaluation.getQuestionnaireId());
             dto.setClassId(evaluation.getClassId());
             dto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
             dto.setPlanner((evaluation.getTclass().getPlanner().getFirstName() + " " +

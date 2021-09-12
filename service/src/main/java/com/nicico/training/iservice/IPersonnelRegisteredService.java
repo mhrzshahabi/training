@@ -42,4 +42,6 @@ public interface IPersonnelRegisteredService {
     Optional<PersonnelRegistered> getByNationalCode(String nationalCode);
 
     List<PersonnelRegistered> checkPersonnelNationalCodes(List<String> personnelNationalCodes);
+
+    void changeContactInfo(long id);
 }

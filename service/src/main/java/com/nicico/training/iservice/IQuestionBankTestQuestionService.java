@@ -19,4 +19,6 @@ public interface IQuestionBankTestQuestionService {
     void addQuestions(String type, Long classId, List<Long> questionIds);
 
     void deleteQuestions(String type, Long classId, List<Long> questionIds);
+
+    boolean usedQuestion(Long questionBankId);
 }

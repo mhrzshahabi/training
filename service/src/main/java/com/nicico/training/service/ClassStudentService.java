@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
@@ -237,5 +238,6 @@ public class ClassStudentService implements IClassStudentService {
     public void setPeresenceTypeId(Long peresenceTypeId, Long id) {
         classStudentDAO.setPeresenceTypeId(peresenceTypeId, id);
     }
+
 
 }

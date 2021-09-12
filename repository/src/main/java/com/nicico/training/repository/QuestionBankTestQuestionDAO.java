@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface QuestionBankTestQuestionDAO extends JpaRepository<QuestionBankTestQuestion, Long>, JpaSpecificationExecutor<QuestionBankTestQuestion> {
@@ -26,5 +27,7 @@ public interface QuestionBankTestQuestionDAO extends JpaRepository<QuestionBankT
     List<QuestionBankTestQuestion> findByQuestionBankIdAndTestQuestionId(Long questionBankId, Long testQuestionId);
 
     List<QuestionBankTestQuestion> findByTestQuestionId(Long testQuestionId);
+
+    List<QuestionBankTestQuestion> findAllByQuestionBankId(Long questionBankId);
 
 }

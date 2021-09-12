@@ -2147,8 +2147,11 @@
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/editList/" + objectType + "/" + objectId,
                 "GET", null, r => responseToListGrid_All_JspNeedsAssessment(objectId, objectType,
                     JSON.parse(r.data).list)));
-        else
+        else {
+            if (data.length === 0)
+                createDialog("info", "مهارتی غیر از مهارت های موجود در این نیازسنجی، در نیازسنجی انتخابی برای کپی وجود ندارد");
             responseToListGrid_All_JspNeedsAssessment(objectId, objectType, data);
+        }
     }
 
     function responseToListGrid_All_JspNeedsAssessment(objectId, objectType, data) {

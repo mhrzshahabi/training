@@ -6,10 +6,12 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.StudentDTO;
+import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.model.Student;
 import response.tclass.ElsStudentAttendanceListResponse;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IStudentService {
 
@@ -34,4 +36,7 @@ public interface IStudentService {
     List<Student> getStudentList(List<Long> absentStudents);
 
     ElsStudentAttendanceListResponse getStudentAttendanceList(String classCode, String nationalCode);
+
+
+    List<Map<String, Object>> findAllExamsByNationalCode(String nationalCode, ExamsType type);
 }

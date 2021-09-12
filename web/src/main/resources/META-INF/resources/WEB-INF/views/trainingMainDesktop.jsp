@@ -1271,6 +1271,7 @@
     const annualStatisticsReportUrl = rootUrl + "/annualStatisticsReport";
     const testQuestionUrl = rootUrl + "/test-question";
     const viewStudentsInCanceledClassReportUrl = rootUrl + "/view-students-in-canceled-class-report";
+    const loginLogUrl = rootUrl + "/log";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2764,6 +2765,16 @@
                     title: "<spring:message code="configurations"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/config/"/>");
+                    }
+                },
+                {isSeparator: true},
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Menu_Security_UsersLoginReport')">
+                {
+                    title: "<spring:message code="users.login.report"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/usersLoginReport/"/>");
                     }
                 }
                 </sec:authorize>

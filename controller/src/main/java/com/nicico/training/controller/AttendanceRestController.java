@@ -287,7 +287,7 @@ public class AttendanceRestController {
     @Loggable
     @GetMapping(value = "/studentUnknownSessionsInClass")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-    public ResponseEntity<String> studentUnknownSessionsInClass(@RequestParam("classId") Long classId) {
+    public ResponseEntity<AttendanceDTO.permissionDto> studentUnknownSessionsInClass(@RequestParam("classId") Long classId) {
         return new ResponseEntity<>(attendanceService.studentUnknownSessionsInClass(classId), HttpStatus.OK);
     }
     @Loggable
@@ -304,5 +304,12 @@ public class AttendanceRestController {
             return new ResponseEntity<>(targetUsers, HttpStatus.OK);
         }
 
+    }
+    @Loggable
+    @GetMapping(value = "/finalApprovalClass")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<Boolean> setFinalApprovalClass(@RequestParam("classId") Long classId) {
+       Boolean isDelete= attendanceService.FinalApprovalClass(classId);
+        return new ResponseEntity<>(isDelete,HttpStatus.OK);
     }
 }

@@ -112,5 +112,9 @@ public class QuestionBank extends Auditable {
     @Column(name = "e_question_level")
     private EQuestionLevel eQuestionLevel;
 
+    @Column(name = "question_target")
+    private Integer questionTarget;
+
+
 }
 

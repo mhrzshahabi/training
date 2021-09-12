@@ -76,6 +76,11 @@ public class MainFormController {
         return "report/needsAssessmentReports";
     }
 
+    @RequestMapping("/needsAssessment-reports-pi")
+    public String showNeedsAssessmentReportsPIForm() {
+        return "report/needsAssessmentReportsPI";
+    }
+
     @RequestMapping("/need.assessment-group-job-promotion-report")
     public String showNeedAssessmentGroupJobPromotionReportForm() {
         return "report/needAssessmentGroupJobPromotionReport";
@@ -159,6 +164,11 @@ public class MainFormController {
     @RequestMapping("/config")
     public String showConfigForm() {
         return "security/config";
+    }
+
+    @RequestMapping("/usersLoginReport")
+    public String showUsersLoginReportForm() {
+        return "security/usersLoginReport";
     }
 
     @RequestMapping("/config-questionnaire")

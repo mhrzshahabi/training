@@ -342,8 +342,13 @@ public class AttendanceService implements IAttendanceService {
     //Amin Haeri-------------------
     @Transactional()
     @Override
-    public String studentUnknownSessionsInClass(Long classId) {
+    public AttendanceDTO.permissionDto studentUnknownSessionsInClass(Long classId) {
+        AttendanceDTO.permissionDto data = new AttendanceDTO.permissionDto();
+
         List<ClassSessionDTO.Info> sessions = classSessionService.getSessions(classId);
+        boolean anyNonEmpty = sessions
+                .stream()
+                .anyMatch(entry -> entry.getTeacherAttendancePermission());
         Tclass tclassOfSession = tclassService.getEntity(classId);
         int numStudents = tclassOfSession.getClassStudents().size();
         Collections.sort(sessions, (ClassSessionDTO.Info s1, ClassSessionDTO.Info s2) -> {
@@ -356,16 +361,20 @@ public class AttendanceService implements IAttendanceService {
         for (ClassSessionDTO.Info s : sessions) {
             List<Attendance> attendanceList = attendanceDAO.findBySessionId(s.getId());
             if (attendanceList.size() != numStudents) {
-                return s.getSessionDate();
+                data.setHasPermission(anyNonEmpty);
+                data.setDate(s.getSessionDate());
+                return data;
             }
             for (Attendance a : attendanceList) {
                 if (a.getState().equals("0")) {
-                    return s.getSessionDate();
-                }
+                    data.setHasPermission(anyNonEmpty);
+                    data.setDate(s.getSessionDate());
+                    return data;                }
             }
         }
-
-        return new String();
+        data.setHasPermission(anyNonEmpty);
+        data.setDate("");
+        return data;
     }
 
     @Override
@@ -425,5 +434,24 @@ public class AttendanceService implements IAttendanceService {
 
     public Optional<Attendance> getAttendanceBySessionIdAndStudentId(Long sessionId, Long studentId) {
         return attendanceDAO.findBySessionIdAndStudentId(sessionId, studentId);
+    }
+
+    @Transactional
+    @Override
+    public boolean FinalApprovalClass(Long classId) {
+        try {
+            List<ClassSessionDTO.Info> sessions = classSessionService.getSessions(classId);
+            for (ClassSessionDTO.Info sessionDTO:sessions){
+                ClassSession classSession=classSessionDAO.getClassSessionById(sessionDTO.getId());
+                classSession.setTeacherAttendancePermission(false);
+                classSessionDAO.save(classSession);
+            }
+            return true;
+
+        }catch (Exception e){
+            return false;
+        }
+
+
     }
 }
