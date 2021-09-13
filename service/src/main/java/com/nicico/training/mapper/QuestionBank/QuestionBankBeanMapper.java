@@ -113,6 +113,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setTitle(questionBank.getQuestion());
             elsQuestionDto.setType(mapAnswerType(questionBank.getQuestionTypeId()));
             elsQuestionDto.setQuestionLevel(questionBank.getEQuestionLevel().getTitleFa());
+            elsQuestionDto.setQuestionTargetId(questionBank.getQuestionTarget());
             elsQuestionDto.setCategoryId(questionBank.getCategoryId());
             elsQuestionDto.setCategoryName(questionBank.getCategoryId() != null ? categoryService.get(questionBank.getCategoryId()).getTitleFa() : null);
             elsQuestionDto.setSubCategory(questionBank.getSubCategoryId());
@@ -154,6 +155,7 @@ public abstract class QuestionBankBeanMapper {
             create.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
             create.setCategoryId(elsQuestionDto.getCategoryId());
             create.setSubCategoryId(elsQuestionDto.getSubCategory());
+            create.setQuestionTarget(elsQuestionDto.getQuestionTargetId());
             create.setTeacherId(teacherId);
             create.setLines(1);
             create.setDisplayTypeId(521L);
@@ -238,6 +240,7 @@ public abstract class QuestionBankBeanMapper {
         update.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
         update.setCategoryId(elsQuestionDto.getCategoryId());
         update.setSubCategoryId(elsQuestionDto.getSubCategory());
+        update.setQuestionTarget(elsQuestionDto.getQuestionTargetId());
         update.setLines(1);
         update.setDisplayTypeId(521L);
         update.setTeacherId(teacherId);
