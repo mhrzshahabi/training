@@ -1035,6 +1035,7 @@ public class ElsRestController {
         return response;
     }
 
+
     @GetMapping("/exam/findByType")
     public List<Map<String, Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type) {
         return iStudentService.findAllExamsByNationalCode(nationalCode, type);
