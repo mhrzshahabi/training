@@ -8,6 +8,7 @@
 //<script>
 //     var Wait_JspClassEvaluationInfo = null;
 
+    var showTeacherTotalGrade = true;
     var DynamicForm_JspClassEvaluationInfo = isc.DynamicForm.create({
         titleAlign: "right",
         titleWidth: 200,
@@ -29,9 +30,8 @@
                         let fields = [{name:'title',title:'عنوان'},{name:'value',title:''}];
                         let allRows = [{title:DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('teacherGradeToClass').getValue()},
                                         {title:DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('trainingGradeToTeacher').getValue()},
-                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getValue()},
-                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').getValue()},];
-
+                                        {title:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('studentsGradeToClass').getValue()}];
+                        if(showTeacherTotalGrade) allRows.push({title:DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').getTitle(),value:DynamicForm_JspClassEvaluationInfo.getItem('teacherTotalGrade').getValue()});
                         ExportToFile.exportToExcelFromClient(fields,allRows,ExportToFile.generateTitle(ListGrid_Class_JspClass),"کلاس - مشاهده وضعيت ارزيابي کلاس");
                     }
                 }
@@ -61,6 +61,7 @@
 
         // Wait_JspClassEvaluationInfo = createDialog("wait");
         DynamicForm_JspClassEvaluationInfo.getItem("teacherTotalGrade").show();
+        showTeacherTotalGrade = true;
         if (studentCount == 0 || studentCount == undefined || evaluation == null || evaluation == undefined) {
             let msg1 = "تعداد فراگیران این کلاس صفر است یا کلاس فاقد نوع ارزیابی می باشد";
             let val1 = getFormulaMessage(msg1 , "2", "red", "b");
@@ -82,6 +83,7 @@
                     if(result.teacherGradeToClass == undefined) {
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", val2);
                         DynamicForm_JspClassEvaluationInfo.getItem("teacherTotalGrade").hide();
+                        showTeacherTotalGrade = false;
                     }
                     else
                         DynamicForm_JspClassEvaluationInfo.setValue("teacherGradeToClass", getFormulaMessage(result.teacherGradeToClass , "2", "black", "b"));
