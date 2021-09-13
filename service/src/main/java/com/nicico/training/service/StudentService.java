@@ -7,9 +7,13 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.enums.ExamsType;
+import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IStudentService;
+import com.nicico.training.iservice.ITeacherRoleService;
 import com.nicico.training.model.Student;
 import com.nicico.training.repository.StudentDAO;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +38,9 @@ public class StudentService implements IStudentService {
     private final ModelMapper modelMapper;
     private final StudentDAO studentDAO;
     private final DateUtil dateUtil;
+    private final ITeacherRoleService iTeacherRoleService;
+    private final IPersonnelService personnelService;
+    private final IPersonnelRegisteredService personnelRegisteredService;
 
     @Transactional(readOnly = true)
     @Override
@@ -62,6 +69,7 @@ public class StudentService implements IStudentService {
         List<Student> list = studentDAO.findByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(postId, personnelNo, depId, fName, lName);
         return list;
     }
+
     @Transactional(readOnly = true)
     public List<Student> getStudentByNationalCode(String nationalCode) {
         List<Student> list = studentDAO.findByNationalCode(nationalCode);
@@ -115,9 +123,8 @@ public class StudentService implements IStudentService {
 
     @Override
     public List<Student> getStudentList(List<Long> absentStudents) {
-        List<Student>students=new ArrayList<>();
-        for (Long id:absentStudents)
-        {
+        List<Student> students = new ArrayList<>();
+        for (Long id : absentStudents) {
             students.add(getStudent(id));
         }
         return students;
@@ -129,20 +136,20 @@ public class StudentService implements IStudentService {
         List<ElsStudentAttendanceInfoDto> elsStudentAttendanceInfoDtos = new ArrayList<>();
         ElsStudentAttendanceListResponse elsStudentAttendanceListResponse = new ElsStudentAttendanceListResponse();
         if (result.size() > 0) {
-            for (Map<String, Object> map: result) {
+            for (Map<String, Object> map : result) {
                 ElsStudentAttendanceInfoDto studentAttInfoDto = new ElsStudentAttendanceInfoDto();
                 map.forEach((key, value) -> {
-                    if (key.equals("SESSION_DATE")){
+                    if (key.equals("SESSION_DATE")) {
                         studentAttInfoDto.setSessionDate(String.valueOf(value));
-                    } else if (key.equals("DAY_NAME")){
+                    } else if (key.equals("DAY_NAME")) {
                         studentAttInfoDto.setSessionWeekDayName(String.valueOf(value));
-                    } else if (key.equals("SESSION_START_HOUR")){
+                    } else if (key.equals("SESSION_START_HOUR")) {
                         studentAttInfoDto.setSessionStartHour(String.valueOf(value));
-                    } else if (key.equals("SESSION_END_HOUR")){
+                    } else if (key.equals("SESSION_END_HOUR")) {
                         studentAttInfoDto.setSessionEndHour(String.valueOf(value));
-                    } else if (key.equals("ATTENDANCE_STATE")){
+                    } else if (key.equals("ATTENDANCE_STATE")) {
                         studentAttInfoDto.setAttendanceStateId(Long.parseLong(String.valueOf(value)));
-                        switch (String.valueOf(value)){
+                        switch (String.valueOf(value)) {
                             case "0": {
                                 studentAttInfoDto.setAttendanceStateTitle("نامشخص");
                                 break;
@@ -177,7 +184,7 @@ public class StudentService implements IStudentService {
             elsStudentAttendanceListResponse.setMessage("اطلاعات حضور غیاب برای این کلاس وجود ندارد");
             elsStudentAttendanceListResponse.setStatus(HttpStatus.NO_CONTENT.value());
         }
-            return elsStudentAttendanceListResponse;
+        return elsStudentAttendanceListResponse;
     }
 
     // ------------------------------
@@ -194,21 +201,37 @@ public class StudentService implements IStudentService {
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
         int day = calendar.get(Calendar.DAY_OF_MONTH);
-        if (Boolean.TRUE.equals(type.equals(ExamsType.NOW))){
+        if (Boolean.TRUE.equals(type.equals(ExamsType.NOW))) {
             String startDate = convertMiToKh(year, month, day);
-            return studentDAO.findAllThisDateExamsByNationalCode(nationalCode,startDate);
+            return studentDAO.findAllThisDateExamsByNationalCode(nationalCode, startDate);
         }
-        if (Boolean.TRUE.equals(type.equals(ExamsType.EXPIRED))){
+        if (Boolean.TRUE.equals(type.equals(ExamsType.EXPIRED))) {
             String dateCurrent = convertMiToKh(year, month, day);
             DateFormat dateFormat = new SimpleDateFormat("HH:mm");
             Date date = new Date();
             String hour = dateFormat.format(date);
-            return studentDAO.findAllExpiredExamsByNationalCode(nationalCode,dateCurrent,hour);
+            return studentDAO.findAllExpiredExamsByNationalCode(nationalCode, dateCurrent, hour);
         }
-        if (Boolean.TRUE.equals(type.equals(ExamsType.FUTURE))){
+        if (Boolean.TRUE.equals(type.equals(ExamsType.FUTURE))) {
             String startDate = convertMiToKh(year, month, day);
-            return studentDAO.findAllNextExamsByNationalCode(nationalCode,startDate);
+            return studentDAO.findAllNextExamsByNationalCode(nationalCode, startDate);
         }
         throw new TrainingException(TrainingException.ErrorType.InvalidData);
+    }
+
+
+    @Override
+    public Set<String> findAllRoleByNationalCode(String nationalCode) {
+        Set<String> roleList = new HashSet<>();
+        List<String> role = iTeacherRoleService.findAllRoleByNationalCode(nationalCode);
+        if (!role.isEmpty()) {
+            roleList.addAll(role);
+            roleList.add("INSTRUCTOR");
+        }
+        if (personnelService.isPresent(nationalCode))
+            roleList.add("USER");
+        if (personnelRegisteredService.isPresent(nationalCode))
+            roleList.add("USER");
+        return roleList;
     }
 }

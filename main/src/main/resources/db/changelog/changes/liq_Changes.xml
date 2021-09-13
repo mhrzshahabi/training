@@ -2864,5 +2864,22 @@ WHERE
     </changeSet>
 
 
+    <changeSet author="nima (generated)" id="1631430089965-539">
+        <createTable tableName="tbl_role">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_rolePK"/>
+            </column>
+            <column name="NAME" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nima (generated)" id="1631430089965-540">
+        <createTable tableName="tbl_teacher_roles">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_teacher_rolesPK"/>
+            </column>
+            <column name="ROLE_ID" type="NUMBER(19, 0)"/>
+            <column name="TEACHER_ID" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

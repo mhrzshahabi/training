@@ -70,6 +70,7 @@ public class TeacherRestController {
     protected EntityManager entityManager;
     private final ViewTeacherReportDAO viewTeacherReportDAO;
     private final MessageSource messageSource;
+    private final ITeacherRoleService iTeacherRoleService;
 
 
     @Loggable
@@ -1085,6 +1086,34 @@ public class TeacherRestController {
             return new ResponseEntity<>("اطلاعات کاربر در سیستم ناقص می باشد", HttpStatus.NOT_FOUND);
         else
             return new ResponseEntity<>("استادی با این کد ملی در سیستم پیدا نشد", HttpStatus.NOT_FOUND);
+    }
+
+
+
+    @DeleteMapping("/role/")
+    public ResponseEntity<Boolean> removeRoleByTeacherId(@RequestParam Long teacherId,@RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.removeTeacherRole(teacherId,role));
+    }
+
+    @DeleteMapping("/role/remove-all")
+    public ResponseEntity<Boolean> removeAllByTeacherId(@RequestParam Long teacherId,@RequestBody List<String> roles) {
+        return ResponseEntity.ok(iTeacherRoleService.removeRolesByTeacherId(teacherId,roles));
+    }
+
+    @PostMapping("/role/")
+    public ResponseEntity<Boolean> addRoleByTeacherId(@RequestParam Long teacherId,@RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.addRoleByTeacherId(teacherId,role));
+    }
+
+    @PostMapping("/role/add-all")
+    public ResponseEntity<Boolean> addGroupRolesByTeacherId(@RequestParam Long teacherId,@RequestBody List<String> roles) {
+        return ResponseEntity.ok(iTeacherRoleService.addRolesByTeacherId(teacherId,roles));
+    }
+
+
+    @GetMapping("/role/")
+    public ResponseEntity<List<Role>> findAllByTeacherId(@RequestParam Long teacherId) {
+        return ResponseEntity.ok(iTeacherRoleService.findAllRoleByTeacherId(teacherId));
     }
 
 }

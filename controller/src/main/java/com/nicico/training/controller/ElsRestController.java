@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -105,6 +106,7 @@ public class ElsRestController {
     private final QuestionBankTestQuestionService questionBankTestQuestionService;
     private final ViewTrainingFileService viewTrainingFileService;
     private final ParameterService parameterService;
+    private final ITeacherRoleService iTeacherRoleService;
 
 
     @GetMapping("/eval/{id}")
@@ -1038,9 +1040,10 @@ public class ElsRestController {
         return response;
     }
 
+
     @GetMapping("/exam/findByType")
-    public List<Map<String,Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type){
-        return iStudentService.findAllExamsByNationalCode(nationalCode,type);
+    public List<Map<String, Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type) {
+        return iStudentService.findAllExamsByNationalCode(nationalCode, type);
     }
 
     @GetMapping(value = "/trainingFileByNationalCode/{nationalCode}")
@@ -1076,5 +1079,23 @@ public class ElsRestController {
         }
 
     }
+
+    @GetMapping("/role/findBy-nationalCode")
+    public ResponseEntity<Set<String>> findAllByNationalCode(@RequestParam String nationalCode) {
+        return ResponseEntity.ok(iStudentService.findAllRoleByNationalCode(nationalCode));
+    }
+
+    @DeleteMapping("/role/")
+    public ResponseEntity<Boolean> removeRoleByNationalCode(@RequestParam String nationalCode,@RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.removeTeacherRole(nationalCode,role));
+    }
+
+    @PostMapping("/role/")
+    public ResponseEntity<Boolean> addRoleByNationalCode(@RequestParam String nationalCode,@RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.addRoleByNationalCode(nationalCode,role));
+    }
+
+
+
 
 }

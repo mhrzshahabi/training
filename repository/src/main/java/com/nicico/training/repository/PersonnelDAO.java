@@ -82,4 +82,6 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     @Query(value = "select * from TBL_PERSONNEL where f_contact_info IN(:ids)" , nativeQuery = true)
     List<Personnel> findAllByContactInfoIds(List<Long> ids);
+
+
 }
