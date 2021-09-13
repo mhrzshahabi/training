@@ -101,6 +101,7 @@ public class ElsRestController {
     private final IStudentService iStudentService;
     private final QuestionBankTestQuestionService questionBankTestQuestionService;
     private final ViewTrainingFileService viewTrainingFileService;
+    private final ITeacherRoleService iTeacherRoleService;
 
 
     @GetMapping("/eval/{id}")
@@ -1050,5 +1051,17 @@ public class ElsRestController {
     public ResponseEntity<Set<String>> findAllByNationalCode(@RequestParam String nationalCode) {
         return ResponseEntity.ok(iStudentService.findAllRoleByNationalCode(nationalCode));
     }
+
+    @DeleteMapping("/role/")
+    public ResponseEntity<Boolean> removeRoleByNationalCode(@RequestParam String nationalCode,@RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.removeTeacherRole(nationalCode,role));
+    }
+
+    @PostMapping("/role/")
+    public ResponseEntity<Boolean> addRoleByNationalCode(@RequestParam String nationalCode,@RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.addRoleByNationalCode(nationalCode,role));
+    }
+
+
 
 }

@@ -54,6 +54,7 @@ public class TeacherRoleService implements ITeacherRoleService {
     }
 
     @Override
+    @Transactional
     public boolean addRoleByNationalCode(String nationalCode, String roleName) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -91,6 +92,7 @@ public class TeacherRoleService implements ITeacherRoleService {
     }
 
     @Override
+    @Transactional
     public boolean addRoleByTeacherId(Long teacherId, Long roleId) {
         Teacher teacher = teacherDAO.findById(teacherId).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -106,6 +108,43 @@ public class TeacherRoleService implements ITeacherRoleService {
     }
 
     @Override
+    @Transactional
+    public boolean addRolesByTeacherId(Long teacherId, List<String> roleNames) {
+        List<TeacherRole> teacherRoles = new ArrayList<>();
+        Teacher teacher = teacherDAO.findById(teacherId).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        for (String roleName : roleNames) {
+            Role role = roleDAO.findByName(roleName).orElseThrow(
+                    () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+            );
+            TeacherRole teacherRole = new TeacherRole();
+            teacherRole.setRole(role);
+            teacherRole.setTeacher(teacher);
+            teacherRoles.add(teacherRole);
+        }
+        teachersRoleDAO.saveAll(teacherRoles);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean addRoleByTeacherId(Long teacherId, String roleName) {
+        Teacher teacher = teacherDAO.findById(teacherId).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        Role role = roleDAO.findByName(roleName).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        TeacherRole teacherRole = new TeacherRole();
+        teacherRole.setTeacher(teacher);
+        teacherRole.setRole(role);
+        teachersRoleDAO.save(teacherRole);
+        return true;
+    }
+
+    @Override
+    @Transactional
     public boolean removeTeacherRole(String nationalCode, Long roleId) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -124,8 +163,63 @@ public class TeacherRoleService implements ITeacherRoleService {
         return true;
     }
 
+    @Override
+    @Transactional
+    public boolean removeRolesByTeacherId(Long teacherId, List<String> roleNames) {
+        Teacher teacher = teacherDAO.findById(teacherId).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        for (String roleName : roleNames) {
+            Role role = roleDAO.findByName(roleName).orElseThrow(
+                    () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+            );
+            TeacherRole teacherRole = teachersRoleDAO.findByTeacherAndRole(teacher, role).orElseThrow(
+                    () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+            );
+            teachersRoleDAO.delete(teacherRole);
+        }
+        return true;
+    }
 
     @Override
+    @Transactional
+    public boolean removeTeacherRole(String nationalCode, String roleName) {
+        PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        Teacher teacher = teacherDAO.findByPersonality(personalInfo).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        Role role = roleDAO.findByName(roleName).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+
+        TeacherRole teacherRole = teachersRoleDAO.findByTeacherAndRole(teacher, role).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        teachersRoleDAO.delete(teacherRole);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeTeacherRole(Long teacherId, String roleName) {
+        Teacher teacher = teacherDAO.findById(teacherId).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        Role role = roleDAO.findByName(roleName).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+
+        TeacherRole teacherRole = teachersRoleDAO.findByTeacherAndRole(teacher, role).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+        teachersRoleDAO.delete(teacherRole);
+        return true;
+    }
+
+    @Override
+    @Transactional
     public boolean removeTeacherRoleByTeacherId(Long teacherId, Long roleId) {
         Teacher teacher = teacherDAO.findById(teacherId).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)

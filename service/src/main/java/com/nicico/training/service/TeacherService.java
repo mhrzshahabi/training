@@ -42,6 +42,7 @@ public class TeacherService implements ITeacherService {
     private final IEducationLevelService educationLevelService;
     private final IEducationMajorService educationMajorService;
     private final IEducationOrientationService educationOrientationService;
+    private final ITeacherRoleService iTeacherRoleService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -889,4 +890,5 @@ public class TeacherService implements ITeacherService {
     public Long getTeacherIdByNationalCode(String nationalCode) {
         return teacherDAO.getTeacherId(nationalCode);
     }
+
 }
