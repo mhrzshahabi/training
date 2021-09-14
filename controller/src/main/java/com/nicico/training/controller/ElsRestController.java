@@ -51,10 +51,7 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
-import response.question.dto.ElsCategoryDto;
-import response.question.dto.ElsQuestionBankDto;
-import response.question.dto.ElsQuestionDto;
-import response.question.dto.ElsSubCategoryDto;
+import response.question.dto.*;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
@@ -1066,17 +1063,27 @@ public class ElsRestController {
 
     @Loggable
     @GetMapping("/parameter/listByCode/{parameterCode}")
-    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getParametersValueListByCode(HttpServletRequest header,@PathVariable String parameterCode) {
+    public ResponseEntity<ElsQuestionTargetsDto> getParametersValueListByCode(HttpServletRequest header, @PathVariable String parameterCode) {
+        ElsQuestionTargetsDto dto=new ElsQuestionTargetsDto();
+
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
+                List<ElsQuestionTargetDto> data;
+                data=evaluationBeanMapper.toQuestionTargets(parameterService.getByCode(parameterCode).getResponse().getData());
+                dto.setStatus(200);
+                dto.setQuestionTargetDtoList(data);
                 //for see all question target the parameterCode must be :=questionTarget
-                return new ResponseEntity<>(parameterService.getByCode(parameterCode), HttpStatus.OK);
+                return new ResponseEntity<>(dto, HttpStatus.OK);
             } catch (Exception e) {
-                throw new TrainingException(TrainingException.ErrorType.NotFound);
+                dto.setStatus(TrainingException.ErrorType.NotFound.getHttpStatusCode());
+                dto.setMessage("کد مورد نظر شما یافت نشد");
+                return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
+
             }
         }else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+            dto.setStatus(TrainingException.ErrorType.Unauthorized.getHttpStatusCode());
+            dto.setMessage("شما دسترسی ندارید");
+            return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);        }
 
     }
 

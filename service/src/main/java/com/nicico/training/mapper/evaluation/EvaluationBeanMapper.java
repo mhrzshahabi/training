@@ -2,6 +2,7 @@ package com.nicico.training.mapper.evaluation;
 
 
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
@@ -36,6 +37,8 @@ import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
 import response.question.QuestionsDto;
+import response.question.dto.ElsQuestionTargetDto;
+import response.question.dto.ElsQuestionTargetsDto;
 
 
 import java.math.BigDecimal;
@@ -1387,4 +1390,15 @@ public abstract class EvaluationBeanMapper {
         request.getUsers().removeIf(p -> absentUsers.stream().anyMatch(x -> (p.getNationalCode().equals(x.getNationalCode()))));
         return request;
     }
+
+
+//    @Mapping(source = "question", target = "title", qualifiedByName = "getQuestionTargetTitle")
+    public abstract ElsQuestionTargetDto toQuestionTarget(ParameterValueDTO.Info question);
+//    @Named("getQuestionTargetTitle")
+//    String getQuestionTargetTitle(ParameterValueDTO.Info info) {
+//     return info.getTitle();
+//    }
+
+    public abstract List<ElsQuestionTargetDto> toQuestionTargets(List<ParameterValueDTO.Info> questions);
+
 }
