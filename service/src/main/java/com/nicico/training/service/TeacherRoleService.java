@@ -28,15 +28,21 @@ public class TeacherRoleService implements ITeacherRoleService {
     private final TeacherDAO teacherDAO;
     private final PersonalInfoDAO personalInfoDAO;
     private final RoleDAO roleDAO;
+    private final String INSTRUCTOR = "INSTRUCTOR";
 
     @Override
-    public List<String> findAllRoleByNationalCode(String nationalCode) {
+    public List<String> findAllTeacherRoleByNationalCode(String nationalCode) {
         List<String> roles = new ArrayList<>();
         List<Map<String, Object>> allTeacherRoleByNationalCode = teacherDAO.findAllTeacherRoleByNationalCode(nationalCode);
         if (!allTeacherRoleByNationalCode.isEmpty()) {
             for (Map<String, Object> objectMap : allTeacherRoleByNationalCode) {
                 roles.add(objectMap.get("name").toString());
             }
+            roles.add(INSTRUCTOR);
+        }else {
+            Long teacherId = teacherDAO.getTeacherId(nationalCode);
+            if (teacherId!=null)
+                roles.add(INSTRUCTOR);
         }
         return roles;
     }
