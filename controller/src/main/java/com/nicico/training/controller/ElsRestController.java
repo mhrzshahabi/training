@@ -104,6 +104,7 @@ public class ElsRestController {
     private final ViewTrainingFileService viewTrainingFileService;
     private final ParameterService parameterService;
     private final ITeacherRoleService iTeacherRoleService;
+    private final IMobileVerifyService iMobileVerifyService;
 
 
     @GetMapping("/eval/{id}")
@@ -1044,7 +1045,7 @@ public class ElsRestController {
     }
 
     @GetMapping(value = "/trainingFileByNationalCode/{nationalCode}")
-    public ResponseEntity<ViewTrainingFileDTO.ViewTrainingFileSpecRs> trainingFileByNationalCode(HttpServletRequest header,@PathVariable String nationalCode) {
+    public ResponseEntity<ViewTrainingFileDTO.ViewTrainingFileSpecRs> trainingFileByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
@@ -1054,7 +1055,7 @@ public class ElsRestController {
             } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
-        }else {
+        } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
 
@@ -1064,12 +1065,12 @@ public class ElsRestController {
     @Loggable
     @GetMapping("/parameter/listByCode/{parameterCode}")
     public ResponseEntity<ElsQuestionTargetsDto> getParametersValueListByCode(HttpServletRequest header, @PathVariable String parameterCode) {
-        ElsQuestionTargetsDto dto=new ElsQuestionTargetsDto();
+        ElsQuestionTargetsDto dto = new ElsQuestionTargetsDto();
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 List<ElsQuestionTargetDto> data;
-                data=evaluationBeanMapper.toQuestionTargets(parameterService.getByCode(parameterCode).getResponse().getData());
+                data = evaluationBeanMapper.toQuestionTargets(parameterService.getByCode(parameterCode).getResponse().getData());
                 dto.setStatus(200);
                 dto.setQuestionTargetDtoList(data);
                 //for see all question target the parameterCode must be :=questionTarget
@@ -1080,10 +1081,11 @@ public class ElsRestController {
                 return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
 
             }
-        }else {
+        } else {
             dto.setStatus(TrainingException.ErrorType.Unauthorized.getHttpStatusCode());
             dto.setMessage("شما دسترسی ندارید");
-            return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);        }
+            return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
+        }
 
     }
 
@@ -1093,16 +1095,23 @@ public class ElsRestController {
     }
 
     @DeleteMapping("/role/")
-    public ResponseEntity<Boolean> removeRoleByNationalCode(@RequestParam String nationalCode,@RequestParam String role) {
-        return ResponseEntity.ok(iTeacherRoleService.removeTeacherRole(nationalCode,role));
+    public ResponseEntity<Boolean> removeRoleByNationalCode(@RequestParam String nationalCode, @RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.removeTeacherRole(nationalCode, role));
     }
 
     @PostMapping("/role/")
-    public ResponseEntity<Boolean> addRoleByNationalCode(@RequestParam String nationalCode,@RequestParam String role) {
-        return ResponseEntity.ok(iTeacherRoleService.addRoleByNationalCode(nationalCode,role));
+    public ResponseEntity<Boolean> addRoleByNationalCode(@RequestParam String nationalCode, @RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.addRoleByNationalCode(nationalCode, role));
     }
 
 
+    @PostMapping("/anonymous-number/")
+    public ResponseEntity<Boolean> addAnonymousNumberForVerify(@RequestParam String nationalCode, @RequestParam String number) {
+        return ResponseEntity.ok(iMobileVerifyService.add(nationalCode, number));
+    }
 
-
+    @GetMapping("/anonymous-number/")
+    public ResponseEntity<Boolean> mobileNumberVerifyStatus(@RequestParam String nationalCode, @RequestParam String number) {
+        return ResponseEntity.ok(iMobileVerifyService.checkVerification(nationalCode, number));
+    }
 }

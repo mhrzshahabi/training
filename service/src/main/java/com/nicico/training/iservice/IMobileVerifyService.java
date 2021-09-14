@@ -7,4 +7,6 @@ public interface IMobileVerifyService {
     boolean remove(String nationalCode, String number);
 
     boolean checkVerification(String nationalCode, String number);
+
+    boolean changeStatus(String nationalCode, String number,boolean status);
 }
