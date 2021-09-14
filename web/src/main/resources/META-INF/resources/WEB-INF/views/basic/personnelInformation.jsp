@@ -136,6 +136,43 @@
                         filterOperator: "iContains"
                     }
                 ],
+                transformRequest: function (dsRequest) {
+                    let mobileFilter = dsRequest.data?.criteria?.filter(r => r.fieldName == 'contactInfo.smSMobileNumber')[0];
+                    dsRequest?.sortBy?.forEach(r => {
+                        dsRequest.sortBy[dsRequest?.sortBy.indexOf(r)] = r.replace('contactInfo.smSMobileNumber', 'contactInfo.mobile');
+                    })
+                    if (mobileFilter) {
+                        let val = dsRequest.data?.criteria?.filter(r => r.fieldName == 'contactInfo.smSMobileNumber')[0].value;
+                        let cr = {
+                            operator: "or", _constructor: "AdvancedCriteria", criteria: [
+                                {
+                                    operator: "and", _constructor: "AdvancedCriteria",
+                                    criteria: [{fieldName: "contactInfo.mobile", operator: "iContains", value: val},
+                                        {fieldName: "contactInfo.eMobileForSMS", operator: "equals", value: "trainingMobile"},
+                                    ]
+                                }, {
+                                    operator: "and", _constructor: "AdvancedCriteria",
+                                    criteria: [{fieldName: "contactInfo.mobile2", operator: "iContains", value: val},
+                                        {fieldName: "contactInfo.eMobileForSMS", operator: "equals", value: "trainingSecondMobile"},
+                                    ]
+                                }, {
+                                    operator: "and", _constructor: "AdvancedCriteria",
+                                    criteria: [{fieldName: "contactInfo.hrMobile", operator: "iContains", value: val},
+                                        {fieldName: "contactInfo.eMobileForSMS", operator: "equals", value: "hrMobile"},
+                                    ]
+                                }, {
+                                    operator: "and", _constructor: "AdvancedCriteria",
+                                    criteria: [{fieldName: "contactInfo.mdmsMobile", operator: "iContains", value: val},
+                                        {fieldName: "contactInfo.eMobileForSMS", operator: "equals", value: "mdmsMobile"},
+                                    ]
+                                }
+                            ]
+                        };
+                        dsRequest.data.criteria.remove(mobileFilter);
+                        dsRequest.data.criteria.push(cr);
+                    }
+                    return this.Super("transformRequest", arguments);
+                },
                 fetchDataURL: personnelUrl + "/iscList"
             });
 
