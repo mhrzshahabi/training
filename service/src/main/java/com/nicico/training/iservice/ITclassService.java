@@ -148,4 +148,6 @@ public interface ITclassService {
 
     ElsSessionResponse getClassSessionsByCode(String classCode);
 
+    TclassDTO.TClassScoreEval getTClassDataForScoresInEval(String classCode);
+
     }

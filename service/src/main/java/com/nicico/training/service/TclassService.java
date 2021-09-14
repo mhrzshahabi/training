@@ -1889,10 +1889,16 @@ public class TclassService implements ITclassService {
             throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
 
-
     @Override
     @Transactional
     public void changeClassToOnlineStatus(Long classId, boolean state) {
         tclassDAO.changeClassToOnlineStatus(classId, state);
+    }
+
+    @Override
+    @Transactional
+    public TclassDTO.TClassScoreEval getTClassDataForScoresInEval(String classCode) {
+        Tclass tclass = tclassDAO.findByCode(classCode);
+        return modelMapper.map(tclass, TclassDTO.TClassScoreEval.class);
     }
 }
