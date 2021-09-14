@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface ITeacherRoleService {
 
-    List<String> findAllRoleByNationalCode(String nationalCode);
+    List<String> findAllTeacherRoleByNationalCode(String nationalCode);
 
     List<Role> findAllRoleByTeacherId(Long teacherId);
 

@@ -223,11 +223,9 @@ public class StudentService implements IStudentService {
     @Override
     public Set<String> findAllRoleByNationalCode(String nationalCode) {
         Set<String> roleList = new HashSet<>();
-        List<String> role = iTeacherRoleService.findAllRoleByNationalCode(nationalCode);
-        if (!role.isEmpty()) {
+        List<String> role = iTeacherRoleService.findAllTeacherRoleByNationalCode(nationalCode);
+        if (!role.isEmpty())
             roleList.addAll(role);
-            roleList.add("INSTRUCTOR");
-        }
         if (personnelService.isPresent(nationalCode))
             roleList.add("USER");
         if (personnelRegisteredService.isPresent(nationalCode))
