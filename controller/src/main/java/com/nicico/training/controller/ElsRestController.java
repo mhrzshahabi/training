@@ -1068,11 +1068,11 @@ public class ElsRestController {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
+                //for see all question target the parameterCode must be :=questionTarget
                 List<ElsQuestionTargetDto> data;
                 data=evaluationBeanMapper.toQuestionTargets(parameterService.getByCode(parameterCode).getResponse().getData());
                 dto.setStatus(200);
                 dto.setQuestionTargetDtoList(data);
-                //for see all question target the parameterCode must be :=questionTarget
                 return new ResponseEntity<>(dto, HttpStatus.OK);
             } catch (Exception e) {
                 dto.setStatus(TrainingException.ErrorType.NotFound.getHttpStatusCode());
