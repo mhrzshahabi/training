@@ -2894,4 +2894,11 @@ WHERE
         </createTable>
     </changeSet>
 
+
+    <changeSet author="nima (generated)" id="15926446194875-45478">
+        <addColumn tableName="tbl_role">
+            <column name="DESCRIPTION" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
