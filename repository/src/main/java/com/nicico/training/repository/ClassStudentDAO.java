@@ -85,4 +85,16 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             " INNER JOIN VIEW_CONTACT_INFO ON VIEW_CONTACT_INFO.ID = TBL_STUDENT.F_CONTACT_INFO WHERE tbl_class.c_start_date > :s1 AND  tbl_class.c_start_date < :s2", nativeQuery = true)
     List<Object> findAllUserMobiles(String s1, String s2);
 
+
+    @Query(value = "SELECT\n" +
+
+            "     tbl_class_student.id\n" +
+            "FROM\n" +
+            "         tbl_class_student\n" +
+            "    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id\n" +
+            "WHERE\n" +
+            "    tbl_class_student.class_id = :classId \n" +
+            "    AND national_code = :nationalCode ", nativeQuery = true)
+    List<Long> getClassStudentIdByClassCodeAndNationalCode(@Param("classId") Long classId, @Param("nationalCode") String nationalCode);
+
 }

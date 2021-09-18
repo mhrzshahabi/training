@@ -5,28 +5,24 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.dto.enums.ExamsType;
+import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
-import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import response.exam.ExtendedUserDto;
-import response.exam.ResendExamTimes;
+import request.exam.ElsExamScore;
+import request.exam.ExamResult;
+import response.BaseResponse;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +38,8 @@ public class ClassStudentService implements IClassStudentService {
     private final IEvaluationAnalysisService evaluationAnalysisService;
     private final PersonnelService personnelService;
     private final ITeacherService iTeacherService;
+    private final ITestQuestionService testQuestionService;
+    private final ParameterValueService parameterValueService;
 
 
     @Transactional(readOnly = true)
@@ -234,10 +232,103 @@ public class ClassStudentService implements IClassStudentService {
         return result;
     }
 
+    @Override
+    @Transactional
+    public BaseResponse updateScore(ElsExamScore elsExamScore) {
+        BaseResponse response =new BaseResponse();
+        TestQuestionDTO.fullInfo testQuestionDTO=testQuestionService.get(elsExamScore.getExamId());
+        Long classStudentId = getStudentId(testQuestionDTO.getTclass().getId(), elsExamScore.getNationalCode());
+        ClassStudent classStudent= getClassStudent(classStudentId);
+        if (checkScoreInRange(testQuestionDTO.getTclass().getScoringMethod(),elsExamScore.getScore())) {
+            switch (elsExamScore.getType()){
+                case "test":{
+
+                    if (classStudent.getTestScore()!=null){
+                        response.setStatus(406);
+                        response.setMessage("نمره ی تستی یک بار برای این دانشجو ذخیره شده است");
+
+                    }else {
+                        classStudent.setTestScore(elsExamScore.getScore());
+                        saveOrUpdate(classStudent);
+                        response.setStatus(200);
+                    }
+
+                    break;
+                }
+                case "descriptive":{
+                    classStudent.setDescriptiveScore(elsExamScore.getScore());
+                    saveOrUpdate(classStudent);
+                    response.setStatus(200);
+                    break;
+                }
+                case "final":{
+                    if (classStudent.getScore()!=null){
+                        response.setStatus(406);
+                        response.setMessage("نمره ی نهایی یک بار برای این دانشجو ذخیره شده است");
+
+                    }else {
+                        classStudent.setScore(elsExamScore.getScore());
+                        classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(testQuestionDTO.getTclass().getAcceptancelimit(),elsExamScore.getScore())).getId());
+                        saveOrUpdate(classStudent);
+                        response.setStatus(200);
+                    }
+                    break;
+                }
+                default:
+                    response.setMessage("نوع نمره اشتباه فرستاده شده است");
+                    response.setStatus(406);
+
+            }
+        }else {
+            response.setStatus(406);
+            response.setMessage("نمره ی وارد شده با روش نمره دهی این آزمون مطابقت ندارد");
+        }
+        return response;
+
+    }
+
+
+
     @Transactional
     public void setPeresenceTypeId(Long peresenceTypeId, Long id) {
         classStudentDAO.setPeresenceTypeId(peresenceTypeId, id);
     }
 
 
+    public Long getStudentId(Long classId, String nationalCode) {
+        List<Long> studentIds=classStudentDAO.getClassStudentIdByClassCodeAndNationalCode(classId, nationalCode);
+        if (!studentIds.isEmpty())
+        return studentIds.get(0);
+        else return null;
+    }
+
+    public boolean checkScoreInRange(String scoringMethod, Float score) {
+        if (scoringMethod.equals("3") || scoringMethod.equals("2")) {
+
+            if (scoringMethod.equals("3") )
+            {
+                    if ( score!=null) {
+                        return !(score > 20F);
+                    }
+            }
+            else
+            {
+                if ( score!=null) {
+                    return !(score > 100F);
+                }
+            }
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private String getStateByScore(String acceptancelimit, Float score) {
+        if (score >= Double.parseDouble(acceptancelimit)){
+            return "PassdByGrade";
+        }else {
+            return "TotalFailed";
+        }
+
+    }
 }

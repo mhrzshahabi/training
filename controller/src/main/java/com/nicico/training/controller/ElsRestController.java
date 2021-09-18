@@ -78,7 +78,7 @@ public class ElsRestController {
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
     private final IEvaluationService iEvaluationService;
-    private final ClassStudentService classStudentService;
+    private final IClassStudentService classStudentService;
     private final TclassService tclassService;
     private final TeacherService teacherService;
     private final CategoryService categoryService;
@@ -722,17 +722,17 @@ public class ElsRestController {
                                                                                 @PathVariable String nationalCode) {
         ElsStudentAttendanceListResponse elsStudentAttendanceListResponse = new ElsStudentAttendanceListResponse();
         try {
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
                 if (classCode != null && nationalCode != null && nationalCode.matches("\\d+")) {
                     elsStudentAttendanceListResponse = iStudentService.getStudentAttendanceList(classCode, nationalCode);
                 } else {
                     elsStudentAttendanceListResponse.setMessage("اطلاعات ارسالی فاقد محتوای صحیح ست");
                     elsStudentAttendanceListResponse.setStatus(HttpStatus.BAD_REQUEST.value());
                 }
-            } else {
-                elsStudentAttendanceListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                elsStudentAttendanceListResponse.setMessage("دسترسی موردنظر یافت نشد");
-            }
+//            } else {
+//                elsStudentAttendanceListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+//                elsStudentAttendanceListResponse.setMessage("دسترسی موردنظر یافت نشد");
+//            }
         } catch (Exception ex) {
             elsStudentAttendanceListResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             elsStudentAttendanceListResponse.setMessage("عملیات با خطا مواجه شد");
@@ -1115,5 +1115,11 @@ public class ElsRestController {
     @GetMapping("/anonymous-number/")
     public ResponseEntity<Boolean> mobileNumberVerifyStatus(@RequestParam String nationalCode, @RequestParam String number) {
         return ResponseEntity.ok(iMobileVerifyService.checkVerification(nationalCode, number));
+    }
+
+    @PostMapping("/set-score")
+    public ResponseEntity<BaseResponse> setScore(@RequestBody ElsExamScore elsExamScore) {
+        BaseResponse response=classStudentService.updateScore(elsExamScore);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 }

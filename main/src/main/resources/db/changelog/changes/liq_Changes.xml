@@ -2909,4 +2909,11 @@ WHERE
         <dropColumn columnName="question_target" tableName="tbl_question_bank"/>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="1631938594000-1">
+        <addColumn tableName="tbl_class_student">
+            <column name="TEST_SCORE" type="FLOAT" />
+            <column name="DESCRIPTIVEـSCORE" type="FLOAT" />
+         </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
