@@ -13,6 +13,9 @@ import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,6 +100,7 @@ public class QuestionBankService implements IQuestionBankService {
         modelMapper.map(request, updating);
 
 
+        updating.setQuestionTargets(request.getQuestionTargets());
         QuestionBank save = questionBankDAO.save(updating);
 
         return modelMapper.map(save, QuestionBankDTO.Info.class);
@@ -122,8 +126,12 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
     @Transactional
-    public List<QuestionBank> getQuestionBankByTeacherId(Long teacherId) {
-        return questionBankDAO.findByTeacherId(teacherId);
+    public List<QuestionBank> getQuestionBankByTeacherId(Long teacherId, Integer page, Integer size) {
+//        return questionBankDAO.findByTeacherId(teacherId);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                Sort.Order.desc("id")
+        ));
+        return questionBankDAO.findAllByTeacherId(teacherId,pageable).getContent();
     }
 
 }

@@ -2901,4 +2901,19 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="1631606843128-534">
+        <createTable tableName="tbl_question_bank_target">
+            <column name="f_question" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="targets" type="NUMBER(19, 0)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="f_question" baseTableName="tbl_question_bank_target" constraintName="FK_tbl_parameter_value_question_bank" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_question_bank" validate="true"/>
+
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1631606843128-535">
+        <dropColumn columnName="question_target" tableName="tbl_question_bank"/>
+    </changeSet>
+
 </databaseChangeLog>

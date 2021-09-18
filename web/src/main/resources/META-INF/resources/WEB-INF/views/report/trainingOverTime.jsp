@@ -27,7 +27,7 @@
         ]
     });
 
-    var organSegmentFilter = init_OrganSegmentFilterDF(true, true , null, "complexTitle","assistant","affairs", "section", "unit")
+    var organSegmentFilter = init_OrganSegmentFilterDF(true,true, true , null, "complexTitle","assistant","affairs", "section", "unit")
 
     var DynamicForm_TrainingOverTime = isc.DynamicForm.create({
         numCols: 6,

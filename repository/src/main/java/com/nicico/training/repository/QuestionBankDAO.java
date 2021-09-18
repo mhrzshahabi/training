@@ -4,6 +4,8 @@ ghazanfari_f, 8/29/2019, 10:43 AM
 package com.nicico.training.repository;
 
 import com.nicico.training.model.QuestionBank;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -39,5 +41,9 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
     List<QuestionBank> findByTclassId(Long id);
 
     List<QuestionBank> findByTeacherId(Long teacherId);
+
+    Page<QuestionBank> findAllByTeacherId(Long teacherId, Pageable pageable);
+
+
 
 }

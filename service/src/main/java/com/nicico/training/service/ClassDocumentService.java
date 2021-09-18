@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -73,6 +74,12 @@ public class ClassDocumentService implements IClassDocumentService {
         }
     }
 
+    @Transactional
+    @Override
+    public Boolean checkLetterNum(Long classId, String letterNum) {
+        List<String> letterNumList = classDocumentDAO.findAllLetterNumByClassId(classId);
+        return !letterNumList.contains(letterNum);
+    }
 
 
 }

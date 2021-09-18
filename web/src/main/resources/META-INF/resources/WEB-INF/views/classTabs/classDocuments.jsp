@@ -88,7 +88,7 @@ var saveActionUrlClassDocument;
             },
             {
                 name: "classId",
-                hidden:true
+                hidden: true
             }
         ]
     });
@@ -102,61 +102,116 @@ var saveActionUrlClassDocument;
             else if (methodClassDocument === "POST") {
                 DynamicForm_JspClassDocuments.getField("classId").setValue(tclassId);
                 let data = DynamicForm_JspClassDocuments.getValues();
-                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
-                    methodClassDocument, JSON.stringify(data), function (resp) {
-                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                            var OK = isc.Dialog.create({
-                                message: "عملیات با موفقیت انجام شد.",
-                                icon: "[SKIN]say.png",
-                                title: "انجام فرمان"
-                            });
-                            setTimeout(function () {
-                                OK.close();
-                            }, 3000);
-                            Window_JspClassDocuments.close();
-                            ListGrid_JspClassDocuments.invalidateCache();
-                        }
-                        else {
-                            var ERROR = isc.Dialog.create({
-                                message: ("خطا در ایجاد مستند کلاس"),
-                                icon: "[SKIN]stop.png",
-                                title: "توجه"
-                            });
-                            setTimeout(function () {
-                                ERROR.close();
-                            }, 3000);
-                        }
+                isc.RPCManager.sendRequest(TrDSRequest(classDocumentUrl + "checkLetterNum/" + tclassId + "/" + data.letterNum, "GET", null, function (resp) {
 
-                    }));
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        let canAttach = JSON.parse(resp.httpResponseText);
+                        if (canAttach === false) {
+                            createDialog("info", "این شماره نامه پیش تر ثبت شده است");
+                            return;
+                        } else {
+                            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
+                                methodClassDocument, JSON.stringify(data), function (resp) {
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        var OK = isc.Dialog.create({
+                                            message: "عملیات با موفقیت انجام شد.",
+                                            icon: "[SKIN]say.png",
+                                            title: "انجام فرمان"
+                                        });
+                                        setTimeout(function () {
+                                            OK.close();
+                                        }, 3000);
+                                        Window_JspClassDocuments.close();
+                                        ListGrid_JspClassDocuments.invalidateCache();
+                                    } else {
+                                        var ERROR = isc.Dialog.create({
+                                            message: ("خطا در ایجاد مستند کلاس"),
+                                            icon: "[SKIN]stop.png",
+                                            title: "توجه"
+                                        });
+                                        setTimeout(function () {
+                                            ERROR.close();
+                                        }, 3000);
+                                    }
+                                }));
+                        }
+                    } else {
+                        createDialog("info", "خطایی رخ داده است");
+                    }
+                }));
             }
-            else if(methodClassDocument == "PUT"){
+            else if (methodClassDocument === "PUT") {
                 let data = DynamicForm_JspClassDocuments.getValues();
-                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
-                    methodClassDocument, JSON.stringify(data), function (resp) {
-                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                            var OK = isc.Dialog.create({
-                                message: "عملیات با موفقیت انجام شد.",
-                                icon: "[SKIN]say.png",
-                                title: "انجام فرمان"
-                            });
-                            setTimeout(function () {
-                                OK.close();
-                            }, 3000);
-                            Window_JspClassDocuments.close();
-                            ListGrid_JspClassDocuments.invalidateCache();
-                        }
-                        else {
-                            var ERROR = isc.Dialog.create({
-                                message: ("خطا در ویرایش مستند کلاس"),
-                                icon: "[SKIN]stop.png",
-                                title: "توجه"
-                            });
-                            setTimeout(function () {
-                                ERROR.close();
-                            }, 3000);
-                        }
+                if (ListGrid_JspClassDocuments.getSelectedRecord().letterNum === data.letterNum) {
+                    isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
+                        methodClassDocument, JSON.stringify(data), function (resp) {
 
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                var OK = isc.Dialog.create({
+                                    message: "عملیات با موفقیت انجام شد.",
+                                    icon: "[SKIN]say.png",
+                                    title: "انجام فرمان"
+                                });
+                                setTimeout(function () {
+                                    OK.close();
+                                }, 3000);
+                                Window_JspClassDocuments.close();
+                                ListGrid_JspClassDocuments.invalidateCache();
+                            }
+                            else {
+                                var ERROR = isc.Dialog.create({
+                                    message: ("خطا در ویرایش مستند کلاس"),
+                                    icon: "[SKIN]stop.png",
+                                    title: "توجه"
+                                });
+                                setTimeout(function () {
+                                    ERROR.close();
+                                }, 3000);
+                            }
+
+                        }));
+                } else {
+
+                    isc.RPCManager.sendRequest(TrDSRequest(classDocumentUrl + "checkLetterNum/" + tclassId + "/" + data.letterNum, "GET", null, function (resp) {
+
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            let canAttach = JSON.parse(resp.httpResponseText);
+                            if (canAttach === false) {
+                                createDialog("info", "این شماره نامه پیش تر ثبت شده است");
+                                return;
+                            } else {
+                                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlClassDocument,
+                                    methodClassDocument, JSON.stringify(data), function (resp) {
+
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                            var OK = isc.Dialog.create({
+                                                message: "عملیات با موفقیت انجام شد.",
+                                                icon: "[SKIN]say.png",
+                                                title: "انجام فرمان"
+                                            });
+                                            setTimeout(function () {
+                                                OK.close();
+                                            }, 3000);
+                                            Window_JspClassDocuments.close();
+                                            ListGrid_JspClassDocuments.invalidateCache();
+                                        }
+                                        else {
+                                            var ERROR = isc.Dialog.create({
+                                                message: ("خطا در ویرایش مستند کلاس"),
+                                                icon: "[SKIN]stop.png",
+                                                title: "توجه"
+                                            });
+                                            setTimeout(function () {
+                                                ERROR.close();
+                                            }, 3000);
+                                        }
+                                }));
+                            }
+                        } else {
+                            createDialog("info", "خطایی رخ داده است");
+                        }
                     }));
+                }
             }
         }
     });
@@ -204,7 +259,7 @@ var saveActionUrlClassDocument;
     var ListGrid_JspClassDocuments = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource:RestDataSource_Document_JspClassDocuments,
+        dataSource: RestDataSource_Document_JspClassDocuments,
         selectionType: "single",
         sortField: 1,
         sortDirection: "descending",
@@ -218,10 +273,11 @@ var saveActionUrlClassDocument;
                 name: "referenceId",
                 title: "فیلد مرجع",
                 type: "SelectItem",
-                filterEditorProperties:{
+                filterEditorProperties: {
                     pickListProperties: {
                         showFilterEditor: false
-                    }},
+                    }
+                },
                 filterOperator: "equals",
                 changeOnKeypress: true,
                 displayField: "title",
@@ -232,10 +288,11 @@ var saveActionUrlClassDocument;
                 name: "letterTypeId",
                 title: "نوع نامه",
                 type: "SelectItem",
-                filterEditorProperties:{
+                filterEditorProperties: {
                     pickListProperties: {
                         showFilterEditor: false
-                    }},
+                    }
+                },
                 filterOperator: "equals",
                 changeOnKeypress: true,
                 displayField: "title",

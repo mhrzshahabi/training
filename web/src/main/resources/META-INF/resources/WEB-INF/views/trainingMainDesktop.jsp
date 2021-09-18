@@ -3781,7 +3781,8 @@
 
     // ---------------------------------------- OrganSegmentFilterDF ----------------------------------------
 
-    function init_OrganSegmentFilterDF(useNameInCriteria = false,
+    function init_OrganSegmentFilterDF(disableField = false,
+                                       useNameInCriteria = false,
                                        hideCompanyFilter = false,
                                        companyFieldName = "companyName",
                                        mojtameFieldName = "department.mojtameCode",
@@ -3799,6 +3800,15 @@
 
         if (hideCompanyFilter === true)
             filterDF.getFields()[0].hide();
+
+        if (disableField === true){
+            filterDF.getFields()[2].disable();
+            filterDF.getFields()[3].disable();
+            filterDF.getFields()[4].disable();
+            filterDF.getFields()[5].disable();
+        }
+
+
 
         filterDF.getFields()[0].criteriaField = companyFieldName;
         filterDF.getFields()[1].criteriaField = mojtameFieldName;
@@ -4092,6 +4102,11 @@
                     {name: "enabled", title: "<spring:message code="active.status"/>",width: "20%", filterOperator: "equals",valueMap:{74 : "غیر فعال"},filterOnKeypress: true}
                 ],
                 changed: function (form, item, value) {
+                    if(value!==null){
+                        form.getFields()[2].enable();
+                    }else{
+                        form.getFields()[2].disable();
+                    }
                     form.updateCriteria(item, value, 1);
                 },
             },
@@ -4121,6 +4136,11 @@
                     if (this.criteriaHasChanged) {this.fetchData(); this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
+                    if(value!==null){
+                        form.getFields()[3].enable();
+                    }else{
+                        form.getFields()[3].disable();
+                    }
                     form.updateCriteria(item, value, 2);
                 }
             },
@@ -4153,6 +4173,11 @@
                     }
                 },
                 changed: function (form, item, value) {
+                    if(value!==null){
+                        form.getFields()[4].enable();
+                    }else{
+                        form.getFields()[4].disable();
+                    }
                     form.updateCriteria(item, value, 3);
                 }
             },
@@ -4184,6 +4209,11 @@
                         this.criteriaHasChanged = false;}
                 },
                 changed: function (form, item, value) {
+                    if(value!==null){
+                        form.getFields()[5].enable();
+                    }else{
+                        form.getFields()[5].disable();
+                    }
                     form.updateCriteria(item, value, 4);
                 }
             },

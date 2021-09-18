@@ -340,13 +340,13 @@ public class ContactInfoService implements IContactInfoService {
 
     @Override
     public Object getCorrespondingRecordOfContactInfo(Long id, Long parentId) {
-        Optional optional = studentDAO.findByContactInfoId(id, parentId);
-        if (optional.isPresent())
-            return optional.get();
-        optional = personnelDAO.findByContactInfoId(id);
+        Optional optional = personnelDAO.findByContactInfoId(id);
         if (optional.isPresent())
             return optional.get();
         optional = personnelRegisteredDAO.findByContactInfoId(id);
+        if (optional.isPresent())
+            return optional.get();
+        optional = studentDAO.findByContactInfoId(id, parentId);
         if (optional.isPresent())
             return optional.get();
         return null;

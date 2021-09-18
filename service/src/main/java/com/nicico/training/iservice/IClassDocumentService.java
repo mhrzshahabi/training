@@ -26,4 +26,7 @@ public interface IClassDocumentService {
 
     @Transactional
     void delete(Long id);
+
+    @Transactional
+    Boolean checkLetterNum(Long classId, String letterNum);
 }
