@@ -15,7 +15,7 @@ public class AnonymousMobileController {
 
 
     @PostMapping("/add/")
-    public ResponseEntity<Boolean> addAnonymousNumber(@RequestParam String nationalCode, @RequestParam String number) {
+    public ResponseEntity<Boolean> addIfNotPresentAnonymousNumber(@RequestParam String nationalCode, @RequestParam String number) {
         return ResponseEntity.ok(iMobileVerifyService.add(nationalCode, number));
     }
 

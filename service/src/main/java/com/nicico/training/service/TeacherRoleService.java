@@ -11,6 +11,8 @@ import com.nicico.training.repository.RoleDAO;
 import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.repository.TeachersRoleDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -61,6 +63,7 @@ public class TeacherRoleService implements ITeacherRoleService {
 
     @Override
     @Transactional
+    @CachePut(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}")
     public boolean addRoleByNationalCode(String nationalCode, String roleName) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -80,6 +83,7 @@ public class TeacherRoleService implements ITeacherRoleService {
 
     @Override
     @Transactional
+    @CachePut(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}")
     public boolean addRoleByNationalCode(String nationalCode, Long roleId) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -151,6 +155,7 @@ public class TeacherRoleService implements ITeacherRoleService {
 
     @Override
     @Transactional
+    @CachePut(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}")
     public boolean removeTeacherRole(String nationalCode, Long roleId) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -189,6 +194,7 @@ public class TeacherRoleService implements ITeacherRoleService {
 
     @Override
     @Transactional
+    @CachePut(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}")
     public boolean removeTeacherRole(String nationalCode, String roleName) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
