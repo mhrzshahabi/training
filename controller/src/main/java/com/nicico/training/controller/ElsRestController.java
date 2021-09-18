@@ -1118,8 +1118,19 @@ public class ElsRestController {
     }
 
     @PostMapping("/set-score")
-    public ResponseEntity<BaseResponse> setScore(@RequestBody ElsExamScore elsExamScore) {
-        BaseResponse response=classStudentService.updateScore(elsExamScore);
+    public ResponseEntity<BaseResponse> setScore(HttpServletRequest header,@RequestBody ElsExamScore elsExamScore) {
+        BaseResponse response =new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                response  = classStudentService.updateScore(elsExamScore);
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage(((TrainingException) e).getMsg());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
-}
+    }

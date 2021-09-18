@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import request.exam.ElsExamScore;
+import request.exam.ElsStudentScore;
 import request.exam.ExamResult;
 import response.BaseResponse;
 
@@ -236,54 +237,64 @@ public class ClassStudentService implements IClassStudentService {
     @Transactional
     public BaseResponse updateScore(ElsExamScore elsExamScore) {
         BaseResponse response =new BaseResponse();
-        TestQuestionDTO.fullInfo testQuestionDTO=testQuestionService.get(elsExamScore.getExamId());
-        Long classStudentId = getStudentId(testQuestionDTO.getTclass().getId(), elsExamScore.getNationalCode());
-        ClassStudent classStudent= getClassStudent(classStudentId);
-        if (checkScoreInRange(testQuestionDTO.getTclass().getScoringMethod(),elsExamScore.getScore())) {
-            switch (elsExamScore.getType()){
-                case "test":{
-
-                    if (classStudent.getTestScore()!=null){
-                        response.setStatus(406);
-                        response.setMessage("نمره ی تستی یک بار برای این دانشجو ذخیره شده است");
-
-                    }else {
-                        classStudent.setTestScore(elsExamScore.getScore());
+        setScoreLoop:
+        for (ElsStudentScore examScore:elsExamScore.getStudentScores()){
+            TestQuestionDTO.fullInfo testQuestionDTO=testQuestionService.get(elsExamScore.getExamId());
+            Long classStudentId = getStudentId(testQuestionDTO.getTclass().getId(), examScore.getNationalCode());
+            ClassStudent classStudent= getClassStudent(classStudentId);
+            if (checkScoreInRange(testQuestionDTO.getTclass().getScoringMethod(),examScore.getScore())) {
+                switch (elsExamScore.getType()){
+                    case "test":{
+                        if (classStudent.getTestScore()!=null){
+                            response.setStatus(406);
+                            response.setMessage("نمره ی تستی کاربر با کد ملی : "+examScore.getNationalCode()+"  یک بار برای این دانشجو ذخیره شده است");
+                            break setScoreLoop;
+                        }else {
+                            classStudent.setTestScore(examScore.getScore());
+                            saveOrUpdate(classStudent);
+                            response.setStatus(200);
+                        }
+                        break;
+                    }
+                    case "descriptive":{
+                        classStudent.setDescriptiveScore(examScore.getScore());
                         saveOrUpdate(classStudent);
                         response.setStatus(200);
+                        break;
                     }
-
-                    break;
-                }
-                case "descriptive":{
-                    classStudent.setDescriptiveScore(elsExamScore.getScore());
-                    saveOrUpdate(classStudent);
-                    response.setStatus(200);
-                    break;
-                }
-                case "final":{
-                    if (classStudent.getScore()!=null){
+                    case "final":{
+                        if (classStudent.getScore()!=null){
+                            response.setStatus(406);
+                            response.setMessage("نمره ی نهایی کاربر با کد ملی : "+examScore.getNationalCode()+"  یک بار برای این دانشجو ذخیره شده است");
+                            break setScoreLoop;
+                        }else {
+                            classStudent.setScore(examScore.getScore());
+                            classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(testQuestionDTO.getTclass().getAcceptancelimit(),examScore.getScore())).getId());
+                            saveOrUpdate(classStudent);
+                            response.setStatus(200);
+                        }
+                        break;
+                    }
+                    default:
+                        response.setMessage("نوع نمره اشتباه فرستاده شده است");
                         response.setStatus(406);
-                        response.setMessage("نمره ی نهایی یک بار برای این دانشجو ذخیره شده است");
+                        break setScoreLoop;
 
-                    }else {
-                        classStudent.setScore(elsExamScore.getScore());
-                        classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(testQuestionDTO.getTclass().getAcceptancelimit(),elsExamScore.getScore())).getId());
-                        saveOrUpdate(classStudent);
-                        response.setStatus(200);
-                    }
-                    break;
                 }
-                default:
-                    response.setMessage("نوع نمره اشتباه فرستاده شده است");
-                    response.setStatus(406);
-
+            }else {
+                response.setStatus(406);
+                response.setMessage("نمره ی وارد شده کاربر با کد ملی : "+examScore.getNationalCode()+"  با روش نمره دهی این آزمون مطابقت ندارد");
+                break;
             }
-        }else {
-            response.setStatus(406);
-            response.setMessage("نمره ی وارد شده با روش نمره دهی این آزمون مطابقت ندارد");
         }
+        if (response.getStatus()==200)
         return response;
+        else
+            throw new TrainingException(TrainingException.ErrorType.registerNotAccepted, null,response.getMessage());
+
+
+
+
 
     }
 
@@ -308,13 +319,13 @@ public class ClassStudentService implements IClassStudentService {
             if (scoringMethod.equals("3") )
             {
                     if ( score!=null) {
-                        return !(score > 20F);
+                        return (score <= 20F && score >= 0);
                     }
             }
             else
             {
                 if ( score!=null) {
-                    return !(score > 100F);
+                    return (score <= 100F && score >= 0);
                 }
             }
             return true;
