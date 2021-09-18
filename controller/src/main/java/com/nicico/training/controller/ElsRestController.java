@@ -22,6 +22,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
@@ -882,13 +883,14 @@ public class ElsRestController {
         return response;
     }
 
-    @GetMapping("/questionBank/{nationalCode}")
-    public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+    @GetMapping("/questionBank/{nationalCode}/{page}/{size}")
+    public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode
+            , @PathVariable Integer page, @PathVariable Integer size) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
+                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId,page,size);
                 return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
             } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);

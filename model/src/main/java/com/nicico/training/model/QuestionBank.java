@@ -1,10 +1,12 @@
 package com.nicico.training.model;
 
 import com.nicico.training.model.enums.EQuestionLevel;
+import io.swagger.models.auth.In;
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -112,8 +114,11 @@ public class QuestionBank extends Auditable {
     @Column(name = "e_question_level")
     private EQuestionLevel eQuestionLevel;
 
-    @Column(name = "question_target")
-    private Integer questionTarget;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "tbl_question_bank_target", joinColumns = @JoinColumn(name = "f_question"))
+    @Column(name = "targets")
+    private List<Integer> questionTargets;
 
 
 }

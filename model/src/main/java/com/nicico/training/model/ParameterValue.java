@@ -41,4 +41,13 @@ public class ParameterValue extends Auditable {
 
     @Column(name = "f_parameter_id")
     private Long parameterId;
+
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "f_question_bank", insertable = false, updatable = false)
+//    private QuestionBank questionTarget;
+//
+//    @Column(name = "f_question_bank")
+//    private Long questionBankId;
+
+
 }
