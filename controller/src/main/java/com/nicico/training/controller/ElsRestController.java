@@ -1092,7 +1092,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/role/findBy-nationalCode")
-    public ResponseEntity<Set<String>> findAllByNationalCode(@RequestParam String nationalCode) {
+    public ResponseEntity<Set<String>> findAllRoleByNationalCode(@RequestParam String nationalCode) {
         return ResponseEntity.ok(iStudentService.findAllRoleByNationalCode(nationalCode));
     }
 
@@ -1108,11 +1108,11 @@ public class ElsRestController {
 
 
     @PostMapping("/anonymous-number/")
-    public ResponseEntity<Boolean> addAnonymousNumberForVerify(@RequestParam String nationalCode, @RequestParam String number) {
+    public ResponseEntity<Boolean> addIfNotPresentAnonymousNumberForVerify(@RequestParam String nationalCode, @RequestParam String number) {
         return ResponseEntity.ok(iMobileVerifyService.add(nationalCode, number));
     }
 
-    @GetMapping("/anonymous-number/")
+    @GetMapping("/anonymous-number/status")
     public ResponseEntity<Boolean> mobileNumberVerifyStatus(@RequestParam String nationalCode, @RequestParam String number) {
         return ResponseEntity.ok(iMobileVerifyService.checkVerification(nationalCode, number));
     }

@@ -30,6 +30,8 @@ public class MobileVerifyService implements IMobileVerifyService {
     @Override
     @Transactional
     public boolean add(@NotBlank @NotBlank @Length(max = 10) String nationalCode, @NotBlank @NotBlank @Length(max = 11) String number) {
+        if (mobileVerifyDAO.findByNationalCodeAndMobileNumber(nationalCode, number).isPresent())
+            return true;
         MobileVerify mobileVerify = new MobileVerify();
         mobileVerify.setNationalCode(nationalCode);
         mobileVerify.setMobileNumber(number);
@@ -69,7 +71,7 @@ public class MobileVerifyService implements IMobileVerifyService {
     }
 
     @Override
-    public boolean checkVerification(@NotBlank @NotBlank @Length(max = 10) String nationalCode, @NotBlank @NotBlank @Length(max = 11) String number) {
+    public boolean checkVerification(@NotBlank @NotBlank @Length(max = 10, min = 10) String nationalCode, @NotBlank @NotBlank @Length(max = 11, min = 11) String number) {
         MobileVerify mobileVerify = mobileVerifyDAO.findByNationalCodeAndMobileNumber(nationalCode, number).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.NotFound)
         );
@@ -78,7 +80,7 @@ public class MobileVerifyService implements IMobileVerifyService {
 
     @Override
     @Transactional
-    public boolean changeStatus(String nationalCode, String number, boolean status) {
+    public boolean changeStatus(@NotBlank @NotBlank @Length(max = 10) String nationalCode, @NotBlank @NotBlank @Length(max = 11) String number, boolean status) {
         MobileVerify mobileVerify = mobileVerifyDAO.findByNationalCodeAndMobileNumber(nationalCode, number).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.NotFound)
         );

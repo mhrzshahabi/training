@@ -2894,6 +2894,13 @@ WHERE
         </createTable>
     </changeSet>
 
+
+    <changeSet author="nima (generated)" id="15926446194875-45478">
+        <addColumn tableName="tbl_role">
+            <column name="DESCRIPTION" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet author="namdari (generated)" id="1631606843128-534">
         <createTable tableName="tbl_question_bank_target">
             <column name="f_question" type="NUMBER(19, 0)">

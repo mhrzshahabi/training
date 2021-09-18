@@ -19,6 +19,7 @@ import com.nicico.training.repository.StudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -221,6 +222,7 @@ public class StudentService implements IStudentService {
 
 
     @Override
+    @Cacheable(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}")
     public Set<String> findAllRoleByNationalCode(String nationalCode) {
         Set<String> roleList = new HashSet<>();
         List<String> role = iTeacherRoleService.findAllTeacherRoleByNationalCode(nationalCode);
