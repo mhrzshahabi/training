@@ -1035,15 +1035,19 @@ public class ElsRestController {
     }
 
     @GetMapping("/exam/findByType")
-    public List<Map<String,Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type){
-        return iStudentService.findAllExamsByNationalCode(nationalCode,type);
+    public List<Map<String, Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type) {
+        return iStudentService.findAllExamsByNationalCode(nationalCode, type);
     }
 
     @GetMapping(value = "/trainingFileByNationalCode/{nationalCode}")
-    public ResponseEntity<ViewTrainingFileDTO.ViewTrainingFileSpecRs> trainingFileByNationalCode(@PathVariable String nationalCode) {
-        return new ResponseEntity(new ViewTrainingFileDTO
-                .ViewTrainingFileSpecRs()
-                .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
+    public ResponseEntity trainingFileByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            return new ResponseEntity(new ViewTrainingFileDTO
+                    .ViewTrainingFileSpecRs()
+                    .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("خطای دسترسی");
+        }
     }
 
 }
