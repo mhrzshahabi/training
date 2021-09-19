@@ -141,4 +141,7 @@ public class ViewClassDetail extends Auditable {
 
     @Column(name = "tclass_student_online_eval_status")
     private Boolean classStudentOnlineEvalStatus;
+
+    @Column(name = "complex_id")
+    private Long complexId;
 }
