@@ -734,7 +734,6 @@
         maxWidth: 500,
         baseStyle: 'MSG-btn-orange',
         click: function () {
-            debugger;
             showOnlineResults('eval');
         }
     });
@@ -1286,7 +1285,6 @@
 
     function toElsRquest(data,type) {
         wait.show()
-        debugger;
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
