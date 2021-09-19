@@ -2941,4 +2941,48 @@ WHERE
         </addColumn>
     </changeSet>
 
+
+
+
+
+<!--    <changeSet author="namdari (generated)" id="1632032662000-2">-->
+<!--        <createTable tableName="REVINFO">-->
+<!--            <column autoIncrement="true" name="REV" type="NUMBER(10, 0)">-->
+<!--                <constraints primaryKey="true" primaryKeyName="REVINFOPK"/>-->
+<!--            </column>-->
+<!--            <column name="REVTSTMP" type="NUMBER(19, 0)"/>-->
+<!--        </createTable>-->
+<!--    </changeSet>-->
+<!--    <changeSet author="ARezaieZR (generated)" id="1603269610475-274">-->
+<!--        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="AUD_TBL_CONTACT_ACCOUNT"-->
+<!--                                 constraintName="FK121bsw0h8rc52w0ajdw8lcs81" deferrable="false"-->
+<!--                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"-->
+<!--                                 validate="true"/>-->
+<!--    </changeSet>-->
+<!--    -->
+<!--    -->
+<!--    -->
+<!--    -->
+<!--    -->
+<!--    <changeSet author="namdari (generated)" id="1632032662000-3">-->
+<!--        <createTable tableName="AUD_TBL_ROLE">-->
+<!--            <column name="id" type="NUMBER(19, 0)">-->
+<!--                <constraints primaryKey="true" primaryKeyName="AUD_TBL_ROLEPK"/>-->
+<!--            </column>-->
+<!--            <column name="REV" type="NUMBER(10, 0)">-->
+<!--                <constraints primaryKey="true" primaryKeyName="AUD_TBL_ROLEPK"/>-->
+<!--            </column>-->
+<!--            <column name="REVTYPE" type="NUMBER(3, 0)"/>-->
+<!--            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>-->
+<!--            <column name="d_created_date" type="TIMESTAMP"/>-->
+<!--            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>-->
+<!--            <column name="d_last_modified_date" type="TIMESTAMP"/>-->
+<!--            <column name="d_last_modified_date" type="TIMESTAMP"/>-->
+<!--            <column name="NAME" type="VARCHAR2(255 CHAR)"/>-->
+<!--        </createTable>-->
+<!--    </changeSet>-->
+
+
+
+
 </databaseChangeLog>

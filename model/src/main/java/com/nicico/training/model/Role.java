@@ -11,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "tbl_role")
-@Audited
+//@Audited
 public class Role extends Auditable{
 
     @Id
