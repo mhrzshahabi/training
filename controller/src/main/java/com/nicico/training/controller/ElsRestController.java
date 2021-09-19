@@ -896,17 +896,21 @@ public class ElsRestController {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId,page,size);
-                ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
-                PaginationDto paginationDto=new PaginationDto();
-                paginationDto.setCurrent(page);
-                paginationDto.setSize(size);
-                paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
-                paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
-                paginationDto.setTotalItems(questionBankList.getTotalPages());
-                questionBankDto.setPagination(paginationDto);
+                if (teacherId!=null){
+                    Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId,page,size);
+                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
+                    PaginationDto paginationDto=new PaginationDto();
+                    paginationDto.setCurrent(page);
+                    paginationDto.setSize(size);
+                    paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
+                    paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
+                    paginationDto.setTotalItems(questionBankList.getTotalPages());
+                    questionBankDto.setPagination(paginationDto);
+                    return questionBankDto;
+                }else {
+                    throw new TrainingException(TrainingException.ErrorType.NotFound);
+                }
 
-                return questionBankDto;
             } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }
