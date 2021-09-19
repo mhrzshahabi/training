@@ -28,6 +28,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -42,6 +43,7 @@ import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import response.BaseResponse;
+import response.PaginationDto;
 import response.attendance.AttendanceListSaveResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.ElsEvaluationsListResponse;
@@ -65,6 +67,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.nicico.training.controller.util.AppUtils.getTotalPages;
 
 
 @RestController
@@ -892,8 +896,17 @@ public class ElsRestController {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId, page, size);
-                return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
+                Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId,page,size);
+                ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
+                PaginationDto paginationDto=new PaginationDto();
+                paginationDto.setCurrent(page);
+                paginationDto.setSize(size);
+                paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
+                paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
+                paginationDto.setTotalItems(questionBankList.getTotalPages());
+                questionBankDto.setPagination(paginationDto);
+
+                return questionBankDto;
             } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }

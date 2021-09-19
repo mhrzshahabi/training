@@ -13,6 +13,7 @@ import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -126,12 +127,12 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
     @Transactional
-    public List<QuestionBank> getQuestionBankByTeacherId(Long teacherId, Integer page, Integer size) {
+    public Page<QuestionBank> getQuestionBankByTeacherId(Long teacherId, Integer page, Integer size) {
 //        return questionBankDAO.findByTeacherId(teacherId);
         Pageable pageable = PageRequest.of(page, size, Sort.by(
                 Sort.Order.desc("id")
         ));
-        return questionBankDAO.findAllByTeacherId(teacherId,pageable).getContent();
+        return questionBankDAO.findAllByTeacherId(teacherId,pageable);
     }
 
 }
