@@ -46,6 +46,7 @@ public class TeacherDTO {
         private CategoryDTO.CategoryInfoTuple majorCategory;
         private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
         private Integer version;
+        private List<Long> roles;
 
         public String getFullName() {
             return personality.getFirstNameFa() + " " + personality.getLastNameFa();

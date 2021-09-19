@@ -17,9 +17,10 @@ public class RoleService implements IRoleService {
     private final RoleDAO roleDAO;
 
     @Override
-    public boolean addRole(String name) {
+    public boolean addRole(String name, String description) {
         Role role = new Role();
         role.setName(name);
+        role.setDescription(description);
         roleDAO.save(role);
         return true;
     }

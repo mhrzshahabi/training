@@ -135,6 +135,7 @@ public class TeacherService implements ITeacherService {
     @Override
     public void delete(Long id) {
         List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Teacher", id).getList();
+        List<TeacherRole> teacherRoleList = iTeacherRoleService.findAllTeacherRoleByTeacherId(id);
         try {
             teacherDAO.deleteById(id);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -142,6 +143,9 @@ public class TeacherService implements ITeacherService {
         }
         for (AttachmentDTO.Info attachment : attachmentInfoList) {
             attachmentService.delete(attachment.getId());
+        }
+        for (TeacherRole teacherRole : teacherRoleList) {
+            iTeacherRoleService.removeTeacherRolesById(teacherRole.getId());
         }
     }
 

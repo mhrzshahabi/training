@@ -888,6 +888,8 @@
 
         vm.editRecord(clonedRecord);
 
+        var roleIds = selected_record.roles;
+        DynamicForm_BasicInfo_JspTeacher.getField("role").setValue(roleIds);
         var categoryIds = selected_record.categories;
         var subCategoryIds =selected_record.subCategories;
         if (categoryIds == null || categoryIds.length === 0)
