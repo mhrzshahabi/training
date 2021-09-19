@@ -64,6 +64,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @RestController
@@ -106,6 +107,7 @@ public class ElsRestController {
     private final ParameterService parameterService;
     private final ITeacherRoleService iTeacherRoleService;
     private final IMobileVerifyService iMobileVerifyService;
+    private final IRoleService iRoleService;
 
 
     @GetMapping("/eval/{id}")
@@ -890,7 +892,7 @@ public class ElsRestController {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId,page,size);
+                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId, page, size);
                 return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
             } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
@@ -1094,6 +1096,11 @@ public class ElsRestController {
     @GetMapping("/role/findBy-nationalCode")
     public ResponseEntity<Set<String>> findAllRoleByNationalCode(@RequestParam String nationalCode) {
         return ResponseEntity.ok(iStudentService.findAllRoleByNationalCode(nationalCode));
+    }
+
+    @GetMapping("/role/")
+    public ResponseEntity<List<Role>> findAllRole() {
+        return ResponseEntity.ok(iRoleService.findAll());
     }
 
     @DeleteMapping("/role/")
