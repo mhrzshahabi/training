@@ -63,6 +63,11 @@ public class TeacherRoleService implements ITeacherRoleService {
     }
 
     @Override
+    public List<TeacherRole> findAllTeacherRoleByTeacherId(Long teacherId) {
+        return teachersRoleDAO.findAllByTeacherId(teacherId);
+    }
+
+    @Override
     @Transactional
     @CacheEvict(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}",allEntries = true)
     public boolean addRoleByNationalCode(String nationalCode, String roleName) {
@@ -245,6 +250,13 @@ public class TeacherRoleService implements ITeacherRoleService {
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
         );
         teachersRoleDAO.delete(teacherRole);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeTeacherRolesById(Long teacherRoleId) {
+        teachersRoleDAO.deleteById(teacherRoleId);
         return true;
     }
 }

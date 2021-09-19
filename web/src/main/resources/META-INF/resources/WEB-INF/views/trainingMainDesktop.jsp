@@ -3406,6 +3406,7 @@
     const polisUrl = rootUrl + "/polis/";
     const classDocumentUrl = rootUrl + "/classDocument/"
     const courseListNeedAssessment = rootUrl + "/trainingNeedAssessment/"
+    const roleUrl = rootUrl + "/role/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

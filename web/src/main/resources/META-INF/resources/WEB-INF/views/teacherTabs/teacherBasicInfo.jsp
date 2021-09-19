@@ -1,7 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 // <script>
+
     var hasTeacherCategoriesChanged = false;
     var hasTeacherMajorCategoryChanged = false;
     //----------------------------------------------------Rest Data Source----------------------------------------------
@@ -23,6 +25,11 @@
     var RestDataSource_SubCategories_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
+    });
+
+    var RestDataSource_Role_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "name"}, {name: "description"}],
+        fetchDataURL: roleUrl + "iscList"
     });
 
     var RestDataSource_PersonnelDS_JspTeacher = isc.TrDS.create({
@@ -48,7 +55,6 @@
         ],
         fetchDataURL: viewActivePersonnelUrl + "/iscList"
     });
-
 
     //----------------------------------------------------Variables-----------------------------------------------------
     var showAttachViewLoader = isc.ViewLoader.create({
@@ -684,7 +690,22 @@
                     }
                 }
             },
-
+            {
+                name: "role",
+                title: "<spring:message code='role'/>",
+                editorType: "SelectItem",
+                type: "long",
+                textAlign: "center",
+                autoFetchData: false,
+                optionDataSource: RestDataSource_Role_JspTeacher,
+                valueField: "id",
+                displayField: "description",
+                filterFields: ["description"],
+                multiple: true,
+                pickListProperties: {
+                    showFilterEditor: false
+                }
+            }
         ],
         itemChanged: function (item, newValue) {
             if (item.name === "personality.nationalCode")
@@ -717,7 +738,7 @@
                     });
                 }
             }
-        },
+        }
     });
 
     DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').setCellStyle('teacher-code-label');

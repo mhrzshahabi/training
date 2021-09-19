@@ -25,7 +25,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +39,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -118,7 +118,14 @@ public class TeacherRestController {
                 create.setSubCategories(subCategories);
             create.setInBlackList(false);
             try {
-                return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
+                TeacherDTO.Info info = teacherService.create(create);
+                if (request.get("role") != null && !((List)request.get("role")).isEmpty()) {
+                    ArrayList<Integer> roles = (ArrayList<Integer>) request.get("role");
+                    for (Integer role : roles) {
+                        iTeacherRoleService.addRoleByTeacherId(info.getId(), Long.valueOf(role));
+                    }
+                }
+                return new ResponseEntity<>(info, HttpStatus.CREATED);
             } catch (TrainingException ex) {
                 return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
             }
@@ -149,6 +156,24 @@ public class TeacherRestController {
                 categories = setCats(request);
             if (request.get("subCategories") != null && !((List) request.get("subCategories")).isEmpty())
                 subCategories = setSubCats(request);
+
+            List<Role> teacherRoles = iTeacherRoleService.findAllRoleByTeacherId(teacher.getId());
+            List<Long> teacherRoleIds = teacherRoles.stream().map(Role::getId).collect(Collectors.toList());
+            if (request.get("role") != null && !((List)request.get("role")).isEmpty()) {
+                List<Long> newRoleIds = objectMapper.convertValue(request.get("role"), new TypeReference<List<Long>>() {
+                });
+                for (Long teacherRoleId : teacherRoleIds) {
+                    if (!newRoleIds.contains(teacherRoleId))
+                        iTeacherRoleService.removeTeacherRoleByTeacherId(teacher.getId(), teacherRoleId);
+                }
+                for (Long newRoleId : newRoleIds) {
+                    if (!teacherRoleIds.contains(newRoleId))
+                        iTeacherRoleService.addRoleByTeacherId(teacher.getId(), newRoleId);
+                }
+            } else {
+                iTeacherRoleService.removeRolesByTeacherId(teacher.getId(), teacherRoles.stream().map(Role::getName).collect(Collectors.toList()));
+            }
+
 
             TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
             if (categories != null && categories.size() > 0)
@@ -222,8 +247,10 @@ public class TeacherRestController {
 
     @GetMapping(value = "/info/{id}")
     //@PreAuthorize("hasAuthority('Teacher_R')")
-    public ResponseEntity<TeacherDTO.Info> info(@PathVariable Long id)throws IOException {
+    public ResponseEntity<TeacherDTO.Info> info(@PathVariable Long id) {
         TeacherDTO.Info response = teacherService.get(id);
+        List<Long> roleIds = iTeacherRoleService.findAllRoleByTeacherId(id).stream().map(Role::getId).collect(Collectors.toList());
+        response.setRoles(roleIds);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
