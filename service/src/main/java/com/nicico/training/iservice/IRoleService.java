@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface IRoleService {
 
-    boolean addRole(String name);
+    boolean addRole(String name, String description);
 
     boolean removeRole(String name);
 

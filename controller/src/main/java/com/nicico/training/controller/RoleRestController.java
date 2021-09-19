@@ -32,6 +32,11 @@ public class RoleRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
     }
 
+    @PostMapping("/addRole")
+    public ResponseEntity<Boolean> addRole(@RequestParam String name, @RequestParam String description) {
+        return ResponseEntity.ok(iRoleService.addRole(name, description));
+    }
+
     @GetMapping("/getAllRole")
     public ResponseEntity<List<Role>> getAllRole() {
         return ResponseEntity.ok(iRoleService.findAll());
