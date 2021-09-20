@@ -11,6 +11,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.model.Tclass;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
@@ -725,7 +726,7 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping("/hasAccessToGroups/{groupIds}")
-    public ResponseEntity<Map<String,Boolean>> hasAccessToGroups(@PathVariable String groupIds) {
+    public ResponseEntity<Map<String, Boolean>> hasAccessToGroups(@PathVariable String groupIds) {
         return new ResponseEntity(tClassService.hasAccessToGroups(groupIds), HttpStatus.OK);
     }
 
@@ -736,33 +737,28 @@ public class TclassRestController {
     }
 
 
-//    every class after finish can edit but when lock it we can not edit that
+    //    every class after finish can edit but when lock it we can not edit that
     @Loggable
     @GetMapping("/changeClassStatusToUnLock/{classId}/{groupId}")
-    public ResponseEntity changeClassStatusToFinish(@PathVariable Long classId,@PathVariable Long groupId) {
-        BaseResponse  response =new BaseResponse();
-        if (tClassService.hasAccessToChangeClassStatus(String.valueOf(groupId)))
-        {
-            response  =  tClassService.changeClassStatus(classId,"unLock",null);
-        }
-        else
-        {
+    public ResponseEntity changeClassStatusToFinish(@PathVariable Long classId, @PathVariable Long groupId) {
+        BaseResponse response = new BaseResponse();
+        if (tClassService.hasAccessToChangeClassStatus(String.valueOf(groupId))) {
+            response = tClassService.changeClassStatus(classId, "unLock", null);
+        } else {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             response.setMessage(messageSource.getMessage("hasNotAccessToUnLock", null, LocaleContextHolder.getLocale()));
         }
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
+
     //every class after finish can edit but when lock it we can not edit that
     @Loggable
     @PostMapping("/changeClassStatusToLock")
     public ResponseEntity changeClassStatusToLock(@RequestBody LockClassDto lockClassDto) {
-        BaseResponse  response =new BaseResponse();
-        if (tClassService.hasAccessToChangeClassStatus(String.valueOf(lockClassDto.getGroupId())))
-        {
-            response  =  tClassService.changeClassStatus(lockClassDto.getClassId(),"lock",lockClassDto.getReason());
-        }
-        else
-        {
+        BaseResponse response = new BaseResponse();
+        if (tClassService.hasAccessToChangeClassStatus(String.valueOf(lockClassDto.getGroupId()))) {
+            response = tClassService.changeClassStatus(lockClassDto.getClassId(), "lock", lockClassDto.getReason());
+        } else {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             response.setMessage(messageSource.getMessage("hasNotAccessToLock", null, LocaleContextHolder.getLocale()));
         }
@@ -790,8 +786,8 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/isValidForExam/{id}")
     public BaseResponse isValidForExam(@PathVariable long id) {
-        BaseResponse response=new BaseResponse();
-        boolean isValidForExam= tClassService.isValidForExam(id);
+        BaseResponse response = new BaseResponse();
+        boolean isValidForExam = tClassService.isValidForExam(id);
 
         if (isValidForExam)
             response.setStatus(200);
@@ -806,6 +802,15 @@ public class TclassRestController {
 
         BaseResponse response = tClassService.changeClassStatusToInProcess(classId);
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @Transactional
+    @GetMapping(value = "/audit/{classId}")
+    public ResponseEntity<List<Tclass>> getClassAuditData(@PathVariable Long classId) {
+        return new ResponseEntity<>(tClassService.getAuditData(classId), HttpStatus.OK);
+
     }
 
 }
