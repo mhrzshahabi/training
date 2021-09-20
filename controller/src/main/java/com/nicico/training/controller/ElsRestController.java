@@ -728,17 +728,17 @@ public class ElsRestController {
                                                                                 @PathVariable String nationalCode) {
         ElsStudentAttendanceListResponse elsStudentAttendanceListResponse = new ElsStudentAttendanceListResponse();
         try {
-//            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
                 if (classCode != null && nationalCode != null && nationalCode.matches("\\d+")) {
                     elsStudentAttendanceListResponse = iStudentService.getStudentAttendanceList(classCode, nationalCode);
                 } else {
                     elsStudentAttendanceListResponse.setMessage("اطلاعات ارسالی فاقد محتوای صحیح ست");
                     elsStudentAttendanceListResponse.setStatus(HttpStatus.BAD_REQUEST.value());
                 }
-//            } else {
-//                elsStudentAttendanceListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-//                elsStudentAttendanceListResponse.setMessage("دسترسی موردنظر یافت نشد");
-//            }
+            } else {
+                elsStudentAttendanceListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+                elsStudentAttendanceListResponse.setMessage("دسترسی موردنظر یافت نشد");
+            }
         } catch (Exception ex) {
             elsStudentAttendanceListResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             elsStudentAttendanceListResponse.setMessage("عملیات با خطا مواجه شد");
@@ -1070,26 +1070,19 @@ public class ElsRestController {
 
 
     @GetMapping("/exam/findByType")
-    public List<Map<String, Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type) {
-        return iStudentService.findAllExamsByNationalCode(nationalCode, type);
+    public List<Map<String,Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type){
+        return iStudentService.findAllExamsByNationalCode(nationalCode,type);
     }
 
     @GetMapping(value = "/trainingFileByNationalCode/{nationalCode}")
-    public ResponseEntity<ViewTrainingFileDTO.ViewTrainingFileSpecRs> trainingFileByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
-
+    public ResponseEntity trainingFileByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            try {
-                return new ResponseEntity(new ViewTrainingFileDTO
-                        .ViewTrainingFileSpecRs()
-                        .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
-            } catch (Exception e) {
-                throw new TrainingException(TrainingException.ErrorType.NotFound);
-            }
+            return new ResponseEntity(new ViewTrainingFileDTO
+                    .ViewTrainingFileSpecRs()
+                    .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
         } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("خطای دسترسی");
         }
-
-
     }
 
     @Loggable
