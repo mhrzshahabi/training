@@ -58,12 +58,16 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @Query(value = "SELECT t.ID FROM tbl_teacher t  LEFT JOIN tbl_personal_info  p ON t.F_PERSONALITY = p.id WHERE p.C_NATIONAL_CODE =:nationalCode", nativeQuery = true)
     Long getTeacherId(String nationalCode);
 
+    @Transactional
+    @Query(value = "SELECT t.ID FROM tbl_teacher t  LEFT JOIN tbl_personal_info  p ON t.F_PERSONALITY = p.id WHERE p.C_NATIONAL_CODE =:nationalCode AND t.B_ENABLED=1", nativeQuery = true)
+    Long getTeacherIdIfTeacherIsActive(String nationalCode);
+
     @Query(value = "select tr.NAME AS " + "\"name\""+
             "  FROM TBL_ROLE tr \n" +
             "INNER JOIN TBL_TEACHER_ROLES ttr ON ttr.ROLE_ID = tr.ID \n" +
             "INNER JOIN TBL_TEACHER tt ON tt.ID = ttr.TEACHER_ID \n" +
             "LEFT JOIN TBL_PERSONAL_INFO tpi ON tpi.ID = tt.F_PERSONALITY \n" +
-            "WHERE tpi.C_NATIONAL_CODE = :nationalCode",nativeQuery = true)
+            "WHERE tpi.C_NATIONAL_CODE = :nationalCode AND tt.B_ENABLED=1",nativeQuery = true)
     List<Map<String,Object>> findAllTeacherRoleByNationalCode(@Param("nationalCode") String nationalCode);
 
 
