@@ -14,4 +14,6 @@ public interface IRoleService {
     boolean deleteById(Long id);
 
     List<Role> findAll();
+
+    boolean editRole(long id, String name, String description);
 }

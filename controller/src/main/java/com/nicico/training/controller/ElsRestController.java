@@ -84,7 +84,7 @@ public class ElsRestController {
     private final EvaluationService evaluationService;
     private final IEvaluationService iEvaluationService;
     private final IClassStudentService classStudentService;
-    private final TclassService tclassService;
+    private final ITclassService tclassService;
     private final TeacherService teacherService;
     private final CategoryService categoryService;
     private final SubcategoryService subcategoryService;
@@ -904,7 +904,7 @@ public class ElsRestController {
                     paginationDto.setSize(size);
                     paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
                     paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
-                    paginationDto.setTotalItems(questionBankList.getTotalPages());
+                    paginationDto.setTotalItems((long) questionBankList.getTotalPages());
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
                 }else {

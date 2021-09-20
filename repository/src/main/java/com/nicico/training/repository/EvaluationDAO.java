@@ -81,6 +81,8 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "         INNER JOIN TBL_CLASS class ON eval.F_CLASS_ID = class.ID  " +
             "WHERE student.NATIONAL_CODE =:evaluatorNationalCode  " +
             "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId  " +
-            "  AND class.STUDENT_ONLINE_EVAL_STATUS = 1 ", nativeQuery = true)
+            "  AND class.STUDENT_ONLINE_EVAL_STATUS = 1 " +
+            "And cs.evaluation_status_reaction = 1" +
+            "", nativeQuery = true)
     List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode,@Param("evaluatorTypeId") Long evaluatorTypeId);
 }

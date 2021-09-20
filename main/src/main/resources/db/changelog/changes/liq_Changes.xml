@@ -2841,7 +2841,7 @@ WHERE
 
     <changeSet author="namdari (generated)" id="2563-1">
         <addColumn tableName="tbl_question_bank">
-            <column name="question_target" type="NUMBER(10, 0)" />
+            <column name="question_target" type="NUMBER(10, 0)"/>
         </addColumn>
     </changeSet>
 
@@ -2908,7 +2908,10 @@ WHERE
             </column>
             <column name="targets" type="NUMBER(19, 0)"/>
         </createTable>
-        <addForeignKeyConstraint baseColumnNames="f_question" baseTableName="tbl_question_bank_target" constraintName="FK_tbl_parameter_value_question_bank" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_question_bank" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_question" baseTableName="tbl_question_bank_target"
+                                 constraintName="FK_tbl_parameter_value_question_bank" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_question_bank" validate="true"/>
 
     </changeSet>
 
@@ -2918,9 +2921,9 @@ WHERE
 
     <changeSet author="namdari (generated)" id="1631938594000-1">
         <addColumn tableName="tbl_class_student">
-            <column name="TEST_SCORE" type="FLOAT" />
-            <column name="DESCRIPTIVEـSCORE" type="FLOAT" />
-         </addColumn>
+            <column name="TEST_SCORE" type="FLOAT"/>
+            <column name="DESCRIPTIVEـSCORE" type="FLOAT"/>
+        </addColumn>
     </changeSet>
 
     <changeSet author="xaniar (generated)" id="1632032662000-1">
@@ -2941,10 +2944,6 @@ WHERE
         </addColumn>
     </changeSet>
 
-
-
-
-
     <changeSet author="namdari (generated)" id="1632032662000-2">
         <createTable tableName="REVINFO">
             <column autoIncrement="true" name="REV" type="NUMBER(10, 0)">
@@ -2953,11 +2952,6 @@ WHERE
             <column name="REVTSTMP" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-
-
-
-
-
 
     <changeSet author="namdari (generated)" id="1632032662000-3">
         <createTable tableName="AUD_TBL_ROLE">
@@ -2987,10 +2981,154 @@ WHERE
     </changeSet>
 
 
-
-
     <changeSet author="namdari (generated)" id="1632032662000-6">
         <createSequence sequenceName="hibernate_sequence"/>
     </changeSet>
+
+    <changeSet author="namdari (generated)" id="1632032662000-7">
+        <createTable tableName="TBL_ROLE_AUD">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_ROLE_AUDPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_ROLE_AUDPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="DESCRIPTION" type="varchar2(255 CHAR)"/>
+
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1632032662000-8">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_ROLE_AUD"
+                                 constraintName="FK_TBL_ROLE_AUD_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
+                                 validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1632032662000-9">
+        <addColumn tableName="TBL_ROLE_AUD">
+            <column name="e_enabled" type="number(19, 0)"/>
+            <column name="e_deleted" type="number(19, 0)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="matin_ar (generated)" id="1632032662000-10">
+        <dropTable tableName="AUD_TBL_ROLE"/>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1632047279000-1">
+        <createTable tableName="TBL_CLASS_AUD">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_CLASS_AUDPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_CLASS_AUDPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="e_enabled" type="number(19, 0)"/>
+            <column name="e_deleted" type="number(19, 0)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
+
+            <column name="c_acceptance_limit" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_status_date" type="TIMESTAMP"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+
+            <column name="f_course" type="NUMBER(19, 0)"/>
+            <column name="n_d_duration" type="NUMBER(19, 0)"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)"/>
+
+            <column name="b_fifth" type="NUMBER(1, 0)"/>
+            <column name="b_first" type="NUMBER(1, 0)"/>
+            <column name="b_fourth" type="NUMBER(1, 0)"/>
+            <column name="b_friday" type="NUMBER(1, 0)"/>
+            <column name="n_group" type="NUMBER(19, 0)"/>
+
+            <column name="n_h_duration" type="NUMBER(19, 0)"/>
+            <column name="c_has_warning" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_institute" type="NUMBER(19, 0)"/>
+            <column name="n_max_capacity" type="NUMBER(19, 0)"/>
+            <column name="n_min_capacity" type="NUMBER(19, 0)"/>
+            <column name="b_monday" type="NUMBER(1, 0)"/>
+            <column name="f_institute_organizer" type="NUMBER(19, 0)"/>
+            <column name="f_planner" type="NUMBER(19, 0)"/>
+            <column name="pre_course_test" type="NUMBER(1, 0)"/>
+            <column name="c_reason" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_saturday" type="NUMBER(1, 0)"/>
+            <column name="c_scoring_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_second" type="NUMBER(1, 0)"/>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)"/>
+
+            <column name="start_evaluation" type="NUMBER(10, 0)"/>
+            <column name="b_sunday" type="NUMBER(1, 0)"/>
+            <column name="f_supervisor" type="NUMBER(19, 0)"/>
+            <column name="f_teacher" type="NUMBER(19, 0)"/>
+            <column name="c_teaching_brand" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_teaching_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_term" type="NUMBER(19, 0)"/>
+            <column name="b_third" type="NUMBER(1, 0)"/>
+            <column name="b_thursday" type="NUMBER(1, 0)"/>
+            <column name="c_title_class" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_topology" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_tuesday" type="NUMBER(1, 0)"/>
+            <column name="b_wednesday" type="NUMBER(1, 0)"/>
+            <column name="c_workflow_ending_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_workflow_ending_status_code" type="NUMBER(10, 0)"/>
+
+            <column name="complex_id" type="number(19, 0)"/>
+            <column name="assistant_id" type="number(19, 0)"/>
+            <column name="affairs_id" type="number(19, 0)"/>
+            <column name="b_class_to_online_status" type="number(1, 0)"/>
+
+            <column name="b_has_test" type="number(1, 0)"/>
+
+            <column name="STUDENT_ONLINE_EVAL_STATUS" type="number(1, 0)"/>
+
+            <column name="TEACHER_ONLINE_EVAL_STATUS" type="number(1, 0)"/>
+
+            <column name="f_student_cost_currency" type="number(19, 0)"/>
+            <column name="c_student_cost" type="varchar2(255 CHAR)"/>
+            <column name="f_targetsociety_type_id" type="number(19, 0)"/>
+            <column name="f_alternative_class" type="number(19, 0)"/>
+
+            <column name="f_cancel_class_reason" type="number(19, 0)"/>
+
+            <column name="c_evaluation" type="varchar2(255 CHAR)"/>
+
+            <column name="c_behavioral_level" type="varchar2(255 CHAR)"/>
+
+            <column name="evaluation_reaction_teacher" type="number(10, 0)"/>
+
+            <column name="evaluation_reaction_training" type="number(10, 0)"/>
+            <column name="f_target_population_type_id" type="number(19, 0)"/>
+            <column name="f_holding_class_type_id" type="number(19, 0)"/>
+            <column name="f_teaching_method_id" type="number(19, 0)"/>
+            <column name="c_postpone_start_date" type="varchar2(255 CHAR)"/>
+
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1632047279000-2">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_CLASS_AUD"
+                                 constraintName="FK_TBL_CLASS_AUD_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
+                                 validate="true"/>
+    </changeSet>
+
 
 </databaseChangeLog>

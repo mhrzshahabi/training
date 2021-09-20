@@ -43,7 +43,7 @@ public class TeacherRoleService implements ITeacherRoleService {
             }
             roles.add(INSTRUCTOR);
         }else {
-            Long teacherId = teacherDAO.getTeacherId(nationalCode);
+            Long teacherId = teacherDAO.getTeacherIdIfTeacherIsActive(nationalCode);
             if (teacherId!=null)
                 roles.add(INSTRUCTOR);
         }
@@ -60,11 +60,6 @@ public class TeacherRoleService implements ITeacherRoleService {
             return allByTeacher.stream().map(TeacherRole::getRole).collect(Collectors.toList());
         else
             return Collections.emptyList();
-    }
-
-    @Override
-    public List<TeacherRole> findAllTeacherRoleByTeacherId(Long teacherId) {
-        return teachersRoleDAO.findAllByTeacherId(teacherId);
     }
 
     @Override
@@ -236,27 +231,4 @@ public class TeacherRoleService implements ITeacherRoleService {
         return true;
     }
 
-    @Override
-    @Transactional
-    public boolean removeTeacherRoleByTeacherId(Long teacherId, Long roleId) {
-        Teacher teacher = teacherDAO.findById(teacherId).orElseThrow(
-                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
-        );
-        Role role = roleDAO.findById(roleId).orElseThrow(
-                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
-        );
-
-        TeacherRole teacherRole = teachersRoleDAO.findByTeacherAndRole(teacher, role).orElseThrow(
-                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
-        );
-        teachersRoleDAO.delete(teacherRole);
-        return true;
-    }
-
-    @Override
-    @Transactional
-    public boolean removeTeacherRolesById(Long teacherRoleId) {
-        teachersRoleDAO.deleteById(teacherRoleId);
-        return true;
-    }
 }

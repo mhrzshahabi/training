@@ -10,6 +10,6 @@ public class PaginationDto {
     private long current;
     private int size;
     private int last;
-    private long totalItems;
+    private Long totalItems;
 
 }

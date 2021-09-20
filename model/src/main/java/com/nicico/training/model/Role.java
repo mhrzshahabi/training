@@ -3,8 +3,10 @@ package com.nicico.training.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.AuditMappedBy;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 
@@ -12,7 +14,8 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "tbl_role")
-//@Audited
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+@AuditOverride(forClass =Auditable.class )
 public class Role extends Auditable{
 
     @Id

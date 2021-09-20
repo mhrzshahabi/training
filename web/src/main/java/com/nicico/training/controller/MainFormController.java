@@ -457,4 +457,9 @@ public class MainFormController {
         return "report/coursesEvaluationReport";
     }
 
+    @RequestMapping("/classHistoryReport")
+    public String classHistoryReport() {
+        return "report/classHistoryReport";
+    }
+
 }
