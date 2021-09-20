@@ -46,7 +46,7 @@ public class ViewTrainingFileDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("ViewTrainingFileSpecRs")
+    @ApiModel("info")
     public static class Info {
         private String firstName;
         private String lastName;
