@@ -183,4 +183,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Modifying
     @Query(value = "update TBL_CLASS set B_CLASS_TO_ONLINE_STATUS =:state where ID =:classId", nativeQuery = true)
     void changeClassToOnlineStatus(Long classId, boolean state);
+
+    @Query(value = "select * from tbl_class_aud  where ID = :classId ORDER BY rev", nativeQuery = true)
+    List<Tclass> getAuditData(long classId);
 }

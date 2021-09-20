@@ -6,10 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class PaginationDto {
-    private long total;
-    private long current;
-    private int size;
-    private int last;
-    private long totalItems;
+    private Long total;
+    private Long current;
+    private Integer size;
+    private Integer last;
+    private Long totalItems;
 
 }

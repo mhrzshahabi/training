@@ -413,9 +413,9 @@
             </sec:authorize>
             {isSeparator: true},
             {
-                title: "<spring:message code='students.list'/>",
+                title: "<spring:message code='class.history'/>",
                 click: function () {
-                    Add_Student();
+                    createTab(this.title, "<spring:url value="web/classHistoryReport"/>");
                 }
             }
         ]
