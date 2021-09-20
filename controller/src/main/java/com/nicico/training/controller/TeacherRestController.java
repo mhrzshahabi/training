@@ -120,9 +120,10 @@ public class TeacherRestController {
             try {
                 TeacherDTO.Info info = teacherService.create(create);
                 if (request.get("role") != null && !((List)request.get("role")).isEmpty()) {
+                    String nationalCode = teacherService.getTeacherNationalCodeById(info.getId());
                     ArrayList<Integer> roles = (ArrayList<Integer>) request.get("role");
                     for (Integer role : roles) {
-                        iTeacherRoleService.addRoleByTeacherId(info.getId(), Long.valueOf(role));
+                        iTeacherRoleService.addRoleByNationalCode(nationalCode, Long.valueOf(role));
                     }
                 }
                 return new ResponseEntity<>(info, HttpStatus.CREATED);
@@ -157,31 +158,33 @@ public class TeacherRestController {
             if (request.get("subCategories") != null && !((List) request.get("subCategories")).isEmpty())
                 subCategories = setSubCats(request);
 
-            List<Role> teacherRoles = iTeacherRoleService.findAllRoleByTeacherId(teacher.getId());
-            List<Long> teacherRoleIds = teacherRoles.stream().map(Role::getId).collect(Collectors.toList());
-            if (request.get("role") != null && !((List)request.get("role")).isEmpty()) {
-                List<Long> newRoleIds = objectMapper.convertValue(request.get("role"), new TypeReference<List<Long>>() {
-                });
-                for (Long teacherRoleId : teacherRoleIds) {
-                    if (!newRoleIds.contains(teacherRoleId))
-                        iTeacherRoleService.removeTeacherRoleByTeacherId(teacher.getId(), teacherRoleId);
-                }
-                for (Long newRoleId : newRoleIds) {
-                    if (!teacherRoleIds.contains(newRoleId))
-                        iTeacherRoleService.addRoleByTeacherId(teacher.getId(), newRoleId);
-                }
-            } else {
-                iTeacherRoleService.removeRolesByTeacherId(teacher.getId(), teacherRoles.stream().map(Role::getName).collect(Collectors.toList()));
-            }
-
-
             TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
             if (categories != null && categories.size() > 0)
                 update.setCategories(categories);
             if (subCategories != null && subCategories.size() > 0)
                 update.setSubCategories(subCategories);
             try {
-                return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
+                TeacherDTO.Info info = teacherService.update(id, update);
+
+                List<Role> roles = iTeacherRoleService.findAllRoleByTeacherId(teacher.getId());
+                List<Long> roleIds = roles.stream().map(Role::getId).collect(Collectors.toList());
+                if (request.get("role") != null && !((List)request.get("role")).isEmpty()) {
+                    String nationalCode = teacherService.getTeacherNationalCodeById(teacher.getId());
+                    List<Long> newRoleIds = objectMapper.convertValue(request.get("role"), new TypeReference<List<Long>>() {
+                    });
+                    for (Long roleId : roleIds) {
+                        if (!newRoleIds.contains(roleId))
+                            iTeacherRoleService.removeTeacherRole(nationalCode, roleId);
+                    }
+                    for (Long newRoleId : newRoleIds) {
+                        if (!roleIds.contains(newRoleId))
+                            iTeacherRoleService.addRoleByNationalCode(nationalCode, newRoleId);
+                    }
+                } else {
+                    iTeacherRoleService.removeRolesByTeacherId(teacher.getId(), roles.stream().map(Role::getName).collect(Collectors.toList()));
+                }
+
+                return new ResponseEntity<>(info, HttpStatus.OK);
             } catch (TrainingException ex) {
                 return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
             }
