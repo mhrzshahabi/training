@@ -908,11 +908,20 @@ public class ElsRestController {
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
                 }else {
-                    throw new TrainingException(TrainingException.ErrorType.NotFound);
+                     ElsQuestionBankDto dto=new ElsQuestionBankDto();
+                    ElsQuestionDto elsQuestionDto=new ElsQuestionDto();
+                    elsQuestionDto.setStatus(406);
+                    elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
+                    dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                     return dto;
                 }
 
             } catch (Exception e) {
-                throw new TrainingException(TrainingException.ErrorType.NotFound);
+                ElsQuestionBankDto dto=new ElsQuestionBankDto();
+                ElsQuestionDto elsQuestionDto=new ElsQuestionDto();
+                elsQuestionDto.setStatus(500);
+                dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                return dto;
             }
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
