@@ -79,7 +79,7 @@ public class ElsRestController {
     private final EvaluationService evaluationService;
     private final IEvaluationService iEvaluationService;
     private final IClassStudentService classStudentService;
-    private final TclassService tclassService;
+    private final ITclassService tclassService;
     private final TeacherService teacherService;
     private final CategoryService categoryService;
     private final SubcategoryService subcategoryService;
@@ -908,11 +908,11 @@ public class ElsRestController {
                     Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId,page,size);
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
                     PaginationDto paginationDto=new PaginationDto();
-                    paginationDto.setCurrent(page);
+                    paginationDto.setCurrent(page.longValue());
                     paginationDto.setSize(size);
-                    paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
+                    paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size).longValue());
                     paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
-                    paginationDto.setTotalItems(questionBankList.getTotalPages());
+                    paginationDto.setTotalItems((long) questionBankList.getTotalPages());
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
                 }else {

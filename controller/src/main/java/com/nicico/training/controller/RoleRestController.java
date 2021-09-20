@@ -42,4 +42,11 @@ public class RoleRestController {
         return ResponseEntity.ok(iRoleService.findAll());
     }
 
+
+//    @PostMapping("/editRole/{id}")
+//    public ResponseEntity<Boolean> editRole(@PathVariable long id,@RequestParam String name, @RequestParam String description) {
+//        return ResponseEntity.ok(iRoleService.editRole(id,name, description));
+//    }
+
+
 }

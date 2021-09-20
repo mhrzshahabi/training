@@ -43,7 +43,7 @@ public class TeacherRoleService implements ITeacherRoleService {
             }
             roles.add(INSTRUCTOR);
         }else {
-            Long teacherId = teacherDAO.getTeacherId(nationalCode);
+            Long teacherId = teacherDAO.getTeacherIdIfTeacherIsActive(nationalCode);
             if (teacherId!=null)
                 roles.add(INSTRUCTOR);
         }

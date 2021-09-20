@@ -47,4 +47,16 @@ public class RoleService implements IRoleService {
     public List<Role> findAll() {
         return roleDAO.findAll();
     }
+
+    @Override
+    public boolean editRole(long id, String name, String description) {
+        Role role = roleDAO.findById(id).orElseThrow(
+                () -> new TrainingException(TrainingException.ErrorType.InvalidData)
+        );
+
+        role.setDescription(description);
+        role.setName(name);
+        roleDAO.save(role);
+        return true;
+    }
 }

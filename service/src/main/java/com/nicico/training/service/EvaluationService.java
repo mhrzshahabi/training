@@ -304,7 +304,14 @@ public class EvaluationService implements IEvaluationService {
     @Override
     public List<Evaluation> getEvaluationsByEvaluatorNationalCode(String evaluatorNationalCode, Long EvaluatorTypeId, String evaluatorType) {
         if (evaluatorType.equals("teacher")) {
-            return evaluationDAO.getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
+            List<Evaluation> list= evaluationDAO.getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
+            List<Evaluation> notAnsweredEvaluations=new ArrayList<>();
+            for (Evaluation evaluation:list){
+                List<EvaluationAnswer> answers=evaluationAnswerDAO.findByEvaluationId(evaluation.getId());
+                if (answers.isEmpty())
+                    notAnsweredEvaluations.add(evaluation);
+            }
+            return notAnsweredEvaluations;
         } else if (evaluatorType.equals("student")) {
             return evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
         } else {

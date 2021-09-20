@@ -3,6 +3,10 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -19,6 +23,8 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_class")
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+@AuditOverride(forClass =Auditable.class )
 public class Tclass extends Auditable {
 
     @Id
@@ -103,6 +109,7 @@ public class Tclass extends Auditable {
     @JoinTable(name = "tbl_class_training_place",
             joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")})
+    @NotAudited
     private Set<TrainingPlace> trainingPlaceSet;
 
     @Column(name = "n_group", nullable = false)
@@ -161,15 +168,18 @@ public class Tclass extends Auditable {
     private Integer workflowEndingStatusCode;
 
     @OneToMany(mappedBy = "tclass", cascade = CascadeType.REMOVE)
+    @NotAudited
     private Set<ClassStudent> classStudents;
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @NotAudited
     private Set<ClassSession> classSessions;
 
     @ElementCollection
     @CollectionTable(name = "tbl_class_pre_course_test_question", joinColumns = @JoinColumn(name = "f_class_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"f_class_id", "c_pre_course_test_question"})})
     @OrderColumn(name = "n_order", nullable = false)
     @Column(name = "c_pre_course_test_question", nullable = false, length = 1000)
+    @NotAudited
     private List<String> preCourseTestQuestions;
 
     @Column(name = "pre_course_test")
@@ -188,12 +198,15 @@ public class Tclass extends Auditable {
     private String hasWarning;
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @NotAudited
     private Set<Alarm> alarms;
 
     @OneToMany(mappedBy = "tclassConflict", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @NotAudited
     private Set<Alarm> alarmsConflict;
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotAudited
     private List<TargetSociety> targetSocietyList;
 
     @Column(name = "evaluation_reaction_teacher")
@@ -219,9 +232,11 @@ public class Tclass extends Auditable {
     private Long classCancelReasonId;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "alternativeClass")
+    @NotAudited
     private Set<Tclass> canceledClasses;
 
     @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @NotAudited
     private Set<Evaluation> evaluations;
 
     @ManyToOne(fetch = FetchType.LAZY)

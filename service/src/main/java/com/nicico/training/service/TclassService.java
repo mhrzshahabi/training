@@ -1788,14 +1788,12 @@ public class TclassService implements ITclassService {
         }
     }
 
+    @Override
     @Transactional(readOnly = true)
     public EvalAverageResult getEvaluationAverageResultToTeacher(Long classId) {
-
-
         Tclass tclass = getTClass(classId);
         Set<ClassStudent> classStudents = tclass.getClassStudents();
         EvalAverageResult studentsAverageGradeToTeacher = getStudentsAverageGradeToTeacher(classStudents);
-
         return studentsAverageGradeToTeacher;
     }
 
@@ -1887,6 +1885,11 @@ public class TclassService implements ITclassService {
             return sessionBeanMapper.toGetElsSessionResponse(tclass);
         else
             throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
+
+    @Override
+    public List<Tclass> getAuditData(long i) {
+        return   tclassDAO.getAuditData(i);
     }
 
 
