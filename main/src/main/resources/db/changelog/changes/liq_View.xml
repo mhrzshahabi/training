@@ -9984,4 +9984,77 @@ WHERE
         </createView>
     </changeSet>
 
+    <changeSet author="zare" id="abiz-2588">
+        <createView viewName="view_class_detail" replaceIfExists="true">
+            <![CDATA[SELECT
+        tclass.ID as id,
+        tclass.c_created_by as c_created_by ,
+        tclass.d_created_date as d_created_date,
+        tclass.e_deleted as e_deleted,
+        tclass.e_enabled as e_enabled,
+        tclass.c_last_modified_by as c_last_modified_by,
+        tclass.d_last_modified_date as d_last_modified_date,
+        tclass.n_version as n_version,
+        tclass.C_SCORING_METHOD as tclass_scoring_method,
+        tclass.PRE_COURSE_TEST as tclass_has_pre_test,
+        tclass.N_H_DURATION as tclass_n_duration,
+        tclass.F_INSTITUTE_ORGANIZER as tclass_organizer,
+        tclass.C_STATUS as tclass_status,
+        tclass.F_PLANNER as tclass_planner,
+        tclass.F_SUPERVISOR as tclass_supervisor,
+        tclass.C_CODE as tclass_c_code,
+        tclass.F_INSTITUTE as institute_id,
+        tclass.F_TEACHER as teacher_id,
+        tclass.F_TERM as term_id,
+        tclass.C_START_DATE as tclass_c_start_date,
+        tclass.C_WORKFLOW_ENDING_STATUS as tclass_ending_status,
+        tclass.C_END_DATE as tclass_c_end_date,
+        tclass.EVALUATION_REACTION_TEACHER as teacher_eval_status,
+        tclass.EVALUATION_REACTION_TRAINING as training_eval_status,
+        tclass.C_EVALUATION as C_EVALUATION,
+        tclass.C_BEHAVIORAL_LEVEL as C_BEHAVIORAL_LEVEL,
+        tclass.START_EVALUATION as START_EVALUATION,
+        tclass.F_CANCEL_CLASS_REASON as CANCEL_REASON_ID,
+        tclass.C_POSTPONE_START_DATE as POSTPONE_DATE,
+        tclass.c_teaching_type as tclass_teaching_type,
+        personalInfo.C_FIRST_NAME_FA as teacher_First_Name,
+        personalInfo.C_LAST_NAME_FA as teacher_Last_Name,
+        SUBSTR(tclass.C_START_DATE,1,4) as tclass_year,
+        course.ID as course_id,
+        course.C_CODE as course_c_code,
+        course.CATEGORY_ID as course_category_id,
+        course.SUBCATEGORY_ID as course_subcategory_id,
+        course.C_TITLE_FA as course_c_title_fa,
+        course.C_EVALUATION as course_c_evaluation,
+        CASE WHEN students.counts IS NULL THEN 0 ELSE students.counts END AS tclass_students_count,
+        term.C_TITLE_FA as term_TitleFa,
+        institute.C_TITLE_FA as tclass_institute,
+        altClasses.C_CODE as ALTERNATIVE_CLASS_CODE,
+        CASE WHEN altClasses.ID IS NULL THEN 0 ELSE 1 END AS RE_HOLIDING_STATUS,
+        CASE WHEN tclass.START_EVALUATION IS NULL THEN NULL ELSE
+        TO_DATE(
+         tclass.C_END_DATE,
+         'yyyy/mm/dd',
+         'nls_calendar=persian'
+       )+30*tclass.START_EVALUATION END AS Behavioral_Due_Date,
+        tclass.STUDENT_ONLINE_EVAL_STATUS as tclass_student_online_eval_status,
+        tclass.TEACHER_ONLINE_EVAL_STATUS as tclass_teacher_online_eval_status
+
+        FROM TBL_CLASS tclass LEFT JOIN TBL_COURSE course
+        ON tclass.F_COURSE = course.ID
+        LEFT JOIN (SELECT
+            TBL_CLASS_STUDENT.CLASS_ID,
+            count(TBL_CLASS_STUDENT.ID) as counts
+        FROM
+            TBL_CLASS_STUDENT
+            GROUP BY TBL_CLASS_STUDENT.CLASS_ID) students ON students.CLASS_ID = tclass.ID
+        LEFT JOIN TBL_TERM term ON tclass.F_TERM = term.ID
+        LEFT JOIN TBL_INSTITUTE institute ON institute.id = tclass.F_INSTITUTE
+        LEFT JOIN TBL_CLASS altClasses ON altClasses.id = tclass.F_ALTERNATIVE_CLASS
+        LEFT JOIN TBL_TEACHER teacher ON teacher.id = tclass.F_TEACHER
+        LEFT JOIN TBL_PERSONAL_INFO personalInfo ON teacher.F_PERSONALITY = personalInfo.Id
+            ]]>
+        </createView>
+    </changeSet>
+
 </databaseChangeLog>
