@@ -69,7 +69,7 @@ public class AppUtils {
 //        return pageDTO;
 //    }
 
-    public static Integer getTotalPages(int total, int size) {
+    public static int getTotalPages(int total, int size) {
         return size == 0 ? 1 : (int) Math.ceil((double) total / (double) size);
     }
 

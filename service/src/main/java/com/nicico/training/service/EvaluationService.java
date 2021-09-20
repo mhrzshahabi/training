@@ -307,7 +307,7 @@ public class EvaluationService implements IEvaluationService {
             List<Evaluation> list= evaluationDAO.getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
             List<Evaluation> notAnsweredEvaluations=new ArrayList<>();
             for (Evaluation evaluation:list){
-                List<EvaluationAnswer> answers=evaluationAnswerDAO.findByEvaluationId(evaluation.getId());
+                List<EvaluationAnswer> answers=evaluationAnswerDAO.findByEvaluationIdAndAnswerId(evaluation.getId());
                 if (answers.isEmpty())
                     notAnsweredEvaluations.add(evaluation);
             }

@@ -900,9 +900,9 @@ public class ElsRestController {
                     Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId,page,size);
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
                     PaginationDto paginationDto=new PaginationDto();
-                    paginationDto.setCurrent(page.longValue());
+                    paginationDto.setCurrent(page);
                     paginationDto.setSize(size);
-                    paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size).longValue());
+                    paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
                     paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
                     paginationDto.setTotalItems((long) questionBankList.getTotalPages());
                     questionBankDto.setPagination(paginationDto);
