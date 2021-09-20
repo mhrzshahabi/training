@@ -2881,5 +2881,116 @@ WHERE
             <column name="TEACHER_ID" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
+    <changeSet author="nima (generated)" id="1631611897716-540">
+        <createTable tableName="tbl_mobile_verify">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_mobile_verifyPK"/>
+            </column>
+            <column name="FAMILY" type="VARCHAR2(255 CHAR)"/>
+            <column name="MOBILE_NUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="NATIONAL_CODE" type="VARCHAR2(255 CHAR)"/>
+            <column name="VERIFY" type="NUMBER(1, 0)"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="nima (generated)" id="15926446194875-45478">
+        <addColumn tableName="tbl_role">
+            <column name="DESCRIPTION" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1631606843128-534">
+        <createTable tableName="tbl_question_bank_target">
+            <column name="f_question" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="targets" type="NUMBER(19, 0)"/>
+        </createTable>
+        <addForeignKeyConstraint baseColumnNames="f_question" baseTableName="tbl_question_bank_target" constraintName="FK_tbl_parameter_value_question_bank" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_question_bank" validate="true"/>
+
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1631606843128-535">
+        <dropColumn columnName="question_target" tableName="tbl_question_bank"/>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1631938594000-1">
+        <addColumn tableName="tbl_class_student">
+            <column name="TEST_SCORE" type="FLOAT" />
+            <column name="DESCRIPTIVEـSCORE" type="FLOAT" />
+         </addColumn>
+    </changeSet>
+
+    <changeSet author="xaniar (generated)" id="1632032662000-1">
+        <addColumn tableName="tbl_role">
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+
+
+
+    <changeSet author="namdari (generated)" id="1632032662000-2">
+        <createTable tableName="REVINFO">
+            <column autoIncrement="true" name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="REVINFOPK"/>
+            </column>
+            <column name="REVTSTMP" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
+
+
+
+
+
+    <changeSet author="namdari (generated)" id="1632032662000-3">
+        <createTable tableName="AUD_TBL_ROLE">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="AUD_TBL_ROLEPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="AUD_TBL_ROLEPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="NAME" type="VARCHAR2(255 CHAR)"/>
+            <column name="DESCRIPTION" type="varchar2(255 CHAR)"/>
+
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1632032662000-4">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="AUD_TBL_ROLE"
+                                 constraintName="FKAUD_TBL_ROLE_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
+                                 validate="true"/>
+    </changeSet>
+
+
+
+
+    <changeSet author="namdari (generated)" id="1632032662000-6">
+        <createSequence sequenceName="hibernate_sequence"/>
+    </changeSet>
 
 </databaseChangeLog>

@@ -3,6 +3,8 @@ package com.nicico.training.model;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
@@ -10,7 +12,8 @@ import javax.persistence.*;
 @Getter
 @Entity
 @Table(name = "tbl_role")
-public class Role {
+//@Audited
+public class Role extends Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_seq")
@@ -20,4 +23,7 @@ public class Role {
 
     @Column(name = "NAME")
     private String name;
+
+    @Column(name = "DESCRIPTION")
+    private String description;
 }

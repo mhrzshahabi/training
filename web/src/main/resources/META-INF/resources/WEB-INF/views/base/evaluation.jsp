@@ -679,7 +679,7 @@
                                 }),
                                 autoFetchData: false,
                                 displayField: "title",
-                                valueField: "code",
+                                valueField: "id",
                                 textAlign: "center",
                                 pickListFields: [
                                     {
@@ -912,22 +912,19 @@
 
     ////*****load classes by department*****
     function load_classList_by_department(value) {
-        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/inDepartmentIsPlanner/" + value, "GET", null, res => {
             if (value !== undefined) {
                 let criteria = {
                     _constructor: "AdvancedCriteria",
                     operator: "and",
                     criteria: [
                         {
-                            fieldName: "tclassPlanner", operator: "inSet", value: JSON.parse(res.data).size() > 0
-                                ? JSON.parse(res.data) : null
+                            fieldName: "complexId", operator: "inSet", value: value
                         }
                     ]
                 };
 
                 if (ListGrid_class_Evaluation.implicitCriteria) {
-                    let termCriteria = ListGrid_class_Evaluation.implicitCriteria.criteria.filter(c => c.fieldName
-                        != "tclassPlanner");
+                    let termCriteria = ListGrid_class_Evaluation.implicitCriteria.criteria.filter(c => c.fieldName != "complexId");
                     if (termCriteria.size() > 0) {
                         criteria.criteria.push(termCriteria[0]);
                     }
@@ -940,7 +937,6 @@
             } else {
                 createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
             }
-        }));
     }
     //creating criteria in detail
     function createCriteria(fieldName, operator, value) {

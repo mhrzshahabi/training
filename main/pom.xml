@@ -47,6 +47,10 @@
                     <propertyFile>src/test/resources/liquibase.properties</propertyFile>
                     <databaseChangeLogTableName>Z_LIQ_CHANGELOG</databaseChangeLogTableName>
                     <databaseChangeLogLockTableName>Z_LIQ_CHANGELOG_LOCK</databaseChangeLogLockTableName>
+                    <systemProperties>
+                        <org.hibernate.envers.audit_table_prefix>AUD_</org.hibernate.envers.audit_table_prefix>
+                        <org.hibernate.envers.audit_table_suffix/>
+                    </systemProperties>
                 </configuration>
 
                 <dependencies>
@@ -97,6 +101,11 @@
                         <groupId>javax.validation</groupId>
                         <artifactId>validation-api</artifactId>
                         <version>2.0.1.Final</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.ehcache</groupId>
+                        <artifactId>ehcache</artifactId>
+                        <version>3.8.1</version>
                     </dependency>
 
                 </dependencies>

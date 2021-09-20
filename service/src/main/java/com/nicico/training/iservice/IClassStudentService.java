@@ -5,6 +5,8 @@ import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.model.ClassStudent;
 import org.springframework.transaction.annotation.Transactional;
+import request.exam.ElsExamScore;
+import response.BaseResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -39,6 +41,5 @@ public interface IClassStudentService {
     SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchEvaluationAnalysistLearning(SearchDTO.SearchRq request, Long classId);
 
 
-
-
+    BaseResponse updateScore(ElsExamScore elsExamScore);
 }

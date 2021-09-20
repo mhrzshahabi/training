@@ -26,7 +26,7 @@ public class QuestionBankDTO {
     private Long courseId;
     private Long tclassId;
     private Integer lines;
-    private Integer questionTarget;
+    private List<Integer> questionTargets;
 
 
     @Getter

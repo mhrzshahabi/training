@@ -978,9 +978,11 @@
                 }
             },
             {
-                name: "questionTarget",
+                name: "questionTargets",
                 title: "تعیین هدف سوال",
                 required: true,
+                type: "SelectItem",
+                multiple: true,
                 textAlign: "center",
                 optionDataSource: questionTargetDS_questionBank,
                 valueField: "id",
@@ -1520,6 +1522,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         let data = QuestionBankDF_questionBank.getValues();
         delete data["eQuestionLevel"];
         data.questionLevelId = QuestionBankDF_questionBank.getField("eQuestionLevel.id").getValue();
+        data.questionTargets = QuestionBankDF_questionBank.getField("questionTargets").getValue();
 
         isc.RPCManager.sendRequest(
             TrDSRequest(questionBankSaveUrl, questionBankMethod_questionBank, JSON.stringify(data), function (resp) {

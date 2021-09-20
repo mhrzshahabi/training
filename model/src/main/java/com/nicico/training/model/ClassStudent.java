@@ -95,4 +95,10 @@ public class ClassStudent extends Auditable {
     @Column(name = "EXAM_STATE")
     @Enumerated(EnumType.STRING)
     private ExamState examState;
+
+    @Column(name = "TEST_SCORE")
+    private Float testScore;
+
+    @Column(name = "DESCRIPTIVEـSCORE")
+    private Float descriptiveScore;
 }

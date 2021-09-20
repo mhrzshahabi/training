@@ -1,6 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.training.model.Role;
+import com.nicico.training.model.TeacherRole;
 
 import java.util.List;
 
@@ -9,6 +10,8 @@ public interface ITeacherRoleService {
     List<String> findAllTeacherRoleByNationalCode(String nationalCode);
 
     List<Role> findAllRoleByTeacherId(Long teacherId);
+
+    List<TeacherRole> findAllTeacherRoleByTeacherId(Long teacherId);
 
     boolean addRoleByNationalCode(String nationalCode, Long roleId);
 
@@ -29,5 +32,7 @@ public interface ITeacherRoleService {
     boolean removeTeacherRole(Long teacherId, String roleName);
 
     boolean removeTeacherRoleByTeacherId(Long teacherId, Long roleId);
+
+    boolean removeTeacherRolesById(Long teacherRoleId);
 
 }

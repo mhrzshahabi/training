@@ -11,6 +11,9 @@ import com.nicico.training.repository.RoleDAO;
 import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.repository.TeachersRoleDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -60,7 +63,13 @@ public class TeacherRoleService implements ITeacherRoleService {
     }
 
     @Override
+    public List<TeacherRole> findAllTeacherRoleByTeacherId(Long teacherId) {
+        return teachersRoleDAO.findAllByTeacherId(teacherId);
+    }
+
+    @Override
     @Transactional
+    @CacheEvict(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}",allEntries = true)
     public boolean addRoleByNationalCode(String nationalCode, String roleName) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -80,6 +89,7 @@ public class TeacherRoleService implements ITeacherRoleService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}",allEntries = true)
     public boolean addRoleByNationalCode(String nationalCode, Long roleId) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -151,6 +161,7 @@ public class TeacherRoleService implements ITeacherRoleService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}",allEntries = true)
     public boolean removeTeacherRole(String nationalCode, Long roleId) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -189,6 +200,7 @@ public class TeacherRoleService implements ITeacherRoleService {
 
     @Override
     @Transactional
+    @CacheEvict(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}",allEntries = true)
     public boolean removeTeacherRole(String nationalCode, String roleName) {
         PersonalInfo personalInfo = personalInfoDAO.findByNationalCode(nationalCode).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
@@ -238,6 +250,13 @@ public class TeacherRoleService implements ITeacherRoleService {
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
         );
         teachersRoleDAO.delete(teacherRole);
+        return true;
+    }
+
+    @Override
+    @Transactional
+    public boolean removeTeacherRolesById(Long teacherRoleId) {
+        teachersRoleDAO.deleteById(teacherRoleId);
         return true;
     }
 }
