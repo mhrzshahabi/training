@@ -323,10 +323,11 @@
                     if (value === 403) {
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student_Eval.completeFields[5].masterIndex);
                     } else if (value === 400 && !(classScoringMethod_Eval == "1")) {
+                        debugger;
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student_Eval.completeFields[7].masterIndex);
                     } else if (value === 400 && classScoringMethod_Eval == "1") {
                         debugger;
-                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student_Eval.completeFields[5].masterIndex);
+                        this.grid.startEditing(this.rowNum, ListGrid_Class_Student_Eval.completeFields[6].masterIndex);
                     } else {
                         ListGrid_Cell_scoresState_Update_Eval(this.grid.getRecord(this.rowNum), value);
                     }
