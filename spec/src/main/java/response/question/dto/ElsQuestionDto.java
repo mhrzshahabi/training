@@ -43,5 +43,7 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     private List<ElsAttachmentDto> files;
     @ApiModelProperty
     private Integer answerTime;
+    @ApiModelProperty
+    private List<Integer> questionTargetIds;
 
 }

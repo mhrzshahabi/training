@@ -47,4 +47,6 @@ public interface IPersonnelService {
     Optional<Personnel[]> getOneByNationalCodeAndDeleted(String nationalCode, int i);
 
 //    <R> R getPOrRegisteredP(Long id, Function<Object, R> converter);
+
+    boolean isPresent(String nationalCode);
 }

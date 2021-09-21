@@ -1,5 +1,6 @@
 package com.nicico.training.repository;
 
+import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -55,4 +57,19 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @Transactional
     @Query(value = "SELECT t.ID FROM tbl_teacher t  LEFT JOIN tbl_personal_info  p ON t.F_PERSONALITY = p.id WHERE p.C_NATIONAL_CODE =:nationalCode", nativeQuery = true)
     Long getTeacherId(String nationalCode);
+
+    @Transactional
+    @Query(value = "SELECT t.ID FROM tbl_teacher t  LEFT JOIN tbl_personal_info  p ON t.F_PERSONALITY = p.id WHERE p.C_NATIONAL_CODE =:nationalCode AND t.B_ENABLED=1", nativeQuery = true)
+    Long getTeacherIdIfTeacherIsActive(String nationalCode);
+
+    @Query(value = "select tr.NAME AS " + "\"name\""+
+            "  FROM TBL_ROLE tr \n" +
+            "INNER JOIN TBL_TEACHER_ROLES ttr ON ttr.ROLE_ID = tr.ID \n" +
+            "INNER JOIN TBL_TEACHER tt ON tt.ID = ttr.TEACHER_ID \n" +
+            "LEFT JOIN TBL_PERSONAL_INFO tpi ON tpi.ID = tt.F_PERSONALITY \n" +
+            "WHERE tpi.C_NATIONAL_CODE = :nationalCode AND tt.B_ENABLED=1",nativeQuery = true)
+    List<Map<String,Object>> findAllTeacherRoleByNationalCode(@Param("nationalCode") String nationalCode);
+
+
+    Optional<Teacher> findByPersonality(PersonalInfo personalInfo);
 }

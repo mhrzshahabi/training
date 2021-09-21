@@ -2,6 +2,8 @@ package com.nicico.training.mapper.evaluation;
 
 
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.EvaluationAnswerDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
@@ -9,6 +11,8 @@ import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.*;
+import com.nicico.training.service.EvaluationService;
+import com.nicico.training.service.QuestionnaireService;
 import com.nicico.training.service.TeacherService;
 import org.mapstruct.Named;
 import org.modelmapper.ModelMapper;
@@ -36,6 +40,8 @@ import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
 import response.question.QuestionsDto;
+import response.question.dto.ElsQuestionTargetDto;
+import response.question.dto.ElsQuestionTargetsDto;
 
 
 import java.math.BigDecimal;
@@ -54,6 +60,8 @@ public abstract class EvaluationBeanMapper {
     @Autowired
     protected QuestionBankService questionBankService;
     @Autowired
+    protected QuestionnaireService questionnaireService;
+    @Autowired
     protected IAttachmentService attachmentService;
     @Autowired
     protected ITclassService iTclassService;
@@ -68,6 +76,9 @@ public abstract class EvaluationBeanMapper {
     @Autowired
     protected TeacherService teacherService;
 
+    @Autowired
+    protected IEvaluationService evaluationService;
+
     private final Boolean hasDuplicateQuestion = true;
 
     @Mapping(source = "firstName", target = "surname")
@@ -76,24 +87,26 @@ public abstract class EvaluationBeanMapper {
     @Mapping(source = "gender", target = "gender")
     @Mapping(source = "contactInfo", target = "cellNumber", qualifiedByName = "getLiveCellNumber")
     public abstract EvalTargetUser toTargetUser(Student student);
+
     @Named("getLiveCellNumber")
-     String getLiveCellNumber(ContactInfo contactInfo) {
-        if (contactInfo==null)
+    String getLiveCellNumber(ContactInfo contactInfo) {
+        if (contactInfo == null)
             return "";
-            if (contactInfo.getEMobileForSMS() == null)
+        if (contactInfo.getEMobileForSMS() == null)
+            return contactInfo.getMobile();
+        switch (contactInfo.getEMobileForSMS()) {
+            case hrMobile:
+                return contactInfo.getHrMobile();
+            case mdmsMobile:
+                return contactInfo.getMdmsMobile();
+            case trainingSecondMobile:
+                return contactInfo.getMobile2();
+            default:
                 return contactInfo.getMobile();
-            switch (contactInfo.getEMobileForSMS()) {
-                case hrMobile:
-                    return contactInfo.getHrMobile();
-                case mdmsMobile:
-                    return contactInfo.getMdmsMobile();
-                case trainingSecondMobile:
-                    return contactInfo.getMobile2();
-                default:
-                    return contactInfo.getMobile();
-            }
+        }
 
     }
+
     public ElsEvalRequest toElsEvalRequest(Evaluation evaluation, Questionnaire questionnaire, List<ClassStudent> classStudents,
                                            List<EvalQuestionDto> questionDtos, PersonalInfo teacher) {
         ElsEvalRequest request = new ElsEvalRequest();
@@ -146,6 +159,7 @@ public abstract class EvaluationBeanMapper {
         EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
         responseDto.setId(evaluation.getId());
         responseDto.setClassId(evaluation.getTclass().getId());
+        responseDto.setQuestionnaireId(evaluation.getQuestionnaireId());
         responseDto.setTitle(questionnaire.getTitle());
         try {
             responseDto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
@@ -182,6 +196,8 @@ public abstract class EvaluationBeanMapper {
             ElsContactEvaluationDto dto = new ElsContactEvaluationDto();
             EvalCourseProtocol evalCourseProtocol = new EvalCourseProtocol();
             dto.setId(evaluation.getId());
+            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
+            dto.setTitle(questionnaire.getTitle());
             dto.setQuestionnaireId(evaluation.getQuestionnaireId());
             dto.setClassId(evaluation.getClassId());
             dto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
@@ -203,6 +219,8 @@ public abstract class EvaluationBeanMapper {
             dto.setCourseProtocol(evalCourseProtocol);
 
             elsContactEvaluationDtos.add(dto);
+
+
         }
         return elsContactEvaluationDtos;
     }
@@ -217,7 +235,7 @@ public abstract class EvaluationBeanMapper {
         ImportedUser instructor = new ImportedUser();
         List<EvalTargetUser> users = new ArrayList<>();
 
-        if ( classId == null )
+        if (classId == null)
             throw new TrainingException(TrainingException.ErrorType.NotFound);
 
         try {
@@ -413,11 +431,11 @@ public abstract class EvaluationBeanMapper {
 
                 ImportedQuestion question = new ImportedQuestion();
 
-                QuestionAttachments attachments=  getFilesForQuestion(questionBank.getId());
+                QuestionAttachments attachments = getFilesForQuestion(questionBank.getId());
                 question.setId(questionData.getQuestionBank().getId());
                 question.setTitle(questionData.getQuestionBank().getQuestion());
-                if (attachments!=null && attachments.getFiles()!=null)
-                question.setFiles(attachments.getFiles());
+                if (attachments != null && attachments.getFiles() != null)
+                    question.setFiles(attachments.getFiles());
                 question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
 
                 if (question.getType().equals(MULTI_CHOICES)) {
@@ -430,40 +448,36 @@ public abstract class EvaluationBeanMapper {
                     ImportedQuestionOption option2 = new ImportedQuestionOption();
                     ImportedQuestionOption option3 = new ImportedQuestionOption();
                     ImportedQuestionOption option4 = new ImportedQuestionOption();
-                    if (questionBank.getOption1()!=null)
-                    {
+                    if (questionBank.getOption1() != null) {
                         option1.setTitle(questionBank.getOption1());
                         option1.setLabel("الف");
                         options.add(option1);
-                        if (attachments!=null && attachments.getOption1Files()!=null)
+                        if (attachments != null && attachments.getOption1Files() != null)
                             question.setOption1Files(attachments.getOption1Files());
 
 
                     }
-                    if (questionBank.getOption2()!=null)
-                    {
+                    if (questionBank.getOption2() != null) {
                         option2.setTitle(questionBank.getOption2());
                         option2.setLabel("ب");
                         options.add(option2);
-                        if (attachments!=null && attachments.getOption2Files()!=null)
+                        if (attachments != null && attachments.getOption2Files() != null)
                             question.setOption2Files(attachments.getOption2Files());
 
                     }
-                     if (questionBank.getOption3()!=null)
-                    {
+                    if (questionBank.getOption3() != null) {
                         option3.setTitle(questionBank.getOption3());
                         option3.setLabel("ج");
                         options.add(option3);
-                        if (attachments!=null && attachments.getOption3Files()!=null)
+                        if (attachments != null && attachments.getOption3Files() != null)
                             question.setOption3Files(attachments.getOption3Files());
 
                     }
-                     if (questionBank.getOption4()!=null)
-                    {
+                    if (questionBank.getOption4() != null) {
                         option4.setTitle(questionBank.getOption4());
                         option4.setLabel("د");
                         options.add(option4);
-                        if (attachments!=null && attachments.getOption4Files()!=null)
+                        if (attachments != null && attachments.getOption4Files() != null)
                             question.setOption4Files(attachments.getOption4Files());
 
                     }
@@ -512,8 +526,8 @@ public abstract class EvaluationBeanMapper {
     }
 
     private QuestionAttachments getFilesForQuestion(Long id) {
-        return   attachmentService.getFiles("QuestionBank",id);
-     }
+        return attachmentService.getFiles("QuestionBank", id);
+    }
 
     private Boolean checkDuplicateDescriptiveQuestions(List<ImportedQuestionProtocol> protocols, String title, EQuestionType type) {
         if (protocols.size() > 0) {
@@ -1250,26 +1264,23 @@ public abstract class EvaluationBeanMapper {
 
     public boolean checkValidScores(List<ExamResult> examResult) {
         for (ExamResult data : examResult) {
-            try
-            {
-                double descriptiveResult=0D;
-                double finalResult=0D;
-                if ( data.getDescriptiveResult()!=null && !data.getDescriptiveResult().equals("-")) {
+            try {
+                double descriptiveResult = 0D;
+                double finalResult = 0D;
+                if (data.getDescriptiveResult() != null && !data.getDescriptiveResult().equals("-")) {
                     String englishDescriptiveResult = new BigDecimal(data.getDescriptiveResult()).toString();
-                    descriptiveResult=  Double.parseDouble(englishDescriptiveResult);
+                    descriptiveResult = Double.parseDouble(englishDescriptiveResult);
 
-                 }
-
-                if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-")) {
-                    String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
-                    finalResult= Double.parseDouble(englishFinalResult);
                 }
-                if (finalResult<descriptiveResult && (data.getFinalResult()!=null && !data.getFinalResult().equals("-")))
+
+                if (data.getFinalResult() != null && !data.getFinalResult().equals("-")) {
+                    String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                    finalResult = Double.parseDouble(englishFinalResult);
+                }
+                if (finalResult < descriptiveResult && (data.getFinalResult() != null && !data.getFinalResult().equals("-")))
                     return false;
 
-            }
-            catch(NumberFormatException e)
-            {
+            } catch (NumberFormatException e) {
                 return false;
             }
         }
@@ -1279,81 +1290,67 @@ public abstract class EvaluationBeanMapper {
     public boolean checkScoreInRange(String scoringMethod, List<ExamResult> examResult) {
         if (scoringMethod.equals("3") || scoringMethod.equals("2")) {
 
-           if (scoringMethod.equals("3") )
-           {
-               for (ExamResult data : examResult) {
-                   double finalResult=0D;
+            if (scoringMethod.equals("3")) {
+                for (ExamResult data : examResult) {
+                    double finalResult = 0D;
 
-                   if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-")) {
-                       String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
-                       finalResult= Double.parseDouble(englishFinalResult);
-                       if (finalResult>20D)
-                           return false;
-                   }
+                    if (data.getFinalResult() != null && !data.getFinalResult().equals("-")) {
+                        String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                        finalResult = Double.parseDouble(englishFinalResult);
+                        if (finalResult > 20D)
+                            return false;
+                    }
 
-               }
-               return true;
-               }
-           else
-           {
-               for (ExamResult data : examResult) {
-                   double finalResult=0D;
+                }
+                return true;
+            } else {
+                for (ExamResult data : examResult) {
+                    double finalResult = 0D;
 
-                   if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-")) {
-                       String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
-                       finalResult= Double.parseDouble(englishFinalResult);
-                       if (finalResult>100D)
-                           return false;
-                   }
+                    if (data.getFinalResult() != null && !data.getFinalResult().equals("-")) {
+                        String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
+                        finalResult = Double.parseDouble(englishFinalResult);
+                        if (finalResult > 100D)
+                            return false;
+                    }
 
-               }
-               return true;
-           }
-           }
-          else
-        return false;
+                }
+                return true;
+            }
+        } else
+            return false;
     }
 
     public UpdateRequest convertScoresToDto(List<ExamResult> examResult, long id) {
-        UpdateRequest request=new UpdateRequest();
+        UpdateRequest request = new UpdateRequest();
         request.setSourceExamId(id);
-        List<UpdatedResultDto> resultDtoList=new ArrayList<>();
-        for (ExamResult data:examResult)
-        {
-            UpdatedResultDto updatedResultDto=new UpdatedResultDto();
+        List<UpdatedResultDto> resultDtoList = new ArrayList<>();
+        for (ExamResult data : examResult) {
+            UpdatedResultDto updatedResultDto = new UpdatedResultDto();
             double descriptiveResult;
             double finalResult;
             double score;
-            if ( data.getDescriptiveResult()!=null && !data.getDescriptiveResult().equals("-"))
-            {
+            if (data.getDescriptiveResult() != null && !data.getDescriptiveResult().equals("-")) {
                 String englishDescriptiveResult = new BigDecimal(data.getDescriptiveResult()).toString();
-                descriptiveResult=  Double.parseDouble(englishDescriptiveResult);
+                descriptiveResult = Double.parseDouble(englishDescriptiveResult);
                 updatedResultDto.setDescriptiveResult(descriptiveResult);
-            }
-            else
-            {
+            } else {
                 updatedResultDto.setDescriptiveResult(null);
 
             }
-            if ( data.getFinalResult()!=null && !data.getFinalResult().equals("-"))
-            {
+            if (data.getFinalResult() != null && !data.getFinalResult().equals("-")) {
                 String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
-                finalResult= Double.parseDouble(englishFinalResult);
+                finalResult = Double.parseDouble(englishFinalResult);
                 updatedResultDto.setFinalResult(finalResult);
-            }
-            else
-            {
+            } else {
                 updatedResultDto.setFinalResult(null);
             }
 
-            if ( data.getTestResult()!=null && !data.getTestResult().equals("-"))
-            {
+            if (data.getTestResult() != null && !data.getTestResult().equals("-")) {
                 String englishScore = new BigDecimal(data.getTestResult()).toString();
-                score= Double.parseDouble(englishScore);
+                score = Double.parseDouble(englishScore);
                 updatedResultDto.setTestResult(score);
-            }
-            else
-            {
+            } else {
                 updatedResultDto.setTestResult(null);
             }
 
@@ -1366,24 +1363,34 @@ public abstract class EvaluationBeanMapper {
     }
 
     public List<String> getUsersWithAnswer(List<ExamResultDto> answers, List<EvalTargetUser> newUsers) {
-        List<ExamResultDto> userListWithoutNotAnswered = answers.stream().filter(item-> !item.getResultStatus().equals("4")).collect(Collectors.toList());
+        List<ExamResultDto> userListWithoutNotAnswered = answers.stream().filter(item -> !item.getResultStatus().equals("4")).collect(Collectors.toList());
 
-        List<String> userNames=new ArrayList<>();
-        for (ExamResultDto examResultDto:userListWithoutNotAnswered)
-        {
-            String nationalCode=examResultDto.getNationalCode();
-           boolean hasUser= newUsers.stream().anyMatch(item -> item.getNationalCode().equals(nationalCode));
+        List<String> userNames = new ArrayList<>();
+        for (ExamResultDto examResultDto : userListWithoutNotAnswered) {
+            String nationalCode = examResultDto.getNationalCode();
+            boolean hasUser = newUsers.stream().anyMatch(item -> item.getNationalCode().equals(nationalCode));
 
             if (hasUser)
-                userNames.add(examResultDto.getSurname() +" "+examResultDto.getLastName() );
+                userNames.add(examResultDto.getSurname() + " " + examResultDto.getLastName());
         }
         return userNames;
 
 
     }
 
-    public  ElsExamRequest removeAbsentUsersForExam(ElsExamRequest request, List<EvalTargetUser> absentUsers){
+    public ElsExamRequest removeAbsentUsersForExam(ElsExamRequest request, List<EvalTargetUser> absentUsers) {
         request.getUsers().removeIf(p -> absentUsers.stream().anyMatch(x -> (p.getNationalCode().equals(x.getNationalCode()))));
         return request;
     }
+
+
+    //    @Mapping(source = "question", target = "title", qualifiedByName = "getQuestionTargetTitle")
+    public abstract ElsQuestionTargetDto toQuestionTarget(ParameterValueDTO.Info question);
+//    @Named("getQuestionTargetTitle")
+//    String getQuestionTargetTitle(ParameterValueDTO.Info info) {
+//     return info.getTitle();
+//    }
+
+    public abstract List<ElsQuestionTargetDto> toQuestionTargets(List<ParameterValueDTO.Info> questions);
+
 }

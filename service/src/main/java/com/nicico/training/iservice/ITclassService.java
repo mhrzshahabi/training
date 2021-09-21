@@ -148,4 +148,6 @@ public interface ITclassService {
 
     ElsSessionResponse getClassSessionsByCode(String classCode);
 
-    }
+    List<Tclass> getAuditData(long classId);
+    EvalAverageResult getEvaluationAverageResultToTeacher(Long classId);
+}

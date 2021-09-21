@@ -286,6 +286,17 @@
     <changeSet author="namdari (generated)" id="1614681515816-433">
         <createSequence sequenceName="seq_fms_id"/>
     </changeSet>
+
+    <changeSet author="nima (generated)" id="1631430089965-537">
+        <createSequence sequenceName="seq_role_id"/>
+    </changeSet>
+
+    <changeSet author="nima (generated)" id="1631430089965-538">
+        <createSequence sequenceName="seq_teacher_role_id"/>
+    </changeSet>
+    <changeSet author="nima (generated)" id="1631611897716-539">
+        <createSequence sequenceName="seq_mobile_verify_id"/>
+    </changeSet>
     <changeSet author="nick (generated)" id="1631425644558-537">
         <createSequence sequenceName="seq_need_assessment_group_result_id"/>
     </changeSet>

@@ -6,7 +6,7 @@ spring:
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
-      maximum-pool-size: 60
+      maximum-pool-size: 5
       connection-timeout: 120000
   jpa:
     hibernate:
@@ -222,6 +222,9 @@ spring:
             token-uri: http://devapp01.icico.net.ir/oauth/token
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
+  cache:
+    jcache:
+      config: ehcache.xml
 nicico:
   security:
 #    sys-password: password

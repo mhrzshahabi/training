@@ -12,6 +12,7 @@ import response.tclass.ElsStudentAttendanceListResponse;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IStudentService {
 
@@ -39,4 +40,6 @@ public interface IStudentService {
 
 
     List<Map<String, Object>> findAllExamsByNationalCode(String nationalCode, ExamsType type);
+
+    Set<String> findAllRoleByNationalCode(String nationalCode);
 }

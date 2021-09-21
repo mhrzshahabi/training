@@ -25,7 +25,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -40,6 +39,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -70,6 +70,7 @@ public class TeacherRestController {
     protected EntityManager entityManager;
     private final ViewTeacherReportDAO viewTeacherReportDAO;
     private final MessageSource messageSource;
+    private final ITeacherRoleService iTeacherRoleService;
 
 
     @Loggable
@@ -117,7 +118,15 @@ public class TeacherRestController {
                 create.setSubCategories(subCategories);
             create.setInBlackList(false);
             try {
-                return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
+                TeacherDTO.Info info = teacherService.create(create);
+                if (request.get("role") != null && !((List)request.get("role")).isEmpty()) {
+                    String nationalCode = teacherService.getTeacherNationalCodeById(info.getId());
+                    ArrayList<Integer> roles = (ArrayList<Integer>) request.get("role");
+                    for (Integer role : roles) {
+                        iTeacherRoleService.addRoleByNationalCode(nationalCode, Long.valueOf(role));
+                    }
+                }
+                return new ResponseEntity<>(info, HttpStatus.CREATED);
             } catch (TrainingException ex) {
                 return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
             }
@@ -155,7 +164,27 @@ public class TeacherRestController {
             if (subCategories != null && subCategories.size() > 0)
                 update.setSubCategories(subCategories);
             try {
-                return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
+                TeacherDTO.Info info = teacherService.update(id, update);
+
+                List<Role> roles = iTeacherRoleService.findAllRoleByTeacherId(teacher.getId());
+                List<Long> roleIds = roles.stream().map(Role::getId).collect(Collectors.toList());
+                if (request.get("role") != null && !((List)request.get("role")).isEmpty()) {
+                    String nationalCode = teacherService.getTeacherNationalCodeById(teacher.getId());
+                    List<Long> newRoleIds = objectMapper.convertValue(request.get("role"), new TypeReference<List<Long>>() {
+                    });
+                    for (Long roleId : roleIds) {
+                        if (!newRoleIds.contains(roleId))
+                            iTeacherRoleService.removeTeacherRole(nationalCode, roleId);
+                    }
+                    for (Long newRoleId : newRoleIds) {
+                        if (!roleIds.contains(newRoleId))
+                            iTeacherRoleService.addRoleByNationalCode(nationalCode, newRoleId);
+                    }
+                } else {
+                    iTeacherRoleService.removeRolesByTeacherId(teacher.getId(), roles.stream().map(Role::getName).collect(Collectors.toList()));
+                }
+
+                return new ResponseEntity<>(info, HttpStatus.OK);
             } catch (TrainingException ex) {
                 return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
             }
@@ -221,8 +250,10 @@ public class TeacherRestController {
 
     @GetMapping(value = "/info/{id}")
     //@PreAuthorize("hasAuthority('Teacher_R')")
-    public ResponseEntity<TeacherDTO.Info> info(@PathVariable Long id)throws IOException {
+    public ResponseEntity<TeacherDTO.Info> info(@PathVariable Long id) {
         TeacherDTO.Info response = teacherService.get(id);
+        List<Long> roleIds = iTeacherRoleService.findAllRoleByTeacherId(id).stream().map(Role::getId).collect(Collectors.toList());
+        response.setRoles(roleIds);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
@@ -1085,6 +1116,34 @@ public class TeacherRestController {
             return new ResponseEntity<>("اطلاعات کاربر در سیستم ناقص می باشد", HttpStatus.NOT_FOUND);
         else
             return new ResponseEntity<>("استادی با این کد ملی در سیستم پیدا نشد", HttpStatus.NOT_FOUND);
+    }
+
+
+
+    @DeleteMapping("/role/")
+    public ResponseEntity<Boolean> removeRoleByTeacherId(@RequestParam Long teacherId,@RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.removeTeacherRole(teacherId,role));
+    }
+
+    @DeleteMapping("/role/remove-all")
+    public ResponseEntity<Boolean> removeAllByTeacherId(@RequestParam Long teacherId,@RequestBody List<String> roles) {
+        return ResponseEntity.ok(iTeacherRoleService.removeRolesByTeacherId(teacherId,roles));
+    }
+
+    @PostMapping("/role/")
+    public ResponseEntity<Boolean> addRoleByTeacherId(@RequestParam Long teacherId,@RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.addRoleByTeacherId(teacherId,role));
+    }
+
+    @PostMapping("/role/add-all")
+    public ResponseEntity<Boolean> addGroupRolesByTeacherId(@RequestParam Long teacherId,@RequestBody List<String> roles) {
+        return ResponseEntity.ok(iTeacherRoleService.addRolesByTeacherId(teacherId,roles));
+    }
+
+
+    @GetMapping("/role/")
+    public ResponseEntity<List<Role>> findAllByTeacherId(@RequestParam Long teacherId) {
+        return ResponseEntity.ok(iTeacherRoleService.findAllRoleByTeacherId(teacherId));
     }
 
 }

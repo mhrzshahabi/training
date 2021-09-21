@@ -1,6 +1,9 @@
 package com.nicico.training.controller;
 
 
+import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -19,16 +22,19 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.evaluation.ElsEvalRequest;
@@ -37,6 +43,7 @@ import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import response.BaseResponse;
+import response.PaginationDto;
 import response.attendance.AttendanceListSaveResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.ElsEvaluationsListResponse;
@@ -47,10 +54,7 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
-import response.question.dto.ElsCategoryDto;
-import response.question.dto.ElsQuestionBankDto;
-import response.question.dto.ElsQuestionDto;
-import response.question.dto.ElsSubCategoryDto;
+import response.question.dto.*;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
@@ -62,6 +66,9 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
+
+import static com.nicico.training.controller.util.AppUtils.getTotalPages;
 
 
 @RestController
@@ -76,8 +83,8 @@ public class ElsRestController {
     private final QuestionnaireService questionnaireService;
     private final EvaluationService evaluationService;
     private final IEvaluationService iEvaluationService;
-    private final ClassStudentService classStudentService;
-    private final TclassService tclassService;
+    private final IClassStudentService classStudentService;
+    private final ITclassService tclassService;
     private final TeacherService teacherService;
     private final CategoryService categoryService;
     private final SubcategoryService subcategoryService;
@@ -101,6 +108,10 @@ public class ElsRestController {
     private final IStudentService iStudentService;
     private final QuestionBankTestQuestionService questionBankTestQuestionService;
     private final ViewTrainingFileService viewTrainingFileService;
+    private final ParameterService parameterService;
+    private final ITeacherRoleService iTeacherRoleService;
+    private final IMobileVerifyService iMobileVerifyService;
+    private final IRoleService iRoleService;
 
 
     @GetMapping("/eval/{id}")
@@ -878,16 +889,39 @@ public class ElsRestController {
         return response;
     }
 
-    @GetMapping("/questionBank/{nationalCode}")
-    public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+    @GetMapping("/questionBank/{nationalCode}/{page}/{size}")
+    public ElsQuestionBankDto getQuestionBankByNationalCode(HttpServletRequest header, @PathVariable String nationalCode
+            , @PathVariable Integer page, @PathVariable Integer size) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                List<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId);
-                return questionBankBeanMapper.toElsQuestionBank(questionBankList, nationalCode);
+                if (teacherId!=null){
+                    Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId,page,size);
+                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
+                    PaginationDto paginationDto=new PaginationDto();
+                    paginationDto.setCurrent(page);
+                    paginationDto.setSize(size);
+                    paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
+                    paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
+                    paginationDto.setTotalItems((long) questionBankList.getTotalPages());
+                    questionBankDto.setPagination(paginationDto);
+                    return questionBankDto;
+                }else {
+                     ElsQuestionBankDto dto=new ElsQuestionBankDto();
+                    ElsQuestionDto elsQuestionDto=new ElsQuestionDto();
+                    elsQuestionDto.setStatus(406);
+                    elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
+                    dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                     return dto;
+                }
+
             } catch (Exception e) {
-                throw new TrainingException(TrainingException.ErrorType.NotFound);
+                ElsQuestionBankDto dto=new ElsQuestionBankDto();
+                ElsQuestionDto elsQuestionDto=new ElsQuestionDto();
+                elsQuestionDto.setStatus(500);
+                dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                return dto;
             }
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
@@ -1034,16 +1068,95 @@ public class ElsRestController {
         return response;
     }
 
+
     @GetMapping("/exam/findByType")
     public List<Map<String,Object>> findAllExamsByNationalCode(@RequestParam String nationalCode, @RequestParam ExamsType type){
         return iStudentService.findAllExamsByNationalCode(nationalCode,type);
     }
 
     @GetMapping(value = "/trainingFileByNationalCode/{nationalCode}")
-    public ResponseEntity<ViewTrainingFileDTO.ViewTrainingFileSpecRs> trainingFileByNationalCode(@PathVariable String nationalCode) {
-        return new ResponseEntity(new ViewTrainingFileDTO
-                .ViewTrainingFileSpecRs()
-                .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
+    public ResponseEntity trainingFileByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            return new ResponseEntity(new ViewTrainingFileDTO
+                    .ViewTrainingFileSpecRs()
+                    .setResponse(viewTrainingFileService.getByNationalCode(nationalCode)), HttpStatus.OK);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("خطای دسترسی");
+        }
     }
 
-}
+    @Loggable
+    @GetMapping("/parameter/listByCode/{parameterCode}")
+    public ResponseEntity<ElsQuestionTargetsDto> getParametersValueListByCode(HttpServletRequest header, @PathVariable String parameterCode) {
+        ElsQuestionTargetsDto dto = new ElsQuestionTargetsDto();
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                //for see all question target the parameterCode must be :=questionTarget
+                List<ElsQuestionTargetDto> data;
+                data = evaluationBeanMapper.toQuestionTargets(parameterService.getByCode(parameterCode).getResponse().getData());
+                dto.setStatus(200);
+                dto.setQuestionTargetDtoList(data);
+                return new ResponseEntity<>(dto, HttpStatus.OK);
+            } catch (Exception e) {
+                dto.setStatus(TrainingException.ErrorType.NotFound.getHttpStatusCode());
+                dto.setMessage("کد مورد نظر شما یافت نشد");
+                return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
+
+            }
+        } else {
+            dto.setStatus(TrainingException.ErrorType.Unauthorized.getHttpStatusCode());
+            dto.setMessage("شما دسترسی ندارید");
+            return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
+        }
+
+    }
+
+    @GetMapping("/role/findBy-nationalCode")
+    public ResponseEntity<Set<String>> findAllRoleByNationalCode(@RequestParam String nationalCode) {
+        return ResponseEntity.ok(iStudentService.findAllRoleByNationalCode(nationalCode));
+    }
+
+    @GetMapping("/role/")
+    public ResponseEntity<List<Role>> findAllRole() {
+        return ResponseEntity.ok(iRoleService.findAll());
+    }
+
+    @DeleteMapping("/role/")
+    public ResponseEntity<Boolean> removeRoleByNationalCode(@RequestParam String nationalCode, @RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.removeTeacherRole(nationalCode, role));
+    }
+
+    @PostMapping("/role/")
+    public ResponseEntity<Boolean> addRoleByNationalCode(@RequestParam String nationalCode, @RequestParam String role) {
+        return ResponseEntity.ok(iTeacherRoleService.addRoleByNationalCode(nationalCode, role));
+    }
+
+
+    @PostMapping("/anonymous-number/")
+    public ResponseEntity<Boolean> addIfNotPresentAnonymousNumberForVerify(@RequestParam String nationalCode, @RequestParam String number) {
+        return ResponseEntity.ok(iMobileVerifyService.add(nationalCode, number));
+    }
+
+    @GetMapping("/anonymous-number/status")
+    public ResponseEntity<Boolean> mobileNumberVerifyStatus(@RequestParam String nationalCode, @RequestParam String number) {
+        return ResponseEntity.ok(iMobileVerifyService.checkVerification(nationalCode, number));
+    }
+
+    @PostMapping("/set-score")
+    public ResponseEntity<BaseResponse> setScore(HttpServletRequest header,@RequestBody ElsExamScore elsExamScore) {
+        BaseResponse response =new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                response  = classStudentService.updateScore(elsExamScore);
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage(((TrainingException) e).getMsg());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    }
+    }

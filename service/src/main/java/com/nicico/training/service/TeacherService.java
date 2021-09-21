@@ -42,6 +42,7 @@ public class TeacherService implements ITeacherService {
     private final IEducationLevelService educationLevelService;
     private final IEducationMajorService educationMajorService;
     private final IEducationOrientationService educationOrientationService;
+    private final ITeacherRoleService iTeacherRoleService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -134,13 +135,18 @@ public class TeacherService implements ITeacherService {
     @Override
     public void delete(Long id) {
         List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Teacher", id).getList();
+        List<Role> roleList = iTeacherRoleService.findAllRoleByTeacherId(id);
         try {
+            String nationalCode = getTeacherNationalCodeById(id);
+            for (AttachmentDTO.Info attachment : attachmentInfoList) {
+                attachmentService.delete(attachment.getId());
+            }
+            for (Role role : roleList) {
+                iTeacherRoleService.removeTeacherRole(nationalCode, role.getId());
+            }
             teacherDAO.deleteById(id);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
-        }
-        for (AttachmentDTO.Info attachment : attachmentInfoList) {
-            attachmentService.delete(attachment.getId());
         }
     }
 
@@ -889,4 +895,10 @@ public class TeacherService implements ITeacherService {
     public Long getTeacherIdByNationalCode(String nationalCode) {
         return teacherDAO.getTeacherId(nationalCode);
     }
+
+    @Transactional
+    public String getTeacherNationalCodeById(Long teacherId) {
+        return teacherDAO.getTeacherNationalCode(teacherId);
+    }
+
 }

@@ -67,7 +67,7 @@
             ]
     });
 
-    var organSegmentFilter_NeedAssessmentsPerformed = init_OrganSegmentFilterDF(true, true , null, "complexTitle","assistant","affairs", "section", "unit");
+    var organSegmentFilter_NeedAssessmentsPerformed = init_OrganSegmentFilterDF(true,true, true , null, "complexTitle","assistant","affairs", "section", "unit");
 
     var DynamicForm_NeedsAssessmentsPerformed = isc.DynamicForm.create({
         numCols: 8,

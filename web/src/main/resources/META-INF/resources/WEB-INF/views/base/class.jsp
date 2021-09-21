@@ -413,9 +413,9 @@
             </sec:authorize>
             {isSeparator: true},
             {
-                title: "<spring:message code='students.list'/>",
+                title: "<spring:message code='class.history'/>",
                 click: function () {
-                    Add_Student();
+                    createTab(this.title, "<spring:url value="web/classHistoryReport"/>");
                 }
             }
         ]
@@ -2551,7 +2551,7 @@
                 optionDataSource: RestDataSource_Department_Filter,
                 autoFetchData: false,
                 displayField: "title",
-                valueField: "code",
+                valueField: "id",
                 textAlign: "center",
                 pickListFields: [
                     {
@@ -4380,15 +4380,13 @@
 
     ////*****load classes by department*****
     function load_classes_by_department(value) {
-            isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/inDepartmentIsPlanner/"+value, "GET", null, res => {
                 if (value !== undefined) {
                     let criteria = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: [
                             {
-                                fieldName: "plannerId", operator: "inSet", value: JSON.parse(res.data).size() > 0
-                                    ? JSON.parse(res.data) : null
+                                fieldName: "complexId", operator: "inSet", value: value
                             }
                         ]
                     };
@@ -4407,7 +4405,7 @@
                 } else {
                     createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
                 }
-            }));
+
     }
     ////******************************
 

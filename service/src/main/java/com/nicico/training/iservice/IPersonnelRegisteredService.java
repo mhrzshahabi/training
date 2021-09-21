@@ -44,4 +44,6 @@ public interface IPersonnelRegisteredService {
     List<PersonnelRegistered> checkPersonnelNationalCodes(List<String> personnelNationalCodes);
 
     void changeContactInfo(long id);
+
+    boolean isPresent(String nationalCode);
 }

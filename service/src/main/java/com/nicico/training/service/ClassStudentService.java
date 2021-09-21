@@ -5,28 +5,25 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.dto.enums.ExamsType;
+import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
-import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassStudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import response.exam.ExtendedUserDto;
-import response.exam.ResendExamTimes;
+import request.exam.ElsExamScore;
+import request.exam.ElsStudentScore;
+import request.exam.ExamResult;
+import response.BaseResponse;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -42,6 +39,8 @@ public class ClassStudentService implements IClassStudentService {
     private final IEvaluationAnalysisService evaluationAnalysisService;
     private final PersonnelService personnelService;
     private final ITeacherService iTeacherService;
+    private final ITestQuestionService testQuestionService;
+    private final ParameterValueService parameterValueService;
 
 
     @Transactional(readOnly = true)
@@ -234,10 +233,113 @@ public class ClassStudentService implements IClassStudentService {
         return result;
     }
 
+    @Override
+    @Transactional
+    public BaseResponse updateScore(ElsExamScore elsExamScore) {
+        BaseResponse response =new BaseResponse();
+        setScoreLoop:
+        for (ElsStudentScore examScore:elsExamScore.getStudentScores()){
+            TestQuestionDTO.fullInfo testQuestionDTO=testQuestionService.get(elsExamScore.getExamId());
+            Long classStudentId = getStudentId(testQuestionDTO.getTclass().getId(), examScore.getNationalCode());
+            ClassStudent classStudent= getClassStudent(classStudentId);
+            if (checkScoreInRange(testQuestionDTO.getTclass().getScoringMethod(),examScore.getScore())) {
+                switch (elsExamScore.getType()){
+                    case "test":{
+                        if (classStudent.getTestScore()!=null){
+                            response.setStatus(406);
+                            response.setMessage("نمره ی تستی کاربر با کد ملی : "+examScore.getNationalCode()+"  یک بار برای این دانشجو ذخیره شده است");
+                            break setScoreLoop;
+                        }else {
+                            classStudent.setTestScore(examScore.getScore());
+                            saveOrUpdate(classStudent);
+                            response.setStatus(200);
+                        }
+                        break;
+                    }
+                    case "descriptive":{
+                        classStudent.setDescriptiveScore(examScore.getScore());
+                        saveOrUpdate(classStudent);
+                        response.setStatus(200);
+                        break;
+                    }
+                    case "final":{
+                        if (classStudent.getScore()!=null){
+                            response.setStatus(406);
+                            response.setMessage("نمره ی نهایی کاربر با کد ملی : "+examScore.getNationalCode()+"  یک بار برای این دانشجو ذخیره شده است");
+                            break setScoreLoop;
+                        }else {
+                            classStudent.setScore(examScore.getScore());
+                            classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(testQuestionDTO.getTclass().getAcceptancelimit(),examScore.getScore())).getId());
+                            saveOrUpdate(classStudent);
+                            response.setStatus(200);
+                        }
+                        break;
+                    }
+                    default:
+                        response.setMessage("نوع نمره اشتباه فرستاده شده است");
+                        response.setStatus(406);
+                        break setScoreLoop;
+
+                }
+            }else {
+                response.setStatus(406);
+                response.setMessage("نمره ی وارد شده کاربر با کد ملی : "+examScore.getNationalCode()+"  با روش نمره دهی این آزمون مطابقت ندارد");
+                break;
+            }
+        }
+        if (response.getStatus()==200)
+        return response;
+        else
+            throw new TrainingException(TrainingException.ErrorType.registerNotAccepted, null,response.getMessage());
+
+
+
+
+
+    }
+
+
+
     @Transactional
     public void setPeresenceTypeId(Long peresenceTypeId, Long id) {
         classStudentDAO.setPeresenceTypeId(peresenceTypeId, id);
     }
 
 
+    public Long getStudentId(Long classId, String nationalCode) {
+        List<Long> studentIds=classStudentDAO.getClassStudentIdByClassCodeAndNationalCode(classId, nationalCode);
+        if (!studentIds.isEmpty())
+        return studentIds.get(0);
+        else return null;
+    }
+
+    public boolean checkScoreInRange(String scoringMethod, Float score) {
+        if (scoringMethod.equals("3") || scoringMethod.equals("2")) {
+
+            if (scoringMethod.equals("3") )
+            {
+                    if ( score!=null) {
+                        return (score <= 20F && score >= 0);
+                    }
+            }
+            else
+            {
+                if ( score!=null) {
+                    return (score <= 100F && score >= 0);
+                }
+            }
+            return true;
+        }
+        else
+            return false;
+    }
+
+    private String getStateByScore(String acceptancelimit, Float score) {
+        if (score >= Double.parseDouble(acceptancelimit)){
+            return "PassdByGrade";
+        }else {
+            return "TotalFailed";
+        }
+
+    }
 }
