@@ -912,9 +912,9 @@ public class ElsRestController {
                     PaginationDto paginationDto=new PaginationDto();
                     paginationDto.setCurrent(page);
                     paginationDto.setSize(size);
-                    paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
-                    paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
-                    paginationDto.setTotalItems((long) questionBankList.getTotalPages());
+                    paginationDto.setTotal(questionBankList.getTotalPages());
+                    paginationDto.setLast(questionBankList.getTotalPages()-1);
+                    paginationDto.setTotalItems(questionBankList.get().count());
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
                 }else {
