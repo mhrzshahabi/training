@@ -2862,6 +2862,16 @@ WHERE
             <column name="USER_NAME" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
+    <changeSet author="nick (generated)" id="1631425644558-538">
+        <createTable tableName="tbl_need_assessment_group_result">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_need_assessment_group_resultPK"/>
+            </column>
+            <column name="CREATE_DATE" type="TIMESTAMP"/>
+            <column name="CREATED_BY" type="VARCHAR2(255 CHAR)"/>
+            <column name="MINIO_REFERENCE" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
 
 
 

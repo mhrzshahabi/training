@@ -1,6 +1,7 @@
 package com.nicico.training.service;
 
 import com.google.gson.Gson;
+import com.nicico.training.TrainingException;
 import com.nicico.training.iservice.IExportToFileService;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.ss.usermodel.*;
@@ -16,12 +17,10 @@ import org.springframework.stereotype.Service;
 import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.Color;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
@@ -32,6 +31,8 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class ExportToFileService implements IExportToFileService {
+
+
 
     @Override
     public void exportToExcel(HttpServletResponse response, String fields, String data, String titr, String pageName) throws Exception {
@@ -312,5 +313,49 @@ public class ExportToFileService implements IExportToFileService {
         }
 
         return cellStyle;
+    }
+
+    @Override
+    public String exportToExcel(Map<Integer, Object[]> dataMap) {
+
+        String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
+//        String fileName = "export-"+timeStamp+".xlsx";
+        String fileName = "export.xlsx";
+
+        //Create blank workbook
+        XSSFWorkbook workbook = new XSSFWorkbook();
+
+        //Create a blank sheet
+        XSSFSheet sheet = workbook.createSheet("export");
+
+        //Create row object
+        XSSFRow row;
+
+        //Iterate over data and write to sheet
+        Set<Integer> keyid = dataMap.keySet();
+        int rowNum = 0;
+
+        System.out.println("Creating excel");
+
+        for (Integer key : keyid) {
+            row = sheet.createRow(rowNum++);
+            Object[] objectArr = dataMap.get(key);
+            int cellid = 0;
+
+            for (Object obj : objectArr) {
+                Cell cell = row.createCell(cellid++);
+                cell.setCellValue((String) obj);
+            }
+        }
+
+        try {
+            FileOutputStream outputStream = new FileOutputStream(fileName);
+            workbook.write(outputStream);
+            workbook.close();
+            outputStream.close();
+        } catch (Exception e) {
+            throw new TrainingException(TrainingException.ErrorType.Forbidden);
+        }
+        return fileName;
     }
 }
