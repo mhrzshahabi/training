@@ -10,4 +10,5 @@ public interface IExportToFileService {
 
     void exportToWord(final HttpServletResponse response, String fields, String data, String titr, String pageName, Map<String,String> titles) throws Exception;
 
+    String exportToExcel(Map < Integer, Object[] >  dataMap);
 }

@@ -14,8 +14,12 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import request.needsassessment.NeedAssessmentGroupJobPromotionDto;
+import request.needsassessment.NeedAssessmentGroupJobPromotionRequestDto;
 
+import javax.persistence.EntityManager;
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -39,14 +43,17 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     private final PostGradeGroupDAO postGradeGroupDAO;
     private final NeedsAssessmentDAO needsAssessmentDAO;
     private final NeedsAssessmentTempDAO needsAssessmentTempDAO;
+    private final PersonnelDAO personnelDAO;
     private final PersonnelCoursePassedNAReportViewDAO personnelCoursePassedNAReportViewDAO;
 
     private final ClassStudentReportService classStudentReportService;
     private final IPersonnelService personnelService;
     private final ParameterValueService parameterValueService;
+    private final ParameterDAO parameterDAO;
     private final ITclassService tClassService;
     private final ICourseService courseService;
     private final ISkillService skillService;
+    protected EntityManager entityManager;
 
     @Transactional(readOnly = true)
 //    @Override
@@ -599,5 +606,82 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
             }
         }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<NeedAssessmentGroupJobPromotionResponse> createNeedAssessmentResultGroup(NeedAssessmentGroupJobPromotionRequestDto requestDto) {
+        Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
 
+        List<NeedAssessmentGroupJobPromotionDto> needAssessmentGroupJobPromotionDtos = requestDto.getNeedAssessmentGroupJobPromotionDtos();
+        List<NeedAssessmentGroupJobPromotionResponse> needAssessmentGroupResponse = new ArrayList<>();
+
+        Map<Long, ParameterValue> competenceTypeParamMap = getLongParameterValueMap("competenceType");
+        Map<Long, ParameterValue> passedStatusParamMap = getLongParameterValueMap("PassedStatus");
+        Map<Long, ParameterValue> needsAssessmentPriorityParamMap = getLongParameterValueMap("NeedsAssessmentPriority");
+
+        for (NeedAssessmentGroupJobPromotionDto dto : needAssessmentGroupJobPromotionDtos) {
+            List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(Long.valueOf(dto.getPostId()), "TrainingPost", Long.valueOf(dto.getPersonnelId()));
+            TrainingPost currentTrainingPost = trainingPostDAO.findById(Long.valueOf(dto.getPostId())).orElseThrow(trainingExceptionSupplier);
+
+            Personnel personnel = personnelDAO.getOne(Long.valueOf(dto.getPersonnelId()));
+            for (NeedsAssessmentReportsDTO.ReportInfo reportInfo : needsAssessmentReportList
+            ) {
+                NeedAssessmentGroupJobPromotionResponse response = new NeedAssessmentGroupJobPromotionResponse();
+                response.setTrainingPostCode(currentTrainingPost.getCode());
+                response.setId(reportInfo.getId());
+                response.setCompetence(reportInfo.getCompetence());
+                if (reportInfo.getCompetence() != null && reportInfo.getCompetence().getCompetenceTypeId() != null) {
+                    response.setCompetenceTypeTitle(competenceTypeParamMap.get(reportInfo.getCompetence().getCompetenceTypeId()).getTitle());
+                }
+                if (reportInfo.getSkill() != null && reportInfo.getSkill().getCourse() != null && reportInfo.getSkill().getCourse().getScoresState() != null) {
+                    response.setScoresStateTitle(passedStatusParamMap.get(reportInfo.getSkill().getCourse().getScoresState()).getTitle());
+                }
+                if (reportInfo.getSkill() != null && reportInfo.getSkill().getCourse() != null && reportInfo.getSkill().getCourse().getScoresStatus() != null) {
+                    String master = reportInfo.getSkill().getCourse().getScoresStatus();
+                    ;
+                    String target = "<b class=\"\">";
+                    String replacement = "";
+                    master = master.replace(target, replacement);
+
+                    target = "</b>";
+                    master = master.replace(target, replacement);
+
+                    target = "<b class=\"acceptRTL\">";
+                    master = master.replace(target, replacement);
+
+                    reportInfo.getSkill().getCourse().setScoresStatus(master);
+                }
+                if (reportInfo.getNeedsAssessmentPriorityId() != null) {
+                    response.setNeedsAssessmentPriorityTitle(needsAssessmentPriorityParamMap.get(reportInfo.getNeedsAssessmentPriorityId()).getTitle());
+                }
+                response.setSkill(reportInfo.getSkill());
+                response.setNeedsAssessmentDomainId(reportInfo.getNeedsAssessmentDomainId());
+                response.setNeedsAssessmentPriorityId(reportInfo.getNeedsAssessmentPriorityId());
+                response.setFirstName(personnel.getFirstName());
+                response.setLastName(personnel.getLastName());
+                response.setPersonnelNo(personnel.getPersonnelNo());
+                response.setPersonnelCcpAffairs(personnel.getCcpAffairs());
+                needAssessmentGroupResponse.add(response);
+            }
+        }
+//        Comparator<NeedAssessmentGroupJobPromotionResponse> familyComparatorLambda =
+//                (na1, na22) -> na1.getLastName().compareTo(na22.getLastName());
+//        Collections.sort(needAssessmentGroupResponse, familyComparatorLambda);
+
+        return needAssessmentGroupResponse;
+    }
+
+    private Map<Long, ParameterValue> getLongParameterValueMap(String parameterTypeName) {
+        Optional<Parameter> parameterTypePByCode = parameterDAO.findByCode(parameterTypeName);
+        Parameter parameter = parameterTypePByCode.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        List<ParameterValue> typeParamList = parameter.getParameterValueList();
+        Map<Long, ParameterValue> typeParamMap = convertListToMap(typeParamList);
+        return typeParamMap;
+    }
+
+
+    public Map<Long, ParameterValue> convertListToMap(List<ParameterValue> list) {
+        Map<Long, ParameterValue> map = list.stream()
+                .collect(Collectors.toMap(ParameterValue::getId, Function.identity()));
+        return map;
+    }
 }
