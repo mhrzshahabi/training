@@ -1131,14 +1131,10 @@ public class ElsRestController {
     }
 
 
-    @PostMapping("/anonymous-number/")
-    public ResponseEntity<Boolean> addIfNotPresentAnonymousNumberForVerify(@RequestParam String nationalCode, @RequestParam String number) {
-        return ResponseEntity.ok(iMobileVerifyService.add(nationalCode, number));
-    }
 
     @GetMapping("/anonymous-number/status")
     public ResponseEntity<Boolean> mobileNumberVerifyStatus(@RequestParam String nationalCode, @RequestParam String number) {
-        return ResponseEntity.ok(iMobileVerifyService.checkVerification(nationalCode, number));
+        return ResponseEntity.ok(iMobileVerifyService.checkVerificationIfNotPresentAdd(nationalCode, number));
     }
 
     @PostMapping("/set-score")
