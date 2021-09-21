@@ -11,7 +11,10 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.Tclass;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
@@ -71,6 +74,8 @@ public class TclassRestController {
     private final MessageSource messageSource;
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
+    private final ModelMapper modelMapper;
+    private final TclassBeanMapper tclassBeanMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -806,11 +811,20 @@ public class TclassRestController {
 
 
     @Loggable
-    @Transactional
     @GetMapping(value = "/audit/{classId}")
-    public ResponseEntity<List<Tclass>> getClassAuditData(@PathVariable Long classId) {
-        return new ResponseEntity<>(tClassService.getAuditData(classId), HttpStatus.OK);
+    public ResponseEntity<TclassDTO.TclassSpecRs> getClassAuditData(@PathVariable Long classId) {
+        List<Tclass> list=tClassService.getAuditData(classId);
+        List<TclassDTO> dto=tclassBeanMapper.toTclassesResponse(list);
+        final TclassDTO.SpecTClassRs specResponse = new TclassDTO.SpecTClassRs();
+        final TclassDTO.TClassSpecTClassRs specRs = new TclassDTO.TClassSpecTClassRs();
+        specResponse.setData(dto)
+                .setStartRow(0)
+                .setEndRow(dto.size())
+                .setTotalRows( dto.size());
 
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity(specRs, HttpStatus.OK);
     }
 
 }

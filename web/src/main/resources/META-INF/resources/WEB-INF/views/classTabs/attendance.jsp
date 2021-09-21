@@ -1221,7 +1221,7 @@
                                 if(classRecord.classStatus === "1") {
                                     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "changeClassStatusToInProcess/" + classRecord.id, "GET", null, function (resp) {
                                         if (resp.httpResponseCode === 200) {
-                                            ListGrid_Class_JspClass.invalidateCache();
+                                            // ListGrid_Class_JspClass.invalidateCache();
                                             simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                         } else {
                                             simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
@@ -1255,7 +1255,7 @@
                                 if(classRecord.classStatus === "1") {
                                     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "changeClassStatusToInProcess/" + classRecord.id, "GET", null, function (resp) {
                                         if (resp.httpResponseCode === 200) {
-                                            ListGrid_Class_JspClass.invalidateCache();
+                                            // ListGrid_Class_JspClass.invalidateCache();
                                             simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                         } else {
                                             simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
