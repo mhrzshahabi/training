@@ -25,12 +25,6 @@ public class MobileVerify {
     @Column(name = "NATIONAL_CODE")
     private String nationalCode;
 
-    @Column(name = "NAME")
-    private String name;
-
-    @Column(name = "FAMILY")
-    private String family;
-
     @Column(name = "VERIFY")
     private boolean verify = false;
 }

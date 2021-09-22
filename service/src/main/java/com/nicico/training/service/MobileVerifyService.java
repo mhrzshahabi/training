@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.dto.UserDetailDTO;
 import com.nicico.training.iservice.IMobileVerifyService;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.iservice.IPersonnelService;
@@ -36,24 +37,6 @@ public class MobileVerifyService implements IMobileVerifyService {
         MobileVerify mobileVerify = new MobileVerify();
         mobileVerify.setNationalCode(nationalCode);
         mobileVerify.setMobileNumber(number);
-        Optional<Teacher> teacherCode = teacherDAO.findByTeacherCode(nationalCode);
-        if (teacherCode.isPresent() && teacherCode.get().getPersonality() != null) {
-            mobileVerify.setName(teacherCode.get().getPersonality().getFirstNameFa());
-            mobileVerify.setFamily(teacherCode.get().getPersonality().getLastNameFa());
-            return mobileVerifyDAO.save(mobileVerify);
-        }
-        PersonnelDTO.PersonalityInfo byNationalCode = personnelService.getByNationalCode(nationalCode);
-        if (byNationalCode != null) {
-            mobileVerify.setName(byNationalCode.getFirstName());
-            mobileVerify.setFamily(byNationalCode.getLastName());
-            return mobileVerifyDAO.save(mobileVerify);
-        }
-        PersonnelRegisteredDTO.Info oneByNationalCode = personnelRegisteredService.getOneByNationalCode(nationalCode);
-        if (oneByNationalCode != null) {
-            mobileVerify.setName(oneByNationalCode.getFirstName());
-            mobileVerify.setFamily(oneByNationalCode.getLastName());
-            return mobileVerifyDAO.save(mobileVerify);
-        }
         return mobileVerifyDAO.save(mobileVerify);
     }
 
@@ -83,5 +66,25 @@ public class MobileVerifyService implements IMobileVerifyService {
         mobileVerify.setVerify(status);
         mobileVerifyDAO.save(mobileVerify);
         return true;
+    }
+
+    public UserDetailDTO findDetailByNationalCode(String nationalCode){
+        UserDetailDTO dto = new UserDetailDTO();
+        Optional<Teacher> teacherCode = teacherDAO.findByTeacherCode(nationalCode);
+        if (teacherCode.isPresent() && teacherCode.get().getPersonality() != null) {
+            dto.setName(teacherCode.get().getPersonality().getFirstNameFa());
+            dto.setFamily(teacherCode.get().getPersonality().getLastNameFa());
+        }
+        PersonnelDTO.PersonalityInfo byNationalCode = personnelService.getByNationalCode(nationalCode);
+        if (byNationalCode != null) {
+            dto.setName(byNationalCode.getFirstName());
+            dto.setFamily(byNationalCode.getLastName());
+        }
+        PersonnelRegisteredDTO.Info oneByNationalCode = personnelRegisteredService.getOneByNationalCode(nationalCode);
+        if (oneByNationalCode != null) {
+            dto.setName(oneByNationalCode.getFirstName());
+            dto.setFamily(oneByNationalCode.getLastName());
+        }
+        return dto;
     }
 }
