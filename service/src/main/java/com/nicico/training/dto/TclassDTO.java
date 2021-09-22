@@ -87,7 +87,6 @@ public class TclassDTO {
     private Long assistantId;
     private Long affairsId;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -106,6 +105,20 @@ public class TclassDTO {
             else return " ";
         }
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("InfoForAudit")
+    public static class InfoForAudit extends TclassDTO {
+
+        private String teacher;
+        private String createdBy;
+        private String modifiedBy;
+
+    }
+
+
 
     @Getter
     @Setter
@@ -380,13 +393,15 @@ public class TclassDTO {
     public static class TclassSpecRs {
         private SpecRs response;
     }
+
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TClassSpecTClassRs")
-    public static class TClassSpecTClassRs {
-        private SpecTClassRs response;
+    @ApiModel("TclassSpecRs")
+    public static class TclassAuditSpecRs {
+        private SpecAuditRs response;
     }
 
     // ------------------------------
@@ -403,19 +418,18 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecTClassRs {
-        private List<TclassDTO> data;
+    public static class SpecAuditRs {
+        private List<TclassDTO.InfoForAudit> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 
     // ------------------------------
 

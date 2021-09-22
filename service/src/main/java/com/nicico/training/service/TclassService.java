@@ -20,6 +20,7 @@ import com.nicico.training.mapper.ClassSession.SessionBeanMapper;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
+import com.nicico.training.model.compositeKey.AuditClassId;
 import com.nicico.training.model.enums.ClassStatus;
 import com.nicico.training.repository.*;
 import com.nicico.training.utility.persianDate.MyUtils;
@@ -62,6 +63,7 @@ public class TclassService implements ITclassService {
     private final ModelMapper modelMapper;
     private final EvaluationQuestionDAO evaluationQuestionDAO;
     private final TclassDAO tclassDAO;
+    private final TclassAuditDAO tclassAuditDAO;
     private final TeacherDAO teacherDAO;
     private final ClassSessionDAO classSessionDAO;
     private final LockClassDAO lockClassDAO;
@@ -1888,8 +1890,8 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public List<Tclass> getAuditData(long i) {
-        return   tclassDAO.getAuditData(i);
+    public List<TClassAudit> getAuditData(long i) {
+        return tclassAuditDAO.getAuditData(i);
     }
 
 

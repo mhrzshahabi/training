@@ -419,7 +419,10 @@
                     if (record == null || record.id == null) {
                         createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                     } else {
-                    createTab(this.title, "<spring:url value="web/classHistoryReport"/>");}
+                         if (mainTabSet.getTab("تغییرات کلاس") != null)
+                             mainTabSet.removeTab("تغییرات کلاس")
+                             createTab(this.title, "<spring:url value="web/classHistoryReport"/>");}
+
                 }
             }
         ]

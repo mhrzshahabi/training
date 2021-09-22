@@ -11,8 +11,11 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.mapper.tclass.TclassAuditMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
+import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.compositeKey.AuditClassId;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import request.exam.ElsExamRequest;
@@ -75,7 +78,7 @@ public class TclassRestController {
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final ModelMapper modelMapper;
-    private final TclassBeanMapper tclassBeanMapper;
+    private final TclassAuditMapper tclassBeanMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -812,19 +815,18 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/audit/{classId}")
-    public ResponseEntity<TclassDTO.TclassSpecRs> getClassAuditData(@PathVariable Long classId) {
-        List<Tclass> list=tClassService.getAuditData(classId);
-        List<TclassDTO> dto=tclassBeanMapper.toTclassesResponse(list);
-        final TclassDTO.SpecTClassRs specResponse = new TclassDTO.SpecTClassRs();
-        final TclassDTO.TClassSpecTClassRs specRs = new TclassDTO.TClassSpecTClassRs();
+    public ResponseEntity<TclassDTO.InfoForAudit.TclassAuditSpecRs> getClassAuditData(@PathVariable Long classId) {
+        List<TClassAudit> list=tClassService.getAuditData(classId);
+        List<TclassDTO.InfoForAudit> dto=tclassBeanMapper.toTclassesResponse(list);
+        final TclassDTO.SpecAuditRs specResponse = new TclassDTO.SpecAuditRs();
+        final TclassDTO.TclassAuditSpecRs specRs = new TclassDTO.TclassAuditSpecRs();
         specResponse.setData(dto)
                 .setStartRow(0)
                 .setEndRow(dto.size())
                 .setTotalRows( dto.size());
-
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity(specRs, HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }
