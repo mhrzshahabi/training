@@ -12,12 +12,8 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
-import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.TClassAudit;
-import com.nicico.training.model.Tclass;
-import com.nicico.training.model.compositeKey.AuditClassId;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
@@ -77,8 +73,7 @@ public class TclassRestController {
     private final MessageSource messageSource;
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
-    private final ModelMapper modelMapper;
-    private final TclassAuditMapper tclassBeanMapper;
+     private final TclassAuditMapper tclassBeanMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")

@@ -9,7 +9,6 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
-import com.nicico.training.model.compositeKey.AuditClassId;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
