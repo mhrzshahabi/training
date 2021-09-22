@@ -151,5 +151,7 @@ public interface ITclassService {
     ElsSessionResponse getClassSessionsByCode(String classCode);
 
      List<TClassAudit> getAuditData(long classId);
+    TclassDTO.TClassScoreEval getTClassDataForScoresInEval(String classCode);
+
     EvalAverageResult getEvaluationAverageResultToTeacher(Long classId);
 }

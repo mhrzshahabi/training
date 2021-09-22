@@ -812,6 +812,12 @@ public class TclassRestController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping("/getTClassDataForScoresInEval/{classCode}")
+    public TclassDTO.TClassScoreEval getTClassDataForScoresInEval(@PathVariable String classCode) {
+        return tClassService.getTClassDataForScoresInEval(classCode);
+    }
+
 
     @Loggable
     @GetMapping(value = "/audit/{classId}")

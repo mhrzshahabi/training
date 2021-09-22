@@ -848,4 +848,16 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassScoreEval")
+    public static class TClassScoreEval {
+        private Long id;
+        private String code;
+        private String classStatus;
+        private String scoringMethod;
+        private String acceptancelimit;
+    }
+
 }

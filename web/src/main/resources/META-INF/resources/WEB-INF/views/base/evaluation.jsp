@@ -618,6 +618,11 @@
                 id: "TabPane_EditGoalQuestions",
                 title: "ویرایش سوالات ارزیابی مربوط به اهداف",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/edit-goal-questions-form"})
+            },
+            {
+                id: "TabPane_Class_Scores",
+                title: "<spring:message code="register.scores"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/class-scores-form"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -820,8 +825,14 @@
                     classRecord_JspEGQ = classRecord;
                     break;
                 }
+                case "TabPane_Class_Scores": {
+                    if (typeof loadPage_Scores_Eval !== "undefined") {
+                        loadPage_Scores_Eval();
+                    }
+                    break;
+                }
                 case "TabPane_Results": {
-                    createDialog("info", "این تب فعلا مورد استفاده قرار نگرفته است")
+                    createDialog("info", "این تب فعلا مورد استفاده قرار نگرفته است");
                     break;
                 }
             }
