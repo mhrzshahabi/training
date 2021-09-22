@@ -1220,18 +1220,20 @@
                                 let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                                 if(classRecord.classStatus === "1") {
                                     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "changeClassStatusToInProcess/" + classRecord.id, "GET", null, function (resp) {
-                                        if (resp.httpResponseCode === 200) {
-                                            // ListGrid_Class_JspClass.invalidateCache();
-                                            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
-                                        } else {
-                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                                        }
+                                        <%--if (resp.httpResponseCode === 200) {--%>
+                                        <%--    // ListGrid_Class_JspClass.invalidateCache();--%>
+                                        <%--    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");--%>
+                                        <%--} else {--%>
+                                        <%--    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");--%>
+                                        <%--}--%>
                                     }));
                                 } else {
-                                    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                    createDialog("info", "<spring:message code="msg.operation.successful"/>", "<spring:message code="create"/>")
+                                    <%--simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");--%>
                                 }
                             } else {
-                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                createDialog("info", "<spring:message code="msg.operation.error"/>", "<spring:message code="message"/>")
+                                <%--simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");--%>
                             }
                         }
                     });
@@ -1254,18 +1256,20 @@
                                 let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                                 if(classRecord.classStatus === "1") {
                                     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "changeClassStatusToInProcess/" + classRecord.id, "GET", null, function (resp) {
-                                        if (resp.httpResponseCode === 200) {
-                                            // ListGrid_Class_JspClass.invalidateCache();
-                                            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
-                                        } else {
-                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                                        }
+                                        <%--if (resp.httpResponseCode === 200) {--%>
+                                        <%--    // ListGrid_Class_JspClass.invalidateCache();--%>
+                                        <%--    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");--%>
+                                        <%--} else {--%>
+                                        <%--    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");--%>
+                                        <%--}--%>
                                     }));
                                 } else {
-                                    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                    createDialog("info", "<spring:message code="msg.operation.successful"/>", "<spring:message code="create"/>")
+                                    <%--simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");--%>
                                 }
                             } else {
-                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                createDialog("info", "<spring:message code="msg.operation.error"/>", "<spring:message code="message"/>")
+                                <%--simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");--%>
                             }
                         }
                     });
