@@ -23,10 +23,10 @@
     var valence_value_Eval = null;
     var score_windows_dynamicForm_value_Eval = null;
     var valence_value_failureReason_Eval = null;
-    var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"};
-    var myMap = new Map(Object.entries(map));
-    var map1 = {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"};
-    var myMap1 = new Map(Object.entries(map1));
+    var map_Eval = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"};
+    var myMap_Eval = new Map(Object.entries(map_Eval));
+    var map1_Eval = {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"};
+    var myMap1_Eval = new Map(Object.entries(map1_Eval));
 
 
     var classId_Eval = null;
@@ -323,10 +323,8 @@
                     if (value === 403) {
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student_Eval.completeFields[5].masterIndex);
                     } else if (value === 400 && !(classScoringMethod_Eval == "1")) {
-                        debugger;
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student_Eval.completeFields[7].masterIndex);
                     } else if (value === 400 && classScoringMethod_Eval == "1") {
-                        debugger;
                         this.grid.startEditing(this.rowNum, ListGrid_Class_Student_Eval.completeFields[6].masterIndex);
                     } else {
                         ListGrid_Cell_scoresState_Update_Eval(this.grid.getRecord(this.rowNum), value);
@@ -412,7 +410,6 @@
                 editorType: "SelectItem",
                 valueMap: {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"},
                 changed: function (form, item, value) {
-                    debugger;
                     valence_value_Eval = value;
                     if (failureReason_change_Eval == true && (value < classRecord_acceptancelimit_Eval)) {
 
@@ -579,21 +576,21 @@
                 ListGrid_Class_Student_Eval.invalidateCache()
         },
         dataArrived: function () {
-            if (myMap.get(classScoringMethod_Eval) === "ارزشی") {
-                totalsLabel_scores_Eval.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classScoringMethod_Eval) + "</b>" +
-                    "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1.get(classAcceptanceLimit_Eval) + "</b>");
-                scoringMethodPrint_Eval = myMap.get(classScoringMethod_Eval);
-                acceptancelimitPrint_Eval = myMap1.get(classAcceptanceLimit_Eval);
-            } else if (myMap.get(classScoringMethod_Eval) === "نمره از صد" || myMap.get(classScoringMethod_Eval) === "نمره از بیست") {
-                totalsLabel_scores_Eval.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classScoringMethod_Eval) + "</b>" +
+            if (myMap_Eval.get(classScoringMethod_Eval) === "ارزشی") {
+                totalsLabel_scores_Eval.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap_Eval.get(classScoringMethod_Eval) + "</b>" +
+                    "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + myMap1_Eval.get(classAcceptanceLimit_Eval) + "</b>");
+                scoringMethodPrint_Eval = myMap_Eval.get(classScoringMethod_Eval);
+                acceptancelimitPrint_Eval = myMap1_Eval.get(classAcceptanceLimit_Eval);
+            } else if (myMap_Eval.get(classScoringMethod_Eval) === "نمره از صد" || myMap_Eval.get(classScoringMethod_Eval) === "نمره از بیست") {
+                totalsLabel_scores_Eval.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap_Eval.get(classScoringMethod_Eval) + "</b>" +
                     "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + (classAcceptanceLimit_Eval) + "</b>");
-                scoringMethodPrint_Eval = myMap.get(classScoringMethod_Eval);
+                scoringMethodPrint_Eval = myMap_Eval.get(classScoringMethod_Eval);
                 acceptancelimitPrint_Eval = classAcceptanceLimit_Eval;
             } else {
 
-                totalsLabel_scores_Eval.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap.get(classScoringMethod_Eval) + "</b>" +
+                totalsLabel_scores_Eval.setContents("<spring:message code="scoring.Method"/>" + ":&nbsp;<b>" + myMap_Eval.get(classScoringMethod_Eval) + "</b>" +
                     "&nbsp;&nbsp;&nbsp;&nbsp;" + "<spring:message code="acceptance.limit"/>" + ":&nbsp;<b>" + "ندارد" + "</b>");
-                scoringMethodPrint_Eval = myMap.get(classScoringMethod_Eval);
+                scoringMethodPrint_Eval = myMap_Eval.get(classScoringMethod_Eval);
                 acceptancelimitPrint_Eval = "ندارد";
             }
         },

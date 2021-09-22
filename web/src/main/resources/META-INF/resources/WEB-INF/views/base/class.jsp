@@ -2112,7 +2112,6 @@
                     Window_Class_JspClass.close();
 
                     //**********generate class sessions**********
-                    debugger;
                     if (!VM_JspClass.hasErrors() && ((classMethod.localeCompare("POST") === 0) || (classMethod.localeCompare("PUT") === 0 && ListGrid_session.getData().localData.length > 0 ? false : true && VM_JspClass.getValues().autoValid))) {
                         if (autoValid) {
                             let ClassID = response.record.id;
