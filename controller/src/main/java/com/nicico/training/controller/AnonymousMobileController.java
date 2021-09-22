@@ -1,5 +1,6 @@
 package com.nicico.training.controller;
 
+import com.nicico.training.dto.UserDetailDTO;
 import com.nicico.training.iservice.IMobileVerifyService;
 import com.nicico.training.model.MobileVerify;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +34,10 @@ public class AnonymousMobileController {
     @GetMapping("/status/")
     public ResponseEntity<Boolean> mobileNumberVerifyStatus(@RequestParam String nationalCode, @RequestParam String number) {
         return ResponseEntity.ok(iMobileVerifyService.checkVerificationIfNotPresentAdd(nationalCode, number));
+    }
+
+    @GetMapping("/detail/")
+    public ResponseEntity<UserDetailDTO> mobileVerifyUserDetail(@RequestParam String nationalCode) {
+        return ResponseEntity.ok(iMobileVerifyService.findDetailByNationalCode(nationalCode));
     }
 }
