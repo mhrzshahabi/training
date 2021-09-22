@@ -192,8 +192,8 @@ public class ElsRestController {
     @GetMapping("/evaluations/userEval/{evalId}")
     public ElsUserEvaluationListResponseDto sendUserEvalToElsById(HttpServletRequest header, @PathVariable long evalId) {
         ElsUserEvaluationListResponseDto response = new ElsUserEvaluationListResponseDto();
-        try {
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
                 Evaluation evaluation = iEvaluationService.getById(evalId);
                 response = evaluationBeanMapper.toElsEvalResponseDto(evaluation,
                         questionnaireService.get(evaluation.getQuestionnaireId()),
@@ -201,10 +201,7 @@ public class ElsRestController {
                                 answerService.getAllByEvaluationId(evaluation.getId())),
                         personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
                 response.setStatus(HttpStatus.OK.value());
-            } else {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-                response.setMessage("خطای شناسایی");
-            }
+
         } catch (Exception ex) {
             if (ex.getMessage().equals("No value present")) {
                 response.setMessage("ارزیابی با این اطلاعات وجود ندارد");
@@ -213,6 +210,10 @@ public class ElsRestController {
                 response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             }
+        }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای شناسایی");
         }
         return response;
     }
@@ -528,25 +529,26 @@ public class ElsRestController {
     @PostMapping("/student/addAnswer/evaluation")
     public BaseResponse addStudentEvaluationAnswer(HttpServletRequest header, @RequestBody StudentEvaluationAnswerDto dto) {
         BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
         try {
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
                 EvaluationAnswerObject answerObject = tclassService.classStudentEvaluations(dto);
                 EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
                 EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
                 evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
                 response.setStatus(200);
-            } else {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
 
-            }
             return response;
         } catch (Exception e) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage("ارزیابی مورد نظر در سیستم آموزش حذف شده است");
 
             return response;
-        }
+        }             } else {
+                response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return response;
+
+            }
 
     }
 
@@ -554,21 +556,24 @@ public class ElsRestController {
     @PostMapping("/teacher/addAnswer/evaluation")
     public BaseResponse addTeacherEvaluationAnswer(HttpServletRequest header, @RequestBody TeacherEvaluationAnswerDto dto) {
         BaseResponse response = new BaseResponse();
-        try {
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+            try {
                 EvaluationAnswerObject answerObject = tclassService.classTeacherEvaluations(dto);
                 EvaluationDTO.Update update = modelMapper.map(answerObject, EvaluationDTO.Update.class);
                 EvaluationDTO.Info info = evaluationService.update(answerObject.getId(), update);
                 evaluationAnalysisService.updateReactionEvaluation(info.getClassId());
                 response.setStatus(200);
-            } else {
-                response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            }
+
             return response;
         } catch (Exception e) {
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage("ارزیابی مورد نظر در سیستم آموزش حذف شده است");
             return response;
+        }    } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            return response;
+
         }
 
     }
@@ -727,21 +732,22 @@ public class ElsRestController {
                                                                                 @PathVariable String classCode,
                                                                                 @PathVariable String nationalCode) {
         ElsStudentAttendanceListResponse elsStudentAttendanceListResponse = new ElsStudentAttendanceListResponse();
-        try {
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+            try {
                 if (classCode != null && nationalCode != null && nationalCode.matches("\\d+")) {
                     elsStudentAttendanceListResponse = iStudentService.getStudentAttendanceList(classCode, nationalCode);
                 } else {
                     elsStudentAttendanceListResponse.setMessage("اطلاعات ارسالی فاقد محتوای صحیح ست");
                     elsStudentAttendanceListResponse.setStatus(HttpStatus.BAD_REQUEST.value());
                 }
-            } else {
-                elsStudentAttendanceListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                elsStudentAttendanceListResponse.setMessage("دسترسی موردنظر یافت نشد");
-            }
+
         } catch (Exception ex) {
             elsStudentAttendanceListResponse.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
             elsStudentAttendanceListResponse.setMessage("عملیات با خطا مواجه شد");
+        }   } else {
+            elsStudentAttendanceListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsStudentAttendanceListResponse.setMessage("دسترسی موردنظر یافت نشد");
         }
 
         return elsStudentAttendanceListResponse;
@@ -766,21 +772,22 @@ public class ElsRestController {
     public ElsSessionResponse getClassSessions(HttpServletRequest header, @PathVariable String classCode) {
 
         ElsSessionResponse elsSessionResponse = new ElsSessionResponse();
-        try {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+
                 elsSessionResponse = tclassService.getClassSessionsByCode(classCode);
                 elsSessionResponse.setStatus(200);
                 return elsSessionResponse;
-            } else {
-                elsSessionResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                elsSessionResponse.setMessage("دسترسی موردنظر یافت نشد");
-                return elsSessionResponse;
-            }
+
         } catch (Exception e) {
 
             elsSessionResponse.setStatus(HttpStatus.NOT_FOUND.value());
             elsSessionResponse.setMessage("کلاس موردنظر یافت نشد");
+            return elsSessionResponse;
+        }    } else {
+            elsSessionResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsSessionResponse.setMessage("دسترسی موردنظر یافت نشد");
             return elsSessionResponse;
         }
     }
@@ -793,8 +800,9 @@ public class ElsRestController {
     @GetMapping("/sessionAttendancesInfo/bySessionId/{sessionId}")
     public ElsSessionAttendanceResponse getAttendanceListPerSession(HttpServletRequest header, @PathVariable Long sessionId) {
         ElsSessionAttendanceResponse elsSessionAttendanceResponse = new ElsSessionAttendanceResponse();
-        try {
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+            try {
                 elsSessionAttendanceResponse = iClassSessionService.sessionStudentsBySessionId(sessionId);
                 if (elsSessionAttendanceResponse.getStudentAttendanceInfos() != null &&
                         elsSessionAttendanceResponse.getStudentAttendanceInfos().size() != 0) {
@@ -804,14 +812,14 @@ public class ElsRestController {
                     elsSessionAttendanceResponse.setMessage("لیست حضور غیاب خالی است");
                 }
                 return elsSessionAttendanceResponse;
-            } else {
-                elsSessionAttendanceResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                elsSessionAttendanceResponse.setMessage("دسترسی موردنظر یافت نشد");
-                return elsSessionAttendanceResponse;
-            }
+
         } catch (Exception ex) {
             elsSessionAttendanceResponse.setStatus(HttpStatus.NOT_FOUND.value());
             elsSessionAttendanceResponse.setMessage("جلسه ی موردنظر یافت نشد");
+            return elsSessionAttendanceResponse;
+        }       } else {
+            elsSessionAttendanceResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsSessionAttendanceResponse.setMessage("دسترسی موردنظر یافت نشد");
             return elsSessionAttendanceResponse;
         }
     }
@@ -821,8 +829,9 @@ public class ElsRestController {
                                                                       @PathVariable String nationalCode,
                                                                       @PathVariable String evaluatorType) {
         ElsEvaluationsListResponse elsEvaluationsListResponse = new ElsEvaluationsListResponse();
-        try {
-            if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+            try {
                 Long evaluatorTypeId = null;
                 switch (evaluatorType) {
                     case "student": {
@@ -840,14 +849,15 @@ public class ElsRestController {
                 elsEvaluationsListResponse.setStatus(HttpStatus.OK.value());
 
                 return elsEvaluationsListResponse;
-            } else {
-                elsEvaluationsListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-                elsEvaluationsListResponse.setMessage("دسترسی موردنظر یافت نشد");
-                return elsEvaluationsListResponse;
-            }
+
         } catch (Exception ex) {
             elsEvaluationsListResponse.setStatus(HttpStatus.NOT_FOUND.value());
             elsEvaluationsListResponse.setMessage("اطلاعات موردنظر یافت نشد");
+            return elsEvaluationsListResponse;
+        }
+        } else {
+            elsEvaluationsListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsEvaluationsListResponse.setMessage("دسترسی موردنظر یافت نشد");
             return elsEvaluationsListResponse;
         }
     }
@@ -902,9 +912,9 @@ public class ElsRestController {
                     PaginationDto paginationDto=new PaginationDto();
                     paginationDto.setCurrent(page);
                     paginationDto.setSize(size);
-                    paginationDto.setTotal(getTotalPages(questionBankList.getTotalPages(), size));
-                    paginationDto.setLast(getTotalPages(questionBankList.getTotalPages(), size)-1);
-                    paginationDto.setTotalItems((long) questionBankList.getTotalPages());
+                    paginationDto.setTotal(questionBankList.getTotalPages());
+                    paginationDto.setLast(questionBankList.getTotalPages()-1);
+                    paginationDto.setTotalItems(questionBankList.get().count());
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
                 }else {
@@ -1133,14 +1143,10 @@ public class ElsRestController {
     }
 
 
-    @PostMapping("/anonymous-number/")
-    public ResponseEntity<Boolean> addIfNotPresentAnonymousNumberForVerify(@RequestParam String nationalCode, @RequestParam String number) {
-        return ResponseEntity.ok(iMobileVerifyService.add(nationalCode, number));
-    }
 
     @GetMapping("/anonymous-number/status")
     public ResponseEntity<Boolean> mobileNumberVerifyStatus(@RequestParam String nationalCode, @RequestParam String number) {
-        return ResponseEntity.ok(iMobileVerifyService.checkVerification(nationalCode, number));
+        return ResponseEntity.ok(iMobileVerifyService.checkVerificationIfNotPresentAdd(nationalCode, number));
     }
 
     @PostMapping("/set-score")

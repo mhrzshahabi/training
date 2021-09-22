@@ -6,330 +6,296 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-    var isCriteriaCategoriesChanged_Comment_REFR = false;
-    let reportCriteria_Comment_REFR = null;
-    let excelData = [];
+      let record = ListGrid_Class_JspClass.getSelectedRecord();
+
     //----------------------------------------------------Default Rest--------------------------------------------------
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
-    RestDataSource_Category_Comment_REFR = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: categoryUrl + "spec-list"
-    });
-    RestDataSource_SubCategory_Comment_REFR = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: subCategoryUrl + "iscList"
-    });
-    RestDataSource_Class_Comment_REFR = isc.TrDS.create({
-        ID: "RestDataSource_Class_REFR_comment",
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleClass"},
-            {name: "code"},
-            {name: "course.titleFa"}
-        ],
-        fetchDataURL: classUrl + "info-tuple-list"
-    });
-    RestDataSource_Comment_REFR = isc.TrDS.create({
-        fields: [
-            { name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "classCode", title: "<spring:message code="class.code"/>", filterOperator: "iContains"},
-            {name: "classTitle", title: "<spring:message code="class.title"/>", filterOperator: "iContains"},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains"},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "startDate", title: "<spring:message code="start.date"/>", filterOperator: "iContains"},
-            {name: "endDate", title: "<spring:message code="end.date"/>", filterOperator: "iContains"},
-            {name: "titleCategory", title: "<spring:message code="category"/>", filterOperator: "iContains"},
-            {name: "titleSubCategory", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
-            {name: "description", title: "<spring:message code="suggestions"/>", filterOperator: "iContains"},
+     RestDataSource_History_REFR = isc.TrDS.create({
+         fields: [
+//              {name: "id"},
+//              {name: "group"},
+//              {name: "classCancelReasonId"},
+// // {name: "lastModifiedDate",hidden:true},
+// // {name: "createdBy",hidden:true},
+// // {name: "createdDate",hidden:true,type:d},
+//              {name: "titleClass", autoFitWidth: true},
+//              {name: "startDate", autoFitWidth: true},
+//              {name: "endDate", autoFitWidth: true},
+//              {name: "studentCount", canFilter: false, canSort: false, autoFitWidth: true},
+             {name: "code", autoFitWidth: true},
+//              {name: "term.titleFa", autoFitWidth: true},
+//              {name: "courseId", autoFitWidth: true},
+//              {name: "course.titleFa", autoFitWidth: true},
+//              {name: "course.id", autoFitWidth: true},
+//              {name: "teacherId", autoFitWidth: true},
+//              {
+//                  name: "teacher",
+//                  autoFitWidth: true
+//              },
+//              {
+//                  name: "teacher.personality.lastNameFa",
+//                  autoFitWidth: true
+//              },
+//              {name: "reason" , autoFitWidth: true},
+//              {name: "classStatus" , autoFitWidth: true},
+//              {name: "topology"},
+//              {name: "targetPopulationTypeId"},
+//              {name: "holdingClassTypeId"},
+//              {name: "teachingMethodId"},
+//              {name: "trainingPlaceIds"},
+//              {name: "instituteId"},
+//              {name: "workflowEndingStatusCode"},
+//              {name: "workflowEndingStatus"},
+//              {name: "preCourseTest", type: "boolean"},
+//              {name: "course.code"},
+//              {name: "course.theoryDuration"},
+//              {name: "scoringMethod"},
+//              {name: "evaluationStatusReactionTraining"},
+//              {name: "supervisor"},
+//              {name: "plannerFullName"},
+//              {name: "supervisorFullName"},
+//              {name: "organizerName"},
+//              {name: "evaluation"},
+//              {name: "startEvaluation"},
+//              {name: "behavioralLevel"},
+//              {name: "studentCost"},
+//              {name: "studentCostCurrency"},
+//              {name: "planner"},
+//              {name: "organizer"},
+//              {name: "hasTest", type: "boolean"},
+//              {name: "classToOnlineStatus", type: "boolean"}
+         ],
+        // fetchDataURL:classAuditUrl+record.id ,
+        fetchDataURL:classAuditUrl ,
 
-        ],
-        fetchDataURL: viewReactionEvaluationCommentUrl + "/list/"+"teacher",
     });
 
     //----------------------------------------------------Criteria Form------------------------------------------------
-    ToolStripButton_Excel_Comment_REFR = isc.ToolStripButtonExcel.create({
-        click: function () {
-            makeExcelComments();
-        }
-    });
-    ToolStripButton_Refresh_Comment_REFR = isc.ToolStripButtonRefresh.create({
-        click: function () {
-            ListGrid_Comment_REFR.invalidateCache();
-        }
-    });
 
-    DynamicForm_CriteriaForm_Comment_REFR = isc.DynamicForm.create({
-        align: "right",
-        titleWidth: 0,
-        titleAlign: "center",
-        showInlineErrors: true,
-        showErrorText: false,
-        numCols: 6,
-        colWidths: ["10%", "25%", "25%", "10%", "25%", "25%"],
-        fields: [
-            {
-                name: "startDate",
-                title: "بازه کلاس: شروع از",
-                ID: "startDate_jspCER_comment",
-                colSpan: 1,
-                titleColSpan: 1,
-                required: true,
-                hint: "--/--/----",
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
-                        closeCalendarWindow();
-                        displayDatePicker('startDate_jspCER_comment', this, 'ymd', '/');
-                    }
-                }],
-                textAlign: "center",
-                changed: function (form, item, value) {
-                    var dateCheck;
-                    dateCheck = checkDate(value);
-                    if (dateCheck === false) {
-                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else {
-                        form.clearFieldErrors("startDate", true);
-                    }
-                }
-            },
-            {
-                colSpan: 1,
-                name: "temp1",
-                canEdit: false,
-                showTitle: false
-            },
-            {
-                name: "endDate",
-                title: "بازه کلاس: پایان تا",
-                ID: "endDate_jspCER_comment",
-                colSpan: 1,
-                titleColSpan: 1,
-                type: 'text',
-                required: true,
-                hint: "--/--/----",
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
-                        closeCalendarWindow();
-                        displayDatePicker('endDate_jspCER_comment', this, 'ymd', '/');
-                    }
-                }],
-                textAlign: "center",
-                changed: function (form, item, value) {
-                    let dateCheck;
-                    dateCheck = checkDate(value);
-                    if (dateCheck === false) {
-                        form.clearFieldErrors("endDate", true);
-                        form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else {
-                        form.clearFieldErrors("endDate", true);
-                    }
-                }
-            },
-            {
-                colSpan: 1,
-                name: "temp2",
-                canEdit: false,
-                showTitle: false
-            },
-            {
-                name: "titleCategory",
-                title: "گروه کاری",
-                type: "SelectItem",
-                textAlign: "center",
-                colSpan: 2,
-                titleColSpan: 1,
-                optionDataSource: RestDataSource_Category_Comment_REFR,
-                valueField: "titleFa",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                changed: function () {
 
-                    isCriteriaCategoriesChanged_Comment_REFR = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_Comment_REFR.getField("titleSubCategory");
-                    if (this.getSelectedRecords() == null) {
-                        subCategoryField.clearValue();
-                        subCategoryField.disable();
-                        return;
-                    }
-                    subCategoryField.enable();
-                    if (subCategoryField.getValue() === undefined)
-                        return;
-                    var subCategories = subCategoryField.getSelectedRecords();
-                    var categoryNames = this.getValue();
-                    var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
-                        if (categoryNames.contains(subCategories[i].category.titleFa))
-                            SubCats.add(subCategories[i].titleFa);
-                    }
-                    subCategoryField.setValue(SubCats);
-                    subCategoryField.focus(this.form, subCategoryField);
-                }
-            },
-            {
-                name: "titleSubCategory",
-                title: "زیرگروه کاری",
-                type: "SelectItem",
-                textAlign: "center",
-                colSpan: 2,
-                titleColSpan: 1,
-                autoFetchData: false,
-                disabled: true,
-                optionDataSource: RestDataSource_SubCategory_Comment_REFR,
-                valueField: "titleFa",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                focus: function () {
 
-                    if (isCriteriaCategoriesChanged_Comment_REFR) {
-                        isCriteriaCategoriesChanged_Comment_REFR = false;
-                        var names = DynamicForm_CriteriaForm_Comment_REFR.getField("titleCategory").getValue();
-                        if (names === []) {
-                            RestDataSource_SubCategory_Comment_REFR.implicitCriteria = null;
-                        } else {
-                            RestDataSource_SubCategory_Comment_REFR.implicitCriteria = {
-                                _constructor: "AdvancedCriteria",
-                                operator: "and",
-                                criteria: [{fieldName: "category.titleFa", operator: "inSet", value: names}]
-                            };
-                        }
-                        this.fetchData();
-                    }
-                }
-            }
-        ]
-    });
-    DynamicForm_choose_report_type_REFR = isc.DynamicForm.create({
-        align: "right",
-        titleWidth: 0,
-        titleAlign: "center",
-        showInlineErrors: true,
-        showErrorText: false,
-        numCols: 6,
-        colWidths: ["10%", "25%", "25%", "10%", "25%", "25%"],
-        fields: [
-            {
-                name: "reportTypeComments",
-                title: "انتقادات و پیشنهادات توسط : ",
-                valueMap: {
-                    "teacher": "استاد",
-                    "student": "فراگیر",
-                    "personnel": "کارکنان آموزش",
-                },
-                type: "SelectItem",
-                textAlign: "center",
-                defaultValue:  ["teacher"],
-                colSpan: 2,
-                allowAdvancedCriteria: false,
-                titleColSpan: 1,
-                required: true,
-                changed: function (form, item, value) {
-                    RestDataSource_Comment_REFR.fetchDataURL = viewReactionEvaluationCommentUrl + "/list/"+value
-
-                }
-
-            }
-        ]
-    });
 
     //----------------------------------- layOut -----------------------------------------------------------------------
-    var ListGrid_Comment_REFR = isc.TrLG.create({
-        height: "70%",
-        dataPageSize: 1000,
-        filterOnKeypress: false,
-        showFilterEditor: true,
-        gridComponents: ["filterEditor", "header", "body"],
-        dataSource: RestDataSource_Comment_REFR,
+    var ListGrid_History_REFR = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_History_REFR,
+        dataPageSize: 15,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        showRollOver:false,
+        selectionType: "single",
+        autoFetchData: true,
         fields: [
-            {name: "classCode"},
-            {name: "classTitle"},
-            {name: "firstName"},
-            {name: "lastName"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "titleCategory"},
-            {name: "titleSubCategory"},
-            {name: "description"},
+            <%--{name: "id", title: "id", canEdit: false, hidden: true},--%>
+            {
+                primaryKey: true,
+                name: "code",
+                title: "<spring:message code='class.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            <%--{--%>
+            <%--    name: "titleClass",--%>
+            <%--    title: "titleClass",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--    hidden: true--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "course.titleFa",--%>
+            <%--    title: "<spring:message code='course.title'/>",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--    sortNormalizer: function (record) {--%>
+            <%--        return record.course.titleFa;--%>
+            <%--    }--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "term.titleFa",--%>
+            <%--    title: "term",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--    hidden: true--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "startDate",--%>
+            <%--    title: "<spring:message code='start.date'/>",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--    filterEditorProperties: {--%>
+            <%--        keyPressFilter: "[0-9/]"--%>
+            <%--    },--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "endDate",--%>
+            <%--    title: "<spring:message code='end.date'/>",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--    filterEditorProperties: {--%>
+            <%--        keyPressFilter: "[0-9/]"--%>
+            <%--    },--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "studentCount",--%>
+            <%--    title: "<spring:message code='student.count'/>",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "group",--%>
+            <%--    title: "<spring:message code='group'/>",--%>
+            <%--    align: "center",--%>
+            <%--    width: 40,--%>
+            <%--    filterOperator: "equals",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "teacher",--%>
+            <%--    title: "<spring:message code='teacher'/>",--%>
+            <%--    displayField: "teacher.personality.lastNameFa",--%>
+            <%--    type: "TextItem",--%>
+            <%--    sortNormalizer(record) {--%>
+            <%--        return record.teacher.personality.lastNameFa;--%>
+            <%--    },--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "planner.lastName",--%>
+            <%--    title: "<spring:message code="planner"/>",--%>
+            <%--    canSort: false,--%>
+            <%--    autoFitWidth: true,--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "supervisor.lastName",--%>
+            <%--    title: "<spring:message code="supervisor"/>",--%>
+            <%--    canSort: false,--%>
+            <%--    align: "center",--%>
+            <%--    autoFitWidth: true,--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "organizer.titleFa",--%>
+            <%--    title: "<spring:message code="executer"/>",--%>
+            <%--    canSort: false,--%>
+            <%--    autoFitWidth: true,--%>
+            <%--    align: "center",--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "reason", title: "<spring:message code='training.request'/>", align: "center",--%>
+            <%--    valueMap: {--%>
+            <%--        "1": "نیازسنجی",--%>
+            <%--        "2": "درخواست واحد",--%>
+            <%--        "3": "نیاز موردی",--%>
+            <%--    },--%>
+            <%--    filterEditorProperties: {--%>
+            <%--        pickListProperties: {--%>
+            <%--            showFilterEditor: false--%>
+            <%--        },--%>
+            <%--    },--%>
+            <%--    filterOnKeypress: true,--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",--%>
+            <%--    valueMap: {--%>
+            <%--        "1": "برنامه ریزی",--%>
+            <%--        "2": "در حال اجرا",--%>
+            <%--        "3": "پایان یافته",--%>
+            <%--        "4": "لغو شده",--%>
+            <%--        "5": "اختتام",--%>
+            <%--    },--%>
+            <%--    filterEditorProperties: {--%>
+            <%--        pickListProperties: {--%>
+            <%--            showFilterEditor: false--%>
+            <%--        },--%>
+            <%--    },--%>
+            <%--    filterOnKeypress: true,--%>
+            <%--    width: 100,--%>
+            <%--    showHover: true,--%>
+            <%--    hoverWidth: 150,--%>
+            <%--    hoverHTML(record) {--%>
+            <%--        return "<b>علت لغو: </b>" + record.classCancelReason.title;--%>
+            <%--    }--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {--%>
+            <%--        "1": "U شکل",--%>
+            <%--        "2": "عادی",--%>
+            <%--        "3": "مدور",--%>
+            <%--        "4": "سالن"--%>
+            <%--    },--%>
+            <%--    filterEditorProperties: {--%>
+            <%--        pickListProperties: {--%>
+            <%--            showFilterEditor: false--%>
+            <%--        },--%>
+            <%--    },--%>
+            <%--    filterOnKeypress: true,--%>
+            <%--    hidden: true--%>
+            <%--},--%>
+            <%--{name: "sendClassToOnlineBtn", canFilter: false, title: "ارسال به آزمون آنلاین", width: "145"},--%>
+            <%--{name: "targetPopulationTypeId", hidden: true},--%>
+            <%--{name: "holdingClassTypeId", hidden: true},--%>
+            <%--{name: "teachingMethodId", hidden: true},--%>
+            <%--{name: "createdBy", hidden: true},--%>
+            <%--{name: "createdDate", hidden: true},--%>
+            <%--{--%>
+            <%--    name: "workflowEndingStatusCode",--%>
+            <%--    title: "workflowCode",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--    hidden: true--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    name: "workflowEndingStatus",--%>
+            <%--    title: "<spring:message code="ending.class.status"/>",--%>
+            <%--    align: "center",--%>
+            <%--    filterOperator: "iContains",--%>
+            <%--    width: 40            },--%>
+            <%--{name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"},--%>
+            <%--{--%>
+            <%--    name: "isSentMessage",--%>
+            <%--    title: "ارسال پيام قبل از شروع کلاس",--%>
+            <%--    width: 40,--%>
+            <%--    // hidden: true,--%>
+            <%--    type: "image",--%>
+            <%--    imageURLPrefix: "",--%>
+            <%--    imageURLSuffix: ".gif",--%>
+            <%--    canEdit: false,--%>
+            <%--    canSort: false,--%>
+            <%--    canFilter: false--%>
+            <%--},--%>
+            <%--{name: "course.code", title: "", hidden: true},--%>
+            <%--{name: "course.theoryDuration", title: "", hidden: true},--%>
+            <%--{name: "scoringMethod", hidden: true},--%>
+            <%--{name: "evaluationStatusReactionTraining", hidden: true},--%>
+            <%--{name: "supervisor", hidden: true},--%>
+            <%--{name: "teacherId", hidden: true},--%>
+            <%--{name: "evaluation", hidden: true},--%>
+            <%--{name: "startEvaluation", hidden: true},--%>
+            <%--{name: "behavioralLevel", hidden: true},--%>
+            <%--{name: "studentCost", hidden: true},--%>
+            <%--{name: "studentCostCurrency", hidden: true},--%>
+            <%--{name: "hasTest", hidden: true},--%>
+            <%--{name: "classToOnlineStatus", hidden: true}--%>
+        ]   ,
+        dataArrived: function (startRow, endRow,data) {
 
-        ]
+
+        },
     });
     var VLayout_Body_Comment_REFR = isc.TrVLayout.create({
         border: "2px solid blue",
         padding: 20,
         members: [
-            ListGrid_Comment_REFR
+            ListGrid_History_REFR
         ]
     });
 
     //------------------------------------------------- Functions ------------------------------------------------------
     //
-    function makeExcelComments() {
-
-        if (ListGrid_Comment_REFR.getOriginalData().localData === undefined)
-            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
-        else {
-            let records = ListGrid_Comment_REFR.data.localData.toArray();
-            excelData = [];
-            excelData.add({
-                classCode: "کد کلاس",
-                classTitle: "عنوان کلاس",
-                firstName: "نام ",
-                lastName: "نام خانوادگی ",
-                startDate: "تاریخ شروع",
-                endDate: "تاریخ پایان",
-                titleCategory: "گروه",
-                titleSubCategory: "زیرگروه",
-                description: "نظرات",
-            });
-
-            if(records) {
-                for (let j = 0; j < records.length; j++) {
-                    excelData.add({
-                        rowNum: j+1,
-                        classCode: records[j].classCode,
-                        classTitle: records[j].classTitle,
-                        firstName: records[j].firstName,
-                        lastName: records[j].lastName,
-                        startDate: records[j].startDate,
-                        endDate: records[j].endDate,
-                        titleCategory: records[j].titleCategory,
-                        titleSubCategory: records[j].titleSubCategory,
-                        description: records[j].description
-                    });
-
-                }
-            }
-            let fields = [
-                {name: "rowNum"},
-                {name: "classCode"},
-                {name: "classTitle"},
-                {name: "firstName"},
-                {name: "lastName"},
-                {name: "startDate"},
-                {name: "endDate"},
-                {name: "titleCategory"},
-                {name: "titleSubCategory"},
-                {name: "description"}
-            ];
-            ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش نظرات ارزیابی ", null);
-        }
-    }
-    // </script>
+     // </script>

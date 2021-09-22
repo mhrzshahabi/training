@@ -380,6 +380,14 @@ public class TclassDTO {
     public static class TclassSpecRs {
         private SpecRs response;
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TClassSpecTClassRs")
+    public static class TClassSpecTClassRs {
+        private SpecTClassRs response;
+    }
 
     // ------------------------------
 
@@ -394,6 +402,20 @@ public class TclassDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecTClassRs {
+        private List<TclassDTO> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+
 
     // ------------------------------
 

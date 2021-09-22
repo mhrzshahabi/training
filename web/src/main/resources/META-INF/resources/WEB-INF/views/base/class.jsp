@@ -415,7 +415,11 @@
             {
                 title: "<spring:message code='class.history'/>",
                 click: function () {
-                    createTab(this.title, "<spring:url value="web/classHistoryReport"/>");
+                    let record = JSON.parse(JSON.stringify(ListGrid_Class_JspClass.getSelectedRecord()));
+                    if (record == null || record.id == null) {
+                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                    } else {
+                    createTab(this.title, "<spring:url value="web/classHistoryReport"/>");}
                 }
             }
         ]
