@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.GroupBy;
+import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.ReportFor;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.SpecRs;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.ReportResponse;
 import com.nicico.training.iservice.IClassCourseSumByFeaturesAndDepartmentReportService;
@@ -29,19 +30,15 @@ public class ManHourStatisticsByClassFeatureReportRestController {
     @GetMapping(value = "/list")
     public ResponseEntity<ReportResponse> list(@RequestParam String fromDate,
                                                @RequestParam String toDate,
-                                               @RequestParam List<String> omorCodes,
-                                               @RequestParam List<String> moavenatCodes,
-                                               @RequestParam List<String> mojtameCodes,
+                                               @RequestParam ReportFor reportFor,
+                                               @RequestParam Long depId,
                                                @RequestParam List<GroupBy> groupBys) {
-        omorCodes = omorCodes.isEmpty() ? null : omorCodes;
-        moavenatCodes = moavenatCodes.isEmpty() ? null : moavenatCodes;
-        mojtameCodes = mojtameCodes.isEmpty() ? null : mojtameCodes;
 
         Map<GroupBy, List<ClassFeatures>> allData = new HashMap<>();
 
         for (int i = 0; i < groupBys.size(); i++) {
             List<ClassFeatures> list = new ArrayList<>();
-            service.getReportForMultipleDepartment(fromDate, toDate, mojtameCodes, moavenatCodes, omorCodes, groupBys.get(i)).forEach(dto -> list.add(dto));
+            service.getReportForMultipleDepartment(fromDate, toDate, reportFor ,depId, groupBys.get(i)).forEach(dto -> list.add(dto));
             allData.put(groupBys.get(i), list);
         }
         SpecRs specRs = new SpecRs()

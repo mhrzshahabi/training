@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.GroupBy;
+import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.ReportFor;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassFeatures;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO.ClassSumByStatus;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +38,8 @@ public interface IClassCourseSumByFeaturesAndDepartmentReportService {
     @Transactional(readOnly = true)
     List<ClassFeatures> getReportForMultipleDepartment(String startDate,
                                                        String endDate,
-                                                       List<String> mojtameCodes,
-                                                       List<String> moavenatCodes,
-                                                       List<String> omorCodes,
+                                                       ReportFor reportFor,
+                                                       Long depId,
                                                        GroupBy groupBy);
 
     @Transactional(readOnly = true)
