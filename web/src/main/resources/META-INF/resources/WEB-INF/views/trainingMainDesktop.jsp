@@ -3439,6 +3439,7 @@
         };
         xhttpRequest.open("Post", url+"/"+groupId, true);
         xhttpRequest.setRequestHeader("user-id", "Bearer <%= accessToken %>");
+        xhttpRequest.setRequestHeader("app-id", "Training");
         <%--xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");--%>
         xhttpRequest.send(formData1);
     }
