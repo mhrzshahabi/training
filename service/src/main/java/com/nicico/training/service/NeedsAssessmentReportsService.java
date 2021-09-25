@@ -6,6 +6,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
+import com.nicico.training.mapper.needAssessmentGroupResult.NeedAssessmentGroupResultMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import request.needsassessment.NeedAssessmentGroupJobPromotionDto;
 import request.needsassessment.NeedAssessmentGroupJobPromotionRequestDto;
+import request.needsassessment.NeedAssessmentGroupJobPromotionResponseDto;
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -33,6 +35,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     private final List<String> needsAssessmentPriorityCodes = Arrays.asList("AZ", "AB", "AT", "AE");
 
     private final ModelMapper modelMapper;
+    private final NeedAssessmentGroupResultMapper needAssessmentGroupResultMapper;
 
     private final PostDAO postDAO;
     private final TrainingPostDAO trainingPostDAO;
@@ -53,6 +56,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     private final ITclassService tClassService;
     private final ICourseService courseService;
     private final ISkillService skillService;
+    private final NeedAssessmentGroupResultDAO needAssessmentGroupResultDAO;
     protected EntityManager entityManager;
 
     @Transactional(readOnly = true)
@@ -684,4 +688,28 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
                 .collect(Collectors.toMap(ParameterValue::getId, Function.identity()));
         return map;
     }
+
+
+    @Override
+    public NeedAssessmentGroupResult createNeedAssessmentGroupResult(byte[] blobFile,String name) {
+        String s = UUID.randomUUID().toString();
+        NeedAssessmentGroupResult needAssessmentGroupResult = new NeedAssessmentGroupResult();
+        needAssessmentGroupResult.setBlobFile(blobFile);
+        needAssessmentGroupResult.setExcelReference(s);
+        needAssessmentGroupResult.setCreatedBy(name);
+        return needAssessmentGroupResultDAO.save(needAssessmentGroupResult);
+    }
+
+    @Override
+    public NeedAssessmentGroupResult getNeedAssessmentGroupResult(String reference) {
+        return needAssessmentGroupResultDAO.findByExcelReference(reference);
+    }
+
+    @Override
+    public List<NeedAssessmentGroupJobPromotionResponseDto.Info> getGroupJobPromotionListByUser( String userName) {
+        List<NeedAssessmentGroupResult> list =  needAssessmentGroupResultDAO.findAllByCreatedByOrderByIdDesc(userName);
+        return needAssessmentGroupResultMapper.toResultDtoList(list);
+    }
+
+
 }

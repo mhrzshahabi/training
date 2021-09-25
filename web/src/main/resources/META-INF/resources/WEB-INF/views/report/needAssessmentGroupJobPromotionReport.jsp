@@ -140,6 +140,33 @@
         fetchDataURL: viewTrainingPostUrl + "/iscList"
     });
 
+    needAssessmentGroupResultDataSource = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "excelReference", hidden: true},
+            {name: "createdBy", title: "<spring:message code="created.by.user"/>"},
+            {name: "createDate", title: "<spring:message code="create.date"/>"},
+        ],
+        fetchDataURL: needsAssessmentReportsUrl + "/getGroupJobPromotionsList"
+    });
+
+    // ------------------------------------------- Functions -------------------------------------------
+    function refresh_needAssessment_results() {
+        needAssessmentGroupResultGrid.invalidateCache();
+    };
+
+    // ------------------------------------------- ToolStrip -------------------------------------------
+    NeedAssessmentResultTS = isc.ToolStrip.create({
+        members: [
+            isc.TrRefreshBtn.create({
+                icon: "<spring:url value="refresh.png"/>",
+                click: function () {
+                    refresh_needAssessment_results();
+                }
+            }),
+        ]
+    });
+
     //----------------------------------------------------Main Form------------------------------------------------
     var initialLayoutStyle = "vertical";
     var DynamicForm_needAssessment_MainReport = isc.DynamicForm.create({
@@ -300,9 +327,9 @@
     // ---------------------------------Grid1--------------------------------------
 
     var needAssessmentGrid1 = isc.TrLG.create({
-        top: 320,
+        top: 250,
         width: "1070",
-        height: 400,
+        height: 250,
         canEdit: true,
         canRemoveRecords: true,
         autoDraw: false,
@@ -338,7 +365,7 @@
     });
 
     var IButton_NeedAssessment_add2_Report = isc.IButtonSave.create({
-        top: 535,
+        top: 200,
         autoFit: true,
         title: "اضافه کردن به لیست",
         click: function () {
@@ -367,12 +394,82 @@
         }
     });
 
+    function print_OperationalUnitListGrid2(ref, name) {
+
+        fetch("/training/api/needsAssessment-reports/getGroupJobPromotionsResult/" + ref, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": "Bearer <%= accessToken %>"
+            }
+        }).then(res => res.blob())
+            .then(blob => {
+                var url = window.URL.createObjectURL(blob);
+                var a = document.createElement('a');
+                a.href = url;
+                a.download = name + ".xlsx";
+                document.body.appendChild(a); // we need to append the element to the dom -> otherwise it will not work in firefox
+                a.click();
+                a.remove();  //afterwards we remove the element again
+            });
+
+    }
+
+    // ---------------------------------Grid3--------------------------------------
+    var needAssessmentGroupResultGrid = isc.TrLG.create({
+        top: 400,
+        width: "740",
+        height: 300,
+        autoDraw: true,
+        showFilterEditor: false,
+        filterOnKeypress: false,
+        ID: "resultListGrid",
+        autoFetchData: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        sortField: "createDate",
+        sortDirection: "descending",
+        dataSource: needAssessmentGroupResultDataSource,
+        gridComponents: [NeedAssessmentResultTS, "filterEditor", "header", "body",],
+        fields: [
+            {name: "id", canEdit: false, hidden: true},
+            {name: "excelReference", canEdit: false, hidden: true},
+            {
+                name: "createdBy",
+                width: 150,
+                canEdit: false
+            },
+            {
+                name: "createDate",
+                width: 400,
+                canEdit: false
+            },
+            {name: "excelBtn", title: " ", width: 130},
+        ],
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName === "excelBtn") {
+                let button = isc.ToolStripButtonExcel.create({
+                    margin: 5,
+                    click: function () {
+                        console.log("USERnAME............", "${username}");
+                        console.log("record", record, record.excelReference);
+                        print_OperationalUnitListGrid2(record.excelReference,
+                            record.createDate + "گزارش_انتصاب_سمت_گروهی_مورخ_");
+                    }
+                });
+                return button;
+            }
+        }
+    });
+
+
     // ---------------------------------Grid2--------------------------------------
 
     var needAssessmentGrid = isc.TrLG.create({
-        top: 320,
+        top: 200,
         width: "1070",
-        height: 400,
+        height: 200,
         canEdit: true,
         autoDraw: false,
         ID: "orderList",
@@ -443,23 +540,23 @@
     });
 
 
-    var IButton_NeedAssessment_add_Report = isc.IButtonSave.create({
-        top: 535,
-        autoFit: true,
-        title: "اضافه کردن ردیف",
-        click: "orderList.startEditingNew()"
-    });
-    var IButton_NeedAssessment_delete_Report = isc.IButtonCancel.create({
-        top: 535,
-        autoFit: true,
-        title: "پاک کردن ردیف",
-        // click: "needAssessmentGrid.data.removeAt(selectedRecord.rowNum);"
-        click: function () {
-            if (needAssessmentGrid1.getSelectedRecord()) {
-                needAssessmentGrid1.removeData(needAssessmentGrid1.getSelectedRecord())
-            }
-        }
-    });
+    // var IButton_NeedAssessment_add_Report = isc.IButtonSave.create({
+    //     top: 300,
+    //     autoFit: true,
+    //     title: "اضافه کردن ردیف",
+    //     click: "orderList.startEditingNew()"
+    // });
+    // var IButton_NeedAssessment_delete_Report = isc.IButtonCancel.create({
+    //     top: 535,
+    //     autoFit: true,
+    //     title: "پاک کردن ردیف",
+    //     // click: "needAssessmentGrid.data.removeAt(selectedRecord.rowNum);"
+    //     click: function () {
+    //         if (needAssessmentGrid1.getSelectedRecord()) {
+    //             needAssessmentGrid1.removeData(needAssessmentGrid1.getSelectedRecord())
+    //         }
+    //     }
+    // });
 
     IButton_NeedAssessment_Excel_Report = isc.IButtonSave.create({
         top: 260,
@@ -487,7 +584,10 @@
                         return;
                     }
                 }
-                var requestDto = {needAssessmentGroupJobPromotionDtos: needAssessmentGroupJobPromotionDtos};
+                var requestDto = {
+                    needAssessmentGroupJobPromotionDtos: needAssessmentGroupJobPromotionDtos,
+                    userName: "${username}"
+                };
                 console.log("requestDto", requestDto);
 
 
@@ -510,6 +610,7 @@
                                 icon: "[SKIN]say.png",
                                 title: "انجام شد"
                             });
+                            IButton_NeedAssessment_Excel_Report.setDisabled(true)
                         } else {
                             simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                         }
@@ -536,18 +637,18 @@
             IButton_NeedAssessment_Excel_Report
         ]
     });
-    var HLayOut_grid_buttons_report = isc.TrHLayoutButtons.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "70%",
-        height: "1%",
-        alignLayout: "center",
-        padding: 4,
-        members: [
-            IButton_NeedAssessment_delete_Report,
-        ]
-    });
+    // var HLayOut_grid_buttons_report = isc.TrHLayoutButtons.create({
+    //     layoutMargin: 5,
+    //     showEdges: false,
+    //     edgeImage: "",
+    //     width: "70%",
+    //     height: "1%",
+    //     alignLayout: "center",
+    //     padding: 4,
+    //     members: [
+    //         IButton_NeedAssessment_delete_Report,
+    //     ]
+    // });
     var HLayOut_grid_add_buttons_report = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
@@ -580,7 +681,8 @@
             HLayOut_grid_add_buttons_report,
             needAssessmentGrid1,
             // HLayOut_grid_buttons_report,
-            HLayOut_Confirm_excel_report
+            HLayOut_Confirm_excel_report,
+            needAssessmentGroupResultGrid
         ]
     });
 

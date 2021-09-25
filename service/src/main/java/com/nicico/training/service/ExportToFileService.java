@@ -319,8 +319,8 @@ public class ExportToFileService implements IExportToFileService {
     public String exportToExcel(Map<Integer, Object[]> dataMap) {
 
         String timeStamp = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new java.util.Date());
-//        String fileName = "export-"+timeStamp+".xlsx";
-        String fileName = "export.xlsx";
+        String fileName = "export-"+timeStamp+".xlsx";
+//        String fileName = "export.xlsx";
 
         //Create blank workbook
         XSSFWorkbook workbook = new XSSFWorkbook();

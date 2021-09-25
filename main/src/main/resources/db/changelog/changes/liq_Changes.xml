@@ -3140,5 +3140,19 @@ WHERE
                                  validate="true"/>
     </changeSet>
 
+    <changeSet author="nick (generated)" id="1632205807374-545">
+        <addColumn tableName="tbl_need_assessment_group_result">
+            <column name="BLOB_FILE" type="blob"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1632285214143-728">
+        <dropColumn columnName="MINIO_REFERENCE" tableName="TBL_NEED_ASSESSMENT_GROUP_RESULT"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1632285214143-545">
+        <addColumn tableName="tbl_need_assessment_group_result">
+            <column name="EXCEL_REFERENCE" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>

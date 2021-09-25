@@ -23,8 +23,11 @@ public class NeedAssessmentGroupResult {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "MINIO_REFERENCE")
-    private String minioReference;
+    @Column(name = "EXCEL_REFERENCE")
+    private String excelReference;
+
+    @Column(name = "BLOB_FILE")
+    private byte[] blobFile;
 
     @Column(name = "CREATED_BY")
     private String createdBy;

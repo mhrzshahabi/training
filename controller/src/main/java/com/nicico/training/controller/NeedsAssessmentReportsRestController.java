@@ -4,12 +4,15 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.minio.MinIoClient;
 import com.nicico.training.dto.NeedAssessmentGroupJobPromotionResponse;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.iservice.IExportToFileService;
+import com.nicico.training.iservice.INeedsAssessmentReportsService;
+import com.nicico.training.model.NeedAssessmentGroupResult;
 import com.nicico.training.service.NeedsAssessmentReportsService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,14 +25,17 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import request.needsassessment.NeedAssessmentGroupJobPromotionRequestDto;
+import request.needsassessment.NeedAssessmentGroupJobPromotionResponseDto;
 import response.minio.UploadFmsRes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -52,6 +58,7 @@ public class NeedsAssessmentReportsRestController {
     private String groupId;
     private final ObjectFactory<HttpMessageConverters> messageConverters;
     private final MinIoClient client;
+    private final INeedsAssessmentReportsService assessmentReportsService;
     @GetMapping
     public ResponseEntity fullList(HttpServletRequest iscRq,
                                    @RequestParam Long objectId,
@@ -71,9 +78,10 @@ public class NeedsAssessmentReportsRestController {
 
     @Loggable
     @PostMapping(value = "/getGroupJobPromotions")
-    public ResponseEntity groupJobPromotionReport(@RequestBody NeedAssessmentGroupJobPromotionRequestDto requestDto, @RequestHeader("Authorization") String token) throws IOException {
-
+    @Async("treadPoolAsync")
+    public void groupJobPromotionReport(@RequestBody NeedAssessmentGroupJobPromotionRequestDto requestDto, @RequestHeader("Authorization") String token) throws IOException {
         List<NeedAssessmentGroupJobPromotionResponse> needAssessmentResultGroup = needsAssessmentReportsService.createNeedAssessmentResultGroup(requestDto);
+        String userName = requestDto.getUserName();
 
         Map < Integer, Object[] > finalInfosToExcelMap = new TreeMap < Integer, Object[] >();
         finalInfosToExcelMap.put( 1, new Object[] {
@@ -103,13 +111,64 @@ public class NeedsAssessmentReportsRestController {
         //minIoClient.uploadFile(token,is,groupId);
 
         String fileName = iExportToFileService.exportToExcel(finalInfosToExcelMap);
+
+        File file = new File(fileName);
         byte[] bytes = Files.readAllBytes(Paths.get(fileName));
-        MultipartFile multipartFile = new MockMultipartFile(fileName,
-                fileName,"multipart/form-data", bytes);
+        file.delete();
+
+        NeedAssessmentGroupResult needAssessmentGroupResult = assessmentReportsService.createNeedAssessmentGroupResult(bytes,userName);
+
+
+        /*MultipartFile multipartFile = new MockMultipartFile(fileName,
+                fileName,"multipart/form-data", bytes);*/
 
 //        UploadFmsRes key = minIoClient.uploadFile(token,multipartFile,groupId);
-        return null;
 
+    }
+
+//    @GetMapping(value = "/getGroupJobPromotionsList")
+//    public ResponseEntity<ISC<NeedAssessmentGroupJobPromotionResponseDto>> list(final HttpServletRequest iscRq, @PathVariable String userName) throws IOException {
+//        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+//        searchRq.setSortBy("createdBy");
+//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+//
+//        SearchDTO.SearchRs<NeedAssessmentGroupJobPromotionResponseDto> searchRs = assessmentReportsService.getGroupJobPromotionListByUser(searchRq, userName);
+//
+//        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+//    }
+
+    @GetMapping(value = "/getGroupJobPromotionsList")
+    public ResponseEntity<NeedAssessmentGroupJobPromotionResponseDto.GroupJobPromotionSpecRs> groupJobPromotionsListList(final HttpServletRequest iscRq) throws IOException {
+
+        List<NeedAssessmentGroupJobPromotionResponseDto.Info> infos = assessmentReportsService.getGroupJobPromotionListByUser(SecurityUtil.getUsername());
+        NeedAssessmentGroupJobPromotionResponseDto.SpecRs specResponse = new NeedAssessmentGroupJobPromotionResponseDto.SpecRs();
+        NeedAssessmentGroupJobPromotionResponseDto.GroupJobPromotionSpecRs specRs = new NeedAssessmentGroupJobPromotionResponseDto.GroupJobPromotionSpecRs();
+
+        specResponse.setData(infos)
+                .setStartRow(0)
+                .setEndRow(infos.size())
+                .setTotalRows(infos.size());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity(specRs, HttpStatus.OK);
+    }
+
+
+    @GetMapping(value = "/getGroupJobPromotionsResult/{ref}")
+    public void getGroupJobPromotionReportExcel(final HttpServletResponse response, @PathVariable String ref) throws IOException {
+        byte[] blobFile = assessmentReportsService.getNeedAssessmentGroupResult(ref).getBlobFile();
+
+        String headerValue;
+        String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
+        response.setContentType("application/octet-stream");
+        headerValue = String.format("attachment; filename=\"%s\"", fileName);
+        response.setHeader("Content-Disposition", headerValue);
+        response.setContentLength(blobFile.length);
+        OutputStream out = response.getOutputStream();
+        out.write(blobFile);
+        out.close();
     }
 
     @GetMapping(value = "/courseNA")
