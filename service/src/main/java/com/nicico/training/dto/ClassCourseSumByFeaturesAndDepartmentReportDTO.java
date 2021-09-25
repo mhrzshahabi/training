@@ -27,6 +27,12 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
         EMPTY
     }
 
+    public enum ReportFor {
+        COMPLEX,
+        ASSISTANT,
+        AFFAIR
+    }
+
     private Double presenceManHour;
 
     private String presenceManHourStr;
@@ -42,6 +48,8 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     private Integer personnelCount;
 
     private Integer studentCount;
+
+    private String studentCountStr;
 
     private Double participationPercent;
 
@@ -66,6 +74,8 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     private String ghesmatCode;
 
     private String ghesmatTitle;
+
+    private Long depId;
 
     @Getter
     @Setter

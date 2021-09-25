@@ -3368,6 +3368,7 @@
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
+    const classAuditUrl = rootUrl + "/tclass/audit/";
     const classFinishUrl = rootUrl + "/tclass/finish/";
     const targetSocietyUrl = rootUrl + "/target-society/";
     const calenderCurrentTermUrl = rootUrl + "/calenderCurrentTerm/";
@@ -3437,7 +3438,8 @@
             }
         };
         xhttpRequest.open("Post", url+"/"+groupId, true);
-        xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+        xhttpRequest.setRequestHeader("user-id", "Bearer <%= accessToken %>");
+        <%--xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");--%>
         xhttpRequest.send(formData1);
     }
     isc.defineClass("MyHLayoutButtons", HLayout);

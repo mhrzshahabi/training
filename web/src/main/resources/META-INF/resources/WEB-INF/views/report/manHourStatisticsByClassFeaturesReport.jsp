@@ -2,110 +2,48 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
 
 //<script>
     var allData;
+    var gridMap = new Map();
+    var fromDate, toDate;
+    var classStatusValueMap = {
+        "1": "برنامه ریزی",
+        "2": "در حال اجرا",
+        "3": "پایان یافته",
+        "4": "لغو شده",
+        "5": "اختتام",
+    }
 
-    RestDataSource_Class_JspManHourReport = isc.TrDS.create({
-        fields: [
-            {
-                name: "presenceManHour"
-            },
-            {
-                name: "absenceManHour"
-            },
-            {
-                name: "unknownManHour"
-            },
-            {
-                name: "personnelCount"
-            },
-            {
-                name: "studentCount"
-            },
-            {
-                name: "participationPercent"
-            },
-            {
-                name: "presencePerPerson"
-            },
-            {
-                name: "classTeachingType"
-            },
-            {
-                name: "classStatus"
-            },
-            {
-                name: "courseTechnicalType"
-            },
-            {
-                name: "courseRunType"
-            },
-            {
-                name: "courseTheoType"
-            },
-            {
-                name: "courseLevelType"
-            },
-            {
-                name: "mojtameCode"
-            },
-            {
-                name: "mojtameTitle"
-            },
-            {
-                name: "moavenatCode"
-            },
-            {
-                name: "moavenatTitle"
-            },
-            {
-                name: "omorCode"
-            },
-            {
-                name: "omorTitle"
-            },
-            {
-                name: "ghesmatCode"
-            },
-            {
-                name: "ghesmatTitle"
-            },
-        ],
-        transformResponse: function (dsResponse, dsRequest, data) {
-            wait.close();
+    var RestDataSource_Class_JspManHourReport = generateDataSource(data => {
+        wait.close();
 
-            if (data && data.response) {
-                allData = data.response.allData;
-                if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('CLASS_STATUS')) {
-                    ListGrid_CLASS_STATUS.setData(allData["CLASS_STATUS"]);
-                    ListGrid_CLASS_STATUS.redraw();
-                }
-                if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('CLASS_TEACHING_TYPE')) {
-                    ListGrid_CLASS_TEACHING_TYPE.setData(allData["CLASS_TEACHING_TYPE"]);
-                    ListGrid_CLASS_TEACHING_TYPE.redraw();
-                }
-                if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_TECHNICAL_TYPE')) {
-                    ListGrid_COURSE_TECHNICAL_TYPE.setData(allData["COURSE_TECHNICAL_TYPE"]);
-                    ListGrid_COURSE_TECHNICAL_TYPE.redraw();
-                }
-                if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_RUN_TYPE')) {
-                    ListGrid_COURSE_RUN_TYPE.setData(allData["COURSE_RUN_TYPE"]);
-                    ListGrid_COURSE_RUN_TYPE.redraw();
-                }
-                if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_THEO_TYPE')) {
-                    ListGrid_COURSE_THEO_TYPE.setData(allData["COURSE_THEO_TYPE"]);
-                    ListGrid_COURSE_THEO_TYPE.redraw();
-                }
-                if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_LEVEL_TYPE')) {
-                    ListGrid_COURSE_LEVEL_TYPE.setData(allData["COURSE_LEVEL_TYPE"]);
-                    ListGrid_COURSE_LEVEL_TYPE.redraw();
-                }
+        if (data && data.response) {
+            allData = data.response.allData;
+            if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('CLASS_STATUS')) {
+                ListGrid_CLASS_STATUS.setData(getListAfterGroupingAndStoringData('CLASS_STATUS'));
+                ListGrid_CLASS_STATUS.redraw();
             }
-            return this.Super("transformResponse", arguments);
+            if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('CLASS_TEACHING_TYPE')) {
+                ListGrid_CLASS_TEACHING_TYPE.setData(getListAfterGroupingAndStoringData("CLASS_TEACHING_TYPE"));
+                ListGrid_CLASS_TEACHING_TYPE.redraw();
+            }
+            if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_TECHNICAL_TYPE')) {
+                ListGrid_COURSE_TECHNICAL_TYPE.setData(getListAfterGroupingAndStoringData("COURSE_TECHNICAL_TYPE"));
+                ListGrid_COURSE_TECHNICAL_TYPE.redraw();
+            }
+            if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_RUN_TYPE')) {
+                ListGrid_COURSE_RUN_TYPE.setData(getListAfterGroupingAndStoringData("COURSE_RUN_TYPE"));
+                ListGrid_COURSE_RUN_TYPE.redraw();
+            }
+            if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_THEO_TYPE')) {
+                ListGrid_COURSE_THEO_TYPE.setData(getListAfterGroupingAndStoringData("COURSE_THEO_TYPE"));
+                ListGrid_COURSE_THEO_TYPE.redraw();
+            }
+            if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('COURSE_LEVEL_TYPE')) {
+                ListGrid_COURSE_LEVEL_TYPE.setData(getListAfterGroupingAndStoringData("COURSE_LEVEL_TYPE"));
+                ListGrid_COURSE_LEVEL_TYPE.redraw();
+            }
         }
     });
 
@@ -114,97 +52,6 @@
         padding: 10,
         titleAlign: "left",
         fields: [
-            {
-                name: "mojtameCode",
-                type: "SelectItem",
-                title: "<spring:message code='complex'/>",
-                optionDataSource: isc.TrDS.create({
-                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
-                    cacheAllData: true,
-                    fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
-                }),
-                operator: "inSet",
-                valueField: "code",
-                displayField: "title",
-                filterOnKeypress: true,
-                multiple: true,
-// layoutStyle: "vertical",
-                vAlign: "top",
-                pickListFields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {name: "title", title: "<spring:message code='title'/>", width: "60%", filterOperator: "iContains"},
-                ],
-                changed: function (form, item, value) {
-                    form.setValue("omorCode", null);
-                    form.setValue("moavenatCode", null);
-                },
-            },
-            {
-                name: "moavenatCode",
-                type: "SelectItem",
-                title: "<spring:message code='assistance'/>",
-                optionDataSource: isc.TrDS.create({
-                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
-                    fetchDataURL: departmentUrl + "/organ-segment-iscList/moavenat"
-                }),
-                operator: "inSet",
-                valueField: "code",
-                displayField: "title",
-                filterOnKeypress: true,
-                multiple: true,
-                autoFitButtons: true,
-                vAlign: "top",
-                criteriaHasChanged: false,
-                pickListFields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", width: "60%"},
-                ],
-                click(form, item) {
-                    if (this.criteriaHasChanged) {
-                        this.fetchData();
-                        this.criteriaHasChanged = false;
-                    }
-                },
-                changed: function (form, item, value) {
-                    form.setValue("mojtameCode", null);
-                    form.setValue("omorCode", null);
-                }
-            },
-            {
-                name: "omorCode",
-                type: "SelectItem",
-                title: "<spring:message code='affairs'/>",
-                optionDataSource: isc.TrDS.create({
-                    fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
-                    fetchDataURL: departmentUrl + "/organ-segment-iscList/omor"
-                }),
-                operator: "inSet",
-                valueField: "code",
-                displayField: "title",
-                filterOnKeypress: true,
-                multiple: true,
-                autoFitButtons: true,
-                vAlign: "top",
-                criteriaHasChanged: false,
-                pickListFields: [
-                    {name: "id", primaryKey: true, hidden: true},
-                    {name: "title", title: "<spring:message code='title'/>", filterOperator: "iContains", width: "60%"},
-                ],
-                click(form, item) {
-                    if (this.criteriaHasChanged) {
-                        this.fetchData();
-                        this.criteriaHasChanged = false;
-                    }
-                },
-                changed: function (form, item, value) {
-                    form.setValue("mojtameCode", null);
-                    form.setValue("moavenatCode", null);
-                }
-            },
-            {
-                type: "SpacerItem",
-                colSpan: 2
-            },
             {
                 name: "dateType",
                 title: "<spring:message code='date.selection.type'/>",
@@ -335,7 +182,6 @@
                     }
                 }],
                 textAlign: "center",
-// colSpan: 2,
                 changed: function (form, item, value) {
                     let dateCheck;
                     dateCheck = checkDate(value);
@@ -355,8 +201,6 @@
                 name: "groupByType",
                 title: "<spring:message code='report.pivot'/>",
                 required: true,
-//width: 200,
-//defaultValue: 5,
                 textAlign: "center",
                 multiple: true,
                 valueMap: {
@@ -389,8 +233,8 @@
                     var ManHour_Report_wait = createDialog("wait");
                     hideDataGrids();
                     setTimeout(function () {
-                        let fromDate = form.getValue("fromDate");
-                        let toDate = form.getValue("toDate");
+                        fromDate = form.getValue("fromDate");
+                        toDate = form.getValue("toDate");
                         if (form.getValue("dateType") == 2) {
                             if (form.getValue("termId") == null) {
                                 fromDate = form.getValue("year") + "/01/01";
@@ -401,13 +245,7 @@
                             }
                         }
                         let url = manHourStatisticsByClassFeaturesReportUrl.concat("/list?fromDate=").concat(fromDate).concat("&toDate=").concat(toDate)
-                            .concat("&groupBys=").concat(form.getValue("groupByType")).concat("&omorCodes=");
-                        if (form.getValue("omorCode")) url = url.concat(form.getValue("omorCode"));
-                        url = url.concat("&moavenatCodes=");
-                        if (form.getValue("moavenatCode")) url = url.concat(form.getValue("moavenatCode"));
-                        url = url.concat("&mojtameCodes=");
-                        if (form.getValue("mojtameCode")) url = url.concat(form.getValue("mojtameCode"));
-
+                            .concat("&groupBys=").concat(form.getValue("groupByType")).concat("&reportFor=COMPLEX").concat("&depId=");
                         RestDataSource_Class_JspManHourReport.fetchDataURL = url;
                         RestDataSource_Class_JspManHourReport.fetchData();
                         ManHour_Report_wait.close();
@@ -426,6 +264,14 @@
                 click(form, item) {
                     form.clearValues();
                     form.clearErrors();
+                    form.getItem("year").hide();
+                    form.getItem("termId").hide();
+                    form.setValue("year", null);
+                    form.setValue("termId", null);
+                    form.getItem("fromDate").show();
+                    form.getItem("toDate").show();
+                    allData = null , fromDate = null, toDate = null;
+                    gridMap = new Map();
                     hideDataGrids();
                 }
             },
@@ -436,6 +282,7 @@
             }
         }
     });
+
     var RestDataSource_Term_JspUnitReport = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -444,6 +291,7 @@
             {name: "endDate"}
         ]
     });
+
     var commonFields = [
         {
             name: "presenceManHour",
@@ -472,133 +320,25 @@
             name: "presencePerPerson",
             title: "<spring:message code='report.presence.per.person'/>",
         },
-    ]
+    ];
 
-    var ListGrid_CLASS_STATUS = isc.TrLG.create({
-        showFilterEditor: false,
-        height: 250,
-        overflow: "auto",
-        gridComponents: [isc.Label.create({
-            height: "20%",
-            align: "center",
-            contents: "<span style='font-weight:bolder;font-size:14px;color:black'><spring:message code='report.pivot'/> : <spring:message code='class.status'/><span>"
-        }), "header", "body"],
-        fields: [...commonFields,
-            {
-                name: "classStatus",
-                title: "<spring:message code='class.status'/>",
-                valueMap: {
-                    "1": "برنامه ریزی",
-                    "2": "در حال اجرا",
-                    "3": "پایان یافته",
-                    "4": "لغو شده",
-                    "5": "اختتام",
-                }
-            },
-        ]
-    });
+    var ListGrid_CLASS_STATUS = generateDepGrid("COMPLEX", "CLASS_STATUS");
 
-    var ListGrid_CLASS_TEACHING_TYPE = isc.TrLG.create({
-        showFilterEditor: false,
-        height: 250,
-        overflow: "auto",
-        gridComponents: [isc.Label.create({
-            height: "20%",
-            align: "center",
-            contents: "<span style='font-weight:bolder;font-size:14px;color:black'><spring:message code='report.pivot'/> : <spring:message code='class.teaching.type'/><span>"
-        })
-            , "header", "body"],
-        fields: [...commonFields,
-            {
-                name: "classTeachingType",
-                title: "<spring:message code='class.teaching.type'/>"
-            },
-        ]
-    });
+    var ListGrid_CLASS_TEACHING_TYPE = generateDepGrid("COMPLEX", "CLASS_TEACHING_TYPE");
 
-    var ListGrid_COURSE_TECHNICAL_TYPE = isc.TrLG.create({
-        showFilterEditor: false,
-        height: 250,
-        overflow: "auto",
-        gridComponents: [isc.Label.create({
-            height: "20%",
-            align: "center",
-            contents: "<span style='font-weight:bolder;font-size:14px;color:black'><spring:message code='report.pivot'/> : <spring:message code='course.technicalType'/><span>"
-        }), "header", "body"],
-        fields: [...commonFields,
-            {
-                name: "courseTechnicalType",
-                title: "<spring:message code='course.technicalType'/>"
-            },
-        ]
-    });
+    var ListGrid_COURSE_TECHNICAL_TYPE = generateDepGrid("COMPLEX", "COURSE_TECHNICAL_TYPE");
 
-    var ListGrid_COURSE_RUN_TYPE = isc.TrLG.create({
-        showFilterEditor: false,
-        height: 300,
-        overflow: "auto",
-        gridComponents: [isc.Label.create({
-            height: "20%",
-            align: "center",
-            contents: "<span style='font-weight:bolder;font-size:14px;color:black'><spring:message code='report.pivot'/> : <spring:message code='course.run.type'/><span>"
-        }), "header", "body"],
-        fields: [...commonFields,
-            {
-                name: "courseRunType",
-                title: "<spring:message code='course.run.type'/>"
-            },
-        ]
-    });
+    var ListGrid_COURSE_RUN_TYPE = generateDepGrid("COMPLEX", "COURSE_RUN_TYPE");
 
-    var ListGrid_COURSE_THEO_TYPE = isc.TrLG.create({
-        showFilterEditor: false,
-        height: 250,
-        overflow: "auto",
-        gridComponents: [isc.Label.create({
-            height: "20%",
-            align: "center",
-            contents: "<span style='font-weight:bolder;font-size:14px;color:black'><spring:message code='report.pivot'/> : <spring:message code='course_etheoType'/><span>"
-        }), "header", "body"],
-        fields: [...commonFields,
-            {
-                name: "courseTheoType",
-                title: "<spring:message code='course_etheoType'/>"
-            },
-        ]
-    });
-    var ListGrid_COURSE_LEVEL_TYPE = isc.TrLG.create({
-        showFilterEditor: false,
-        height: 250,
-        overflow: "auto",
-        gridComponents: [isc.Label.create({
-            height: "20%",
-            align: "center",
-            contents: "<span style='font-weight:bolder;font-size:14px;color:black'><spring:message code='report.pivot'/> : <spring:message code='cousre_elevelType'/><span>"
-        }), "header", "body"],
-        fields: [...commonFields,
-            {
-                name: "courseLevelType",
-                title: "<spring:message code='cousre_elevelType'/>"
-            },
-        ]
-    });
+    var ListGrid_COURSE_THEO_TYPE = generateDepGrid("COMPLEX", "COURSE_THEO_TYPE");
 
+    var ListGrid_COURSE_LEVEL_TYPE = generateDepGrid("COMPLEX", "COURSE_LEVEL_TYPE");
 
     var VLayout_Body_ = isc.VLayout.create({
         width: "100%",
         members: [
             DynamicForm_ManHourReport,
-            isc.HLayout.create({
-                align: "center", height: "10%", members: [
-                    isc.ToolStripButtonExcel.create({
-                        margin: 5,
-                        click: function () {
-                            let t = 0;
-                            Object.keys(allData).forEach(type_ => setTimeout(() => exportExcel(type_), (t++) * 500));
-                        }
-                    })]
-            }),
-            , isc.VLayout.create({
+            isc.VLayout.create({
                 width: "100%",
                 overflow: "auto",
                 align: "top",
@@ -615,8 +355,6 @@
     });
 
     function hideDataGrids() {
-
-
         if (DynamicForm_ManHourReport.getValue("groupByType") && DynamicForm_ManHourReport.getValue("groupByType").includes('CLASS_TEACHING_TYPE'))
             ListGrid_CLASS_TEACHING_TYPE.show();
         else
@@ -655,12 +393,12 @@
         ListGrid_COURSE_LEVEL_TYPE.setData([]);
     };
 
-    function exportExcel(type_) {
+    function exportExcel(type_, depId) {
         let pivot = DynamicForm_ManHourReport.getItem('groupByType').valueMap[type_];
 
-        let detailFields = "presenceManHourStr,absenceManHourStr,unknownManHourStr,participationPercentStr,presencePerPersonStr";
+        let detailFields = "presenceManHourStr,absenceManHourStr,unknownManHourStr,studentCountStr,participationPercentStr,presencePerPersonStr";
         let detailHeaders = '<spring:message code="report.presence.man.hour"/>,<spring:message code="report.absence.man.hour"/>,<spring:message
-    code="report.unknown.man.hour"/>,<spring:message code="report.participation.percent"/>,<spring:message
+    code="report.unknown.man.hour"/>,<spring:message code="report.student.count"/>,<spring:message code="report.participation.percent"/>,<spring:message
     code="report.presence.per.person"/>';
         detailHeaders = detailHeaders.concat(',').concat(pivot);
         switch (type_) {
@@ -694,17 +432,17 @@
             masterData['<spring:message code="from.date"/>'] = DynamicForm_ManHourReport.getItem('fromDate').getValue();
             masterData['<spring:message code="to.date"/>'] = DynamicForm_ManHourReport.getItem('toDate').getValue();
         }
-        let mojtameCode = DynamicForm_ManHourReport.getItem('mojtameCode').getValue();
-        if (mojtameCode) {
-            masterData['<spring:message code="complex"/>'] = DynamicForm_ManHourReport.getItem("mojtameCode").getDisplayValue().toString();
+        let mojtameTitle = gridMap.get(type_.concat(depId)).dep.mojtameTitle;
+        if (mojtameTitle) {
+            masterData['<spring:message code="complex"/>'] = mojtameTitle;
         }
-        let moavenatCode = DynamicForm_ManHourReport.getItem('moavenatCode').getValue();
-        if (moavenatCode) {
-            masterData['<spring:message code="assistance"/>'] = DynamicForm_ManHourReport.getItem("moavenatCode").getDisplayValue().toString();
+        let moavenatTitle = gridMap.get(type_.concat(depId)).dep.moavenatTitle;
+        if (moavenatTitle) {
+            masterData['<spring:message code="assistance"/>'] = moavenatTitle;
         }
-        let omorCode = DynamicForm_ManHourReport.getItem('omorCode').getValue();
-        if (omorCode) {
-            masterData['<spring:message code="affairs"/>'] = DynamicForm_ManHourReport.getItem("omorCode").getDisplayValue().toString();
+        let omorTitle = gridMap.get(type_.concat(depId)).dep.omorTitle;
+        if (omorTitle) {
+            masterData['<spring:message code="affairs"/>'] = omorTitle;
         }
         let title = '<spring:message code="man.hour.statistics.by.class.features.report"/>';
         let downloadForm = isc.DynamicForm.create({
@@ -722,16 +460,16 @@
                     {name: "detailData", type: "hidden"},
                 ]
         });
-        let listData = allData[type_];
+        let listData = gridMap.get(type_.concat(depId)).list;
         listData.forEach(d => d.participationPercentStr = d.participationPercent);
         listData.forEach(d => d.presenceManHourStr = d.presenceManHour);
         listData.forEach(d => d.absenceManHourStr = d.absenceManHour);
         listData.forEach(d => d.unknownManHourStr = d.unknownManHour);
+        listData.forEach(d => d.studentCountStr = d.studentCount);
         listData.forEach(d => d.presencePerPersonStr = d.presencePerPerson);
         if (type_ == 'CLASS_STATUS') {
-            let classStatusList = ListGrid_CLASS_STATUS.getField('classStatus').valueMap;
             listData.forEach(d =>
-                d.classStatus = (classStatusList[d.classStatus] == null ? d.classStatus : classStatusList[d.classStatus]));
+                d.classStatus = (classStatusValueMap[d.classStatus] == null ? d.classStatus : classStatusValueMap[d.classStatus]));
         }
         downloadForm.setValue("masterData", JSON.stringify(masterData));
         downloadForm.setValue("detailFields", detailFields);
@@ -741,6 +479,261 @@
         downloadForm.setValue("detailDto", "com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO$ClassFeatures");
         downloadForm.show();
         downloadForm.submitForm();
+    };
+
+    function generateGrid(dep, type_, depId) {
+        let fs;
+        switch (type_) {
+            case 'CLASS_STATUS':
+                fs = {
+                    name: "classStatus",
+                    title: "<spring:message code='class.status'/>",
+                    valueMap: classStatusValueMap
+                };
+                break;
+            case 'CLASS_TEACHING_TYPE':
+                fs = {
+                    name: "classTeachingType",
+                    title: "<spring:message code='class.teaching.type'/>"
+                };
+                break;
+            case 'COURSE_TECHNICAL_TYPE':
+                fs = {
+                    name: "courseTechnicalType",
+                    title: "<spring:message code='course.technicalType'/>"
+                };
+                break;
+            case 'COURSE_RUN_TYPE':
+                fs = {
+                    name: "courseRunType",
+                    title: "<spring:message code='course.run.type'/>"
+                };
+                break;
+            case 'COURSE_THEO_TYPE':
+                fs = {
+                    name: "courseTheoType",
+                    title: "<spring:message code='course_etheoType'/>"
+                };
+                break;
+            case 'COURSE_LEVEL_TYPE':
+                fs = {
+                    name: "courseLevelType",
+                    title: "<spring:message code='cousre_elevelType'/>"
+                };
+                break;
+        }
+        return isc.TrLG.create({
+            showFilterEditor: false,
+            height: 220,
+            overflow: "auto",
+            gridComponents: [isc.HLayout.create({
+                alignment: 'right',
+                align: "right",
+                members: [
+                    isc.ToolStripButtonExcel.create({
+                        click: function () {
+                            exportExcel(type_, depId);
+                        }
+                    }),
+                ]
+            }), "header", "body"],
+            fields: [...commonFields, fs],
+            data: gridMap.get(type_.concat(depId)).list
+        });
+    };
+
+    function generateDepGrid(dep, type_, hideTitle) {
+        let depField = [{name: "depId", hidden: true, autoFitWidth: true}];
+        let h, bckColor;
+        switch (dep) {
+            case 'COMPLEX':
+                depField.push(
+                    {
+                        name: "mojtameTitle",
+                        title: "<spring:message code='complex'/>",
+                        width: "100%"
+                    }
+                );
+                h = 650;
+                bckColor = "#acd1e8";
+                break;
+            case 'ASSISTANT':
+                depField.push(
+                    {
+                        name: "moavenatTitle",
+                        title: "<spring:message code='assistance'/>",
+                        width: "100%"
+                    }
+                );
+                h = 300;
+                bckColor = "#a491a7";
+                break;
+            case 'AFFAIR':
+                depField.push(
+                    {
+                        name: "omorTitle",
+                        title: "<spring:message code='affairs'/>",
+                        width: "100%"
+                    }
+                );
+                h = 250;
+                bckColor = "#606d48";
+                break;
+        }
+        let gComponents = ["header", "body"];
+        if (!hideTitle)
+            gComponents.unshift(isc.Label.create({
+                height: "10%",
+                width: "100%",
+                align: "center",
+                contents: "<span style='font-weight:bolder;font-size:14px;color:black'><spring:message code='report.pivot'/> : " + DynamicForm_ManHourReport.getItem("groupByType").valueMap[type_] + "<span>"
+            }));
+        return isc.TrLG.create({
+            showFilterEditor: false,
+            height: h,
+            width: "100%",
+            overflow: "auto",
+            backgroundColor: bckColor,
+            getCellCSSText: function () {
+                return "background-color:" + bckColor + ";color:black;font-size: 12px;";
+            },
+
+            canExpandRecords: true,
+            canExpandMultipleRecords: false,
+            gridComponents: gComponents,
+            fields: [
+                ...depField,
+            ],
+            getExpansionComponent: function (record, rowNum, colNum) {
+                let depGrid;
+                let nextLevel;
+                switch (dep) {
+                    case 'COMPLEX':
+                        nextLevel = "ASSISTANT";
+                        break;
+                    case 'ASSISTANT':
+                        nextLevel = "AFFAIR";
+                        break;
+                    case 'AFFAIR':
+                        depGrid = null;
+                        break;
+                }
+                if (nextLevel && record.depId) {
+                    depGrid = generateDepGrid(nextLevel, type_, true);
+                    wait.show();
+                    let ds = generateDataSource(data => {
+                        wait.close();
+                        if (data && data.response) {
+                            allData = data.response.allData;
+                            depGrid.setData(getListAfterGroupingAndStoringData(type_));
+                            depGrid.redraw();
+                        }
+                    });
+                    let url = manHourStatisticsByClassFeaturesReportUrl.concat("/list?fromDate=").concat(fromDate).concat("&toDate=").concat(toDate)
+                        .concat("&groupBys=").concat(type_).concat("&reportFor=").concat(nextLevel).concat("&depId=").concat(record.depId ? record.depId : '');
+                    ds.fetchDataURL = url;
+                    ds.fetchData();
+                }
+                return isc.VLayout.create({
+                    width: "98%",
+                    members: [generateGrid(dep, type_, record.depId),
+                        depGrid
+                    ]
+                });
+            },
+        });
+    }
+
+    function getListAfterGroupingAndStoringData(type_) {
+
+        let depIds = allData[type_].toArray().map(r => r.depId).filter((value, index, self) => {
+            return self.indexOf(value) === index
+        });
+
+        allData[type_].forEach(d => {
+            gridMap.set(type_.concat(d.depId), {dep: {depId: d.depId, mojtameTitle: d.mojtameTitle, moavenatTitle: d.moavenatTitle, omorTitle: d.omorTitle}, list: []})
+        });
+
+        allData[type_].forEach(d => {
+            gridMap.get(type_.concat(d.depId)).list.push(d);
+        });
+        let arr = [];
+        depIds.forEach(k => arr.push(gridMap.get(type_.concat(k)).dep));
+        return arr;
+    }
+
+    function generateDataSource(responseCallBack) {
+        return isc.TrDS.create({
+            fields: [
+                {
+                    name: "presenceManHour"
+                },
+                {
+                    name: "absenceManHour"
+                },
+                {
+                    name: "unknownManHour"
+                },
+                {
+                    name: "personnelCount"
+                },
+                {
+                    name: "studentCount"
+                },
+                {
+                    name: "participationPercent"
+                },
+                {
+                    name: "presencePerPerson"
+                },
+                {
+                    name: "classTeachingType"
+                },
+                {
+                    name: "classStatus"
+                },
+                {
+                    name: "courseTechnicalType"
+                },
+                {
+                    name: "courseRunType"
+                },
+                {
+                    name: "courseTheoType"
+                },
+                {
+                    name: "courseLevelType"
+                },
+                {
+                    name: "mojtameCode"
+                },
+                {
+                    name: "mojtameTitle"
+                },
+                {
+                    name: "moavenatCode"
+                },
+                {
+                    name: "moavenatTitle"
+                },
+                {
+                    name: "omorCode"
+                },
+                {
+                    name: "omorTitle"
+                },
+                {
+                    name: "ghesmatCode"
+                },
+                {
+                    name: "ghesmatTitle"
+                },
+            ],
+            transformResponse: function (dsResponse, dsRequest, data) {
+                responseCallBack(data);
+                return this.Super("transformResponse", arguments);
+            }
+        });
     }
 
     hideDataGrids();

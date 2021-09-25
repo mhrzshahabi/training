@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassStudent;
+import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
@@ -148,6 +149,8 @@ public interface ITclassService {
 
     ElsSessionResponse getClassSessionsByCode(String classCode);
 
-    List<Tclass> getAuditData(long classId);
+     List<TClassAudit> getAuditData(long classId);
+    TclassDTO.TClassScoreEval getTClassDataForScoresInEval(String classCode);
+
     EvalAverageResult getEvaluationAverageResultToTeacher(Long classId);
 }

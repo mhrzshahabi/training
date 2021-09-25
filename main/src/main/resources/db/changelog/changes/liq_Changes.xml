@@ -3140,6 +3140,13 @@ WHERE
                                  validate="true"/>
     </changeSet>
 
+    <changeSet author="nima (generated)" id="1632293676765-727">
+        <dropColumn columnName="FAMILY" tableName="TBL_MOBILE_VERIFY"/>
+    </changeSet>
+
+    <changeSet author="nima (generated)" id="1632293676765-729">
+        <dropColumn columnName="NAME" tableName="TBL_MOBILE_VERIFY"/>
+    </changeSet>
     <changeSet author="nick (generated)" id="1632205807374-545">
         <addColumn tableName="tbl_need_assessment_group_result">
             <column name="BLOB_FILE" type="blob"/>

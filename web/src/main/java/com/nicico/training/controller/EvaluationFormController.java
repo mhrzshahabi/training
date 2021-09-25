@@ -39,6 +39,11 @@ public class EvaluationFormController {
         return "evaluation/behavioral";
     }
 
+    @RequestMapping("/class-scores-form")
+    public String loadPageClassScores() {
+        return "evaluation/classScores";
+    }
+
     @RequestMapping("/results-form")
     public String loadPageResults() {
         return "evaluation/results";

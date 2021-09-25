@@ -6,268 +6,217 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-    var isCriteriaCategoriesChanged_Comment_REFR = false;
-    let reportCriteria_Comment_REFR = null;
-    let excelData = [];
+      let record = ListGrid_Class_JspClass.getSelectedRecord();
+
     //----------------------------------------------------Default Rest--------------------------------------------------
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
-    RestDataSource_Category_Comment_REFR = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: categoryUrl + "spec-list"
-    });
-    RestDataSource_SubCategory_Comment_REFR = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
-        fetchDataURL: subCategoryUrl + "iscList"
-    });
-    RestDataSource_Class_Comment_REFR = isc.TrDS.create({
-        ID: "RestDataSource_Class_REFR_comment",
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleClass"},
-            {name: "code"},
-            {name: "course.titleFa"}
-        ],
-        fetchDataURL: classUrl + "info-tuple-list"
-    });
-    RestDataSource_Comment_REFR = isc.TrDS.create({
-        fields: [
-            { name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "classCode", title: "<spring:message code="class.code"/>", filterOperator: "iContains"},
-            {name: "classTitle", title: "<spring:message code="class.title"/>", filterOperator: "iContains"},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains"},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {name: "startDate", title: "<spring:message code="start.date"/>", filterOperator: "iContains"},
-            {name: "endDate", title: "<spring:message code="end.date"/>", filterOperator: "iContains"},
-            {name: "titleCategory", title: "<spring:message code="category"/>", filterOperator: "iContains"},
-            {name: "titleSubCategory", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
-            {name: "description", title: "<spring:message code="suggestions"/>", filterOperator: "iContains"},
+     RestDataSource_History_REFR = isc.TrDS.create({
+         fields: [
+              {name: "group"},
+             {name: "classCancelReasonId"},
 
-        ],
-        fetchDataURL: viewReactionEvaluationCommentUrl + "/list/"+"teacher",
+             {name: "titleClass"},
+             {name: "createdBy", autoFitWidth: true},
+             {name: "modifiedBy", autoFitWidth: true},
+
+
+             {name: "startDate", autoFitWidth: true},
+             {name: "endDate", autoFitWidth: true},
+              {name: "code", autoFitWidth: true},
+             {name: "courseId", autoFitWidth: true},
+              {name: "plannerId", autoFitWidth: true},
+             {name: "acceptancelimit", autoFitWidth: true},
+             {
+                 name: "teacher",
+                 autoFitWidth: true
+             },
+
+             {name: "reason" , autoFitWidth: true},
+             {name: "classStatus" , autoFitWidth: true},
+             {name: "topology"},
+              {name: "complexId"},
+             {name: "assistantId"},
+             {name: "affairsId"},
+             {name: "minCapacity"},
+             {name: "maxCapacity"},
+         ],
+        fetchDataURL:classAuditUrl+record.id ,
+
     });
 
     //----------------------------------------------------Criteria Form------------------------------------------------
-    ToolStripButton_Excel_Comment_REFR = isc.ToolStripButtonExcel.create({
-        click: function () {
-            makeExcelComments();
-        }
-    });
-    ToolStripButton_Refresh_Comment_REFR = isc.ToolStripButtonRefresh.create({
-        click: function () {
-            ListGrid_Comment_REFR.invalidateCache();
-        }
-    });
 
-    DynamicForm_CriteriaForm_Comment_REFR = isc.DynamicForm.create({
-        align: "right",
-        titleWidth: 0,
-        titleAlign: "center",
-        showInlineErrors: true,
-        showErrorText: false,
-        numCols: 6,
-        colWidths: ["10%", "25%", "25%", "10%", "25%", "25%"],
+
+
+
+    //----------------------------------- layOut -----------------------------------------------------------------------
+    var ListGrid_History_REFR = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_History_REFR,
+        dataPageSize: 100,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        showRollOver:false,
+        selectionType: "single",
+        autoFetchData: true,
         fields: [
             {
-                name: "startDate",
-                title: "بازه کلاس: شروع از",
-                ID: "startDate_jspCER_comment",
-                colSpan: 1,
-                titleColSpan: 1,
-                required: true,
-                hint: "--/--/----",
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
-                        closeCalendarWindow();
-                        displayDatePicker('startDate_jspCER_comment', this, 'ymd', '/');
-                    }
-                }],
-                textAlign: "center",
-                changed: function (form, item, value) {
-                    var dateCheck;
-                    dateCheck = checkDate(value);
-                    if (dateCheck === false) {
-                        form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else {
-                        form.clearFieldErrors("startDate", true);
-                    }
-                }
+                name: "code",
+                title: "<spring:message code='class.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+             },
+            {
+                name: "titleClass",
+                title: "عنوان کلاس",
+                align: "center",
+                filterOperator: "iContains"},
+            {
+                name: "minCapacity",
+                title: "حداقل ظرفیت",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
             },
             {
-                colSpan: 1,
-                name: "temp1",
-                canEdit: false,
-                showTitle: false
+                name: "maxCapacity",
+                title: "حداکثر ظرفیت",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
+            },   {
+                name: "complexId",
+                title: "شناسه مجتمع",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
+            },{
+                name: "assistantId",
+                title: "شناسه معاونت",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
+            },{
+                name: "affairsId",
+                title: "شناسه امور",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
+            },{
+                name: "plannerId",
+                title: "شناسه برنامه ریز",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
+            },
+
+            {
+                name: "startDate",
+                title: "<spring:message code='start.date'/>",
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                },
             },
             {
                 name: "endDate",
-                title: "بازه کلاس: پایان تا",
-                ID: "endDate_jspCER_comment",
-                colSpan: 1,
-                titleColSpan: 1,
-                type: 'text',
-                required: true,
-                hint: "--/--/----",
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function (form) {
-                        closeCalendarWindow();
-                        displayDatePicker('endDate_jspCER_comment', this, 'ymd', '/');
-                    }
-                }],
-                textAlign: "center",
-                changed: function (form, item, value) {
-                    let dateCheck;
-                    dateCheck = checkDate(value);
-                    if (dateCheck === false) {
-                        form.clearFieldErrors("endDate", true);
-                        form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
-                    } else {
-                        form.clearFieldErrors("endDate", true);
-                    }
-                }
-            },
-            {
-                colSpan: 1,
-                name: "temp2",
-                canEdit: false,
-                showTitle: false
-            },
-            {
-                name: "titleCategory",
-                title: "گروه کاری",
-                type: "SelectItem",
-                textAlign: "center",
-                colSpan: 2,
-                titleColSpan: 1,
-                optionDataSource: RestDataSource_Category_Comment_REFR,
-                valueField: "titleFa",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
+                title: "<spring:message code='end.date'/>",
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
                 },
-                changed: function () {
+            },
 
-                    isCriteriaCategoriesChanged_Comment_REFR = true;
-                    var subCategoryField = DynamicForm_CriteriaForm_Comment_REFR.getField("titleSubCategory");
-                    if (this.getSelectedRecords() == null) {
-                        subCategoryField.clearValue();
-                        subCategoryField.disable();
-                        return;
-                    }
-                    subCategoryField.enable();
-                    if (subCategoryField.getValue() === undefined)
-                        return;
-                    var subCategories = subCategoryField.getSelectedRecords();
-                    var categoryNames = this.getValue();
-                    var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
-                        if (categoryNames.contains(subCategories[i].category.titleFa))
-                            SubCats.add(subCategories[i].titleFa);
-                    }
-                    subCategoryField.setValue(SubCats);
-                    subCategoryField.focus(this.form, subCategoryField);
-                }
+            {
+                name: "group",
+                title: "<spring:message code='group'/>",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "equals",
             },
             {
-                name: "titleSubCategory",
-                title: "زیرگروه کاری",
-                type: "SelectItem",
-                textAlign: "center",
-                colSpan: 2,
-                titleColSpan: 1,
-                autoFetchData: false,
-                disabled: true,
-                optionDataSource: RestDataSource_SubCategory_Comment_REFR,
-                valueField: "titleFa",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
-                },
-                focus: function () {
+                name: "teacher",
+                title: "مدرس",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "equals",
+            },  {
+                name: "acceptancelimit",
+                title: "حد قبولی کلاس",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "equals",
+            },
 
-                    if (isCriteriaCategoriesChanged_Comment_REFR) {
-                        isCriteriaCategoriesChanged_Comment_REFR = false;
-                        var names = DynamicForm_CriteriaForm_Comment_REFR.getField("titleCategory").getValue();
-                        if (names === []) {
-                            RestDataSource_SubCategory_Comment_REFR.implicitCriteria = null;
-                        } else {
-                            RestDataSource_SubCategory_Comment_REFR.implicitCriteria = {
-                                _constructor: "AdvancedCriteria",
-                                operator: "and",
-                                criteria: [{fieldName: "category.titleFa", operator: "inSet", value: names}]
-                            };
-                        }
-                        this.fetchData();
-                    }
-                }
-            }
-        ]
-    });
-    DynamicForm_choose_report_type_REFR = isc.DynamicForm.create({
-        align: "right",
-        titleWidth: 0,
-        titleAlign: "center",
-        showInlineErrors: true,
-        showErrorText: false,
-        numCols: 6,
-        colWidths: ["10%", "25%", "25%", "10%", "25%", "25%"],
-        fields: [
             {
-                name: "reportTypeComments",
-                title: "انتقادات و پیشنهادات توسط : ",
+                name: "reason", title: "<spring:message code='training.request'/>", align: "center",
                 valueMap: {
-                    "teacher": "استاد",
-                    "student": "فراگیر",
-                    "personnel": "کارکنان آموزش",
+                    "1": "نیازسنجی",
+                    "2": "درخواست واحد",
+                    "3": "نیاز موردی",
                 },
-                type: "SelectItem",
-                textAlign: "center",
-                defaultValue:  ["teacher"],
-                colSpan: 2,
-                allowAdvancedCriteria: false,
-                titleColSpan: 1,
-                required: true,
-                changed: function (form, item, value) {
-                    RestDataSource_Comment_REFR.fetchDataURL = viewReactionEvaluationCommentUrl + "/list/"+value
-
-                }
-
-            }
-        ]
-    });
-
-    //----------------------------------- layOut -----------------------------------------------------------------------
-    var ListGrid_Comment_REFR = isc.TrLG.create({
-        height: "70%",
-        dataPageSize: 1000,
-        filterOnKeypress: false,
-        showFilterEditor: true,
-        gridComponents: ["filterEditor", "header", "body"],
-        dataSource: RestDataSource_Comment_REFR,
-        fields: [
-            {name: "classCode"},
-            {name: "classTitle"},
-            {name: "firstName"},
-            {name: "lastName"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "titleCategory"},
-            {name: "titleSubCategory"},
-            {name: "description"},
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                },
+                filterOnKeypress: true,
+            },
+            {
+                name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                valueMap: {
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
+                    "4": "لغو شده",
+                    "5": "اختتام",
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                },
+                filterOnKeypress: true,
+                width: 100,
+                showHover: true,
+                hoverWidth: 150
+            },
+            {
+                name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
+                    "1": "U شکل",
+                    "2": "عادی",
+                    "3": "مدور",
+                    "4": "سالن"
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                },
+                filterOnKeypress: true,
+                hidden: false,
+                autoFitWidth: true
+            },
+            {
+                name: "createdBy",
+                title: "ایجاد کننده",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "equals",
+            },
+            {
+                name: "modifiedBy",
+                title: "ویرایش کننده",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "equals",
+            },
 
         ]
     });
@@ -275,61 +224,10 @@
         border: "2px solid blue",
         padding: 20,
         members: [
-            ListGrid_Comment_REFR
+            ListGrid_History_REFR
         ]
     });
 
     //------------------------------------------------- Functions ------------------------------------------------------
     //
-    function makeExcelComments() {
-
-        if (ListGrid_Comment_REFR.getOriginalData().localData === undefined)
-            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
-        else {
-            let records = ListGrid_Comment_REFR.data.localData.toArray();
-            excelData = [];
-            excelData.add({
-                classCode: "کد کلاس",
-                classTitle: "عنوان کلاس",
-                firstName: "نام ",
-                lastName: "نام خانوادگی ",
-                startDate: "تاریخ شروع",
-                endDate: "تاریخ پایان",
-                titleCategory: "گروه",
-                titleSubCategory: "زیرگروه",
-                description: "نظرات",
-            });
-
-            if(records) {
-                for (let j = 0; j < records.length; j++) {
-                    excelData.add({
-                        rowNum: j+1,
-                        classCode: records[j].classCode,
-                        classTitle: records[j].classTitle,
-                        firstName: records[j].firstName,
-                        lastName: records[j].lastName,
-                        startDate: records[j].startDate,
-                        endDate: records[j].endDate,
-                        titleCategory: records[j].titleCategory,
-                        titleSubCategory: records[j].titleSubCategory,
-                        description: records[j].description
-                    });
-
-                }
-            }
-            let fields = [
-                {name: "rowNum"},
-                {name: "classCode"},
-                {name: "classTitle"},
-                {name: "firstName"},
-                {name: "lastName"},
-                {name: "startDate"},
-                {name: "endDate"},
-                {name: "titleCategory"},
-                {name: "titleSubCategory"},
-                {name: "description"}
-            ];
-            ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش نظرات ارزیابی ", null);
-        }
-    }
-    // </script>
+     // </script>

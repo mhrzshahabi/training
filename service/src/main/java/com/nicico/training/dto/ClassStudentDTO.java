@@ -249,6 +249,8 @@ public class ClassStudentDTO implements Serializable {
         private String valence;
         private String scoreStateTitle;
         private String failureReasonTitle;
+        private Integer evaluationStatusReaction;
+
     }
 
     @Getter
