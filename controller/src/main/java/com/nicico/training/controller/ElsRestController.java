@@ -21,7 +21,9 @@ import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
@@ -62,10 +64,11 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.controller.util.AppUtils.getTotalPages;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/anonymous/els")
 @RequiredArgsConstructor
@@ -107,6 +110,10 @@ public class ElsRestController {
     private final ITeacherRoleService iTeacherRoleService;
     private final IMobileVerifyService iMobileVerifyService;
     private final IRoleService iRoleService;
+    private final SendMessageService sendMessageService;
+
+    @Value("${nicico.elsSmsUrl}")
+    private String elsSmsUrl;
 
 
     @GetMapping("/eval/{id}")
@@ -114,6 +121,24 @@ public class ElsRestController {
 
         SendEvalToElsResponse response = new SendEvalToElsResponse();
         Evaluation evaluation = evaluationService.getById(id);
+
+        try{
+          List<ClassStudent>classStudents=  classStudentService.getClassStudents(evaluation.getClassId());
+         List  <EvalTargetUser> students=classStudents.stream()
+                    .map(classStudent -> evaluationBeanMapper.toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
+            Questionnaire   questionnaire= questionnaireService.get(evaluation.getQuestionnaireId());
+            Map<String, String> paramValMap = new HashMap<>();
+            for (EvalTargetUser evalTargetUser:students){
+                paramValMap.put("user_name",evalTargetUser.getLastName());
+                paramValMap.put("evaluation_title",questionnaire.getTitle());
+                paramValMap.put("url", elsSmsUrl);
+                sendMessageService.syncEnqueue("1ax63fg1dr",paramValMap,Collections.singletonList(evalTargetUser.getCellNumber()));
+            }
+        }catch (Exception e){
+            log.error("Exception evaluation ", e);
+        }
+
+
         iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
         response.setStatus(200);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
@@ -161,10 +186,23 @@ public class ElsRestController {
     }
 
     @GetMapping("/teacherEval/{id}")
+    @Loggable
     public ResponseEntity<SendEvalToElsResponse> sendEvalToElsForTeacher(@PathVariable long id) {
 
         SendEvalToElsResponse response = new SendEvalToElsResponse();
         Evaluation evaluation = evaluationService.getById(id);
+        try{
+            EvalTargetUser teacher=evaluationBeanMapper.toTeacher(personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+            Questionnaire   questionnaire= questionnaireService.get(evaluation.getQuestionnaireId());
+            Map<String, String> paramValMap = new HashMap<>();
+            paramValMap.put("user_name",teacher.getLastName());
+            paramValMap.put("evaluation_title",questionnaire.getTitle());
+            paramValMap.put("url", elsSmsUrl);
+            sendMessageService.syncEnqueue("c76g6vfs4l",paramValMap,Collections.singletonList(teacher.getCellNumber()));
+
+        }catch (Exception e){
+            log.error("Exception evaluation ", e);
+        }
         iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
