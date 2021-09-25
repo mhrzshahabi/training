@@ -11,4 +11,5 @@ import java.util.List;
 public class NeedAssessmentGroupJobPromotionRequestDto implements Serializable {
     private static final long serialVersionUID = 2736628968763636669L;
     private List<NeedAssessmentGroupJobPromotionDto> needAssessmentGroupJobPromotionDtos;
+    private String userName;
 }

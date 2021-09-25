@@ -297,4 +297,7 @@
     <changeSet author="nima (generated)" id="1631611897716-539">
         <createSequence sequenceName="seq_mobile_verify_id"/>
     </changeSet>
+    <changeSet author="nick (generated)" id="1631425644558-537">
+        <createSequence sequenceName="seq_need_assessment_group_result_id"/>
+    </changeSet>
 </databaseChangeLog>

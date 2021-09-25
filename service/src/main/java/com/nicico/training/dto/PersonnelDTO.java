@@ -309,4 +309,17 @@ public class PersonnelDTO implements Serializable {
     public static class FieldValue {
         private String value;
     }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @Accessors(chain = true)
+    @ApiModel("SummeryInfo")
+    public static class PersonnelSummeryInfo {
+        private Long id;
+        private String firstName;
+        private String lastName;
+        private String personnelNo;
+        private String ccpAffairs;
+    }
 }

@@ -2862,6 +2862,16 @@ WHERE
             <column name="USER_NAME" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
+    <changeSet author="nick (generated)" id="1631425644558-538">
+        <createTable tableName="tbl_need_assessment_group_result">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_need_assessment_group_resultPK"/>
+            </column>
+            <column name="CREATE_DATE" type="TIMESTAMP"/>
+            <column name="CREATED_BY" type="VARCHAR2(255 CHAR)"/>
+            <column name="MINIO_REFERENCE" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
 
 
     <changeSet author="nima (generated)" id="1631430089965-539">
@@ -3136,6 +3146,19 @@ WHERE
 
     <changeSet author="nima (generated)" id="1632293676765-729">
         <dropColumn columnName="NAME" tableName="TBL_MOBILE_VERIFY"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1632205807374-545">
+        <addColumn tableName="tbl_need_assessment_group_result">
+            <column name="BLOB_FILE" type="blob"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1632285214143-728">
+        <dropColumn columnName="MINIO_REFERENCE" tableName="TBL_NEED_ASSESSMENT_GROUP_RESULT"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1632285214143-545">
+        <addColumn tableName="tbl_need_assessment_group_result">
+            <column name="EXCEL_REFERENCE" type="varchar2(255 CHAR)"/>
+        </addColumn>
     </changeSet>
 
 
