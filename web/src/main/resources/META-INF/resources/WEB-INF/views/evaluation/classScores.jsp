@@ -76,7 +76,10 @@
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-
+            {
+                name: "evaluationStatusReaction",
+                hidden:true
+            },
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
@@ -280,6 +283,10 @@
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
+            },
+            {
+                name: "evaluationStatusReaction",
+                hidden:true
             },
             {
                 name: "student.personnelNo",
@@ -515,53 +522,62 @@
                     }
                 },
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid, item) {
-                    if (newValue != null) {
-                        if (validators_score_Eval(newValue)) {
-                            if (parseFloat(newValue) >= classRecord_acceptancelimit_Eval && parseFloat(newValue) <= score_value_Eval) {
-                                ListGrid_Cell_score_Update_Eval(record, newValue, 1);
+                    if (record.evaluationStatusReaction!==1){
+                        if (newValue != null) {
+                            if (validators_score_Eval(newValue)) {
+                                if (parseFloat(newValue) >= classRecord_acceptancelimit_Eval && parseFloat(newValue) <= score_value_Eval) {
+                                    ListGrid_Cell_score_Update_Eval(record, newValue, 1);
+                                    return;
+
+
+                                } else if ((parseFloat(newValue) >= 0 && parseFloat(newValue) < classRecord_acceptancelimit_Eval)) {
+
+                                    if ((typeof record.scoresStateId === "undefined" || record.scoresStateId == null || typeof record.scoresStateId === undefined) && failureReason_change_Eval === false) {
+
+                                        record.scoresStateId = null;
+                                        record.failureReasonId = null;
+                                        ListGrid_Cell_score_Update_Eval(record, newValue, 4);
+                                        return
+                                    } else if ((typeof record.failureReasonId === "undefined" || typeof record.failureReasonId === undefined) && record.scoresStateId === 410) {
+
+                                        ListGrid_Cell_score_Update_Eval(record, newValue, 4);
+                                        return
+                                    }
+                                    else if (failureReason_change_Eval === true) {
+
+                                        failureReason_change_Eval = false;
+                                        ListGrid_Cell_score_Update_Eval(record, newValue, 2);
+                                        return;
+                                    } else {
+
+                                        failureReason_change_Eval = false;
+                                        ListGrid_Cell_score_Update_Eval(record, newValue, 3);
+                                        return;
+                                    }
+                                }
+
+                            } else {
+                                Remove_All_Cell_Action_Eval();
+                                createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>");
                                 return;
-
-
-                            } else if ((parseFloat(newValue) >= 0 && parseFloat(newValue) < classRecord_acceptancelimit_Eval)) {
-
-                                if ((typeof record.scoresStateId === "undefined" || record.scoresStateId == null || typeof record.scoresStateId === undefined) && failureReason_change_Eval === false) {
-
-                                    record.scoresStateId = null;
-                                    record.failureReasonId = null;
-                                    ListGrid_Cell_score_Update_Eval(record, newValue, 4);
-                                    return
-                                } else if ((typeof record.failureReasonId === "undefined" || typeof record.failureReasonId === undefined) && record.scoresStateId === 410) {
-
-                                    ListGrid_Cell_score_Update_Eval(record, newValue, 4);
-                                    return
-                                }
-                                else if (failureReason_change_Eval === true) {
-
-                                    failureReason_change_Eval = false;
-                                    ListGrid_Cell_score_Update_Eval(record, newValue, 2);
-                                    return;
-                                } else {
-
-                                    failureReason_change_Eval = false;
-                                    ListGrid_Cell_score_Update_Eval(record, newValue, 3);
-                                    return;
-                                }
                             }
-
-                        } else {
-                            Remove_All_Cell_Action_Eval();
-                            createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>");
+                        } else if ((typeof newValue === "undefined") && failureReason_change_Eval === true && record.scoresStateId === 403) {
+                            // refresh_special = 1;
+                            ListGrid_Cell_score_Update_Eval(record, record.score, 5);
                             return;
+                        } else {
+                            //  console.log('editorExit')
+                            //ListGrid_Class_Student_Eval.invalidateCache()
+                            return true;
                         }
-                    } else if ((typeof newValue === "undefined") && failureReason_change_Eval === true && record.scoresStateId === 403) {
-                        // refresh_special = 1;
-                        ListGrid_Cell_score_Update_Eval(record, record.score, 5);
-                        return;
-                    } else {
-                        //  console.log('editorExit')
-                        //ListGrid_Class_Student_Eval.invalidateCache()
-                        return true;
+                    }else {
+                        record.score = "";
+                        ListGrid_Class_Student_Eval.refreshFields();
+                        ListGrid_Class_Student_Eval.refreshCell;
+                        ListGrid_Class_Student_Eval.dataChanged();
+                        createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
                     }
+
 
                 }
             }

@@ -66,7 +66,10 @@
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-
+            {
+                name: "evaluationStatusReaction",
+                hidden:true
+            },
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
@@ -316,6 +319,10 @@
                     keyPressFilter: "[0-9]"
                 }
             },
+             {
+                name: "evaluationStatusReaction",
+                hidden:true
+            },
 
             {
                 name: "scoresStateId",
@@ -557,56 +564,66 @@
                 },
 
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid, item) {
-                    if (newValue != null) {
-                        if (validators_score(newValue)) {
-                            if (parseFloat(newValue) >= classRecord_acceptancelimit && parseFloat(newValue) <= score_value) {
-                                ListGrid_Cell_score_Update(record, newValue, 1);
+                    if (record.evaluationStatusReaction!==1){
+                        if (newValue != null) {
+                            if (validators_score(newValue)) {
+                                if (parseFloat(newValue) >= classRecord_acceptancelimit && parseFloat(newValue) <= score_value) {
+                                    ListGrid_Cell_score_Update(record, newValue, 1);
+                                    return;
+
+
+                                } else if ((parseFloat(newValue) >= 0 && parseFloat(newValue) < classRecord.acceptancelimit)) {
+
+                                    if ((typeof record.scoresStateId === "undefined" || record.scoresStateId == null || typeof record.scoresStateId === undefined) && failureReason_change === false) {
+
+                                        record.scoresStateId = null;
+                                        record.failureReasonId = null;
+                                        ListGrid_Cell_score_Update(record, newValue, 4)
+                                        return
+                                    }else if((typeof record.failureReasonId === "undefined" || typeof record.failureReasonId === undefined) && record.scoresStateId ===410)
+                                    {
+
+                                        ListGrid_Cell_score_Update(record, newValue, 4)
+                                        return
+                                    }
+                                    else if (failureReason_change === true) {
+
+                                        failureReason_change = false
+
+                                        ListGrid_Cell_score_Update(record, newValue, 2)
+                                        return
+                                    } else {
+
+                                        failureReason_change = false
+                                        ListGrid_Cell_score_Update(record, newValue, 3)
+                                        return
+                                    }
+
+
+                                }
+
+                            } else {
+                                Remove_All_Cell_Action();
+                                createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>");
                                 return;
-
-
-                            } else if ((parseFloat(newValue) >= 0 && parseFloat(newValue) < classRecord.acceptancelimit)) {
-
-                                      if ((typeof record.scoresStateId === "undefined" || record.scoresStateId == null || typeof record.scoresStateId === undefined) && failureReason_change === false) {
-
-                                                record.scoresStateId = null;
-                                                record.failureReasonId = null;
-                                                ListGrid_Cell_score_Update(record, newValue, 4)
-                                            return
-                                        }else if((typeof record.failureReasonId === "undefined" || typeof record.failureReasonId === undefined) && record.scoresStateId ===410)
-                                        {
-
-                                            ListGrid_Cell_score_Update(record, newValue, 4)
-                                            return
-                                        }
-                                        else if (failureReason_change === true) {
-
-                                            failureReason_change = false
-
-                                            ListGrid_Cell_score_Update(record, newValue, 2)
-                                            return
-                                        } else {
-
-                                            failureReason_change = false
-                                            ListGrid_Cell_score_Update(record, newValue, 3)
-                                            return
-                                        }
-
-
                             }
-
+                        } else if ((typeof newValue === "undefined") && failureReason_change === true && record.scoresStateId === 403) {
+                            // refresh_special = 1;
+                            ListGrid_Cell_score_Update(record, record.score, 5)
+                            return
                         } else {
-                            Remove_All_Cell_Action();
-                            createDialog("info", "<spring:message code="enter.current.score"/>", "<spring:message code="message"/>");
-                            return;
+                            //  console.log('editorExit')
+                            //ListGrid_Class_Student.invalidateCache()
+                            return true
                         }
-                    } else if ((typeof newValue === "undefined") && failureReason_change === true && record.scoresStateId === 403) {
-                       // refresh_special = 1;
-                        ListGrid_Cell_score_Update(record, record.score, 5)
-                        return
-                    } else {
-                              //  console.log('editorExit')
-                                //ListGrid_Class_Student.invalidateCache()
-                    return true
+
+
+                    }else {
+                        record.score = "";
+                        ListGrid_Class_Student.refreshFields();
+                        ListGrid_Class_Student.refreshCell;
+                        ListGrid_Class_Student.dataChanged();
+                        createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
                     }
 
                 }
