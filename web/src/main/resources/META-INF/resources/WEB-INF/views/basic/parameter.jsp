@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -11,7 +12,9 @@
         ID: "ParameterMenu_parameter",
         data: [
             {title: "<spring:message code="refresh"/>", click: function () { refreshLG(ParameterLG_parameter, cleanLG(ParameterValueLG_parameter)); }},
+            <sec:authorize access="hasAuthority('Parameter_C')">
             {title: "<spring:message code="create"/>", click: function () { createParameter_parameter(); }},
+            </sec:authorize>
             // {title: "<spring:message code="edit"/>", click: function () { editParameter_parameter(); }},
             // {title: "<spring:message code="remove"/>", click: function () { removeParameter_parameter(); }},
         ]
@@ -21,7 +24,9 @@
         ID: "ParameterValueMenu_parameter",
         data: [
             {title: "<spring:message code="refresh"/>", click: function () { refreshParameterValueLG_parameter(); }},
+            <sec:authorize access="hasAuthority('Parameter_C')">
             {title: "<spring:message code="create"/>", click: function () { createParameterValue_parameter(); }},
+            </sec:authorize>
             // {title: "<spring:message code="edit"/>", click: function () { editParameterValue_parameter(); }},
             // {title: "<spring:message code="remove"/>", click: function () { removeParameterValue_parameter(); }},
         ]
@@ -32,7 +37,9 @@
         ID: "ParameterTS_parameter",
         members: [
             isc.ToolStripButtonRefresh.create({click: function () { refreshLG(ParameterLG_parameter, cleanLG(ParameterValueLG_parameter)); }}),
+            <sec:authorize access="hasAuthority('Parameter_C')">
             isc.ToolStripButtonCreate.create({click: function () { createParameter_parameter(); }}),
+            </sec:authorize>
             // isc.ToolStripButtonEdit.create({click: function () { editParameter_parameter(); }}),
             // isc.ToolStripButtonRemove.create({click: function () { removeParameter_parameter(); }}),
             isc.LayoutSpacer.create({width: "*"}),
@@ -44,7 +51,9 @@
         ID: "ParameterValueTS_parameter",
         members: [
             isc.ToolStripButtonRefresh.create({click: function () { refreshParameterValueLG_parameter(); }}),
+            <sec:authorize access="hasAuthority('Parameter_C')">
             isc.ToolStripButtonCreate.create({click: function () { createParameterValue_parameter(); }}),
+            </sec:authorize>
             // isc.ToolStripButtonEdit.create({click: function () { editParameterValue_parameter(); }}),
             // isc.ToolStripButtonRemove.create({click: function () { removeParameterValue_parameter(); }}),
             isc.LayoutSpacer.create({width: "*"}),
@@ -67,7 +76,9 @@
 
     ParameterLG_parameter = isc.TrLG.create({
         ID: "ParameterLG_parameter",
+        <sec:authorize access="hasAuthority('Parameter_R')">
         dataSource: ParameterDS_parameter,
+        </sec:authorize>
         autoFetchData: true,
         fields: [{name: "id", filterEditorProperties: {keyPressFilter: "[0-9]"}}, {name: "title"}, {name: "code"}, {name: "type"}, {name: "description"},],
         gridComponents: [
@@ -94,7 +105,9 @@
 
     ParameterValueLG_parameter = isc.TrLG.create({
         ID: "ParameterValueLG_parameter",
+        <sec:authorize access="hasAuthority('Parameter_R')">
         dataSource: ParameterValueDS_parameter,
+        </sec:authorize>
         fields: [{name: "title"}, {name: "code"}, {name: "type"}, {name: "value"}, {name: "description"},],
         gridComponents: [
             isc.LgLabel.create({

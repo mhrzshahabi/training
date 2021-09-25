@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
@@ -321,31 +322,45 @@
 
     var Menu_ListGrid_Category = isc.Menu.create({
         width: 150,
-        data: [{
+        data: [
+        <sec:authorize access="hasAuthority('Category_R')">
+        {
             title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Category_refresh();
             }
-        }, {
+        },
+        </sec:authorize>
+        <sec:authorize access="hasAuthority('Category_C')">
+        {
             title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Category_Add();
             }
-        }, {
+        },
+        </sec:authorize>
+        <sec:authorize access="hasAuthority('Category_U')">
+        {
             title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
 
                 ListGrid_Category_Edit();
 
             }
-        }, {
+        },
+        </sec:authorize>
+        <sec:authorize access="hasAuthority('Category_D')">
+        {
             title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Category_Remove();
             }
-        },]
+        },
+        </sec:authorize>]
     });
 
     var ListGrid_Category = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('Category_R')">
         dataSource: RestDataSource_Category,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Category,
         selectionType: "single",
         fields: [
@@ -425,16 +440,26 @@
         width: "100%",
         membersMargin: 5,
         members: [,
+            <sec:authorize access="hasAuthority('Category_C')">
             ToolStripButton_Category_Add,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Category_U')">
             ToolStripButton_Category_Edit,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Category_D')">
             ToolStripButton_Category_Remove,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Category_P')">
             ToolStrip_Category_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Category_R')">
                     ToolStripButton_Category_Refresh
+                    </sec:authorize>
                 ]
             })
         ]
@@ -824,31 +849,45 @@
 
     var Menu_ListGrid_Sub_Category = isc.Menu.create({
         width: 150,
-        data: [{
+        data: [
+        <sec:authorize access="hasAuthority('SubCategory_R')">
+        {
             title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Sub_Category_refresh();
             }
-        }, {
+        },
+        </sec:authorize>
+        <sec:authorize access="hasAuthority('SubCategory_C')">
+        {
             title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Sub_Category_Add()
             }
-        }, {
+        },
+        </sec:authorize>
+        <sec:authorize access="hasAuthority('SubCategory_U')">
+        {
             title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
 
                 ListGrid_Sub_Category_Edit();
 
             }
-        }, {
+        },
+        </sec:authorize>
+        <sec:authorize access="hasAuthority('SubCategory_D')">
+        {
             title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Sub_Category_Remove();
             }
-        },]
+        }
+        </sec:authorize>]
     });
 
     var ListGrid_Sub_Category = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('SubCategory_R')">
         dataSource: RestDataSource_Sub_Category,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Sub_Category,
         doubleClick: function () {
             ListGrid_Sub_Category_Edit();
@@ -916,17 +955,27 @@
     var ToolStrip_Actions_Sub_Category = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [,
+        members: [
+            <sec:authorize access="hasAuthority('SubCategory_C')">
             ToolStripButton_Sub_Category_Add,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('SubCategory_U')">
             ToolStripButton_Sub_Category_Edit,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('SubCategory_D')">
             ToolStripButton_Sub_Category_Remove,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('SubCategory_P')">
             ToolStrip_Sub_Category_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('SubCategory_R')">
                     ToolStripButton_Sub_Category_Refresh
+                    </sec:authorize>
                 ]
             }),
         ]
@@ -960,4 +1009,4 @@
     });
 
 
-    //</script>
+    // </script>

@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     var methodEducation = "GET";
@@ -46,18 +47,25 @@
 
     Menu_ListGrid_EducationOrientation = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('EducationOrientation_R')">
             {
                 title: "<spring:message code='refresh'/>",
                 click: function () {
                     refreshLG(ListGrid_EducationOrientation);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_C')">
+            {
                 title: "<spring:message code='create'/>",
                 click: function () {
                     ListGrid_Education_Add(educationOrientationUrl, "<spring:message code='education.orientation'/>",
                         DynamicForm_EducationOrientation, Window_EducationOrientation);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_U')">
+            {
                 title: "<spring:message code='edit'/>",
                 click: function () {
                     DynamicForm_EducationOrientation.clearValues();
@@ -65,35 +73,52 @@
                         "<spring:message code='education.orientation'/>",
                         DynamicForm_EducationOrientation, Window_EducationOrientation);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_D')">
+            {
                 title: "<spring:message code='remove'/>",
                 click: function () {
                     listGridEducation = ListGrid_EducationOrientation;
                     ListGrid_Education_Remove(educationOrientationUrl, "<spring:message code='msg.education.orientation.remove'/>");
                 }
-            }, {isSeparator: true}, {
+            },
+            </sec:authorize>
+            {isSeparator: true},
+            <sec:authorize access="hasAuthority('EducationOrientation_P')">
+            {
                 title: "<spring:message code='global.form.print.pdf'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationOrientation/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationOrientation.getCriteria());
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_P')">
+            {
                 title: "<spring:message code='global.form.print.excel'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationOrientation/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationOrientation.getCriteria());
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_P')">
+            {
                 title: "<spring:message code='global.form.print.html'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationOrientation/printWithCriteria/"/>" + "html",
                         ListGrid_EducationOrientation.getCriteria());
                 }
-            }]
+            }
+            </sec:authorize>
+            ]
     });
 
     var ListGrid_EducationOrientation = isc.TrLG.create({
+        <sec:authorize access="hasAuthority('EducationOrientation_R')">
         dataSource: RestDataSourceEducationOrientation,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_EducationOrientation,
         selectionType: "multiple",
         sortField: 0,
@@ -237,17 +262,29 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('EducationOrientation_C')">
             ToolStripButton_Add_EducationOrientation,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_U')">
             ToolStripButton_Edit_EducationOrientation,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_D')">
             ToolStripButton_Remove_EducationOrientation,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_P')">
             ToolStripButton_Print_EducationOrientation,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationOrientation_P')">
             ToolStrip_EducationOrientation_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('EducationOrientation_R')">
                     ToolStripButton_Refresh_EducationOrientation,
+                    </sec:authorize>
                 ]
             }),
         ]
@@ -320,18 +357,25 @@
 
     Menu_ListGrid_EducationMajor = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('EducationMajor_R')">
             {
                 title: "<spring:message code='refresh'/>",
                 click: function () {
                     refreshLG(ListGrid_EducationMajor);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_C')">
+            {
                 title: "<spring:message code='create'/>",
                 click: function () {
                     ListGrid_Education_Add(educationMajorUrl, "<spring:message code='education.major'/>",
                         DynamicForm_EducationMajor, Window_EducationMajor);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_U')">
+            {
                 title: "<spring:message code='edit'/>",
                 click: function () {
                     DynamicForm_EducationMajor.clearValues();
@@ -339,35 +383,52 @@
                         "<spring:message code='education.major'/>",
                         DynamicForm_EducationMajor, Window_EducationMajor);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_D')">
+            {
                 title: "<spring:message code='remove'/>",
                 click: function () {
                     listGridEducation = ListGrid_EducationMajor;
                     ListGrid_Education_Remove(educationMajorUrl, "<spring:message code='msg.education.major.remove'/>");
                 }
-            }, {isSeparator: true}, {
+            },
+            </sec:authorize>
+            {isSeparator: true},
+            <sec:authorize access="hasAuthority('EducationMajor_P')">
+            {
                 title: "<spring:message code='global.form.print.pdf'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationMajor/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationMajor.getCriteria());
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_P')">
+            {
                 title: "<spring:message code='global.form.print.excel'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationMajor/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationMajor.getCriteria());
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_P')">
+            {
                 title: "<spring:message code='global.form.print.html'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationMajor/printWithCriteria/"/>" + "html",
                         ListGrid_EducationMajor.getCriteria());
                 }
-            }]
+            }
+            </sec:authorize>
+            ]
     });
 
     var ListGrid_EducationMajor = isc.TrLG.create({
+        <sec:authorize access="hasAuthority('EducationMajor_R')">
         dataSource: RestDataSourceEducationMajor,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_EducationMajor,
         selectionType: "multiple",
         sortField: 0,
@@ -467,17 +528,29 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('EducationMajor_C')">
             ToolStripButton_Add_EducationMajor,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_U')">
             ToolStripButton_Edit_EducationMajor,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_D')">
             ToolStripButton_Remove_EducationMajor,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_P')">
             ToolStripButton_Print_EducationMajor,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationMajor_P')">
             ToolStrip_EducationMajor_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('EducationMajor_R')">
                     ToolStripButton_Refresh_EducationMajor,
+                    </sec:authorize>
                 ]
             }),
 
@@ -551,18 +624,25 @@
 
     Menu_ListGrid_EducationLevel = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('EducationLevel_R')">
             {
                 title: "<spring:message code='refresh'/>",
                 click: function () {
                     refreshLG(ListGrid_EducationLevel);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_C')">
+            {
                 title: "<spring:message code='create'/>",
                 click: function () {
                     ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.level'/>",
                         DynamicForm_EducationLevel, Window_EducationLevel);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_U')">
+            {
                 title: "<spring:message code='edit'/>",
                 click: function () {
                     DynamicForm_EducationLevel.clearValues();
@@ -570,36 +650,53 @@
                         "<spring:message code='education.level'/>",
                         DynamicForm_EducationLevel, Window_EducationLevel);
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_D')">
+            {
                 title: "<spring:message code='remove'/>",
                 click: function () {
                     listGridEducation = ListGrid_EducationLevel;
                     ListGrid_Education_Remove(educationLevelUrl, "<spring:message code='msg.education.level.remove'/>");
                 }
-            }, {isSeparator: true}, {
+            },
+            </sec:authorize>
+            {isSeparator: true},
+            <sec:authorize access="hasAuthority('EducationLevel_P')">
+            {
                 title: "<spring:message code='global.form.print.pdf'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationLevel/printWithCriteria/"/>" + "pdf",
                         ListGrid_EducationLevel.getCriteria());
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_P')">
+            {
                 title: "<spring:message code='global.form.print.excel'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationLevel/printWithCriteria/"/>" + "excel",
                         ListGrid_EducationLevel.getCriteria());
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_P')">
+            {
                 title: "<spring:message code='global.form.print.html'/>",
                 click: function () {
                     trPrintWithCriteria("<spring:url value="education/educationLevel/printWithCriteria/"/>" + "html",
                         ListGrid_EducationLevel.getCriteria());
                 }
-            }]
+            }
+            </sec:authorize>
+        ]
     });
 
     var ListGrid_EducationLevel = isc.TrLG.create({
         dataSource: RestDataSourceEducationLevel,
+        <sec:authorize access="hasAuthority('EducationLevel_R')">
         contextMenu: Menu_ListGrid_EducationLevel,
+        </sec:authorize>
         selectionType: "multiple",
         sortField: 0,
         sortDirection: "descending",
@@ -713,17 +810,29 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('EducationLevel_C')">
             ToolStripButton_Add_EducationLevel,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_U')">
             ToolStripButton_Edit_EducationLevel,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_D')">
             ToolStripButton_Remove_EducationLevel,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_P')">
             ToolStripButton_Print_EducationLevel,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EducationLevel_P')">
             ToolStrip_EducationLevel_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('EducationLevel_R')">
                     ToolStripButton_Refresh_EducationLevel,
+                    </sec:authorize>
                 ]
             }),
 

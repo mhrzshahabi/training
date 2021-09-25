@@ -339,6 +339,8 @@
       "title": "منوی امنیت - گزارش لاگین کاربران"
     },
 
+    {"code": "Parameter_C", "title": "ایجاد پارامتر"},
+    {"code": "Parameter_R", "title": "مشاهده پارامتر"},
     {"code": "AccountInfo_C", "title": "ایجاد اطلاعات حساب"},
     {"code": "AccountInfo_R", "title": "مشاهده اطلاعات حساب"},
     {"code": "AccountInfo_U", "title": "ویرایش اطلاعات حساب"},

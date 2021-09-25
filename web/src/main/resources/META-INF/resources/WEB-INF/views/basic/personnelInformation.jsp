@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     {
@@ -257,7 +258,9 @@
             });*/
 
             var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
+                <sec:authorize access="hasAuthority('Personnel_R')">
                 dataSource: PersonnelInfoDS_PersonnelList,
+                </sec:authorize>
                 selectionType: "single",
                 dataPageSize: 20,
                 allowAdvancedCriteria: true,
@@ -439,7 +442,9 @@
 
 
             PersonnelInfoListGrid_RegisteredPersonnelList = isc.TrLG.create({
+                <sec:authorize access="hasAuthority('Personnel_R')">
                 dataSource: PersonnelInfoDS_RegisteredPersonnelList,
+                </sec:authorize>
                 selectionType: "single",
                 autoFetchData: true,
                 fields: [
@@ -580,7 +585,10 @@
                 height: "1%",
                 membersMargin: 5,
                 members: [
+                    <sec:authorize access="hasAuthority('Personnel_D')">
                     btnRemoveCriteria,
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('Personnel_C')">
                     isc.ToolStripButtonAdd.create({
                         title: 'فیلتر گروهي',
                         click: function () {
@@ -592,6 +600,8 @@
 
                         }
                     }),
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('Personnel_P')">
                     isc.ToolStripButtonExcel.create({
                         title: 'ارسال لیست فیلتر شده به اکسل',
                         click: function () {
@@ -611,7 +621,11 @@
                             }
                         }
                     }),
-                    ToolStrip_Personnel_Info]
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('Personnel_R')">
+                    ToolStrip_Personnel_Info
+                    </sec:authorize>
+                ]
             });
 
             var Hlayout_Grid_PI = isc.HLayout.create({

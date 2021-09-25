@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -15,23 +16,36 @@
 
     var Menu_ListGrid_Equipment = isc.Menu.create({
         width: 150,
-        data: [{
-            title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+        data: [
+            <sec:authorize access="hasAuthority('Equipment_R')">
+            {
+                title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Equipment_refresh();
             }
-        }, {
-            title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Equipment_C')">
+            {
+                title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Equipment_Add();
             }
-        }, {
-            title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Equipment_U')">
+            {
+                title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_Equipment_edit();
             }
-        }, {
-            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Equipment_D')">
+            {
+                title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Equipment_remove();
             }
-        },]
+            }
+            </sec:authorize>
+        ]
     });
 
     var RestDataSource_Equipment = isc.TrDS.create({
@@ -45,7 +59,9 @@
     var ListGrid_Equipment = isc.ListGrid.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('Equipment_R')">
         dataSource: RestDataSource_Equipment,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Equipment,
         doubleClick: function () {
             ListGrid_Equipment_edit();
@@ -394,16 +410,26 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Equipment_C')">
             ToolStripButton_Add,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Equipment_U')">
             ToolStripButton_Edit,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Equipment_D')">
             ToolStripButton_Remove,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Equipment_P')">
             ToolStrip_Equipment_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Equipment_R')">
                     ToolStripButton_Refresh
+                    </sec:authorize>
                 ]
             })
         ]
