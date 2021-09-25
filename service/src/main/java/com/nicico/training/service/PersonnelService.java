@@ -10,6 +10,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.SysUserInfoModel;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.PersonnelRegistered;
@@ -20,15 +21,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -441,5 +440,25 @@ public class PersonnelService implements IPersonnelService {
     public boolean isPresent(String nationalCode) {
         Personnel[] personnels = personnelDAO.findByNationalCode(nationalCode);
         return personnels.length > 0;
+    }
+
+    @Override
+    public SysUserInfoModel minioValidate() {
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        SysUserInfoModel model = new SysUserInfoModel();
+        if (principal!=null){
+            model.setUserId(principal.toString());
+            model.setCellNumber("");
+            model.setAuthorities(new HashSet<>());
+            model.setStatus(200);
+        }else {
+            Set<String> emptyAuthorities = new HashSet<>();
+            model.setUserId("");
+            model.setCellNumber("");
+            model.setAuthorities(emptyAuthorities);
+            model.setStatus(405);
+            model.setMessage("user_unknown");
+        }
+        return model;
     }
 }

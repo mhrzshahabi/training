@@ -1165,4 +1165,14 @@ public class ElsRestController {
         }
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
+
+
+
+    @GetMapping("/minio/validation")
+    public SysUserInfoModel validatingUserRequest(@RequestHeader(value = "api-token") String token) {
+        return userService.validateUser(mobileNumber);
     }
+
+
+
+}

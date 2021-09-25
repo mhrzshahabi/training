@@ -15,6 +15,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.dto.SysUserInfoModel;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
@@ -237,6 +238,11 @@ public class PersonnelRestController {
     public ResponseEntity fetchAndUpdateLastHrMobile(HttpServletRequest iscRq, @PathVariable Long id,@PathVariable String type) {
         Long infoId = contactInfoService.fetchAndUpdateLastHrMobile(id, type, iscRq.getHeader("Authorization")).getId();
         return new ResponseEntity(infoId, HttpStatus.OK);
+    }
+
+    @GetMapping("/minio/validation")
+    public SysUserInfoModel validatingUserRequest() {
+        return personnelService.minioValidate();
     }
 
 }
