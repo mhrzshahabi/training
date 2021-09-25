@@ -558,8 +558,10 @@
     //     }
     // });
 
-    IButton_NeedAssessment_Excel_Report = isc.IButtonSave.create({
-        top: 260,
+    IButton_NeedAssessment_Excel_Report = isc.IButton.create({
+baseStyle: 'MSG-btn-orange',
+icon: "<spring:url value="excel.png"/>",
+top: 260,
         title: "درخواست گزارش اکسل",
         width: 300,
         click: function () {
@@ -630,7 +632,7 @@
         showEdges: false,
         edgeImage: "",
         width: "70%",
-        height: "3%",
+        height: "10%",
         alignLayout: "center",
         padding: 3,
         members: [
