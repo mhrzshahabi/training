@@ -166,21 +166,28 @@
                                     isc.IButton.create({
                                         title: "تایید",
                                         click: function () {
-                                            if (!score_windows_dynamicForm.validate()) {
-                                                return;
+
+                                            if (rec.evaluationStatusReaction!==1){
+                                                if (!score_windows_dynamicForm.validate()) {
+                                                    return;
+                                                }
+                                                if (validators_score(score_windows_dynamicForm_value))
+                                                {
+                                                    rec.scoresStateId=403
+                                                    rec.failureReasonId=408
+                                                    rec.score=score_windows_dynamicForm.getItem("cause").getValue()
+                                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + rec.id, "PUT", JSON.stringify(rec), "callback: Edit_Cell_ScoreState_failureReason_Update(rpcResponse)"));
+                                                    score_windows.close();
+                                                }
+                                                else {
+                                                    simpleDialog("<spring:message code="message"/>", "گاربر گرامی نمره وارد شده صحیح نمی باشد", 6000, "stop");
+                                                    score_windows_dynamicForm.getItem("cause").setValue()
+                                                }
+
+                                            }else {
+                                                createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
                                             }
-                                           if (validators_score(score_windows_dynamicForm_value))
-                                           {
-                                               rec.scoresStateId=403
-                                               rec.failureReasonId=408
-                                               rec.score=score_windows_dynamicForm.getItem("cause").getValue()
-                                               isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + rec.id, "PUT", JSON.stringify(rec), "callback: Edit_Cell_ScoreState_failureReason_Update(rpcResponse)"));
-                                               score_windows.close();
-                                           }
-                                           else {
-                                               simpleDialog("<spring:message code="message"/>", "گاربر گرامی نمره وارد شده صحیح نمی باشد", 6000, "stop");
-                                               score_windows_dynamicForm.getItem("cause").setValue()
-                                           }
+
 
                                         }
                                     }),

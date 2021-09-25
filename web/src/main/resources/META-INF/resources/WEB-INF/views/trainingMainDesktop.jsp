@@ -3438,7 +3438,8 @@
             }
         };
         xhttpRequest.open("Post", url+"/"+groupId, true);
-        xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+        xhttpRequest.setRequestHeader("user-id", "Bearer <%= accessToken %>");
+        <%--xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");--%>
         xhttpRequest.send(formData1);
     }
     isc.defineClass("MyHLayoutButtons", HLayout);
