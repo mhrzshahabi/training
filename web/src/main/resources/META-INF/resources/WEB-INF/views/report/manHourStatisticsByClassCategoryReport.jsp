@@ -414,7 +414,7 @@
         height: 500,
         overflow: "auto",
         filterOnKeypress: false,
-        showFilterEditor: true,
+        showFilterEditor: false,
         gridComponents: [
             isc.HLayout.create({
                 alignment: 'right',
@@ -479,7 +479,7 @@
         height: 550,
         overflow: "auto",
         filterOnKeypress: false,
-        showFilterEditor: true,
+        showFilterEditor: false,
         gridComponents: [
             isc.HLayout.create({
                 alignment: 'right',
