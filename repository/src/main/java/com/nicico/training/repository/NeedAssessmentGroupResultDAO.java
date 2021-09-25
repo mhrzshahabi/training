@@ -10,6 +10,5 @@ import java.util.List;
 @Repository
 public interface NeedAssessmentGroupResultDAO extends JpaRepository<NeedAssessmentGroupResult, Long> {
     List<NeedAssessmentGroupResult> findAllByCreatedByOrderByIdDesc(String createBy);
-
     NeedAssessmentGroupResult findByExcelReference(String reference);
 }
