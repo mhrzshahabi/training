@@ -1168,11 +1168,5 @@ public class ElsRestController {
 
 
 
-    @GetMapping("/minio/validation")
-    public SysUserInfoModel validatingUserRequest(@RequestHeader(value = "api-token") String token) {
-        return userService.validateUser(mobileNumber);
-    }
-
-
 
 }
