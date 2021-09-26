@@ -36,6 +36,9 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
 
     @Query(value = "select * from tbl_personnel_registered where f_contact_info IN(:ids)" , nativeQuery = true)
     List<PersonnelRegistered> findAllByContactInfoIds(List<Long> ids);
+
+    @Query(value = "update  tbl_personnel_registered set f_contact_info=null where f_contact_info IN(:ids)" , nativeQuery = true)
+    List<PersonnelRegistered> setNullToContactInfo(List<Long> ids);
 }
 
 

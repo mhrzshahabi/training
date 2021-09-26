@@ -225,14 +225,9 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     }
 
     @Override
-    public void changeContactInfo(long id) {
-        final Optional<PersonnelRegistered> gById = personnelRegisteredDAO.findById(id);
-        if (gById.isPresent()){
-            PersonnelRegistered personnelRegistered=gById.get();
-            personnelRegistered.setContactInfoId(null);
-            personnelRegistered.setContactInfo(null);
-            save(personnelRegistered);
-        }
+    public void changeContactInfo(List<Long> ids) {
+        personnelRegisteredDAO.setNullToContactInfo(ids);
+
 
     }
 

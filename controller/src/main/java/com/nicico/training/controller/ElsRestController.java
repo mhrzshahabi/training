@@ -631,7 +631,7 @@ public class ElsRestController {
             , @PathVariable String token
     ) throws IOException {
 
-        ByteArrayResource file = client2.downloadFile("Bearer " + token, group, key);
+        ByteArrayResource file = client2.downloadFile("Bearer " + token,"Training", group, key);
         try {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")

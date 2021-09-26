@@ -70,9 +70,9 @@ import java.util.*;
 public class AnonymousRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
 
-    @GetMapping("/changeContactInfo/{id}")
-    public void changeContactInfo(@PathVariable long id) {
-        personnelRegisteredService.changeContactInfo(id);
+    @PostMapping("/changeContactInfo")
+    public void changeContactInfo(@RequestBody List<Long> ids) {
+        personnelRegisteredService.changeContactInfo(ids);
     }
 
 

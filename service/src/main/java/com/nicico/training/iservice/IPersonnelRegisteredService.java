@@ -43,7 +43,7 @@ public interface IPersonnelRegisteredService {
 
     List<PersonnelRegistered> checkPersonnelNationalCodes(List<String> personnelNationalCodes);
 
-    void changeContactInfo(long id);
+    void changeContactInfo(List<Long> id);
 
     boolean isPresent(String nationalCode);
 }
