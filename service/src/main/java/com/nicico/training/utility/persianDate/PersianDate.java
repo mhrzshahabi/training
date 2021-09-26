@@ -675,7 +675,7 @@ public final class PersianDate implements ChronoLocalDate {
 // parse the string
         DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
         DateTime dateTime = formatter.parseDateTime(dateString);
-        int hours = (int) (-4); //since both are ints, you get an int
+        int hours = (int) (-3); //since both are ints, you get an int
         int minutes = (int) (-30);
         dateTime = dateTime.plusMinutes(minutes);
         dateTime = dateTime.plusHours(hours);
@@ -686,7 +686,7 @@ public final class PersianDate implements ChronoLocalDate {
 // parse the string
         DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
         DateTime dateTime = formatter.parseDateTime(dateString);
-        int hours = (int) (4); //since both are ints, you get an int
+        int hours = (int) (3); //since both are ints, you get an int
         int minutes = (int) (30);
         dateTime = dateTime.plusMinutes(minutes);
         dateTime = dateTime.plusHours(hours);
