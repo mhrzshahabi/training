@@ -571,7 +571,7 @@
                 },
 
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid, item) {
-                    if (record.evaluationStatusReaction!==1){
+                    // if (record.evaluationStatusReaction!==1){
                         if (newValue != null) {
                             if (validators_score(newValue)) {
                                 if (parseFloat(newValue) >= classRecord_acceptancelimit && parseFloat(newValue) <= score_value) {
@@ -625,13 +625,13 @@
                         }
 
 
-                    }else {
-                        record.score = "";
-                        ListGrid_Class_Student.refreshFields();
-                        ListGrid_Class_Student.refreshCell;
-                        ListGrid_Class_Student.dataChanged();
-                        createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
-                    }
+                    // }else {
+                    //     record.score = "";
+                    //     ListGrid_Class_Student.refreshFields();
+                    //     ListGrid_Class_Student.refreshCell;
+                    //     ListGrid_Class_Student.dataChanged();
+                    //     createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
+                    // }
 
                 }
             }
@@ -690,6 +690,9 @@
             }
 
             if (fieldName === "score") {
+                if (record.evaluationStatusReaction===1){
+                    return false;
+                }else {
 
                 if (scoresState_value === 403 || scoresState_value === 400) {
                     return true
@@ -706,6 +709,7 @@
                 }
                 let arr = [448, 405, 449, 406, 404, 401, 450]
                 return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId))
+                }
             }
 
             if (fieldName === "failureReasonId") {

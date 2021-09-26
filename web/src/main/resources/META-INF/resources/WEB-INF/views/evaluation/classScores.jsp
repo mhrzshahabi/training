@@ -507,6 +507,7 @@
                 title: "<spring:message code="score"/>",
                 filterOperator: "iContains",
                 canEdit: true,
+                // canEdit: record.evaluationStatusReaction===1,
                 canSort: false,
                 validateOnChange: false,
                 editEvent: "click",
@@ -529,7 +530,7 @@
                     }
                 },
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid, item) {
-                    if (record.evaluationStatusReaction!==1){
+                    // if (record.evaluationStatusReaction!==1){
                         if (newValue != null) {
                             if (validators_score_Eval(newValue)) {
                                 if (parseFloat(newValue) >= classRecord_acceptancelimit_Eval && parseFloat(newValue) <= score_value_Eval) {
@@ -577,13 +578,13 @@
                             //ListGrid_Class_Student_Eval.invalidateCache()
                             return true;
                         }
-                    }else {
-                        record.score = "";
-                        ListGrid_Class_Student_Eval.refreshFields();
-                        ListGrid_Class_Student_Eval.refreshCell;
-                        ListGrid_Class_Student_Eval.dataChanged();
-                        createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
-                    }
+                    // }else {
+                    //     record.score = "";
+                    //     ListGrid_Class_Student_Eval.refreshFields();
+                    //     ListGrid_Class_Student_Eval.refreshCell;
+                    //     ListGrid_Class_Student_Eval.dataChanged();
+                    //     createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
+                    // }
 
 
                 }
@@ -636,20 +637,26 @@
             }
 
             if (fieldName === "score") {
-                if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
-                    return true;
-                }
-                if (failureReason_value_Eval != null && record.scoresStateId == 403) {
-                    return true;
-                }
-                if (classScoringMethod_Eval == "1" || classScoringMethod_Eval == "4") {
+                if (record.evaluationStatusReaction===1){
                     return false;
+                }else {
+                    if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
+                        return true;
+                    }
+                    if (failureReason_value_Eval != null && record.scoresStateId == 403) {
+                        return true;
+                    }
+                    if (classScoringMethod_Eval == "1" || classScoringMethod_Eval == "4") {
+                        return false;
+                    }
+                    if ((scoresState_value_Eval === 403 || scoresState_value_Eval === 400) && (failureReason_value_Eval != null)) {
+                        return true;
+                    }
+                    let arr = [448, 405, 449, 406, 404, 401, 450];
+                    return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
+
                 }
-                if ((scoresState_value_Eval === 403 || scoresState_value_Eval === 400) && (failureReason_value_Eval != null)) {
-                    return true;
-                }
-                let arr = [448, 405, 449, 406, 404, 401, 450];
-                return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
+
             }
 
             if (fieldName === "failureReasonId") {
