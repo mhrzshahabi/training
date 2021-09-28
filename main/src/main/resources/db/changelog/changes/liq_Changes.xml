@@ -3160,6 +3160,10 @@ WHERE
             <column name="EXCEL_REFERENCE" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet author="namdari (generated)" id="2657-1">
+        <sql>
+            create or replace synonym TBL_OFFICIAL_CALENDAR for DEVHRM.TBL_OFFICIAL_CALENDAR;
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
