@@ -51,6 +51,7 @@ import response.evaluation.SendEvalToElsResponse;
 import response.evaluation.dto.ElsContactEvaluationDto;
 import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
+import response.event.EventListDto;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
@@ -1164,6 +1165,27 @@ public class ElsRestController {
             response.setMessage("خطای دسترسی");
         }
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+    }
+
+    @GetMapping("/event")
+    public ResponseEntity<EventListDto> getEventByNationalCode(HttpServletRequest header
+            , @RequestParam String nationalCode
+            , @RequestParam String startDate
+            , @RequestParam String endDate
+    ) {
+        EventListDto response =new EventListDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                response  = iClassSessionService.getEvent(nationalCode,startDate,endDate);
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage(((TrainingException) e).getMsg());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 

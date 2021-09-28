@@ -6,6 +6,7 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassSession;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
+import response.event.EventListDto;
 import response.tclass.ElsSessionAttendanceResponse;
 
 import javax.servlet.http.HttpServletResponse;
@@ -50,4 +51,5 @@ public interface IClassSession {
 
     ElsSessionAttendanceResponse sessionStudentsBySessionId(Long sessionId);
 
+    EventListDto getEvent(String nationalCode, String startDate, String endDate);
 }
