@@ -46,8 +46,7 @@ deploy-dev:
         -e PROFILE=Development \
         --restart=always \
         --name $CI_PROJECT_NAME \
-        $G_REG_PULL_URL/$CI_PROJECT_NAME:dev;
-      docker exec -it $(docker ps -q --filter "name=training") bash -c "echo 10.1.254.144 mobiles.nicico.com >> /etc/hosts"
+        $G_REG_PULL_URL/$CI_PROJECT_NAME:dev
       "
 
 
