@@ -51,5 +51,7 @@ public interface IClassSession {
 
     ElsSessionAttendanceResponse sessionStudentsBySessionId(Long sessionId);
 
-    EventListDto getEvent(String nationalCode, String startDate, String endDate);
+    EventListDto getStudentEvent(String nationalCode, String startDate, String endDate);
+
+    EventListDto getTeacherEvent(String nationalCode, String startDate, String endDate);
 }

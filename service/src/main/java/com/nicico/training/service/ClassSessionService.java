@@ -840,20 +840,43 @@ public class ClassSessionService implements IClassSession {
     }
 
     @Override
-    public EventListDto getEvent(String nationalCode, String startDate, String endDate) {
-        List<Object> list=classSessionDAO.getEvents(nationalCode,startDate,endDate);
+    public EventListDto getStudentEvent(String nationalCode, String startDate, String endDate) {
+        List<Object> list=classSessionDAO.getStudentEvent(nationalCode,startDate,endDate);
         EventListDto eventListDto=new EventListDto();
-        List<EventDto> eventDtoList = null;
+        List<EventDto> eventDtoList;
+        eventDtoList = new ArrayList<>(list.size());
         if (list.size() > 0) {
-            eventDtoList = new ArrayList<>(list.size());
             for (Object o : list) {
                 Object[] arr = (Object[]) o;
                 EventDto event = new EventDto();
                 event.setDate(arr[3].toString());
                 event.setStartTime(arr[5].toString());
                 event.setEndTime(arr[4].toString());
-                event.setTitle(arr[6] == null ? null : arr[0].toString());
-                event.setLocation(arr[7] == null ? null : arr[0].toString());
+                event.setTitle(arr[6] == null ? null : arr[6].toString());
+                event.setLocation(arr[7] == null ? null : arr[7].toString());
+                eventDtoList.add(event);
+            }
+        }
+        eventListDto.setEventDtoList(eventDtoList);
+        return eventListDto;
+    }
+
+    @Override
+    public EventListDto getTeacherEvent(String nationalCode, String startDate, String endDate) {
+        List<Object> list=classSessionDAO.getTeacherEvent(nationalCode,startDate,endDate);
+        EventListDto eventListDto=new EventListDto();
+        List<EventDto> eventDtoList;
+        eventDtoList = new ArrayList<>(list.size());
+
+        if (list.size() > 0) {
+            for (Object o : list) {
+                Object[] arr = (Object[]) o;
+                EventDto event = new EventDto();
+                event.setDate(arr[0].toString());
+                event.setStartTime(arr[1].toString());
+                event.setEndTime(arr[2].toString());
+                event.setTitle(arr[3] == null ? null : arr[3].toString());
+                event.setLocation(arr[4] == null ? null : arr[4].toString());
                 eventDtoList.add(event);
             }
         }

@@ -1169,6 +1169,7 @@ public class ElsRestController {
 
     @GetMapping("/event")
     public ResponseEntity<EventListDto> getEventByNationalCode(HttpServletRequest header
+            , @RequestParam String type
             , @RequestParam String nationalCode
             , @RequestParam String startDate
             , @RequestParam String endDate
@@ -1176,7 +1177,16 @@ public class ElsRestController {
         EventListDto response =new EventListDto();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
-                response  = iClassSessionService.getEvent(nationalCode,startDate,endDate);
+                switch (type) {
+                    case "student": {
+                        response  = iClassSessionService.getStudentEvent(nationalCode,startDate,endDate);
+                        break;
+                    }
+                    case "teacher": {
+                        response  = iClassSessionService.getTeacherEvent(nationalCode,startDate,endDate);
+                    }
+                }
+                response.setStatus(200);
             } catch (Exception e) {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                 response.setMessage(((TrainingException) e).getMsg());
