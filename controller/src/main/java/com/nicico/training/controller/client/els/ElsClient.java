@@ -1,6 +1,8 @@
 package com.nicico.training.controller.client.els;
 
+import com.nicico.training.dto.MessagesAttDTO;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import request.evaluation.ElsEvalRequest;
 import request.exam.ElsExamRequest;
@@ -64,5 +66,8 @@ public interface ElsClient {
 
     @DeleteMapping(value = "/evaluations/remove")
     BaseResponse deleteEvaluationForOneClass(@RequestBody List<Long> sourceIds);
+
+    @GetMapping(value = "/messages/findAll")
+    ResponseEntity<List<MessagesAttDTO>> findAllMessagesBySessionId(@RequestParam("sessionId") Long sessionId);
 
 }

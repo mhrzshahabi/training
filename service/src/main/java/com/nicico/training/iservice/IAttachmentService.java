@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.MessagesAttDTO;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.model.Attachment;
 import response.BaseResponse;
@@ -30,4 +31,7 @@ public interface IAttachmentService {
     List<Long> getFileIds(String questionBank, Long id);
 
     void saveSessionAttachment(Long sessionId, Map<String, String> file, String fileName);
+
+
+    List<MessagesAttDTO> findAllSessionsMessage(Long sessionId);
 }

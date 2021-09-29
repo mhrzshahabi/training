@@ -3,8 +3,10 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.MessagesAttDTO;
 import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.mapper.fms.AttachmentMapper;
 import com.nicico.training.model.Attachment;
@@ -34,6 +36,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 
 @Slf4j
@@ -45,6 +48,7 @@ public class AttachmentRestController {
     private final IAttachmentService attachmentService;
     private final AttachmentMapper attachmentMapper;
     private final MinIoClient client;
+    private final ElsClient elsClient;
 
     @Value("${nicico.upload.dir}")
     private String uploadDir;
@@ -242,5 +246,12 @@ public class AttachmentRestController {
 //        }
 //
 //    }
+
+    @Loggable
+    @GetMapping(value = "/findAll/{sessionId}")
+    public ResponseEntity<List<MessagesAttDTO>> findAllBySessionId(@PathVariable Long sessionId) {
+        return new ResponseEntity<>(elsClient.findAllMessagesBySessionId(sessionId).getBody(), HttpStatus.OK);
+    }
+
 
 }

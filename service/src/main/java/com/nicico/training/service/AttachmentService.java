@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.MessagesAttDTO;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.model.Attachment;
@@ -31,6 +32,7 @@ public class AttachmentService implements IAttachmentService {
 
     private final ModelMapper modelMapper;
     private final AttachmentDAO attachmentDAO;
+
     @Value("${nicico.upload.dir}")
     private String uploadDir;
     @Value("${nicico.minioQuestionsGroup}")
@@ -289,4 +291,9 @@ public class AttachmentService implements IAttachmentService {
             throw new TrainingException(TrainingException.ErrorType.InvalidData);
     }
 
+
+    @Override
+    public List<MessagesAttDTO> findAllSessionsMessage(Long sessionId) {
+        return null;
+    }
 }
