@@ -20,32 +20,43 @@
     //******************************
     Menu_ListGrid_term = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('Term_R')">
             {
                 title: "<spring:message code="refresh"/>",
-                icon: "<spring:url value="refresh.png"/>",
+                <%--icon: "<spring:url value="refresh.png"/>",--%>
                 click: function () {
                     ListGrid_Term.invalidateCache();
                 }
             },
-/*            {
-                <sec:authorize access="hasAuthority('PERMISSION')">
-                </sec:authorize>
-                title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
-                    show_TermNewForm();
-                    <sec:authorize access="hasAuthority('PERMISSION')">
-                    </sec:authorize>
-                }
-            }, */
-/*            {
-                title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
-                    show_TermEditForm();
-                }
-            },*/
-/*            {
-                title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
-                    show_TermRemoveForm();
-                }
-            }, {isSeparator: true}, */
+            </sec:authorize>
+            <%--<sec:authorize access="hasAuthority('Term_C')">--%>
+            <%--{--%>
+                <%--title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", --%>
+                <%--click: function () {--%>
+                    <%--show_TermNewForm();--%>
+                <%--}--%>
+            <%--},--%>
+            <%--</sec:authorize>--%>
+            <%--<sec:authorize access="hasAuthority('Term_U')">--%>
+            <%--{--%>
+                <%--title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", --%>
+                <%--click: function () {--%>
+                    <%--show_TermEditForm();--%>
+                <%--}--%>
+            <%--},--%>
+            <%--</sec:authorize>--%>
+            <%--<sec:authorize access="hasAuthority('Term_D')">--%>
+            <%--{--%>
+                <%--title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", --%>
+                <%--click: function () {--%>
+                    <%--show_TermRemoveForm();--%>
+                <%--}--%>
+            <%--},--%>
+            <%--</sec:authorize>--%>
+            <%--<sec:authorize access="hasAnyAuthority('Term_R', 'Term_C', 'Term_U', 'Term_D')">--%>
+            <%--{isSeparator: true},--%>
+            <%--</sec:authorize>--%>
+            <sec:authorize access="hasAuthority('Term_P')">
             {
                 title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                     print_TermListGrid("pdf");
@@ -62,7 +73,9 @@
                 click: function () {
                     print_TermListGrid("html");
                 }
-            }]
+            }
+            </sec:authorize>
+            ]
     });
     //************************************************************************************
     // RestDataSource & ListGrid
@@ -86,7 +99,9 @@
         autoFetchData: true,
     });
     var ListGrid_Term = isc.TrLG.create({
+        <sec:authorize access="hasAuthority('Term_R')">
         dataSource: RestDataSource_term,
+        </sec:authorize>
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_term,
         autoFetchData: true,
@@ -349,17 +364,27 @@
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [
+            <sec:authorize access="hasAuthority('Term_C')">
             ToolStripButton_Add,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Term_U')">
             ToolStripButton_Edit,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Term_D')">
             ToolStripButton_Remove,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Term_P')">
             ToolStripButton_Print,
             ToolStripButton_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Term_R')">
                     ToolStripButton_Refresh,
+                    </sec:authorize>
                 ]
             })
         ]

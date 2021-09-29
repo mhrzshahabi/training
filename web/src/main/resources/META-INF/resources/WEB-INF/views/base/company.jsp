@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -50,6 +51,7 @@
 
     Menu_ListGrid_Company = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('Company_R')">
             {
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
@@ -57,21 +59,28 @@
                     Refresh_Company();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Company_C')">
             {
                 title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
                     show_CompanyNewForm();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Company_U')">
             {
                 title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
                     show_Company_EditForm();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Company_D')">
             {
                 title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     show_CompanyRemoveForm();
                 }
             },
+            </sec:authorize>
             <%--{isSeparator: true},--%>
             <%--{--%>
             <%--    title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
@@ -443,7 +452,9 @@
     });
 
     ListGrid_Company = isc.TrLG.create({
+        <sec:authorize access="hasAuthority('Company_R')">
         dataSource: RestDataSource_company,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Company,
         sortField: 1,
         autoFetchData: true,
@@ -510,17 +521,27 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Company_C')">
             ToolStripButton_Add,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Company_U')">
             ToolStripButton_Edit,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Company_D')">
             ToolStripButton_Remove,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Company_P')">
             ToolStripButton_Export2EXcel,
+            </sec:authorize>
             //ToolStripButton_Print,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Company_R')">
                     ToolStripButton_Refresh,
+                    </sec:authorize>
                 ]
             })
         ]
