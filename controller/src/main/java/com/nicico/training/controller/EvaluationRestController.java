@@ -327,52 +327,52 @@ public class EvaluationRestController {
     @PostMapping("/deleteEvaluation")
     public ResponseEntity deleteEvaluation(@RequestBody HashMap req) {
 
-        if (req.get("alow") != null) {
-            BaseResponse response = new BaseResponse();
+        return deleteEvaluationAfterEls(req, true);
 
-            if (Boolean.parseBoolean(req.get("isTeacher").toString())) {
-                EvalElsData data = evaluationService.GetTeacherElsData(req);
-                if (data.getSourceId() != null && data.getMobile() != null) {
-                    try {
-                        response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
-                    } catch (Exception e) {
-                        log.info("خطا در حذف ارزیابی در آموزش آنلاین" + data.getSourceId() + "/" + data.getMobile());
-                        response.setMessage("خطا در حذف ارزیابی در آموزش آنلاین");
-                        response.setStatus(500);
-                        return deleteEvaluationAfterEls(req, false);
-                    }
-                } else {
-                    return deleteEvaluationAfterEls(req, false);
-                }
-                if (response.getStatus() == 200)
-                    return deleteEvaluationAfterEls(req, true);
-                else
-                    return deleteEvaluationAfterEls(req, false);
-            } else {
-                EvalElsData data = evaluationService.GetStudentElsData(req);
-                if (data.getSourceId() != null && data.getMobile() != null) {
-                    try {
-                        response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
-                    } catch (Exception e) {
-                        log.info("خطا در حذف ارزیابی در آموزش آنلاین" + data.getSourceId() + "/" + data.getMobile());
-                        response.setMessage("خطا در حذف ارزیابی در آموزش آنلاین");
-                        response.setStatus(500);
-                        return deleteEvaluationAfterEls(req, false);
-                    }
-                } else {
-                    return deleteEvaluationAfterEls(req, false);
-                }
-                if (response.getStatus() == 200)
-                    return deleteEvaluationAfterEls(req, true);
-                else
-                    return deleteEvaluationAfterEls(req, false);
-            }
-
-        } else {
-            return deleteEvaluationAfterEls(req, false);
-        }
-
-
+//        if (req.get("alow") != null) {
+//            BaseResponse response = new BaseResponse();
+//
+//            if (Boolean.parseBoolean(req.get("isTeacher").toString())) {
+//                EvalElsData data = evaluationService.GetTeacherElsData(req);
+//                if (data.getSourceId() != null && data.getMobile() != null) {
+//                    try {
+//                        response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+//                    } catch (Exception e) {
+//                        log.info("خطا در حذف ارزیابی در آموزش آنلاین" + data.getSourceId() + "/" + data.getMobile());
+//                        response.setMessage("خطا در حذف ارزیابی در آموزش آنلاین");
+//                        response.setStatus(500);
+//                        return deleteEvaluationAfterEls(req, false);
+//                    }
+//                } else {
+//                    return deleteEvaluationAfterEls(req, false);
+//                }
+//                if (response.getStatus() == 200)
+//                    return deleteEvaluationAfterEls(req, true);
+//                else
+//                    return deleteEvaluationAfterEls(req, false);
+//            } else {
+//                EvalElsData data = evaluationService.GetStudentElsData(req);
+//                if (data.getSourceId() != null && data.getMobile() != null) {
+//                    try {
+//                        response = client.deleteEvaluationForOnePerson(data.getSourceId(), data.getMobile());
+//                    } catch (Exception e) {
+//                        log.info("خطا در حذف ارزیابی در آموزش آنلاین" + data.getSourceId() + "/" + data.getMobile());
+//                        response.setMessage("خطا در حذف ارزیابی در آموزش آنلاین");
+//                        response.setStatus(500);
+//                        return deleteEvaluationAfterEls(req, false);
+//                    }
+//                } else {
+//                    return deleteEvaluationAfterEls(req, false);
+//                }
+//                if (response.getStatus() == 200)
+//                    return deleteEvaluationAfterEls(req, true);
+//                else
+//                    return deleteEvaluationAfterEls(req, false);
+//            }
+//
+//        } else {
+//            return deleteEvaluationAfterEls(req, false);
+//        }
     }
 
     private ResponseEntity deleteEvaluationAfterEls(HashMap req, boolean isDelete) {
@@ -414,22 +414,24 @@ public class EvaluationRestController {
     @Loggable
     @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}/{deleteInEls}")
     public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, @PathVariable boolean deleteInEls, HttpServletRequest iscRq) throws IOException {
-        if (deleteInEls) {
-            BaseResponse response;
-            List<Long> allEvaluationIds = evaluationService.getAllReactionEvaluationForms(classId);
-            if (!allEvaluationIds.isEmpty()) {
-                response = client.deleteEvaluationForOneClass(allEvaluationIds);
-            } else {
-                return deleteAllEvaluationAfterEls(classId, false);
-            }
-            if (response.getStatus() == 200)
-                return deleteAllEvaluationAfterEls(classId, true);
-            else
-                return deleteAllEvaluationAfterEls(classId, false);
-        } else {
-            return deleteAllEvaluationAfterEls(classId, false);
-        }
+        
+        return deleteAllEvaluationAfterEls(classId, true);
 
+//        if (deleteInEls) {
+//            BaseResponse response;
+//            List<Long> allEvaluationIds = evaluationService.getAllReactionEvaluationForms(classId);
+//            if (!allEvaluationIds.isEmpty()) {
+//                response = client.deleteEvaluationForOneClass(allEvaluationIds);
+//            } else {
+//                return deleteAllEvaluationAfterEls(classId, false);
+//            }
+//            if (response.getStatus() == 200)
+//                return deleteAllEvaluationAfterEls(classId, true);
+//            else
+//                return deleteAllEvaluationAfterEls(classId, false);
+//        } else {
+//            return deleteAllEvaluationAfterEls(classId, false);
+//        }
     }
 
     private ResponseEntity<Void> deleteAllEvaluationAfterEls(Long classId, boolean b) {
