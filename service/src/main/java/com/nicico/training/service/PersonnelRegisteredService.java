@@ -65,10 +65,13 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     @Override
     public void createList(List<PersonnelRegistered> requests) {
         for (PersonnelRegistered personnelRegistered : requests) {
-            ContactInfo contactInfo = contactInfoDAO.save(modelMapper.map(personnelRegistered.getContactInfo(), ContactInfo.class));
-            personnelRegistered.setContactInfo(contactInfo);
-            personnelRegistered.setActive(1);
-            save(personnelRegistered);
+            List<PersonnelRegistered> personnelRegistereds=personnelRegisteredDAO.findAllByMobile(personnelRegistered.getContactInfo().getMobile());
+            if (personnelRegistereds.isEmpty()){
+                ContactInfo contactInfo = contactInfoDAO.save(modelMapper.map(personnelRegistered.getContactInfo(), ContactInfo.class));
+                personnelRegistered.setContactInfo(contactInfo);
+                personnelRegistered.setActive(1);
+                save(personnelRegistered);
+            }
         }
 
     }
