@@ -53,6 +53,11 @@ public class TestQuestionService implements ITestQuestionService {
         return modelMapper.map(model, TestQuestionDTO.fullInfo.class);
     }
 
+    @Override
+    public TestQuestion getById(Long id) {
+        return testQuestionDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TestQuestionNotFound));
+    }
+
     @Transactional
     @Override
     public SearchDTO.SearchRs<TestQuestionDTO.Info> search(SearchDTO.SearchRq request) {

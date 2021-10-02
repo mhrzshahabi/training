@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.TestQuestion;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +12,8 @@ import java.util.Set;
 public interface ITestQuestionService {
 
     TestQuestionDTO.fullInfo get(Long id);
+
+    TestQuestion getById(Long id);
 
     SearchDTO.SearchRs<TestQuestionDTO.Info> search(SearchDTO.SearchRq request);
 

@@ -381,6 +381,49 @@ public abstract class EvaluationBeanMapper {
         return elsExamRequestResponse;
     }
 
+    public ElsExamRequestResponse toGetPreExamRequest2(Tclass tClass, PersonalInfo teacherInfo, TestQuestion exam , List<ClassStudent> classStudents) {
+
+        ElsExamRequest request = new ElsExamRequest();
+        ElsExamRequestResponse elsExamRequestResponse = new ElsExamRequestResponse();
+        ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
+
+        ExamCreateDTO exam2 = getPreExamData2(exam, tClass);
+        ImportedCourseCategory courseCategory = getCourseCategoryData2(exam);
+        ImportedCourseDto courseDto = getCourseData2(exam);
+        CourseProtocolImportDTO courseProtocol = getCourseProtocolData2(exam);
+
+        ///todo mohamad... complete this
+        examQuestionsObject = getQuestions2(exam, 0);
+        examQuestionsObject.getProtocols().stream().forEach(question -> question.setTime(null));
+        List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
+
+        ImportedUser teacher = getTeacherData(teacherInfo);
+
+        request.setUsers(classStudents.stream()
+                .map(classStudent -> toTargetUser(classStudent.getStudent())).collect(Collectors.toList()));
+
+        exam2.setType(getExamType(questionProtocols));
+        if (exam2.getType() != ExamType.MULTI_CHOICES)
+            exam2.setResultDate(1638036038L);
+
+        request.setExam(exam2);
+        request.setCategory(courseCategory);
+        request.setCourse(courseDto);
+        //todo mohamad... complete this
+        request.setInstructor(teacher);
+        request.setQuestionProtocols(questionProtocols);
+//        request.setPrograms(getPrograms(object.getExamItem().getTclass()));
+        request.setProtocol(courseProtocol);
+
+        elsExamRequestResponse.setElsExamRequest(request);
+        if (examQuestionsObject.getStatus() != 200) {
+            elsExamRequestResponse.setStatus(examQuestionsObject.getStatus());
+            elsExamRequestResponse.setMessage(examQuestionsObject.getMessage());
+        } else
+            elsExamRequestResponse.setStatus(200);
+        return elsExamRequestResponse;
+    }
+
     public ElsResendExamRequestResponse toGetResendExamRequest(ResendExamImportedRequest object) {
         ElsExtendedExamRequest request = new ElsExtendedExamRequest();
         ElsResendExamRequestResponse elsResendExamRequestResponse = new ElsResendExamRequestResponse();
@@ -524,6 +567,117 @@ public abstract class EvaluationBeanMapper {
         return examQuestionsObject;
         /*return questionProtocols;*/
     }
+    private ExamQuestionsObject getQuestions2(TestQuestion exam, Integer timeQues) {
+        ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
+        List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
+        Boolean findDuplicate = false;
+
+        if (exam.getQuestionBankTestQuestionList().size() > 0) {
+//            Double questionScore = (double) (20 / object.getQuestions().size());
+
+            Set<QuestionBankTestQuestion> questionBankTestQuestions = exam.getQuestionBankTestQuestionList();
+
+            for (QuestionBankTestQuestion questionData : questionBankTestQuestions) {
+
+
+                ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
+                QuestionBank questionBank = questionData.getQuestionBank();
+
+                ImportedQuestion question = new ImportedQuestion();
+
+                QuestionAttachments attachments = getFilesForQuestion(questionBank.getId());
+                question.setId(questionData.getQuestionBank().getId());
+                question.setTitle(questionData.getQuestionBank().getQuestion());
+                if (attachments != null && attachments.getFiles() != null)
+                    question.setFiles(attachments.getFiles());
+                question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
+
+                if (question.getType().equals(MULTI_CHOICES)) {
+
+
+                    List<ImportedQuestionOption> options = new ArrayList<>();
+
+
+                    ImportedQuestionOption option1 = new ImportedQuestionOption();
+                    ImportedQuestionOption option2 = new ImportedQuestionOption();
+                    ImportedQuestionOption option3 = new ImportedQuestionOption();
+                    ImportedQuestionOption option4 = new ImportedQuestionOption();
+                    if (questionBank.getOption1() != null) {
+                        option1.setTitle(questionBank.getOption1());
+                        option1.setLabel("الف");
+                        options.add(option1);
+                        if (attachments != null && attachments.getOption1Files() != null)
+                            question.setOption1Files(attachments.getOption1Files());
+
+
+                    }
+                    if (questionBank.getOption2() != null) {
+                        option2.setTitle(questionBank.getOption2());
+                        option2.setLabel("ب");
+                        options.add(option2);
+                        if (attachments != null && attachments.getOption2Files() != null)
+                            question.setOption2Files(attachments.getOption2Files());
+
+                    }
+                    if (questionBank.getOption3() != null) {
+                        option3.setTitle(questionBank.getOption3());
+                        option3.setLabel("ج");
+                        options.add(option3);
+                        if (attachments != null && attachments.getOption3Files() != null)
+                            question.setOption3Files(attachments.getOption3Files());
+
+                    }
+                    if (questionBank.getOption4() != null) {
+                        option4.setTitle(questionBank.getOption4());
+                        option4.setLabel("د");
+                        options.add(option4);
+                        if (attachments != null && attachments.getOption4Files() != null)
+                            question.setOption4Files(attachments.getOption4Files());
+
+                    }
+                    if (!findDuplicate) {
+                        String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                        findDuplicate = checkDuplicateQuestion(options, questionProtocols, title, question.getType());
+                        if (findDuplicate) {
+                            examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
+                            examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                        }
+                    }
+                    question.setQuestionOption(options);
+                    questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
+
+                } else if (question.getType().equals(DESCRIPTIVE)) {
+                    if (!findDuplicate) {
+                        String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                        findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, title, question.getType());
+                        if (findDuplicate) {
+                            examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
+                            examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                        }
+                    }
+                    questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
+                    question.setHasAttachment(questionBank.getHasAttachment());
+                }
+
+//                    QuestionScores questionScore = object.getQuestionData().stream()
+//                            .filter(x -> x.getId().equals(question.getId()))
+//                            .findFirst()
+//                            .get();
+
+//                    questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
+
+
+                questionProtocol.setTime(timeQues);
+                questionProtocol.setQuestion(question);
+                questionProtocols.add(questionProtocol);
+            }
+        }
+        examQuestionsObject.setProtocols(questionProtocols);
+        if (!findDuplicate)
+            examQuestionsObject.setStatus(HttpStatus.OK.value());
+        return examQuestionsObject;
+        /*return questionProtocols;*/
+    }
 
     private QuestionAttachments getFilesForQuestion(Long id) {
         return attachmentService.getFiles("QuestionBank", id);
@@ -591,6 +745,22 @@ public abstract class EvaluationBeanMapper {
 
         return courseProtocol;
     }
+    private CourseProtocolImportDTO getCourseProtocolData2(TestQuestion exam) {
+        CourseProtocolImportDTO courseProtocol = new CourseProtocolImportDTO();
+        if (null != exam.getTclass().getMaxCapacity())
+            courseProtocol.setCapacity(Math.toIntExact(exam.getTclass().getMaxCapacity()));
+        courseProtocol.setCode(exam.getTclass().getCode());
+        courseProtocol.setName(exam.getTclass().getTitleClass());
+        courseProtocol.setStartDate(getDateFromStringDate(exam.getTclass().getStartDate()).getTime());
+        courseProtocol.setFinishDate(getDateFromStringDate(exam.getTclass().getEndDate()).getTime());
+//todo
+        courseProtocol.setClassType(ClassType.ATTENDANCE);
+        courseProtocol.setDuration(100);
+        courseProtocol.setCourseStatus(CourseStatus.ACTIVE);
+        courseProtocol.setCourseType(CourseType.IMPERETIVE);
+
+        return courseProtocol;
+    }
 
     private ImportedCourseDto getCourseData(ExamImportedRequest object) {
         ImportedCourseDto courseDto = new ImportedCourseDto();
@@ -600,10 +770,25 @@ public abstract class EvaluationBeanMapper {
     }
 
 
+    private ImportedCourseDto getCourseData2(TestQuestion exam) {
+        ImportedCourseDto courseDto = new ImportedCourseDto();
+        courseDto.setCode(exam.getTclass().getCourse().getCode());
+        courseDto.setName(exam.getTclass().getCourse().getTitleFa());
+        return courseDto;
+    }
+
+
     private ImportedCourseCategory getCourseCategoryData(ExamImportedRequest object) {
         ImportedCourseCategory courseCategory = new ImportedCourseCategory();
         courseCategory.setCode(object.getExamItem().getTclass().getCourse().getCategory().getCode());
         courseCategory.setName(object.getExamItem().getTclass().getCourse().getCategory().getTitleFa());
+        return courseCategory;
+    }
+
+    private ImportedCourseCategory getCourseCategoryData2(TestQuestion exam) {
+        ImportedCourseCategory courseCategory = new ImportedCourseCategory();
+        courseCategory.setCode(exam.getTclass().getCourse().getCategory().getCode());
+        courseCategory.setName(exam.getTclass().getCourse().getCategory().getTitleFa());
         return courseCategory;
     }
 
@@ -684,6 +869,34 @@ public abstract class EvaluationBeanMapper {
 
         exam.setStatus(ExamStatus.ACTIVE);
         return exam;
+    }
+    private ExamCreateDTO getPreExamData2(TestQuestion exam, Tclass tClass) {
+
+        ExamCreateDTO examDto = new ExamCreateDTO();
+        examDto.setCode(exam.getTclass().getCode());
+        examDto.setName(exam.getTclass().getTitleClass());
+        examDto.setStartDate(null);
+        examDto.setEndDate(null);
+        examDto.setQuestionCount(exam.getQuestionBankTestQuestionList().size());
+        examDto.setSourceExamId(exam.getId());
+        examDto.setDuration(0);
+
+        if (tClass.getScoringMethod().equals("3")) {
+            examDto.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
+            examDto.setScore(20D);
+        } else if (tClass.getScoringMethod().equals("2")) {
+            if (null != tClass.getAcceptancelimit())
+                examDto.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
+            else
+                examDto.setMinimumAcceptScore(50D);
+            examDto.setScore(100D);
+        } else {
+            examDto.setMinimumAcceptScore(0D);
+            examDto.setScore(0D);
+        }
+
+        examDto.setStatus(ExamStatus.ACTIVE);
+        return examDto;
     }
 
     private List<ImportedCourseProgram> getPrograms(ExamClassData tclass) {

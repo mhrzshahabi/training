@@ -22,6 +22,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
+import dto.exam.ExamData;
 import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -93,6 +94,7 @@ public class ElsRestController {
     private final ElsClient client;
     private final MinIoClient client2;
     private final TestQuestionService testQuestionService;
+    private final ITestQuestionService iTestQuestionService;
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final EvaluationAnalysisService evaluationAnalysisService;
@@ -278,6 +280,44 @@ public class ElsRestController {
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
 
         }
+    }
+
+    @GetMapping("/examQuestionsToEls/{examId}")
+    public ResponseEntity sendExamQuestions(@RequestBody ExamImportedRequest object, @PathVariable Long examId) {
+        BaseResponse response = new BaseResponse();
+        final ElsExamRequestResponse elsExamRequestResponse;
+        final ElsExamQuestionsResponse elsExamQuestionsResponse = new ElsExamQuestionsResponse();
+        try {
+            ElsExamQuestionsResponse questionsResponse;
+            TestQuestion exam = iTestQuestionService.getById(examId);
+            PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(exam.getTclass().getTeacherId()).getPersonalityId());
+            if (exam.isPreTestQuestion()){
+                elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(exam.getTclass(), teacherInfo, object, classStudentService.getClassStudents(exam.getTclassId()));
+            } else {
+                elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(exam.getTclass(), teacherInfo, object, classStudentService.getClassStudents(exam.getTclassId()));
+            }
+            if (elsExamRequestResponse.getStatus() == 200) {
+                ElsExamRequest request = elsExamRequestResponse.getElsExamRequest();
+                elsExamQuestionsResponse.setExam(request.getExam());
+                elsExamQuestionsResponse.setCategory(request.getCategory());
+                elsExamQuestionsResponse.setCourse(request.getCourse());
+                elsExamQuestionsResponse.setProtocol(request.getProtocol());
+                elsExamQuestionsResponse.setPrograms(request.getPrograms());
+                elsExamQuestionsResponse.setQuestionProtocols(request.getQuestionProtocols());
+                elsExamQuestionsResponse.setInstructor(request.getInstructor());
+            }
+
+            }
+        catch (TrainingException ex) {
+        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        response.setMessage("بروز خطا در سیستم");
+        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+
+    }
+
+
+
+        return null;
     }
 
     @PostMapping("/resendExamToEls")
