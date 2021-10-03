@@ -331,7 +331,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/examQuestionsToEls/{examId}")
-    public ResponseEntity sendExamQuestions(@RequestBody ExamImportedRequest object, @PathVariable Long examId) {
+    public ElsExamQuestionsResponse sendExamQuestions(@RequestBody ExamImportedRequest object, @PathVariable Long examId) {
         BaseResponse response = new BaseResponse();
         final ElsExamRequestResponse elsExamRequestResponse;
         final ElsExamQuestionsResponse elsExamQuestionsResponse = new ElsExamQuestionsResponse();
@@ -339,10 +339,10 @@ public class ElsRestController {
             ElsExamQuestionsResponse questionsResponse;
             TestQuestion exam = iTestQuestionService.getById(examId);
             PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(exam.getTclass().getTeacherId()).getPersonalityId());
-            if (exam.isPreTestQuestion()){
-                elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(exam.getTclass(), teacherInfo, object, classStudentService.getClassStudents(exam.getTclassId()));
+            if (exam.isPreTestQuestion()) {
+                elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
             } else {
-                elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(exam.getTclass(), teacherInfo, object, classStudentService.getClassStudents(exam.getTclassId()));
+                elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
             }
             if (elsExamRequestResponse.getStatus() == 200) {
                 ElsExamRequest request = elsExamRequestResponse.getElsExamRequest();
@@ -353,19 +353,17 @@ public class ElsRestController {
                 elsExamQuestionsResponse.setPrograms(request.getPrograms());
                 elsExamQuestionsResponse.setQuestionProtocols(request.getQuestionProtocols());
                 elsExamQuestionsResponse.setInstructor(request.getInstructor());
+            } else {
+                elsExamQuestionsResponse.setStatus(elsExamRequestResponse.getStatus());
+                elsExamQuestionsResponse.setMessage(elsExamRequestResponse.getMessage());
+                return elsExamQuestionsResponse;
             }
-
-            }
-        catch (TrainingException ex) {
-        response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-        response.setMessage("بروز خطا در سیستم");
-        return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-
-    }
-
-
-
-        return null;
+        } catch (TrainingException ex) {
+            elsExamQuestionsResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            elsExamQuestionsResponse.setMessage("بروز خطا در سیستم");
+            return elsExamQuestionsResponse;
+        }
+        return elsExamQuestionsResponse;
     }
 
     @PostMapping("/resendExamToEls")
