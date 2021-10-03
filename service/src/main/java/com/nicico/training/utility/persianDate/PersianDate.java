@@ -692,4 +692,43 @@ public final class PersianDate implements ChronoLocalDate {
         dateTime = dateTime.plusHours(hours);
         return dateTime.getHourOfDay() + ":" + dateTime.getMinuteOfHour();
     }
+
+    public static Date getEpochDate(String date, String time) {
+        if (!time.contains(":")) {
+            StringBuilder sb = new StringBuilder(time);
+            sb.insert(2, ':');
+            time = sb.toString();
+        }
+        long longDate = Date.from(java.sql.Timestamp
+                .valueOf(                           // Class-method parses SQL-style formatted date-time strings.
+                        getStringGeoDate(date, time)
+                )                                   // Returns a `Timestamp` object.
+                .toInstant()).getTime();
+
+        return new Date(longDate / 1000);
+    }
+
+
+    public static String getStringGeoDate(String date, String time) {
+        if (null != time) {
+            if (!time.contains(":")) {
+                StringBuilder sb = new StringBuilder(time);
+                sb.insert(2, ':');
+                time = sb.toString();
+            }
+            String[] arr = date.split("/");
+
+            PersianDate persianDate = PersianDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+            LocalDate gregDate = persianDate.toGregorian();
+            return gregDate.toString() + " " + time + ":00";
+        } else {
+            String[] arr = date.split("/");
+
+            PersianDate persianDate = PersianDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+            LocalDate gregDate = persianDate.toGregorian();
+            return gregDate.toString();
+        }
+
+    }
+
 }

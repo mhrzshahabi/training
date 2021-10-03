@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.TestQuestion;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -26,4 +27,6 @@ public interface ITestQuestionService {
 
     @Transactional
     void changeOnlineFinalExamStatus(Long examId , boolean state);
+
+    TestQuestion findById(Long sourceExamId);
 }
