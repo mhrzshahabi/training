@@ -2,8 +2,6 @@ package com.nicico.training.controller;
 
 
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -25,7 +23,9 @@ import dto.evaluuation.EvalTargetUser;
 import dto.exam.ExamData;
 import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
@@ -35,7 +35,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.evaluation.ElsEvalRequest;
@@ -52,6 +51,7 @@ import response.evaluation.SendEvalToElsResponse;
 import response.evaluation.dto.ElsContactEvaluationDto;
 import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
+import response.event.EventListDto;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
@@ -71,7 +71,7 @@ import java.util.stream.Collectors;
 
 import static com.nicico.training.controller.util.AppUtils.getTotalPages;
 
-
+@Slf4j
 @RestController
 @RequestMapping("/anonymous/els")
 @RequiredArgsConstructor
@@ -114,81 +114,129 @@ public class ElsRestController {
     private final ITeacherRoleService iTeacherRoleService;
     private final IMobileVerifyService iMobileVerifyService;
     private final IRoleService iRoleService;
+    private final SendMessageService sendMessageService;
+
+    @Value("${nicico.elsSmsUrl}")
+    private String elsSmsUrl;
 
 
     @GetMapping("/eval/{id}")
     public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id) {
+
         SendEvalToElsResponse response = new SendEvalToElsResponse();
         Evaluation evaluation = evaluationService.getById(id);
-        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
 
-        if (!evaluationBeanMapper.validateTargetUser(request.getTeacher())) {
-            response.setMessage("اطلاعات استاد تکمیل نیست");
-            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-
-            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-        } else {
-            try {
-                request = evaluationBeanMapper.removeInvalidUsers(request);
-                if (!request.getTargetUsers().isEmpty()) {
-                    BaseResponse baseResponse = client.sendEvaluation(request);
-                    response.setMessage(baseResponse.getMessage());
-                    response.setStatus(baseResponse.getStatus());
-                    if (baseResponse.getStatus() == 200)
-                        iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
-
-                } else {
-                    response.setMessage("دوره فراگیری با اطلاعات کامل ندارد.");
-                    response.setStatus(HttpStatus.NOT_FOUND.value());
-                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-                }
-
-            } catch (Exception r) {
-
-                if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
-                    response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-                    response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-                    return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
-
-                } else {
-                    response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-                }
+        try{
+          List<ClassStudent>classStudents=  classStudentService.getClassStudents(evaluation.getClassId());
+         List  <EvalTargetUser> students=classStudents.stream()
+                    .map(classStudent -> evaluationBeanMapper.toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
+            Questionnaire   questionnaire= questionnaireService.get(evaluation.getQuestionnaireId());
+            Map<String, String> paramValMap = new HashMap<>();
+            for (EvalTargetUser evalTargetUser:students){
+                paramValMap.put("user_name",evalTargetUser.getLastName());
+                paramValMap.put("evaluation_title",questionnaire.getTitle());
+                paramValMap.put("url", elsSmsUrl);
+                sendMessageService.syncEnqueue("1ax63fg1dr",paramValMap,Collections.singletonList(evalTargetUser.getCellNumber()));
             }
-            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+        }catch (Exception e){
+            log.error("Exception evaluation ", e);
         }
+
+
+        iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
+        response.setStatus(200);
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+
+//        SendEvalToElsResponse response = new SendEvalToElsResponse();
+//        Evaluation evaluation = evaluationService.getById(id);
+//        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+//
+//        if (!evaluationBeanMapper.validateTargetUser(request.getTeacher())) {
+//            response.setMessage("اطلاعات استاد تکمیل نیست");
+//            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+//
+//            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+//        } else {
+//            try {
+//                request = evaluationBeanMapper.removeInvalidUsers(request);
+//                if (!request.getTargetUsers().isEmpty()) {
+//                    BaseResponse baseResponse = client.sendEvaluation(request);
+//                    response.setMessage(baseResponse.getMessage());
+//                    response.setStatus(baseResponse.getStatus());
+//                    if (baseResponse.getStatus() == 200)
+//                        iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
+//
+//                } else {
+//                    response.setMessage("دوره فراگیری با اطلاعات کامل ندارد.");
+//                    response.setStatus(HttpStatus.NOT_FOUND.value());
+//                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+//                }
+//
+//            } catch (Exception r) {
+//
+//                if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
+//                    response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+//                    response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+//                    return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
+//
+//                } else {
+//                    response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+//                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+//                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
+//                }
+//            }
+//            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+//        }
     }
 
     @GetMapping("/teacherEval/{id}")
+    @Loggable
     public ResponseEntity<SendEvalToElsResponse> sendEvalToElsForTeacher(@PathVariable long id) {
+
         SendEvalToElsResponse response = new SendEvalToElsResponse();
         Evaluation evaluation = evaluationService.getById(id);
-        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
-        try {
-            request = evaluationBeanMapper.removeInvalidUsers(request);
-            BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
-            response.setMessage(baseResponse.getMessage());
-            response.setStatus(baseResponse.getStatus());
-            if (baseResponse.getStatus() == 200)
-                iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
-            else
-                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+        try{
+            EvalTargetUser teacher=evaluationBeanMapper.toTeacher(personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+            Questionnaire   questionnaire= questionnaireService.get(evaluation.getQuestionnaireId());
+            Map<String, String> paramValMap = new HashMap<>();
+            paramValMap.put("user_name",teacher.getLastName());
+            paramValMap.put("evaluation_title",questionnaire.getTitle());
+            paramValMap.put("url", elsSmsUrl);
+            sendMessageService.syncEnqueue("c76g6vfs4l",paramValMap,Collections.singletonList(teacher.getCellNumber()));
 
-        } catch (Exception r) {
-
-            if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
-                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-                response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
-
-            } else {
-                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
-            }
+        }catch (Exception e){
+            log.error("Exception evaluation ", e);
         }
+        iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
         return new ResponseEntity<>(response, HttpStatus.OK);
+
+//        SendEvalToElsResponse response = new SendEvalToElsResponse();
+//        Evaluation evaluation = evaluationService.getById(id);
+//        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
+//        try {
+//            request = evaluationBeanMapper.removeInvalidUsers(request);
+//            BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
+//            response.setMessage(baseResponse.getMessage());
+//            response.setStatus(baseResponse.getStatus());
+//            if (baseResponse.getStatus() == 200)
+//                iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
+//            else
+//                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+//
+//        } catch (Exception r) {
+//
+//            if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
+//                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+//                response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+//                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+//
+//            } else {
+//                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+//                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+//                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
+//            }
+//        }
+//        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/evaluations/userEval/{evalId}")
@@ -671,7 +719,7 @@ public class ElsRestController {
             , @PathVariable String token
     ) throws IOException {
 
-        ByteArrayResource file = client2.downloadFile("Bearer " + token, group, key);
+        ByteArrayResource file = client2.downloadFile("Bearer " + token,"Training", group, key);
         try {
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
@@ -1205,6 +1253,40 @@ public class ElsRestController {
         }
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
+
+    @GetMapping("/event")
+    public ResponseEntity<EventListDto> getEventByNationalCode(HttpServletRequest header
+            , @RequestParam String type
+            , @RequestParam String nationalCode
+            , @RequestParam String startDate
+            , @RequestParam String endDate
+    ) {
+        EventListDto response =new EventListDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                switch (type) {
+                    case "student": {
+                        response  = iClassSessionService.getStudentEvent(nationalCode,startDate,endDate);
+                        break;
+                    }
+                    case "teacher": {
+                        response  = iClassSessionService.getTeacherEvent(nationalCode,startDate,endDate);
+                    }
+                }
+                response.setStatus(200);
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage(((TrainingException) e).getMsg());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+
+
 
 
 

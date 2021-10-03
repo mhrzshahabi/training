@@ -7,6 +7,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.iservice.IForeignLangKnowledgeService;
@@ -21,6 +22,9 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.event.EventDto;
+import response.event.EventListDto;
+import response.question.dto.ElsQuestionTargetDto;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.dto.ElsSessionAttendanceUserInfoDto;
 
@@ -32,6 +36,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.*;
+import java.util.Calendar;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -380,6 +385,8 @@ public class ClassSessionService implements IClassSession {
         }
         return elsSessionAttendanceResponse;
     }
+
+
 
     private Map<Long, Student> convertListToMap(List<Student> list) {
         Map<Long, Student> map = list.stream().collect(Collectors.toMap(Student::getId, Function.identity()));
@@ -831,5 +838,51 @@ public class ClassSessionService implements IClassSession {
         ClassSession classSession = classSessionDAO.getClassSessionById(sessionId);
         return classSession.getClassId();
     }
+
+    @Override
+    public EventListDto getStudentEvent(String nationalCode, String startDate, String endDate) {
+        List<Object> list=classSessionDAO.getStudentEvent(nationalCode,startDate,endDate);
+        EventListDto eventListDto=new EventListDto();
+        List<EventDto> eventDtoList;
+        eventDtoList = new ArrayList<>(list.size());
+        if (list.size() > 0) {
+            for (Object o : list) {
+                Object[] arr = (Object[]) o;
+                EventDto event = new EventDto();
+                event.setDate(arr[3].toString());
+                event.setStartTime(arr[5].toString());
+                event.setEndTime(arr[4].toString());
+                event.setTitle(arr[6] == null ? null : arr[6].toString());
+                event.setLocation(arr[7] == null ? null : arr[7].toString());
+                eventDtoList.add(event);
+            }
+        }
+        eventListDto.setEventDtoList(eventDtoList);
+        return eventListDto;
+    }
+
+    @Override
+    public EventListDto getTeacherEvent(String nationalCode, String startDate, String endDate) {
+        List<Object> list=classSessionDAO.getTeacherEvent(nationalCode,startDate,endDate);
+        EventListDto eventListDto=new EventListDto();
+        List<EventDto> eventDtoList;
+        eventDtoList = new ArrayList<>(list.size());
+
+        if (list.size() > 0) {
+            for (Object o : list) {
+                Object[] arr = (Object[]) o;
+                EventDto event = new EventDto();
+                event.setDate(arr[0].toString());
+                event.setStartTime(arr[1].toString());
+                event.setEndTime(arr[2].toString());
+                event.setTitle(arr[3] == null ? null : arr[3].toString());
+                event.setLocation(arr[4] == null ? null : arr[4].toString());
+                eventDtoList.add(event);
+            }
+        }
+        eventListDto.setEventDtoList(eventDtoList);
+        return eventListDto;
+    }
+
 
 }

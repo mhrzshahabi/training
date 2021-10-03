@@ -266,7 +266,7 @@
                 canFilter: false,
                 autoFithWidth: true
             },
-            {name: "removeForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
+            {name: "removeForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true, hidden: true},
             {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
         ],
         cellClick: function (record, rowNum, colNum) {
@@ -320,8 +320,8 @@
             if (fieldName == "saveResults") {
                 let button = isc.IButton.create({
                     layoutAlign: "center",
-                    title: "ثبت نتیجه ارزیابی",
-                    width: "120",
+                    title: "ثبت و مشاهده نتیجه ارزیابی",
+                    width: "150",
                     baseStyle: "registerFile",
                     click: function () {
                         if (record.evaluationStatusReaction == "0" || record.evaluationStatusReaction == null)
@@ -871,9 +871,9 @@
                                             },
                                             {
                                                 name: "registerButtonTeacher",
-                                                title: "ثبت نتایج ارزیابی مدرس از کلاس",
+                                                title: "ثبت و مشاهده نتایج ارزیابی مدرس از کلاس",
                                                 type: "button",
-                                                width: 170,
+                                                width: 220,
                                                 startRow: false,
                                                 endRow: false,
                                                 baseStyle: "registerFile",
@@ -991,6 +991,7 @@
                                                 name: "showResultsEls_teacher",
                                                 title: "مشاهده نتایج ارزیابی",
                                                 type: "button",
+                                                hidden: true,
                                                 startRow: false,
                                                 click: function () {
                                                     showResults('teacher')

@@ -122,7 +122,7 @@ public class ContactInfoService implements IContactInfoService {
             } else if (record instanceof PersonnelRegistered) {
                 recordNc = ((PersonnelRegistered) record).getNationalCode();
             }
-            if ((alreadyNc == null && recordNc != null) || !alreadyNc.equals(recordNc)) {
+            if ((alreadyNc == null && recordNc != null) || !Objects.equals(alreadyNc, recordNc)) {
                 throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, msg, msg);
             }
         }

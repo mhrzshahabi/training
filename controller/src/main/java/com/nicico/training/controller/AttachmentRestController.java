@@ -3,8 +3,10 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.MessagesAttDTO;
 import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.mapper.fms.AttachmentMapper;
 import com.nicico.training.model.Attachment;
@@ -34,6 +36,7 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 
 @Slf4j
@@ -45,6 +48,7 @@ public class AttachmentRestController {
     private final IAttachmentService attachmentService;
     private final AttachmentMapper attachmentMapper;
     private final MinIoClient client;
+    private final ElsClient elsClient;
 
     @Value("${nicico.upload.dir}")
     private String uploadDir;
@@ -140,7 +144,7 @@ public class AttachmentRestController {
         AttachmentDTO.Info attachment = attachmentService.get(Id);
 //        if (attachment.getObjectType()!=null && attachment.getObjectType().equals("QuestionBank"))
 //        {
-            ByteArrayResource file= client.downloadFile(request.getHeader("Authorization"),attachment.getGroup_id(),attachment.getKey());
+            ByteArrayResource file= client.downloadFile(request.getHeader("Authorization"),"Training",attachment.getGroup_id(),attachment.getKey());
             try {
                 return ResponseEntity.ok()
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + attachment.getFileName() + "\"")
@@ -225,22 +229,29 @@ public class AttachmentRestController {
         }
     }
 
-    @RequestMapping(value = {"/download/{group}/{key}"}, method = RequestMethod.GET)
-    @Transactional
-    public ResponseEntity<ByteArrayResource> downloadWithKey(HttpServletRequest request, HttpServletResponse response, @PathVariable String group
-   , @PathVariable String key
-    ) throws IOException {
+//    @RequestMapping(value = {"/download/{group}/{key}"}, method = RequestMethod.GET)
+//    @Transactional
+//    public ResponseEntity<ByteArrayResource> downloadWithKey(HttpServletRequest request, HttpServletResponse response, @PathVariable String group
+//   , @PathVariable String key
+//    ) throws IOException {
+//
+//        ByteArrayResource file= client.downloadFile(request.getHeader("Authorization"),"Training","608fa5263cee3d76470c3d30","fd97198b-bfbf-40e7-8b0b-42846166fe73");
+//        try {
+//            return ResponseEntity.ok()
+//                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +"file"+  "\"")
+//                    .body(file);
+//        } catch ( Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+//
+//    }
 
-        ByteArrayResource file= client.downloadFile(request.getHeader("Authorization"),"608fa5263cee3d76470c3d30","fd97198b-bfbf-40e7-8b0b-42846166fe73");
-        try {
-            return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" +"file"+  "\"")
-                    .body(file);
-        } catch ( Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-
+    @Loggable
+    @GetMapping(value = "/findAll/{sessionId}")
+    public ResponseEntity<List<MessagesAttDTO>> findAllBySessionId(@PathVariable Long sessionId) {
+        return new ResponseEntity<>(elsClient.findAllMessagesBySessionId(sessionId).getBody(), HttpStatus.OK);
     }
+
 
 }

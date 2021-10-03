@@ -23,7 +23,8 @@ public interface MinIoClient {
                             @PathVariable("groupId") String groupId);
 
     @RequestMapping(method = RequestMethod.GET,value = "{groupId}/{key}")
-    ByteArrayResource downloadFile(@RequestHeader("Authorization") String token,
+    ByteArrayResource downloadFile(@RequestHeader("user-id") String token,
+                                   @RequestHeader("app-id") String appId,
                                    @PathVariable("groupId") String groupId,
                                    @PathVariable("key") String key);
 
