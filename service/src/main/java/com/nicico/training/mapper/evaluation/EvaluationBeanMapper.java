@@ -47,6 +47,7 @@ import response.question.dto.ElsQuestionTargetsDto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.utility.persianDate.PersianDate.*;
@@ -74,6 +75,12 @@ public abstract class EvaluationBeanMapper {
     protected IPersonalInfoService iPersonalInfoService;
     @Autowired
     protected TeacherService teacherService;
+    @Autowired
+    protected IQuestionProtocolService iQuestionProtocolService;
+    @Autowired
+    protected ITestQuestionService iTestQuestionService;
+    @Autowired
+    protected IQuestionBankTestQuestionService iQuestionBankTestQuestionService;
 
     @Autowired
     protected IEvaluationService evaluationService;
@@ -344,15 +351,16 @@ public abstract class EvaluationBeanMapper {
         int time = Math.toIntExact(exam.getDuration());
 
         int timeQues = 0;
-        if (exam.getQuestionBankTestQuestionList() != null && exam.getQuestionBankTestQuestionList().size() > 0)
-            timeQues = (time * 60) / exam.getQuestionBankTestQuestionList().size();
+        List<QuestionBankTestQuestion>  QuestionBankTestQuestionList= iQuestionBankTestQuestionService.getExamQuestions(exam.getId());
+        if (QuestionBankTestQuestionList != null && QuestionBankTestQuestionList.size() > 0)
+            timeQues = (time * 60) / QuestionBankTestQuestionList.size();
 
-        ExamCreateDTO examData = getExamData2(exam, tClass);
+        ExamCreateDTO examData = getExamData2(exam, tClass, QuestionBankTestQuestionList.size());
         ImportedCourseCategory courseCategory = getCourseCategoryData2(exam);
         ImportedCourseDto courseDto = getCourseData2(exam);
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData2(exam);
 
-        examQuestionsObject = getQuestions2(exam, timeQues);
+        examQuestionsObject = getQuestions2(exam, timeQues, QuestionBankTestQuestionList);
         List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
 
         ImportedUser teacher = getTeacherData(teacherInfo);
@@ -434,13 +442,15 @@ public abstract class EvaluationBeanMapper {
         ElsExamRequestResponse elsExamRequestResponse = new ElsExamRequestResponse();
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
 
-        ExamCreateDTO exam2 = getPreExamData2(exam, tClass);
+        List<QuestionBankTestQuestion>  QuestionBankTestQuestionList= iQuestionBankTestQuestionService.getExamQuestions(exam.getId());
+
+        ExamCreateDTO exam2 = getPreExamData2(exam, tClass, QuestionBankTestQuestionList.size());
         ImportedCourseCategory courseCategory = getCourseCategoryData2(exam);
         ImportedCourseDto courseDto = getCourseData2(exam);
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData2(exam);
 
         ///todo mohamad... complete this
-        examQuestionsObject = getQuestions2(exam, 0);
+        examQuestionsObject = getQuestions2(exam, 0, QuestionBankTestQuestionList);
         examQuestionsObject.getProtocols().stream().forEach(question -> question.setTime(null));
         List<ImportedQuestionProtocol> questionProtocols = examQuestionsObject.getProtocols();
 
@@ -614,15 +624,16 @@ public abstract class EvaluationBeanMapper {
         return examQuestionsObject;
         /*return questionProtocols;*/
     }
-    private ExamQuestionsObject getQuestions2(TestQuestion exam, Integer timeQues) {
+    private ExamQuestionsObject getQuestions2(TestQuestion exam, Integer timeQues,List<QuestionBankTestQuestion> questionBankTestQuestions) {
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
         Boolean findDuplicate = false;
 
-        if (exam.getQuestionBankTestQuestionList().size() > 0) {
-            Double questionScore = (double) (20 / exam.getQuestionBankTestQuestionList().size());
+        if (questionBankTestQuestions.size() > 0) {
+            Double questionScore = (double) (20 / questionBankTestQuestions.size());
 
-            Set<QuestionBankTestQuestion> questionBankTestQuestions = exam.getQuestionBankTestQuestionList();
+            List<QuestionProtocol> questionProtocolList = iQuestionProtocolService.findAllByExamId(exam.getId());
+            Map<Long, QuestionProtocol> protocolsMap =convertProtocolListToMap(questionProtocolList);
 
             for (QuestionBankTestQuestion questionData : questionBankTestQuestions) {
 
@@ -705,18 +716,16 @@ public abstract class EvaluationBeanMapper {
                     questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
                     question.setHasAttachment(questionBank.getHasAttachment());
                 }
-//TODO mohamad resolve the problem....
-//                    QuestionScores questionScore = object.getQuestionData().stream()
-//                            .filter(x -> x.getId().equals(question.getId()))
-//                            .findFirst()
-//                            .get();
-//
-//                    questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
+                QuestionProtocol protocol = protocolsMap.get(question.getId());
+                if (protocol != null) {
+                    if (protocol.getQuestionMark() != null)
+                        questionProtocol.setMark(Double.valueOf(protocol.getQuestionMark()));
 
 
-                questionProtocol.setTime(timeQues);
-                questionProtocol.setQuestion(question);
-                questionProtocols.add(questionProtocol);
+                    questionProtocol.setTime(timeQues);
+                    questionProtocol.setQuestion(question);
+                    questionProtocols.add(questionProtocol);
+                }
             }
         }
         examQuestionsObject.setProtocols(questionProtocols);
@@ -725,6 +734,18 @@ public abstract class EvaluationBeanMapper {
         return examQuestionsObject;
         /*return questionProtocols;*/
     }
+
+    public Map<Long, QuestionProtocol> convertProtocolListToMap(List<QuestionProtocol> list) {
+        Map<Long, QuestionProtocol> map = list.stream()
+                .collect(Collectors.toMap(QuestionProtocol::getQuestionId, Function.identity()));
+        return map;
+    }
+
+//    @Mapping(source = "id", target = "id")
+//    @Mapping(source = "questionMark", target = "mark")
+//    @Mapping(source = "correctAnswerTitle", target = "correctAnswerTitle")
+//    @Mapping(source = "exam", target = "question")
+//    public abstract List<ImportedQuestionProtocol> toQuestionProtocolDtos(List<QuestionProtocol> questionProtocolList);
 
     private QuestionAttachments getFilesForQuestion(Long id) {
         return attachmentService.getFiles("QuestionBank", id);
@@ -888,16 +909,16 @@ public abstract class EvaluationBeanMapper {
 
         return exam;
     }
-    private ExamCreateDTO getExamData2(TestQuestion exam, Tclass tClass) {
+    private ExamCreateDTO getExamData2(TestQuestion exam, Tclass tClass, int examQuestionSize) {
         int time = Math.toIntExact(exam.getDuration());
 
         String newTime = convertToTimeZone(exam.getTime());
         String newEndTime = convertToTimeZone(exam.getEndTime());
 //        String newTime = exam.getTime();
 
-        Date startDate = getDate(exam.getDate(), newTime);
+        Date startDate = getEpochDate(exam.getDate(), newTime);
 
-        Date endDate = getDate(exam.getEndDate(), newEndTime);
+        Date endDate = getEpochDate(exam.getEndDate(), newEndTime);
 //        Date endDate = getEndDateFromDuration(getStringGeoDate(exam.getDate(), newTime)
 //                , exam.getDuration());
         ExamCreateDTO examCreateDTO = new ExamCreateDTO();
@@ -905,7 +926,7 @@ public abstract class EvaluationBeanMapper {
         examCreateDTO.setName(exam.getTclass().getTitleClass());
         examCreateDTO.setStartDate(startDate.getTime());
         examCreateDTO.setEndDate(endDate.getTime());
-        examCreateDTO.setQuestionCount(exam.getQuestionBankTestQuestionList().size());
+        examCreateDTO.setQuestionCount(examQuestionSize);
         examCreateDTO.setSourceExamId(exam.getId());
 
         examCreateDTO.setDuration(time);
@@ -966,14 +987,14 @@ public abstract class EvaluationBeanMapper {
         exam.setStatus(ExamStatus.ACTIVE);
         return exam;
     }
-    private ExamCreateDTO getPreExamData2(TestQuestion exam, Tclass tClass) {
+    private ExamCreateDTO getPreExamData2(TestQuestion exam, Tclass tClass, int examQuestionsSize) {
 
         ExamCreateDTO examDto = new ExamCreateDTO();
         examDto.setCode(exam.getTclass().getCode());
         examDto.setName(exam.getTclass().getTitleClass());
         examDto.setStartDate(null);
         examDto.setEndDate(null);
-        examDto.setQuestionCount(exam.getQuestionBankTestQuestionList().size());
+        examDto.setQuestionCount(examQuestionsSize);
         examDto.setSourceExamId(exam.getId());
         examDto.setDuration(0);
 

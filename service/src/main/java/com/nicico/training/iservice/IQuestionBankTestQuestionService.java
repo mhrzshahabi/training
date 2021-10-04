@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.QuestionBankTestQuestionDTO;
+import com.nicico.training.model.QuestionBankTestQuestion;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface IQuestionBankTestQuestionService {
     void deleteQuestions(String type, Long classId, List<Long> questionIds);
 
     boolean usedQuestion(Long questionBankId);
+
+    List<QuestionBankTestQuestion> getExamQuestions(Long sourceExamId);
 }

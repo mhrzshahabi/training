@@ -332,8 +332,9 @@ public class ElsRestController {
         }
     }
 
+    @Transactional
     @GetMapping("/examQuestionsToEls/{examId}")
-    public ElsExamQuestionsResponse sendExamQuestions(@RequestBody ExamImportedRequest object, @PathVariable Long examId) {
+    public ElsExamQuestionsResponse sendExamQuestions(@PathVariable Long examId) {
         BaseResponse response = new BaseResponse();
         final ElsExamRequestResponse elsExamRequestResponse;
         final ElsExamQuestionsResponse elsExamQuestionsResponse = new ElsExamQuestionsResponse();
