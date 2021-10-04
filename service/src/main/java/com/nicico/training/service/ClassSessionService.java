@@ -37,6 +37,7 @@ import java.util.Calendar;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.utility.persianDate.PersianDate.convertToTimeZone;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Service
@@ -848,8 +849,8 @@ public class ClassSessionService implements IClassSession {
                 Object[] arr = (Object[]) o;
                 EventDto event = new EventDto();
                 event.setDate(arr[3].toString());
-                Date start = getEpochDate(arr[3].toString(), arr[5].toString());
-                Date end = getEpochDate(arr[3].toString(), arr[4].toString());
+                Date start = getEpochDate(arr[3].toString(), convertToTimeZone(arr[5].toString()));
+                Date end = getEpochDate(arr[3].toString(), convertToTimeZone(arr[4].toString()));
                 event.setStartTime(start.getTime()*1000);
                 event.setEndTime(end.getTime()*1000);
                 event.setTitle(arr[6] == null ? null : arr[6].toString());
@@ -873,8 +874,8 @@ public class ClassSessionService implements IClassSession {
                 Object[] arr = (Object[]) o;
                 EventDto event = new EventDto();
                 event.setDate(arr[0].toString());
-                Date start = getEpochDate(arr[0].toString(), arr[1].toString());
-                Date end = getEpochDate(arr[0].toString(), arr[2].toString());
+                Date start = getEpochDate(arr[0].toString(),convertToTimeZone( arr[1].toString()));
+                Date end = getEpochDate(arr[0].toString(), convertToTimeZone(arr[2].toString()));
                 event.setStartTime(start.getTime()*1000);
                 event.setEndTime(end.getTime()*1000);
                 event.setTitle(arr[3] == null ? null : arr[3].toString());

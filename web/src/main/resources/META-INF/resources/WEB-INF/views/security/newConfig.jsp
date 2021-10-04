@@ -5,6 +5,7 @@
 // <script>
 
 
+
     //----------------------------------------------------RestDataSource------------------------------------------------
 
 
@@ -18,11 +19,13 @@
     //
 
 
-    DynamicForm_V2_config = isc.DynamicForm.create({
-        width: "100%",
-        align: "right",
+
+    DynamicForm_V2_edit_config = isc.DynamicForm.create({
+        titleAlign: "center",
         showInlineErrors: true,
         showErrorText: false,
+        width: "100%",
+        align: "right",
         numCols: 6,
         fields: [
             {
@@ -31,26 +34,11 @@
                 defaultValue: " نمایش و تغییر تنظیمات مجتمع مورد نظر:"
             },
             {
-                colSpan: 2,
-                name: "complex",
-                title: "مجتمع :",
-                displayField: "titleFa",
-                valueField: "id",
-                pickListProperties: {
-                    showFilterEditor: false
-                }
-            },
-            {
-
-                name: "configDepartmentFilter",
-                title: "تغییر تنظیمات مجتمع :",
-                width: "300",
+                name: "editConfigDepartmentFilter",
+                title: " مجتمع :",
                 colSpan: 2,
                 optionDataSource: RestDataSource_config_Department_Filter,
-                showHintInField: true,
-                startRow: false,
-                endRow: false,
-                type: "Button",
+                autoFetchData: false,
                 displayField: "title",
                 valueField: "id",
                 textAlign: "center",
@@ -65,11 +53,63 @@
                 changed: function (form, item, value) {
 
                 },
-            }
+
+            },
+            {
+                colSpan: 2,
+                name: "configBtn",
+                title: "<spring:message code="configurations"/>",
+                type: "Button",
+                width: 100,
+                startRow: false,
+                endRow: false,
+                click() {
+                    alert("zaza")
+                }
+            },
         ]
     });
 
 
+    DynamicForm_V2_set_config = isc.DynamicForm.create({
+        titleAlign: "center",
+        showInlineErrors: true,
+        showErrorText: false,
+        width: "100%",
+        align: "right",
+        numCols: 6,
+        fields: [
+            {
+                colSpan: 2,
+                type: "header",
+                defaultValue: " کل تنظیمات اپلیکیشن برای شما بر اساس مجتمع زیر است:"
+            },
+            {
+                name: "setConfigDepartmentFilter",
+                title: " مجتمع :",
+                colSpan: 2,
+                optionDataSource: RestDataSource_config_Department_Filter,
+                autoFetchData: false,
+                displayField: "title",
+                valueField: "id",
+                textAlign: "center",
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                changed: function (form, item, value) {
+
+
+                },
+
+            }
+
+        ]
+    });
 
     IButton_V2_Config = isc.IButtonSave.create({
         top: 260,
@@ -81,6 +121,7 @@
     });
 
 
+
     //----------------------------------- layOut -----------------------------------------------------------------------
     var VLayOut_CriteriaForm_V2_Config = isc.VLayout.create({
         showEdges: false,
@@ -88,7 +129,8 @@
         width: "100%",
         alignLayout: "center",
         members: [
-            DynamicForm_V2_config
+            DynamicForm_V2_edit_config,
+            DynamicForm_V2_set_config
         ]
     });
     var HLayOut_Confirm_V2_Config = isc.TrHLayoutButtons.create({
