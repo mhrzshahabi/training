@@ -850,8 +850,8 @@ public class ClassSessionService implements IClassSession {
                 event.setDate(arr[3].toString());
                 Date start = getEpochDate(arr[3].toString(), arr[5].toString());
                 Date end = getEpochDate(arr[3].toString(), arr[4].toString());
-                event.setStartTime(start.getTime());
-                event.setEndTime(end.getTime());
+                event.setStartTime(start.getTime()*1000);
+                event.setEndTime(end.getTime()*1000);
                 event.setTitle(arr[6] == null ? null : arr[6].toString());
                 event.setLocation(arr[7] == null ? null : arr[7].toString());
                 eventDtoList.add(event);
@@ -875,8 +875,8 @@ public class ClassSessionService implements IClassSession {
                 event.setDate(arr[0].toString());
                 Date start = getEpochDate(arr[0].toString(), arr[1].toString());
                 Date end = getEpochDate(arr[0].toString(), arr[2].toString());
-                event.setStartTime(start.getTime());
-                event.setEndTime(end.getTime());
+                event.setStartTime(start.getTime()*1000);
+                event.setEndTime(end.getTime()*1000);
                 event.setTitle(arr[3] == null ? null : arr[3].toString());
                 event.setLocation(arr[4] == null ? null : arr[4].toString());
                 eventDtoList.add(event);
