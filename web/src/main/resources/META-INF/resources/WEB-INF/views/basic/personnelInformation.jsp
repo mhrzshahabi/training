@@ -432,7 +432,7 @@
                         filterOperator: "iContains"
                     },
                     {
-                        name: "email",
+                        name: "contactInfo.email",
                         title: "<spring:message code="email"/>",
                         filterOperator: "iContains"
                     }
@@ -472,7 +472,8 @@
                     },
                     {name: "postTitle"},
                     {name: "ccpArea"},
-                    {name: "email"},
+                    {name: "contactInfo.mobile"},
+                    {name: "contactInfo.email"},
                     {name: "ccpAssistant", hidden: true},
                     {name: "ccpAffairs", hidden: true},
                     {name: "ccpSection", hidden: true},
