@@ -1631,6 +1631,7 @@
                 displayField: "title",
                 defaultValue: "Job",
                 autoFetchData: false,
+                required: true,
                 pickListProperties: {
                     showFilterEditor: false,
                     autoFitWidthApproach: "both",
@@ -1655,6 +1656,7 @@
                 filterFields: ["code","titleFa"],
                 textMatchStyle: "substring",
                 generateExactMatchCriteria: true,
+                required: true,
                 pickListProperties: {
                     showFilterEditor: false,
                     autoFitWidthApproach: "both",
@@ -1677,22 +1679,24 @@
                 width:100,
                 type:"Button",
                 align: "center",
-                click(){
-                    Menu_JspEditNeedsAssessment.hideContextMenu();
-                    let url = needsAssessmentUrl + "/getValuesForCopyNA/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectType")
-                        + "/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectId") + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectType")
-                        + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectId");
-                    wait.show();
-                    isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
-                        wait.close();
-                        if (resp.httpResponseCode !== 200) {
-                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                            return;
-                        }
-                        editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"),DynamicForm_JspEditNeedsAssessment.getValue("objectType"), JSON.parse(resp.data));
-                        hasChanged = true;
-                        canSendToWorkFlowNA = true;
-                    }));
+                click: function(form, item) {
+                    if (form.validate()) {
+                        Menu_JspEditNeedsAssessment.hideContextMenu();
+                        let url = needsAssessmentUrl + "/getValuesForCopyNA/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectType")
+                            + "/" + DynamicForm_CopyOf_JspEditNeedsAssessment.getValue("objectId") + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectType")
+                            + "/" + DynamicForm_JspEditNeedsAssessment.getValue("objectId");
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null,(resp)=>{
+                            wait.close();
+                            if (resp.httpResponseCode !== 200) {
+                                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                return;
+                            }
+                            editNeedsAssessmentRecord(DynamicForm_JspEditNeedsAssessment.getValue("objectId"),DynamicForm_JspEditNeedsAssessment.getValue("objectType"), JSON.parse(resp.data));
+                            hasChanged = true;
+                            canSendToWorkFlowNA = true;
+                        }));
+                    }
                 }
             }
         ]
