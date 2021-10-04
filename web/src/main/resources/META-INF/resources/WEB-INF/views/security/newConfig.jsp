@@ -5,6 +5,7 @@
 // <script>
 
 
+    let configComplexTitle=null;
 
     //----------------------------------------------------RestDataSource------------------------------------------------
 
@@ -13,6 +14,35 @@
         fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
         cacheAllData: true,
         fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
+
+    //
+    let config_tabs = isc.TabSet.create({
+        //ID: "PersonnelInfo_ClassInfo_Tab",
+        width: "100%",
+        height: 500,
+        tabBarPosition: "top",
+        tabs: [
+            {
+                id: "Config_Tab_Course",
+                title: "تنظیمات دوره",
+                // pane: this.DynamicForm_PersonnelInfo_CourseInfo
+            }
+        ],
+        tabSelected: function () {
+        }.bind(this)
+    });
+
+
+    //-------------------------------window-----------------------------------------------------------------------------
+
+    window_edit_config = isc.Window.create({
+        title: "",
+        width: "70%",
+        minWidth: 500,
+        height: 500,
+        visibility: "hidden",
+        items: [config_tabs]
     });
 
     //----------------------------------------------------Criteria Form------------------------------------------------
@@ -51,7 +81,7 @@
                     }
                 ],
                 changed: function (form, item, value) {
-
+                    configComplexTitle=value;
                 },
 
             },
@@ -64,7 +94,13 @@
                 startRow: false,
                 endRow: false,
                 click() {
-                    alert("zaza")
+                    if (configComplexTitle!==null){
+                        window_edit_config.setTitle(configComplexTitle);
+                        window_edit_config.show();
+                    }else {
+                        createDialog("info", "مجتمع را انتخاب کنید");
+                    }
+
                 }
             },
         ]
@@ -82,7 +118,7 @@
             {
                 colSpan: 2,
                 type: "header",
-                defaultValue: " کل تنظیمات اپلیکیشن برای شما بر اساس مجتمع زیر است:"
+                defaultValue: " کل تنظیمات اپلیکیشن برای شما بر اساس مجتمع زیر است:(برای ثبت تغییر ذخیره را انتخاب کنید)"
             },
             {
                 name: "setConfigDepartmentFilter",

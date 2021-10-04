@@ -43,17 +43,17 @@ public class ImportedQuestion {
         @ApiModelProperty
         private List<Map<String,String>> files;
 
-        @ApiModelProperty
-        private List<Map<String,String>> option1Files;
-
-        @ApiModelProperty
-        private List<Map<String,String>> option2Files;
-
-        @ApiModelProperty
-        private List<Map<String,String>> option3Files;
-
-        @ApiModelProperty
-        private List<Map<String,String>> option4Files;
+//        @ApiModelProperty
+//        private List<Map<String,String>> option1Files;
+//
+//        @ApiModelProperty
+//        private List<Map<String,String>> option2Files;
+//
+//        @ApiModelProperty
+//        private List<Map<String,String>> option3Files;
+//
+//        @ApiModelProperty
+//        private List<Map<String,String>> option4Files;
         @ApiModelProperty
         private Boolean hasAttachment;
 
