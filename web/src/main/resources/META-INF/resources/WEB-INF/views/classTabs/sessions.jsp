@@ -10,15 +10,10 @@
 // <script>
 
     // <<========== Global - Variables ==========
-    {
         var session_method = "POST";
         var deleteRecord=false;
 
-    }
-    // ============ Global - Variables ========>>
-
     // <<-------------------------------------- Create - contextMenu ------------------------------------------
-    {
         Menu_ListGrid_session = isc.Menu.create({
             data: [
                 <sec:authorize access="hasAuthority('TclassSessionsTab_R')">
@@ -92,13 +87,9 @@
                 }
                 </sec:authorize>
             ]
-        })
-    }
-    // ---------------------------------------- Create - contextMenu ---------------------------------------->>
-
+        });
 
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
-    {
         var RestDataSource_session = isc.TrDS.create({
             transformRequest: function (dsRequest) {
                 dsRequest.httpHeaders = {
@@ -129,7 +120,6 @@
             fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
-
         var ListGrid_session = isc.TrLG.create({
             width: "100%",
             height: "100%",
@@ -140,6 +130,8 @@
             // contextMenu: Menu_ListGrid_session,
             canAddFormulaFields: false,
             // autoFetchData: true,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
@@ -190,7 +182,8 @@
                     filterEditorProperties: {
                         keyPressFilter: "[0-9|:]"
                     }
-                }, {
+                },
+                {
                     name: "sessionTypeId",
                     title: "sessionTypeId",
                     align: "center",
@@ -202,7 +195,8 @@
                     title: "<spring:message code="session.type"/>",
                     align: "center",
                     filterOperator: "iContains"
-                }, {
+                },
+                {
                     name: "instituteId",
                     title: "instituteId",
                     align: "center",
@@ -214,19 +208,21 @@
                     title: "<spring:message code="presenter"/>",
                     align: "center",
                     filterOperator: "iContains"
-                }, {
+                },
+                {
                     name: "trainingPlaceId",
                     title: "trainingPlaceId",
                     align: "center",
                     filterOperator: "iContains",
                     hidden: true
-                }
-                , {
+                },
+                {
                     name: "trainingPlace.titleFa",
                     title: "<spring:message code="present.location"/>",
                     align: "center",
                     filterOperator: "iContains"
-                }, {
+                },
+                {
                     name: "teacherId",
                     title: "teacherId",
                     align: "center",
@@ -251,11 +247,18 @@
                     title: "<spring:message code="session.state"/>",
                     align: "center",
                     filterOperator: "iContains"
-                },*/ {
+                },*/
+                {
                     name: "description",
                     title: "<spring:message code="description"/>",
                     align: "center",
                     filterOperator: "iContains"
+                },
+                {
+                    name: "sessionContent",
+                    title: "محتوای جلسه",
+                    align: "center",
+                    canFilter: false
                 }
             ],
             doubleClick: function () {
@@ -299,7 +302,23 @@
                         break;
                 }//end switch-case
                 return result;
-            }//end getCellCSSText
+            },
+            createRecordComponent: function (record, colNum) {
+
+                var fieldName = this.getFieldName(colNum);
+                if (record == null || fieldName != "sessionContent")
+                    return null;
+
+                return isc.IButton.create({
+                    layoutAlign: "center",
+                    title: "محتوای جلسه",
+                    width: "120",
+                    margin: 3,
+                    click: function () {
+                        getSessionContent(record.id);
+                    }
+                });
+            }
         });
 
         var RestDataSource_Institute_JspSession = isc.TrDS.create({
@@ -324,12 +343,7 @@
             fetchDataURL: instituteUrl + "0/trainingPlaces"
         });
 
-    }
-    // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
-
-
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
-    {
         <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_classStatus')">
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
             click: function () {
@@ -413,12 +427,9 @@
 
             ]
         });
-    }
-    // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
-
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
-    {
+
         //*****create fields*****
         var DynamicForm_Session = isc.DynamicForm.create({
             numCols: 5,
@@ -702,12 +713,64 @@
                     DynamicForm_Session, create_Buttons
                 ]
         });
-    }
-    // ---------------------------------------- Create - DynamicForm $ Window ------------------------------->>
 
+    // <<-------------------------------------- Create - Session Content ---------------------------------
+    var RestDataSource_Session_Content = isc.TrDS.create({
+        fields: [
+            {name: "context", title: "context"},
+            {name: "groupId", title: "groupId"},
+            {name: "deleted", title: "deleted"},
+            {name: "title", title: "title", filterOperator: "iContains"}
+        ]
+    });
+
+    var ListGrid_Session_Content = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Session_Content,
+        showFilterEditor: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        fields: [
+            {
+                name: "title",
+                title: "نام فایل",
+                align: "center"
+            },
+            {
+                name: "download",
+                title: "دریافت فایل",
+                align: "center",
+                canFilter: false
+            }
+        ],
+        createRecordComponent: function (record, colNum) {
+
+            var fieldName = this.getFieldName(colNum);
+            if (record == null || fieldName != "download")
+                return null;
+
+            return isc.ToolStripButton.create({
+                icon: "[SKIN]actions/download.png",
+                width: "25",
+                click: function () {
+
+                    if (record == null) {return;}
+                    downloadContentFile(record.groupId, record.context, record.title);
+                }
+            });
+        }
+    });
+
+    var Window_Session_Content = isc.Window.create({
+        title: "نمایش محتوای جلسه",
+        width: "20%",
+        height: "40%",
+        autoSize: false,
+        items: [ListGrid_Session_Content]
+    });
 
     // <<-------------------------------------- Create - HLayout & VLayout ------------------------------------
-    {
         var HLayout_Actions_session = isc.HLayout.create({
             width: "100%",
             members: [ToolStrip_session]
@@ -724,12 +787,8 @@
             height: "100%",
             members: [HLayout_Actions_session, Hlayout_Grid_session]
         });
-    }
-    // ---------------------------------------- Create - HLayout & VLayout ---------------------------------->>
 
-
-    // <<----------------------------------------------- Functions --------------------------------------------
-    {
+    // <<----------------------------------------------- Functions -----------------------------------------
         //*****check date is valid*****
         function check_valid_date() {
 
@@ -1116,7 +1175,6 @@
 
         }
 
-
         function loadPage_session() {
             let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (!(classRecord == undefined || classRecord == null)) {
@@ -1148,8 +1206,33 @@
             }
         }
 
-    }
-    // ------------------------------------------------- Functions ------------------------------------------>>
+        function getSessionContent(sessionId) {
 
+            isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "/findAll/" + sessionId, "GET", null, function (resp) {
+                if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let content = JSON.parse(resp.httpResponseText);
+                    ListGrid_Session_Content.setData(content);
+                    Window_Session_Content.show();
+                } else {
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
+        }
 
-    //</script>
+        function downloadContentFile(groupId, key, fileName) {
+
+            let downloadForm = isc.DynamicForm.create({
+                method: "GET",
+                action: "minIo/downloadFile/" + groupId + "/" + key + "/" + fileName,
+                target: "_Blank",
+                canSubmit: true,
+                fields: [
+                    {name: "token", type: "hidden"}
+                ]
+            });
+            downloadForm.setValue("token", "<%=accessToken1%>");
+            downloadForm.show();
+            downloadForm.submitForm();
+        }
+
+// </script>
