@@ -191,6 +191,16 @@
                 filterOperator: "iContains", autoFitWidth: true
             },
             {
+                name: "endDate",
+                title: "<spring:message code="test.question.end.date"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "endTime",
+                title: "<spring:message code="test.question.end.time"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
                 name: "duration",
                 title: "<spring:message code="test.question.duration"/>",
                 filterOperator: "equals", autoFitWidth: true
@@ -315,9 +325,11 @@
             {name: "tclass.startDate", sortNormalizer: function (record) {return record.tclass.startDate; } },
             {name: "tclass.endDate", sortNormalizer: function (record) {return record.tclass.endDate; } },
             // {name: "tclass.teacher", sortNormalizer: function (record) {return record.tclass.teacher; } },
-            {name: "date",},
-            {name: "time",},
-            {name: "duration",},
+            {name: "date"},
+            {name: "time"},
+            {name: "endDate"},
+            {name: "endTime"},
+            {name: "duration"},
             { name: "onlineFinalExamStatus",canFilter: false, valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
             { name: "sendBtn",canFilter: false, title: "بارم بندی ", width: "145"},
             { name: "showBtn",canFilter: false, title: "نتایج ", width: "130"},
