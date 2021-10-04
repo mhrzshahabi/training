@@ -49,8 +49,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.nicico.training.utility.persianDate.PersianDate.convertToTimeZone;
-import static com.nicico.training.utility.persianDate.PersianDate.getEndDateFromDuration;
+import static com.nicico.training.utility.persianDate.PersianDate.*;
 import static dto.exam.EQuestionType.DESCRIPTIVE;
 import static dto.exam.EQuestionType.MULTI_CHOICES;
 
@@ -479,7 +478,7 @@ public abstract class EvaluationBeanMapper {
 
         String newTime = convertToTimeZone(object.getTime());
 
-        Date startDate = getDate(object.getStartDate(), newTime);
+        Date startDate = getEpochDate(object.getStartDate(), newTime);
         Date endDate = getEndDateFromDuration(getStringGeoDate(object.getStartDate(), newTime)
                 , object.getDuration());
 
@@ -847,9 +846,9 @@ public abstract class EvaluationBeanMapper {
         String newEndTime = convertToTimeZone(object.getExamItem().getEndTime());
 //        String newTime = object.getExamItem().getTime();
 
-        Date startDate = getDate(object.getExamItem().getDate(), newTime);
+        Date startDate = getEpochDate(object.getExamItem().getDate(), newTime);
 
-        Date endDate = getDate(object.getExamItem().getEndDate(), newEndTime);
+        Date endDate = getEpochDate(object.getExamItem().getEndDate(), newEndTime);
 //        Date endDate = getEndDateFromDuration(getStringGeoDate(object.getExamItem().getDate(), newTime)
 //                , object.getExamItem().getDuration());
         ExamCreateDTO exam = new ExamCreateDTO();
@@ -1601,43 +1600,43 @@ public abstract class EvaluationBeanMapper {
         return programs;
     }
 
-    private Date getDate(String date, String time) {
-        if (!time.contains(":")) {
-            StringBuilder sb = new StringBuilder(time);
-            sb.insert(2, ':');
-            time = sb.toString();
-        }
-        long longDate = Date.from(java.sql.Timestamp
-                .valueOf(                           // Class-method parses SQL-style formatted date-time strings.
-                        getStringGeoDate(date, time)
-                )                                   // Returns a `Timestamp` object.
-                .toInstant()).getTime();
-
-        return new Date(longDate / 1000);
-    }
-
-    private String getStringGeoDate(String date, String time) {
-        if (null != time) {
-            if (!time.contains(":")) {
-                StringBuilder sb = new StringBuilder(time);
-                sb.insert(2, ':');
-                time = sb.toString();
-            }
-            String[] arr = date.split("/");
-
-            PersianDate persianDate = PersianDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
-            LocalDate gregDate = persianDate.toGregorian();
-            return gregDate.toString() + " " + time + ":00";
-        } else {
-            String[] arr = date.split("/");
-
-            PersianDate persianDate = PersianDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
-            LocalDate gregDate = persianDate.toGregorian();
-            return gregDate.toString();
-        }
-
-    }
-
+//    private Date getDate(String date, String time) {
+//        if (!time.contains(":")) {
+//            StringBuilder sb = new StringBuilder(time);
+//            sb.insert(2, ':');
+//            time = sb.toString();
+//        }
+//        long longDate = Date.from(java.sql.Timestamp
+//                .valueOf(                           // Class-method parses SQL-style formatted date-time strings.
+//                        getStringGeoDate(date, time)
+//                )                                   // Returns a `Timestamp` object.
+//                .toInstant()).getTime();
+//
+//        return new Date(longDate / 1000);
+//    }
+//
+//    private String getStringGeoDate(String date, String time) {
+//        if (null != time) {
+//            if (!time.contains(":")) {
+//                StringBuilder sb = new StringBuilder(time);
+//                sb.insert(2, ':');
+//                time = sb.toString();
+//            }
+//            String[] arr = date.split("/");
+//
+//            PersianDate persianDate = PersianDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+//            LocalDate gregDate = persianDate.toGregorian();
+//            return gregDate.toString() + " " + time + ":00";
+//        } else {
+//            String[] arr = date.split("/");
+//
+//            PersianDate persianDate = PersianDate.of(Integer.parseInt(arr[0]), Integer.parseInt(arr[1]), Integer.parseInt(arr[2]));
+//            LocalDate gregDate = persianDate.toGregorian();
+//            return gregDate.toString();
+//        }
+//
+//    }
+//
 
     private String convertCorrectAnswer(Integer multipleChoiceAnswer, QuestionBank questionBank) {
         switch (multipleChoiceAnswer) {

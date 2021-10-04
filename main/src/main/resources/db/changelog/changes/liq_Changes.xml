@@ -3166,4 +3166,33 @@ WHERE
         </sql>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="1633237431001-1">
+        <createTable tableName="tbl_question_protocol">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_question_protocolPK"/>
+            </column>
+            <column name="question_id" type="NUMBER(19, 0)"/>
+            <column name="question_mark" type="FLOAT"/>
+         </createTable>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1633237431001-2">
+        <addColumn tableName="tbl_question_protocol">
+            <column name="f_test_question" type="number(19, 0)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="f_test_question" baseTableName="tbl_question_protocol" constraintName="FKQuestionToQuestionProtocol" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_test_question" validate="true"/>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1633237431001-3">
+        <addColumn tableName="tbl_question_protocol">
+            <column name="question_time" type="number(10, 0)"/>
+            <column name="correct_answer" type="varchar2(255 CHAR)"/>
+        </addColumn>
+     </changeSet>
+
+    <changeSet author="namdari (generated)" id="1633237431001-4">
+        <createSequence sequenceName="seq_question_protocol_id"/>
+    </changeSet>
+
+
 </databaseChangeLog>

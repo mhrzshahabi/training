@@ -186,13 +186,16 @@
             <sec:authorize access="hasAuthority('Course_R')">
             {
                 title: "<spring:message code="refresh"/>",
+                <%--icon: "<spring:url value="refresh.png"/>", --%>
                 click: function () {
                     ListGrid_Course_refresh();
+                    // ListGrid_CourseJob.setData([]);
+                    // ListGrid_CourseSkill.setData([]);
+                    // ListGrid_CourseSyllabus.setData([]);
                     refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
                 }
             },
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('Course_C')">
             {
                 title: "<spring:message code="create"/>",
@@ -616,15 +619,6 @@
     });
     </sec:authorize>
 
-    <sec:authorize access="hasAuthority('Course_C')">
-    var ToolStripButton_Copy = isc.ToolStripButton.create({
-        title: "<spring:message code='copy.of.course'/>",
-        click: function () {
-            ListGrid_Course_Copy();
-        }
-    });
-    </sec:authorize>
-
     <sec:authorize access="hasAuthority('Course_P')">
     var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
         click: function () {
@@ -882,12 +876,16 @@
             ToolStripButton_Remove,
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('Course_C')">
-            ToolStripButton_Copy,
-            </sec:authorize>
+            isc.ToolStripButton.create({
+                title: "<spring:message code='copy.of.course'/>",
+                click: function () {
+                    ListGrid_Course_Copy();
+                }
+            }),
 
             <sec:authorize access="hasAuthority('Course_P')">
             ToolStripButton_Print,
+
             ToolStripExcel_JspCourse,
             </sec:authorize>
 

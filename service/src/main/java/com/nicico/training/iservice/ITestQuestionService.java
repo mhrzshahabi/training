@@ -29,4 +29,6 @@ public interface ITestQuestionService {
 
     @Transactional
     void changeOnlineFinalExamStatus(Long examId , boolean state);
+
+    TestQuestion findById(Long sourceExamId);
 }

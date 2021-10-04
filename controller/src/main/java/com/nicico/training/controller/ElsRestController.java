@@ -94,6 +94,7 @@ public class ElsRestController {
     private final ElsClient client;
     private final MinIoClient client2;
     private final TestQuestionService testQuestionService;
+    private final IQuestionProtocolService questionProtocolService;
     private final ITestQuestionService iTestQuestionService;
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
@@ -291,6 +292,7 @@ public class ElsRestController {
                             request = evaluationBeanMapper.removeAbsentUsersForExam(request, object.getAbsentUsers());
                         }
                         if (request.getUsers() != null && !request.getUsers().isEmpty()) {
+                            questionProtocolService.saveQuestionProtocol(request.getExam().getSourceExamId(),request.getQuestionProtocols());
                             response = client.sendExam(request);
                         } else {
                             response.setStatus(HttpStatus.NOT_FOUND.value());
@@ -1282,7 +1284,6 @@ public class ElsRestController {
         }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 
 

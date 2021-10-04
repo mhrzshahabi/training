@@ -14,8 +14,8 @@ import java.util.List;
 public class EventDto  {
 
 
-    private String startTime;
-    private String endTime;
+    private Long startTime;
+    private Long endTime;
     private String date;
     private String title;
     private String location;

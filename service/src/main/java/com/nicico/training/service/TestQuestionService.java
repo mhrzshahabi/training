@@ -11,7 +11,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.ITestQuestionService;
-import com.nicico.training.model.Publication;
 import com.nicico.training.model.QuestionBank;
 import com.nicico.training.model.TestQuestion;
 import com.nicico.training.repository.TclassDAO;
@@ -32,9 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -174,6 +171,11 @@ public class TestQuestionService implements ITestQuestionService {
     @Override
     public void changeOnlineFinalExamStatus(Long examId, boolean state) {
         testQuestionDAO.changeOnlineFinalExamStatus(examId,state);
+    }
+
+    @Override
+    public TestQuestion findById(Long sourceExamId) {
+        return testQuestionDAO.findById(sourceExamId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TestQuestionNotFound));
     }
 
     @Transactional

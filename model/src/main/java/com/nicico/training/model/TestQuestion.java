@@ -34,9 +34,6 @@ public class TestQuestion extends Auditable {
     @Column(name = "f_class")
     private Long tclassId;
 
-    @OneToMany(mappedBy = "testQuestion", fetch = FetchType.LAZY ,cascade = CascadeType.REMOVE)
-    private Set<QuestionBankTestQuestion> questionBankTestQuestionList;
-
     @Column(name = "c_date")
     private String date;
 
@@ -54,4 +51,11 @@ public class TestQuestion extends Auditable {
 
     @Column(name = "B_ONLINE_FINAL_EXAM_STATUS")
     private Boolean onlineFinalExamStatus;
+
+
+    @OneToMany(mappedBy = "testQuestion", fetch = FetchType.LAZY ,cascade = CascadeType.REMOVE)
+    private Set<QuestionBankTestQuestion> questionBankTestQuestionList;
+
+    @OneToMany(mappedBy = "exam", fetch = FetchType.LAZY ,cascade = CascadeType.ALL)
+    private Set<QuestionProtocol> questionProtocols;
 }
