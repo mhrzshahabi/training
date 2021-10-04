@@ -69,9 +69,11 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
             if (personnelRegistereds.isEmpty()){
                 ContactInfo contactInfo = contactInfoDAO.save(modelMapper.map(personnelRegistered.getContactInfo(), ContactInfo.class));
                 personnelRegistered.setContactInfo(contactInfo);
-                personnelRegistered.setActive(1);
-                save(personnelRegistered);
+            }else {
+                personnelRegistered.setContactInfo(null);
             }
+            personnelRegistered.setActive(1);
+            save(personnelRegistered);
         }
 
     }

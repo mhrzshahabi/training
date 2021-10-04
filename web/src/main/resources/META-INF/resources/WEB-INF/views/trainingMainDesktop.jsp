@@ -2770,6 +2770,16 @@
                 {isSeparator: true},
                 </sec:authorize>
 
+                  <sec:authorize access="hasAuthority('Menu_Security_Settings')">
+                {
+                    title: "تنظیمات ورژن جدید",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/v2/config/"/>");
+                    }
+                },
+                {isSeparator: true},
+                </sec:authorize>
+
                 <sec:authorize access="hasAuthority('Menu_Security_UsersLoginReport')">
                 {
                     title: "<spring:message code="users.login.report"/>",
