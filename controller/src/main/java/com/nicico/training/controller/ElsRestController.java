@@ -334,37 +334,40 @@ public class ElsRestController {
 
     @Transactional
     @GetMapping("/examQuestionsToEls/{examId}")
-    public ElsExamQuestionsResponse sendExamQuestions(@PathVariable Long examId) {
-        BaseResponse response = new BaseResponse();
+    public ElsExamQuestionsResponse sendExamQuestions(HttpServletRequest header, @PathVariable Long examId) {
         final ElsExamRequestResponse elsExamRequestResponse;
         final ElsExamQuestionsResponse elsExamQuestionsResponse = new ElsExamQuestionsResponse();
-        try {
-            ElsExamQuestionsResponse questionsResponse;
-            TestQuestion exam = iTestQuestionService.getById(examId);
-            PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(exam.getTclass().getTeacherId()).getPersonalityId());
-            if (exam.isPreTestQuestion()) {
-                elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
-            } else {
-                elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
-            }
-            if (elsExamRequestResponse.getStatus() == 200) {
-                ElsExamRequest request = elsExamRequestResponse.getElsExamRequest();
-                elsExamQuestionsResponse.setExam(request.getExam());
-                elsExamQuestionsResponse.setCategory(request.getCategory());
-                elsExamQuestionsResponse.setCourse(request.getCourse());
-                elsExamQuestionsResponse.setProtocol(request.getProtocol());
-                elsExamQuestionsResponse.setPrograms(request.getPrograms());
-                elsExamQuestionsResponse.setQuestionProtocols(request.getQuestionProtocols());
-                elsExamQuestionsResponse.setInstructor(request.getInstructor());
-            } else {
-                elsExamQuestionsResponse.setStatus(elsExamRequestResponse.getStatus());
-                elsExamQuestionsResponse.setMessage(elsExamRequestResponse.getMessage());
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                TestQuestion exam = iTestQuestionService.getById(examId);
+                PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(exam.getTclass().getTeacherId()).getPersonalityId());
+                if (exam.isPreTestQuestion()) {
+                    elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
+                } else {
+                    elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
+                }
+                if (elsExamRequestResponse.getStatus() == 200) {
+                    ElsExamRequest request = elsExamRequestResponse.getElsExamRequest();
+                    elsExamQuestionsResponse.setExam(request.getExam());
+                    elsExamQuestionsResponse.setCategory(request.getCategory());
+                    elsExamQuestionsResponse.setCourse(request.getCourse());
+                    elsExamQuestionsResponse.setProtocol(request.getProtocol());
+                    elsExamQuestionsResponse.setPrograms(request.getPrograms());
+                    elsExamQuestionsResponse.setQuestionProtocols(request.getQuestionProtocols());
+                    elsExamQuestionsResponse.setInstructor(request.getInstructor());
+                } else {
+                    elsExamQuestionsResponse.setStatus(elsExamRequestResponse.getStatus());
+                    elsExamQuestionsResponse.setMessage(elsExamRequestResponse.getMessage());
+                    return elsExamQuestionsResponse;
+                }
+            } catch (TrainingException ex) {
+                elsExamQuestionsResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                elsExamQuestionsResponse.setMessage("بروز خطا در سیستم");
                 return elsExamQuestionsResponse;
             }
-        } catch (TrainingException ex) {
-            elsExamQuestionsResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-            elsExamQuestionsResponse.setMessage("بروز خطا در سیستم");
-            return elsExamQuestionsResponse;
+        } else {
+            elsExamQuestionsResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsExamQuestionsResponse.setMessage("خطای شناسایی");
         }
         return elsExamQuestionsResponse;
     }
