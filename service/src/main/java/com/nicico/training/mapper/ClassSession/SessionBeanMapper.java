@@ -14,10 +14,7 @@ import response.tclass.dto.ElsSessionUsersDto;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
@@ -59,6 +56,7 @@ public abstract class SessionBeanMapper {
 
             elsSessionDetailDtos.add(elsSessionDetailDto);
         });
+        elsSessionDetailDtos.sort(Comparator.comparing(ElsSessionDetailDto::getDateOfHolding));
 
         elsSessionResponse.setCode(tclass.getCode());
         elsSessionResponse.setUsers(elsSessionUsersDtos);
