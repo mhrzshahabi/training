@@ -630,7 +630,6 @@ public abstract class EvaluationBeanMapper {
         Boolean findDuplicate = false;
 
         if (questionBankTestQuestions.size() > 0) {
-            Double questionScore = (double) (20 / questionBankTestQuestions.size());
 
             List<QuestionProtocol> questionProtocolList = iQuestionProtocolService.findAllByExamId(exam.getId());
             Map<Long, QuestionProtocol> protocolsMap =convertProtocolListToMap(questionProtocolList);
@@ -665,7 +664,7 @@ public abstract class EvaluationBeanMapper {
                         option1.setLabel("الف");
                         options.add(option1);
                         if (attachments != null && attachments.getOption1Files() != null)
-                            question.setOption1Files(attachments.getOption1Files());
+                            option1.setFiles(attachments.getOption1Files());
 
 
                     }
@@ -674,7 +673,7 @@ public abstract class EvaluationBeanMapper {
                         option2.setLabel("ب");
                         options.add(option2);
                         if (attachments != null && attachments.getOption2Files() != null)
-                            question.setOption2Files(attachments.getOption2Files());
+                            option2.setFiles(attachments.getOption2Files());
 
                     }
                     if (questionBank.getOption3() != null) {
@@ -682,7 +681,7 @@ public abstract class EvaluationBeanMapper {
                         option3.setLabel("ج");
                         options.add(option3);
                         if (attachments != null && attachments.getOption3Files() != null)
-                            question.setOption3Files(attachments.getOption3Files());
+                            option3.setFiles(attachments.getOption3Files());
 
                     }
                     if (questionBank.getOption4() != null) {
@@ -690,7 +689,7 @@ public abstract class EvaluationBeanMapper {
                         option4.setLabel("د");
                         options.add(option4);
                         if (attachments != null && attachments.getOption4Files() != null)
-                            question.setOption4Files(attachments.getOption4Files());
+                            option4.setFiles(attachments.getOption4Files());
 
                     }
                     if (!findDuplicate) {
