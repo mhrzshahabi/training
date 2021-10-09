@@ -1,10 +1,7 @@
 package com.nicico.training.repository;
 
 import com.nicico.training.model.QuestionBankTestQuestion;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +25,12 @@ public interface QuestionBankTestQuestionDAO extends JpaRepository<QuestionBankT
 
     List<QuestionBankTestQuestion> findByTestQuestionId(Long testQuestionId);
 
+    @EntityGraph(attributePaths = {"questionBank"}, type= EntityGraph.EntityGraphType.FETCH)
+    List<QuestionBankTestQuestion> findAllByTestQuestionId(Long testQuestionId);
+
     List<QuestionBankTestQuestion> findAllByQuestionBankId(Long questionBankId);
 
+//    @Query(value = "SELECT * FROM tbl_question_bank_test_question b LEFT JOIN b.f_question_bank WHERE b.f_test_question = :testQuestionId" , nativeQuery = true)
+//    @EntityGraph(attributePaths = {"questionBank"}, type= EntityGraph.EntityGraphType.FETCH)
+//    List<QuestionBankTestQuestion> findByTestQuestionId(@Param("testQuestionId") Long testQuestionId);
 }

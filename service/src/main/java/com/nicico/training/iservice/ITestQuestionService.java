@@ -13,6 +13,8 @@ public interface ITestQuestionService {
 
     TestQuestionDTO.fullInfo get(Long id);
 
+    TestQuestion getById(Long id);
+
     SearchDTO.SearchRs<TestQuestionDTO.Info> search(SearchDTO.SearchRq request);
 
     Set<QuestionBankDTO.Exam> getAllQuestionsByTestQuestionId(Long testQuestionId);

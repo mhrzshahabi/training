@@ -20,6 +20,8 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
+import dto.exam.ExamData;
+import io.swagger.models.auth.In;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -93,6 +95,7 @@ public class ElsRestController {
     private final MinIoClient client2;
     private final TestQuestionService testQuestionService;
     private final IQuestionProtocolService questionProtocolService;
+    private final ITestQuestionService iTestQuestionService;
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final EvaluationAnalysisService evaluationAnalysisService;
@@ -327,6 +330,43 @@ public class ElsRestController {
             return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
 
         }
+    }
+
+    @Transactional
+    @GetMapping("/examQuestionsToEls/{examId}")
+    public ElsExamQuestionsResponse sendExamQuestions(@PathVariable Long examId) {
+        BaseResponse response = new BaseResponse();
+        final ElsExamRequestResponse elsExamRequestResponse;
+        final ElsExamQuestionsResponse elsExamQuestionsResponse = new ElsExamQuestionsResponse();
+        try {
+            ElsExamQuestionsResponse questionsResponse;
+            TestQuestion exam = iTestQuestionService.getById(examId);
+            PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(exam.getTclass().getTeacherId()).getPersonalityId());
+            if (exam.isPreTestQuestion()) {
+                elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
+            } else {
+                elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
+            }
+            if (elsExamRequestResponse.getStatus() == 200) {
+                ElsExamRequest request = elsExamRequestResponse.getElsExamRequest();
+                elsExamQuestionsResponse.setExam(request.getExam());
+                elsExamQuestionsResponse.setCategory(request.getCategory());
+                elsExamQuestionsResponse.setCourse(request.getCourse());
+                elsExamQuestionsResponse.setProtocol(request.getProtocol());
+                elsExamQuestionsResponse.setPrograms(request.getPrograms());
+                elsExamQuestionsResponse.setQuestionProtocols(request.getQuestionProtocols());
+                elsExamQuestionsResponse.setInstructor(request.getInstructor());
+            } else {
+                elsExamQuestionsResponse.setStatus(elsExamRequestResponse.getStatus());
+                elsExamQuestionsResponse.setMessage(elsExamRequestResponse.getMessage());
+                return elsExamQuestionsResponse;
+            }
+        } catch (TrainingException ex) {
+            elsExamQuestionsResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            elsExamQuestionsResponse.setMessage("بروز خطا در سیستم");
+            return elsExamQuestionsResponse;
+        }
+        return elsExamQuestionsResponse;
     }
 
     @PostMapping("/resendExamToEls")
@@ -1250,5 +1290,5 @@ public class ElsRestController {
 
 
 
-    
+
 }

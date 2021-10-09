@@ -24,7 +24,6 @@ import request.exam.ExamImportedRequest;
 
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -207,4 +206,10 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
         List<QuestionBankTestQuestion> optionalQuestionBank=questionBankTestQuestionDAO.findAllByQuestionBankId(questionBankId);
         return !optionalQuestionBank.isEmpty();
     }
+
+    @Override
+    public List<QuestionBankTestQuestion> getExamQuestions(Long sourceExamId) {
+        return questionBankTestQuestionDAO.findAllByTestQuestionId(sourceExamId);
+    }
+
 }
