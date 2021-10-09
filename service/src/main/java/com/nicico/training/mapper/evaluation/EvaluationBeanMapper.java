@@ -553,7 +553,7 @@ public abstract class EvaluationBeanMapper {
                         option1.setLabel("الف");
                         options.add(option1);
                         if (attachments != null && attachments.getOption1Files() != null)
-                            option1.setFiles(attachments.getOption1Files());
+                            option1.setMapFiles(attachments.getOption1Files());
 
 
                     }
@@ -562,7 +562,7 @@ public abstract class EvaluationBeanMapper {
                         option2.setLabel("ب");
                         options.add(option2);
                         if (attachments != null && attachments.getOption2Files() != null)
-                            option2.setFiles(attachments.getOption2Files());
+                            option2.setMapFiles(attachments.getOption2Files());
 
                     }
                     if (questionBank.getOption3() != null) {
@@ -570,7 +570,7 @@ public abstract class EvaluationBeanMapper {
                         option3.setLabel("ج");
                         options.add(option3);
                         if (attachments != null && attachments.getOption3Files() != null)
-                            option3.setFiles(attachments.getOption3Files());
+                            option3.setMapFiles(attachments.getOption3Files());
 
                     }
                     if (questionBank.getOption4() != null) {
@@ -578,7 +578,7 @@ public abstract class EvaluationBeanMapper {
                         option4.setLabel("د");
                         options.add(option4);
                         if (attachments != null && attachments.getOption4Files() != null)
-                            option4.setFiles(attachments.getOption4Files());
+                            option4.setMapFiles(attachments.getOption4Files());
 
                     }
                     if (!findDuplicate) {
@@ -664,7 +664,7 @@ public abstract class EvaluationBeanMapper {
                         option1.setLabel("الف");
                         options.add(option1);
                         if (attachments != null && attachments.getOption1Files() != null)
-                            option1.setFiles(attachments.getOption1Files());
+                            option1.setMapFiles(attachments.getOption1Files());
 
 
                     }
@@ -673,7 +673,7 @@ public abstract class EvaluationBeanMapper {
                         option2.setLabel("ب");
                         options.add(option2);
                         if (attachments != null && attachments.getOption2Files() != null)
-                            option2.setFiles(attachments.getOption2Files());
+                            option2.setMapFiles(attachments.getOption2Files());
 
                     }
                     if (questionBank.getOption3() != null) {
@@ -681,7 +681,7 @@ public abstract class EvaluationBeanMapper {
                         option3.setLabel("ج");
                         options.add(option3);
                         if (attachments != null && attachments.getOption3Files() != null)
-                            option3.setFiles(attachments.getOption3Files());
+                            option3.setMapFiles(attachments.getOption3Files());
 
                     }
                     if (questionBank.getOption4() != null) {
@@ -689,7 +689,7 @@ public abstract class EvaluationBeanMapper {
                         option4.setLabel("د");
                         options.add(option4);
                         if (attachments != null && attachments.getOption4Files() != null)
-                            option4.setFiles(attachments.getOption4Files());
+                            option4.setMapFiles(attachments.getOption4Files());
 
                     }
                     if (!findDuplicate) {

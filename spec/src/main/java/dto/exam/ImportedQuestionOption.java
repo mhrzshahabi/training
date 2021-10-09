@@ -22,6 +22,6 @@ public class ImportedQuestionOption {
 
         private String label;
 
-        private List<Map<String,String>> files;
+        private List<Map<String,String>> mapFiles;
 
 }
