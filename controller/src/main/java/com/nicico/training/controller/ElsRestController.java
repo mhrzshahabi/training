@@ -296,7 +296,7 @@ public class ElsRestController {
                             response = client.sendExam(request);
                         } else {
                             response.setStatus(HttpStatus.NOT_FOUND.value());
-                            response.setMessage("دوره فراگیر ندارد");
+                            response.setMessage("دوره فراگیر ندارد .");
                             return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
                         }
                     } catch (Exception e) {
