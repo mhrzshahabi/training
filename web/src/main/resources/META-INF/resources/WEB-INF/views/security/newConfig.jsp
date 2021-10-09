@@ -81,6 +81,7 @@
                     }
                 ],
                 changed: function (form, item, value) {
+                    debugger
                     configComplexTitle=value;
                 },
 

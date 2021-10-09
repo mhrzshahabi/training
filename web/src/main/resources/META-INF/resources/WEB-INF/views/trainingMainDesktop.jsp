@@ -2768,7 +2768,7 @@
                     }
                 },
                 {isSeparator: true},
-<%--                </sec:authorize>--%>
+                </sec:authorize>
 
 <%--                  <sec:authorize access="hasAuthority('Menu_Security_Settings')">--%>
 <%--                {--%>
