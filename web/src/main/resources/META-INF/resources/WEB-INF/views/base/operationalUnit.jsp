@@ -206,9 +206,7 @@
                         name: "unitCode",
                         title: "<spring:message code="unitCode"/>",
                         type: "text",
-                        required: true,
-                        requiredMessage: "<spring:message code="msg.field.is.required"/>",
-                        validators: [TrValidators.NotEmpty],
+                        disabled: true,
                         length: 10
                     },
                     {
@@ -290,6 +288,7 @@
         //*****open insert window*****
         function create_OperationalUnit() {
             operational_method = "POST";
+            DynamicForm_OperationalUnit.getItem("unitCode").hide();
             DynamicForm_OperationalUnit.clearValues();
             Window_OperationalUnit.show();
         }
@@ -324,6 +323,7 @@
             } else {
 
                 operational_method = "PUT";
+                DynamicForm_OperationalUnit.getItem("unitCode").show();
                 DynamicForm_OperationalUnit.clearValues();
                 DynamicForm_OperationalUnit.editRecord(record);
                 Window_OperationalUnit.show();

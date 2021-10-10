@@ -2759,6 +2759,15 @@
 <%--                },--%>
                 {isSeparator: true},
                 </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_Security_OperationalًRole')">--%>
+                {
+                    title: "<spring:message code="operational.role"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/operationalRole/"/>");
+                    }
+                },
+                {isSeparator: true},
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_Settings')">
                 {
