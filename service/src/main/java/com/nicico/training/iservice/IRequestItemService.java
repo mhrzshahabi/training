@@ -1,0 +1,28 @@
+package com.nicico.training.iservice;
+
+
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.model.RequestItem;
+
+import java.util.List;
+
+public interface IRequestItemService {
+
+    RequestItem create(RequestItem competenceRequest);
+
+    RequestItem update(RequestItem requestItem, Long id);
+
+    RequestItem get(Long id);
+
+    void delete(Long id);
+
+    List<RequestItem> getList();
+
+    Integer getTotalCount();
+
+    List<RequestItem> search(SearchDTO.SearchRq request);
+
+    void createList(List<RequestItem> requestItem);
+
+    List<RequestItem> getListWithCompetenceRequest(Long id);
+}

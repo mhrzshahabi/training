@@ -300,4 +300,11 @@
     <changeSet author="nick (generated)" id="1631425644558-537">
         <createSequence sequenceName="seq_need_assessment_group_result_id"/>
     </changeSet>
+    <changeSet author="namdari (generated)" id="1633849306000-1">
+        <createSequence sequenceName="seq_competence_req_id"/>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1633848478000-1">
+        <createSequence sequenceName="seq_request_item_id"/>
+    </changeSet>
 </databaseChangeLog>
