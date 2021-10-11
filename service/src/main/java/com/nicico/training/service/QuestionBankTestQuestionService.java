@@ -41,7 +41,6 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
     private final ClassStudentService classStudentService;
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
-
     private MessageSource messageSource;
 
     @Transactional
