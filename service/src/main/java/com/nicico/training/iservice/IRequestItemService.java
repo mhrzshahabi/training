@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.model.RequestItem;
 import response.requestItem.RequestItemWithDiff;
 
@@ -11,7 +12,7 @@ public interface IRequestItemService {
 
     RequestItem create(RequestItem competenceRequest);
 
-    RequestItem update(RequestItem requestItem, Long id);
+    RequestItemWithDiff update(RequestItem requestItem, Long id);
 
     RequestItem get(Long id);
 

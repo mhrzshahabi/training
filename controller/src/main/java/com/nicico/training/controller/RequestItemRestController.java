@@ -54,11 +54,10 @@ public class RequestItemRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<RequestItemDTO.Info> update(@PathVariable Long id, @RequestBody RequestItemDTO.Create request) {
+    public ResponseEntity<RequestItemWithDiff> update(@PathVariable Long id, @RequestBody RequestItemDTO.Create request) {
         RequestItem competenceRequest=requestItemBeanMapper.toRequestItem(request);
-        RequestItem competenceRequestResponse=  requestItemService.update(competenceRequest,id);
-        RequestItemDTO.Info res=requestItemBeanMapper.toRequestItemDto(competenceRequestResponse);
-        return new ResponseEntity<>(res, HttpStatus.OK);    }
+        RequestItemWithDiff competenceRequestResponse=  requestItemService.update(competenceRequest,id);
+         return new ResponseEntity<>(competenceRequestResponse, HttpStatus.OK);    }
 
     @Loggable
     @DeleteMapping(value = "/{id}")

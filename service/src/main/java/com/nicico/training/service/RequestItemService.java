@@ -38,7 +38,7 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    public RequestItem update(RequestItem newData, Long id) {
+    public RequestItemWithDiff update(RequestItem newData, Long id) {
         RequestItem requestItem=get(id);
         requestItem.setAffairs(newData.getAffairs());
         requestItem.setCompetenceReq(newData.getCompetenceReq());
@@ -49,7 +49,7 @@ public class RequestItemService implements IRequestItemService {
         requestItem.setPersonnelNumber(newData.getPersonnelNumber());
         requestItem.setPost(newData.getPost());
         requestItem.setState(newData.getState());
-        return create(requestItem);
+        return getRequestDiff(requestItem);
     }
 
     @Override
@@ -88,49 +88,51 @@ public class RequestItemService implements IRequestItemService {
     public List<RequestItemWithDiff> createList(List<RequestItem> requestItems) {
         List<RequestItemWithDiff> requestItemWithDiffList=new ArrayList<>();
         for (RequestItem requestItem:requestItems){
-            Personnel personnel= personnelService.getByPersonnelNumber(requestItem.getPersonnelNumber());
-
-            RequestItemWithDiff requestItemWithDiff=new RequestItemWithDiff();
-            requestItemWithDiff.setPersonnelNumber(requestItem.getPersonnelNumber());
-            requestItemWithDiff.setName(requestItem.getName());
-            requestItemWithDiff.setLastName(requestItem.getLastName());
-            requestItemWithDiff.setPost(requestItem.getPost());
-            requestItemWithDiff.setAffairs(requestItem.getAffairs());
-             //todo after add workgroup
-            requestItemWithDiff.setWorkGroupCode("");
-
-            if (personnel!=null){
-                requestItemWithDiff.setPersonnelNumberCorrect(true);
-                if (personnel.getFirstName()!=null && personnel.getFirstName().trim().equals(requestItem.getName().trim())){
-                    requestItemWithDiff.setNameCorrect(true);
-                }else {
-                    requestItemWithDiff.setCorrectName(personnel.getFirstName());
-                    requestItemWithDiff.setNameCorrect(false);
-                }
-                if (personnel.getLastName()!=null && personnel.getLastName().trim().equals(requestItem.getLastName().trim())){
-                    requestItemWithDiff.setLastNameCorrect(true);
-                }else {
-                    requestItemWithDiff.setCorrectLastName(personnel.getLastName());
-                    requestItemWithDiff.setLastNameCorrect(false);
-                }
-                if (personnel.getCcpAffairs()!=null && personnel.getCcpAffairs().trim().equals(requestItem.getAffairs().trim())){
-                    requestItemWithDiff.setAffairsCorrect(true);
-                }else {
-                    requestItemWithDiff.setCorrectAffairs(personnel.getCcpAffairs());
-                    requestItemWithDiff.setAffairsCorrect(false);
-                }
-                create(requestItem);
-            }else {
-                requestItemWithDiff.setPersonnelNumberCorrect(false);
-                requestItemWithDiff.setAffairsCorrect(false);
-                requestItemWithDiff.setLastNameCorrect(false);
-                requestItemWithDiff.setNameCorrect(false);
-            }
-
-            requestItemWithDiffList.add(requestItemWithDiff);
-
+            requestItemWithDiffList.add(getRequestDiff(requestItem));
         }
         return requestItemWithDiffList;
+    }
+
+    private RequestItemWithDiff getRequestDiff(RequestItem requestItem) {
+        Personnel personnel= personnelService.getByPersonnelNumber(requestItem.getPersonnelNumber());
+        RequestItemWithDiff requestItemWithDiff=new RequestItemWithDiff();
+        requestItemWithDiff.setPersonnelNumber(requestItem.getPersonnelNumber());
+        requestItemWithDiff.setName(requestItem.getName());
+        requestItemWithDiff.setLastName(requestItem.getLastName());
+        requestItemWithDiff.setPost(requestItem.getPost());
+        requestItemWithDiff.setAffairs(requestItem.getAffairs());
+        //todo after add workgroup
+        requestItemWithDiff.setWorkGroupCode("");
+
+        if (personnel!=null){
+            requestItemWithDiff.setPersonnelNumberCorrect(true);
+            if (personnel.getFirstName()!=null && personnel.getFirstName().trim().equals(requestItem.getName().trim())){
+                requestItemWithDiff.setNameCorrect(true);
+            }else {
+                requestItemWithDiff.setCorrectName(personnel.getFirstName());
+                requestItemWithDiff.setNameCorrect(false);
+            }
+            if (personnel.getLastName()!=null && personnel.getLastName().trim().equals(requestItem.getLastName().trim())){
+                requestItemWithDiff.setLastNameCorrect(true);
+            }else {
+                requestItemWithDiff.setCorrectLastName(personnel.getLastName());
+                requestItemWithDiff.setLastNameCorrect(false);
+            }
+            if (personnel.getCcpAffairs()!=null && personnel.getCcpAffairs().trim().equals(requestItem.getAffairs().trim())){
+                requestItemWithDiff.setAffairsCorrect(true);
+            }else {
+                requestItemWithDiff.setCorrectAffairs(personnel.getCcpAffairs());
+                requestItemWithDiff.setAffairsCorrect(false);
+            }
+            create(requestItem);
+        }else {
+            requestItemWithDiff.setPersonnelNumberCorrect(false);
+            requestItemWithDiff.setAffairsCorrect(false);
+            requestItemWithDiff.setLastNameCorrect(false);
+            requestItemWithDiff.setNameCorrect(false);
+        }
+        return requestItemWithDiff;
+
     }
 
 

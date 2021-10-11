@@ -48,13 +48,7 @@ public class RequestItemDTO {
 
 
     //    // ------------------------------
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("RequestItemInfo")
-    public static class InfoWithDiff extends RequestItemDTO {
-        private Long id;
-    }
+
 
 
     @Getter
