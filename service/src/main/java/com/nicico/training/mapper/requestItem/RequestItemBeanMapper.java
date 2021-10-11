@@ -22,6 +22,10 @@ public interface RequestItemBeanMapper {
     RequestItemDTO.Info toRequestItemDto(RequestItem requestItem);
 
 
+    @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr")
+    RequestItemDTO.InfoWithDiff toRequestItemDiffDto(RequestItem requestItem);
+
+
     @Qualifier("StateToStr")
     default String StateToStr(RequestItemState state) {
         if (state!=null)
@@ -38,5 +42,6 @@ public interface RequestItemBeanMapper {
     }
 
     List<RequestItemDTO.Info> toRequestItemDTODtos(List<RequestItem> requestItemList);
+    List<RequestItemDTO.InfoWithDiff> toRequestItemDiffDTODtos(List<RequestItem> requestItemList);
     List<RequestItem> toRequestItemDtos(List<RequestItemDTO.Create> requestItemList);
 }

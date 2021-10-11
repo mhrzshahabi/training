@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.model.RequestItem;
+import response.requestItem.RequestItemWithDiff;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface IRequestItemService {
 
     List<RequestItem> search(SearchDTO.SearchRq request);
 
-    void createList(List<RequestItem> requestItem);
+    List<RequestItemWithDiff> createList(List<RequestItem> requestItem);
 
     List<RequestItem> getListWithCompetenceRequest(Long id);
 }

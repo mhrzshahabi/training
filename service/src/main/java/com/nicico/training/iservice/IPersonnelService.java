@@ -33,6 +33,7 @@ public interface IPersonnelService {
 
     PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode);
 
+
     PersonnelDTO.PersonalityInfo getByNationalCode(String nationalCode);
 
     List<PersonnelDTO.Info> findAllStatisticalReportFilter(String reportType);
@@ -52,4 +53,7 @@ public interface IPersonnelService {
     boolean isPresent(String nationalCode);
 
     SysUserInfoModel minioValidate();
+
+    Personnel getByPersonnelNumber(String personnelCode);
+
 }

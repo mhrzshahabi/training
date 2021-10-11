@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.requestItem.RequestItemWithDiff;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,10 +44,10 @@ public class RequestItemRestController {
 
     @Loggable
     @PostMapping(value = "/list")
-    public ResponseEntity<Boolean> createList(@RequestBody List<RequestItemDTO.Create> requests) {
+    public ResponseEntity<List<RequestItemWithDiff>> createList(@RequestBody List<RequestItemDTO.Create> requests) {
         List<RequestItem> requestItem=requestItemBeanMapper.toRequestItemDtos(requests);
-        requestItemService.createList(requestItem);
-        return new ResponseEntity<>(true, HttpStatus.CREATED);
+        List<RequestItemWithDiff>list= requestItemService.createList(requestItem);
+         return new ResponseEntity<>(list, HttpStatus.CREATED);
 
     }
 
