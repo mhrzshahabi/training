@@ -10,6 +10,7 @@ public class RequestItemWithDiff {
     private Long id;
 
     private String personnelNumber;
+    private String nationalCode;
     private String correctPersonnelNumber;
     private boolean isPersonnelNumberCorrect;
 
