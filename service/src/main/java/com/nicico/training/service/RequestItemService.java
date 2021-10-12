@@ -106,6 +106,7 @@ public class RequestItemService implements IRequestItemService {
 
         if (personnel!=null){
             requestItemWithDiff.setPersonnelNumberCorrect(true);
+            requestItemWithDiff.setNationalCode(personnel.getNationalCode());
             if (personnel.getFirstName()!=null && personnel.getFirstName().trim().equals(requestItem.getName().trim())){
                 requestItemWithDiff.setNameCorrect(true);
             }else {
