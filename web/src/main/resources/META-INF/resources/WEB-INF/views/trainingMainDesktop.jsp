@@ -1735,6 +1735,15 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                {
+                    title: "<spring:message code="scientific.technical.certification"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/certification"/>");
+                    }
+                },
+
+                {isSeparator: true},
+
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">
                 {
                     title: "<spring:message code="competence"/>",
@@ -1835,15 +1844,8 @@
                         createTab(this.title, "<spring:url value="web/training-post"/>");
                     }
                 },
-                {isSeparator: true},
                 </sec:authorize>
 
-                {
-                    title: "<spring:message code="scientific.technical.certification"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/certification"/>");
-                    }
-                },
 
                 <%--,--%>
                 <%--{--%>
