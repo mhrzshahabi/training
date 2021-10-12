@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
 import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
 import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
+import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.ViewTrainingNeedAssessment;
 import com.nicico.training.repository.ViewTrainingNeedAssessmentDAO;
 import com.nicico.training.utility.MakeExcelOutputUtil;
@@ -89,6 +90,25 @@ public class ReportsToExcelFormController {
         byte[] bytes = makeExcelOutputUtil.makeOutputWithExtraHeader(list, Class.forName(detailDto), detailFields, detailHeaders, true, title, masterData);
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
+
+    @RequestMapping("/export")
+    public void exportExcel(@RequestParam("headers") String[] headers, @RequestParam("fieldNames") String[] fieldNames, HttpServletResponse response) throws Exception {
+
+        byte[] bytes = makeExcelOutputUtil.makeOutput(new ArrayList<>(), RequestItem.class, fieldNames, headers, true, "");
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
+    }
+
+//    @PostMapping("/import-data")
+//    public ResponseEntity<List<Map<String, Object>>> importFromExcel(
+//            @RequestParam("file") MultipartFile file,
+//            @RequestParam("recordLimit") Integer recordLimit,
+//            @RequestParam("fieldNames") List<String> fieldNames) throws IOException {
+//
+//        if (file.isEmpty()) throw new SalesException2(ErrorType.NotFound, "file", "Excel file not found.");
+//
+//        List<Map<String, Object>> data = excelInputUtil.getData(0, recordLimit, file.getInputStream(), fieldNames);
+//        return new ResponseEntity<>(data, HttpStatus.OK);
+//    }
 
 }
 
