@@ -8,6 +8,7 @@ import lombok.Setter;
 public class RequestItemWithDiff {
 
     private Long id;
+    private int wrongCount;
 
     private String personnelNumber;
     private String nationalCode;

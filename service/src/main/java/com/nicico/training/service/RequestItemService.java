@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.requestItem.RequestItemDto;
 import response.requestItem.RequestItemWithDiff;
 
 import java.util.ArrayList;
@@ -32,14 +33,14 @@ public class RequestItemService implements IRequestItemService {
     @Override
     @Transactional
     public RequestItem create(RequestItem requestItem) {
-        CompetenceRequest competenceRequest= competenceRequestService.get(requestItem.getCompetenceReqId());
+        CompetenceRequest competenceRequest = competenceRequestService.get(requestItem.getCompetenceReqId());
         requestItem.setCompetenceReq(competenceRequest);
         return requestItemDAO.save(requestItem);
     }
 
     @Override
     public RequestItemWithDiff update(RequestItem newData, Long id) {
-        RequestItem requestItem=get(id);
+        RequestItem requestItem = get(id);
         requestItem.setAffairs(newData.getAffairs());
         requestItem.setCompetenceReq(newData.getCompetenceReq());
         requestItem.setCompetenceReqId(newData.getCompetenceReqId());
@@ -76,7 +77,7 @@ public class RequestItemService implements IRequestItemService {
     public List<RequestItem> search(SearchDTO.SearchRq request) {
         if (request.getStartIndex() != null) {
             Page<RequestItem> all = requestItemDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
-       return all.getContent();
+            return all.getContent();
         } else {
             return requestItemDAO.findAll(NICICOSpecification.of(request));
         }
@@ -85,17 +86,35 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    public List<RequestItemWithDiff> createList(List<RequestItem> requestItems) {
-        List<RequestItemWithDiff> requestItemWithDiffList=new ArrayList<>();
-        for (RequestItem requestItem:requestItems){
-            requestItemWithDiffList.add(getRequestDiff(requestItem));
+    public RequestItemDto createList(List<RequestItem> requestItems) {
+        RequestItemDto res = new RequestItemDto();
+        List<RequestItemWithDiff> requestItemWithDiffList = new ArrayList<>();
+        for (RequestItem requestItem : requestItems) {
+            RequestItemWithDiff data = getRequestDiff(requestItem);
+            if (data.isPersonnelNumberCorrect()) {
+                requestItemWithDiffList.add(data);
+            }
+
         }
-        return requestItemWithDiffList;
+        int wrongCount=getWrongCount(requestItemWithDiffList);
+        res.setWrongCount(wrongCount);
+        res.setList(requestItemWithDiffList);
+        return res;
+    }
+
+    private int getWrongCount(List<RequestItemWithDiff> list) {
+        int wrongCount=0;
+        for (RequestItemWithDiff data:list){
+            if (!(data.isPersonnelNumberCorrect() && data.isAffairsCorrect() && data.isLastNameCorrect() && data.isNameCorrect())){
+                wrongCount++;
+            }
+        }
+        return wrongCount;
     }
 
     private RequestItemWithDiff getRequestDiff(RequestItem requestItem) {
-        Personnel personnel= personnelService.getByPersonnelNumber(requestItem.getPersonnelNumber());
-        RequestItemWithDiff requestItemWithDiff=new RequestItemWithDiff();
+        Personnel personnel = personnelService.getByPersonnelNumber(requestItem.getPersonnelNumber());
+        RequestItemWithDiff requestItemWithDiff = new RequestItemWithDiff();
         requestItemWithDiff.setPersonnelNumber(requestItem.getPersonnelNumber());
         requestItemWithDiff.setName(requestItem.getName());
         requestItemWithDiff.setLastName(requestItem.getLastName());
@@ -104,29 +123,30 @@ public class RequestItemService implements IRequestItemService {
         //todo after add workgroup
         requestItemWithDiff.setWorkGroupCode("");
 
-        if (personnel!=null){
+        if (personnel != null) {
             requestItemWithDiff.setPersonnelNumberCorrect(true);
             requestItemWithDiff.setNationalCode(personnel.getNationalCode());
-            if (personnel.getFirstName()!=null && personnel.getFirstName().trim().equals(requestItem.getName().trim())){
+            if (personnel.getFirstName() != null && personnel.getFirstName().trim().equals(requestItem.getName().trim())) {
                 requestItemWithDiff.setNameCorrect(true);
-            }else {
+            } else {
                 requestItemWithDiff.setCorrectName(personnel.getFirstName());
                 requestItemWithDiff.setNameCorrect(false);
             }
-            if (personnel.getLastName()!=null && personnel.getLastName().trim().equals(requestItem.getLastName().trim())){
+            if (personnel.getLastName() != null && personnel.getLastName().trim().equals(requestItem.getLastName().trim())) {
                 requestItemWithDiff.setLastNameCorrect(true);
-            }else {
+            } else {
                 requestItemWithDiff.setCorrectLastName(personnel.getLastName());
                 requestItemWithDiff.setLastNameCorrect(false);
             }
-            if (personnel.getCcpAffairs()!=null && personnel.getCcpAffairs().trim().equals(requestItem.getAffairs().trim())){
+            if (personnel.getCcpAffairs() != null && personnel.getCcpAffairs().trim().equals(requestItem.getAffairs().trim())) {
                 requestItemWithDiff.setAffairsCorrect(true);
-            }else {
+            } else {
                 requestItemWithDiff.setCorrectAffairs(personnel.getCcpAffairs());
                 requestItemWithDiff.setAffairsCorrect(false);
             }
-            create(requestItem);
-        }else {
+            RequestItem savedItem = create(requestItem);
+            requestItemWithDiff.setId(savedItem.getId());
+        } else {
             requestItemWithDiff.setPersonnelNumberCorrect(false);
             requestItemWithDiff.setAffairsCorrect(false);
             requestItemWithDiff.setLastNameCorrect(false);
