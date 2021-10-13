@@ -49,6 +49,63 @@
         fetchDataURL: categoryUrl + "spec-list"
     });
 
+    RestDataSource_Competence_Request_PersonnelJobExperiences = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "personnelNo", title: "شماره پرسنلی"},
+            {name: "ssn", title: "کدملی"},
+            {name: "assignmentDate", title: "تاریخ شروع"},
+            {name: "dismissalDate", title: "تاریخ پایان"},
+            {name: "postCode", title: "کد پست"},
+            {name: "postTitle", title: "عنوان پست"},
+            {name: "jobNo", title: "کد شغل"},
+            {name: "jobTitle", title: "عنوان شغل"},
+            {name: "departmentTitle", title: "نام دپارتمان"},
+            {name: "departmentCode", title: "کد دپارتمان"},
+            {name: "omur", title: "امور"},
+            {name: "ghesmat", title: "قسمت"},
+            {name: "companyName", title: "نام شرکت"}
+        ]
+    });
+    RestDataSource_Competence_Request_PostInfo = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "personnelNo", title: "شماره پرسنلی"},
+            {name: "firstName", title: "نام"},
+            {name: "lastName", title: "نام خانوادگی"},
+            {name: "nationalCode", title: "کدملی"},
+            {name: "assignmentDate", title: "تاریخ شروع"},
+            {name: "dismissalDate", title: "تاریخ پایان"},
+            {name: "postCode", title: "کدپست"},
+            {name: "postTitle", title: "عنوان پست"},
+            {name: "jobNo", title: "کد شغل"},
+            {name: "jobTitle", title: "عنوان شغل"},
+            {name: "departmentTitle", title: "نام دپارتمان"},
+            {name: "departmentCode", title: "کد دپارتمان", hidden: true},
+            {name: "omur", title: "امور"},
+            {name: "ghesmat", title: "قسمت"},
+            {name: "companyName", title: "نام شرکت"}
+        ]
+    });
+    RestDataSource_Competence_Request_PersonnelTraining = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "courseId"},
+            {name: "courseTitle"},
+            {name: "courseCode"},
+            {name: "code"},
+            {name: "titleClass"},
+            {name: "hduration"},
+            {name: "startDate"},
+            {name: "endDate"},
+            {name: "classStatusId"},
+            {name: "classStatus"},
+            {name: "scoreStateId"},
+            {name: "scoreState"},
+            {name: "erunType"}
+        ]
+    });
+
     //--------------------------------------------------------Actions---------------------------------------------------
 
     ToolStripButton_Add_Competence_Request = isc.ToolStripButtonCreate.create({
@@ -214,7 +271,6 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Competence_Request,
-        // contextMenu: Menu_ListGrid_InvoiceSales,
         autoFetchData: true,
         styleName: 'expandList',
         alternateRecordStyles: true,
@@ -278,12 +334,11 @@
         ],
         getExpansionComponent: function (record) {
 
-            var criteriaReq = {
+            let criteriaReq = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [{fieldName: "competenceReqId", operator: "equals", value: record.id}]
             };
-
             ListGrid_Competence_Request_Items.fetchData(criteriaReq, function (dsResponse, data, dsRequest) {
                 if (data.length == 0) {
                     ListGrid_Competence_Request_Items.setData([]);
@@ -295,7 +350,7 @@
                 }
             }, {operationId: "00"});
 
-            var ToolStrip_Actions_Import_Data = isc.HLayout.create({
+            let ToolStrip_Actions_Import_Data = isc.HLayout.create({
                 width: "100%",
                 // membersMargin: 5,
                 members: [
@@ -321,9 +376,9 @@
                                 colSpan: 1,
                                 click:function () {
                                     let address=certificatExcelFile.getValue();
-                                    if(address==null){
+                                    if(address==null) {
                                         createDialog("info", "فايل خود را انتخاب نماييد.");
-                                    }else{
+                                    } else {
                                         let ExcelToJSON = function() {
 
                                             this.parseExcel = function(file) {
@@ -361,10 +416,9 @@
                                                         certificatExcelFile.setValue('');
                                                     });
 
-                                                    if(records.length > 0){
+                                                    if(records.length > 0) {
 
                                                         let uniqueRecords = [];
-
                                                         for (let i=0; i < records.length; i++) {
                                                             if (uniqueRecords.filter(function (item) {return item.personnelNumber === records[i].personnelNumber ;}).length===0) {
                                                                 uniqueRecords.push(records[i]);
@@ -374,17 +428,20 @@
                                                         isc.RPCManager.sendRequest(TrDSRequest(RequestItemWithDiff, "POST", JSON.stringify(uniqueRecords), function (resp) {
                                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                                 wait.close();
-                                                                ListGrid_Competence_Request_Items.setData(resp.data);
+                                                                let result = JSON.parse(resp.data);
+                                                                // debugger;
+                                                                setRequestItemData(result);
                                                             } else {
                                                                 wait.close();
                                                                 createDialog("info", "خطایی رخ داده است");
                                                             }
                                                         }));
-                                                        createDialog("info", "فایل به لیست اضافه شد.");
-                                                    }else{
-                                                        if(isEmpty){
+
+                                                    } else {
+
+                                                        if(isEmpty) {
                                                             createDialog("info", "خطا در محتویات فایل");
-                                                        }else{
+                                                        } else {
                                                             createDialog("info", "فرد جدیدی برای اضافه کردن وجود ندارد.");
                                                         }
                                                     }
@@ -395,8 +452,8 @@
                                                 reader.readAsBinaryString(file);
                                             };
                                         };
-                                        let split=$('[name="certificatExcelFile"]')[0].files[0].name.split('.');
 
+                                        let split=$('[name="certificatExcelFile"]')[0].files[0].name.split('.');
                                         if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
                                             let xl2json = new ExcelToJSON();
                                             xl2json.parseExcel($('[name="certificatExcelFile"]')[0].files[0]);
@@ -411,12 +468,13 @@
                     isc.ToolStripButtonExcel.create({
                         align: "left",
                         click: function () {
+                            exportToExcelRequestItems();
                         }
                     })
                 ]
             });
 
-            var layoutCompetenceRequest = isc.VLayout.create({
+            let layoutCompetenceRequest = isc.VLayout.create({
                 styleName: "expand-layout",
                 padding: 5,
                 // membersMargin: 10,
@@ -425,7 +483,6 @@
                     ToolStrip_Actions_Import_Data
                 ]
             });
-
             return layoutCompetenceRequest;
         }
     });
@@ -437,8 +494,8 @@
         styleName: "listgrid-child",
         height: 180,
         dataSource: RestDataSource_Competence_Request_Item,
-        // contextMenu: Menu_ListGrid_InvoiceSalesItem,
         setAutoFitExtraRecords: true,
+        editEvent: "doubleClick",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         fields: [
@@ -454,33 +511,29 @@
             },
             {
                 name: "name",
-                // title: "نام",
                 width: "10%",
                 align: "center"
             },
             {
                 name: "lastName",
-                // title: "نام خانوادگی",
                 width: "10%",
                 align: "center"
             },
             {
                 name: "affairs",
-                // title: "امور",
                 width: "10%",
                 align: "center"
             },
             {
                 name: "post",
-                // title: "کدپست پیشنهادی",
                 width: "10%",
                 align: "center"
             },
             {
                 name: "workGroupCode",
-                // title: "گروه کاری",
                 width: "10%",
                 align: "center",
+                canEdit: false,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Competence_Request_Category,
                 displayField: "titleFa",
@@ -492,9 +545,9 @@
             },
             {
                 name: "state",
-                // title: "وضعیت",
                 width: "10%",
                 align: "center",
+                canEdit: false,
                 valueMap: {
                     1: "بلامانع",
                     2: "نیاز به گذراندن دوره"
@@ -518,48 +571,85 @@
             }
         ],
         autoFetchData: false,
+        recordClick: function () {
+            selectionUpdated_Competence_Request();
+        },
+        getCellCSSText: function (record, rowNum, colNum) {
+
+            if (this.getFieldName(colNum) == "name") {
+                if (record.nameCorrect != null && !record.nameCorrect)
+                    return "color:#d64949;";
+            } else if (this.getFieldName(colNum) == "lastName") {
+                if (record.lastNameCorrect != null && !record.lastNameCorrect)
+                    return "color:#d64949;";
+            } else if (this.getFieldName(colNum) == "affairs") {
+                if (record.affairsCorrect != null && !record.affairsCorrect)
+                    return "color:#d64949;";
+            }
+        },
+        rowEditorExit: function (editCompletionEvent, record, newValues, rowNum) {
+
+            if (editCompletionEvent == "enter") {
+
+                delete newValues["id"];
+
+                if (newValues && Object.keys(newValues).length === 0 && Object.getPrototypeOf(newValues) === Object.prototype)
+                    ListGrid_Competence_Request_Items.endEditing();
+
+                else {
+                    let recordData = newValues;
+                    if (record != null) {
+                        recordData = Object.assign(record, newValues);
+                    }
+
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/" + recordData.id, "PUT", JSON.stringify(recordData), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            wait.close();
+                            createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            ListGrid_Competence_Request_Items.invalidateCache();
+                        } else {
+                            wait.close();
+                            createDialog("info", "خطایی رخ داده است");
+                        }
+                    }));
+                }
+            }
+        },
         createRecordComponent: function (record, colNum) {
 
             var fieldName = this.getFieldName(colNum);
-            var recordCanvas = isc.HLayout.create(
-                {
-                    height: 22,
-                    width: "100%",
-                    align: "center"
-                });
             if (fieldName === "editIcon") {
-                var editImg = isc.ImgButton.create(
-                    {
-                        showDown: false,
-                        showRollOver: false,
-                        layoutAlign: "center",
-                        src: "[SKIN]/actions/edit.png",
-                        prompt: "ویرایش",
-                        height: 16,
-                        width: 16,
-                        grid: this,
-                        click: function () {
-                            // ListGrid_InvoiceSalesItem.selectSingleRecord(record);
-                            // ListGrid_InvoiceSalesItem_edit();
-                        }
-                    });
+                var editImg = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/edit.png",
+                    prompt: "ویرایش",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        ListGrid_Competence_Request_Items.selectSingleRecord(record);
+                        editRequestItem();
+                    }
+                });
                 return editImg;
             } else if (fieldName === "removeIcon") {
-                var removeImg = isc.ImgButton.create(
-                    {
-                        showDown: false,
-                        showRollOver: false,
-                        layoutAlign: "center",
-                        src: "[SKIN]/actions/remove.png",
-                        prompt: "حذف",
-                        height: 16,
-                        width: 16,
-                        grid: this,
-                        click: function () {
-                            // ListGrid_InvoiceSalesItem.selectSingleRecord(record);
-                            // ListGrid_InvoiceSalesItem_remove();
-                        }
-                    });
+                var removeImg = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "حذف",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        ListGrid_Competence_Request_Items.selectSingleRecord(record);
+                        deleteRequestItem(record);
+                    }
+                });
                 return removeImg;
             } else {
                 return null;
@@ -569,85 +659,210 @@
 
     //--------------------------------------------------------Tab Set---------------------------------------------------
 
-    ListGrid_Personnel_Job_History = isc.TrLG.create({
+    ToolStrip_Personnel_Job_History_Actions = isc.ToolStrip.create({
         width: "100%",
-        height: 600,
-        fields: [
-            {name: "startDate", title: 'تاریخ شروع', width: "10%"},
-            {name: "endDate", title: 'تاریخ پایان', width: "10%"},
-            {name: "postTitle", title: "عنوان پست", width: "10%", align: "center"},
-            {name: "postCode", title: "کد پست", width: "10%", align: "center"},
-            {name: "affair", title: "امور", width: "10%", align: "center"},
-            {name: "section", title: "قسمت", width: "10%", align: "center"},
-            {name: "departmentTitle", title: "نام شرکت", width: "10%", align: "center"}
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    exportToExcelPersonnelJobHistory();
+                }.bind(this)
+            })
         ]
+    });
+    ToolStrip_Post_History_Actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    exportToExcelPostHistory();
+                }.bind(this)
+            }),
+            isc.Label.create({
+                width: "100"
+            }),
+            isc.Label.create({
+                ID:"postStatus",
+                wrap:false,
+                icon:"",
+                contents:"وضعیت پست:",
+                dynamicContents:true
+            })
+        ]
+    });
+    ToolStrip_Personnel_Training_Actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    exportToExcelPersonnelTraining();
+                }.bind(this)
+            })
+        ]
+    });
+
+    ListGrid_Personnel_Job_History = isc.TrLG.create({
+        dataSource: RestDataSource_Competence_Request_PersonnelJobExperiences,
+        selectionType: "single",
+        autoFetchData: false,
+        width: "100%",
+        height: "100%",
+        initialSort: [
+            {property: "assignmentDate", direction: "ascending"}
+        ],
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "personnelNo"},
+            {name: "ssn"},
+            {name: "assignmentDate"},
+            {name: "dismissalDate"},
+            {name: "postCode"},
+            {name: "postTitle"},
+            {name: "jobNo"},
+            {name: "jobTitle"},
+            {name: "departmentTitle"},
+            {name: "departmentCode", hidden: true},
+            {name: "omur"},
+            {name: "ghesmat"},
+            {name: "companyName"}
+
+        ],
+        gridComponents: [ToolStrip_Personnel_Job_History_Actions, "filterEditor", "header", "body"]
     });
     ListGrid_Post_History = isc.TrLG.create({
+        dataSource: RestDataSource_Competence_Request_PostInfo,
+        selectionType: "single",
+        autoFetchData: false,
         width: "100%",
-        height: 600,
-        fields: [
-            {name: "firstName", title: 'نام', width: "10%"},
-            {name: "lastName", title: 'نام خانوادگی', width: "10%"},
-            {name: "startDate", title: 'تاریخ شروع', width: "10%"},
-            {name: "endDate", title: 'تاریخ پایان', width: "10%"},
-            {name: "postTitle", title: "عنوان پست", width: "10%", align: "center"},
-            {name: "postCode", title: "کد پست", width: "10%", align: "center"},
-            {name: "affair", title: "امور", width: "10%", align: "center"},
-            {name: "section", title: "قسمت", width: "10%", align: "center"},
-            {name: "departmentTitle", title: "نام شرکت", width: "10%", align: "center"}
-        ]
+        height: "100%",
+        initialSort: [
+            {property: "assignmentDate", direction: "ascending"}
+        ],
+        gridComponents: [ToolStrip_Post_History_Actions, "filterEditor", "header", "body"]
     });
     ListGrid_Personnel_Training_History = isc.TrLG.create({
+        dataSource: RestDataSource_Competence_Request_PersonnelTraining,
+        selectionType: "single",
+        autoFetchData: false,
+        showGridSummary: true,
         width: "100%",
-        height: 600,
+        height: "100%",
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
                 name: "code",
                 title: "<spring:message code="class.code"/>",
-                align: "center"
+                align: "center",
+                filterOperator: "iContains",
+                summaryFunction:function (records) {
+                    return competenceRequestTotalPlanning(records)
+                }.bind(this)
+            },
+            {
+                name: "courseId",
+                title: "courseId",
+                align: "center",
+                filterOperator: "iContains",
+                hidden: true
             },
             {
                 name: "courseTitle",
                 title: "<spring:message code="course.title"/>",
-                align: "center"
+                align: "center",
+                filterOperator: "iContains",
+                summaryFunction: function(records){
+                    return competenceRequestTotalPassed(records)
+                }.bind(this)
             },
             {
                 name: "courseCode",
                 title: "<spring:message code="course.code"/>",
-                align: "center"
+                align: "center",
+                width: 100,
+                filterOperator: "iContains"
+            },
+            {
+                name: "titleClass",
+                title: "<spring:message code='class.title'/>",
+                align: "center",
+                filterOperator: "iContains",
+                hidden: true
             },
             {
                 name: "hduration",
                 title: "<spring:message code="class.duration"/>",
-                align: "center"
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
             },
             {
                 name: "startDate",
                 title: "<spring:message code='start.date'/>",
-                align: "center"
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
             },
             {
                 name: "endDate",
                 title: "<spring:message code='end.date'/>",
-                align: "center"
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {
+                name: "classStatusId",
+                title: "classStatusId",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                hidden: true
             },
             {
                 name: "classStatus",
                 title: "<spring:message code="class.status"/>",
-                align: "center"
+                align: "center",
+                filterOperator: "equals",
+                summaryFunction: function(records){
+                    return competenceRequestTotalRejected(records)
+                }.bind(this)
+            },
+            {
+                name: "scoreStateId",
+                title: "scoreStateId",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                hidden: true
             },
             {
                 name: "scoreState",
                 title: "<spring:message code="score.state"/>",
-                align: "center"
+                align: "center",
+                filterOperator: "iContains",
+                summaryFunction: function(records){
+                    return competenceRequestTotalAll(records)
+                }.bind(this)
             },
             {
                 name: "erunType",
                 title: "<spring:message code="course_eruntype"/>",
-                align: "center"
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
             }
-        ]
+        ],
+        gridComponents: [ToolStrip_Personnel_Training_Actions, "filterEditor", "header", "body", "summaryRow"]
     });
 
     Requests_Detail_Tabs = isc.TabSet.create({
@@ -657,14 +872,10 @@
         tabs: [
             {name: "TabPane_Personnel_Job_History", title: "سوابق شغلی پرسنل", pane: ListGrid_Personnel_Job_History},
             {name: "TabPane_Post_History", title: "سوابق پست پیشنهادی", pane: ListGrid_Post_History},
-            {
-                name: "TabPane_Personnel_Training_History",
-                title: "دوره های گذرانده فرد",
-                pane: ListGrid_Personnel_Training_History
-            }
+            {name: "TabPane_Personnel_Training_History", title: "دوره های گذرانده فرد", pane: ListGrid_Personnel_Training_History}
         ],
         tabSelected: function () {
-            // selectionUpdated_TrainingPost_Jsp();
+            selectionUpdated_Competence_Request();
         }
     });
 
@@ -732,7 +943,6 @@
         DynamicForm_Competence_Request.setValue("applicant", userUserName);
         Window_Competence_Request.show();
     }
-
     function editCompetenceRequest() {
 
         let record = ListGrid_Competence_Request.getSelectedRecord();
@@ -744,7 +954,6 @@
             Window_Competence_Request.show();
         }
     }
-
     function saveCompetenceRequest() {
 
         if (!DynamicForm_Competence_Request.validate())
@@ -787,7 +996,6 @@
         }
 
     }
-
     function deleteCompetenceRequest() {
 
         let record = ListGrid_Competence_Request.getSelectedRecord();
@@ -818,6 +1026,170 @@
         }
     }
 
+    function editRequestItem() {
+        ListGrid_Competence_Request_Items.startEditing();
+    }
+    function deleteRequestItem(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_Competence_Request_Item_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Competence_Request_Item_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/" + record.id, "DELETE", null, function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                wait.close();
+                                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                ListGrid_Competence_Request.invalidateCache();
+
+                            } else {
+                                wait.close();
+                                createDialog("info", "خطایی رخ داده است");
+                            }
+                        }));
+                    }
+                }
+            });
+        }
+    }
+    function setRequestItemData(records) {
+
+        let incorrectRecords = 1;
+        ListGrid_Competence_Request_Items.setData(records);
+        createDialog("info", incorrectRecords + " رکورد با دیتای نادرست اضافه شده است");
+    }
+
+    function selectionUpdated_Competence_Request() {
+
+        let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();
+        let tab = Requests_Detail_Tabs.getSelectedTab();
+
+        if (requestItem == null && tab.pane != null) {
+            tab.pane.setData([]);
+            return;
+        }
+
+        switch (tab.name) {
+            case "TabPane_Personnel_Job_History": {
+                RestDataSource_Competence_Request_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + requestItem.nationalCode;
+                ListGrid_Personnel_Job_History.fetchData();
+                ListGrid_Personnel_Job_History.invalidateCache();
+                break;
+            }
+            case "TabPane_Post_History": {
+
+                RestDataSource_Competence_Request_PostInfo.fetchDataURL = masterDataUrl + "/post?postCode=" + requestItem.post;
+                ListGrid_Post_History.fetchData();
+                ListGrid_Post_History.invalidateCache();
+                break;
+            }
+            case "TabPane_Personnel_Training_History": {
+                RestDataSource_Competence_Request_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + requestItem.nationalCode + "/" + requestItem.personnelNumber;
+                ListGrid_Personnel_Training_History.invalidateCache();
+                ListGrid_Personnel_Training_History.fetchData();
+                break;
+            }
+        }
+    }
+
+    function competenceRequestTotalAll(records) {
+        let totalAll_ = 0;
+        for (let i = 0; i < records.length; i++) {
+            totalAll_ += records[i].hduration;
+        }
+        return "<spring:message code='total.sum'/> : " + totalAll_ + " <spring:message code='hour'/> ";
+    }
+    function competenceRequestTotalRejected(records) {
+        let totalRejected_ = 0;
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].scoreStateId === 403 || records[i].scoreStateId === 405 || records[i].scoreStateId === 449)
+                totalRejected_ += records[i].hduration;
+        }
+        return "<spring:message code='missing.or.absent.sum'/> : " + totalRejected_ + " <spring:message code='hour'/> ";
+    }
+    function competenceRequestTotalPassed(records) {
+        let totalPassed_ = 0;
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].classStatusId !== 1)
+                totalPassed_ += records[i].hduration;
+        }
+        return "<spring:message code='passed.or.running.sum'/> : " + totalPassed_ + " <spring:message code='hour'/> ";
+    }
+    function competenceRequestTotalPlanning(records) {
+        let totalPlanning_ = 0;
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].classStatusId === 1)
+                totalPlanning_ += records[i].hduration;
+        }
+        return "<spring:message code='planning.sum'/> : " + totalPlanning_ + " <spring:message code='hour'/> ";
+    }
+
+    function exportToExcelRequestItems() {
+
+        let competenceRequest = ListGrid_Competence_Request.getSelectedRecord();
+        if (ListGrid_Competence_Request_Items.getData() === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else {
+
+            let itemFields = ListGrid_Competence_Request_Items.getFields().slice(1, 8).map(q => q.name);
+            let itemHeaders = ListGrid_Competence_Request_Items.getFields().slice(1, 8).map(q => q.title);
+            let title = "درخواست با شماره " + competenceRequest.id + " - درخواست دهنده " + competenceRequest.applicant;
+
+            let downloadForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "/training/reportsToExcel/competenceRequestWithItems",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "fieldNames", type: "hidden"},
+                        {name: "headers", type: "hidden"},
+                        {name: "compReqId", type: "hidden"},
+                        {name: "title", type: "hidden"}
+                    ]
+            });
+
+            downloadForm.setValue("fieldNames", itemFields);
+            downloadForm.setValue("headers", itemHeaders);
+            downloadForm.setValue("compReqId", competenceRequest.id);
+            downloadForm.setValue("title", title);
+            downloadForm.show();
+            downloadForm.submitForm();
+        }
+    }
+    function exportToExcelPersonnelJobHistory() {
+
+        let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();
+        if (ListGrid_Personnel_Job_History.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Personnel_Job_History, masterDataUrl + "/job/" + requestItem.nationalCode, 0, null,
+                '',"گزارش سوابق شغلی پرسنل"  , null, null);
+    }
+    function exportToExcelPostHistory() {
+
+        let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();
+        if (ListGrid_Post_History.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Post_History, masterDataUrl + "/post?postCode=" + requestItem.post, 0, null,
+                '',"گزارش سوابق پیشنهادی"  , null, null);
+    }
+    function exportToExcelPersonnelTraining() {
+
+        let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();
+        if (ListGrid_Personnel_Training_History.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Personnel_Training_History, classUrl + "personnel-training/" + requestItem.nationalCode + "/" + requestItem.personnelNumber, 0, null,
+                '',"گزارش دوره های گذرانده فرد"  , null, null);
+    }
+
     //---------------------------------------------------------Mock-----------------------------------------------------
 
     // ListGrid_Competence_Request.setData([
@@ -840,26 +1212,26 @@
     // ]);
     // ListGrid_Competence_Request_Items.setData([
     //     {
-    //         id: "1",
-    //         personnelNo: "1409023295",
-    //         personnelFirstName: "رضا",
-    //         personnelLastName: "خراسانی دهوئی",
-    //         affairs: "امور آب و بازیافت(سرچشمه)",
-    //         postCode: "52023502/1",
-    //         category: 8,
-    //         status: 1,
-    //         requestId: "1"
+    //         id:"1",
+    //         personnelNumber:"1634282153",
+    //         name:"غلامعلی",
+    //         lastName: "دهقانی سرگزی",
+    //         affairs: "امور HSE و کنترل فرآیند [سونگون]",
+    //         post: "62032311/3",
+    //         workGroupCode: "",
+    //         state: "",
+    //         competenceReqId: "3"
     //     },
     //     {
-    //         id: "2",
-    //         personnelNo: "3149096073",
-    //         personnelFirstName: "منوچهر",
-    //         personnelLastName: "ریاحی مدوار",
-    //         affairs: "امور روابط عمومی و خدمات اجتماعی شهربابک",
-    //         postCode: "7904780914/7",
-    //         category: 5,
-    //         status: 2,
-    //         requestId: "1"
+    //         id:"2",
+    //         personnelNumber:"1649198156",
+    //         name:"رفعت اله",
+    //         lastName: "جعفری یرکی",
+    //         affairs: "امور HSE و کنترل فرآیند [سونگون]",
+    //         post: "10002201/1",
+    //         workGroupCode: "",
+    //         state: "",
+    //         competenceReqId: "3"
     //     }
     // ]);
     //
