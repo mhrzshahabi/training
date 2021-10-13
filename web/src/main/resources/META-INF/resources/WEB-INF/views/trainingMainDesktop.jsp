@@ -1274,6 +1274,7 @@
     const viewStudentsInCanceledClassReportUrl = rootUrl + "/view-students-in-canceled-class-report";
     const loginLogUrl = rootUrl + "/log";
     const competenceRequestUrl = rootUrl + "/competence-request";
+    const RequestItemWithDiff = rootUrl + "/request-item/list";
     const requestItemUrl = rootUrl + "/request-item";
 
     // -------------------------------------------  Filters  -----------------------------------------------
