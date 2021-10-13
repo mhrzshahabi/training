@@ -376,9 +376,9 @@
                                 colSpan: 1,
                                 click:function () {
                                     let address=certificatExcelFile.getValue();
-                                    if(address==null){
+                                    if(address==null) {
                                         createDialog("info", "فايل خود را انتخاب نماييد.");
-                                    }else{
+                                    } else {
                                         let ExcelToJSON = function() {
 
                                             this.parseExcel = function(file) {
@@ -416,10 +416,9 @@
                                                         certificatExcelFile.setValue('');
                                                     });
 
-                                                    if(records.length > 0){
+                                                    if(records.length > 0) {
 
                                                         let uniqueRecords = [];
-
                                                         for (let i=0; i < records.length; i++) {
                                                             if (uniqueRecords.filter(function (item) {return item.personnelNumber === records[i].personnelNumber ;}).length===0) {
                                                                 uniqueRecords.push(records[i]);
@@ -429,17 +428,20 @@
                                                         isc.RPCManager.sendRequest(TrDSRequest(RequestItemWithDiff, "POST", JSON.stringify(uniqueRecords), function (resp) {
                                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                                 wait.close();
-                                                                ListGrid_Competence_Request_Items.setData(resp.data);
+                                                                let result = JSON.parse(resp.data);
+                                                                // debugger;
+                                                                setRequestItemData(result);
                                                             } else {
                                                                 wait.close();
                                                                 createDialog("info", "خطایی رخ داده است");
                                                             }
                                                         }));
-                                                        createDialog("info", "فایل به لیست اضافه شد.");
-                                                    }else{
-                                                        if(isEmpty){
+
+                                                    } else {
+
+                                                        if(isEmpty) {
                                                             createDialog("info", "خطا در محتویات فایل");
-                                                        }else{
+                                                        } else {
                                                             createDialog("info", "فرد جدیدی برای اضافه کردن وجود ندارد.");
                                                         }
                                                     }
@@ -450,8 +452,8 @@
                                                 reader.readAsBinaryString(file);
                                             };
                                         };
-                                        let split=$('[name="certificatExcelFile"]')[0].files[0].name.split('.');
 
+                                        let split=$('[name="certificatExcelFile"]')[0].files[0].name.split('.');
                                         if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
                                             let xl2json = new ExcelToJSON();
                                             xl2json.parseExcel($('[name="certificatExcelFile"]')[0].files[0]);
@@ -491,8 +493,9 @@
         width: "100%",
         styleName: "listgrid-child",
         height: 180,
-        // dataSource: RestDataSource_Competence_Request_Item,
+        dataSource: RestDataSource_Competence_Request_Item,
         setAutoFitExtraRecords: true,
+        editEvent: "doubleClick",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         fields: [
@@ -530,6 +533,7 @@
                 name: "workGroupCode",
                 width: "10%",
                 align: "center",
+                canEdit: false,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Competence_Request_Category,
                 displayField: "titleFa",
@@ -543,6 +547,7 @@
                 name: "state",
                 width: "10%",
                 align: "center",
+                canEdit: false,
                 valueMap: {
                     1: "بلامانع",
                     2: "نیاز به گذراندن دوره"
@@ -569,6 +574,48 @@
         recordClick: function () {
             selectionUpdated_Competence_Request();
         },
+        getCellCSSText: function (record, rowNum, colNum) {
+
+            if (this.getFieldName(colNum) == "name") {
+                if (record.nameCorrect != null && !record.nameCorrect)
+                    return "color:#d64949;";
+            } else if (this.getFieldName(colNum) == "lastName") {
+                if (record.lastNameCorrect != null && !record.lastNameCorrect)
+                    return "color:#d64949;";
+            } else if (this.getFieldName(colNum) == "affairs") {
+                if (record.affairsCorrect != null && !record.affairsCorrect)
+                    return "color:#d64949;";
+            }
+        },
+        rowEditorExit: function (editCompletionEvent, record, newValues, rowNum) {
+
+            if (editCompletionEvent == "enter") {
+
+                delete newValues["id"];
+
+                if (newValues && Object.keys(newValues).length === 0 && Object.getPrototypeOf(newValues) === Object.prototype)
+                    ListGrid_Competence_Request_Items.endEditing();
+
+                else {
+                    let recordData = newValues;
+                    if (record != null) {
+                        recordData = Object.assign(record, newValues);
+                    }
+
+                    wait.show();
+                    isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/" + recordData.id, "PUT", JSON.stringify(recordData), function (resp) {
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            wait.close();
+                            createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            ListGrid_Competence_Request_Items.invalidateCache();
+                        } else {
+                            wait.close();
+                            createDialog("info", "خطایی رخ داده است");
+                        }
+                    }));
+                }
+            }
+        },
         createRecordComponent: function (record, colNum) {
 
             var fieldName = this.getFieldName(colNum);
@@ -584,7 +631,7 @@
                     grid: this,
                     click: function () {
                         ListGrid_Competence_Request_Items.selectSingleRecord(record);
-                        editRequestItem(record);
+                        editRequestItem();
                     }
                 });
                 return editImg;
@@ -979,19 +1026,8 @@
         }
     }
 
-    function editRequestItem(record) {
-
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/" + record.id, "PUT", JSON.stringify(record), function (resp) {
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                wait.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                ListGrid_Competence_Request_Items.invalidateCache();
-            } else {
-                wait.close();
-                createDialog("info", "خطایی رخ داده است");
-            }
-        }));
+    function editRequestItem() {
+        ListGrid_Competence_Request_Items.startEditing();
     }
     function deleteRequestItem(record) {
 
@@ -1009,7 +1045,7 @@
                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                 wait.close();
                                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                ListGrid_Competence_Request_Items.invalidateCache();
+                                ListGrid_Competence_Request.invalidateCache();
 
                             } else {
                                 wait.close();
@@ -1020,6 +1056,12 @@
                 }
             });
         }
+    }
+    function setRequestItemData(records) {
+
+        let incorrectRecords = 1;
+        ListGrid_Competence_Request_Items.setData(records);
+        createDialog("info", incorrectRecords + " رکورد با دیتای نادرست اضافه شده است");
     }
 
     function selectionUpdated_Competence_Request() {
@@ -1089,20 +1131,35 @@
 
     function exportToExcelRequestItems() {
 
-        // debugger;
-        let competenceRequestId = ListGrid_Competence_Request.getSelectedRecord().id;
+        let competenceRequest = ListGrid_Competence_Request.getSelectedRecord();
         if (ListGrid_Competence_Request_Items.getData() === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else {
-            let criteriaReq = {
-                _constructor: "AdvancedCriteria",
-                operator: "and",
-                criteria: [{fieldName: "competenceReqId", operator: "equals", value: competenceRequestId}]
-            };
-            ExportToFile.downloadExcel(null, ListGrid_Competence_Request_Items, 'گزارش آیتم های درخواست', 0,
-                null, '', "گزارش آیتم های درخواست", null, null);
-            // ExportToFile.downloadExcelRestUrl(null, ListGrid_Competence_Request_Items, requestItemUrl + "/spec-list", 0, null,
-            //     '',"گزارش آیتم های درخواست"  , criteriaReq, null);
+
+            let itemFields = ListGrid_Competence_Request_Items.getFields().slice(1, 8).map(q => q.name);
+            let itemHeaders = ListGrid_Competence_Request_Items.getFields().slice(1, 8).map(q => q.title);
+            let title = "درخواست با شماره " + competenceRequest.id + " - درخواست دهنده " + competenceRequest.applicant;
+
+            let downloadForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "/training/reportsToExcel/competenceRequestWithItems",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "fieldNames", type: "hidden"},
+                        {name: "headers", type: "hidden"},
+                        {name: "compReqId", type: "hidden"},
+                        {name: "title", type: "hidden"}
+                    ]
+            });
+
+            downloadForm.setValue("fieldNames", itemFields);
+            downloadForm.setValue("headers", itemHeaders);
+            downloadForm.setValue("compReqId", competenceRequest.id);
+            downloadForm.setValue("title", title);
+            downloadForm.show();
+            downloadForm.submitForm();
         }
     }
     function exportToExcelPersonnelJobHistory() {
@@ -1153,34 +1210,30 @@
     //         letterNo: ""
     //     }
     // ]);
-
-
-    ListGrid_Competence_Request_Items.setData([
-        {
-            id:"1",
-            personnelNumber:"1634282153",
-            name:"غلامعلی",
-            lastName: "دهقانی سرگزی",
-            affairs: "امور HSE و کنترل فرآیند [سونگون]",
-            post: "62032311/3",
-            workGroupCode: "",
-            state: "",
-            competenceReqId: "3"
-        },
-        {
-            id:"2",
-            personnelNumber:"1649198156",
-            name:"رفعت اله",
-            lastName: "جعفری یرکی",
-            affairs: "امور HSE و کنترل فرآیند [سونگون]",
-            post: "10002201/1",
-            workGroupCode: "",
-            state: "",
-            competenceReqId: "3"
-        }
-    ]);
-
-
+    // ListGrid_Competence_Request_Items.setData([
+    //     {
+    //         id:"1",
+    //         personnelNumber:"1634282153",
+    //         name:"غلامعلی",
+    //         lastName: "دهقانی سرگزی",
+    //         affairs: "امور HSE و کنترل فرآیند [سونگون]",
+    //         post: "62032311/3",
+    //         workGroupCode: "",
+    //         state: "",
+    //         competenceReqId: "3"
+    //     },
+    //     {
+    //         id:"2",
+    //         personnelNumber:"1649198156",
+    //         name:"رفعت اله",
+    //         lastName: "جعفری یرکی",
+    //         affairs: "امور HSE و کنترل فرآیند [سونگون]",
+    //         post: "10002201/1",
+    //         workGroupCode: "",
+    //         state: "",
+    //         competenceReqId: "3"
+    //     }
+    // ]);
     //
     // ListGrid_Personnel_Job_History.setData([
     //     {
