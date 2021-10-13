@@ -937,7 +937,7 @@
                                                                                     ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
                                                                                     ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
                                                                                     if (classRecord_RE.classTeacherOnlineEvalStatus) {
-                                                                                        ToolStripButton_OnlineFormIssuanceForAll_RE.setDisabled(false);
+
                                                                                         classRecord_RE.classTeacherOnlineEvalStatus= false;
                                                                                         ListGrid_class_Evaluation.getSelectedRecord().classTeacherOnlineEvalStatus = false;
 

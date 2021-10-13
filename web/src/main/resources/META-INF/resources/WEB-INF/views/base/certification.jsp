@@ -304,7 +304,8 @@
                         numCols: 8,
                         fields: [
                             {
-                                name: "excelFile",
+                                ID:"certificatExcelFile",
+                                name: "certificatExcelFile",
                                 type: "file",
                                 title: "انتخاب فایل",
                                 endRow: false,
@@ -318,48 +319,91 @@
                                 width: 120,
                                 startRow: false,
                                 colSpan: 1,
-                                click: function () {
+                                click:function () {
+                                    let address=certificatExcelFile.getValue();
+                                    if(address==null){
+                                        createDialog("info", "فايل خود را انتخاب نماييد.");
+                                    }else{
+                                        let ExcelToJSON = function() {
 
-                                    debugger;
-                                    let fileBrowserId = document.getElementById(ToolStrip_Actions_Import_Data.members[0].getItem("excelFile").uploadItem.getElement().id);
-                                    let fieldNames = ListGrid_Competence_Request_Items.getFields().slice(1, 8).map(q => q.name);
+                                            this.parseExcel = function(file) {
+                                                let reader = new FileReader();
+                                                let records = [];
 
-                                    let formData = new FormData();
-                                    formData.append("file", fileBrowserId.files[0]);
-                                    formData.append("fieldNames", fieldNames);
+                                                reader.onload = function(e) {
+                                                    let data = e.target.result;
+                                                    let workbook = XLSX.read(data, {
+                                                        type: 'binary'
+                                                    });
+                                                    let isEmpty = true;
+                                                    workbook.SheetNames.forEach(function(sheetName) {
+                                                        let XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
 
-                                    let request = new XMLHttpRequest();
-                                    request.open("POST", "${contextPath}/training/reportsToExcel/import-data");
-                                    request.setRequestHeader("contentType", "application/json; charset=utf-8");
-                                    request.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
-                                    request.send(formData);
+                                                        for(let i=0;i<XL_row_object.length;i++){
+                                                            if(ListGrid_Competence_Request_Items.getData().filter(c =>
+                                                                c.personnelNumber === Object.values(XL_row_object[i])[1]).length===0){
+                                                                let current={personnelNumber:Object.values(XL_row_object[i])[1],
+                                                                    name:Object.values(XL_row_object[i])[2],
+                                                                    lastName:Object.values(XL_row_object[i])[3],
+                                                                    affairs:Object.values(XL_row_object[i])[4],
+                                                                    post:Object.values(XL_row_object[i])[5],
+                                                                    competenceReqId:ListGrid_Competence_Request.getSelectedRecord().id,
+                                                                };
+                                                                records.add(current);
+                                                                isEmpty=false;
+                                                                continue;
+                                                            }
+                                                            else{
+                                                                isEmpty=false;
+                                                                continue;
+                                                            }
+                                                        }
+                                                        certificatExcelFile.setValue('');
+                                                    });
 
-                                    request.onreadystatechange = function () {
+                                                    if(records.length > 0){
 
-                                        if (request.readyState === XMLHttpRequest.DONE) {
-                                            if (request.status === 0)
-                                                isc.warn("00");
-                                            else if (request.status === 500)
-                                                isc.warn("500");
-                                            else if (request.status === 200 || request.status === 201) {
-                                                isc.warn("200");
-                                                let gridData = JSON.parse(request.response);
-                                                for (let i = 0; i < gridData.length; i++) {
+                                                        let uniqueRecords = [];
 
-                                                    // let grid = inspectionReportTab.listGrid.weightElement;
-                                                    // grid.startEditing(i);
-                                                    // gridData[i].inventoryId = grid.getEditValue(i, 1);
-                                                    // grid.setEditValues(i, gridData[i]);
-                                                    // if (gridData[i].weighingType !== "WeighBridge" && gridData[i].weighingType !== "DraftSurvey") {
-                                                    //
-                                                    //     let colNum = grid.fields.indexOf(grid.fields.filter(q => q.name === "weighingType").first());
-                                                    //     grid.setEditValue(i, colNum, "WeighBridge");
-                                                    // }
-                                                    // grid.endEditing();
-                                                }
-                                            }
+                                                        for (let i=0; i < records.length; i++) {
+                                                            if (uniqueRecords.filter(function (item) {return item.personnelNumber === records[i].personnelNumber ;}).length===0) {
+                                                                uniqueRecords.push(records[i]);
+                                                            }
+                                                        }
+                                                        wait.show();
+                                                        isc.RPCManager.sendRequest(TrDSRequest(RequestItemWithDiff, "POST", JSON.stringify(uniqueRecords), function (resp) {
+                                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                                wait.close();
+                                                                ListGrid_Competence_Request_Items.setData(resp.data);
+                                                            } else {
+                                                                wait.close();
+                                                                createDialog("info", "خطایی رخ داده است");
+                                                            }
+                                                        }));
+                                                        createDialog("info", "فایل به لیست اضافه شد.");
+                                                    }else{
+                                                        if(isEmpty){
+                                                            createDialog("info", "خطا در محتویات فایل");
+                                                        }else{
+                                                            createDialog("info", "فرد جدیدی برای اضافه کردن وجود ندارد.");
+                                                        }
+                                                    }
+                                                };
+                                                reader.onerror = function(ex) {
+                                                    createDialog("info", "خطا در باز کردن فایل");
+                                                };
+                                                reader.readAsBinaryString(file);
+                                            };
+                                        };
+                                        let split=$('[name="certificatExcelFile"]')[0].files[0].name.split('.');
+
+                                        if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
+                                            let xl2json = new ExcelToJSON();
+                                            xl2json.parseExcel($('[name="certificatExcelFile"]')[0].files[0]);
+                                        }else{
+                                            createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
                                         }
-                                    };
+                                    }
                                 }
                             }
                         ]
@@ -386,6 +430,7 @@
         }
     });
     ListGrid_Competence_Request_Items = isc.TrLG.create({
+        ID: "Competence_Request_Items_LG",
         showFilterEditor: true,
         canAutoFitFields: true,
         width: "100%",
@@ -724,7 +769,7 @@
             }));
         } else {
 
-            debugger;
+
             let record = ListGrid_Competence_Request.getSelectedRecord();
 
             wait.show();
