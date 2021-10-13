@@ -271,7 +271,6 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Competence_Request,
-        // contextMenu: Menu_ListGrid_InvoiceSales,
         autoFetchData: true,
         styleName: 'expandList',
         alternateRecordStyles: true,
@@ -335,12 +334,11 @@
         ],
         getExpansionComponent: function (record) {
 
-            var criteriaReq = {
+            let criteriaReq = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [{fieldName: "competenceReqId", operator: "equals", value: record.id}]
             };
-
             ListGrid_Competence_Request_Items.fetchData(criteriaReq, function (dsResponse, data, dsRequest) {
                 if (data.length == 0) {
                     ListGrid_Competence_Request_Items.setData([]);
@@ -352,7 +350,7 @@
                 }
             }, {operationId: "00"});
 
-            var ToolStrip_Actions_Import_Data = isc.HLayout.create({
+            let ToolStrip_Actions_Import_Data = isc.HLayout.create({
                 width: "100%",
                 // membersMargin: 5,
                 members: [
@@ -424,12 +422,13 @@
                     isc.ToolStripButtonExcel.create({
                         align: "left",
                         click: function () {
+                            exportToExcelRequestItems();
                         }
                     })
                 ]
             });
 
-            var layoutCompetenceRequest = isc.VLayout.create({
+            let layoutCompetenceRequest = isc.VLayout.create({
                 styleName: "expand-layout",
                 padding: 5,
                 // membersMargin: 10,
@@ -438,7 +437,6 @@
                     ToolStrip_Actions_Import_Data
                 ]
             });
-
             return layoutCompetenceRequest;
         }
     });
@@ -1044,6 +1042,24 @@
         return "<spring:message code='planning.sum'/> : " + totalPlanning_ + " <spring:message code='hour'/> ";
     }
 
+    function exportToExcelRequestItems() {
+
+        // debugger;
+        let competenceRequestId = ListGrid_Competence_Request.getSelectedRecord().id;
+        if (ListGrid_Competence_Request_Items.getData() === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else {
+            let criteriaReq = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [{fieldName: "competenceReqId", operator: "equals", value: competenceRequestId}]
+            };
+            ExportToFile.downloadExcel(null, ListGrid_Competence_Request_Items, 'گزارش آیتم های درخواست', 0,
+                null, '', "گزارش آیتم های درخواست", null, null);
+            // ExportToFile.downloadExcelRestUrl(null, ListGrid_Competence_Request_Items, requestItemUrl + "/spec-list", 0, null,
+            //     '',"گزارش آیتم های درخواست"  , criteriaReq, null);
+        }
+    }
     function exportToExcelPersonnelJobHistory() {
 
         let requestItem = ListGrid_Competence_Request_Items.getSelectedRecord();
@@ -1092,6 +1108,8 @@
     //         letterNo: ""
     //     }
     // ]);
+
+
     ListGrid_Competence_Request_Items.setData([
         {
             id:"1",
@@ -1116,6 +1134,8 @@
             competenceReqId: "3"
         }
     ]);
+
+
     //
     // ListGrid_Personnel_Job_History.setData([
     //     {
