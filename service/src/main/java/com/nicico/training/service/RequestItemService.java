@@ -158,6 +158,7 @@ public class RequestItemService implements IRequestItemService {
             }
             RequestItem savedItem = create(requestItem);
             requestItemWithDiff.setId(savedItem.getId());
+            requestItemWithDiff.setCompetenceReqId(savedItem.getCompetenceReqId());
         } else {
             requestItemWithDiff.setPersonnelNumberCorrect(false);
             requestItemWithDiff.setAffairsCorrect(false);

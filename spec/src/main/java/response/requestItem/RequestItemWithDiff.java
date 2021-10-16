@@ -9,6 +9,7 @@ public class RequestItemWithDiff {
 
     private Long id;
     private int wrongCount;
+    private Long competenceReqId;
 
     private String personnelNumber;
     private String nationalCode;

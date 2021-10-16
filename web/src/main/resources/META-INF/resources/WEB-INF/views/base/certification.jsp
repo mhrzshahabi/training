@@ -30,14 +30,15 @@
     RestDataSource_Competence_Request_Item = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "personnelNumber", title: "شماره پرسنلی", filterOperator: "iContains"},
+            {name: "personnelNumber", title: "شماره پرسنلی 10 رقمی", filterOperator: "iContains"},
             {name: "name", title: "نام", filterOperator: "iContains"},
             {name: "lastName", title: "نام خانوادگی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
             {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
             {name: "state", title: "وضعیت", filterOperator: "iContains"},
-            {name: "competenceReqId", hidden: true}
+            {name: "competenceReqId", hidden: true},
+            {name: "nationalCode", hidden: true}
         ],
         fetchDataURL: requestItemUrl + "/spec-list"
     });
@@ -132,8 +133,13 @@
         icon: "<spring:url value="excel.png"/>",
         click: function () {
 
-            let headers = ListGrid_Competence_Request_Items.getFields().slice(1, 6).map(q => q.title);
-            let fieldNames = ListGrid_Competence_Request_Items.getFields().slice(1, 6).map(q => q.name);
+            // let record = ListGrid_Competence_Request.getRecord(0);
+            // ListGrid_Competence_Request.expandRecord(record);
+            // let headers = ListGrid_Competence_Request_Items.getFields().slice(1, 6).map(q => q.title);
+            // let fieldNames = ListGrid_Competence_Request_Items.getFields().slice(1, 6).map(q => q.name);
+
+            let headers = [ "شماره پرسنلی 10 رقمی", "نام", "نام خانوادگی", "امور", "کدپست پیشنهادی" ];
+            let fieldNames = [ "personnelNumber", "name", "lastName", "affairs", "post" ];
             window.open("${contextPath}/training/reportsToExcel/export?headers=" + headers + "&fieldNames=" + fieldNames);
         }
     });
@@ -149,7 +155,7 @@
         membersMargin: 5,
         members: [
             ToolStripButton_Add_Competence_Request,
-            ToolStripButton_Edit_Competence_Request,
+            // ToolStripButton_Edit_Competence_Request,
             ToolStripButton_Delete_Competence_Request,
             ToolStripButton_Excel_Competence_Request,
             isc.ToolStrip.create({
@@ -429,7 +435,6 @@
                                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                                 wait.close();
                                                                 let result = JSON.parse(resp.data);
-                                                                // debugger;
                                                                 setRequestItemData(result);
                                                             } else {
                                                                 wait.close();
@@ -555,6 +560,10 @@
             },
             {
                 name: "competenceReqId",
+                hidden: true
+            },
+            {
+                name: "nationalCode",
                 hidden: true
             },
             {
@@ -1057,11 +1066,10 @@
             });
         }
     }
-    function setRequestItemData(records) {
+    function setRequestItemData(result) {
 
-        let incorrectRecords = 1;
-        ListGrid_Competence_Request_Items.setData(records);
-        createDialog("info", incorrectRecords + " رکورد با دیتای نادرست اضافه شده است");
+        ListGrid_Competence_Request_Items.setData(result.list);
+        createDialog("info", result.wrongCount + " رکورد با دیتای نادرست اضافه شده است");
     }
 
     function selectionUpdated_Competence_Request() {
