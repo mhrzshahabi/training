@@ -11,6 +11,7 @@ import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.*;
+import com.nicico.training.repository.QuestionBankTestQuestionDAO;
 import com.nicico.training.service.EvaluationService;
 import com.nicico.training.service.QuestionnaireService;
 import com.nicico.training.service.TeacherService;
@@ -79,8 +80,9 @@ public abstract class EvaluationBeanMapper {
     protected IQuestionProtocolService iQuestionProtocolService;
     @Autowired
     protected ITestQuestionService iTestQuestionService;
+
     @Autowired
-    protected IQuestionBankTestQuestionService iQuestionBankTestQuestionService;
+    protected QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
 
     @Autowired
     protected IEvaluationService evaluationService;
@@ -351,7 +353,7 @@ public abstract class EvaluationBeanMapper {
         int time = Math.toIntExact(exam.getDuration());
 
         int timeQues = 0;
-        List<QuestionBankTestQuestion>  QuestionBankTestQuestionList= iQuestionBankTestQuestionService.getExamQuestions(exam.getId());
+        List<QuestionBankTestQuestion>  QuestionBankTestQuestionList= questionBankTestQuestionDAO.findAllByTestQuestionId(exam.getId());
         if (QuestionBankTestQuestionList != null && QuestionBankTestQuestionList.size() > 0)
             timeQues = (time * 60) / QuestionBankTestQuestionList.size();
 
@@ -442,7 +444,7 @@ public abstract class EvaluationBeanMapper {
         ElsExamRequestResponse elsExamRequestResponse = new ElsExamRequestResponse();
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
 
-        List<QuestionBankTestQuestion>  QuestionBankTestQuestionList= iQuestionBankTestQuestionService.getExamQuestions(exam.getId());
+        List<QuestionBankTestQuestion>  QuestionBankTestQuestionList= questionBankTestQuestionDAO.findAllByTestQuestionId(exam.getId());
 
         ExamCreateDTO exam2 = getPreExamData2(exam, tClass, QuestionBankTestQuestionList.size());
         ImportedCourseCategory courseCategory = getCourseCategoryData2(exam);
