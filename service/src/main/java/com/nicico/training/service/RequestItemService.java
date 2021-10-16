@@ -35,7 +35,10 @@ public class RequestItemService implements IRequestItemService {
     public RequestItem create(RequestItem requestItem) {
         CompetenceRequest competenceRequest = competenceRequestService.get(requestItem.getCompetenceReqId());
         requestItem.setCompetenceReq(competenceRequest);
-        return requestItemDAO.save(requestItem);
+        RequestItem saved=requestItemDAO.save(requestItem);
+        Personnel personnel = personnelService.getByPersonnelNumber(requestItem.getPersonnelNumber());
+        saved.setNationalCode(personnel.getNationalCode());
+        return saved;
     }
 
     @Override

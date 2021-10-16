@@ -43,6 +43,9 @@ public class RequestItem extends Auditable {
     @Column(name = "work_group_code")
     private String workGroupCode;
 
+    @Transient
+    private String nationalCode;
+
     @Column(name = "state")
     private RequestItemState state;
 

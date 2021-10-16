@@ -44,6 +44,8 @@ public class RequestItemDTO {
     @ApiModel("RequestItemInfo")
     public static class Info extends RequestItemDTO {
         private Long id;
+        private String nationalCode;
+
     }
 
 
