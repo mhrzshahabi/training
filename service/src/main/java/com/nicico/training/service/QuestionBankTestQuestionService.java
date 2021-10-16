@@ -14,6 +14,7 @@ import dto.exam.ExamData;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.security.acls.model.NotFoundException;
@@ -30,18 +31,47 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionBankTestQuestionService implements IQuestionBankTestQuestionService {
 
-    private final TclassDAO tclassDAO;
-    private final TeacherDAO teacherDAO;
-    private final ModelMapper modelMapper;
-    private final ContactInfoDAO contactInfoDAO;
-    private final TestQuestionDAO testQuestionDAO;
-    private final QuestionBankDAO questionBankDAO;
-    private final PersonalInfoDAO personalInfoDAO;
-    private final ParameterValueDAO parameterValueDAO;
-    private final ClassStudentService classStudentService;
-    private final EvaluationBeanMapper evaluationBeanMapper;
-    private final QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
-    private MessageSource messageSource;
+    TclassDAO tclassDAO;
+    TeacherDAO teacherDAO;
+    ModelMapper modelMapper;
+    ContactInfoDAO contactInfoDAO;
+    TestQuestionDAO testQuestionDAO;
+    QuestionBankDAO questionBankDAO;
+    PersonalInfoDAO personalInfoDAO;
+    ParameterValueDAO parameterValueDAO;
+    ClassStudentService classStudentService;
+    EvaluationBeanMapper evaluationBeanMapper;
+    QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
+    MessageSource messageSource;
+
+
+    @Autowired
+    public QuestionBankTestQuestionService(TclassDAO tclassDAO,
+                                           TeacherDAO teacherDAO,
+                                           ModelMapper modelMapper,
+                                           ContactInfoDAO contactInfoDAO,
+                                           TestQuestionDAO testQuestionDAO,
+                                           QuestionBankDAO questionBankDAO,
+                                           PersonalInfoDAO personalInfoDAO,
+                                           ParameterValueDAO parameterValueDAO,
+                                           ClassStudentService classStudentService,
+                                           EvaluationBeanMapper evaluationBeanMapper,
+                                           QuestionBankTestQuestionDAO questionBankTestQuestionDAO,
+                                           MessageSource messageSource) {
+
+        this.teacherDAO = teacherDAO;
+        this.tclassDAO = tclassDAO;
+        this.modelMapper = modelMapper;
+        this.contactInfoDAO = contactInfoDAO;
+        this.testQuestionDAO = testQuestionDAO;
+        this.questionBankDAO = questionBankDAO;
+        this.personalInfoDAO = personalInfoDAO;
+        this.parameterValueDAO = parameterValueDAO;
+        this.classStudentService = classStudentService;
+        this.evaluationBeanMapper = evaluationBeanMapper;
+        this.questionBankTestQuestionDAO = questionBankTestQuestionDAO;
+        this.messageSource = messageSource;
+    }
 
     @Transactional
     @Override
@@ -127,10 +157,10 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
 
         if (type.equals("preTest")) {
             elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(tclass, personalInfo, object,
-                            classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
+                    classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
         } else {
             elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclass, personalInfo, object,
-                            classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
+                    classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
         }
         request = elsExamRequestResponse.getElsExamRequest();
         boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
@@ -202,7 +232,7 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
 
     @Override
     public boolean usedQuestion(Long questionBankId) {
-        List<QuestionBankTestQuestion> optionalQuestionBank=questionBankTestQuestionDAO.findAllByQuestionBankId(questionBankId);
+        List<QuestionBankTestQuestion> optionalQuestionBank = questionBankTestQuestionDAO.findAllByQuestionBankId(questionBankId);
         return !optionalQuestionBank.isEmpty();
     }
 

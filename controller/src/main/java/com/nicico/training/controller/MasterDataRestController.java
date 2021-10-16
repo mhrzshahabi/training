@@ -214,6 +214,10 @@ public class MasterDataRestController {
             response.setTotalRows(postInfoList.size());
             response.setStatus(200);
 
+
+//if (postInfoList.size()>0){
+////zaza
+//}
             ISC<JobExpResponse.postInfo> isc = new ISC<>(response);
             return new ResponseEntity<>(isc, HttpStatus.OK);
 

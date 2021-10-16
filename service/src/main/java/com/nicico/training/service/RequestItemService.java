@@ -36,8 +36,7 @@ public class RequestItemService implements IRequestItemService {
         CompetenceRequest competenceRequest = competenceRequestService.get(requestItem.getCompetenceReqId());
         requestItem.setCompetenceReq(competenceRequest);
         RequestItem saved=requestItemDAO.save(requestItem);
-        Personnel personnel = personnelService.getByPersonnelNumber(requestItem.getPersonnelNumber());
-        saved.setNationalCode(personnel.getNationalCode());
+        saved.setNationalCode(getNationalCode(saved.getPersonnelNumber()));
         return saved;
     }
 
@@ -60,6 +59,10 @@ public class RequestItemService implements IRequestItemService {
     public RequestItem get(Long id) {
         return requestItemDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
+    public String getNationalCode(String personnelNumber) {
+        Personnel personnel = personnelService.getByPersonnelNumber(personnelNumber);
+        return personnel.getNationalCode();
+    }
 
     @Override
     public void delete(Long id) {
@@ -78,12 +81,18 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     public List<RequestItem> search(SearchDTO.SearchRq request) {
+        List<RequestItem>list;
         if (request.getStartIndex() != null) {
             Page<RequestItem> all = requestItemDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
-            return all.getContent();
+            list= all.getContent();
         } else {
-            return requestItemDAO.findAll(NICICOSpecification.of(request));
+            list= requestItemDAO.findAll(NICICOSpecification.of(request));
         }
+        for (RequestItem requestItem:list){
+            requestItem.setNationalCode(getNationalCode(requestItem.getPersonnelNumber()));
+        }
+
+        return list;
 
     }
 
