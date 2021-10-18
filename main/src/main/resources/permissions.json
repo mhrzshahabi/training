@@ -76,7 +76,7 @@
       "title": "منوی نیازسنجی - پست"
     },
     {
-      "code": "Menu_NeedAssessment_Certification",
+      "code": "Menu_NeedAssessment_CompetenceRequest",
       "title": "منوی نیازسنجی - تایید صلاحیت علمی و فنی"
     },
 
@@ -407,6 +407,11 @@
     {"code": "Competence_U", "title": "ویرایش شایستگی"},
     {"code": "Competence_D", "title": "حذف شایستگی"},
     {"code": "Competence_P", "title": "چاپ شایستگی"},
+    {"code": "CompetenceRequest_C", "title": "ایجاد درخواست تایید صلاحیت"},
+    {"code": "CompetenceRequest_R", "title": "مشاهده درخواست تایید صلاحیت"},
+    {"code": "CompetenceRequest_U", "title": "ویرایش درخواست تایید صلاحیت"},
+    {"code": "CompetenceRequest_D", "title": "حذف درخواست تایید صلاحیت"},
+    {"code": "CompetenceRequest_P", "title": "چاپ درخواست تایید صلاحیت"},
     {"code": "ContactInfo_C", "title": "ایجاد اطلاعات تماس"},
     {"code": "ContactInfo_R", "title": "مشاهده اطلاعات تماس"},
     {"code": "ContactInfo_U", "title": "ویرایش اطلاعات تماس"},
@@ -488,6 +493,7 @@
     {"code": "NeedAssessment_U", "title": "ویرایش نیازسنجی"},
     {"code": "NeedAssessment_D", "title": "حذف نیازسنجی"},
     {"code": "NeedAssessment_P", "title": "چاپ نیازسنجی"},
+    {"code": "NeedAssessment_T", "title": "درخت نیازسنجی"},
     {"code": "NeedAssessment_WFCommittee", "title": "ارسال به گردش کار کمیته نیازسنجی"},
     {"code": "NeedAssessment_WFMain", "title": "ارسال به گردش کار اصلی نیازسنجی"},
     {"code": "NeedAssessmentSkillBased_C", "title": "ایجاد نیازسنجی مبتنی بر مهارت"},
@@ -511,8 +517,10 @@
     {"code": "Personnel_D", "title": "حذف پرسنل"},
     {"code": "Personnel_P", "title": "چاپ پرسنل"},
     {"code": "Training_Post_C", "title": "ایجاد پست"},
+    {"code": "Training_Post_R", "title": "مشاهده پست"},
     {"code": "Training_Post_U", "title": "ویرایش پست"},
     {"code": "Training_Post_D", "title": "حذف پست"},
+    {"code": "Training_Post_P", "title": "چاپ پست"},
     {"code": "Training_Post_List_CD", "title": "لیست پست ها"},
     {"code": "NeedAssessment_Tree_Training_Post_U", "title": "ویرایش نیازسنجی مبتنی پست"},
     {"code": "Post_C", "title": "ایجاد پست انفرادی"},

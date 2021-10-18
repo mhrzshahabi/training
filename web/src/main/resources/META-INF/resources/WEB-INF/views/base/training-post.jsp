@@ -162,38 +162,42 @@
     });
     var Menu_ListGrid_TrainingPost_Jsp = isc.Menu.create({
         width: 150,
-        data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_TrainingPost_refresh();
-            }
-        },
+        data: [
+            <sec:authorize access="hasAuthority('Training_Post_R')">
+            {
+                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                    ListGrid_TrainingPost_refresh();
+                }
+            },
+            </sec:authorize>
+
             <sec:authorize access="hasAuthority('Training_Post_C')">
             {
-            title: " ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
-                ListGrid_TrainingPost_add();
-                }
-        },
+                title: " ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+                    ListGrid_TrainingPost_add();
+                    }
+            },
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('Training_Post_U')">
             {
-            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
-                ListGrid_TrainingPost_edit();
-            }
-        },
+                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+                    ListGrid_TrainingPost_edit();
+                }
+            },
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('Training_Post_D')">
             {
-            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                ListGrid_TrainingPost_remove();
-            }
-        },
+                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+                    ListGrid_TrainingPost_remove();
+                }
+            },
             </sec:authorize>
 
             {isSeparator: true},
 
-            <sec:authorize access="hasAuthority('Training_Post_List_CD')">
+            <sec:authorize access="hasAuthority('Training_Post_R')">
             {
                 title: "لیست پست های انفرادی دسته بندی شده", icon: "<spring:url value="post.png"/>", click: function () {
                     let record = ListGrid_TrainingPost_Jsp.getSelectedRecord();
@@ -220,13 +224,14 @@
                 }
             }
             </sec:authorize>
-
         ]
     });
     var ListGrid_TrainingPost_Jsp = isc.TrLG.create({
         color: "red",
         selectionType: "single",
+        <sec:authorize access="hasAuthority('Training_Post_R')">
         dataSource: RestDataSource_TrainingPost_Jsp,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_TrainingPost_Jsp,
         canMultiSort: true,
         dataPageSize: 20,
@@ -586,7 +591,6 @@
         }
     });
 
-    <sec:authorize access="hasAuthority('Training_Post_List_CD')">
     let addSelections = isc.ToolStripButtonAdd.create({
         height:25,
         title:"اضافه کردن گروهی",
@@ -608,7 +612,6 @@
             }
         }
     });
-    </sec:authorize>
 
     Lable_NullPosts = isc.LgLabel.create({contents:"لیست پست های انفرادی دسته بندی نشده", customEdges: ["R","L","T", "B"]});
 
@@ -622,11 +625,7 @@
         showRecordComponentsByCell: true,
         gridComponents: [
             Lable_NullPosts,
-
-            <sec:authorize access="hasAuthority('Training_Post_List_CD')">
             addSelections,
-            </sec:authorize>
-
             "filterEditor", "header", "body"],
         fields: [
             {name: "peopleType",
@@ -690,7 +689,6 @@
         }
     });
 
-    <sec:authorize access="hasAuthority('Training_Post_List_CD')">
     var VLayOut_TrainingPost_Posts_Jsp = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -766,9 +764,7 @@
             })
         ]
     });
-    </sec:authorize>
 
-    <sec:authorize access="hasAuthority('Training_Post_List_CD')">
     var Window_Add_Post_to_TrainingPost = isc.Window.create({
         title: "لیست پست ها",
         align: "center",
@@ -783,7 +779,6 @@
             VLayOut_TrainingPost_Posts_Jsp
         ]
     });
-    </sec:authorize>
 
     let ToolStrip_TrainingPost_Grades_Export2EXcel = isc.ToolStrip.create({
         width: "100%",
@@ -1178,7 +1173,6 @@
         }
     });
 
-    <sec:authorize access="hasAuthority('NeedAssessment_Tree_Training_Post_U')">
     ToolStripButton_EditNA_Jsp = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی",
         click: function () {
@@ -1197,9 +1191,6 @@
             // Window_NeedsAssessment_Edit.show();
         }
     });
-    </sec:authorize>
-
-    <sec:authorize access="hasAuthority('NeedAssessment_Tree_Training_Post_U')">
     ToolStripButton_TreeNA_JspTrainingPost = isc.ToolStripButton.create({
         title: "درخت نیازسنجی",
         click: function () {
@@ -1210,7 +1201,6 @@
             Window_NeedsAssessment_Tree.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost");
         }
     });
-    </sec:authorize>
 
 
     ToolStrip_NA_TrainingPost_Jsp = isc.ToolStrip.create({
@@ -1219,11 +1209,11 @@
         members: [
             // ToolStripButton_unGroupedPosts_Jsp,
             // ToolStripButton_newPosts_Jsp,
-            <sec:authorize access="hasAuthority('NeedAssessment_Tree_Training_Post_U')">
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
             ToolStripButton_EditNA_Jsp,
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('NeedAssessment_Tree_Training_Post_U')">
+            <sec:authorize access="hasAuthority('NeedAssessment_T')">
             ToolStripButton_TreeNA_JspTrainingPost
             </sec:authorize>
         ]
@@ -1274,7 +1264,7 @@
     });
     </sec:authorize>
 
-    <sec:authorize access="hasAuthority('Training_Post_List_CD')">
+    <sec:authorize access="hasAuthority('Training_Post_R')">
     var ToolStripButton_Add_TrainingPost_AddPost_Jsp = isc.ToolStripButton.create({
         title: "لیست پست ها",
         click: function () {
@@ -1327,17 +1317,21 @@
             ToolStripButton_Remove_TrainingPost_Jsp,
             </sec:authorize>
 
-            <sec:authorize access="hasAuthority('Training_Post_List_CD')">
+            <sec:authorize access="hasAuthority('Training_Post_R')">
             ToolStripButton_Add_TrainingPost_AddPost_Jsp,
             </sec:authorize>
 
+            <sec:authorize access="hasAuthority('Training_Post_P')">
             ToolStrip_TrainingPost_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Training_Post_R')">
                     ToolStripButton_Refresh_TrainingPost_Jsp,
+                    </sec:authorize>
                 ]
             }),
         ]
@@ -1619,7 +1613,11 @@
         width: "100%",
         height: "100%",
         <%--border: "2px solid blue",--%>
-        members: [Detail_Tab_TrainingPost]
+        members: [
+            <sec:authorize access="hasAuthority('Training_Post_R')">
+            Detail_Tab_TrainingPost
+            </sec:authorize>
+        ]
     });
 
     var HLayout_Grid_TrainingPost_Jsp = isc.HLayout.create({
