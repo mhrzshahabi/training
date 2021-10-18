@@ -307,4 +307,8 @@
     <changeSet author="namdari (generated)" id="1633848478000-1">
         <createSequence sequenceName="seq_request_item_id"/>
     </changeSet>
+
+    <changeSet author="nima (generated)" id="1634462669353-547">
+        <createSequence sequenceName="request_seq_id"/>
+    </changeSet>
 </databaseChangeLog>
