@@ -4,9 +4,11 @@ import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.ICompetenceRequestService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IRequestItemService;
+import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.model.CompetenceRequest;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.RequestItem;
@@ -29,6 +31,7 @@ public class RequestItemService implements IRequestItemService {
     private final RequestItemDAO requestItemDAO;
     private final ICompetenceRequestService competenceRequestService;
     private final IPersonnelService personnelService;
+    private final RequestItemBeanMapper requestItemBeanMapper;
 
     @Override
     @Transactional
@@ -175,5 +178,16 @@ public class RequestItemService implements IRequestItemService {
         return requestItemDAO.findAllByCompetenceReqId(id);
     }
 
+    @Override
+    public List<RequestItemDTO.Info> getItemListWithCompetenceRequest(Long id) {
+
+        List<RequestItemDTO.Info> infoList = new ArrayList<>();
+        List<RequestItem> requestItems = requestItemDAO.findAllByCompetenceReqId(id);
+        requestItems.forEach(item -> {
+            RequestItemDTO.Info info = requestItemBeanMapper.toRequestItemDto(item);
+            infoList.add(info);
+        });
+        return infoList;
+    }
 
 }

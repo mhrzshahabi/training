@@ -1,10 +1,8 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
-import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
 import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
 import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
@@ -113,10 +111,10 @@ public class ReportsToExcelFormController {
                               HttpServletResponse response) throws Exception {
 
         List<Object> resp = new ArrayList<>();
-        List<RequestItem> requestItems = iRequestItemService.getListWithCompetenceRequest(compReqId);
+        List<RequestItemDTO.Info> requestItems = iRequestItemService.getItemListWithCompetenceRequest(compReqId);
         if (requestItems != null) resp.addAll(requestItems);
 
-        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, RequestItem.class, fieldNames, headers, true, title);
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, RequestItemDTO.Info.class, fieldNames, headers, true, title);
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
 
