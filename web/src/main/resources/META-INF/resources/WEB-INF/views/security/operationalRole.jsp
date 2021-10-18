@@ -77,7 +77,7 @@
     });
 
 
-    var PostDS_OperationalRole = isc.TrDS.create({
+    let PostDS_OperationalRole = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
@@ -98,7 +98,7 @@
             {name: "modifiedByNA", hidden: true, title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "enabled", hidden: true, title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
         ],
-        fetchDataURL: viewPostUrl + "/iscList"
+        // fetchDataURL: viewPostUrl + "/iscList"
         // fetchDataURL: viewPostUrl + "/rolePostList"
     });
 
@@ -113,10 +113,13 @@
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
+                PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + 0;
                 ListGrid_OperationalRole_Add();
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
+                let record = ListGrid_JspOperationalRole.getSelectedRecord();
+                PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
                 ListGrid_OperationalRole_Edit();
             }
         }, {
@@ -204,7 +207,8 @@
                 ]
             }
         ],
-        rowDoubleClick: function () {
+        rowDoubleClick: function (record) {
+            PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
             ListGrid_OperationalRole_Edit();
         },
         filterEditorSubmit: function () {
@@ -465,11 +469,18 @@
 
     var ToolStripButton_Edit_JspOperationalRole = isc.ToolStripButtonEdit.create({
         click: function () {
-            ListGrid_OperationalRole_Edit();
+            let record = ListGrid_JspOperationalRole.getSelectedRecord();
+            if (record == null || record.id == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            } else {
+                PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
+                ListGrid_OperationalRole_Edit();
+            }
         }
     });
     var ToolStripButton_Add_JspOperationalRole = isc.ToolStripButtonCreate.create({
         click: function () {
+            PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + 0;
             ListGrid_OperationalRole_Add();
         }
     });
@@ -512,6 +523,7 @@
 
     function ListGrid_OperationalRole_Add() {
         methodOperationalRole = "POST";
+        // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/";
         saveActionUrlOperationalRole = operationalRoleUrl;
         DynamicForm_JspOperationalRole.clearValues();
         Window_JspOperationalRole.show();
@@ -523,6 +535,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             methodOperationalRole = "PUT";
+            // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/iscList";
             saveActionUrlOperationalRole = operationalRoleUrl + "/" + record.id;
             DynamicForm_JspOperationalRole.clearValues();
             DynamicForm_JspOperationalRole.editRecord(record);

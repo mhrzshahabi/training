@@ -56,11 +56,11 @@ public class OperationalRoleService implements IOperationalRoleService {
     }
 
     @Override
-    public List<Long> getUsedPostIdsInRoles() {
-//        if (roleId == null){
-//            roleId = 0L;
-//        }
-        List<Long> usedPostIds = operationalRoleDAO.getUsedPostIdsInRoles();
+    public List<Long> getUsedPostIdsInRoles(Long roleId) {
+        if (roleId == null){
+            roleId = 0L;
+        }
+        List<Long> usedPostIds = operationalRoleDAO.getUsedPostIdsInRoles(roleId);
         return usedPostIds;
     }
 
@@ -78,6 +78,7 @@ public class OperationalRoleService implements IOperationalRoleService {
         OperationalRole updating = new OperationalRole();
         updating = mapper.copyOperationalRoleFrom(operationalRole);
         updating.setUserIds(request.getUserIds());
+        updating.setPostIds(request.getPostIds());
         try {
             return mapper.toOperationalRoleInfoDto(operationalRoleDAO.save(updating));
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {

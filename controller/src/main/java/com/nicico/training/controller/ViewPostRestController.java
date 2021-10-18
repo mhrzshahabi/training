@@ -42,11 +42,11 @@ public class ViewPostRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
-    @GetMapping(value = "/rolePostList")
-    public ResponseEntity<ISC<ViewPostDTO.Info>> rolePostList(HttpServletRequest iscRq) throws IOException {
+    @GetMapping(value = "/rolePostList/{roleId}")
+    public ResponseEntity<ISC<ViewPostDTO.Info>> rolePostList(HttpServletRequest iscRq, @PathVariable Long roleId) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
-        List<Long> usedPostIds = iOperationalRoleService.getUsedPostIdsInRoles();
+        List<Long> usedPostIds = iOperationalRoleService.getUsedPostIdsInRoles(roleId);
         if (usedPostIds != null && usedPostIds.size() > 0) {
             List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
             criteriaList.add(makeNewCriteria("id", usedPostIds, EOperator.notInSet, null));

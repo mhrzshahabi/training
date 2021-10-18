@@ -8,7 +8,7 @@ import java.util.List;
 public interface IOperationalRoleService {
     OperationalRoleDTO.Info create(OperationalRoleDTO.Create request);
 
-    List<Long> getUsedPostIdsInRoles();
+    List<Long> getUsedPostIdsInRoles(Long roleId);
 
     SearchDTO.SearchRs<OperationalRoleDTO.Info> search(SearchDTO.SearchRq searchRq);
 
