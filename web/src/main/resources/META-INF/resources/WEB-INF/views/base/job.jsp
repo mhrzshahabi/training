@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     {
@@ -24,13 +25,15 @@
         ///////////////////////////////////////////////////Menu/////////////////////////////////////////////////////////////
         JobMenu_job = isc.Menu.create({
             data: [
+                <sec:authorize access="hasAuthority('Job_R')">
                 {
                     title: "<spring:message code="refresh"/>",
                     icon: "<spring:url value="refresh.png"/>",
                     click: function () {
                         refresh_Job();
                     }
-                },
+                }
+                </sec:authorize>
             ]
         });
 
@@ -72,7 +75,19 @@
         ToolStrip_NA_Job = isc.ToolStrip.create({
             width: "100%",
             membersMargin: 5,
-            members: [ToolStripButton_EditNA_Job, ToolStripButton_TreeNA_JspJob, ToolStrip_Job_Export2EXcel]
+            members: [
+                <sec:authorize access="hasAuthority('NeedAssessment_U')">
+                ToolStripButton_EditNA_Job,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('NeedAssessment_T')">
+                ToolStripButton_TreeNA_JspJob,
+                </sec:authorize>
+
+                <sec:authorize access="hasAuthority('Job_P')">
+                ToolStrip_Job_Export2EXcel
+                </sec:authorize>
+            ]
         });
 
         JobTS_job = isc.ToolStrip.create({
@@ -161,7 +176,9 @@
         });
 
         JobLG_job = isc.TrLG.create({
+            <sec:authorize access="hasAuthority('Job_R')">
             dataSource: JobDS_job,
+            </sec:authorize>
             fields: [
                 {
                     name: "code",
@@ -730,7 +747,12 @@
 
         //////////////////////////////////////////////////////////Form//////////////////////////////////////////////////////
         isc.TrVLayout.create({
-            members: [JobLG_job, DetailTab_Job],
+            members: [
+                JobLG_job,
+                <sec:authorize access="hasAuthority('Job_R')">
+                DetailTab_Job
+                </sec:authorize>
+            ]
         });
 
         /////////////////////////////////////////////////////////Functions//////////////////////////////////////////////////

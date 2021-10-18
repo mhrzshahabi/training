@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
 
 // <script>
@@ -154,14 +155,26 @@
         border: '0px',
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('CompetenceRequest_C')">
             ToolStripButton_Add_Competence_Request,
+            </sec:authorize>
+            <%--<sec:authorize access="hasAuthority('CompetenceRequest_U')">--%>
             // ToolStripButton_Edit_Competence_Request,
+            <%--</sec:authorize>--%>
+            <sec:authorize access="hasAuthority('CompetenceRequest_D')">
             ToolStripButton_Delete_Competence_Request,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('CompetenceRequest_P')">
             ToolStripButton_Excel_Competence_Request,
+            </sec:authorize>
             isc.ToolStrip.create({
                 align: "left",
                 border: '0px',
-                members: [ToolStripButton_Refresh_Competence_Request]
+                members: [
+                    <sec:authorize access="hasAuthority('CompetenceRequest_R')">
+                    ToolStripButton_Refresh_Competence_Request
+                    </sec:authorize>
+                ]
             })
         ]
     });
@@ -276,7 +289,9 @@
         canAutoFitFields: true,
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('CompetenceRequest_R')">
         dataSource: RestDataSource_Competence_Request,
+        </sec:authorize>
         autoFetchData: true,
         styleName: 'expandList',
         alternateRecordStyles: true,
@@ -364,6 +379,7 @@
                         width: "20%",
                         numCols: 8,
                         fields: [
+                            <sec:authorize access="hasAuthority('CompetenceRequest_C')">
                             {
                                 ID:"certificatExcelFile",
                                 name: "certificatExcelFile",
@@ -373,6 +389,8 @@
                                 colSpan: 1,
                                 titleColSpan: 1
                             },
+                            </sec:authorize>
+                            <sec:authorize access="hasAuthority('CompetenceRequest_C')">
                             {
                                 name: "import",
                                 title: "وارد کردن اطلاعات",
@@ -468,14 +486,17 @@
                                     }
                                 }
                             }
+                            </sec:authorize>
                         ]
                     }),
+                    <sec:authorize access="hasAuthority('CompetenceRequest_P')">
                     isc.ToolStripButtonExcel.create({
                         align: "left",
                         click: function () {
                             exportToExcelRequestItems();
                         }
                     })
+                    </sec:authorize>
                 ]
             });
 
@@ -498,7 +519,9 @@
         width: "100%",
         styleName: "listgrid-child",
         height: 180,
+        <sec:authorize access="hasAuthority('CompetenceRequest_R')">
         dataSource: RestDataSource_Competence_Request_Item,
+        </sec:authorize>
         setAutoFitExtraRecords: true,
         editEvent: "doubleClick",
         showRecordComponents: true,
@@ -629,6 +652,7 @@
 
             var fieldName = this.getFieldName(colNum);
             if (fieldName === "editIcon") {
+                <sec:authorize access="hasAuthority('CompetenceRequest_U')">
                 var editImg = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
@@ -644,7 +668,9 @@
                     }
                 });
                 return editImg;
+                </sec:authorize>
             } else if (fieldName === "removeIcon") {
+                <sec:authorize access="hasAuthority('CompetenceRequest_D')">
                 var removeImg = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
@@ -660,6 +686,7 @@
                     }
                 });
                 return removeImg;
+                </sec:authorize>
             } else {
                 return null;
             }

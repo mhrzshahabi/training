@@ -3,6 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -103,24 +105,38 @@
     });
     var Menu_ListGrid_Job_Group_Jsp = isc.Menu.create({
         width: 150,
-        data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+        data: [
+            <sec:authorize access="hasAuthority('JobGroup_R')">
+            {
+                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Job_Group_refresh();
             }
-        }, {
-            title: " ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('JobGroup_C')">
+            {
+                title: " ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Job_Group_add();
             }
-        }, {
-            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('JobGroup_U')">
+            {
+                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_Job_Group_edit();
             }
-        }, {
-            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('JobGroup_D')">
+            {
+                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Job_Group_remove();
             }
-        },
-            {isSeparator: true}, {
+            },
+            </sec:authorize>
+            {isSeparator: true},
+            <sec:authorize access="hasAuthority('JobGroup_R')">
+            {
                 title: "لیست شغل ها", icon: "<spring:url value="job.png"/>", click: function () {
                     var record = ListGrid_Job_Group_Jsp.getSelectedRecord();
 
@@ -149,12 +165,15 @@
                     }
                 }
             }
+            </sec:authorize>
         ]
     });
 
     var ListGrid_Job_Group_Jsp = isc.TrLG.create({
         color: "red",
+        <sec:authorize access="hasAuthority('JobGroup_R')">
         dataSource: RestDataSource_Job_Group_Jsp,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Job_Group_Jsp,
         autoFetchData: true,
         selectionType: "single",
@@ -854,7 +873,14 @@
     let ToolStrip_NA_JobGroup = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_JobGroup, ToolStripButton_TreeNA_JobGroup]
+        members: [
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_JobGroup,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_T')">
+            ToolStripButton_TreeNA_JobGroup
+            </sec:authorize>
+        ]
     });
 
     var ToolStripButton_Refresh_Job_Group_Jsp = isc.ToolStripButtonRefresh.create({
@@ -946,21 +972,32 @@
         //     ToolStripButton_Remove_Job_Group_Jsp,
         //     ToolStripButton_Add_Job_Group_AddJob_Jsp]
         members: [
+            <sec:authorize access="hasAuthority('JobGroup_C')">
             ToolStripButton_Add_Job_Group_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('JobGroup_U')">
             ToolStripButton_Edit_Job_Group_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('JobGroup_D')">
             ToolStripButton_Remove_Job_Group_Jsp,
+            </sec:authorize>
             // ToolStripButton_Print_Job_Group_Jsp,
+            <sec:authorize access="hasAuthority('JobGroup_R')">
             ToolStripButton_Add_Job_Group_AddJob_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('JobGroup_P')">
             ToolStrip_Job_Group_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
-                    ToolStripButton_Refresh_Job_Group_Jsp,
+                    <sec:authorize access="hasAuthority('JobGroup_R')">
+                    ToolStripButton_Refresh_Job_Group_Jsp
+                    </sec:authorize>
                 ]
-            }),
-
+            })
         ]
     });
 
@@ -1365,7 +1402,11 @@
         width: "100%",
         height: "100%",
         <%--border: "2px solid blue",--%>
-        members: [Detail_Tab_Job_Group]
+        members: [
+            <sec:authorize access="hasAuthority('JobGroup_R')">
+            Detail_Tab_Job_Group
+            </sec:authorize>
+        ]
     });
 
     var HLayout_Grid_Job_Group_Jsp = isc.HLayout.create({
