@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -10,16 +11,24 @@
         2: "تایید نهایی",
         3: "حذف گردش کار",
         4: "اصلاح شایستگی و ارسال به گردش کار"
-    }
+    };
 
     // ------------------------------------------- Menu -------------------------------------------
     isc.Menu.create({
         ID: "CompetenceMenu_competence",
         data: [
+            <sec:authorize access="hasAuthority('Competence_R')">
             {title: "<spring:message code="refresh"/>", click: function () { refreshLG(CompetenceLG_competence); }},
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_C')">
             {title: "<spring:message code="create"/>", click: function () { createCompetence_competence(); }},
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_U')">
             {title: "<spring:message code="edit"/>", click: function () { editCompetence_competence(); }},
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_D')">
             {title: "<spring:message code="remove"/>", click: function () { removeCompetence_competence(); }},
+            </sec:authorize>
         ]
     });
 
@@ -48,11 +57,21 @@
             //         Window_WebService_CompetenceWin_competence.show();
             //     }
             // }),
+            <sec:authorize access="hasAuthority('Competence_R')">
             isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competence); }}),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_C')">
             isc.ToolStripButtonCreate.create({click: function () { createCompetence_competence(); }}),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_U')">
             isc.ToolStripButtonEdit.create({click: function () { editCompetence_competence(); }}),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_D')">
             isc.ToolStripButtonRemove.create({click: function () { removeCompetence_competence(); }}),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_P')">
             ToolStrip_Competence_Export2EXcel,
+            </sec:authorize>
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "CompetenceLGCountLabel_competence"}),
         ]
@@ -144,11 +163,21 @@
 
     CompetenceLG_competence = isc.TrLG.create({
         ID: "CompetenceLG_competence",
+        <sec:authorize access="hasAuthority('Competence_R')">
         dataSource: CompetenceDS_competence,
+        </sec:authorize>
         autoFetchData: true,
-        fields: [{name: "title"}, {name: "code"}, {name: "competenceType.title"},{name: "categoryId"},{name:"subCategoryId"}, {name: "workFlowStatusCode", valueMap: valueMap}, {name: "description"}],
+        fields: [
+            {name: "title"},
+            {name: "code"},
+            {name: "competenceType.title"},
+            {name: "categoryId"},
+            {name:"subCategoryId"},
+            {name: "workFlowStatusCode", valueMap: valueMap},
+            {name: "description"}
+        ],
         gridComponents: [
-            CompetenceTS_competence, , "filterEditor", "header", "body"
+            CompetenceTS_competence, "filterEditor", "header", "body"
         ],
         contextMenu: CompetenceMenu_competence,
         dataChanged: function () { updateCountLabel(this, CompetenceLGCountLabel_competence)},

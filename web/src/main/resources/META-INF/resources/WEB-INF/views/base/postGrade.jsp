@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     let naJob_PostGrade = null;
@@ -9,13 +10,15 @@
     // ------------------------------------------- Menu -------------------------------------------
     PostGradeMenu_postGrade = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('PostGrade_R')">
             {
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
                     refreshPostGradeLG_postGrade();
                 }
-            },
+            }
+            </sec:authorize>
         ]
     });
 
@@ -57,7 +60,17 @@
     ToolStrip_NA_PostGrade = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_PostGrade, ToolStripButton_TreeNA_PostGrade, ToolStrip_Post_Grade_Export2EXcel]
+        members: [
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_PostGrade,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_T')">
+            ToolStripButton_TreeNA_PostGrade,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGrade_P')">
+            ToolStrip_Post_Grade_Export2EXcel
+            </sec:authorize>
+        ]
     });
     
     PostGradeTS_postGrade = isc.ToolStrip.create({
@@ -70,6 +83,7 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
+            <sec:authorize access="hasAuthority('PostGrade_R')">
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -82,7 +96,7 @@
                     })
                 ]
             })
-
+            </sec:authorize>
         ]
     });
 
@@ -119,7 +133,9 @@
     });
 
     PostGradeLG_postGrade = isc.TrLG.create({
+        <sec:authorize access="hasAuthority('PostGrade_R')">
         dataSource: PostGradeDS_postGrade,
+        </sec:authorize>
         fields: [
             {name: "code",
                 filterEditorProperties: {
@@ -559,7 +575,12 @@
     });
     
     isc.TrVLayout.create({
-        members: [PostGradeLG_postGrade, Detail_Tab_PostGrade],
+        members: [
+            PostGradeLG_postGrade,
+            <sec:authorize access="hasAuthority('PostGrade_R')">
+            Detail_Tab_PostGrade
+            </sec:authorize>
+        ]
     });
 
     // ------------------------------------------- Functions -------------------------------------------

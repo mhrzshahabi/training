@@ -1736,12 +1736,14 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_CompetenceRequest')">
                 {
                     title: "<spring:message code="scientific.technical.certification"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/certification"/>");
                     }
                 },
+                </sec:authorize>
 
                 {isSeparator: true},
 
@@ -1846,7 +1848,6 @@
                     }
                 },
                 </sec:authorize>
-
 
                 <%--,--%>
                 <%--{--%>
