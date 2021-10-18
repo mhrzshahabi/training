@@ -153,4 +153,7 @@ public interface ITclassService {
     TclassDTO.TClassScoreEval getTClassDataForScoresInEval(String classCode);
 
     EvalAverageResult getEvaluationAverageResultToTeacher(Long classId);
+
+    boolean getScoreDependency();
+
 }

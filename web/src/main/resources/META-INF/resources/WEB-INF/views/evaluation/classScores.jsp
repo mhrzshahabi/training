@@ -35,6 +35,16 @@
     var classScoringMethod_Eval = null;
     var classAcceptanceLimit_Eval = null;
 
+    let isScoreDependent_Eval = true;
+
+    //----------------------------------------------------Default Rest--------------------------------------------------
+    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "scoreDependsOnEvaluation", "GET", null, function (resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            isScoreDependent_Eval = JSON.parse(resp.data);
+        }
+    }));
+    //------------------------------------------------------------------------------------------------------------------
+
     //------------------------------------------- DataSource
 
     RestDataSource_ScoreState_JSPScores_Eval = isc.TrDS.create({
@@ -171,27 +181,39 @@
                                     title: "تایید",
                                     click: function () {
 
-                                        if (rec.evaluationStatusReaction!==1){
-                                            if (!score_windows_dynamicForm_Eval.validate()) {
-                                                return;
+                                        if(isScoreDependent_Eval) {
+
+                                            if (rec.evaluationStatusReaction!==1) {
+
+                                                if (!score_windows_dynamicForm_Eval.validate()) {return;}
+                                                if (validators_score_Eval(score_windows_dynamicForm_value_Eval)) {
+                                                    rec.scoresStateId = 403;
+                                                    rec.failureReasonId = 408;
+                                                    rec.score = score_windows_dynamicForm_Eval.getItem("cause").getValue();
+                                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + rec.id, "PUT", JSON.stringify(rec), "callback: Edit_Cell_ScoreState_failureReason_Update_Eval(rpcResponse)"));
+                                                    score_windows_Eval.close();
+                                                } else {
+                                                    simpleDialog("<spring:message code="message"/>", "گاربر گرامی نمره وارد شده صحیح نمی باشد", 6000, "stop");
+                                                    score_windows_dynamicForm_Eval.getItem("cause").setValue();
+                                                }
+
+                                            } else {
+                                                createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
                                             }
+                                        } else {
+
+                                            if (!score_windows_dynamicForm_Eval.validate()) {return;}
                                             if (validators_score_Eval(score_windows_dynamicForm_value_Eval)) {
                                                 rec.scoresStateId = 403;
                                                 rec.failureReasonId = 408;
                                                 rec.score = score_windows_dynamicForm_Eval.getItem("cause").getValue();
                                                 isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + rec.id, "PUT", JSON.stringify(rec), "callback: Edit_Cell_ScoreState_failureReason_Update_Eval(rpcResponse)"));
                                                 score_windows_Eval.close();
-                                            }
-                                            else {
+                                            } else {
                                                 simpleDialog("<spring:message code="message"/>", "گاربر گرامی نمره وارد شده صحیح نمی باشد", 6000, "stop");
                                                 score_windows_dynamicForm_Eval.getItem("cause").setValue();
                                             }
-                                        }else {
-                                            createDialog("info", "ارزیابی واکنشی دانشجوی مورد نظر ثبت نشده است");
                                         }
-
-
-
                                     }
                                 }),
                                 isc.IButton.create({
@@ -637,9 +659,30 @@
             }
 
             if (fieldName === "score") {
-                if (record.evaluationStatusReaction===1){
-                    return false;
-                }else {
+
+                if (isScoreDependent_Eval) {
+
+                    if (record.evaluationStatusReaction===1) {
+                        return false;
+                    } else {
+                        if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
+                            return true;
+                        }
+                        if (failureReason_value_Eval != null && record.scoresStateId == 403) {
+                            return true;
+                        }
+                        if (classScoringMethod_Eval == "1" || classScoringMethod_Eval == "4") {
+                            return false;
+                        }
+                        if ((scoresState_value_Eval === 403 || scoresState_value_Eval === 400) && (failureReason_value_Eval != null)) {
+                            return true;
+                        }
+                        let arr = [448, 405, 449, 406, 404, 401, 450];
+                        return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
+                    }
+
+                } else {
+
                     if (scoresState_value_Eval === 403 || scoresState_value_Eval === 400) {
                         return true;
                     }
@@ -654,9 +697,7 @@
                     }
                     let arr = [448, 405, 449, 406, 404, 401, 450];
                     return !((record.scoresStateId === 403 && record.failureReasonId === 407) || (record.scoresStateId === 403 && record.failureReasonId === 453) || arr.includes(record.scoresStateId));
-
                 }
-
             }
 
             if (fieldName === "failureReasonId") {
