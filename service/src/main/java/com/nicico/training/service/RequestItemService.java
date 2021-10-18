@@ -39,6 +39,7 @@ public class RequestItemService implements IRequestItemService {
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final IPostService iPostService;
     private final ParameterValueService parameterValueService;
+    private final RequestItemBeanMapper requestItemBeanMapper;
 
     @Override
     @Transactional
