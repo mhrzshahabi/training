@@ -29,6 +29,7 @@ public class JobExpResponse {
         private String firstName;
         private String lastName;
         private String nationalCode;
+        private boolean isActive;
     }
 
 }

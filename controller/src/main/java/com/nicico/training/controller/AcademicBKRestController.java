@@ -47,6 +47,7 @@ public class AcademicBKRestController {
     }
 
 
+
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationLevel')")

@@ -1,11 +1,17 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.google.gson.Gson;
+import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.EOperator;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
 import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
 import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
+import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.ViewTrainingNeedAssessment;
 import com.nicico.training.repository.ViewTrainingNeedAssessmentDAO;
+import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,6 +36,7 @@ public class ReportsToExcelFormController {
 
     private final ModelMapper modelMapper;
     private final MakeExcelOutputUtil makeExcelOutputUtil;
+    private final IRequestItemService iRequestItemService;
     private final ViewTrainingNeedAssessmentDAO viewTrainingNeedAssessmentDAO;
     private final IViewNeedAssessmentInRangeTimeService iViewNeedAssessmentInRangeTimeService;
 
@@ -87,6 +94,29 @@ public class ReportsToExcelFormController {
             list.add(gson.fromJson(s, Class.forName(detailDto)));
         }
         byte[] bytes = makeExcelOutputUtil.makeOutputWithExtraHeader(list, Class.forName(detailDto), detailFields, detailHeaders, true, title, masterData);
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
+    }
+
+    @RequestMapping("/export")
+    public void exportExcel(@RequestParam("headers") String[] headers, @RequestParam("fieldNames") String[] fieldNames, HttpServletResponse response) throws Exception {
+
+        byte[] bytes = makeExcelOutputUtil.makeOutput(new ArrayList<>(), RequestItem.class, fieldNames, headers, true, "");
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
+    }
+
+    @Loggable
+    @PostMapping("/competenceRequestWithItems")
+    public void ExportToExcel(@RequestParam("headers") String[] headers,
+                              @RequestParam("fieldNames") String[] fieldNames,
+                              @RequestParam("compReqId") Long compReqId,
+                              @RequestParam("title") String title,
+                              HttpServletResponse response) throws Exception {
+
+        List<Object> resp = new ArrayList<>();
+        List<RequestItem> requestItems = iRequestItemService.getListWithCompetenceRequest(compReqId);
+        if (requestItems != null) resp.addAll(requestItems);
+
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, RequestItem.class, fieldNames, headers, true, title);
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
 

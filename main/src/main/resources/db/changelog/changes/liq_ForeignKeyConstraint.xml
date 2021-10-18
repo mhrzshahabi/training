@@ -1279,6 +1279,11 @@
         <addForeignKeyConstraint baseColumnNames="f_orginal_message_message" baseTableName="tbl_message" constraintName="FKbhobgm3psdospx4rbhu22c4oh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_message" validate="true"/>
     </changeSet>
 
+
+    <changeSet author="namdari (generated)" id="1633848525000-1">
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_request_item" constraintName="FKcompetence_req_item" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_competence_req" validate="true"/>
+    </changeSet>
+
     <changeSet author="nick (generated)" id="1634122431773-566">
         <addForeignKeyConstraint baseColumnNames="F_OPERATIONAL_ROLE" baseTableName="TBL_OPERATIONAL_ROLE_USER_IDS" constraintName="FKOperationalRoleINOperationalRoleUserIds" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_role" validate="true"/>
     </changeSet>

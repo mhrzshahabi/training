@@ -3234,6 +3234,64 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="1633842708000-2">
+        <createTable tableName="tbl_competence_req">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_competence_reqPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="request_date" type="timestamp"/>
+            <column name="request_type" type="NUMBER(10, 0)"/>
+            <column name="applicant" type="VARCHAR2(255 CHAR)"/>
+            <column name="letter_number" type="VARCHAR2(255 CHAR)"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1633848285000-1">
+        <createTable tableName="tbl_request_item">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_request_itemPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+             <column name="state" type="NUMBER(10, 0)"/>
+            <column name="personnel_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="name" type="VARCHAR2(255 CHAR)"/>
+            <column name="last_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="post" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_group_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_competence_id" type="NUMBER(19, 0)"/>
+
+        </createTable>
+    </changeSet>
+
     <changeSet author="nick (generated)" id="1634122431773-548">
         <createTable tableName="TBL_OPERATIONAL_ROLE">
             <column name="ID" type="NUMBER(19, 0)">

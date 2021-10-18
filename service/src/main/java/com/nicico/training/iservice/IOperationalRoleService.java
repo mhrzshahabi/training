@@ -13,4 +13,6 @@ public interface IOperationalRoleService {
     SearchDTO.SearchRs<OperationalRoleDTO.Info> search(SearchDTO.SearchRq searchRq);
 
     OperationalRoleDTO.Info update(Long id, OperationalRoleDTO.Update request);
+
+    void deleteAll(List<Long> request);
 }

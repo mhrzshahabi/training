@@ -11,6 +11,7 @@ import com.nicico.training.iservice.IOperationalRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -40,6 +41,16 @@ public class OperationalRoleRestController {
     }
 
     @Loggable
+    @PutMapping("/{id}")
+    public ResponseEntity update( @RequestBody OperationalRoleDTO.Update request, @PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(operationalRoleService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<ISC<OperationalRoleDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         int startRow = 0;
@@ -49,6 +60,19 @@ public class OperationalRoleRestController {
         searchRq.setDistinct(true);
         SearchDTO.SearchRs<OperationalRoleDTO.Info> searchRs = operationalRoleService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping("/{request}")
+    public ResponseEntity deleteAll(@PathVariable List<Long> request) {
+        try {
+            operationalRoleService.deleteAll(request);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
@@ -91,13 +115,4 @@ public class OperationalRoleRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @Loggable
-    @PutMapping("/{id}")
-    public ResponseEntity update( @RequestBody OperationalRoleDTO.Update request, @PathVariable Long id) {
-        try {
-            return new ResponseEntity<>(operationalRoleService.update(id, request), HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
 }

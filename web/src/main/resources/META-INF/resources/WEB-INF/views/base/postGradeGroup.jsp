@@ -2,6 +2,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 
 // <script>
 
@@ -102,43 +104,58 @@
 
     Menu_ListGrid_Post_Grade_Group_Jsp = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('PostGradeGroup_R')">
             {
                 title: "<spring:message code='refresh'/>",
                 click: function () {
                     ListGrid_Post_Grade_Group_refresh();
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGradeGroup_C')">
+            {
                 title: "<spring:message code='create'/>",
                 click: function () {
                     ListGrid_Post_Grade_Group_add();
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGradeGroup_U')">
+            {
                 title: "<spring:message code='edit'/>",
                 click: function () {
                     ListGrid_Post_Grade_Group_edit();
                 }
-            }, {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGradeGroup_D')">
+            {
                 title: "<spring:message code='remove'/>",
                 click: function () {
                     ListGrid_Post_Grade_Group_remove();
                 }
             },
+            </sec:authorize>
             {
                 isSeparator: true
             },
+            <sec:authorize access="hasAuthority('PostGradeGroup_R')">
             {
                 title: "<spring:message code="post.grade.list"/>",
                 click: function () {
                     Add_Post_Grade_Group_AddPostGrade_Jsp();
                 }
             }
+            </sec:authorize>
         ]
     });
 
     let ListGrid_Post_Grade_Group_Jsp = isc.TrLG.create({
         selectionType: "single",
         autoFetchData: true,
+        <sec:authorize access="hasAuthority('PostGradeGroup_R')">
         dataSource: RestDataSource_PostGradeGroup_Jsp,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Post_Grade_Group_Jsp,
         canMultiSort: true,
         initialSort: [
@@ -691,7 +708,14 @@
     ToolStrip_NA_PGG = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
-        members: [ToolStripButton_EditNA_PGG, ToolStripButton_TreeNA_PGG]
+        members: [
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_PGG,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_T')">
+            ToolStripButton_TreeNA_PGG
+            </sec:authorize>
+        ]
     });
 
     let ToolStripButton_Refresh_Post_Grade_Group_Jsp = isc.ToolStripButtonRefresh.create({
@@ -742,17 +766,29 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('PostGradeGroup_C')">
             ToolStripButton_Add_Post_Grade_Group_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGradeGroup_U')">
             ToolStripButton_Edit_Post_Grade_Group_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGradeGroup_D')">
             ToolStripButton_Remove_Post_Grade_Group_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGradeGroup_R')">
             ToolStripButton_Add_Post_Grade_Group_AddPostGrade_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGradeGroup_P')">
             ToolStrip_Post_Grade_Group_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('PostGradeGroup_R')">
                     ToolStripButton_Refresh_Post_Grade_Group_Jsp,
+                    </sec:authorize>
                 ]
             }),
 
@@ -1160,7 +1196,11 @@
     });
 
     let HLayout_Tab_Post_Grade_Group = isc.TrHLayout.create({
-        members: [Detail_Tab_Post_Grade_Group]
+        members: [
+            <sec:authorize access="hasAuthority('PostGradeGroup_R')">
+            Detail_Tab_Post_Grade_Group
+            </sec:authorize>
+        ]
     });
 
     let HLayout_Grid_Post_Grade_Group_Jsp = isc.TrHLayout.create({

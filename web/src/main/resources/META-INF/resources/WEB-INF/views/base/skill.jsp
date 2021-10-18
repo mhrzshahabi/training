@@ -2,6 +2,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -453,6 +455,7 @@
 
     let MenuSkill_Skill = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('Skill_R')">
             {
                 title: "<spring:message code="refresh"/>",
                 click: function () {
@@ -460,35 +463,50 @@
                     PostLG_Skill.setData([]);
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Skill_C')">
             {
                 title: "<spring:message code="create"/>",
                 click: function () {
                     CreateSkill_Skill();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Skill_U')">
             {
                 title: "<spring:message code="edit"/>",
                 click: function () {
                     EditSkill_Skill();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Skill_D')">
             {
                 title: "<spring:message code="remove"/>",
                 click: function () {
                     RemoveSkill_Skill();
                 }
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Skill_R')">
             {
                 title: "دوره مرتبط با مهارت",
                 click: function () {
                     setCourseDetailViewerData_Skill();
                 }
             }
+            </sec:authorize>
         ]
     });
 
     let SkillLG_Skill = isc.TrLG.create({
+        <sec:authorize access="hasAuthority('Skill_R')">
         dataSource: SkillDS_Skill,
+        </sec:authorize>
         contextMenu: MenuSkill_Skill,
         width:"100%",
         minWidth:"100%",
@@ -586,16 +604,30 @@
     let ActionsTS_Skill = isc.ToolStrip.create({
         width: "100%",
         members: [
+            <sec:authorize access="hasAuthority('Skill_C')">
             CreateTSB_Skill,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Skill_U')">
             EditTSB_Skill,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Skill_D')">
             RemoveTSB_Skill,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Skill_R')">
             CourseTSB_Skill,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Skill_P')">
             ToolStrip_Skill_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
-                members: [RefreshTSB_Skill]
+                members: [
+                    <sec:authorize access="hasAuthority('Skill_R')">
+                    RefreshTSB_Skill
+                    </sec:authorize>
+                ]
             })
         ]
     });
@@ -667,7 +699,9 @@
         members: [
             ActionsTS_Skill,
             SkillLG_Skill,
+            <sec:authorize access="hasAuthority('Skill_R')">
             DetailTS_Skill
+            </sec:authorize>
         ]
     });
 

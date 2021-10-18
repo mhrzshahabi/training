@@ -22,8 +22,7 @@ public class CountryRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('r_country')")
-    public ResponseEntity<CountryDTO.Info> get(@PathVariable Long id) {
+     public ResponseEntity<CountryDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(countryService.get(id), HttpStatus.OK);
     }
 

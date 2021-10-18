@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 //<script>
+    "use strict"
 
     var methodOperationalRole;
     var saveActionUrlOperationalRole;
@@ -26,7 +27,7 @@
             ],
     });
 
-    UserDS_JspOperationalRole = isc.TrDS.create({
+    var UserDS_JspOperationalRole = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {
@@ -76,7 +77,7 @@
     });
 
 
-    PostDS_OperationalRole = isc.TrDS.create({
+    var PostDS_OperationalRole = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
@@ -105,7 +106,7 @@
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    Menu_JspOperationalRole = isc.Menu.create({
+    var Menu_JspOperationalRole = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
                 refreshLG(ListGrid_JspOperationalRole);
@@ -120,7 +121,7 @@
             }
         }, {
             title: "<spring:message code='remove'/>", click: function () {
-                // ListGrid_OperationalRole_Remove();
+                ListGrid_OperationalRole_Remove();
             }
         },
         ]
@@ -130,7 +131,7 @@
     /*ListGrid*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    ListGrid_JspOperationalRole = isc.TrLG.create({
+    var ListGrid_JspOperationalRole = isc.TrLG.create({
         dataSource: RestDataSource_JspOperationalRole,
         contextMenu: Menu_JspOperationalRole,
         sortField: 0,
@@ -216,7 +217,7 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
 
-    DynamicForm_JspOperationalRole = isc.DynamicForm.create({
+    var DynamicForm_JspOperationalRole = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         titleAlign: "left",
@@ -375,7 +376,7 @@
         ]
     });
 
-    IButton_Save_JspOperationalRole = isc.IButtonSave.create({
+    var IButton_Save_JspOperationalRole = isc.IButtonSave.create({
         top: 260,
         click: function () {
             if (!DynamicForm_JspOperationalRole.validate())
@@ -392,14 +393,14 @@
         }
     });
 
-    IButton_Cancel_JspOperationalRole = isc.IButtonCancel.create({
+    var IButton_Cancel_JspOperationalRole = isc.IButtonCancel.create({
         click: function () {
             DynamicForm_JspOperationalRole.clearValues();
             Window_JspOperationalRole.close();
         }
     });
 
-    HLayout_SaveOrExit_JspOperationalRole = isc.TrHLayoutButtons.create({
+    var HLayout_SaveOrExit_JspOperationalRole = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -407,7 +408,7 @@
         members: [IButton_Save_JspOperationalRole, IButton_Cancel_JspOperationalRole]
     });
 
-    Window_JspOperationalRole = isc.Window.create({
+    var Window_JspOperationalRole = isc.Window.create({
         width: "550",
         minWidth: "550",
         align: "center",
@@ -456,29 +457,29 @@
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    ToolStripButton_Refresh_JspOperationalRole = isc.ToolStripButtonRefresh.create({
+    var ToolStripButton_Refresh_JspOperationalRole = isc.ToolStripButtonRefresh.create({
         click: function () {
             refreshLG(ListGrid_JspOperationalRole);
         }
     });
 
-    ToolStripButton_Edit_JspOperationalRole = isc.ToolStripButtonEdit.create({
+    var ToolStripButton_Edit_JspOperationalRole = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_OperationalRole_Edit();
         }
     });
-    ToolStripButton_Add_JspOperationalRole = isc.ToolStripButtonCreate.create({
+    var ToolStripButton_Add_JspOperationalRole = isc.ToolStripButtonCreate.create({
         click: function () {
             ListGrid_OperationalRole_Add();
         }
     });
-    ToolStripButton_Remove_JspOperationalRole = isc.ToolStripButtonRemove.create({
+    var ToolStripButton_Remove_JspOperationalRole = isc.ToolStripButtonRemove.create({
         click: function () {
-            // ListGrid_OperationalRole_Remove();
+            ListGrid_OperationalRole_Remove();
         }
     });
 
-    ToolStrip_Actions_JspOperationalRole = isc.ToolStrip.create({
+    var ToolStrip_Actions_JspOperationalRole = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
@@ -498,7 +499,7 @@
             ]
     });
 
-    VLayout_Body_JspOperationalRole = isc.TrVLayout.create({
+    var VLayout_Body_JspOperationalRole = isc.TrVLayout.create({
         members: [
             ToolStrip_Actions_JspOperationalRole,
             ListGrid_JspOperationalRole,
@@ -517,11 +518,11 @@
     }
 
     function ListGrid_OperationalRole_Edit() {
-        var record = ListGrid_JspOperationalRole.getSelectedRecord();
+        let record = ListGrid_JspOperationalRole.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            methodWorkGroup = "PUT";
+            methodOperationalRole = "PUT";
             saveActionUrlOperationalRole = operationalRoleUrl + "/" + record.id;
             DynamicForm_JspOperationalRole.clearValues();
             DynamicForm_JspOperationalRole.editRecord(record);
@@ -541,6 +542,46 @@
         } else {
             if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
                 createDialog("info", "<spring:message code="msg.record.duplicate"/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
+        }
+    }
+
+    function ListGrid_OperationalRole_Remove() {
+        let recordIds = ListGrid_JspOperationalRole.getSelectedRecords().map(r => r.id);
+        if (recordIds == null || recordIds.length === 0) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code='verify.delete'/>");
+            Dialog_Delete.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait_Permission = createDialog("wait");
+                        isc.RPCManager.sendRequest(TrDSRequest(operationalRoleUrl + "/" + recordIds,
+                            "DELETE",
+                            null,
+                            OperationalRole_remove_result));
+                    }
+                }
+            });
+        }
+    }
+
+    function OperationalRole_remove_result(resp) {
+        wait_Permission.close();
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            refreshLG(ListGrid_JspOperationalRole);
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
             }

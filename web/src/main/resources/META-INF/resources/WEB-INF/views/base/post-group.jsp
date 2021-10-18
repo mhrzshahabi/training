@@ -3,6 +3,8 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -118,22 +120,33 @@
     });
     var Menu_ListGrid_Post_Group_Jsp = isc.Menu.create({
         width: 150,
-        data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+        data: [
+            <sec:authorize access="hasAuthority('PostGroup_R')">
+            {
+                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
 
                 LoadAttachments_Post_Group.ListGrid_JspAttachment.setData([]);
                 ListGrid_Post_Group_refresh();
             }
-        }, {
-            title: " ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_C')">
+            {
+                title: " ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Post_Group_add();
             }
-        }, {
-            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_U')">
+            {
+                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_Post_Group_edit();
             }
-        }, {
-            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_D')">
+            {
+                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Post_Group_remove();
                 <%--var postGrouprecord = ListGrid_Post_Group_Jsp.getSelectedRecord();--%>
                 <%--if (postGrouprecord == null || postGrouprecord.id == null) {--%>
@@ -168,7 +181,8 @@
                 <%--});--%>
                 <%--}--%>
             }
-        },
+            },
+            </sec:authorize>
             <%--{isSeparator: true},--%>
             <%--{--%>
             <%--    title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>",--%>
@@ -179,6 +193,7 @@
             <%--    click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"--%>
             <%--},--%>
             {isSeparator: true},
+            <sec:authorize access="hasAuthority('PostGroup_R')">
             {
                 title: "لیست پست های انفرادی", icon: "<spring:url value="post.png"/>", click: function () {
                     let record = ListGrid_Post_Group_Jsp.getSelectedRecord();
@@ -204,6 +219,8 @@
                     }
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_R')">
             {
                 title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {
                     let record = ListGrid_Post_Group_Jsp.getSelectedRecord();
@@ -229,12 +246,15 @@
                     }
                 }
             }
+            </sec:authorize>
         ]
     });
     var ListGrid_Post_Group_Jsp = isc.TrLG.create({
         color: "red",
         selectionType: "single",
+        <sec:authorize access="hasAuthority('PostGroup_R')">
         dataSource: RestDataSource_Post_Group_Jsp,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Post_Group_Jsp,
         canMultiSort: true,
         initialSort: [
@@ -1504,10 +1524,18 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('PostGroup_R')">
             ToolStripButton_unGroupedPosts_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_R')">
             ToolStripButton_newPosts_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
             ToolStripButton_EditNA_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_T')">
             ToolStripButton_TreeNA_JspPostGroup
+            </sec:authorize>
         ]
     });
 
@@ -1624,12 +1652,25 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('PostGroup_C')">
             ToolStripButton_Add_Post_Group_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_U')">
             ToolStripButton_Edit_Post_Group_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_D')">
             ToolStripButton_Remove_Post_Group_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_R')">
             ToolStripButton_Add_Post_Group_AddPost_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_R')">
             ToolStripButton_Add_Traininng_Post_Group_AddPost_Jsp,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_P')">
             ToolStrip_Post_Group_Export2EXcel,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('PostGroup_R')">
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1637,7 +1678,8 @@
                 members: [
                     ToolStripButton_Refresh_Post_Group_Jsp,
                 ]
-            }),
+            })
+            </sec:authorize>
         ]
     });
 
@@ -1914,7 +1956,11 @@
         width: "100%",
         height: "100%",
         <%--border: "2px solid blue",--%>
-        members: [Detail_Tab_Post_Group]
+        members: [
+            <sec:authorize access="hasAuthority('PostGroup_R')">
+            Detail_Tab_Post_Group
+            </sec:authorize>
+        ]
     });
 
     var HLayout_Grid_Post_Group_Jsp = isc.HLayout.create({

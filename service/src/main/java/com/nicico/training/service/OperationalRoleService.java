@@ -85,6 +85,13 @@ public class OperationalRoleService implements IOperationalRoleService {
         }
     }
 
+    @Transactional
+    @Override
+    public void deleteAll(List<Long> request) {
+        final List<OperationalRole> gAllById = operationalRoleDAO.findAllById(request);
+        operationalRoleDAO.deleteAll(gAllById);
+    }
+
     @Transactional(readOnly = true)
     public OperationalRole getOperationalRole(Long id) {
         Optional<OperationalRole> operationalRole = operationalRoleDAO.findById(id);

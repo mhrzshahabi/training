@@ -177,6 +177,11 @@ public class PersonnelService implements IPersonnelService {
         return modelMapper.map(personnel, PersonnelDTO.PersonalityInfo.class);
     }
 
+    @Override
+    public Personnel getByPersonnelNumber(String personnelCode) {
+        return personnelDAO.findPersonnelDataByPersonnelNumber(personnelCode);
+    }
+
     //Unused
     @Override
     @Transactional
