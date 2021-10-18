@@ -26,6 +26,8 @@ public interface IPostService {
     @Transactional(readOnly = true)
     PostDTO.Info getByPostCode(String postCode);
 
+    boolean isPostExist(String postCode);
+
     SearchDTO.SearchRs<PostDTO.Info> search(SearchDTO.SearchRq rq);
 
     <T> SearchDTO.SearchRs<T> searchWithoutPermission(SearchDTO.SearchRq request, Function converter);

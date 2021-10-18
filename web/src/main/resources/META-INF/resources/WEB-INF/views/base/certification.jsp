@@ -85,8 +85,7 @@
             {name: "departmentCode", title: "کد دپارتمان", hidden: true},
             {name: "omur", title: "امور"},
             {name: "ghesmat", title: "قسمت"},
-            {name: "companyName", title: "نام شرکت"}
-        ]
+            {name: "companyName", title: "نام شرکت"}]
     });
     RestDataSource_Competence_Request_PersonnelTraining = isc.TrDS.create({
         fields: [
@@ -554,8 +553,9 @@
                 align: "center",
                 canEdit: false,
                 valueMap: {
-                    1: "بلامانع",
-                    2: "نیاز به گذراندن دوره"
+                    1: "نیاز به گذراندن دوره",
+                    2: "بلامانع",
+                    3: "پست موجود نیست"
                 }
             },
             {
@@ -749,7 +749,19 @@
         initialSort: [
             {property: "assignmentDate", direction: "ascending"}
         ],
-        gridComponents: [ToolStrip_Post_History_Actions, "filterEditor", "header", "body"]
+        gridComponents: [ToolStrip_Post_History_Actions, "filterEditor", "header", "body"],
+        dataArrived: function (startRow, endRow, data) {
+            let totalRows = this.data.getLength();
+
+           if (this.data.localData.get(totalRows-1)!==undefined){
+                if (this.data.localData.get(totalRows-1).dismissalDate===undefined){
+                   postStatus.setContents("وضعیت پست : دارای انتصاب سمت");
+               }else {
+                   postStatus.setContents("وضعیت پست : بلاتصدی");
+               }
+           }
+
+        },
     });
     ListGrid_Personnel_Training_History = isc.TrLG.create({
         dataSource: RestDataSource_Competence_Request_PersonnelTraining,
@@ -1090,10 +1102,13 @@
                 break;
             }
             case "TabPane_Post_History": {
+                postStatus.setContents("وضعیت پست :");
 
                 RestDataSource_Competence_Request_PostInfo.fetchDataURL = masterDataUrl + "/post?postCode=" + requestItem.post;
+
                 ListGrid_Post_History.fetchData();
                 ListGrid_Post_History.invalidateCache();
+
                 break;
             }
             case "TabPane_Personnel_Training_History": {

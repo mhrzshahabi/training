@@ -70,7 +70,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     }
 
     @Transactional(readOnly = true)
-//    @Override
+    @Override
     public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, Long personnelId) {
 
         Long passedCodeId = parameterValueService.getId("Passed");
@@ -524,7 +524,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
 
     @Transactional(readOnly = true)
-//    @Override
+    @Override
     public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseListForBpms( String postCode, String objectType, String nationalCode,String personnelNumber) {
         Long passedCodeId = parameterValueService.getId("Passed");
         Long notPassedCodeId = parameterValueService.getId("false");
@@ -579,7 +579,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     }
 
     @Transactional(readOnly = true)
-//    @Override
+    @Override
     public List<NeedsAssessment> getNeedsAssessmentListForBpms(String postCode, String objectType) {
         List<NeedsAssessment> needsAssessmentList = new ArrayList<>();
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());

@@ -12,7 +12,8 @@ import lombok.ToString;
 public enum RequestItemState {
 
     Impeded(1, "نیاز به گذراندن دوره"),
-    Unimpeded(2, "بلامانع");
+    Unimpeded(2, "بلامانع"),
+    PostMissed(3, "پست موجود نیست");
 
     private final Integer id;
     private final String titleFa;

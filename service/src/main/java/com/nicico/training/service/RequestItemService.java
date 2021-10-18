@@ -4,14 +4,16 @@ import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.iservice.ICompetenceRequestService;
-import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.iservice.IRequestItemService;
+import com.nicico.training.dto.NeedsAssessmentReportsDTO;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.CompetenceRequest;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.RequestItem;
+import com.nicico.training.model.enums.RequestItemState;
 import com.nicico.training.repository.RequestItemDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,18 +31,23 @@ public class RequestItemService implements IRequestItemService {
     private final RequestItemDAO requestItemDAO;
     private final ICompetenceRequestService competenceRequestService;
     private final IPersonnelService personnelService;
+    private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
+    private final IPostService iPostService;
+    private final ParameterValueService parameterValueService;
 
     @Override
     @Transactional
-    public RequestItem create(RequestItem requestItem) {
+    @CacheEvict(value = "searchIRequestItemService", key = "{#id}",allEntries = true)
+    public RequestItem create(RequestItem requestItem,Long id) {
         CompetenceRequest competenceRequest = competenceRequestService.get(requestItem.getCompetenceReqId());
         requestItem.setCompetenceReq(competenceRequest);
-        RequestItem saved=requestItemDAO.save(requestItem);
+        RequestItem saved = requestItemDAO.save(requestItem);
         saved.setNationalCode(getNationalCode(saved.getPersonnelNumber()));
         return saved;
     }
 
     @Override
+    @CacheEvict(value = "searchIRequestItemService", key = "{#id}",allEntries = true)
     public RequestItemWithDiff update(RequestItem newData, Long id) {
         RequestItem requestItem = get(id);
         requestItem.setAffairs(newData.getAffairs());
@@ -59,12 +66,14 @@ public class RequestItemService implements IRequestItemService {
     public RequestItem get(Long id) {
         return requestItemDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
+
     public String getNationalCode(String personnelNumber) {
         Personnel personnel = personnelService.getByPersonnelNumber(personnelNumber);
         return personnel.getNationalCode();
     }
 
     @Override
+    @CacheEvict(value = "searchIRequestItemService", key = "{#id}",allEntries = true)
     public void delete(Long id) {
         requestItemDAO.deleteById(id);
     }
@@ -80,16 +89,19 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    public List<RequestItem> search(SearchDTO.SearchRq request) {
-        List<RequestItem>list;
+    @Cacheable(value = "searchIRequestItemService", key = "{#id}")
+    public List<RequestItem> search(SearchDTO.SearchRq request, Long id) {
+        List<RequestItem> list;
         if (request.getStartIndex() != null) {
             Page<RequestItem> all = requestItemDAO.findAll(NICICOSpecification.of(request), NICICOPageable.of(request));
-            list= all.getContent();
+            list = all.getContent();
         } else {
-            list= requestItemDAO.findAll(NICICOSpecification.of(request));
+            list = requestItemDAO.findAll(NICICOSpecification.of(request));
         }
-        for (RequestItem requestItem:list){
+        for (RequestItem requestItem : list) {
             requestItem.setNationalCode(getNationalCode(requestItem.getPersonnelNumber()));
+            requestItem.setState(getRequestState(requestItem.getPersonnelNumber(), requestItem.getPost(), requestItem.getNationalCode()));
+
         }
 
         return list;
@@ -108,16 +120,16 @@ public class RequestItemService implements IRequestItemService {
             }
 
         }
-        int wrongCount=getWrongCount(requestItemWithDiffList);
+        int wrongCount = getWrongCount(requestItemWithDiffList);
         res.setWrongCount(wrongCount);
         res.setList(requestItemWithDiffList);
         return res;
     }
 
     private int getWrongCount(List<RequestItemWithDiff> list) {
-        int wrongCount=0;
-        for (RequestItemWithDiff data:list){
-            if (!(data.isPersonnelNumberCorrect() && data.isAffairsCorrect() && data.isLastNameCorrect() && data.isNameCorrect())){
+        int wrongCount = 0;
+        for (RequestItemWithDiff data : list) {
+            if (!(data.isPersonnelNumberCorrect() && data.isAffairsCorrect() && data.isLastNameCorrect() && data.isNameCorrect())) {
                 wrongCount++;
             }
         }
@@ -136,6 +148,7 @@ public class RequestItemService implements IRequestItemService {
         requestItemWithDiff.setWorkGroupCode("");
 
         if (personnel != null) {
+            requestItemWithDiff.setState(getRequestState(personnel.getPersonnelNo(), requestItem.getPost(), personnel.getNationalCode()).getTitleFa());
             requestItemWithDiff.setPersonnelNumberCorrect(true);
             requestItemWithDiff.setNationalCode(personnel.getNationalCode());
             if (personnel.getFirstName() != null && personnel.getFirstName().trim().equals(requestItem.getName().trim())) {
@@ -156,7 +169,7 @@ public class RequestItemService implements IRequestItemService {
                 requestItemWithDiff.setCorrectAffairs(personnel.getCcpAffairs());
                 requestItemWithDiff.setAffairsCorrect(false);
             }
-            RequestItem savedItem = create(requestItem);
+            RequestItem savedItem = create(requestItem,requestItem.getCompetenceReqId());
             requestItemWithDiff.setId(savedItem.getId());
             requestItemWithDiff.setCompetenceReqId(savedItem.getCompetenceReqId());
         } else {
@@ -166,6 +179,29 @@ public class RequestItemService implements IRequestItemService {
             requestItemWithDiff.setNameCorrect(false);
         }
         return requestItemWithDiff;
+
+    }
+
+    private RequestItemState getRequestState(String personnelNumber, String post, String nationalCode) {
+        boolean isPostExist = iPostService.isPostExist(post);
+        if (isPostExist) {
+            List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = iNeedsAssessmentReportsService.getCourseListForBpms(post, "Post", nationalCode, personnelNumber);
+            if (needsAssessmentReportList.isEmpty()) {
+                return RequestItemState.Unimpeded;
+            } else {
+                Long notPassedCodeId = parameterValueService.getId("false");
+                boolean isNotPassedCodeIdExist = needsAssessmentReportList.stream().anyMatch(o -> o.getSkill().getCourse().getScoresState().equals(notPassedCodeId));
+                if (isNotPassedCodeIdExist)
+                    return RequestItemState.Impeded;
+                else
+                    return RequestItemState.Unimpeded;
+
+
+            }
+        } else {
+            return RequestItemState.PostMissed;
+        }
+
 
     }
 

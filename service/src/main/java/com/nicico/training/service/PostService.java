@@ -68,6 +68,12 @@ public class PostService implements IPostService {
         return modelMapper.map(optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound)), PostDTO.Info.class);
     }
 
+    @Override
+    public boolean isPostExist(String postCode) {
+        Optional<Post> optionalPost = postDAO.findByCodeAndDeleted(postCode,null);
+        return optionalPost.isPresent();
+    }
+
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PostDTO.Info> search(SearchDTO.SearchRq request) {

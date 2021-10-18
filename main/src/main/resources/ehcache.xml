@@ -9,4 +9,14 @@
             <heap unit="kB">10</heap>
         </resources>
     </cache>
+    <cache alias="searchIRequestItemService">
+        <key-type>java.lang.Long</key-type>
+        <value-type>java.util.Set</value-type>
+        <expiry>
+            <ttl unit="seconds">2</ttl>
+        </expiry>
+        <resources>
+            <heap unit="kB">10</heap>
+        </resources>
+    </cache>
 </config>

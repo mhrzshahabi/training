@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.NeedAssessmentGroupJobPromotionResponse;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.model.NeedAssessmentGroupResult;
+import com.nicico.training.model.NeedsAssessment;
 import request.needsassessment.NeedAssessmentGroupJobPromotionRequestDto;
 import request.needsassessment.NeedAssessmentGroupJobPromotionResponseDto;
 
@@ -19,5 +20,11 @@ public interface INeedsAssessmentReportsService {
     NeedAssessmentGroupResult getNeedAssessmentGroupResult(String reference);
 
     List<NeedAssessmentGroupJobPromotionResponseDto.Info> getGroupJobPromotionListByUser(String userName);
+
+    List<NeedsAssessmentReportsDTO.ReportInfo> getCourseList(Long objectId, String objectType, Long personnelId);
+
+    List<NeedsAssessment> getNeedsAssessmentListForBpms(String postCode, String objectType);
+
+    List<NeedsAssessmentReportsDTO.ReportInfo> getCourseListForBpms( String postCode, String objectType, String nationalCode,String personnelNumber);
 
 }

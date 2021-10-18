@@ -350,7 +350,7 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
+//zaza2
                                     ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
                                     // let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  [activeId].some(p=>(!questionBank)?p==id:p==questionBankId));
                                     //
@@ -923,7 +923,8 @@
                                     serverOutputAsString: false,
                                     callback: function (resp) {
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
+                                          //  zaza1
+                                            debugger
                                             ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
                                             // let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
                                             // if(findRows && findRows.length>0){

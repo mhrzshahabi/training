@@ -36,9 +36,9 @@ public class RequestItemRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<RequestItemDTO.Info> create(@RequestBody RequestItemDTO.Create request) {
-        RequestItem requestItem=requestItemBeanMapper.toRequestItem(request);
-        RequestItem saved=  requestItemService.create(requestItem);
-        RequestItemDTO.Info res=requestItemBeanMapper.toRequestItemDto(saved);
+        RequestItem requestItem = requestItemBeanMapper.toRequestItem(request);
+        RequestItem saved = requestItemService.create(requestItem,requestItem.getCompetenceReqId());
+        RequestItemDTO.Info res = requestItemBeanMapper.toRequestItemDto(saved);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
 
     }
@@ -46,9 +46,9 @@ public class RequestItemRestController {
     @Loggable
     @PostMapping(value = "/list")
     public ResponseEntity<RequestItemDto> createList(@RequestBody List<RequestItemDTO.Create> requests) {
-        List<RequestItem> requestItem=requestItemBeanMapper.toRequestItemDtos(requests);
-        RequestItemDto dto= requestItemService.createList(requestItem);
-         return new ResponseEntity<>(dto, HttpStatus.CREATED);
+        List<RequestItem> requestItem = requestItemBeanMapper.toRequestItemDtos(requests);
+        RequestItemDto dto = requestItemService.createList(requestItem);
+        return new ResponseEntity<>(dto, HttpStatus.CREATED);
 
     }
 
@@ -56,9 +56,10 @@ public class RequestItemRestController {
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<RequestItemWithDiff> update(@PathVariable Long id, @RequestBody RequestItemDTO.Create request) {
-        RequestItem competenceRequest=requestItemBeanMapper.toRequestItem(request);
-        RequestItemWithDiff competenceRequestResponse=  requestItemService.update(competenceRequest,id);
-         return new ResponseEntity<>(competenceRequestResponse, HttpStatus.OK);    }
+        RequestItem competenceRequest = requestItemBeanMapper.toRequestItem(request);
+        RequestItemWithDiff competenceRequestResponse = requestItemService.update(competenceRequest, id);
+        return new ResponseEntity<>(competenceRequestResponse, HttpStatus.OK);
+    }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
@@ -77,26 +78,28 @@ public class RequestItemRestController {
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<RequestItemDTO.Info> get(@PathVariable Long id) {
-        RequestItem competenceRequestResponse=  requestItemService.get(id);
-        RequestItemDTO.Info res=requestItemBeanMapper.toRequestItemDto(competenceRequestResponse);
+        RequestItem competenceRequestResponse = requestItemService.get(id);
+        RequestItemDTO.Info res = requestItemBeanMapper.toRequestItemDto(competenceRequestResponse);
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
-//
+
+    //
     @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<RequestItemDTO.Info>> list() {
-        List<RequestItem> requestItems=  requestItemService.getList();
-        List<RequestItemDTO.Info> res=requestItemBeanMapper.toRequestItemDTODtos(requestItems);
-        return new ResponseEntity<>(res, HttpStatus.OK); }
+        List<RequestItem> requestItems = requestItemService.getList();
+        List<RequestItemDTO.Info> res = requestItemBeanMapper.toRequestItemDTODtos(requestItems);
+        return new ResponseEntity<>(res, HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<RequestItemDTO.RequestItemSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                   @RequestParam(value = "_endRow",defaultValue = "50") Integer endRow,
-                                                   @RequestParam(value = "_constructor", required = false) String constructor,
-                                                   @RequestParam(value = "operator", required = false) String operator,
-                                                   @RequestParam(value = "criteria", required = false) String criteria,
-                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                 @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
@@ -117,8 +120,20 @@ public class RequestItemRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        List<RequestItem> response = requestItemService.search(request);
-        List<RequestItemDTO.Info> res=requestItemBeanMapper.toRequestItemDTODtos(response);
+        int id = 0;
+        if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
+            for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+                if (criterion.getFieldName() != null) {
+                    if (criterion.getFieldName().equals("competenceReqId")) {
+                        id = (Integer) criterion.getValue().get(0);
+                    }
+                }
+            }
+        }
+
+
+        List<RequestItem> response = requestItemService.search(request, (long) id);
+        List<RequestItemDTO.Info> res = requestItemBeanMapper.toRequestItemDTODtos(response);
 
         final RequestItemDTO.SpecRs specResponse = new RequestItemDTO.SpecRs();
         final RequestItemDTO.RequestItemSpecRs specRs = new RequestItemDTO.RequestItemSpecRs();
@@ -131,7 +146,6 @@ public class RequestItemRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-
 
 
 }

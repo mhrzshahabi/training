@@ -131,11 +131,10 @@ public class ElsRestController {
           List<ClassStudent>classStudents=  classStudentService.getClassStudents(evaluation.getClassId());
          List  <EvalTargetUser> students=classStudents.stream()
                     .map(classStudent -> evaluationBeanMapper.toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
-            Questionnaire   questionnaire= questionnaireService.get(evaluation.getQuestionnaireId());
             Map<String, String> paramValMap = new HashMap<>();
             for (EvalTargetUser evalTargetUser:students){
                 paramValMap.put("user_name",evalTargetUser.getLastName());
-                paramValMap.put("evaluation_title",questionnaire.getTitle());
+                paramValMap.put("evaluation_title",evaluation.getTclass().getTitleClass());
                 paramValMap.put("url", elsSmsUrl);
                 sendMessageService.syncEnqueue("1ax63fg1dr",paramValMap,Collections.singletonList(evalTargetUser.getCellNumber()));
             }

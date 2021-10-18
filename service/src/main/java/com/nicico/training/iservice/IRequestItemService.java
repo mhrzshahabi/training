@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface IRequestItemService {
 
-    RequestItem create(RequestItem competenceRequest);
+    RequestItem create(RequestItem competenceRequest,Long id);
 
     RequestItemWithDiff update(RequestItem requestItem, Long id);
 
@@ -22,7 +22,7 @@ public interface IRequestItemService {
 
     Integer getTotalCount();
 
-    List<RequestItem> search(SearchDTO.SearchRq request);
+    List<RequestItem> search(SearchDTO.SearchRq request, Long id);
 
     RequestItemDto createList(List<RequestItem> requestItem);
 
