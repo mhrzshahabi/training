@@ -332,6 +332,10 @@
       "title": "منوی امنیت - واحد عملياتي"
     },
     {
+      "code": "Menu_Security_OperationalًRole",
+      "title": "منوی امنیت - نقش عملياتي"
+    },
+    {
       "code": "Menu_Security_Settings",
       "title": "منوی امنیت - تنظيمات"
     },
