@@ -1213,6 +1213,7 @@
     const teacherInformation = rootUrl + "/teacherInformation";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
+    const operationalRoleUrl = rootUrl + "/operational-role";
     const evaluationUrl = rootUrl + "/evaluation";
     const hasAccessToChangeClassStatus = rootUrl + "/tclass/hasAccessToChangeClassStatus/";
     const isValidForExam = rootUrl + "/tclass/isValidForExam/";
@@ -2766,6 +2767,15 @@
 <%--                },--%>
                 {isSeparator: true},
                 </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_Security_OperationalًRole')">--%>
+                {
+                    title: "<spring:message code="operational.role"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/operationalRole/"/>");
+                    }
+                },
+                {isSeparator: true},
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_Settings')">
                 {

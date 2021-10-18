@@ -175,6 +175,11 @@ public class MainFormController {
         return "security/usersLoginReport";
     }
 
+    @RequestMapping("/operationalRole")
+    public String showOperationalRoleForm() {
+        return "security/operationalRole";
+    }
+
     @RequestMapping("/config-questionnaire")
     public String showConfigQuestionnaireForm() {
         return "base/configQuestionnaire";

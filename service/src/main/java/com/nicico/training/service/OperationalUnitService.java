@@ -61,9 +61,22 @@ public class OperationalUnitService implements IOperationalUnitService {
 
         OperationalUnit operationalUnit = modelMapper.map(request, OperationalUnit.class);
         try {
+            int count = operationalUnitDAO.countAllRecords();
+            if (!operationalUnitDAO.existsByOperationalUnit(request.getOperationalUnit())) {
+                if (count < 1000 ){
+                    String formattedUnitCode = getFormat(count);
+                    while (operationalUnitDAO.existsByUnitCode(formattedUnitCode)){
+                        formattedUnitCode = getFormat(++count);
+                    }
+                    operationalUnit.setUnitCode(formattedUnitCode);
 
-            if (!operationalUnitDAO.existsByUnitCodeOrOperationalUnit(request.getUnitCode(), request.getOperationalUnit()))
-                info = modelMapper.map(operationalUnitDAO.saveAndFlush(operationalUnit), OperationalUnitDTO.Info.class);
+                    info = modelMapper.map(operationalUnitDAO.saveAndFlush(operationalUnit), OperationalUnitDTO.Info.class);
+                }
+                else {
+                    Locale locale = LocaleContextHolder.getLocale();
+                    response.sendError(403, messageSource.getMessage("more.than.maximum.capacity", null, locale));
+                }
+            }
             else {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(406, messageSource.getMessage("msg.record.duplicate", null, locale));
@@ -74,6 +87,9 @@ public class OperationalUnitService implements IOperationalUnitService {
         }
 
         return info;
+    }
+    private String getFormat(int count) {
+        return String.format("%03d", count + 1);
     }
 
     //*********************************

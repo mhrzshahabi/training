@@ -200,5 +200,11 @@
     <!--<changeSet author="matin_ar (generated)" id="1596019535756-476">-->
         <!--<addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_TRAINING_POSTC_CODE_COL" tableName="tbl_training_post"/>-->
     <!--</changeSet>-->
+    <changeSet author="nick (generated)" id="1634122431773-560">
+        <addUniqueConstraint columnNames="C_CODE" constraintName="UC_TBL_OPERATIONAL_ROLEC_CODE_COL" tableName="TBL_OPERATIONAL_ROLE"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1634122431773-561">
+        <addUniqueConstraint columnNames="C_TITLE" constraintName="UC_TBL_OPERATIONAL_ROLEC_TITLE_COL" tableName="TBL_OPERATIONAL_ROLE"/>
+    </changeSet>
     
 </databaseChangeLog>
