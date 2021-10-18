@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     let LoadAttachments_Post = null;
@@ -7,6 +8,7 @@
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('Post_R')">
             {
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
@@ -16,7 +18,8 @@
                     closeToShowUnGroupedPosts_POST();
                     refreshLG(PostLG_post);
                 }
-            },
+            }
+            </sec:authorize>
         ]
     });
 
@@ -59,15 +62,22 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
             ToolStripButton_EditNA_POST,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_T')">
             ToolStripButton_TreeNA_JspPost,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Post_P')">
             ToolStrip_Post_Export2EXcel
+            </sec:authorize>
         ]
     });
 
     PostTS_post = isc.ToolStrip.create({
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Post_R')">
             isc.ToolStripButton.create({
                 top: 260,
                 align: "center",
@@ -83,6 +93,7 @@
 
                 }
             }),
+            </sec:authorize>
             // isc.ToolStripButton.create({
             //     title: 'نمايش مجتمع ها از وبسرويس',
             //     click: function () {
@@ -110,6 +121,7 @@
                     isc.Label.create({
                         ID: "totalsLabel_post"
                     }),
+                    <sec:authorize access="hasAuthority('Post_R')">
                     isc.ToolStripButtonRefresh.create({
                         click: function () {
                             LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
@@ -117,7 +129,8 @@
                             closeToShowUnGroupedPosts_POST();
                             refreshLG(PostLG_post);
                         }
-                    }),
+                    })
+                    </sec:authorize>
                 ]
             })
         ]
@@ -266,7 +279,9 @@
 
     PostLG_post = isc.TrLG.create({
         selectionType: "single",
+        <sec:authorize access="hasAuthority('Post_R')">
         dataSource: PostDS_post,
+        </sec:authorize>
         fields: [
             {name: "code",
                 filterEditorProperties: {
@@ -791,7 +806,12 @@
     //////////////////////////////////////////////////////////////detailTab/////////////////////////////////////////////
 
     isc.TrVLayout.create({
-        members: [PostLG_post, DetailTS_Post],
+        members: [
+            PostLG_post,
+            <sec:authorize access="hasAuthority('Post_R')">
+            DetailTS_Post
+            </sec:authorize>
+        ]
     });
 
     // ------------------------------------------- Functions -------------------------------------------
