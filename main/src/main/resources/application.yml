@@ -2,7 +2,7 @@ spring:
   application:
     name: Training
   profiles:
-    active: Local
+    active: Development
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
@@ -224,7 +224,7 @@ spring:
             user-name-attribute: username
   cache:
     jcache:
-      config: ehcache.xml
+      config: classpath:ehcache.xml
 nicico:
   security:
 #    sys-password: password
