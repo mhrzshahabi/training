@@ -1212,6 +1212,7 @@
     const teacherInformation = rootUrl + "/teacherInformation";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
+    const operationalRoleUrl = rootUrl + "/operational-role";
     const evaluationUrl = rootUrl + "/evaluation";
     const hasAccessToChangeClassStatus = rootUrl + "/tclass/hasAccessToChangeClassStatus/";
     const isValidForExam = rootUrl + "/tclass/isValidForExam/";

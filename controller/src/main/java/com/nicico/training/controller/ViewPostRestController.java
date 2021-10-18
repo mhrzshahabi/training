@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.ViewPostDTO;
+import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.ViewPostService;
 import lombok.RequiredArgsConstructor;
@@ -14,14 +15,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -31,11 +32,34 @@ public class ViewPostRestController {
 
     private final ObjectMapper objectMapper;
     private final ViewPostService viewPostService;
+    private final IOperationalRoleService iOperationalRoleService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        SearchDTO.SearchRs<ViewPostDTO.Info> searchRs = viewPostService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/rolePostList")
+    public ResponseEntity<ISC<ViewPostDTO.Info>> rolePostList(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        List<Long> usedPostIds = iOperationalRoleService.getUsedPostIdsInRoles();
+        if (usedPostIds != null && usedPostIds.size() > 0) {
+            List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+            criteriaList.add(makeNewCriteria("id", usedPostIds, EOperator.notInSet, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, criteriaList);
+            if (searchRq.getCriteria() != null) {
+                if (searchRq.getCriteria().getCriteria() != null)
+                    searchRq.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    searchRq.getCriteria().setCriteria(criteriaList);
+            } else {
+                searchRq.setCriteria(criteriaRq);
+            }
+        }
         SearchDTO.SearchRs<ViewPostDTO.Info> searchRs = viewPostService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
@@ -73,5 +97,14 @@ public class ViewPostRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    public static SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        criteriaRq.setCriteria(criteriaRqList);
+        return criteriaRq;
     }
 }

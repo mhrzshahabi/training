@@ -1278,4 +1278,20 @@
     <changeSet author="golrokhi (generated)" id="1601709679462-529">
         <addForeignKeyConstraint baseColumnNames="f_orginal_message_message" baseTableName="tbl_message" constraintName="FKbhobgm3psdospx4rbhu22c4oh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_message" validate="true"/>
     </changeSet>
+
+    <changeSet author="nick (generated)" id="1634122431773-566">
+        <addForeignKeyConstraint baseColumnNames="F_OPERATIONAL_ROLE" baseTableName="TBL_OPERATIONAL_ROLE_USER_IDS" constraintName="FKOperationalRoleINOperationalRoleUserIds" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_role" validate="true"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1634122431773-567">
+        <addForeignKeyConstraint baseColumnNames="E_DELETED" baseTableName="TBL_OPERATIONAL_ROLE" constraintName="FKEDeletedINOperationalRole" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1634122431773-570">
+        <addForeignKeyConstraint baseColumnNames="E_ENABLED" baseTableName="TBL_OPERATIONAL_ROLE" constraintName="FKEEnabledNOperationalRole" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1634122431773-574">
+        <addForeignKeyConstraint baseColumnNames="F_OPERATIONAL_UNIT_ID" baseTableName="TBL_OPERATIONAL_ROLE" constraintName="FKOperationalUnitIdINOperationalRole" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_unit" validate="true"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1634467547507-577">
+        <addForeignKeyConstraint baseColumnNames="F_OPERATIONAL_ROLE" baseTableName="TBL_OPERATIONAL_ROLE_POST_IDS" constraintName="FKOperationalRoleINOperationalPostUserIds" deferrable="false" initiallyDeferred="false" referencedColumnNames="ID" referencedTableName="tbl_operational_role" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

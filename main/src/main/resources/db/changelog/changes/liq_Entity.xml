@@ -3234,4 +3234,49 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="nick (generated)" id="1634122431773-548">
+        <createTable tableName="TBL_OPERATIONAL_ROLE">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_OPERATIONAL_ROLEPK"/>
+            </column>
+            <column name="C_CREATED_BY" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="D_CREATED_DATE" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="E_DELETED" type="NUMBER(19, 0)"/>
+            <column name="E_ENABLED" type="NUMBER(19, 0)"/>
+            <column name="C_LAST_MODIFIED_BY" type="VARCHAR2(255 CHAR)"/>
+            <column name="D_LAST_MODIFIED_DATE" type="TIMESTAMP"/>
+            <column name="N_VERSION" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="C_CODE" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="COMPLEX_ID" type="number(19, 0)"/>
+            <column name="C_DESCRIPTION" type="VARCHAR2(255 CHAR)"/>
+            <column name="F_OPERATIONAL_UNIT_ID" type="NUMBER(19, 0)"/>
+            <column name="C_TITLE" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1634122431773-549">
+        <createTable tableName="TBL_OPERATIONAL_ROLE_USER_IDS">
+            <column name="F_OPERATIONAL_ROLE" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="USER_IDS" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1634467547507-548">
+        <createTable tableName="TBL_OPERATIONAL_ROLE_POST_IDS">
+            <column name="F_OPERATIONAL_ROLE" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="POST_IDS" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

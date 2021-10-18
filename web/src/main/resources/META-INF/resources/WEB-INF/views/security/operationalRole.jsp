@@ -7,9 +7,24 @@
     var methodOperationalRole;
     var saveActionUrlOperationalRole;
     var wait_Permission;
+    let departmentCriteria = [];
     //--------------------------------------------------------------------------------------------------------------------//
     /*DS*/
     //--------------------------------------------------------------------------------------------------------------------//
+
+    var RestDataSource_JspOperationalRole = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true},
+                {name: "code"},
+                {name: "title"},
+                {name: "description"},
+                {name: "operationalUnit.operationalUnit"},
+                {name: "userIds", title: "<spring:message code="post"/>", filterOperator: "inSet"},
+                {name: "postIds", title: "<spring:message code="users"/>", filterOperator: "inSet"},
+                {name: "complexId"}
+            ],
+    });
 
     UserDS_JspOperationalRole = isc.TrDS.create({
         fields: [
@@ -83,6 +98,7 @@
             {name: "enabled", hidden: true, title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
         ],
         fetchDataURL: viewPostUrl + "/iscList"
+        // fetchDataURL: viewPostUrl + "/rolePostList"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -100,7 +116,7 @@
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
-                // ListGrid_OperationalRole_Edit();
+                ListGrid_OperationalRole_Edit();
             }
         }, {
             title: "<spring:message code='remove'/>", click: function () {
@@ -115,12 +131,12 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     ListGrid_JspOperationalRole = isc.TrLG.create({
-        // dataSource: WorkGroupDS_JspOperationalRole,
+        dataSource: RestDataSource_JspOperationalRole,
         contextMenu: Menu_JspOperationalRole,
         sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: true,
+        autoFetchData: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
@@ -140,7 +156,7 @@
                 filterOperator: "iContains"
             },
             {
-                name: "operationUnitTitle",
+                name: "operationalUnit.operationalUnit",
                 title: "<spring:message code="unitName"/>",
                 filterOperator: "iContains"
             },
@@ -187,9 +203,9 @@
                 ]
             }
         ],
-        // rowDoubleClick: function () {
-        //     ListGrid_OperationalRole_Edit();
-        // },
+        rowDoubleClick: function () {
+            ListGrid_OperationalRole_Edit();
+        },
         filterEditorSubmit: function () {
             ListGrid_JspOperationalRole.invalidateCache();
         }
@@ -214,7 +230,27 @@
                 length: 255
             },
             {
-                name: "operationUnitId",
+                name: "complexId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="complex"/>:",
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_OperationalRole_Department_Filter,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+            },
+            {
+                name: "operationalUnitId",
                 title: "<spring:message code="unitName"/>",
                 optionDataSource: RestDataSource_JspOperationalUnit,
                 valueField: "id",
@@ -225,19 +261,40 @@
                 canSort: false,
             },
             {
-                name: "postId",
+                name: "postIds",
+                type: "MultiComboBoxItem",
                 title: "<spring:message code="post"/>",
-                editorType: "ComboBoxItem",
-                pickListFields: [{name: "code"}, {name: "titleFa"}, {name: "jobTitleFa"}, {name: "postGradeTitleFa"}],
-                filterFields: [{name: "titleFa"},],
                 optionDataSource: PostDS_OperationalRole,
                 valueField: "id",
                 displayField: "titleFa",
-                required: true,
-                validateOnExit: true,
-                length: 255,
-                canSort: false,
-                changed: function (form, item, value) {
+                filterOnKeypress: true,
+                multiple: true,
+                comboBoxProperties: {
+                    hint: "",
+                    filterFields: ["code", "titleFa", "jobTitleFa", "postGradeTitleFa"],
+                    textMatchStyle: "substring",
+                    pickListWidth: 450,
+                    pickListProperties: {
+                        autoFitWidthApproach: "both",
+                    },
+                    pickListFields: [
+                        {
+                            name: "code",
+                            filterOperator: "iContains",
+                            autoFitWidth: true
+                        },
+                        {name: "titleFa",  filterOperator: "iContains"},
+                        {
+                            name: "jobTitleFa",
+                            filterOperator: "iContains",
+                            autoFitWidth: true
+                        },
+                        {
+                            name: "postGradeTitleFa",
+                            filterOperator: "iContains",
+                            autoFitWidth: true
+                        }
+                    ],
                 }
             },
             {
@@ -388,7 +445,7 @@
                     }
                 ],
                 changed: function (form, item, value) {
-                    load_classes_by_department(value);
+                    load_roles_by_department(value);
                 },
             },
         ]
@@ -407,7 +464,7 @@
 
     ToolStripButton_Edit_JspOperationalRole = isc.ToolStripButtonEdit.create({
         click: function () {
-            // ListGrid_OperationalRole_Edit();
+            ListGrid_OperationalRole_Edit();
         }
     });
     ToolStripButton_Add_JspOperationalRole = isc.ToolStripButtonCreate.create({
@@ -454,9 +511,22 @@
 
     function ListGrid_OperationalRole_Add() {
         methodOperationalRole = "POST";
-        // saveActionUrlOperationalRole = operationalRoleUrl;
+        saveActionUrlOperationalRole = operationalRoleUrl;
         DynamicForm_JspOperationalRole.clearValues();
         Window_JspOperationalRole.show();
+    }
+
+    function ListGrid_OperationalRole_Edit() {
+        var record = ListGrid_JspOperationalRole.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            methodWorkGroup = "PUT";
+            saveActionUrlOperationalRole = operationalRoleUrl + "/" + record.id;
+            DynamicForm_JspOperationalRole.clearValues();
+            DynamicForm_JspOperationalRole.editRecord(record);
+            Window_JspOperationalRole.show();
+        }
     }
 
     function OperationalRole_save_result(resp) {
@@ -475,6 +545,37 @@
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
         }
+    }
+
+    function load_roles_by_department(value) {
+        if (value !== undefined) {
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {
+                        fieldName: "complexId", operator: "inSet", value: value
+                    }
+                ]
+            };
+            RestDataSource_JspOperationalRole.fetchDataURL = operationalRoleUrl + "/spec-list";
+            departmentCriteria = criteria;
+            let mainCriteria = createMainCriteriaInRoles();
+            ListGrid_JspOperationalRole.invalidateCache();
+            ListGrid_JspOperationalRole.fetchData(mainCriteria);
+        } else {
+            createDialog("info", "<spring:message code="msg.select.complex.ask"/>", "<spring:message code="message"/>")
+        }
+
+    }
+
+    function createMainCriteriaInRoles() {
+        let mainCriteria = {};
+        mainCriteria._constructor = "AdvancedCriteria";
+        mainCriteria.operator = "and";
+        mainCriteria.criteria = [];
+        mainCriteria.criteria.add(departmentCriteria);
+        return mainCriteria;
     }
 
 //</script>
