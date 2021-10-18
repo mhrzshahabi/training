@@ -131,7 +131,6 @@ public class RequestItemRestController {
             }
         }
 
-
         List<RequestItem> response = requestItemService.search(request, (long) id);
         List<RequestItemDTO.Info> res = requestItemBeanMapper.toRequestItemDTODtos(response);
 

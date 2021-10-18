@@ -2,7 +2,7 @@ spring:
   application:
     name: Training
   profiles:
-    active: Local
+    active: Development
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
@@ -234,7 +234,7 @@ nicico:
   hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
   masterDataUrl: 'http://devapp01.icico.net.ir/master-data/api/v3'
-  elsSmsUrl: 'http://devapp01.icico.net.ir/els/api/url/evaluations'
+  elsSmsUrl: 'http://devapp01.icico.net.ir'
 
   upload:
     dir: /var/nicico/${spring.application.name}/upload
@@ -306,7 +306,7 @@ nicico:
   hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
   masterDataUrl: 'http://devapp01.icico.net.ir/master-data/api/v3'
-  elsSmsUrl: 'http://devapp01.icico.net.ir/els/api/url/evaluations'
+  elsSmsUrl: 'http://devapp01.icico.net.ir'
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:
