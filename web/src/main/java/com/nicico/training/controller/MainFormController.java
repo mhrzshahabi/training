@@ -175,6 +175,11 @@ public class MainFormController {
         return "security/usersLoginReport";
     }
 
+    @RequestMapping("/operationalRole")
+    public String showOperationalRoleForm() {
+        return "security/operationalRole";
+    }
+
     @RequestMapping("/config-questionnaire")
     public String showConfigQuestionnaireForm() {
         return "base/configQuestionnaire";
@@ -464,6 +469,11 @@ public class MainFormController {
     @RequestMapping("/classHistoryReport")
     public String classHistoryReport() {
         return "report/classHistoryReport";
+    }
+
+    @RequestMapping("/request")
+    public String showRequestsForm() {
+        return "evaluation/requests";
     }
 
 }

@@ -224,7 +224,7 @@ spring:
             user-name-attribute: username
   cache:
     jcache:
-      config: ehcache.xml
+      config: classpath:ehcache.xml
 nicico:
   security:
 #    sys-password: password

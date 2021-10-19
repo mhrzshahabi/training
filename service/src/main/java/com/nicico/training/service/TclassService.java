@@ -20,7 +20,6 @@ import com.nicico.training.mapper.ClassSession.SessionBeanMapper;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.model.compositeKey.AuditClassId;
 import com.nicico.training.model.enums.ClassStatus;
 import com.nicico.training.repository.*;
 import com.nicico.training.utility.persianDate.MyUtils;
@@ -1906,5 +1905,22 @@ public class TclassService implements ITclassService {
     public TclassDTO.TClassScoreEval getTClassDataForScoresInEval(String classCode) {
         Tclass tclass = tclassDAO.findByCode(classCode);
         return modelMapper.map(tclass, TclassDTO.TClassScoreEval.class);
+    }
+
+    @Override
+    public boolean getScoreDependency() {
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("scoreDependsOnEvaluation")).findFirst().orElse(null);
+        if (info != null) {
+            switch (info.getValue()) {
+                case "بله":
+                    return true;
+                case "خیر":
+                    return false;
+                default:
+                    return true;
+            }
+        } else throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
 }

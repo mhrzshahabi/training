@@ -1213,6 +1213,7 @@
     const teacherInformation = rootUrl + "/teacherInformation";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
     const workGroupUrl = rootUrl + "/work-group";
+    const operationalRoleUrl = rootUrl + "/operational-role";
     const evaluationUrl = rootUrl + "/evaluation";
     const hasAccessToChangeClassStatus = rootUrl + "/tclass/hasAccessToChangeClassStatus/";
     const isValidForExam = rootUrl + "/tclass/isValidForExam/";
@@ -1276,6 +1277,7 @@
     const competenceRequestUrl = rootUrl + "/competence-request";
     const RequestItemWithDiff = rootUrl + "/request-item/list";
     const requestItemUrl = rootUrl + "/request-item";
+    const requestUrl = rootUrl + "/request";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2042,6 +2044,13 @@
                         createTab(this.title, "<spring:url value="/evaluation-final-test/show-form"/>");
                     }
                 },
+
+                {
+                    title: "<spring:message code="requests"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/request"/>");
+                    }
+                },
                 <%--{--%>
                 <%--title: "ثبت نتایج",--%>
                 <%--click: function () {--%>
@@ -2766,6 +2775,15 @@
 <%--                },--%>
                 {isSeparator: true},
                 </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_Security_OperationalًRole')">--%>
+                {
+                    title: "<spring:message code="operational.role"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/operationalRole/"/>");
+                    }
+                },
+                {isSeparator: true},
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Security_Settings')">
                 {

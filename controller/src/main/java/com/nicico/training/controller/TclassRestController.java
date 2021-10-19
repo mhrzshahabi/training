@@ -830,4 +830,10 @@ public class TclassRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/scoreDependsOnEvaluation")
+    public boolean getScoreDependency() {
+        return tClassService.getScoreDependency();
+    }
+
 }
