@@ -1295,6 +1295,16 @@ public class ElsRestController {
     }
 
 
+    @PostMapping("/user-request/create")
+    public ResponseEntity<RequestResVM> create(@RequestBody RequestReqVM requestReqVM, @RequestHeader(name = "X-Auth-Token") String header) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            RequestResVM request = iRequestService.createRequest(requestReqVM);
+            return new ResponseEntity<>(request, HttpStatus.OK);
+        } else
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+
+    }
+
     @GetMapping("/user-request/by-nationalCode")
     public ResponseEntity<List<RequestResVM>> findAllByNationalCode(@RequestParam String nationalCode, @RequestHeader(name = "X-Auth-Token") String header) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
