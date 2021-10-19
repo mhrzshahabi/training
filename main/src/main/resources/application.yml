@@ -198,7 +198,7 @@ nicico:
 ---
 
 spring:
-  profiles: Development
+  profiles: Local
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
     username: devtraining

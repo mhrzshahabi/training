@@ -488,7 +488,13 @@ public class TclassService implements ITclassService {
     @Override
     public BaseResponse changeClassStatus(Long classId, String state,String reason){
         BaseResponse response=new BaseResponse();
+        Tclass tclass=new Tclass();
         Optional<LockClass> lockClassOptional=lockClassDAO.findByClassId(classId);
+        Optional<Tclass> optionalTClass = tclassDAO.findById(classId);
+        if (optionalTClass.isPresent()){
+            tclass =optionalTClass.get();
+        }
+
         String classStatus = get(classId).getClassStatus();
         switch (state){
             case "lock":{
@@ -503,7 +509,10 @@ public class TclassService implements ITclassService {
                         lockClass.setReason(reason);
                         lockClass.setClassCode(get(classId).getCode());
                         lockClassDAO.save(lockClass);
-                        tclassDAO.changeClassStatus(classId, ClassStatus.lock.getId().toString());
+                        tclass.setClassStatus(ClassStatus.lock.getId().toString());
+                        tclassDAO.save(tclass);
+
+//                        tclassDAO.changeClassStatus(classId, ClassStatus.lock.getId().toString());
                         response.setStatus(200);
                     }
                 } else
@@ -517,7 +526,9 @@ public class TclassService implements ITclassService {
                 if (classStatus.equals(ClassStatus.lock.getId().toString())) {
                     if (lockClassOptional.isPresent()) {
                         lockClassDAO.deleteById(lockClassOptional.get().getId());
-                        tclassDAO.changeClassStatus(classId, ClassStatus.finish.getId().toString());
+                        tclass.setClassStatus(ClassStatus.finish.getId().toString());
+                        tclassDAO.save(tclass);
+//                        tclassDAO.changeClassStatus(classId, ClassStatus.finish.getId().toString());
                         response.setStatus(200);
                     }
                     else{
@@ -1778,8 +1789,9 @@ public class TclassService implements ITclassService {
         Optional<Tclass> optionalTClass = tclassDAO.findById(classId);
 
         if (optionalTClass.isPresent()) {
-
-            tclassDAO.changeClassStatus(classId, ClassStatus.inProcess.getId().toString());
+            Tclass tclass=optionalTClass.get();
+            tclass.setClassStatus(ClassStatus.inProcess.getId().toString());
+            tclassDAO.save(tclass);
             response.setStatus(200);
             return response;
         } else {
