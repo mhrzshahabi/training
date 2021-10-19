@@ -11,8 +11,10 @@ import java.util.Date;
 public class RequestResVM {
 
 
-
     private String text;
+
+    private String name;
+
     private String nationalCode;
 
     private String response;

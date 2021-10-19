@@ -471,4 +471,9 @@ public class MainFormController {
         return "report/classHistoryReport";
     }
 
+    @RequestMapping("/request")
+    public String showRequestsForm() {
+        return "evaluation/requests";
+    }
+
 }
