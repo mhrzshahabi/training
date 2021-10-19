@@ -69,9 +69,8 @@ public class PostService implements IPostService {
     }
 
     @Override
-    public boolean isPostExist(String postCode) {
-        Optional<Post> optionalPost = postDAO.findByCodeAndDeleted(postCode,null);
-        return optionalPost.isPresent();
+    public Optional<Post> isPostExist(String postCode) {
+        return postDAO.findByCodeAndDeleted(postCode,null);
     }
 
     @Transactional(readOnly = true)

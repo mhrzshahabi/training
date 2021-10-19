@@ -13,6 +13,7 @@ import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.model.CompetenceRequest;
 import com.nicico.training.model.Personnel;
+import com.nicico.training.model.Post;
 import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.enums.RequestItemState;
 import com.nicico.training.repository.RequestItemDAO;
@@ -27,6 +28,7 @@ import response.requestItem.RequestItemWithDiff;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -40,11 +42,12 @@ public class RequestItemService implements IRequestItemService {
     private final IPostService iPostService;
     private final ParameterValueService parameterValueService;
     private final RequestItemBeanMapper requestItemBeanMapper;
+    private final IOperationalRoleService iOperationalRoleService;
 
     @Override
     @Transactional
-    @CacheEvict(value = "searchIRequestItemService", key = "{#id}",allEntries = true)
-    public RequestItem create(RequestItem requestItem,Long id) {
+    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
+    public RequestItem create(RequestItem requestItem, Long id) {
         CompetenceRequest competenceRequest = competenceRequestService.get(requestItem.getCompetenceReqId());
         requestItem.setCompetenceReq(competenceRequest);
         RequestItem saved = requestItemDAO.save(requestItem);
@@ -53,7 +56,7 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    @CacheEvict(value = "searchIRequestItemService", key = "{#id}",allEntries = true)
+    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
     public RequestItemWithDiff update(RequestItem newData, Long id) {
         RequestItem requestItem = get(id);
         requestItem.setAffairs(newData.getAffairs());
@@ -79,7 +82,7 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    @CacheEvict(value = "searchIRequestItemService", key = "{#id}",allEntries = true)
+    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
     public void delete(Long id) {
         requestItemDAO.deleteById(id);
     }
@@ -106,7 +109,8 @@ public class RequestItemService implements IRequestItemService {
         }
         for (RequestItem requestItem : list) {
             requestItem.setNationalCode(getNationalCode(requestItem.getPersonnelNumber()));
-            requestItem.setState(getRequestState(requestItem.getPersonnelNumber(), requestItem.getPost(), requestItem.getNationalCode()));
+            Optional<Post> optionalPost = iPostService.isPostExist(requestItem.getPost());
+            requestItem.setState(getRequestState(requestItem.getPersonnelNumber(), optionalPost.isPresent(),requestItem.getPost(), requestItem.getNationalCode()));
 
         }
 
@@ -150,11 +154,14 @@ public class RequestItemService implements IRequestItemService {
         requestItemWithDiff.setLastName(requestItem.getLastName());
         requestItemWithDiff.setPost(requestItem.getPost());
         requestItemWithDiff.setAffairs(requestItem.getAffairs());
-        //todo after add workgroup
-        requestItemWithDiff.setWorkGroupCode("");
-
+        Optional<Post> optionalPost = iPostService.isPostExist(requestItem.getPost());
+        if (!optionalPost.isPresent())
+            requestItemWithDiff.setWorkGroupCode("پست وجود ندارد");
+        else {
+            requestItemWithDiff.setWorkGroupCode(iOperationalRoleService.getWorkGroup(optionalPost.get().getId()));
+        }
         if (personnel != null) {
-            requestItemWithDiff.setState(getRequestState(personnel.getPersonnelNo(), requestItem.getPost(), personnel.getNationalCode()).getTitleFa());
+            requestItemWithDiff.setState(getRequestState(personnel.getPersonnelNo(), optionalPost.isPresent(),requestItem.getPost(), personnel.getNationalCode()).getTitleFa());
             requestItemWithDiff.setPersonnelNumberCorrect(true);
             requestItemWithDiff.setNationalCode(personnel.getNationalCode());
             if (personnel.getFirstName() != null && personnel.getFirstName().trim().equals(requestItem.getName().trim())) {
@@ -175,7 +182,7 @@ public class RequestItemService implements IRequestItemService {
                 requestItemWithDiff.setCorrectAffairs(personnel.getCcpAffairs());
                 requestItemWithDiff.setAffairsCorrect(false);
             }
-            RequestItem savedItem = create(requestItem,requestItem.getCompetenceReqId());
+            RequestItem savedItem = create(requestItem, requestItem.getCompetenceReqId());
             requestItemWithDiff.setId(savedItem.getId());
             requestItemWithDiff.setCompetenceReqId(savedItem.getCompetenceReqId());
         } else {
@@ -188,8 +195,7 @@ public class RequestItemService implements IRequestItemService {
 
     }
 
-    private RequestItemState getRequestState(String personnelNumber, String post, String nationalCode) {
-        boolean isPostExist = iPostService.isPostExist(post);
+    private RequestItemState getRequestState(String personnelNumber, boolean isPostExist,String post, String nationalCode) {
         if (isPostExist) {
             List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = iNeedsAssessmentReportsService.getCourseListForBpms(post, "Post", nationalCode, personnelNumber);
             if (needsAssessmentReportList.isEmpty()) {

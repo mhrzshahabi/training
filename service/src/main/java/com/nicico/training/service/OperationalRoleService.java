@@ -98,4 +98,13 @@ public class OperationalRoleService implements IOperationalRoleService {
         Optional<OperationalRole> operationalRole = operationalRoleDAO.findById(id);
         return operationalRole.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
+
+    @Override
+    public String getWorkGroup(Long postId) {
+         Optional<OperationalRole> operationalRole = operationalRoleDAO.findByPostIdsIn(postId);
+         if (operationalRole.isPresent())
+             return operationalRole.get().getTitle();
+         else return "گروه کاری ثبت نشده";
+    }
+
 }

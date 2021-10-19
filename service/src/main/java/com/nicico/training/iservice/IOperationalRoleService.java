@@ -15,4 +15,6 @@ public interface IOperationalRoleService {
     OperationalRoleDTO.Info update(Long id, OperationalRoleDTO.Update request);
 
     void deleteAll(List<Long> request);
+
+    String getWorkGroup(Long postId);
 }
