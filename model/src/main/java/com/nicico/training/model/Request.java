@@ -26,18 +26,20 @@ public class Request extends Auditable {
 
     @Column
     private String text;
-    @Column
+
+    @Column(name = "NATIONAL_CODE")
     private String nationalCode;
+
     @Column
     private String name;
 
     @Column
     private String response;
 
-    @Column
+    @Column(name = "FMS_REFERENCE")
     private String fmsReference;
 
-    @Column
+    @Column(name = "GROUP_ID")
     private String groupId;
 
     @Column(name = "REQUEST_TYPE")

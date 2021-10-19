@@ -1277,6 +1277,7 @@
     const competenceRequestUrl = rootUrl + "/competence-request";
     const RequestItemWithDiff = rootUrl + "/request-item/list";
     const requestItemUrl = rootUrl + "/request-item";
+    const requestUrl = rootUrl + "/request";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2041,6 +2042,13 @@
                     title: "<spring:message code="evaluation.final.test"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluation-final-test/show-form"/>");
+                    }
+                },
+
+                {
+                    title: "<spring:message code="requests"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/request"/>");
                     }
                 },
                 <%--{--%>
