@@ -23,6 +23,8 @@ public interface IRequestItemService {
 
     Integer getTotalCount();
 
+    Integer getTotalCountForOneCompetenceReqId(Long id);
+
     List<RequestItem> search(SearchDTO.SearchRq request, Long id);
 
     RequestItemDto createList(List<RequestItem> requestItem);

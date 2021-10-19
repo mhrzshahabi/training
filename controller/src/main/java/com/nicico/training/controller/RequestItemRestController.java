@@ -19,6 +19,7 @@ import response.requestItem.RequestItemDto;
 import response.requestItem.RequestItemWithDiff;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -130,8 +131,10 @@ public class RequestItemRestController {
                 }
             }
         }
-
-        List<RequestItem> response = requestItemService.search(request, (long) id);
+        List<RequestItem> response=new ArrayList<>();
+        if (requestItemService.getTotalCountForOneCompetenceReqId((long) id)>0){
+            response = requestItemService.search(request, (long) id);
+        }
         List<RequestItemDTO.Info> res = requestItemBeanMapper.toRequestItemDTODtos(response);
 
         final RequestItemDTO.SpecRs specResponse = new RequestItemDTO.SpecRs();

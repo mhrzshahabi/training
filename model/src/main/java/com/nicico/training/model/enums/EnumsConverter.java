@@ -6,8 +6,11 @@ DATE: 6/2/2019
 TIME: 11:01 AM
 */
 
+import org.springframework.beans.factory.annotation.Qualifier;
+
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
+import java.util.Arrays;
 
 public abstract class EnumsConverter {
 
@@ -444,6 +447,33 @@ public abstract class EnumsConverter {
                 }
             }
             return null;
+        }
+    }
+
+    @Converter(autoApply = true)
+    public static class RequestItemStateTypeConverter implements AttributeConverter<RequestItemState, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(RequestItemState entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public RequestItemState convertToEntityAttribute(Integer id) {
+
+            for (RequestItemState entry : RequestItemState.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+
+        public RequestItemState strToRequestItemState(String title) {
+            return Arrays.stream(RequestItemState.values())
+                    .filter(e -> e.getTitleFa().equals(title))
+                    .findFirst()
+                    .orElse(null);
         }
     }
 

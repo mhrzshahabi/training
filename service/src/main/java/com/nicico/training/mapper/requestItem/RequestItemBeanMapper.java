@@ -8,6 +8,8 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Qualifier;
+import response.requestItem.RequestItemWithDiff;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -20,6 +22,9 @@ public interface RequestItemBeanMapper {
 
     @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr")
     RequestItemDTO.Info toRequestItemDto(RequestItem requestItem);
+
+    @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr")
+    RequestItemDTO.Info toRequestItemDiffDto(RequestItemWithDiff requestItemWithDiff);
 
 
     @Qualifier("StateToStr")
@@ -37,6 +42,7 @@ public interface RequestItemBeanMapper {
                 .orElse(null);
     }
 
+    List<RequestItemDTO.Info> toRequestItemDiffDTODtos(List<RequestItemWithDiff> requestItemWithDiffList);
     List<RequestItemDTO.Info> toRequestItemDTODtos(List<RequestItem> requestItemList);
     List<RequestItem> toRequestItemDtos(List<RequestItemDTO.Create> requestItemList);
 }

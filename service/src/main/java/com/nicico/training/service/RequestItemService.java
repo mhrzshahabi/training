@@ -15,6 +15,7 @@ import com.nicico.training.model.CompetenceRequest;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.RequestItem;
+import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.model.enums.RequestItemState;
 import com.nicico.training.repository.RequestItemDAO;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +44,8 @@ public class RequestItemService implements IRequestItemService {
     private final ParameterValueService parameterValueService;
     private final RequestItemBeanMapper requestItemBeanMapper;
     private final IOperationalRoleService iOperationalRoleService;
+    private final EnumsConverter.RequestItemStateTypeConverter stateTypeConverter = new EnumsConverter.RequestItemStateTypeConverter();
+
 
     @Override
     @Transactional
@@ -95,6 +98,11 @@ public class RequestItemService implements IRequestItemService {
     @Override
     public Integer getTotalCount() {
         return Math.toIntExact(requestItemDAO.count());
+    }
+
+    @Override
+    public Integer getTotalCountForOneCompetenceReqId(Long id) {
+        return requestItemDAO.findAllByCompetenceReqId(id).size();
     }
 
     @Override
@@ -155,13 +163,18 @@ public class RequestItemService implements IRequestItemService {
         requestItemWithDiff.setPost(requestItem.getPost());
         requestItemWithDiff.setAffairs(requestItem.getAffairs());
         Optional<Post> optionalPost = iPostService.isPostExist(requestItem.getPost());
-        if (!optionalPost.isPresent())
+        if (!optionalPost.isPresent()){
             requestItemWithDiff.setWorkGroupCode("پست وجود ندارد");
-        else {
-            requestItemWithDiff.setWorkGroupCode(iOperationalRoleService.getWorkGroup(optionalPost.get().getId()));
+            requestItem.setWorkGroupCode("پست وجود ندارد");
+        } else {
+            String workGroupCode=iOperationalRoleService.getWorkGroup(optionalPost.get().getId());
+            requestItemWithDiff.setWorkGroupCode(workGroupCode);
+            requestItem.setWorkGroupCode(workGroupCode);
         }
         if (personnel != null) {
-            requestItemWithDiff.setState(getRequestState(personnel.getPersonnelNo(), optionalPost.isPresent(),requestItem.getPost(), personnel.getNationalCode()).getTitleFa());
+            String state=getRequestState(personnel.getPersonnelNo(), optionalPost.isPresent(),requestItem.getPost(), personnel.getNationalCode()).getTitleFa();
+            requestItemWithDiff.setState(state);
+            requestItem.setState(stateTypeConverter.strToRequestItemState(state));
             requestItemWithDiff.setPersonnelNumberCorrect(true);
             requestItemWithDiff.setNationalCode(personnel.getNationalCode());
             if (personnel.getFirstName() != null && personnel.getFirstName().trim().equals(requestItem.getName().trim())) {
