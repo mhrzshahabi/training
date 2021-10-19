@@ -1535,7 +1535,10 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                     QuestionBankWin_questionBank.close();
                     createDialog("info", "سوال ( " + question + " ) " + questionBankAction);
                     QuestionBankLG_questionBank.invalidateCache();
-                } else {
+                } else if (resp.httpResponseCode == 403) {
+                    createDialog("warning", "<spring:message code="msg.question.bank.question.not.editable"/>", "<spring:message code="error"/>");
+                }
+                else {
                     QuestionBankWin_questionBank.close();
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }

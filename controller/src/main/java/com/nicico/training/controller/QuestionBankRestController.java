@@ -13,6 +13,7 @@ import com.nicico.training.iservice.IViewStatisticsUnitReportService;
 import com.nicico.training.model.QuestionBank;
 import com.nicico.training.repository.QuestionBankDAO;
 import com.nicico.training.service.QuestionBankService;
+import com.nicico.training.service.QuestionBankTestQuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +40,7 @@ public class QuestionBankRestController {
     private final QuestionBankService questionBankService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
+    private final QuestionBankTestQuestionService questionBankTestQuestionService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -118,7 +120,17 @@ public class QuestionBankRestController {
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<QuestionBankDTO.Info> update(@PathVariable Long id, @RequestBody QuestionBankDTO.Update request) {
-        return new ResponseEntity<>(questionBankService.update(id, request), HttpStatus.OK);
+        HttpStatus httpStatus = HttpStatus.OK;
+        QuestionBankDTO.Info info = null;
+        if (!questionBankTestQuestionService.usedQuestion(id)) {
+            info = questionBankService.update(id, request);
+            return new ResponseEntity<>(info, httpStatus);
+        } else {
+            return new ResponseEntity<>(
+                    info,
+                    HttpStatus.FORBIDDEN);
+        }
+
     }
 
 
@@ -126,20 +138,25 @@ public class QuestionBankRestController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
+            if (!questionBankTestQuestionService.usedQuestion(id)) {
+                QuestionBank qb = questionBankService.getById(id);
 
-            QuestionBank qb = questionBankService.getById(id);
-
-            if (qb == null) {
-                return new ResponseEntity<>(
-                        new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
-                        HttpStatus.NOT_FOUND);
-            } else if (questionBankService.isExist(id)) {
+                if (qb == null) {
+                    return new ResponseEntity<>(
+                            new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                            HttpStatus.NOT_FOUND);
+                } else if (questionBankService.isExist(id)) {
+                    return new ResponseEntity<>(
+                            new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                            HttpStatus.NOT_ACCEPTABLE);
+                } else {
+                    questionBankService.delete(id);
+                    return new ResponseEntity(HttpStatus.OK);
+                }
+            } else {
                 return new ResponseEntity<>(
                         new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
                         HttpStatus.NOT_ACCEPTABLE);
-            } else {
-                questionBankService.delete(id);
-                return new ResponseEntity(HttpStatus.OK);
             }
 
 
