@@ -125,6 +125,10 @@ public class ContactInfoService implements IContactInfoService {
             if ((alreadyNc == null && recordNc != null) || !Objects.equals(alreadyNc, recordNc)) {
                 throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, msg, msg);
             }
+            if (recordNc==null){
+                msg = messageSource.getMessage("msg.duplicate.mobile.number.national.code.RegisteredPersonnel", new Object[]{alreadyNc}, locale);
+                throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, msg, msg);
+            }
         }
         final Optional<ContactInfo> cById = contactInfoDAO.findById(id);
         ContactInfo contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));

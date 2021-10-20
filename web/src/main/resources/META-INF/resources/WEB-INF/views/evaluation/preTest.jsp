@@ -274,12 +274,19 @@
                 return;
             }
 
-            let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  lgIds.some(p=>(!questionBank)?p==id:p==questionBankId));
-
-            if(findRows && findRows.length>0){
-                ListGrid_AllQuestions_PreTestJSP.setSelectedState(findRows);
-                findRows.setProperty("enabled", false);
+            for(let i=0;i<lgIds.length;i++)
+            {
+                let row= ListGrid_AllQuestions_PreTestJSP.getData().localData.filter(p =>p.id===lgIds[i])
+                row.setProperty("enabled", false);
+                ListGrid_AllQuestions_PreTestJSP.redraw();
             }
+
+            // let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  lgIds.some(p=>(!questionBank)?p==id:p==questionBankId));
+            //
+            // if(findRows && findRows.length>0){
+            //     ListGrid_AllQuestions_PreTestJSP.setSelectedState(findRows);
+            //     findRows.setProperty("enabled", false);
+            // }
         },
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -338,12 +345,17 @@
                                 callback: function (resp) {
                                     wait.close();
                                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                        ListGrid_AllQuestions_PreTestJSP.selectRecord(findRows);
-                                        findRows.setProperty("enabled", false);
+                                        // ListGrid_AllQuestions_PreTestJSP.selectRecord(findRows);
+                                        // findRows.setProperty("enabled", false);
+                                        // ListGrid_AllQuestions_PreTestJSP.redraw();
+                                        //
+                                        // ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                        // ListGrid_ForQuestions_PreTestJSP.fetchData();
+
                                         ListGrid_AllQuestions_PreTestJSP.redraw();
 
-                                        ListGrid_ForQuestions_PreTestJSP.invalidateCache();
-                                        ListGrid_ForQuestions_PreTestJSP.fetchData();
+                                        ListGrid_AllQuestions_PreTestJSP.invalidateCache();
+                                        ListGrid_AllQuestions_PreTestJSP.fetchData();
                                     } else {
                                         isc.say("خطا");
                                     }
@@ -434,13 +446,19 @@
 
                                     ListGrid_ForQuestions_PreTestJSP.invalidateCache();
 
-                                    let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  [activeId].some(p=>(!questionBank)?p==id:p==questionBankId));
+                                    let row= ListGrid_AllQuestions_PreTestJSP.getData().localData.filter(p =>p.id===activeId)
+                                    row.setProperty("enabled", true);
+                                    ListGrid_AllQuestions_PreTestJSP.redraw();
 
-                                    if(findRows && findRows.length>0){
-                                        findRows.setProperty("enabled", true);
-                                        ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows[0]);
-                                        ListGrid_AllQuestions_PreTestJSP.redraw();
-                                    }
+                                    // ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                    //
+                                    // let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  [activeId].some(p=>(!questionBank)?p==id:p==questionBankId));
+                                    //
+                                    // if(findRows && findRows.length>0){
+                                    //     findRows.setProperty("enabled", true);
+                                    //     ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows[0]);
+                                    //     ListGrid_AllQuestions_PreTestJSP.redraw();
+                                    // }
 
                                 } else {
                                     isc.say("خطا در پاسخ سرویس دهنده");
@@ -1727,14 +1745,28 @@
                                             wait.close();
 
                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
                                                 ListGrid_ForQuestions_PreTestJSP.invalidateCache();
 
-                                                let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
+                                                // let findRows=ListGrid_AllQuestions_FinalTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
+                                                //
+                                                // if(findRows && findRows.length>0){
+                                                //
+                                                //     findRows.setProperty("enabled", false);
+                                                //     ListGrid_AllQuestions_FinalTestJSP.redraw();
+                                                // }
+                                                ListGrid_AllQuestions_PreTestJSP.getSelectedRecords().setProperty("enabled", false);
+                                                ListGrid_AllQuestions_PreTestJSP.deselectAllRecords();
+                                                ListGrid_AllQuestions_PreTestJSP.redraw();
 
-                                                if(findRows && findRows.length>0){
-                                                    findRows.setProperty("enabled", false);
-                                                    ListGrid_AllQuestions_PreTestJSP.redraw();
-                                                }
+                                                // ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                                //
+                                                // let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
+                                                //
+                                                // if(findRows && findRows.length>0){
+                                                //     findRows.setProperty("enabled", false);
+                                                //     ListGrid_AllQuestions_PreTestJSP.redraw();
+                                                // }
                                                 isc.say("عملیات با موفقیت انجام شد.");
 
                                             } else {
@@ -1782,14 +1814,25 @@
                                         callback: function (resp) {
                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
-                                                ListGrid_ForQuestions_PreTestJSP.invalidateCache();
-                                                let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
 
-                                                if(findRows && findRows.length>0){
-                                                    findRows.setProperty("enabled", true);
-                                                    ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows);
+                                                ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                                for(let i=0;i<ids.length;i++)
+                                                {
+                                                    let row= ListGrid_AllQuestions_PreTestJSP.getData().localData.filter(p =>p.id===ids[i])
+                                                    row.setProperty("enabled", true);
                                                     ListGrid_AllQuestions_PreTestJSP.redraw();
                                                 }
+
+
+
+                                                // ListGrid_ForQuestions_PreTestJSP.invalidateCache();
+                                                // let findRows=ListGrid_AllQuestions_PreTestJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));
+                                                //
+                                                // if(findRows && findRows.length>0){
+                                                //     findRows.setProperty("enabled", true);
+                                                //     ListGrid_AllQuestions_PreTestJSP.deselectRecord(findRows);
+                                                //     ListGrid_AllQuestions_PreTestJSP.redraw();
+                                                // }
                                                 isc.say("عملیات با موفقیت انجام شد.");
                                             } else {
                                                 isc.say("خطا در پاسخ سرویس دهنده");
