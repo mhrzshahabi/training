@@ -4,9 +4,6 @@
 
 // <script>
 
-    //----------------------------------------------------Variables-----------------------------------------------------
-    // let reportCriteria_ULR = null;
-
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_Request = isc.TrDS.create({
         fields: [
@@ -54,7 +51,7 @@
     });
 
     DynamicForm_Request = isc.DynamicForm.create({
-        width: 400,
+        width: 600,
         height: 300,
         numCols: 4,
         fields: [
@@ -86,7 +83,7 @@
             {
                 name: "status",
                 title: "وضعیت",
-                canEdit: false,
+                canEdit: true,
                 valueMap: {
                     ACTIVE: "ACTIVE",
                     PENDING: "PENDING",
@@ -98,24 +95,25 @@
                 name: "text",
                 title: "متن درخواست",
                 canEdit: false,
+                editorType: "textArea",
+                width: "100%",
+                height: 200,
                 colSpan: 4
             },
             {
                 name: "response",
                 title: "پاسخ",
                 required: true,
-                editorType: "text",
+                editorType: "textArea",
                 width: "100%",
                 height: 200,
                 colSpan: 4
             }
         ]
     });
-
     Window_Request = isc.Window.create({
         title: "پاسخ دهی به درخواست",
-        width: 450,
-        // height: 600,
+        width: 600,
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -191,8 +189,6 @@
     });
 
     VLayout_Body_ULR = isc.TrVLayout.create({
-        border: "2px solid blue",
-        padding: 20,
         members: [
             ToolStrip_Actions_Request,
             ListGrid_Request
@@ -214,24 +210,28 @@
 
     function saveRequestResponse() {
 
-        <%--if (!DynamicForm_Request.validate())--%>
-            <%--return;--%>
-        <%--else {--%>
-            <%--let record = DynamicForm_Request.getValues();--%>
-            <%--let data = {--%>
-                <%--reference: record.reference,--%>
-                <%--response: record.response,--%>
-                <%--requestStatus: record.status--%>
-            <%--};--%>
-            <%--debugger;--%>
-            <%--isc.RPCManager.sendRequest(TrDSRequest(requestUrl + "/answer" , "POST", record, function (resp) {--%>
-                <%--if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+        if (!DynamicForm_Request.validate()) {
+            return;
+        } else {
 
-                <%--} else {--%>
-                    <%--createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");--%>
-                <%--}--%>
-            <%--}));--%>
-        <%--}--%>
+            let record = DynamicForm_Request.getValues();
+            let data = {};
+            data.reference = record.reference;
+            data.response = record.response;
+            data.requestStatus = record.status;
+
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(requestUrl + "/answer" , "POST", JSON.stringify(data), function (resp) {
+                wait.close();
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    Window_Request.close();
+                    ListGrid_Request.invalidateCache();
+                } else {
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
+        }
     }
 
     function makeExcelOutput() {

@@ -2775,7 +2775,7 @@
 <%--                },--%>
                 {isSeparator: true},
                 </sec:authorize>
-<%--                <sec:authorize access="hasAuthority('Menu_Security_OperationalًRole')">--%>
+                <sec:authorize access="hasAuthority('Menu_Security_OperationalًRole')">
                 {
                     title: "<spring:message code="operational.role"/>",
                     click: function () {
@@ -2783,7 +2783,7 @@
                     }
                 },
                 {isSeparator: true},
-<%--                </sec:authorize>--%>
+                </sec:authorize>
 
                 <sec:authorize access="hasAuthority('Menu_Security_Settings')">
                 {
