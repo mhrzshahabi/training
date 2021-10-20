@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
@@ -15,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +42,33 @@ public class ViewPostRestController {
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewPostDTO.Info> searchRs = viewPostService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/roleIndPostIscList")
+    public ResponseEntity<ISC<ViewPostDTO.Info>> roleIndPostIscList(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = ((CustomUserDetails) principal).getUserId();
+        List<Long> userAccessPostIds = iOperationalRoleService.getUserAccessPostsInRole(userId);
+
+        if (userAccessPostIds != null && userAccessPostIds.size() > 0) {
+            List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+            criteriaList.add(makeNewCriteria("id", userAccessPostIds, EOperator.inSet, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, criteriaList);
+            if (searchRq.getCriteria() != null) {
+                if (searchRq.getCriteria().getCriteria() != null)
+                    searchRq.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    searchRq.getCriteria().setCriteria(criteriaList);
+            } else {
+                searchRq.setCriteria(criteriaRq);
+            }
+            SearchDTO.SearchRs<ViewPostDTO.Info> searchRs = viewPostService.search(searchRq);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
     }
 
     @GetMapping(value = "/rolePostList/{roleId}")

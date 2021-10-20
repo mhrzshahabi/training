@@ -64,6 +64,13 @@ public class OperationalRoleService implements IOperationalRoleService {
         return usedPostIds;
     }
 
+    @Override
+    public List<Long> getUserAccessPostsInRole(Long userId) {
+        if (userId!= null){
+          return  operationalRoleDAO.getUserAccessPostsInRole(userId);
+        } else return null;
+    }
+
 
     @Override
     public SearchDTO.SearchRs<OperationalRoleDTO.Info> search(SearchDTO.SearchRq searchRq) {

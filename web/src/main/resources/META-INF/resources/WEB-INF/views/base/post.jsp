@@ -4,6 +4,7 @@
 
 // <script>
     let LoadAttachments_Post = null;
+    let PostDS_Url = viewPostUrl + "/iscList";
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -22,6 +23,44 @@
             </sec:authorize>
         ]
     });
+
+    // ------------------------------------------- forms -------------------------------------------
+    var DynamicForm_PostAlarmSelection = isc.DynamicForm.create({
+        width: "85%",
+        height: "100%",
+        fields: [
+            {
+
+                name: "loadTypeSelect",
+                title: "",
+                type: "radioGroup",
+                defaultValue: "1",
+                valueMap: {
+                    "1": "لیست تمامی پست ها",
+                    "2": "لیست پست های عملیاتی",
+                },
+                vertical: false,
+                changed: function (form, item, value) {
+                    if (value === "1") {
+                        LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
+                        objectIdAttachment=null
+                        PostDS_Url = viewPostUrl + "/iscList" ;
+                        PostDS_post.fetchDataURL = PostDS_Url ;
+                        PostLG_post.invalidateCache();
+                        closeToShowUnGroupedPosts_POST();
+                    } else if(value === "2"){
+                        objectIdAttachment=null
+                        LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
+                        PostDS_Url = viewPostUrl + "/roleIndPostIscList" ;
+                        PostDS_post.fetchDataURL = PostDS_Url ;
+                        PostLG_post.invalidateCache();
+                    }
+
+                },
+            }
+        ]
+    });
+
 
     // ------------------------------------------- ToolStrip -------------------------------------------
     ToolStripButton_EditNA_POST = isc.ToolStripButton.create({
@@ -110,6 +149,7 @@
             //         Window_PostWebService_Post.show();
             //     }
             // }),
+            DynamicForm_PostAlarmSelection,
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -126,6 +166,7 @@
                         click: function () {
                             LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
                             objectIdAttachment=null
+                            PostDS_post.fetchDataURL = PostDS_Url ;
                             closeToShowUnGroupedPosts_POST();
                             refreshLG(PostLG_post);
                         }
@@ -170,7 +211,7 @@
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: viewPostUrl + "/iscList"
+        fetchDataURL: PostDS_Url
     });
 
     DepartmentWebserviceDS_post = isc.TrDS.create({
@@ -281,6 +322,7 @@
         selectionType: "single",
         <sec:authorize access="hasAuthority('Post_R')">
         dataSource: PostDS_post,
+        autoFetchData: true,
         </sec:authorize>
         fields: [
             {name: "code",

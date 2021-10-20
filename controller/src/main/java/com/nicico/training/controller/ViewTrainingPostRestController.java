@@ -5,16 +5,19 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
+import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,6 +43,7 @@ public class ViewTrainingPostRestController {
     private final JobGroupService jobGroupService;
     private final PostGradeGroupService postGradeGroupService;
     private final ViewTrainingPostReportService viewTrainingPostReportService;
+    private final IOperationalRoleService iOperationalRoleService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
@@ -47,6 +51,33 @@ public class ViewTrainingPostRestController {
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewTrainingPostDTO.Info> searchRs = viewTrainingPostService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    //tavasoli it should be changed to load training posts
+    @GetMapping(value = "/rolePostIscList")
+    public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> rolePostIscList(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = ((CustomUserDetails) principal).getUserId();
+        List<Long> userAccessPostIds = iOperationalRoleService.getUserAccessPostsInRole(userId);
+        if (userAccessPostIds != null && userAccessPostIds.size() > 0) {
+            List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+            criteriaList.add(makeNewCriteria("id", userAccessPostIds, EOperator.inSet, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, criteriaList);
+            if (searchRq.getCriteria() != null) {
+                if (searchRq.getCriteria().getCriteria() != null)
+                    searchRq.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    searchRq.getCriteria().setCriteria(criteriaList);
+            } else {
+                searchRq.setCriteria(criteriaRq);
+            }
+            SearchDTO.SearchRs<ViewTrainingPostDTO.Info> searchRs = viewTrainingPostService.search(searchRq);
+            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+        }else {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
     }
 
     @GetMapping(value = "/iscListReport")

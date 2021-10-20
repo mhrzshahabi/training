@@ -10,6 +10,8 @@ public interface IOperationalRoleService {
 
     List<Long> getUsedPostIdsInRoles(Long roleId);
 
+    List<Long> getUserAccessPostsInRole(Long userId);
+
     SearchDTO.SearchRs<OperationalRoleDTO.Info> search(SearchDTO.SearchRq searchRq);
 
     OperationalRoleDTO.Info update(Long id, OperationalRoleDTO.Update request);
