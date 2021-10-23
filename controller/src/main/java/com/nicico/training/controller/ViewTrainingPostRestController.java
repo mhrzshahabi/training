@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -60,7 +61,9 @@ public class ViewTrainingPostRestController {
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Long userId = ((CustomUserDetails) principal).getUserId();
-        List<Long> userAccessPostIds = iOperationalRoleService.getUserAccessPostsInRole(userId);
+        Set<Long> userAccessTrainingPostIds = iOperationalRoleService.getUserAccessTrainingPostsInRole(userId);
+        List<Long> userAccessPostIds =  new ArrayList<Long>();
+        userAccessPostIds.addAll(userAccessTrainingPostIds);
         if (userAccessPostIds != null && userAccessPostIds.size() > 0) {
             List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
             criteriaList.add(makeNewCriteria("id", userAccessPostIds, EOperator.inSet, null));
