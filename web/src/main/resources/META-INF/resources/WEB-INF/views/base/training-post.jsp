@@ -24,6 +24,8 @@
         // "Company" : "شرکتی",
         // "OrgCostCenter" : "پیمان کار"
     };
+    let TrainingPostDS_Url = viewTrainingPostUrl + "/iscList";
+
 
     let PostDS_TrainingPost = isc.TrDS.create({
         fields: [
@@ -63,7 +65,7 @@
         ]
     });
 
-    PostLG_TrainingPost = isc.TrLG.create({
+    let PostLG_TrainingPost = isc.TrLG.create({
         dataSource: PostDS_TrainingPost,
         // contextMenu: Menu_PostLG_TrainingPost_Jsp,
         autoFetchData: true,
@@ -112,7 +114,7 @@
         // }
     });
 
-    window_unGroupedPosts_TrainingPost = isc.Window.create({
+    let window_unGroupedPosts_TrainingPost = isc.Window.create({
         minWidth: 1024,
         autoCenter: true,
         showMaximizeButton: false,
@@ -158,7 +160,8 @@
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: viewTrainingPostUrl + "/iscList"
+        //tavasoli comment this fetchURL
+        fetchDataURL: TrainingPostDS_Url
     });
     var Menu_ListGrid_TrainingPost_Jsp = isc.Menu.create({
         width: 150,
@@ -1301,7 +1304,41 @@
         ]
     });
 
-    var ToolStrip_Actions_TrainingPost_Jsp = isc.ToolStrip.create({
+    var DynamicForm_AlarmSelection = isc.DynamicForm.create({
+        width: "85%",
+        height: "100%",
+        fields: [
+            {
+
+                name: "loadTypeSelect",
+                title: "",
+                type: "radioGroup",
+                defaultValue: "1",
+                valueMap: {
+                    "1": "لیست تمامی پست ها",
+                    "2": "لیست پست های عملیاتی",
+                },
+                vertical: false,
+                changed: function (form, item, value) {
+                    if (value === "1") {
+                        objectIdAttachment=null
+                        LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
+                        TrainingPostDS_Url = viewTrainingPostUrl + "/iscList" ;
+                        RestDataSource_TrainingPost_Jsp.fetchDataURL  = TrainingPostDS_Url ;
+                        ListGrid_TrainingPost_refresh();
+                    } else if(value === "2"){
+                        objectIdAttachment=null
+                        LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
+                        TrainingPostDS_Url = viewTrainingPostUrl + "/rolePostIscList" ;
+                        RestDataSource_TrainingPost_Jsp.fetchDataURL  = TrainingPostDS_Url ;
+                        ListGrid_TrainingPost_Jsp.invalidateCache();
+                    }
+
+                },
+            }
+        ]
+    });
+        var ToolStrip_Actions_TrainingPost_Jsp = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
@@ -1324,6 +1361,8 @@
             <sec:authorize access="hasAuthority('Training_Post_P')">
             ToolStrip_TrainingPost_Export2EXcel,
             </sec:authorize>
+            //tavasoli oncomment it
+            // DynamicForm_AlarmSelection,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1646,7 +1685,7 @@
     });
 
     function ListGrid_TrainingPost_Posts_refresh() {
-
+        RestDataSource_TrainingPost_Jsp.fetchDataURL  = TrainingPostDS_Url ;
         if (ListGrid_TrainingPost_Jsp.getSelectedRecord() == null)
             ListGrid_TrainingPost_Posts.setData([]);
         else
