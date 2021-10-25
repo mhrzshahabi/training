@@ -1931,7 +1931,7 @@
     loadjs.ready('load_Attachments_Training_Post', function () {
         setTimeout(()=> {
             LoadAttachments_Training_Post = new loadAttachments();
-            Detail_Tab_TrainingPost.updateTab(TrainingPost_AttachmentsTab, LoadAttachments_Training_Post.VLayout_Body_JspAttachment)
+            Detail_Tab_TrainingPost.updateTab(TrainingPost_AttachmentsTab, LoadAttachments_Training_Post.VLayout_Body_JspAttachment);
         },0);
 
     })
