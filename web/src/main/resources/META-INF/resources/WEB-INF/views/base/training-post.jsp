@@ -1360,7 +1360,7 @@
             <sec:authorize access="hasAuthority('Training_Post_P')">
             ToolStrip_TrainingPost_Export2EXcel,
             </sec:authorize>
-            DynamicForm_AlarmSelection,
+            // DynamicForm_AlarmSelection,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
