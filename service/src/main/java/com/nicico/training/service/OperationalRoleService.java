@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -68,6 +69,13 @@ public class OperationalRoleService implements IOperationalRoleService {
     public List<Long> getUserAccessPostsInRole(Long userId) {
         if (userId!= null){
           return  operationalRoleDAO.getUserAccessPostsInRole(userId);
+        } else return null;
+    }
+
+    @Override
+    public Set<Long> getUserAccessTrainingPostsInRole(Long userId) {
+        if (userId!= null){
+            return  operationalRoleDAO.getUserAccessTrainingPostsInRole(userId);
         } else return null;
     }
 
