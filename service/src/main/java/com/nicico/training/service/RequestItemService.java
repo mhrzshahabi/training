@@ -49,7 +49,7 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
+//    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
     public RequestItem create(RequestItem requestItem, Long id) {
         CompetenceRequest competenceRequest = competenceRequestService.get(requestItem.getCompetenceReqId());
         requestItem.setCompetenceReq(competenceRequest);
@@ -59,7 +59,7 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
+//    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
     public RequestItemWithDiff update(RequestItem newData, Long id) {
         RequestItem requestItem = get(id);
         requestItem.setAffairs(newData.getAffairs());
@@ -85,7 +85,7 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
+//    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
     public void delete(Long id) {
         requestItemDAO.deleteById(id);
     }
@@ -106,7 +106,7 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    @Cacheable(value = "searchIRequestItemService", key = "{#id}")
+//    @Cacheable(value = "searchIRequestItemService", key = "{#id}")
     public List<RequestItem> search(SearchDTO.SearchRq request, Long id) {
         List<RequestItem> list;
         if (request.getStartIndex() != null) {
