@@ -167,5 +167,10 @@ public class QuestionBankRestController {
         }
     }
 
+    @GetMapping(value = "/usedQuestion/{id}")
+    public ResponseEntity<Boolean> usedQuestion(@PathVariable Long id) {
+        return new ResponseEntity<>(questionBankTestQuestionService.usedQuestion(id), HttpStatus.OK);
+    }
+
 
 }
