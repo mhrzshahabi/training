@@ -215,4 +215,11 @@ public class NeedsAssessmentReportsRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/personnelNeedsAssessmentReport.jasper", params, jsonDataSource, response);
     }
+
+    @Loggable
+    @DeleteMapping(value = "/deleteGroupResult/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        needsAssessmentReportsService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 }

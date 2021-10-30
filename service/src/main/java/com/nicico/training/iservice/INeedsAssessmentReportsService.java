@@ -27,4 +27,6 @@ public interface INeedsAssessmentReportsService {
 
     List<NeedsAssessmentReportsDTO.ReportInfo> getCourseListForBpms( String postCode, String objectType, String nationalCode,String personnelNumber);
 
+    void delete(Long id);
+
 }

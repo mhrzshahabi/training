@@ -711,5 +711,9 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         return needAssessmentGroupResultMapper.toResultDtoList(list);
     }
 
-
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        needAssessmentGroupResultDAO.deleteById(id);
+    }
 }

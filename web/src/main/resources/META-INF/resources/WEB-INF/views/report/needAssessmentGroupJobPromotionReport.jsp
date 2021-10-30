@@ -5,7 +5,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-//<script>
+// <script>
 
     var tempPersonnelId;
     var tempPersonnelNo;
@@ -418,7 +418,7 @@
     // ---------------------------------Grid3--------------------------------------
     var needAssessmentGroupResultGrid = isc.TrLG.create({
         top: 400,
-        width: "740",
+        width: "800",
         height: 300,
         autoDraw: true,
         showFilterEditor: false,
@@ -445,6 +445,7 @@
                 canEdit: false
             },
             {name: "excelBtn", title: " ", width: 130},
+            {name: "removeBtn", title: " ", width: 50},
         ],
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -459,10 +460,40 @@
                     }
                 });
                 return button;
+            } else if (fieldName === "removeBtn") {
+                var removeImg = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "حذف",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        removeNeedAssessmentGroupResult(record.id);
+                    }
+                });
+                return removeImg;
             }
         }
     });
 
+    function removeNeedAssessmentGroupResult(id) {
+
+        let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            "<spring:message code='verify.delete'/>");
+        Dialog_Delete.addProperties({
+            buttonClick: function (button, index) {
+                this.close();
+                if (index === 0) {
+                    isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentReportsUrl + "/deleteGroupResult/" + id, "DELETE", null, function (resp) {
+                        needAssessmentGroupResultGrid.invalidateCache();
+                    }));
+                }
+            }
+        });
+    }
 
     // ---------------------------------Grid2--------------------------------------
 
