@@ -10,6 +10,7 @@ import java.io.Serializable;
 public class ExamResult implements Serializable {
 
     private String  cellNumber;
+    private String  nationalCode;
     private String  descriptiveResult;
     private String  finalResult;
     private String  testResult;

@@ -2538,7 +2538,6 @@
                             return (item.nationalCode === currentVal.nationalCode);
                         });
                     }
-
                     for (let i = 0; i < len; i++) {
                         let personnelNo = list[i].personnelNo;
 
@@ -2594,12 +2593,12 @@
                                     list[i].error = false;
                                     list[i].hasWarning = "check";
                                     list[i].description = "";
-
                                     if (!checkIfAlreadyExist(person)) {
 
-                                        if (students.filter(function (item) {
-                                            return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
-                                        }).length == 0) {
+                                        // if (students.filter(function (item) {
+                                        //     debugger
+                                        //     return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
+                                        // }).length == 0) {
                                             students.add({
                                                 "firstName": person.firstName,
                                                 "lastName": person.lastName,
@@ -2610,7 +2609,7 @@
                                                 "employmentStatus": person.employmentStatus,
                                                 "registerTypeId": url.indexOf(personnelUrl + "/") > -1 ? 1 : 2
                                             });
-                                        }
+                                        // }
                                     }
                                 }
                             }
