@@ -160,7 +160,6 @@
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
-        //tavasoli comment this fetchURL
         fetchDataURL: TrainingPostDS_Url
     });
     var Menu_ListGrid_TrainingPost_Jsp = isc.Menu.create({
@@ -1361,8 +1360,7 @@
             <sec:authorize access="hasAuthority('Training_Post_P')">
             ToolStrip_TrainingPost_Export2EXcel,
             </sec:authorize>
-            //tavasoli oncomment it
-            // DynamicForm_AlarmSelection,
+            DynamicForm_AlarmSelection,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1933,7 +1931,7 @@
     loadjs.ready('load_Attachments_Training_Post', function () {
         setTimeout(()=> {
             LoadAttachments_Training_Post = new loadAttachments();
-            Detail_Tab_TrainingPost.updateTab(TrainingPost_AttachmentsTab, LoadAttachments_Training_Post.VLayout_Body_JspAttachment)
+            Detail_Tab_TrainingPost.updateTab(TrainingPost_AttachmentsTab, LoadAttachments_Training_Post.VLayout_Body_JspAttachment);
         },0);
 
     })
