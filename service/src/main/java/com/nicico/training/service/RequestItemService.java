@@ -129,6 +129,14 @@ public class RequestItemService implements IRequestItemService {
     @Override
     @Transactional
     public RequestItemDto createList(List<RequestItem> requestItems) {
+        if (!requestItems.isEmpty()){
+          Long competenceReqId=  requestItems.get(0).getCompetenceReqId();
+            List<RequestItem> list=getListWithCompetenceRequest(competenceReqId);
+            for (RequestItem requestItem:list){
+                if (!requestItems.isEmpty() && requestItems.contains(requestItem))
+                    requestItems.remove(requestItem);
+            }
+        }
         RequestItemDto res = new RequestItemDto();
         List<RequestItemWithDiff> requestItemWithDiffList = new ArrayList<>();
         for (RequestItem requestItem : requestItems) {

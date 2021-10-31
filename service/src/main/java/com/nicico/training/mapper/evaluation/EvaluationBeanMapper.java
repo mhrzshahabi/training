@@ -1880,6 +1880,11 @@ public abstract class EvaluationBeanMapper {
                     examResultDto.setResultStatus("بدون پاسخ");
                     break;
                 }
+                case "5": {
+                    examResultDto.setScore("-");
+                    examResultDto.setResultStatus("نمره نهایی");
+                    break;
+                }
             }
             if (null == examResultDto.getTestResult())
                 examResultDto.setTestResult("-");
@@ -1988,6 +1993,7 @@ public abstract class EvaluationBeanMapper {
             }
 
             updatedResultDto.setMobileNumber(data.getCellNumber());
+            updatedResultDto.setNationalCode(data.getNationalCode());
 
             resultDtoList.add(updatedResultDto);
         }

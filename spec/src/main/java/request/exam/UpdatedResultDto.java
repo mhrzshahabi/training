@@ -10,6 +10,8 @@ public class UpdatedResultDto {
 
     private String mobileNumber;
 
+    private String nationalCode;
+
     private Double testResult;
 
     private Double descriptiveResult;
