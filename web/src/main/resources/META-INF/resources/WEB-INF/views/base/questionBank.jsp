@@ -1625,7 +1625,8 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
     };
 
     function loadAttachment() {
-        if (QuestionBankLG_questionBank.getSelectedRecord() === null) {
+        let record = QuestionBankLG_questionBank.getSelectedRecord();
+        if (record === null) {
             TabSet_questionBank.disable();
             oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", 0, "<spring:message code="document"/>", {
                 1: "صورت سوال",
@@ -1637,6 +1638,22 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
             });
 
             return;
+        } else {
+            isc.RPCManager.sendRequest(TrDSRequest(questionBankUrl + "/usedQuestion/" + record.id , "GET", null, function (resp) {
+                oLoadAttachments_questionBank.ToolStripButton_Edit_JspAttachment.enable();
+                oLoadAttachments_questionBank.ToolStripButton_Add_JspAttachment.enable();
+                oLoadAttachments_questionBank.ToolStripButton_Remove_JspAttachment.enable();
+                let isQuestionUsed = true;
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    isQuestionUsed = JSON.parse(resp.data);
+                }
+                if (isQuestionUsed) {
+                    oLoadAttachments_questionBank.ToolStripButton_Edit_JspAttachment.disable();
+                    oLoadAttachments_questionBank.ToolStripButton_Add_JspAttachment.disable();
+                    oLoadAttachments_questionBank.ToolStripButton_Remove_JspAttachment.disable();
+                    return;
+                }
+            }));
         }
 
         oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", QuestionBankLG_questionBank.getSelectedRecord().id, "<spring:message code="document"/>", {
