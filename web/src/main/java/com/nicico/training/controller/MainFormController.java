@@ -171,9 +171,10 @@ public class MainFormController {
     }
 
     @RequestMapping("/usersLoginReport")
-    public String showUsersLoginReportForm() {
-        return "security/usersLoginReport";
-    }
+    public String showUsersLoginReportForm() { return "security/usersLoginReport"; }
+
+    @RequestMapping("/mobileVerify")
+    public String showMobileVerifyForm() { return "security/mobileVerify"; }
 
     @RequestMapping("/operationalRole")
     public String showOperationalRoleForm() {
