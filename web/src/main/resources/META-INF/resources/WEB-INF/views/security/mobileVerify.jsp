@@ -59,6 +59,7 @@
             {name: "mobileNumber"},
             {name: "nationalCode"},
             {name: "verify", valueMap: {false: "تایید نشده", true: "تایید شده"}},
+            {name: "showDetail", canFilter: false, title: "نمایش جزییات", width: "145"},
             {name: "verifyMobileNumber", canFilter: false, title: "تایید شماره موبایل", width: "145"},
         ],
         createRecordComponent: function (record, colNum) {
@@ -74,6 +75,17 @@
                     }
                 });
                 return verifyBtn;
+            } else if (fieldName === "showDetail") {
+                let detailBtn = isc.IButton.create({
+                    layoutAlign: "center",
+                    title: "نمایش جزییات",
+                    width: "145",
+                    margin: 3,
+                    click: function () {
+                        showDetail(record);
+                    }
+                });
+                return detailBtn;
             } else {
                 return null;
             }
@@ -113,6 +125,84 @@
                     }
                 }
             });
+        }
+    }
+
+    function showDetail(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_Show_Detail = isc.DynamicForm.create({
+                width: 400,
+                height: 80,
+                padding: 6,
+                titleAlign: "center",
+                numCols: 2,
+                fields: [
+                    {
+                        name: "name",
+                        title: "نام",
+                        width: "100%",
+                        colSpan: 1,
+                        editorType: 'staticText'
+                    },
+                    {
+                        name: "family",
+                        title: "نام خانوادگی",
+                        width: "100%",
+                        colSpan: 1,
+                        editorType: 'staticText'
+                    },
+                    {
+                        name: "personType",
+                        title: "نوع",
+                        width: "100%",
+                        colSpan: 2,
+                        editorType: 'staticText',
+                        valueMap: {
+                            "TEACHER": "استاد",
+                            "PERSON": "پرسنل شرکتی",
+                            "PERSON_REGISTER": "افراد متفرقه"
+                        }
+                    },
+                ]
+            });
+
+            let Window_Show_Detail = isc.Window.create({
+                width: 400,
+                height: 120,
+                numCols: 2,
+                title: "نمایش جزییات",
+                items: [
+                    DynamicForm_Show_Detail,
+                    isc.MyHLayoutButtons.create({
+                        members: [
+                            isc.IButtonCancel.create({
+                                title: "<spring:message code="close"/>",
+                                click: function () {
+                                    Window_Show_Detail.close();
+                                }
+                            })
+                        ],
+                    })
+                ]
+            });
+
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(mobileVerifyUrl + "/detail/" + "?nationalCode=" + record.nationalCode, "GET", null, function (resp) {
+                wait.close();
+                if (resp.httpResponseCode === 200) {
+                    let res = JSON.parse(resp.httpResponseText);
+                    DynamicForm_Show_Detail.setValue("name", res.name);
+                    DynamicForm_Show_Detail.setValue("family", res.family);
+                    DynamicForm_Show_Detail.setValue("personType", res.personType);
+                    Window_Show_Detail.show();
+                } else {
+                    createDialog("info", "پرسنل با این کدملی یافت نشد");
+                }
+            }));
         }
     }
 
