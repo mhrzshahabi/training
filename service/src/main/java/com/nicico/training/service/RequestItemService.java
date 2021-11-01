@@ -133,8 +133,8 @@ public class RequestItemService implements IRequestItemService {
         if (!requestItems.isEmpty()){
           Long competenceReqId=  requestItems.get(0).getCompetenceReqId();
             List<RequestItem> list=getListWithCompetenceRequest(competenceReqId);
-            for (RequestItem requestItem:list){
-                if (!(!requestItems.isEmpty() && requestItems.stream().anyMatch(q -> q.getPersonnelNumber().equals(requestItem.getPersonnelNumber()))))
+            for (RequestItem requestItem:requestItems){
+                if (!(!list.isEmpty() && list.stream().anyMatch(q -> q.getPersonnelNumber().equals(requestItem.getPersonnelNumber()))))
                     temp.add(requestItem);
             }
             if (list.isEmpty())
