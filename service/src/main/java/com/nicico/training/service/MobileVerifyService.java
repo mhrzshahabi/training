@@ -3,8 +3,13 @@ package com.nicico.training.service;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.UserDetailDTO;
 import com.nicico.training.iservice.*;
+import com.nicico.training.iservice.IMobileVerifyService;
+import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.MobileVerify;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.MobileVerifyDAO;
@@ -28,6 +33,7 @@ public class MobileVerifyService implements IMobileVerifyService {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ITeacherService iTeacherService;
     private final IPersonalInfoService personalInfoService;
+    private final TeacherService teacherService;
 
     @Override
     @Transactional
@@ -82,9 +88,11 @@ public class MobileVerifyService implements IMobileVerifyService {
     public UserDetailDTO findDetailByNationalCode(String nationalCode) {
         UserDetailDTO dto = new UserDetailDTO();
         Optional<Teacher> teacherCode = teacherDAO.findByTeacherCode(nationalCode);
+
         if (teacherCode.isPresent() && teacherCode.get().getPersonality() != null) {
-            dto.setName(teacherCode.get().getPersonality().getFirstNameFa());
-            dto.setFamily(teacherCode.get().getPersonality().getLastNameFa());
+            TeacherDTO.Info teacherDTO = teacherService.get(teacherCode.get().getId());
+            dto.setName(teacherDTO.getPersonality().getFirstNameFa());
+            dto.setFamily(teacherDTO.getPersonality().getLastNameFa());
             dto.setPersonType("TEACHER");
         }
         PersonnelDTO.PersonalityInfo byNationalCode = personnelService.getByNationalCode(nationalCode);
