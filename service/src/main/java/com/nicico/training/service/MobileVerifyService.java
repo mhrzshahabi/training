@@ -90,7 +90,7 @@ public class MobileVerifyService implements IMobileVerifyService {
         Optional<Teacher> teacherCode = teacherDAO.findByTeacherCode(nationalCode);
 
         if (teacherCode.isPresent() && teacherCode.get().getPersonality() != null) {
-            TeacherDTO.Info teacherDTO = teacherService.get(teacherCode.get().getId());
+            TeacherDTO.Info teacherDTO = iTeacherService.get(teacherCode.get().getId());
             dto.setName(teacherDTO.getPersonality().getFirstNameFa());
             dto.setFamily(teacherDTO.getPersonality().getLastNameFa());
             dto.setPersonType("TEACHER");
