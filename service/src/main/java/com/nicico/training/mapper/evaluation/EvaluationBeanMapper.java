@@ -36,6 +36,7 @@ import org.springframework.http.HttpStatus;
 import request.evaluation.ElsEvalRequest;
 import request.evaluation.ElsUserEvaluationListResponseDto;
 import request.exam.*;
+import response.BaseResponse;
 import response.evaluation.dto.ElsContactEvaluationDto;
 import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
@@ -1900,7 +1901,8 @@ public abstract class EvaluationBeanMapper {
         return response;
     }
 
-    public boolean checkValidScores(List<ExamResult> examResult) {
+    public BaseResponse checkValidScores(List<ExamResult> examResult) {
+        BaseResponse response=new BaseResponse();
         for (ExamResult data : examResult) {
             try {
                 double descriptiveResult = 0D;
@@ -1908,21 +1910,43 @@ public abstract class EvaluationBeanMapper {
                 if (data.getDescriptiveResult() != null && !data.getDescriptiveResult().equals("-")) {
                     String englishDescriptiveResult = new BigDecimal(data.getDescriptiveResult()).toString();
                     descriptiveResult = Double.parseDouble(englishDescriptiveResult);
+                    String[] splitter = Double.toString(descriptiveResult).split("\\.");
+                    int dec=splitter[1].length();
+                    if (dec>2){
+                        response.setMessage("نمره اعشاری نمره ی تشریحی تا دو رقم باید باشد");
+                        response.setStatus(406);
+                        return response;
+
+                    }
 
                 }
 
                 if (data.getFinalResult() != null && !data.getFinalResult().equals("-")) {
                     String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
                     finalResult = Double.parseDouble(englishFinalResult);
+                    String[] splitter = Double.toString(finalResult).split("\\.");
+                    int dec=splitter[1].length();
+                    if (dec>2){
+                        response.setMessage("نمره اعشاری نمره ی نهایی تا دو رقم باید باشد");
+                        response.setStatus(406);
+                        return response;
+
+                    }
                 }
-                if (finalResult < descriptiveResult && (data.getFinalResult() != null && !data.getFinalResult().equals("-")))
-                    return false;
+                if (finalResult < descriptiveResult && (data.getFinalResult() != null && !data.getFinalResult().equals("-"))){
+                    response.setMessage("مقدار های وارد شده صحیح نمی باشد");
+                    response.setStatus(406);
+                    return response;
+
+                }
 
             } catch (NumberFormatException e) {
-                return false;
-            }
+                response.setMessage("مقدار های وارد شده صحیح نمی باشد");
+                response.setStatus(406);
+                return response;            }
         }
-        return true;
+        response.setStatus(200);
+        return response;
     }
 
     public boolean checkScoreInRange(String scoringMethod, List<ExamResult> examResult) {

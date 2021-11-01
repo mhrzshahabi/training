@@ -3,6 +3,8 @@ package com.nicico.training.iservice;
 import com.nicico.training.dto.UserDetailDTO;
 import com.nicico.training.model.MobileVerify;
 
+import java.util.List;
+
 public interface IMobileVerifyService {
 
     MobileVerify add(String nationalCode, String number);
@@ -14,4 +16,6 @@ public interface IMobileVerifyService {
     boolean changeStatus(String nationalCode, String number,boolean status);
 
     UserDetailDTO findDetailByNationalCode(String nationalCode);
+
+    List<MobileVerify> findAll();
 }

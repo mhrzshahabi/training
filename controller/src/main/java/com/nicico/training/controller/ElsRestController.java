@@ -676,10 +676,10 @@ public class ElsRestController {
     @PostMapping("/final/test/{id}")
     public BaseResponse setFinalScores(@PathVariable long id, @RequestBody List<ExamResult> examResult) {
         BaseResponse baseResponse = new BaseResponse();
-        boolean checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
-        if (!checkValidScores) {
-            baseResponse.setStatus(406);
-            baseResponse.setMessage("مقدار های وارد شده صحیح نمی باشد");
+        BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
+        if (checkValidScores.getStatus()!=200) {
+            baseResponse.setStatus(checkValidScores.getStatus());
+            baseResponse.setMessage(checkValidScores.getMessage());
 
         } else {
             String scoringMethod = testQuestionService.get(id).getTclass().getScoringMethod();

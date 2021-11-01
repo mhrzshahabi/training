@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotBlank;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -89,5 +90,10 @@ public class MobileVerifyService implements IMobileVerifyService {
             dto.setPersonType("PERSON_REGISTER");
         }
         return dto;
+    }
+
+    @Override
+    public List<MobileVerify> findAll() {
+        return mobileVerifyDAO.findAll();
     }
 }

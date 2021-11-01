@@ -49,7 +49,7 @@ public class RequestController {
 
     @Loggable
     @GetMapping(value = "/list")
-    public ResponseEntity<ISC<RequestResVM>> loginLog(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<RequestResVM>> requests(HttpServletRequest iscRq) throws IOException {
 
         List<RequestResVM> all = iRequestService.findAll();
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
