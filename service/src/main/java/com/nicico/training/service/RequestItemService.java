@@ -129,17 +129,20 @@ public class RequestItemService implements IRequestItemService {
     @Override
     @Transactional
     public RequestItemDto createList(List<RequestItem> requestItems) {
+        List<RequestItem> temp=new ArrayList<>();
         if (!requestItems.isEmpty()){
           Long competenceReqId=  requestItems.get(0).getCompetenceReqId();
             List<RequestItem> list=getListWithCompetenceRequest(competenceReqId);
             for (RequestItem requestItem:list){
-                if (!requestItems.isEmpty() && requestItems.contains(requestItem))
-                    requestItems.remove(requestItem);
+                if (!(!requestItems.isEmpty() && requestItems.stream().anyMatch(q -> q.getPersonnelNumber().equals(requestItem.getPersonnelNumber()))))
+                    temp.add(requestItem);
             }
+            if (list.isEmpty())
+                temp=requestItems;
         }
         RequestItemDto res = new RequestItemDto();
         List<RequestItemWithDiff> requestItemWithDiffList = new ArrayList<>();
-        for (RequestItem requestItem : requestItems) {
+        for (RequestItem requestItem : temp) {
             RequestItemWithDiff data = getRequestDiff(requestItem);
             if (data.isPersonnelNumberCorrect()) {
                 requestItemWithDiffList.add(data);
