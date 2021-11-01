@@ -41,7 +41,6 @@ public class RequestItemRestController {
         RequestItem saved = requestItemService.create(requestItem,requestItem.getCompetenceReqId());
         RequestItemDTO.Info res = requestItemBeanMapper.toRequestItemDto(saved);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
-
     }
 
     @Loggable
