@@ -589,7 +589,6 @@
         }.bind(this)
 
         this.loadPage_attachment_Job=function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, valueMap_EAttachmentType, readOnly = false, criteria = null) {
-            console.log("bia 33333333   :" , valueMap_EAttachmentType);
             this.VLayout_Body_JspAttachment.redraw();
             objectTypeAttachment = inputObjectType;
             objectIdAttachment = inputObjectId;
