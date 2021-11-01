@@ -74,16 +74,19 @@ public class MobileVerifyService implements IMobileVerifyService {
         if (teacherCode.isPresent() && teacherCode.get().getPersonality() != null) {
             dto.setName(teacherCode.get().getPersonality().getFirstNameFa());
             dto.setFamily(teacherCode.get().getPersonality().getLastNameFa());
+            dto.setPersonType("TEACHER");
         }
         PersonnelDTO.PersonalityInfo byNationalCode = personnelService.getByNationalCode(nationalCode);
         if (byNationalCode != null) {
             dto.setName(byNationalCode.getFirstName());
             dto.setFamily(byNationalCode.getLastName());
+            dto.setPersonType("PERSON");
         }
         PersonnelRegisteredDTO.Info oneByNationalCode = personnelRegisteredService.getOneByNationalCode(nationalCode);
         if (oneByNationalCode != null) {
             dto.setName(oneByNationalCode.getFirstName());
             dto.setFamily(oneByNationalCode.getLastName());
+            dto.setPersonType("PERSON_REGISTER");
         }
         return dto;
     }

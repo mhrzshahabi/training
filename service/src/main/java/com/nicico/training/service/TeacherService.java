@@ -901,4 +901,8 @@ public class TeacherService implements ITeacherService {
         return teacherDAO.getTeacherNationalCode(teacherId);
     }
 
+    @Override
+    public List<Map<String, Object>> findAllByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber) {
+        return teacherDAO.findAllByNationalCodeAndMobileNumber(mobileNumber,nationalCode);
+    }
 }

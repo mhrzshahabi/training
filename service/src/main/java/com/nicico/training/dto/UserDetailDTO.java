@@ -8,4 +8,6 @@ public class UserDetailDTO {
     private String name;
 
     private String family;
+
+    private String personType;
 }

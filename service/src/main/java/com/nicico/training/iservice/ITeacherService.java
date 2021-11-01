@@ -55,4 +55,6 @@ public interface ITeacherService {
     @Transactional(readOnly = true)
     Map<String, Object> evaluateTeacher(Teacher teacher, Category category, Subcategory subcategory, List<ParameterValueDTO.Info> parameterValues);
 
+    List<Map<String,Object>> findAllByNationalCodeAndMobileNumber(String nationalCode,String mobileNumber);
+
 }

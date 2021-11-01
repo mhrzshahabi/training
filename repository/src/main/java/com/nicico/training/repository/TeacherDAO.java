@@ -72,4 +72,12 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
 
 
     Optional<Teacher> findByPersonality(PersonalInfo personalInfo);
+
+    @Query(value = "select t.C_TEACHER_CODE AS " + "\"code\"" +
+            ",contact.C_MOBILE AS"+ "\"mobile\""+
+            " from TBL_TEACHER t \n" +
+            "Left join TBL_PERSONAL_INFO info ON info.ID = t.F_PERSONALITY \n" +
+            "left join TBL_CONTACT_INFO contact on contact.ID = info.F_CONTACT_INFO"+
+            "WHERE contact.C_MOBILE = :mobile AND t.C_TEACHER_CODE= :nationalCode",nativeQuery = true)
+    List<Map<String,Object>> findAllByNationalCodeAndMobileNumber(@Param("mobile") String mobileNumber,@Param("nationalCode") String nationalCode);
 }
