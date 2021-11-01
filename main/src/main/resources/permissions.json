@@ -342,6 +342,10 @@
       "code": "Menu_Security_UsersLoginReport",
       "title": "منوی امنیت - گزارش لاگین کاربران"
     },
+    {
+      "code": "Menu_Security_MobileVerify",
+      "title": "منوی امنیت - تایید شماره موبایل فر اگیران"
+    },
 
     {"code": "Parameter_C", "title": "ایجاد پارامتر"},
     {"code": "Parameter_R", "title": "مشاهده پارامتر"},
