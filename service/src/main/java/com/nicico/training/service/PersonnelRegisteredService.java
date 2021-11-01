@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -240,5 +241,10 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     public boolean isPresent(String nationalCode) {
         PersonnelRegistered[] allByNationalCode = personnelRegisteredDAO.findAllByNationalCode(nationalCode);
         return allByNationalCode.length > 0;
+    }
+
+    @Override
+    public List<Map<String, Object>> findByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber) {
+        return personnelRegisteredDAO.findAllByNationalCodeAndMobileNumber(mobileNumber,nationalCode);
     }
 }

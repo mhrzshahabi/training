@@ -10,6 +10,7 @@ import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.model.PersonnelRegistered;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface IPersonnelRegisteredService {
@@ -46,4 +47,7 @@ public interface IPersonnelRegisteredService {
     void changeContactInfo(List<Long> id);
 
     boolean isPresent(String nationalCode);
+
+    List<Map<String,Object>> findByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber);
+
 }

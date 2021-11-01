@@ -4,9 +4,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.dto.UserDetailDTO;
-import com.nicico.training.iservice.IMobileVerifyService;
-import com.nicico.training.iservice.IPersonnelRegisteredService;
-import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.MobileVerify;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.MobileVerifyDAO;
@@ -28,6 +26,8 @@ public class MobileVerifyService implements IMobileVerifyService {
     private final TeacherDAO teacherDAO;
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
+    private final ITeacherService iTeacherService;
+    private final IPersonalInfoService personalInfoService;
 
     @Override
     @Transactional
@@ -38,7 +38,17 @@ public class MobileVerifyService implements IMobileVerifyService {
         MobileVerify mobileVerify = new MobileVerify();
         mobileVerify.setNationalCode(nationalCode);
         mobileVerify.setMobileNumber(number);
+        mobileVerify.setVerify(checkMobileWithNationalCodeIsInTraining(nationalCode, number));
         return mobileVerifyDAO.save(mobileVerify);
+    }
+
+    private boolean checkMobileWithNationalCodeIsInTraining(@NotBlank @NotBlank @Length(max = 10) String nationalCode, @NotBlank @NotBlank @Length(max = 11) String number) {
+        String convertNumber = String.valueOf(Long.parseLong(number));
+        if (!iTeacherService.findAllByNationalCodeAndMobileNumber(nationalCode, convertNumber).isEmpty())
+            return true;
+        if (!personalInfoService.findByNationalCodeAndMobileNumber(nationalCode, convertNumber).isEmpty())
+            return true;
+        return !personnelRegisteredService.findByNationalCodeAndMobileNumber(nationalCode, convertNumber).isEmpty();
     }
 
     @Override
@@ -69,7 +79,7 @@ public class MobileVerifyService implements IMobileVerifyService {
         return true;
     }
 
-    public UserDetailDTO findDetailByNationalCode(String nationalCode){
+    public UserDetailDTO findDetailByNationalCode(String nationalCode) {
         UserDetailDTO dto = new UserDetailDTO();
         Optional<Teacher> teacherCode = teacherDAO.findByTeacherCode(nationalCode);
         if (teacherCode.isPresent() && teacherCode.get().getPersonality() != null) {

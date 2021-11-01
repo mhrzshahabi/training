@@ -7,9 +7,11 @@ import com.nicico.training.model.PersonnelRegistered;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
@@ -41,6 +43,13 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
 
     @Query(value = "update  tbl_personnel_registered set f_contact_info=null where f_contact_info IN(:ids)" , nativeQuery = true)
     List<PersonnelRegistered> setNullToContactInfo(List<Long> ids);
+
+    @Query(value = "select registered.NATIONAL_CODE AS " + "\"code\"" +
+            ",contact.C_MOBILE AS"+ "\"mobile\""+
+            " from TBL_PERSONNEL_REGISTERED registered \n" +
+            "left join TBL_CONTACT_INFO contact on contact.ID = registered.F_CONTACT_INFO "+
+            "WHERE contact.C_MOBILE like :mobile AND registered.NATIONAL_CODE = :nationalCode",nativeQuery = true)
+    List<Map<String,Object>> findAllByNationalCodeAndMobileNumber(@Param("mobile") String mobileNumber, @Param("nationalCode") String nationalCode);
 }
 
 

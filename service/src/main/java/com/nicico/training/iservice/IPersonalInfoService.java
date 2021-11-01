@@ -5,6 +5,7 @@ import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.model.PersonalInfo;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IPersonalInfoService {
     PersonalInfoDTO.Info get(Long id);
@@ -32,4 +33,6 @@ public interface IPersonalInfoService {
     PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.CreateOrUpdate request);
 
     void modify(PersonalInfoDTO.CreateOrUpdate request, PersonalInfo personalInfo);
+
+    List<Map<String,Object>> findByNationalCodeAndMobileNumber(String nationalCode,String mobileNumber);
 }

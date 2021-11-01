@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -185,4 +186,9 @@ public class PersonalInfoService implements IPersonalInfoService {
 
     }
 
+
+    @Override
+    public List<Map<String, Object>> findByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber) {
+        return personalInfoDAO.findAllByNationalCodeAndMobileNumber(mobileNumber,nationalCode);
+    }
 }
