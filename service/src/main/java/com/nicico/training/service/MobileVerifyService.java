@@ -49,7 +49,7 @@ public class MobileVerifyService implements IMobileVerifyService {
     }
 
     private boolean checkMobileWithNationalCodeIsInTraining(@NotBlank @NotBlank @Length(max = 10) String nationalCode, @NotBlank @NotBlank @Length(max = 11) String number) {
-        String convertNumber = String.valueOf(Long.parseLong(number));
+        String convertNumber = "%" + Long.parseLong(number);
         if (!iTeacherService.findAllByNationalCodeAndMobileNumber(nationalCode, convertNumber).isEmpty())
             return true;
         if (!personalInfoService.findByNationalCodeAndMobileNumber(nationalCode, convertNumber).isEmpty())
