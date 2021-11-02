@@ -59,6 +59,7 @@ import response.question.dto.*;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
+import response.tclass.dto.ElsClassListDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -86,7 +87,7 @@ public class ElsRestController {
     private final IEvaluationService iEvaluationService;
     private final IClassStudentService classStudentService;
     private final ITclassService tclassService;
-    private final TeacherService teacherService;
+    private final ITeacherService teacherService;
     private final CategoryService categoryService;
     private final SubcategoryService subcategoryService;
     private final ITclassService iTclassService;
@@ -677,7 +678,7 @@ public class ElsRestController {
     public BaseResponse setFinalScores(@PathVariable long id, @RequestBody List<ExamResult> examResult) {
         BaseResponse baseResponse = new BaseResponse();
         BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
-        if (checkValidScores.getStatus()!=200) {
+        if (checkValidScores.getStatus() != 200) {
             baseResponse.setStatus(checkValidScores.getStatus());
             baseResponse.setMessage(checkValidScores.getMessage());
 
@@ -1322,6 +1323,48 @@ public class ElsRestController {
             return new ResponseEntity<>(byReference, HttpStatus.OK);
         } else
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+
+
+    //get all classes foe a student and teacher
+    @GetMapping("/user-classes/{type}/{nationalCode}/{page}/{size}")
+    public ElsClassListDto getUserClasses(HttpServletRequest header
+            , @PathVariable String type
+            , @PathVariable String nationalCode
+            , @PathVariable Integer page, @PathVariable Integer size) {
+
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+
+                switch (type) {
+                    case "student": {
+                        List<Student> students = iStudentService.getStudentByNationalCode(nationalCode);
+                        if (!students.isEmpty()){
+
+                        }else {
+                            throw new TrainingException(TrainingException.ErrorType.NotFound);
+                        }
+                        break;
+                    }
+                    case "teacher": {
+                        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                        if (teacherId != null) {
+                            return classStudentService.getTeacherClasses(nationalCode, page, size);
+                        } else {
+                            throw new TrainingException(TrainingException.ErrorType.NotFound);
+                        }
+                    }
+                    default: {
+
+                    }
+                }
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.Unknown);
+            }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
+        return null;
     }
 
 

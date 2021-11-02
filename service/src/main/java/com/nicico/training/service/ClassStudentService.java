@@ -10,18 +10,26 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.enums.EQuestionLevel;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassStudentDAO;
+import dto.exam.ClassType;
+import dto.exam.CourseStatus;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import request.exam.ElsExamScore;
 import request.exam.ElsStudentScore;
-import request.exam.ExamResult;
 import response.BaseResponse;
+import response.PaginationDto;
+import response.tclass.dto.ElsClassDto;
+import response.tclass.dto.ElsClassListDto;
 
-import java.math.BigDecimal;
 import java.util.*;
 import java.util.function.Function;
 
@@ -298,6 +306,63 @@ public class ClassStudentService implements IClassStudentService {
 
     }
 
+    @Override
+    public ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size) {
+        ElsClassListDto dto=new ElsClassListDto();
+        List<Object> list=classStudentDAO.findAllClassByTeacher(nationalCode,page+1,size);
+
+
+
+
+//        List<ElsClassDto> result = new ArrayList<>();
+//        for (int i = 0; i < list.size(); i++) {
+//            ElsClassDto elsClassDto=new ElsClassDto();
+//            Object[] arr = (Object[]) list.get(i);
+//            Long classId=Long.parseLong(arr[1].toString());
+//            elsClassDto.setClassId(classId);
+//            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+//            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+//            elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
+//            elsClassDto.setCapacity(arr[6] == null ? null : Integer.valueOf(arr[6].toString()));
+//            elsClassDto.setDescription(arr[7] == null ? null : arr[7].toString());
+//            elsClassDto.setLocation(arr[8] == null ? null : arr[8].toString());
+//            elsClassDto.setCourseStatus(arr[9] == null ? null : getCourseStatus(Integer.parseInt(arr[9].toString())));
+//            elsClassDto.setClassType(arr[10] == null ? null : getClassType(Integer.parseInt(arr[10].toString())));
+//
+//            asa
+//        }
+//
+//
+//
+//        PaginationDto paginationDto = new PaginationDto();
+//                            paginationDto.setCurrent(page);
+//                            paginationDto.setSize(size);
+//                            paginationDto.setTotal(questionBankList.getTotalPages());
+//                            paginationDto.setLast(questionBankList.getTotalPages() - 1);
+//                            paginationDto.setTotalItems(questionBankList.get().count());
+//        dto.setPagination(paginationDto);
+//        dto.setList();
+        return null;
+
+    }
+
+    private ClassType getClassType(int id) {
+        for (ClassType entry : ClassType.values()) {
+            if (entry.getKey()==id) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    private CourseStatus getCourseStatus(int id) {
+            for (CourseStatus entry : CourseStatus.values()) {
+                if (entry.getKey()==id) {
+                    return entry;
+                }
+            }
+            return null;
+    }
 
 
     @Transactional

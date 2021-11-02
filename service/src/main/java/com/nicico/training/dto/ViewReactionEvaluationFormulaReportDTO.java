@@ -40,5 +40,7 @@ public class ViewReactionEvaluationFormulaReportDTO implements Serializable {
         private Double evaluatedPercent;
         private Double answeredStudentsNum;
         private Double allStudentsNum;
+        private String complex;
+        private String isPersonnel;
     }
 }

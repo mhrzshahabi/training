@@ -892,6 +892,7 @@ public class TeacherService implements ITeacherService {
     }
 
     @Transactional
+    @Override
     public Long getTeacherIdByNationalCode(String nationalCode) {
         return teacherDAO.getTeacherId(nationalCode);
     }

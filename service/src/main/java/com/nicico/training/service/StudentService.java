@@ -72,6 +72,7 @@ public class StudentService implements IStudentService {
     }
 
     @Transactional(readOnly = true)
+    @Override
     public List<Student> getStudentByNationalCode(String nationalCode) {
         List<Student> list = studentDAO.findByNationalCode(nationalCode);
         return list;

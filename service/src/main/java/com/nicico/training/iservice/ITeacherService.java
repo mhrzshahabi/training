@@ -57,4 +57,6 @@ public interface ITeacherService {
 
     List<Map<String,Object>> findAllByNationalCodeAndMobileNumber(String nationalCode,String mobileNumber);
 
+    Long getTeacherIdByNationalCode(String nationalCode);
+
 }

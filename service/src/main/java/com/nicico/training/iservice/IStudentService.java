@@ -42,4 +42,6 @@ public interface IStudentService {
     List<Map<String, Object>> findAllExamsByNationalCode(String nationalCode, ExamsType type);
 
     Set<String> findAllRoleByNationalCode(String nationalCode);
+
+     List<Student> getStudentByNationalCode(String nationalCode);
 }

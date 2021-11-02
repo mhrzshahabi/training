@@ -64,4 +64,9 @@ public class ViewReactionEvaluationFormulaReport implements Serializable {
     @Column(name = "teacher_national_code")
     private String teacherNationalCode;
 
+    @Column(name = "complex")
+    private String complex;
+
+    @Column(name = "is_personnel")
+    private String isPersonnel;
 }
