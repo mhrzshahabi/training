@@ -2052,6 +2052,16 @@
                         createTab(this.title, "<spring:url value="/web/request"/>");
                     }
                 },
+
+                <sec:authorize access="hasAuthority('Menu_Evaluation_MobileVerify')">
+                {
+                    title: "<spring:message code="mobile.verify"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/mobileVerify/"/>");
+                    }
+                }
+                </sec:authorize>
+
                 <%--{--%>
                 <%--title: "ثبت نتایج",--%>
                 <%--click: function () {--%>
@@ -2813,15 +2823,6 @@
                         createTab(this.title, "<spring:url value="web/usersLoginReport/"/>");
                     }
                 },
-                </sec:authorize>
-
-                <sec:authorize access="hasAuthority('Menu_Security_MobileVerify')">
-                {
-                    title: "<spring:message code="mobile.verify"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/mobileVerify/"/>");
-                    }
-                }
                 </sec:authorize>
             ]
         }),
