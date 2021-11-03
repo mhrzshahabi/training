@@ -368,11 +368,64 @@ public class ClassStudentService implements IClassStudentService {
 return dto;
     }
 
+    @Override
+    public ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size) {
+        ElsClassListDto dto=new ElsClassListDto();
+        List<Object> list=classStudentDAO.findAllClassByStudent(nationalCode,page+1,size);
+        long count= classStudentDAO.findAllCountClassByStudent(nationalCode).size();
+        long totalPage=0;
+        if (count!=0 && size!=0){
+            totalPage=count/size;
+        }
+
+        List<ElsClassDto> result = new ArrayList<>();
+        for (Object o : list) {
+
+            ElsClassDto elsClassDto = new ElsClassDto();
+            Object[] arr = (Object[]) o;
+            Long classId = Long.parseLong(arr[1].toString());
+            Tclass tclass= tclassService.getTClass(classId);
+
+            elsClassDto.setClassId(classId);
+            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
+            elsClassDto.setCapacity(arr[6] == null ? null : Integer.valueOf(arr[6].toString()));
+            elsClassDto.setDuration(arr[7] == null ? null :  Integer.valueOf(arr[7].toString()));
+            elsClassDto.setLocation(arr[8] == null ? null : arr[8].toString());
+            elsClassDto.setCourseStatus(arr[9] == null ? null : getCourseStatus(Integer.parseInt(arr[9].toString())));
+            elsClassDto.setClassType(arr[10] == null ? null : getClassType(Integer.parseInt(arr[10].toString())));
+            //todo this property must be remove in els
+            elsClassDto.setCourseType(null);
+            elsClassDto.setCoursePrograms(getPrograms2(tclass));
+
+            Date startDate = getEpochDate(arr[11].toString(), "08:00");
+            Date endDate = getEpochDate(arr[12].toString(), "23:59");
+            elsClassDto.setStartDate(startDate.getTime() * 1000);
+            elsClassDto.setFinishDate(endDate.getTime() * 1000);
+            elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
+            result.add(elsClassDto);
+        }
+
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setCurrent(page);
+        paginationDto.setSize(size);
+        if (totalPage!=0){
+            paginationDto.setTotal(totalPage+1);
+            paginationDto.setLast((int) (totalPage));
+        }else{
+            paginationDto.setTotal(0);
+            paginationDto.setLast(0);}
+        paginationDto.setTotalItems(count);
+        dto.setPagination(paginationDto);
+        dto.setList(result);
+
+        return dto;    }
+
     private List<CourseProgramDTO> getPrograms2(Tclass tclass) {
         List<CourseProgramDTO> programs = new ArrayList<>();
-        ////////////////////////////////////
-
-
         if (null != (tclass.getSaturday()) && tclass.getSaturday()) {
 
 

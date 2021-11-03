@@ -1342,11 +1342,10 @@ public class ElsRestController {
                     case "student": {
                         List<Student> students = iStudentService.getStudentByNationalCode(nationalCode);
                         if (!students.isEmpty()){
-
+                            return classStudentService.getStudentClasses(nationalCode, page, size);
                         }else {
                             throw new TrainingException(TrainingException.ErrorType.NotFound);
                         }
-                        break;
                     }
                     case "teacher": {
                         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
@@ -1366,7 +1365,6 @@ public class ElsRestController {
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
-        return null;
     }
 
 

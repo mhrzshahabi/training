@@ -2,14 +2,11 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.model.ClassStudent;
-import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 import request.exam.ElsExamScore;
 import response.BaseResponse;
 import response.tclass.dto.ElsClassListDto;
-
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -46,4 +43,6 @@ public interface IClassStudentService {
     BaseResponse updateScore(ElsExamScore elsExamScore);
 
     ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size);
+
+    ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size);
 }
