@@ -159,4 +159,50 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     List<Object> findAllClassByTeacher(String nationalCode, int page,int sizee);
 
 
+
+    @Query(value = "\n" +
+            "SELECT DISTINCT\n" +
+            "    tbl_teacher.c_teacher_code,\n" +
+            "    tbl_class.id                      AS classid,\n" +
+            "    tbl_teacher.id                    AS teacherid,\n" +
+            "    tbl_class.c_code                  AS code,\n" +
+            "    tbl_class.c_title_class           AS title,\n" +
+            "    tbl_course.c_title_fa             AS name,\n" +
+            "    tbl_class.n_max_capacity          AS capacity,\n" +
+            "    tbl_class.n_h_duration            AS duration,\n" +
+            "    view_complex.c_title AS location,\n" +
+            "    CASE\n" +
+            "        WHEN tbl_class.c_status = 1 THEN\n" +
+            "            4\n" +
+            "        WHEN tbl_class.c_status = 2 THEN\n" +
+            "            1\n" +
+            "        WHEN tbl_class.c_status = 3 THEN\n" +
+            "            2\n" +
+            "        WHEN tbl_class.c_status = 4 THEN\n" +
+            "            3\n" +
+            "        WHEN tbl_class.c_status = 5 THEN\n" +
+            "            2\n" +
+            "    END                               AS coursestatus,\n" +
+            "    CASE\n" +
+            "        WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
+            "            1\n" +
+            "        ELSE\n" +
+            "            2\n" +
+            "    END                               AS classtype,\n" +
+            "    tbl_class.c_start_date            AS startdate,\n" +
+            "    tbl_class.c_end_date              AS finishdate,\n" +
+            "    concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) as instructor \n" +
+            "FROM\n" +
+            "         tbl_class_student\n" +
+            "    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "    INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "    LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "    INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            " \n" +
+            "WHERE\n" +
+            "    tbl_teacher.c_teacher_code = :nationalCode \n" +
+            "        ORDER BY  classid Desc",nativeQuery = true)
+    List<Object> findAllCountClassByTeacher(String nationalCode);
+
 }

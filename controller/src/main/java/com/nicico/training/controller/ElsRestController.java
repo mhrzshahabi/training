@@ -133,11 +133,12 @@ public class ElsRestController {
             List<ClassStudent> classStudents = classStudentService.getClassStudents(evaluation.getClassId());
             List<EvalTargetUser> students = classStudents.stream()
                     .map(classStudent -> evaluationBeanMapper.toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
-            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
+//            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
+            TclassDTO.Info tclass=iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
             for (EvalTargetUser evalTargetUser : students) {
                 paramValMap.put("user_name", evalTargetUser.getLastName());
-                paramValMap.put("evaluation_title", questionnaire.getTitle());
+                paramValMap.put("evaluation_title", tclass.getTitleClass());
                 paramValMap.put("url", elsSmsUrl);
                 sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(evalTargetUser.getCellNumber()));
             }
@@ -200,10 +201,11 @@ public class ElsRestController {
         Evaluation evaluation = evaluationService.getById(id);
         try {
             EvalTargetUser teacher = evaluationBeanMapper.toTeacher(personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
-            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
+//            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
+            TclassDTO.Info tclass=iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
             paramValMap.put("user_name", teacher.getLastName());
-            paramValMap.put("evaluation_title", questionnaire.getTitle());
+            paramValMap.put("evaluation_title", tclass.getTitleClass());
             paramValMap.put("url", elsSmsUrl);
             sendMessageService.syncEnqueue("c76g6vfs4l", paramValMap, Collections.singletonList(teacher.getCellNumber()));
 
@@ -1333,7 +1335,7 @@ public class ElsRestController {
             , @PathVariable String nationalCode
             , @PathVariable Integer page, @PathVariable Integer size) {
 
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
 
                 switch (type) {
@@ -1355,15 +1357,15 @@ public class ElsRestController {
                         }
                     }
                     default: {
-
+                        throw new TrainingException(TrainingException.ErrorType.Unknown);
                     }
                 }
             } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.Unknown);
             }
-//        } else {
-//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-//        }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
         return null;
     }
 

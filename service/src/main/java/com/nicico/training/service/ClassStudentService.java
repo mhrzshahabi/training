@@ -33,6 +33,8 @@ import response.tclass.dto.ElsClassListDto;
 import java.util.*;
 import java.util.function.Function;
 
+import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
+
 @Service
 @RequiredArgsConstructor
 public class ClassStudentService implements IClassStudentService {
@@ -310,40 +312,58 @@ public class ClassStudentService implements IClassStudentService {
     public ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size) {
         ElsClassListDto dto=new ElsClassListDto();
         List<Object> list=classStudentDAO.findAllClassByTeacher(nationalCode,page+1,size);
+        long count= classStudentDAO.findAllCountClassByTeacher(nationalCode).size();
+        long totalPage=0;
+        if (count!=0 && size!=0){
+            totalPage=count/size;
+        }
 
 
 
 
-//        List<ElsClassDto> result = new ArrayList<>();
-//        for (int i = 0; i < list.size(); i++) {
-//            ElsClassDto elsClassDto=new ElsClassDto();
-//            Object[] arr = (Object[]) list.get(i);
-//            Long classId=Long.parseLong(arr[1].toString());
-//            elsClassDto.setClassId(classId);
-//            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
-//            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
-//            elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
-//            elsClassDto.setCapacity(arr[6] == null ? null : Integer.valueOf(arr[6].toString()));
-//            elsClassDto.setDescription(arr[7] == null ? null : arr[7].toString());
-//            elsClassDto.setLocation(arr[8] == null ? null : arr[8].toString());
-//            elsClassDto.setCourseStatus(arr[9] == null ? null : getCourseStatus(Integer.parseInt(arr[9].toString())));
-//            elsClassDto.setClassType(arr[10] == null ? null : getClassType(Integer.parseInt(arr[10].toString())));
-//
-//            asa
-//        }
-//
-//
-//
-//        PaginationDto paginationDto = new PaginationDto();
-//                            paginationDto.setCurrent(page);
-//                            paginationDto.setSize(size);
-//                            paginationDto.setTotal(questionBankList.getTotalPages());
-//                            paginationDto.setLast(questionBankList.getTotalPages() - 1);
-//                            paginationDto.setTotalItems(questionBankList.get().count());
-//        dto.setPagination(paginationDto);
-//        dto.setList();
-        return null;
+        List<ElsClassDto> result = new ArrayList<>();
+        for (Object o : list) {
+            ElsClassDto elsClassDto = new ElsClassDto();
+            Object[] arr = (Object[]) o;
+            Long classId = Long.parseLong(arr[1].toString());
+            elsClassDto.setClassId(classId);
+            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
+            elsClassDto.setCapacity(arr[6] == null ? null : Integer.valueOf(arr[6].toString()));
+            elsClassDto.setDuration(arr[7] == null ? null :  Integer.valueOf(arr[7].toString()));
+            elsClassDto.setLocation(arr[8] == null ? null : arr[8].toString());
+            elsClassDto.setCourseStatus(arr[9] == null ? null : getCourseStatus(Integer.parseInt(arr[9].toString())));
+            elsClassDto.setClassType(arr[10] == null ? null : getClassType(Integer.parseInt(arr[10].toString())));
+            //todo this property must be remove in els
+            elsClassDto.setCourseType(null);
+            Date startDate = getEpochDate(arr[11].toString(), "08:00");
+            Date endDate = getEpochDate(arr[12].toString(), "23:59");
+            elsClassDto.setStartDate(startDate.getTime() * 1000);
+            elsClassDto.setFinishDate(endDate.getTime() * 1000);
+            elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
+            result.add(elsClassDto);
+        }
 
+
+
+        PaginationDto paginationDto = new PaginationDto();
+                            paginationDto.setCurrent(page);
+                            paginationDto.setSize(size);
+                            if (totalPage!=0){
+                                paginationDto.setTotal(totalPage+1);
+                                paginationDto.setLast((int) (totalPage-1));
+
+                            }else{
+                                paginationDto.setTotal(1);
+                                paginationDto.setLast(0);
+
+                            }
+                            paginationDto.setTotalItems(count);
+        dto.setPagination(paginationDto);
+        dto.setList(result);
+
+return dto;
     }
 
     private ClassType getClassType(int id) {
