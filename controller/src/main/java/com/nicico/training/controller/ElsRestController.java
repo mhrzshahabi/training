@@ -1329,10 +1329,10 @@ public class ElsRestController {
 
 
     //get all classes foe a student and teacher
-    @GetMapping("/user-classes/{type}/{nationalCode}/{page}/{size}")
+    @GetMapping("/user-classes/{page}/{size}")
     public ElsClassListDto getUserClasses(HttpServletRequest header
-            , @PathVariable String type
-            , @PathVariable String nationalCode
+            , @RequestParam String type
+            , @RequestParam String nationalCode
             , @PathVariable Integer page, @PathVariable Integer size) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
