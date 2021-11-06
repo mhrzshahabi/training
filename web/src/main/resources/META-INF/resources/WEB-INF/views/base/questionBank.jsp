@@ -1626,6 +1626,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
     function loadAttachment() {
         let record = QuestionBankLG_questionBank.getSelectedRecord();
+        let valueMap_AttachmentType;
         if (record === null) {
             TabSet_questionBank.disable();
             oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", 0, "<spring:message code="document"/>", {
@@ -1656,15 +1657,26 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
             }));
         }
 
-        oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", QuestionBankLG_questionBank.getSelectedRecord().id, "<spring:message code="document"/>", {
-            1: "صورت سوال",
-            2: "سوالات عملی",
-            3: "فایل گزینه اول",
-            4: "فایل گزینه دوم",
-            5: "فایل گزینه سوم",
-            6: "فایل گزینه چهارم",
-        });
-
+            //تشریحی
+        if (QuestionBankLG_questionBank.getSelectedRecord().questionType !== null
+            && QuestionBankLG_questionBank.getSelectedRecord().questionType.code === "Descriptive"){
+            valueMap_AttachmentType =  {
+                1: "صورت سوال",
+                2: "سوالات عملی"
+            };
+        } else {
+            valueMap_AttachmentType = {
+                1: "صورت سوال",
+                2: "سوالات عملی",
+                3: "فایل گزینه اول",
+                4: "فایل گزینه دوم",
+                5: "فایل گزینه سوم",
+                6: "فایل گزینه چهارم",
+            };
+        }
+        oLoadAttachments_questionBank.ListGrid_JspAttachment.getField("fileTypeId").valueMap = valueMap_AttachmentType;
+        oLoadAttachments_questionBank.DynamicForm_JspAttachments.getField("fileTypeId").setValueMap(valueMap_AttachmentType); ;
+        oLoadAttachments_questionBank.loadPage_attachment_Job("QuestionBank", QuestionBankLG_questionBank.getSelectedRecord().id, "<spring:message code="document"/>", valueMap_AttachmentType, false);
         TabSet_questionBank.enable();
     }
 
