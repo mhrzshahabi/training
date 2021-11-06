@@ -102,7 +102,6 @@
                 teacherName: "نام استاد",
                 teacherFamily: "نام خانوادگی استاد",
                 isPersonnel: "نوع استاد",
-
                 classStartDate: "تاریخ شروع",
                 classEndDate: "تاریخ پایان",
                 courseTitleFa: "نام دوره",
@@ -500,6 +499,7 @@
         height: "70%",
         filterOnKeypress: false,
         showFilterEditor: true,
+        dataPageSize: 200,
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_REFR,
         fields: [
