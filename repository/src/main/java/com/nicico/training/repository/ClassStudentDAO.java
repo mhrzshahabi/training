@@ -218,52 +218,92 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             ,nativeQuery = true)
     List<Object> findAllCountClassByTeacher(String nationalCode);
 
-    @Query(value = "",nativeQuery = true)
-    List<Object> findAllClassByStudent(String nationalCode, int i, Integer size);
-
-    @Query(value = "SELECT DISTINCT\n" +
-            "    devtraining.tbl_student.national_code,\n" +
-            "    tbl_class.id             AS classid,\n" +
-            "    tbl_class.f_teacher,\n" +
-            "    tbl_class.c_code         AS code,\n" +
-            "    tbl_class.c_title_class  AS title,\n" +
-            "    tbl_course.c_title_fa    AS name,\n" +
-            "    tbl_class.n_max_capacity AS capacity,\n" +
-            "    tbl_class.n_h_duration   AS duration,\n" +
-            "    view_complex.c_title     AS location,\n" +
-            "    CASE\n" +
-            "        WHEN tbl_class.c_status = 1 THEN\n" +
-            "            4\n" +
-            "        WHEN tbl_class.c_status = 2 THEN\n" +
-            "            1\n" +
-            "        WHEN tbl_class.c_status = 3 THEN\n" +
-            "            2\n" +
-            "        WHEN tbl_class.c_status = 4 THEN\n" +
-            "            3\n" +
-            "        WHEN tbl_class.c_status = 5 THEN\n" +
-            "            2\n" +
-            "    END                      AS coursestatus,\n" +
-            "    CASE\n" +
-            "        WHEN tbl_class.f_teaching_method_id = 639 THEN\n" +
-            "            1\n" +
-            "        ELSE\n" +
-            "            2\n" +
-            "    END                      AS classtype,\n" +
-            "    tbl_class.c_start_date   AS startdate,\n" +
-            "    tbl_class.c_end_date     AS finishdate,\n" +
-            "      concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) as instructor    \n" +
-            "\n" +
-            "FROM\n" +
-            "         tbl_class_student\n" +
-            "    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
-            "    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
-            "    LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
-            "    INNER JOIN devtraining.tbl_student ON tbl_class_student.student_id = devtraining.tbl_student.id\n" +
-            "    INNER JOIN devtraining.tbl_teacher ON tbl_class.f_teacher = devtraining.tbl_teacher.id\n" +
-            "    INNER JOIN devtraining.tbl_personal_info ON devtraining.tbl_teacher.f_personality = devtraining.tbl_personal_info.id\n" +
+    @Query(value = "SELECT * FROM\n" +
+            "            (\n" +
+            "               SELECT a.*, rownum r__\n" +
+            "                FROM\n" +
+            "               ( SELECT DISTINCT \n" +
+            "tbl_student.national_code,               tbl_class.id             AS classid,\n" +
+            "tbl_class.f_teacher,\n" +
+            "tbl_class.c_code         AS code,\n" +
+            "tbl_class.c_title_class  AS title,\n" +
+            "tbl_course.c_title_fa    AS name,\n" +
+            "tbl_class.n_max_capacity AS capacity,\n" +
+            "tbl_class.n_h_duration   AS duration,\n" +
+            "view_complex.c_title     AS location,\n" +
+            "CASE\n" +
+            "WHEN tbl_class.c_status = 1 THEN\n" +
+            "4\n" +
+            "WHEN tbl_class.c_status = 2 THEN\n" +
+            "1\n" +
+            "WHEN tbl_class.c_status = 3 THEN\n" +
+            "2\n" +
+            "WHEN tbl_class.c_status = 4 THEN\n" +
+            "3\n" +
+            "WHEN tbl_class.c_status = 5 THEN\n" +
+            "2\n" +
+            "END                      AS coursestatus,\n" +
+            "CASE\n" +
+            "WHEN tbl_class.f_teaching_method_id = 639 THEN                          1\n" +
+            "ELSE\n" +
+            "2\n" +
+            "END                      AS classtype,\n" +
+            "tbl_class.c_start_date   AS startdate,\n" +
+            "tbl_class.c_end_date     AS finishdate,\n" +
+            "concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) as instructor                         FROM\n" +
+            "tbl_class_student\n" +
+            "INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id              \n" +
+            "INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
             "WHERE\n" +
-            "    devtraining.tbl_student.national_code = '3720228851'\n" +
-            "ORDER BY\n" +
-            "    classid DESC",nativeQuery = true)
+            "tbl_student.national_code = :nationalCode    \n" +
+            "ORDER BY                classid DESC) a\n" +
+            "                WHERE rownum < ((:page * :sizee) + 1 )\n" +
+            "            )\n" +
+            "            WHERE r__ >= (((:page-1) * :sizee) + 1)",nativeQuery = true)
+    List<Object> findAllClassByStudent(String nationalCode, int page, Integer sizee);
+
+    @Query(value = "SELECT DISTINCT \n" +
+            "tbl_student.national_code,               tbl_class.id             AS classid,\n" +
+            "tbl_class.f_teacher,\n" +
+            "tbl_class.c_code         AS code,\n" +
+            "tbl_class.c_title_class  AS title,\n" +
+            "tbl_course.c_title_fa    AS name,\n" +
+            "tbl_class.n_max_capacity AS capacity,\n" +
+            "tbl_class.n_h_duration   AS duration,\n" +
+            "view_complex.c_title     AS location,\n" +
+            "CASE\n" +
+            "WHEN tbl_class.c_status = 1 THEN\n" +
+            "4\n" +
+            "WHEN tbl_class.c_status = 2 THEN\n" +
+            "1\n" +
+            "WHEN tbl_class.c_status = 3 THEN\n" +
+            "2\n" +
+            "WHEN tbl_class.c_status = 4 THEN\n" +
+            "3\n" +
+            "WHEN tbl_class.c_status = 5 THEN\n" +
+            "2\n" +
+            "END                      AS coursestatus,\n" +
+            "CASE\n" +
+            "WHEN tbl_class.f_teaching_method_id = 639 THEN                          1\n" +
+            "ELSE\n" +
+            "2\n" +
+            "END                      AS classtype,\n" +
+            "tbl_class.c_start_date   AS startdate,\n" +
+            "tbl_class.c_end_date     AS finishdate,\n" +
+            "concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) as instructor                         FROM\n" +
+            "tbl_class_student\n" +
+            "INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id\n" +
+            "LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id\n" +
+            "INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id              \n" +
+            "INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id\n" +
+            "INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id\n" +
+            "WHERE\n" +
+            "tbl_student.national_code = :nationalCode    \n" +
+            "ORDER BY                classid DESC",nativeQuery = true)
     List<Object> findAllCountClassByStudent(String nationalCode);
 }
