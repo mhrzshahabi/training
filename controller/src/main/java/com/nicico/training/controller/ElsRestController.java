@@ -1356,10 +1356,12 @@ public class ElsRestController {
                         }
                     }
                     default: {
+                        log.error("default error"+type);
                         throw new TrainingException(TrainingException.ErrorType.Unknown);
                     }
                 }
-            } catch (Exception e) {
+            } catch (Exception s) {
+                log.error("Exception error:"+s);
                 throw new TrainingException(TrainingException.ErrorType.Unknown);
             }
         } else {
