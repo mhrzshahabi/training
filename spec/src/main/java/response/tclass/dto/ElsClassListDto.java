@@ -11,6 +11,6 @@ import java.util.List;
 
 @Getter
 @Setter
-public class ElsClassListDto extends PageDto implements Serializable {
+public class ElsClassListDto extends PageDto  {
     private List<ElsClassDto> list;
 }
