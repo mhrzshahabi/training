@@ -161,15 +161,6 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
 
 
     @Query(value = "\n" +
-            "\n" +
-            " \n" +
-            "\n" +
-            "SELECT * FROM\n" +
-            "(\n" +
-            "    SELECT a.*, rownum r__\n" +
-            "    FROM\n" +
-            "    (\n" +
-            "\n" +
             "SELECT DISTINCT\n" +
             "    tbl_teacher.c_teacher_code,\n" +
             "    tbl_class.id                      AS classid,\n" +
@@ -211,10 +202,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             " \n" +
             "WHERE\n" +
             "    tbl_teacher.c_teacher_code = :nationalCode \n" +
-            "        ORDER BY  classid Desc) a\n" +
-            "    WHERE rownum < ((:page * :sizee) + 1 )\n" +
-            ")\n" +
-            "WHERE r__ >= (((:page-1) * :sizee) + 1)\n"
+            "        ORDER BY  classid Desc "
             ,nativeQuery = true)
     List<Object> findAllCountClassByTeacher(String nationalCode);
 
