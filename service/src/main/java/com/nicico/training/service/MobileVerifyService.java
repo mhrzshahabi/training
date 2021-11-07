@@ -46,8 +46,10 @@ public class MobileVerifyService implements IMobileVerifyService {
         MobileVerify mobileVerify = new MobileVerify();
         mobileVerify.setNationalCode(nationalCode);
         mobileVerify.setMobileNumber(number);
-        mobileVerify.setVerify(checkMobileWithNationalCodeIsInTraining(nationalCode, number));
-        mobileVerify.setVerifiedBy(SYSTEM);
+        boolean codeIsInTraining = checkMobileWithNationalCodeIsInTraining(nationalCode, number);
+        mobileVerify.setVerify(codeIsInTraining);
+        if (codeIsInTraining)
+            mobileVerify.setVerifiedBy(SYSTEM);
         return mobileVerifyDAO.save(mobileVerify);
     }
 
