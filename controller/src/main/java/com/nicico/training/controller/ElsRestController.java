@@ -137,8 +137,9 @@ public class ElsRestController {
             TclassDTO.Info tclass=iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
             for (EvalTargetUser evalTargetUser : students) {
+
                 paramValMap.put("user_name", evalTargetUser.getLastName());
-                paramValMap.put("evaluation_title", tclass.getTitleClass());
+                paramValMap.put("evaluation_title", String.format("%15s", tclass.getTitleClass()));
                 paramValMap.put("url", elsSmsUrl);
                 sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(evalTargetUser.getCellNumber()));
             }
@@ -205,7 +206,7 @@ public class ElsRestController {
             TclassDTO.Info tclass=iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
             paramValMap.put("user_name", teacher.getLastName());
-            paramValMap.put("evaluation_title", tclass.getTitleClass());
+            paramValMap.put("evaluation_title", String.format("%15s", tclass.getTitleClass()));
             paramValMap.put("url", elsSmsUrl);
             sendMessageService.syncEnqueue("c76g6vfs4l", paramValMap, Collections.singletonList(teacher.getCellNumber()));
 

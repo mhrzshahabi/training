@@ -362,7 +362,7 @@ public class ClassStudentService implements IClassStudentService {
                                 paginationDto.setTotal(0);
                                 paginationDto.setLast(0);}
                             paginationDto.setTotalItems(count);
-        dto.setPagination(paginationDto);
+        dto.setPaginationDto(paginationDto);
         dto.setList(result);
 
 return dto;
@@ -419,7 +419,7 @@ return dto;
             paginationDto.setTotal(0);
             paginationDto.setLast(0);}
         paginationDto.setTotalItems(count);
-        dto.setPagination(paginationDto);
+        dto.setPaginationDto(paginationDto);
         dto.setList(result);
 
         return dto;    }
