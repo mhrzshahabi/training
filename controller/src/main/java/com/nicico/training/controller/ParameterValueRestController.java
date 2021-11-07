@@ -5,6 +5,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.model.ParameterValue;
 import com.nicico.training.service.ParameterService;
 import com.nicico.training.service.ParameterValueService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -96,5 +99,11 @@ public class ParameterValueRestController {
     @GetMapping("/get-id")
     public ResponseEntity<Long> getParametersValueList(@RequestParam String code) {
         return new ResponseEntity<>(parameterValueService.getId(code), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/messages")
+    public ResponseEntity<TotalResponse<ParameterValueDTO>> getMessages() throws IOException {
+        return new ResponseEntity<>(parameterValueService.getMessages(), HttpStatus.OK);
     }
 }

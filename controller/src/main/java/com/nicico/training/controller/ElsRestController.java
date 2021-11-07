@@ -134,7 +134,7 @@ public class ElsRestController {
             List<EvalTargetUser> students = classStudents.stream()
                     .map(classStudent -> evaluationBeanMapper.toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
 //            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
-            TclassDTO.Info tclass=iTclassService.get(evaluation.getClassId());
+            TclassDTO.Info tclass = iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
             for (EvalTargetUser evalTargetUser : students) {
 
@@ -203,7 +203,7 @@ public class ElsRestController {
         try {
             EvalTargetUser teacher = evaluationBeanMapper.toTeacher(personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
 //            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
-            TclassDTO.Info tclass=iTclassService.get(evaluation.getClassId());
+            TclassDTO.Info tclass = iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
             paramValMap.put("user_name", teacher.getLastName());
             paramValMap.put("evaluation_title", String.format("%15s", tclass.getTitleClass()));
@@ -1341,28 +1341,18 @@ public class ElsRestController {
 
                 switch (type) {
                     case "student": {
-                        List<Student> students = iStudentService.getStudentByNationalCode(nationalCode);
-                        if (!students.isEmpty()){
-                            return classStudentService.getStudentClasses(nationalCode, page, size);
-                        }else {
-                            throw new TrainingException(TrainingException.ErrorType.NotFound);
-                        }
+                        return classStudentService.getStudentClasses(nationalCode, page, size);
                     }
                     case "teacher": {
-                        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                        if (teacherId != null) {
-                            return classStudentService.getTeacherClasses(nationalCode, page, size);
-                        } else {
-                            throw new TrainingException(TrainingException.ErrorType.NotFound);
-                        }
+                        return classStudentService.getTeacherClasses(nationalCode, page, size);
                     }
                     default: {
-                        log.error("default error"+type);
+                        log.error("default error" + type);
                         throw new TrainingException(TrainingException.ErrorType.Unknown);
                     }
                 }
             } catch (Exception s) {
-                log.error("Exception error:"+s);
+                log.error("Exception error:" + s);
                 throw new TrainingException(TrainingException.ErrorType.Unknown);
             }
         } else {
