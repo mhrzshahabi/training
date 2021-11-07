@@ -3,13 +3,8 @@ package response.tclass.dto;
 import dto.exam.ClassType;
 import dto.exam.CourseStatus;
 import dto.exam.CourseType;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
-import response.BaseResponse;
-import response.question.dto.ElsAttachmentDto;
-import response.question.dto.ElsQuestionOptionDto;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -39,9 +34,9 @@ public class ElsClassDto  implements Serializable {
 
     private CourseType courseType;
 
-    // in millisecond
+
     private Long startDate;
-    // in millisecond
+
     private Long finishDate;
 
     private List<CourseProgramDTO> coursePrograms;

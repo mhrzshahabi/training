@@ -344,8 +344,8 @@ public class ClassStudentService implements IClassStudentService {
 
             Date startDate = getEpochDate(arr[11].toString(), "08:00");
             Date endDate = getEpochDate(arr[12].toString(), "23:59");
-            elsClassDto.setStartDate(startDate.getTime() * 1000);
-            elsClassDto.setFinishDate(endDate.getTime() * 1000);
+            elsClassDto.setStartDate(startDate.getTime());
+            elsClassDto.setFinishDate(endDate.getTime());
             elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
             result.add(elsClassDto);
         }
@@ -401,8 +401,8 @@ return dto;
 
             Date startDate = getEpochDate(arr[11].toString(), "08:00");
             Date endDate = getEpochDate(arr[12].toString(), "23:59");
-            elsClassDto.setStartDate(startDate.getTime() * 1000);
-            elsClassDto.setFinishDate(endDate.getTime() * 1000);
+            elsClassDto.setStartDate(startDate.getTime());
+            elsClassDto.setFinishDate(endDate.getTime());
             elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
             result.add(elsClassDto);
         }
