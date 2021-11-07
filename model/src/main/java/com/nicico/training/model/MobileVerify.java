@@ -34,4 +34,9 @@ public class MobileVerify {
 
     @Column(name = "VERIFIED_BY")
     private String verifiedBy;
+
+    @PrePersist
+    public void setCreateTime(){
+        createDate=new Timestamp(System.currentTimeMillis());
+    }
 }

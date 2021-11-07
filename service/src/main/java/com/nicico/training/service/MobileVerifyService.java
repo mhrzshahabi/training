@@ -16,6 +16,7 @@ import com.nicico.training.repository.MobileVerifyDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,7 +34,8 @@ public class MobileVerifyService implements IMobileVerifyService {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ITeacherService iTeacherService;
     private final IPersonalInfoService personalInfoService;
-    private final TeacherService teacherService;
+
+    private static final String SYSTEM = "SYSTEM";
 
     @Override
     @Transactional
@@ -44,7 +46,10 @@ public class MobileVerifyService implements IMobileVerifyService {
         MobileVerify mobileVerify = new MobileVerify();
         mobileVerify.setNationalCode(nationalCode);
         mobileVerify.setMobileNumber(number);
-        mobileVerify.setVerify(checkMobileWithNationalCodeIsInTraining(nationalCode, number));
+        boolean codeIsInTraining = checkMobileWithNationalCodeIsInTraining(nationalCode, number);
+        mobileVerify.setVerify(codeIsInTraining);
+        if (codeIsInTraining)
+            mobileVerify.setVerifiedBy(SYSTEM);
         return mobileVerifyDAO.save(mobileVerify);
     }
 
@@ -54,7 +59,9 @@ public class MobileVerifyService implements IMobileVerifyService {
             return true;
         if (!personalInfoService.findByNationalCodeAndMobileNumber(nationalCode, convertNumber).isEmpty())
             return true;
-        return !personnelRegisteredService.findByNationalCodeAndMobileNumber(nationalCode, convertNumber).isEmpty();
+        if(!personnelRegisteredService.findByNationalCodeAndMobileNumber(nationalCode, convertNumber).isEmpty())
+            return true;
+        return !teacherDAO.findByTeacherCode(nationalCode).isPresent();
     }
 
     @Override
@@ -81,6 +88,7 @@ public class MobileVerifyService implements IMobileVerifyService {
                 () -> new TrainingException(TrainingException.ErrorType.NotFound)
         );
         mobileVerify.setVerify(status);
+        mobileVerify.setVerifiedBy(SecurityContextHolder.getContext().getAuthentication().getName());
         mobileVerifyDAO.save(mobileVerify);
         return true;
     }
