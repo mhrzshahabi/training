@@ -4,6 +4,7 @@ package com.nicico.training.model;
 import lombok.*;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -27,4 +28,10 @@ public class MobileVerify {
 
     @Column(name = "VERIFY")
     private boolean verify = false;
+
+    @Column(name = "CREATE_DATE")
+    private Timestamp createDate;
+
+    @Column(name = "VERIFIED_BY")
+    private String verifiedBy;
 }

@@ -3265,5 +3265,11 @@ WHERE
         </createView>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-024">
+        <addColumn tableName="tbl_mobile_verify">
+            <column name="CREATE_DATE" type="date"/>
+            <column name="VERIFIED_BY" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
