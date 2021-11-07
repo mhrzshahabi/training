@@ -499,7 +499,7 @@
         height: "70%",
         filterOnKeypress: false,
         showFilterEditor: true,
-        dataPageSize: 200,
+        dataPageSize: 1000,
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_REFR,
         fields: [
