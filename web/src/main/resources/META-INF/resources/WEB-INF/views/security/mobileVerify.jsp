@@ -11,6 +11,8 @@
             {name: "mobileNumber", title: "شماره موبایل", filterOperator: "iContains"},
             {name: "nationalCode", title: "کدملی", filterOperator: "iContains"},
             {name: "verify", title: "وضعیت تایید", valueMap: {false: "تایید نشده", true: "تایید شده"}},
+            {name: "createDate", title: "تاریخ"},
+            {name: "verifiedBy", title: "تایید شده توسط"},
         ],
         fetchDataURL: mobileVerifyUrl + "/list"
     });
@@ -52,6 +54,7 @@
         autoFetchData: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
+        showRollOver:false,
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_MV,
         fields: [
@@ -59,8 +62,10 @@
             {name: "mobileNumber"},
             {name: "nationalCode"},
             {name: "verify", valueMap: {false: "تایید نشده", true: "تایید شده"}},
+            {name: "createDate"},
+            {name: "verifiedBy"},
             {name: "showDetail", canFilter: false, title: "نمایش جزییات", width: "145"},
-            {name: "verifyMobileNumber", canFilter: false, title: "تایید شماره موبایل", width: "145"},
+            {name: "verifyMobileNumber", canFilter: false, title: "تایید شماره موبایل", width: "145"}
         ],
         createRecordComponent: function (record, colNum) {
             let fieldName = this.getFieldName(colNum);
@@ -87,6 +92,7 @@
                 });
                 return detailBtn;
             } else {
+                debugger;
                 return null;
             }
         }

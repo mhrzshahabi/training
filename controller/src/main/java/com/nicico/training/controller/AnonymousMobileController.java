@@ -54,12 +54,11 @@ public class AnonymousMobileController {
     public ResponseEntity<ISC<MobileVerify>> mobileVerifyList(HttpServletRequest iscRq) throws IOException {
 
         List<MobileVerify> all = iMobileVerifyService.findAll();
-        List<MobileVerify> allNotVerified = all.stream().filter(item -> !item.isVerify()).collect(Collectors.toList());
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
 
         SearchDTO.SearchRs<MobileVerify> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setTotalCount((long) allNotVerified.size());
-        searchRs.setList(allNotVerified);
+        searchRs.setTotalCount((long) all.size());
+        searchRs.setList(all);
 
         ISC<MobileVerify> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
