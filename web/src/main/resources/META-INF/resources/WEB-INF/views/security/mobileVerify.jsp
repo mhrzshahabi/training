@@ -125,6 +125,7 @@
                     isc.RPCManager.sendRequest(TrDSRequest(mobileVerifyUrl + "/change/status" + "?nationalCode=" + record.nationalCode + "&number=" + record.mobileNumber + "&status=true", "PUT", null, function (resp) {
                         wait.close();
                         createDialog("info", "تایید شماره موبایل با موفقیت انجام شد");
+                        ListGrid_MV.clearFilterValues();
                         ListGrid_MV.invalidateCache();
                     }));
                 }
