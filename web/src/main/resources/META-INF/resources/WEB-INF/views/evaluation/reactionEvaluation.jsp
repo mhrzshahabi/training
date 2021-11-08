@@ -584,7 +584,7 @@
                                         linkFormMLanding.getItem('link').setRequired(true);
                                         linkFormMLanding.getItem('link').enable();
                                         MSG_Window_MSG_Main.show();
-                                        RestDataSource_Messages.fetchDataURL =  parameterValueUrl + "/messages/zaza";
+                                        RestDataSource_Messages.fetchDataURL =  parameterValueUrl + "/messages/evaluation/student";
                                         MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages;
                                         MSG_main_layout.members[0].getField("messageType").fetchData();
 
@@ -714,7 +714,7 @@
                                         linkFormMLanding.getItem('link').setRequired(true);
                                         linkFormMLanding.getItem('link').enable();
                                         MSG_Window_MSG_Main.show();
-                                        RestDataSource_Messages.fetchDataURL =  parameterValueUrl + "/messages/zaza2";
+                                        RestDataSource_Messages.fetchDataURL =  parameterValueUrl + "/messages/evaluation/teacher";
                                         MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages;
                                         MSG_main_layout.members[0].getField("messageType").fetchData();
 
