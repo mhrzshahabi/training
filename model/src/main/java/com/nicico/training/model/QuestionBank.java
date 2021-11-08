@@ -111,8 +111,11 @@ public class QuestionBank extends Auditable {
     @Column(name = "has_attachment")
     private Boolean hasAttachment;
 
-    @Column(name = "e_question_level")
+    @Column(name = "e_question_level", insertable = false, updatable = false)
     private EQuestionLevel eQuestionLevel;
+
+    @Column(name = "e_question_level")
+    private Integer eQuestionLevelId;
 
 
     @ElementCollection(fetch = FetchType.EAGER)

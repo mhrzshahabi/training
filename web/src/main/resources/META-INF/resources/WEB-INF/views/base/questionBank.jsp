@@ -132,6 +132,11 @@
                 autoFitWidth: true
             },
             {
+                name: "eQuestionLevel.titleFa",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
                 name: "tclass.startDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
@@ -419,6 +424,35 @@
             {name: "course.titleFa",sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; }},
+            {
+                name: "eQuestionLevel.id",
+                optionDataSource: EQuestionLevelDS_questionBank,
+                title: "درجه سختی سوال",
+                // textAlign: "center",
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: EQuestionLevelDS_questionBank,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["id","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                },
+                sortNormalizer: function (record) {
+                    return record.eQuestionLevel?.titleFa;
+                }
+            },
             {name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; }},
             {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
         ],

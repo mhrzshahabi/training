@@ -65,7 +65,7 @@ public class QuestionBankRestController {
                                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws NoSuchFieldException, IllegalAccessException, IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
-        if (criteria != null) {
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.valueOf(operator))
@@ -74,6 +74,16 @@ public class QuestionBankRestController {
 
 
             request.setCriteria(criteriaRq);
+            if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
+            {
+                for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+                    if(criterion.getFieldName()!=null) {
+                        if (criterion.getFieldName().equals("eQuestionLevel.id") || criterion.getFieldName().equals("eQuestionLevel")) {
+                            criterion.setFieldName("eQuestionLevelId");
+                        }
+                    }
+                }
+            }
         }
 
         if (StringUtils.isNotEmpty(sortBy)) {
