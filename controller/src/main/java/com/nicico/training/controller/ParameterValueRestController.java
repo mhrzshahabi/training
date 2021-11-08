@@ -102,8 +102,8 @@ public class ParameterValueRestController {
     }
 
     @Loggable
-    @GetMapping("/messages")
-    public ResponseEntity<TotalResponse<ParameterValueDTO>> getMessages() throws IOException {
-        return new ResponseEntity<>(parameterValueService.getMessages(), HttpStatus.OK);
+    @GetMapping("/messages/{code}")
+    public ResponseEntity<TotalResponse<ParameterValueDTO>> getMessages(@PathVariable String code) throws IOException {
+        return new ResponseEntity<>(parameterValueService.getMessages(code), HttpStatus.OK);
     }
 }

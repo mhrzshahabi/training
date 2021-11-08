@@ -73,12 +73,19 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
 
     }
 
-    public TotalResponse<ParameterValueDTO> getMessages() {
+    public TotalResponse<ParameterValueDTO> getMessages(String code) {
         List<ParameterValue> list = dao.findMessagesByCode();
          List<ParameterValueDTO> infos = modelMapper.map(list, new TypeToken<List<ParameterValueDTO.Info>>() {
         }.getType());
-        GridResponse grid=new GridResponse<>(infos);
-        grid.setTotalRows(infos.size());
-        return new TotalResponse<>(grid);
+         if (code.equals("zaza")){
+             GridResponse grid=new GridResponse<>(infos);
+             grid.setTotalRows(infos.size());
+             return new TotalResponse<>(grid);
+         }else {
+             GridResponse grid=new GridResponse<>();
+             grid.setTotalRows(0);
+             return new TotalResponse<>(grid);
+         }
+
      }
 }

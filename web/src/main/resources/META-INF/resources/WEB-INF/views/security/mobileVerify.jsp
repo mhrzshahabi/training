@@ -48,6 +48,7 @@
     });
     ToolStripButton_Refresh_MV = isc.ToolStripButtonRefresh.create({
         click: function () {
+            ListGrid_MV.clearFilterValues();
             ListGrid_MV.invalidateCache();
         }
     });
