@@ -88,15 +88,6 @@
                 btnRemove_student_class,
                 </sec:authorize>
 
-                <%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
-                <%--                isc.ToolStripButton.create({--%>
-                <%--                    title: "<spring:message code="evaluation"/>",--%>
-                <%--                    click: function () {--%>
-                <%--                        evaluationStudent_student();--%>
-                <%--                    }--%>
-                <%--                }),--%>
-                <%--                </sec:authorize>--%>
-
                 <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
                 isc.ToolStripButtonExcel.create({
                     click: function () {
@@ -229,7 +220,7 @@
                 isc.IButton.create({
                     baseStyle: 'MSG-btn-orange',
                     icon: '../static/img/msg/mail.svg',
-                    title: "ارسال پیام", width: 80,
+                    title: "ارسال پیام فراگیران", width: 120,
                     click: function () {
                         let row = ListGrid_Class_JspClass.getSelectedRecords()[0];
                         let wait = createDialog("wait");
@@ -314,10 +305,9 @@
                                                     }
                                                     MSG_selectUsersForm.getItem("multipleSelect").fetchData();
 
-                                                    MSG_textEditorValue = JSON.parse(resp2.data).response.data[0].description;
-                                                    MSG_contentEditor.setValue(MSG_textEditorValue);
+                                                    // MSG_textEditorValue = JSON.parse(resp2.data).response.data[0].description;
+                                                    // MSG_contentEditor.setValue(MSG_textEditorValue);
 
-                                                    linkFormMLanding.getItem('link').setValue('');
 
                                                     if (JSON.parse(resp.data).response.data.filter(p => !p.student.contactInfo.smSMobileNumber).length != 0) {
                                                         ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.student.contactInfo.smSMobileNumber).length + ' فراگیر، شماره موبایل تعریف نشده است.');
@@ -334,7 +324,12 @@
                                                     linkFormMLanding.getItem('link').setValue('');
                                                     linkFormMLanding.getItem('link').setRequired(true);
                                                     linkFormMLanding.getItem('link').enable();
+                                                    linkFormMLanding.getItem('link').setValue('https://mobiles.nicico.com/');
+
                                                     MSG_Window_MSG_Main.show();
+                                                    RestDataSource_Messages_student.fetchDataURL =  parameterValueUrl + "/messages/class/student";
+                                                    MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_student;
+                                                    MSG_main_layout.members[0].getField("messageType").fetchData();
                                                 } else {
                                                     createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
                                                 }
@@ -351,6 +346,132 @@
                         }));
                     }
                 }),
+                isc.IButton.create({
+                    baseStyle: 'MSG-btn-orange',
+                    icon: '../static/img/msg/mail.svg',
+                    title: "ارسال پیام استاد", width: 120,
+                    click: function () {
+                        let row = ListGrid_Class_JspClass.getSelectedRecords()[0];
+                        let wait = createDialog("wait");
+
+                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "spec-list?_constructor=AdvancedCriteria&_endRow=1000&_sortBy=id&_startRow=0&criteria=%7B%22operator%22%3A%22equals%22%2C%22fieldName%22%3A%22tclasse.id%22%2C%22value%22%3A%22" + row.id + "%22%7D&operator=and", "GET", null, function (resp) {
+                            if (generalGetResp(resp)) {
+                                if (resp.httpResponseCode == 200) {
+                                    wait.close();
+                                    if (generalGetResp(resp)) {
+                                        if (resp.httpResponseCode == 200) {
+                                            let id = [];
+                                            JSON.parse(resp.data).response.data.filter(p => p.personality?.contactInfo?.mobile).forEach(p => id.push(p.id));
+
+                                            MSG_sendTypesItems = [];
+                                            MSG_msgContent.type = [];
+                                            MSG_sendTypesItems.push('MSG_messageType_sms');
+                                            MSG_msgContent.type = MSG_sendTypesItems;
+
+                                            StudentsDS_student2.fetchDataURL = teacherUrl + "spec-list";
+                                            StudentsDS_student2.implicitCriteria = {
+                                                _constructor: "AdvancedCriteria",
+                                                operator: "and",
+                                                criteria: [{fieldName: "tclasse.id", operator: "equals", value: row.id}]
+                                            };
+                                            sendMessageFunc = sendMessage_StudentClassJsp;
+                                            MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = StudentsDS_student2;
+
+                                            MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
+                                                {
+                                                    name: "teacherCode",
+                                                    title: "<spring:message code="national.code"/>",
+                                                    autoFitWidth: false,
+                                                    align: "center"
+                                                },
+                                                {
+                                                    name: "personality.firstNameFa",
+                                                    title: "<spring:message code="firstName"/>",
+                                                    autoFitWidth: false,
+                                                    align: "center"
+                                                },
+                                                {
+                                                    name: "personality.lastNameFa",
+                                                    title: "<spring:message code="lastName"/>",
+                                                    width: 100,
+                                                    align: "center"
+                                                },
+                                                {
+                                                    name: "personnelCode",
+                                                    title: "<spring:message code="personnel.code.six.digit"/>",
+                                                    width: 100,
+                                                    align: "center"
+                                                },
+                                                {
+                                                    name: "personality.contactInfo.mobile",
+                                                    title: "<spring:message code="mobile"/>",
+                                                    width: 100,
+                                                    align: "center"
+                                                },
+                                                {
+                                                    name: "enableStatus",
+                                                    title: "<spring:message code="status"/>",
+                                                    width: 100,
+                                                    align: "center",
+                                                    type: "boolean"
+                                                },
+                                            ];
+                                            MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
+                                            MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
+                                            MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
+                                                let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p?.personality?.contactInfo?.mobile).map(function (item) {
+                                                    return item.id;
+                                                });
+                                                let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
+                                                    _constructor: "AdvancedCriteria",
+                                                    operator: "and",
+                                                    criteria: [{fieldName: "id", operator: "inSet", value: ids}]
+                                                });
+                                                findRows.setProperty("enabled", false);
+
+                                                MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                                            }
+                                            MSG_selectUsersForm.getItem("multipleSelect").fetchData();
+
+
+
+                                            if (JSON.parse(resp.data).response.data.length == 1 && JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
+                                                ErrorMsg.setContents('برای مدرس این کلاس، شماره موبایل تعریف نشده است.');
+                                            } else if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
+                                                ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length + ' مدرس، شماره موبایل تعریف نشده است.');
+                                            } else {
+                                                ErrorMsg.setContents('');
+                                            }
+                                            MSG_userType = "classTeacher";
+                                            MSG_classID = row.id;
+
+                                            MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                                            MSG_repeatOptions.getItem('timeBMessages').setValue(1);
+                                            linkFormMLanding.getItem('link').setValue('');
+                                            linkFormMLanding.getItem('link').setRequired(true);
+                                            linkFormMLanding.getItem('link').enable();
+                                            linkFormMLanding.getItem('link').setValue('https://mobiles.nicico.com/');
+
+                                            MSG_Window_MSG_Main.show();
+                                            RestDataSource_Messages_student.fetchDataURL = parameterValueUrl + "/messages/class/teacher";
+                                            MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_student;
+                                            MSG_main_layout.members[0].getField("messageType").fetchData();
+                                        } else {
+                                            createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                                        }
+                                    }
+                                } else {
+                                    wait.close();
+                                    createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                                }
+                            } else {
+                                wait.close();
+                            }
+                        }));
+                    }
+                }),
+
+
 
                 isc.LayoutSpacer.create({width: "*"}),
                 isc.Label.create({ID: "StudentsCount_student"}),
@@ -379,8 +500,15 @@
             ]
         });
 
-        // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-
+        // ------------------------------------------- DataSource & ListGrid --------------------------------------
+        //
+        var RestDataSource_Messages_student = isc.TrDS.create({
+            fields: [
+                {name: "code", title: "<spring:message code='course.code'/>", filterOperator: "equals"},
+                {name: "title", title: "<spring:message code='group.code'/>", filterOperator: "iContains"},
+                {name: "description", title: "<spring:message code='course.title'/>", filterOperator: "iContains"},
+            ]
+        });
         let RestDataSource_company_Student = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true, hidden: true},
@@ -410,6 +538,120 @@
         });
 
         let StudentsDS_student = isc.TrDS.create({
+            <%--transformRequest: function (dsRequest) {--%>
+            <%--    dsRequest.httpHeaders = {--%>
+            <%--        "Authorization": "Bearer <%= accessToken1 %>"--%>
+            <%--    };--%>
+            <%--    return this.Super("transformRequest", arguments);--%>
+            <%--},--%>
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "student.id", hidden: true},
+                {
+                    name: "student.firstName",
+                    title: "<spring:message code="firstName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.lastName",
+                    title: "<spring:message code="lastName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.nationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "applicantCompanyName",
+                    title: "<spring:message code="company.applicant"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "presenceTypeId",
+                    title: "<spring:message code="class.presence.type"/>",
+                    filterOperator: "equals",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.companyName",
+                    title: "<spring:message code="company.name"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.personnelNo2",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "student.postTitle",
+                    title: "<spring:message code="post"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "student.ccpArea",
+                    title: "<spring:message code="reward.cost.center.area"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "student.ccpAssistant",
+                    title: "<spring:message code="reward.cost.center.assistant"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "student.ccpAffairs",
+                    title: "<spring:message code="reward.cost.center.affairs"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "student.ccpSection",
+                    title: "<spring:message code="reward.cost.center.section"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "student.ccpUnit",
+                    title: "<spring:message code="reward.cost.center.unit"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "student.fatherName",
+                    title: "<spring:message code="father.name"/>",
+                    filterOperator: "iContains"
+                },
+                {name: "student.contactInfo.smSMobileNumber", title: "<spring:message code="mobile"/>", filterOperator: "iContains"},
+                {
+                    name: "student.birthCertificateNo",
+                    title: "<spring:message code="birth.certificate.no"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "hasWarning",
+                    title: " ",
+                    width: 40,
+                    type: "image",
+                    imageURLPrefix: "",
+                    imageURLSuffix: ".png",
+                    canEdit: false
+                },
+                {name: "warning", autoFitWidth: true}
+
+            ],
+
+            fetchDataURL: tclassStudentUrl + "/students-iscList/"
+        });
+        let StudentsDS_student2 = isc.TrDS.create({
             <%--transformRequest: function (dsRequest) {--%>
             <%--    dsRequest.httpHeaders = {--%>
             <%--        "Authorization": "Bearer <%= accessToken1 %>"--%>
@@ -2702,9 +2944,19 @@
             timeBMessages: MSG_repeatOptions.getItem('timeBMessages').getValue(),
             link: linkFormMLanding.getItem('link').getValue(),
         }
+        if (MSG_userType == "classStudentRegistered") {
+            data.classStudentRegistered = MSG_msgContent.users;
+            data.classID = MSG_classID;
+        } else if (MSG_userType == "classTeacher") {
+            data.classTeacher = MSG_msgContent.users;
+            data.classID = MSG_classID;
+        } /*else if (MSG_userType == "classStudentHaventEvaluation") {
+            data.classStudentHaventEvaluation = MSG_msgContent.users;
+            data.classID = MSG_classID;
+        }*/
 
-        data.classStudentRegistered = MSG_msgContent.users;
-        data.classID = MSG_classID;
+
+
 
         let wait = createDialog("wait");
 

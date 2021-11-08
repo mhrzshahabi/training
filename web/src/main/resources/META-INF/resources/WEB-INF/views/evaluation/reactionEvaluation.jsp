@@ -137,7 +137,7 @@
         ],
     });
 
-    var RestDataSource_Messages = isc.TrDS.create({
+    var RestDataSource_Messages_reaction = isc.TrDS.create({
         fields: [
             {name: "code", title: "<spring:message code='course.code'/>", filterOperator: "equals"},
             {name: "title", title: "<spring:message code='group.code'/>", filterOperator: "iContains"},
@@ -584,8 +584,8 @@
                                         linkFormMLanding.getItem('link').setRequired(true);
                                         linkFormMLanding.getItem('link').enable();
                                         MSG_Window_MSG_Main.show();
-                                        RestDataSource_Messages.fetchDataURL =  parameterValueUrl + "/messages/evaluation/student";
-                                        MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages;
+                                        RestDataSource_Messages_reaction.fetchDataURL =  parameterValueUrl + "/messages/evaluation/student";
+                                        MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_reaction;
                                         MSG_main_layout.members[0].getField("messageType").fetchData();
 
 

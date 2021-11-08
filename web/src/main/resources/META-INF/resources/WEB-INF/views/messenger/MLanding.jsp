@@ -333,6 +333,7 @@
                         // optionDataSource: RestDataSource_Messages,
                         autoFetchData: false,
                         displayField: "title",
+                        pickListWidth: 500,
                         valueField: "description",
                         textAlign: "center",
                         pickListFields: [

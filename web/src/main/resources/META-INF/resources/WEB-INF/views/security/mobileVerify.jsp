@@ -10,7 +10,7 @@
             {name: "id", title: "id", primaryKey: true, hidden: true},
             {name: "mobileNumber", title: "شماره موبایل", filterOperator: "iContains"},
             {name: "nationalCode", title: "کدملی", filterOperator: "iContains"},
-            {name: "verify", title: "وضعیت تایید", valueMap: {false: "تایید نشده", true: "تایید شده"}},
+            {name: "verify", title: "وضعیت تایید", valueMap: {false: "تایید نشده", true: "تایید شده"}, filterOperator: "equals"},
             {name: "createDate", title: "تاریخ"},
             {name: "verifiedBy", title: "تایید شده توسط"},
         ],
@@ -48,8 +48,7 @@
     });
     ToolStripButton_Refresh_MV = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_MV.clearFilterValues();
-            ListGrid_MV.invalidateCache();
+            ListGrid_MV.fetchData();
         }
     });
     ToolStrip_Actions_MV = isc.ToolStrip.create({
