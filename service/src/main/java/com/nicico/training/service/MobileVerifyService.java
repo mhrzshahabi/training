@@ -96,24 +96,26 @@ public class MobileVerifyService implements IMobileVerifyService {
     public UserDetailDTO findDetailByNationalCode(String nationalCode) {
         UserDetailDTO dto = new UserDetailDTO();
         Optional<Teacher> teacherCode = teacherDAO.findByTeacherCode(nationalCode);
-
         if (teacherCode.isPresent() && teacherCode.get().getPersonality() != null) {
             TeacherDTO.Info teacherDTO = iTeacherService.get(teacherCode.get().getId());
             dto.setName(teacherDTO.getPersonality().getFirstNameFa());
             dto.setFamily(teacherDTO.getPersonality().getLastNameFa());
             dto.setPersonType("TEACHER");
+            return dto;
         }
         PersonnelDTO.PersonalityInfo byNationalCode = personnelService.getByNationalCode(nationalCode);
         if (byNationalCode != null) {
             dto.setName(byNationalCode.getFirstName());
             dto.setFamily(byNationalCode.getLastName());
             dto.setPersonType("PERSON");
+            return dto;
         }
         PersonnelRegisteredDTO.Info oneByNationalCode = personnelRegisteredService.getOneByNationalCode(nationalCode);
         if (oneByNationalCode != null) {
             dto.setName(oneByNationalCode.getFirstName());
             dto.setFamily(oneByNationalCode.getLastName());
             dto.setPersonType("PERSON_REGISTER");
+            return dto;
         }
         return dto;
     }
