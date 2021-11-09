@@ -472,123 +472,9 @@
                 wrap: "OFF",
             },
             {
-                name: "categoryId",
-                title: "<spring:message code="category"/>",
-                textAlign: "center",
-                width: "*",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_category,
-                filterFields: ["titleFa"],
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                sortField: ["id"],
-                icons: [
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click: function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                            QuestionBankDF_questionBank.getItem("subCategoryId").disable();
-                            QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
-
-                            QuestionBankDF_questionBank.getItem("courseId").disable();
-                            QuestionBankDF_questionBank.getItem("courseId").setValue();
-
-                            QuestionBankDF_questionBank.getItem("tclassId").disable();
-                            QuestionBankDF_questionBank.getItem("tclassId").setValue();
-                        }
-                    }
-                ],
-                changed: function (form, item, value) {
-                    if (!value) {
-                        QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
-                        QuestionBankDF_questionBank.getItem("subCategoryId").disable();
-                        return;
-                    }
-
-                    QuestionBankDF_questionBank.getItem("subCategoryId").enable();
-                    QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
-                    RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
-                    QuestionBankDF_questionBank.getItem("subCategoryId").fetchData();
-
-                    QuestionBankDF_questionBank.getItem("courseId").setValue();
-                    QuestionBankDF_questionBank.getItem("courseId").disable();
-
-                    QuestionBankDF_questionBank.getItem("tclassId").setValue();
-                    QuestionBankDF_questionBank.getItem("tclassId").disable();
-                },
-                click: function (form, item) {
-                    item.fetchData();
-                }
-            },
-            {
-                name: "subCategoryId",
-                title: "<spring:message code="subcategory"/>",
-                prompt: "<spring:message code="first.select.group"/>",
-                textAlign: "center",
-                autoFetchData: false,
-                width: "*",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSourceSubCategory,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                icons: [
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click: function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-
-                            QuestionBankDF_questionBank.getItem("courseId").disable();
-                            QuestionBankDF_questionBank.getItem("courseId").setValue();
-
-                            QuestionBankDF_questionBank.getItem("tclassId").disable();
-                            QuestionBankDF_questionBank.getItem("tclassId").setValue();
-
-                        }
-                    }
-                ],
-                endRow: true,
-                startRow: false,
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                changed: function (form, item, value) {
-                    if (!value) {
-                        QuestionBankDF_questionBank.getItem("courseId").disable();
-                        return;
-                    }
-
-                    QuestionBankDF_questionBank.getItem("courseId").enable();
-                    QuestionBankDF_questionBank.getItem("courseId").setValue();
-                    CourseDS_questionBank.implicitCriteria = {
-                        _constructor: "AdvancedCriteria",
-                        operator: "and",
-                        criteria: [{fieldName: "subCategoryId", operator: "equals", value: value}]
-                    };
-                    QuestionBankDF_questionBank.getItem("courseId").fetchData();
-
-                    QuestionBankDF_questionBank.getItem("tclassId").setValue();
-                    QuestionBankDF_questionBank.getItem("tclassId").disable();
-                }
-            },
-            {
                 name: "courseId",
                 title: "<spring:message code="course"/>",
-                prompt: "<spring:message code="first.select.sub.group"/>",
+                <%--prompt: "<spring:message code="first.select.sub.group"/>",--%>
                 textAlign: "center",
                 autoFetchData: false,
                 width: "*",
@@ -610,7 +496,9 @@
                             item.focusInItem();
                             QuestionBankDF_questionBank.getItem("tclassId").disable();
                             QuestionBankDF_questionBank.getItem("tclassId").setValue();
-
+                            QuestionBankDF_questionBank.getItem("categoryId").setValue();
+                            QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                            QuestionBankDF_questionBank.getItem("teacherId").setValue();
                         }
                     }
                 ],
@@ -620,19 +508,36 @@
                     showFilterEditor: true
                 },
                 changed: function (form, item, value) {
+                    QuestionBankDF_questionBank.getItem("teacherId").setValue();
+                    QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                    QuestionBankDF_questionBank.getItem("categoryId").setValue();
+                    QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+
                     if (!value) {
                         QuestionBankDF_questionBank.getItem("tclassId").disable();
                         return;
                     }
 
                     QuestionBankDF_questionBank.getItem("tclassId").enable();
-                    QuestionBankDF_questionBank.getItem("tclassId").setValue();
                     ClassDS_questionBank.implicitCriteria = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
                         criteria: [{fieldName: "courseId", operator: "equals", value: value}]
                     };
-                    QuestionBankDF_questionBank.getItem("tclassId").fetchData()
+                    QuestionBankDF_questionBank.getItem("tclassId").fetchData();
+                    if (item.getSelectedRecord() && item.getSelectedRecord().categoryId) {
+                        QuestionBankDF_questionBank.getItem("categoryId").setValue(item.getSelectedRecord().categoryId);
+                        RestDataSourceSubCategory.fetchDataURL = categoryUrl + item.getSelectedRecord().categoryId + "/sub-categories";
+                        QuestionBankDF_questionBank.getItem("subCategoryId").fetchData();
+                        if (item.getSelectedRecord().subCategoryId) {
+                            QuestionBankDF_questionBank.getItem("subCategoryId").setValue(item.getSelectedRecord().subCategoryId);
+                        } else {
+                            QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                        }
+                    } else {
+                        QuestionBankDF_questionBank.getItem("categoryId").setValue();
+                        QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                    }
                 }
             },
             {
@@ -741,7 +646,7 @@
                         click: function (form, item, icon) {
                             item.clearValue();
                             item.focusInItem();
-
+                            QuestionBankDF_questionBank.getItem("teacherId").setValue();
                         }
                     }
                 ],
@@ -750,119 +655,241 @@
 
                 changed: function (form, item, value) {
                     //DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
+                    if (item.getSelectedRecord() && item.getSelectedRecord().teacherId) {
+                        QuestionBankDF_questionBank.getItem("teacherId").setValue(item.getSelectedRecord().teacherId);
+                    } else {
+                        QuestionBankDF_questionBank.getItem("teacherId").setValue();
+                    }
                 }
+            },
+            {
+                name: "categoryId",
+                title: "<spring:message code="category"/>",
+                textAlign: "center",
+                disabled: true,
+                width: "*",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_category,
+                filterFields: ["titleFa"],
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                // sortField: ["id"],
+                // icons: [
+                //     {
+                //         name: "clear",
+                //         src: "[SKIN]actions/remove.png",
+                //         width: 15,
+                //         height: 15,
+                //         inline: true,
+                //         prompt: "پاک کردن",
+                //         click: function (form, item, icon) {
+                //             item.clearValue();
+                //             item.focusInItem();
+                //             QuestionBankDF_questionBank.getItem("subCategoryId").disable();
+                //             QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                //
+                //             QuestionBankDF_questionBank.getItem("courseId").disable();
+                //             QuestionBankDF_questionBank.getItem("courseId").setValue();
+                //
+                //             QuestionBankDF_questionBank.getItem("tclassId").disable();
+                //             QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                //         }
+                //     }
+                // ],
+                // changed: function (form, item, value) {
+                //     if (!value) {
+                //         QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                //         QuestionBankDF_questionBank.getItem("subCategoryId").disable();
+                //         return;
+                //     }
+                //
+                //     QuestionBankDF_questionBank.getItem("subCategoryId").enable();
+                //     QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                //     RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
+                //     QuestionBankDF_questionBank.getItem("subCategoryId").fetchData();
+                //
+                //     QuestionBankDF_questionBank.getItem("courseId").setValue();
+                //     QuestionBankDF_questionBank.getItem("courseId").disable();
+                //
+                //     QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                //     QuestionBankDF_questionBank.getItem("tclassId").disable();
+                // },
+                // click: function (form, item) {
+                //     item.fetchData();
+                // }
+            },
+            {
+                name: "subCategoryId",
+                title: "<spring:message code="subcategory"/>",
+                <%--prompt: "<spring:message code="first.select.group"/>",--%>
+                textAlign: "center",
+                disabled: true,
+                autoFetchData: false,
+                width: "*",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSourceSubCategory,
+                // filterFields: ["titleFa"],
+                // sortField: ["id"],
+                // icons: [
+                //     {
+                //         name: "clear",
+                //         src: "[SKIN]actions/remove.png",
+                //         width: 15,
+                //         height: 15,
+                //         inline: true,
+                //         prompt: "پاک کردن",
+                //         click: function (form, item, icon) {
+                //             item.clearValue();
+                //             item.focusInItem();
+                //
+                //             QuestionBankDF_questionBank.getItem("courseId").disable();
+                //             QuestionBankDF_questionBank.getItem("courseId").setValue();
+                //
+                //             QuestionBankDF_questionBank.getItem("tclassId").disable();
+                //             QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                //
+                //         }
+                //     }
+                // ],
+                // endRow: true,
+                // startRow: false,
+                // pickListProperties: {
+                //     showFilterEditor: false
+                // },
+                // changed: function (form, item, value) {
+                //     if (!value) {
+                //         QuestionBankDF_questionBank.getItem("courseId").disable();
+                //         return;
+                //     }
+                //
+                //     QuestionBankDF_questionBank.getItem("courseId").enable();
+                //     QuestionBankDF_questionBank.getItem("courseId").setValue();
+                //     CourseDS_questionBank.implicitCriteria = {
+                //         _constructor: "AdvancedCriteria",
+                //         operator: "and",
+                //         criteria: [{fieldName: "subCategoryId", operator: "equals", value: value}]
+                //     };
+                //     QuestionBankDF_questionBank.getItem("courseId").fetchData();
+                //
+                //     QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                //     QuestionBankDF_questionBank.getItem("tclassId").disable();
+                // }
             },
             {
                 name: "teacherId",
                 title: "<spring:message code="teacher"/>",
                 textAlign: "center",
                 autoFetchData: false,
+                disabled: true,
                 colSpan: 4,
                 width: "100%",
                 displayField: "fullName",
                 valueField: "id",
                 optionDataSource: TeacherDS_questionBank,
-                sortField: ["id"],
-                filterFields: ["id"],
-                //type: "ComboBoxItem",
-                pickListFields: [
-                    {name: "id", title: "id", canEdit: false, hidden: true, filterOperator: "equals"},
-                    {
-                        name: "teacherCode",
-                        title: "<spring:message code='national.code'/>",
-                        align: "center",
-                        filterOperator: "iContains",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9]"
-                        }
-                    },
-                    {
-                        name: "personality.firstNameFa",
-                        title: "<spring:message code='firstName'/>",
-                        align: "center",
-                        filterOperator: "iContains",
+                <%--sortField: ["id"],--%>
+                <%--filterFields: ["id"],--%>
+                <%--//type: "ComboBoxItem",--%>
+                <%--pickListFields: [--%>
+                <%--    {name: "id", title: "id", canEdit: false, hidden: true, filterOperator: "equals"},--%>
+                <%--    {--%>
+                <%--        name: "teacherCode",--%>
+                <%--        title: "<spring:message code='national.code'/>",--%>
+                <%--        align: "center",--%>
+                <%--        filterOperator: "iContains",--%>
+                <%--        filterEditorProperties: {--%>
+                <%--            keyPressFilter: "[0-9]"--%>
+                <%--        }--%>
+                <%--    },--%>
+                <%--    {--%>
+                <%--        name: "personality.firstNameFa",--%>
+                <%--        title: "<spring:message code='firstName'/>",--%>
+                <%--        align: "center",--%>
+                <%--        filterOperator: "iContains",--%>
 
-                        sortNormalizer: function (record) {
-                            return record.personality.firstNameFa;
-                        }
-                    },
-                    {
-                        name: "personality.lastNameFa",
-                        title: "<spring:message code='lastName'/>",
-                        align: "center",
-                        filterOperator: "iContains",
+                <%--        sortNormalizer: function (record) {--%>
+                <%--            return record.personality.firstNameFa;--%>
+                <%--        }--%>
+                <%--    },--%>
+                <%--    {--%>
+                <%--        name: "personality.lastNameFa",--%>
+                <%--        title: "<spring:message code='lastName'/>",--%>
+                <%--        align: "center",--%>
+                <%--        filterOperator: "iContains",--%>
 
-                        sortNormalizer: function (record) {
-                            return record.personality.lastNameFa;
-                        }
-                    },
-                    {
-                        name: "personnelCode",
-                        title: "<spring:message code='personnel.code.six.digit'/>",
-                        align: "center",
-                        filterOperator: "iContains",
+                <%--        sortNormalizer: function (record) {--%>
+                <%--            return record.personality.lastNameFa;--%>
+                <%--        }--%>
+                <%--    },--%>
+                <%--    {--%>
+                <%--        name: "personnelCode",--%>
+                <%--        title: "<spring:message code='personnel.code.six.digit'/>",--%>
+                <%--        align: "center",--%>
+                <%--        filterOperator: "iContains",--%>
 
-                    },
-                    {
-                        name: "personality.educationLevel.titleFa",
-                        title: "<spring:message code='education.level'/>",
-                        align: "center",
-                        filterOperator: "equals",
-                        sortNormalizer: function (record) {
-                            return record.personality.educationLevel.titleFa;
-                        }
-                    },
-                    {
-                        name: "personality.educationMajor.titleFa",
-                        title: "<spring:message code='education.major'/>",
-                        align: "center",
-                        filterOperator: "equals",
-                        sortNormalizer: function (record) {
-                            return record.personality.educationMajor.titleFa;
-                        }
-                    },
-                    {
-                        name: "personality.contactInfo.mobile",
-                        title: "<spring:message code='mobile.connection'/>",
-                        align: "center",
-                        type: "phoneNumber",
-                        filterEditorProperties: {
-                            keyPressFilter: "[0-9]"
-                        },
-                        sortNormalizer: function (record) {
-                            return record.personality.contactInfo.mobile;
-                        }
-                    },
-                    {
-                        name: "enableStatus",
-                        title: "<spring:message code='status'/>",
-                        align: "center",
-                        type: "boolean"
-                    }
-                ],
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListWidth: 800,
-                icons: [
-                    {
-                        name: "clear",
-                        src: "[SKIN]actions/remove.png",
-                        width: 15,
-                        height: 15,
-                        inline: true,
-                        prompt: "پاک کردن",
-                        click: function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
+                <%--    },--%>
+                <%--    {--%>
+                <%--        name: "personality.educationLevel.titleFa",--%>
+                <%--        title: "<spring:message code='education.level'/>",--%>
+                <%--        align: "center",--%>
+                <%--        filterOperator: "equals",--%>
+                <%--        sortNormalizer: function (record) {--%>
+                <%--            return record.personality.educationLevel.titleFa;--%>
+                <%--        }--%>
+                <%--    },--%>
+                <%--    {--%>
+                <%--        name: "personality.educationMajor.titleFa",--%>
+                <%--        title: "<spring:message code='education.major'/>",--%>
+                <%--        align: "center",--%>
+                <%--        filterOperator: "equals",--%>
+                <%--        sortNormalizer: function (record) {--%>
+                <%--            return record.personality.educationMajor.titleFa;--%>
+                <%--        }--%>
+                <%--    },--%>
+                <%--    {--%>
+                <%--        name: "personality.contactInfo.mobile",--%>
+                <%--        title: "<spring:message code='mobile.connection'/>",--%>
+                <%--        align: "center",--%>
+                <%--        type: "phoneNumber",--%>
+                <%--        filterEditorProperties: {--%>
+                <%--            keyPressFilter: "[0-9]"--%>
+                <%--        },--%>
+                <%--        sortNormalizer: function (record) {--%>
+                <%--            return record.personality.contactInfo.mobile;--%>
+                <%--        }--%>
+                <%--    },--%>
+                <%--    {--%>
+                <%--        name: "enableStatus",--%>
+                <%--        title: "<spring:message code='status'/>",--%>
+                <%--        align: "center",--%>
+                <%--        type: "boolean"--%>
+                <%--    }--%>
+                <%--],--%>
+                <%--pickListProperties: {--%>
+                <%--    showFilterEditor: true--%>
+                <%--},--%>
+                <%--pickListWidth: 800,--%>
+                <%--icons: [--%>
+                <%--    {--%>
+                <%--        name: "clear",--%>
+                <%--        src: "[SKIN]actions/remove.png",--%>
+                <%--        width: 15,--%>
+                <%--        height: 15,--%>
+                <%--        inline: true,--%>
+                <%--        prompt: "پاک کردن",--%>
+                <%--        click: function (form, item, icon) {--%>
+                <%--            item.clearValue();--%>
+                <%--            item.focusInItem();--%>
 
-                        }
-                    }
-                ],
-                startRow: true,
-                changed: function (form, item, value) {
-                    //DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
-                }
+                <%--        }--%>
+                <%--    }--%>
+                <%--],--%>
+                <%--startRow: true,--%>
+                <%--changed: function (form, item, value) {--%>
+                <%--    //DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());--%>
+                <%--}--%>
             },
             {
                 type: "BlurbItem",
@@ -1265,11 +1292,11 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
 
         }));
 
-        QuestionBankDF_questionBank.getItem("categoryId").enable();
-        QuestionBankDF_questionBank.getItem("subCategoryId").disable();
-        QuestionBankDF_questionBank.getItem("courseId").disable();
-        QuestionBankDF_questionBank.getItem("tclassId").disable();
-        QuestionBankDF_questionBank.getItem("teacherId").enable();
+        // QuestionBankDF_questionBank.getItem("categoryId").enable();
+        // QuestionBankDF_questionBank.getItem("subCategoryId").disable();
+        // QuestionBankDF_questionBank.getItem("courseId").disable();
+        // QuestionBankDF_questionBank.getItem("tclassId").disable();
+        // QuestionBankDF_questionBank.getItem("teacherId").enable();
 
         QuestionBankDF_questionBank.getItem("displayTypeId").disable();
 
@@ -1324,52 +1351,80 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
                 QuestionBankWin_questionBank.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="question.bank"/>" + '&nbsp;\'' + record.question + '\'');
 
-                QuestionBankDF_questionBank.getItem("categoryId").enable();
-                QuestionBankDF_questionBank.getItem("subCategoryId").enable();
-
+                // QuestionBankDF_questionBank.getItem("categoryId").enable();
+                // QuestionBankDF_questionBank.getItem("subCategoryId").enable();
                 QuestionBankDF_questionBank.getItem("courseId").enable();
                 QuestionBankDF_questionBank.getItem("tclassId").enable();
-                QuestionBankDF_questionBank.getItem("teacherId").enable();
+                // QuestionBankDF_questionBank.getItem("teacherId").enable();
+
+                if (record.courseId) {
+                    QuestionBankDF_questionBank.getItem("courseId").fetchData();
+                    // QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                    ClassDS_questionBank.implicitCriteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [{fieldName: "courseId", operator: "equals", value: record.courseId}]
+                    };
+                    QuestionBankDF_questionBank.getItem("tclassId").fetchData();
+                } else {
+                    QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                    QuestionBankDF_questionBank.getItem("categoryId").setValue();
+                    QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                    QuestionBankDF_questionBank.getItem("teacherId").setValue();
+
+                    QuestionBankDF_questionBank.getItem("tclassId").disable();
+                }
 
                 if (record.categoryId) {
                     RestDataSourceSubCategory.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories";
                     QuestionBankDF_questionBank.getItem("subCategoryId").fetchData();
                 } else {
                     QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
-
-                    QuestionBankDF_questionBank.getItem("subCategoryId").disable();
-                    QuestionBankDF_questionBank.getItem("courseId").disable();
-                    QuestionBankDF_questionBank.getItem("tclassId").disable();
                 }
 
-                if (record.subCategoryId) {
-                    QuestionBankDF_questionBank.getItem("courseId").setValue();
-                    CourseDS_questionBank.implicitCriteria = {
-                        _constructor: "AdvancedCriteria",
-                        operator: "and",
-                        criteria: [{fieldName: "subCategoryId", operator: "equals", value: record.subCategoryId}]
-                    };
-                    QuestionBankDF_questionBank.getItem("courseId").fetchData();
-                } else {
-                    QuestionBankDF_questionBank.getItem("courseId").setValue();
-
-                    QuestionBankDF_questionBank.getItem("courseId").disable();
-                    QuestionBankDF_questionBank.getItem("tclassId").disable();
+                if (!record.tclassId){
+                    QuestionBankDF_questionBank.getItem("teacherId").setValue();
                 }
 
-                if (record.courseId) {
-                    QuestionBankDF_questionBank.getItem("tclassId").setValue();
-                    ClassDS_questionBank.implicitCriteria = {
-                        _constructor: "AdvancedCriteria",
-                        operator: "and",
-                        criteria: [{fieldName: "courseId", operator: "equals", value: record.courseId}]
-                    };
-                    QuestionBankDF_questionBank.getItem("tclassId").fetchData()
-                } else {
-                    QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                // if (record.categoryId) {
+                //     RestDataSourceSubCategory.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories";
+                //     QuestionBankDF_questionBank.getItem("subCategoryId").fetchData();
+                // } else {
+                //     QuestionBankDF_questionBank.getItem("subCategoryId").setValue();
+                //
+                //     QuestionBankDF_questionBank.getItem("subCategoryId").disable();
+                //     QuestionBankDF_questionBank.getItem("courseId").disable();
+                //     QuestionBankDF_questionBank.getItem("tclassId").disable();
+                // }
 
-                    QuestionBankDF_questionBank.getItem("tclassId").disable();
-                }
+                // if (record.subCategoryId) {
+                //     QuestionBankDF_questionBank.getItem("courseId").setValue();
+                //     CourseDS_questionBank.implicitCriteria = {
+                //         _constructor: "AdvancedCriteria",
+                //         operator: "and",
+                //         criteria: [{fieldName: "subCategoryId", operator: "equals", value: record.subCategoryId}]
+                //     };
+                //     QuestionBankDF_questionBank.getItem("courseId").fetchData();
+                // } else {
+                //     QuestionBankDF_questionBank.getItem("courseId").setValue();
+                //
+                //     QuestionBankDF_questionBank.getItem("courseId").disable();
+                //     QuestionBankDF_questionBank.getItem("tclassId").disable();
+                // }
+
+                // if (record.courseId) {
+                //     QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                //     ClassDS_questionBank.implicitCriteria = {
+                //         _constructor: "AdvancedCriteria",
+                //         operator: "and",
+                //         criteria: [{fieldName: "courseId", operator: "equals", value: record.courseId}]
+                //     };
+                //     QuestionBankDF_questionBank.getItem("tclassId").fetchData()
+                // } else {
+                //     QuestionBankDF_questionBank.getItem("tclassId").setValue();
+                //
+                //     QuestionBankDF_questionBank.getItem("tclassId").disable();
+                // }
 
                 QuestionBankDF_questionBank.editRecord(record);
                 QuestionBankDF_questionBank.getItem("eQuestionLevel.id").setValue(record.questionLevelId);
