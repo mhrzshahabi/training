@@ -38,6 +38,7 @@ public class ViewClassDetailDTO implements Serializable {
         private Long tclassDuration;
         private Long tclassOrganizerId;
         private String tclassStatus;
+        private String tclassReason;
         private String tclassEndingStatus;
         private Long tclassPlanner;
         private Long tclassSupervisor;

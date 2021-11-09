@@ -31,6 +31,7 @@
             {name: "tclassDuration"},
             {name: "tclassOrganizerId"},
             {name: "tclassStatus"},
+            {name: "tclassReason"},
             {name: "tclassEndingStatus"},
             {name: "tclassPlanner"},
             {name: "termTitleFa"},
@@ -465,6 +466,20 @@
                     "3": "رفتاری",
                     "4": "نتایج"
                 },
+            },
+            {
+                name: "tclassReason", title: "<spring:message code='training.request'/>", align: "center",
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                },
+                valueMap: {
+                    "1": "نیازسنجی",
+                    "2": "درخواست واحد",
+                    "3": "نیاز موردی",
+                },
+                filterOnKeypress: true
             },
             {
                 name: "tclassStatus", title: "<spring:message code='class.status'/>", align: "center",

@@ -76,6 +76,9 @@ public class ViewClassDetail extends Auditable {
    @Column(name = "tclass_status")
    private String tclassStatus;
 
+    @Column(name = "tclass_reason")
+    private String tclassReason;
+
     @Column(name = "tclass_ending_status")
     private String tclassEndingStatus;
 
