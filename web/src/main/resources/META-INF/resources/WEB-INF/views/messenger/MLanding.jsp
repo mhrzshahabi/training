@@ -12,6 +12,7 @@
 
 
     var MSG_textEditorValue = "";
+
     var MSG_sendTypesItems = [];
     var MSG_msgContent = {};
     var MSG_attachFiles = [];
@@ -237,8 +238,8 @@
         baseStyle: 'MSG-btn-white',
         title:"انصراف", width:120,
         click: function () {
-            MSG_Window_MSG_Main.close()
             MSG_initMSG()
+            MSG_Window_MSG_Main.close()
         },
         mouseOver: function(){
             this.baseStyle = 'MSG-btn-orange';
@@ -275,19 +276,19 @@
                 value:"0",
                 valueMap:
                     {
-                    "10000" : "نامحدود",
-                    "0" : "عدم تکرار",
-                    "1" : "یکبار",
-                    "2" : "دوبار",
-                    "3" : "سه بار",
-                    "4" : "چهار بار",
-                    "5" : "پنج بار",
-                    "6" : "شش بار",
-                    "7" : "هفت بار",
-                    "8" : "هشت بار",
-                    "9" : "نه بار",
-                    "10" : "ده بار",
-                },
+                        "10000" : "نامحدود",
+                        "0" : "عدم تکرار",
+                        "1" : "یکبار",
+                        "2" : "دوبار",
+                        "3" : "سه بار",
+                        "4" : "چهار بار",
+                        "5" : "پنج بار",
+                        "6" : "شش بار",
+                        "7" : "هفت بار",
+                        "8" : "هشت بار",
+                        "9" : "نه بار",
+                        "10" : "ده بار",
+                    },
             },
             {
                 name: "timeBMessages", title: "فاصله زمانی بین پیام ها", type: "select",
@@ -302,6 +303,7 @@
         ]
     });
 
+
     var MSG_main_layout = isc.VLayout.create({
         width: "100%",
         height: 400,
@@ -310,6 +312,47 @@
         marginTop:30,
         defaultLayoutAlign: "center",
         members:[
+            isc.DynamicForm.create({
+                titleAlign: "center",
+                showInlineErrors: true,
+                showErrorText: false,
+                width: "100%",
+                align: "right",
+                numCols: 6,
+                fields: [
+                    {
+                        colSpan: 2,
+                        type: "header",
+                        defaultValue: "      برای تغییر نوع پیامک از منوی زیر نوع پیام را انتخاب کنید"
+                    },
+                    {
+                        ID:"messageType",
+                        name:"messageType",
+                        title: " نوع پیامک :",
+                        colSpan: 2,
+                        // optionDataSource: RestDataSource_Messages,
+                        autoFetchData: false,
+                        displayField: "title",
+                        pickListWidth: 500,
+                        valueField: "description",
+                        textAlign: "center",
+                        pickListFields: [
+                            {
+                                name: "title",
+                                title: "<spring:message code="title"/>",
+                                filterOperator: "iContains",
+                                autoFitWidth: true
+                            }
+                        ],
+                        changed: function (form, item, value) {
+                            MSG_textEditorValue = value;
+                            MSG_contentEditor.setValue(MSG_textEditorValue);
+                        },
+
+                    }
+
+                ]
+            }),
             isc.VLayout.create({
                 width: "90%",
                 height: "100%",
@@ -340,7 +383,8 @@
                         width: "100%",
                         fields: [
                             { name: "link", title: "لینک", controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false, validateOnExit: true,
-        validators: [TrValidators.WebsiteValidate],},
+                                validators: [TrValidators.WebsiteValidate],},
+                            { name: "messageType",hidden: true}
                         ]
                     }),
                 ],
@@ -392,14 +436,14 @@
                             MSG_attachMsgBtn
                         ]
                     })*/
-                    ]
+                ]
             }),
             isc.LayoutSpacer.create({height: 20}),
-             isc.HTMLFlow.create({
-              align: "center",
-              layoutTopMargin: 20,
-              width:"80%",
-              contents: "<hr/>"
+            isc.HTMLFlow.create({
+                align: "center",
+                layoutTopMargin: 20,
+                width:"80%",
+                contents: "<hr/>"
             }),
             isc.LayoutSpacer.create({height: 20}),
             isc.Label.create({
@@ -422,7 +466,7 @@
                 layoutTopMargin: 20,
                 members: [
                     MSG_selectUsersForm
-                    ]
+                ]
             }),
             ErrorMsg
             ,
@@ -711,6 +755,8 @@
 
 
     function MSG_initMSG(){
+        MSG_Window_MSG_Main.clear()
+        MSG_main_layout.members[0].getField("messageType").clearValue();
         MSG_contentEditor.setValue('');
         linkFormMLanding.getItem('link').setValue('');
         linkFormMLanding.getItem('link').setRequired(false);
@@ -720,6 +766,8 @@
         MSG_sendTypesItems = [];
         MSG_msgContent = {};
         MSG_attachFiles = [];
+
+
     }
 
     function MSG_toggleMessageType(messageTypeID, isEnable){
@@ -729,7 +777,7 @@
             var joinText = isEnable ? 'MSG-type-container': 'MSG-type-container-disable';
             var cr = c.split("MSG-type-container").join(joinText);
             var cr2 = cr.split('onclick=\'selectSendMessageType(this)\'').join('');
-             window[selectType].setContents(isEnable ? cr : cr2)
+            window[selectType].setContents(isEnable ? cr : cr2)
         },1000)
 
     }
@@ -737,7 +785,7 @@
 
     var MSG_Window_MSG_Main = isc.Window.create({
         placement: "center",
-        title: "ارسال پیام",
+        title:  "ارسال پیام" ,
         overflow: "auto",
         width: 900,
         height: 760,

@@ -12,8 +12,6 @@ public interface ParameterValueDAO extends BaseDAO<ParameterValue, Long> {
     List<ParameterValue> findAllByParameterId(long id);
     ParameterValue findByTitle(String title);
 
-    @Query(value = "SELECT\n" +
-            "    * FROM tbl_parameter_value\n" +
-            "     where f_parameter_id = 481",nativeQuery = true)
-    List<ParameterValue> findMessagesByCode();
+    @Query(value = "SELECT * FROM tbl_parameter_value  where f_parameter_id = 481  And c_code like :type AND c_code like :target",nativeQuery = true)
+    List<ParameterValue> findMessagesByCode(String type, String target);
 }

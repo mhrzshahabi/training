@@ -41,7 +41,7 @@
         fetchDataURL: categoryUrl + "spec-list"
     });
     RestDataSource_SubCategory_REFR = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id"}, {name: "titleFa"}, {name: "category.titleFa"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
     RestDataSource_Class_REFR = isc.TrDS.create({
@@ -311,6 +311,18 @@
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان گروه",
+                        align: "center"
+                    }
+                ],
                 changed: function () {
 
                     isCriteriaCategoriesChanged_REFR = true;
@@ -350,9 +362,28 @@
                 multiple: true,
                 filterLocally: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains"
+                    canSelectAll: false
                 },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "category.titleFa",
+                        title: "عنوان گروه",
+                        align: "center",
+                        sortNormalizer: function (record) {
+                            return record.category.titleFa;
+                        }
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان زیرگروه",
+                        align: "center"
+                    }
+                ],
                 focus: function () {
 
                     if (isCriteriaCategoriesChanged_REFR) {

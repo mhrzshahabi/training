@@ -28,6 +28,7 @@ import request.exam.ElsExamScore;
 import request.exam.ElsStudentScore;
 import response.BaseResponse;
 import response.PaginationDto;
+import response.evaluation.dto.EvalAverageResult;
 import response.tclass.dto.CourseProgramDTO;
 import response.tclass.dto.ElsClassDto;
 import response.tclass.dto.ElsClassListDto;
@@ -347,6 +348,9 @@ public class ClassStudentService implements IClassStudentService {
             elsClassDto.setStartDate(startDate.getTime());
             elsClassDto.setFinishDate(endDate.getTime());
             elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
+            elsClassDto.setEvaluationId(arr[14] == null ? null : Long.valueOf(arr[14].toString()));
+            EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
+            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
             result.add(elsClassDto);
         }
 
@@ -404,6 +408,10 @@ return dto;
             elsClassDto.setStartDate(startDate.getTime());
             elsClassDto.setFinishDate(endDate.getTime());
             elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
+            elsClassDto.setEvaluationId(arr[14] == null ? null : Long.valueOf(arr[14].toString()));
+            EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
+            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
+
             result.add(elsClassDto);
         }
 

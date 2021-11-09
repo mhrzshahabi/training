@@ -73,9 +73,6 @@
             {name: "id", primaryKey: true},
             {name: "group"},
             {name: "classCancelReasonId"},
-// {name: "lastModifiedDate",hidden:true},
-// {name: "createdBy",hidden:true},
-// {name: "createdDate",hidden:true,type:d},
             {name: "titleClass", autoFitWidth: true},
             {name: "startDate", autoFitWidth: true},
             {name: "endDate", autoFitWidth: true},
@@ -947,7 +944,6 @@
             {
                 name: "targetPopulationTypeId",
                 editorType: "ComboBoxItem",
-                <%--title: "<spring:message code="executer"/>:",--%>
                 title: "دوره ویژه ی:",
                 colSpan: 1,
                 pickListWidth: 200,
@@ -1651,11 +1647,7 @@
                     sortField: 0,
                     showFilterEditor: false
                 },
-                // changed: function (form, item, value) {
-                //
-                // },
             }
-            //------------------------ DONE BY ROYA---------------------------------------------------------------------
         ],
         itemChanged: function () {
             if (DynamicForm_Class_JspClass.getItem("teachingMethodId") !== null && DynamicForm_Class_JspClass.getItem("teachingMethodId") !== undefined
@@ -2113,8 +2105,6 @@
                         ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
                     }, 3000);
                     Window_Class_JspClass.close();
-
-                    //**********generate class sessions**********
                     if (!VM_JspClass.hasErrors() && ((classMethod.localeCompare("POST") === 0) || (classMethod.localeCompare("PUT") === 0 && ListGrid_session.getData().localData.length > 0 ? false : true && VM_JspClass.getValues().autoValid))) {
                         if (autoValid) {
                             let ClassID = response.record.id;
@@ -2125,8 +2115,6 @@
                             }));
                         }
                     }
-                    //**********generate class sessions**********
-
                 } else {
                     simpleDialog("<spring:message code="message"/>", response.message, "0", "error");
                 }
@@ -2292,9 +2280,6 @@
             })
         ]
     });
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*ToolStrips and Layout*/
-    //--------------------------------------------------------------------------------------------------------------------//
     <sec:authorize access="hasAuthority('Tclass_R')">
     var ToolStripButton_Refresh_JspClass = isc.ToolStripButtonRefresh.create({
         click: function () {
@@ -2571,24 +2556,6 @@
                 changed: function (form, item, value) {
                     load_classes_by_department(value);
                 },
-                // icons: [
-                //     {
-                //         name: "clear",
-                //         src: "[SKIN]actions/remove.png",
-                //         width: 15,
-                //         height: 15,
-                //         inline: true,
-                //         prompt: "پاک کردن",
-                //         click: function (form, item) {
-                //             item.clearValue();
-                //             item.focusInItem();
-                //             departmentCriteria = [];
-                //             let mainCriteria = createMainCriteria();
-                //             ListGrid_Class_JspClass.invalidateCache();
-                //             ListGrid_Class_JspClass.fetchData(mainCriteria);
-                //         }
-                //     }
-                // ],
            },
         ]
     });
@@ -2706,7 +2673,6 @@
                                 width: 15,
                                 height: 15,
                                 inline: true,
-                                // showIf: false,
                                 prompt: "تائید صدور",
                                 click: function (form, item, icon) {
                                 }
@@ -2855,9 +2821,6 @@
             <sec:authorize access="hasAuthority('Tclass_P')">
             ToolStripButton_Print_JspClass,
             </sec:authorize>
-<%--            <sec:authorize access="hasAuthority('Tclass_P')">--%>
-<%--            ToolStripButton_finish,--%>
-<%--            </sec:authorize>--%>
 
             <sec:authorize access="hasAuthority('Tclass_C')">
             ToolStripButton_copy_of_class,
@@ -2962,7 +2925,6 @@
             {
                 ID: "classAttachmentsTab",
                 title: "<spring:message code="attachments"/>",
-                // pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
             },
             </sec:authorize>
             {
@@ -3048,7 +3010,6 @@
                     }
                 ]
             });
-
             DynamicForm_Remove_Class_Warn.setValue("warnMessage", "<spring:message code='remove.class.dependency'/>");
             DynamicForm_Remove_Class_Warn.setValue("confirm", "<spring:message code='confirm.remove.class'/>");
 
@@ -3334,7 +3295,6 @@
         }
     }
     /*Functions*/
-    //--------------------------------------------------------------------------------------------------------------------//
     function ListGrid_Class_refresh() {
         let gridState;
         if (ListGrid_Class_JspClass.getSelectedRecord()) {
@@ -3389,7 +3349,6 @@
         DynamicForm_Class_JspClass.getItem("trainingPlaceIds").setDisabled(false);
         setDefaultTerm();
     }
-
     function ListGrid_class_print(type) {
         let direction = "";
         if (ListGrid_Class_JspClass.getSort()[0]["direction"] === "descending") {
@@ -3622,7 +3581,6 @@
             }
         }
     }
-
     function alternativeClass_JspClass(record) {
         let WindowAlternativeClass = isc.Window.create({
             title: "جایگزین کلاس های لغو شده",
@@ -3634,9 +3592,7 @@
                         ID: "DynamicFormAlternativeClass",
                         numCols: 4,
                         validateOnChange: true,
-                        // colWidths: [120, 20, 50, 100],
                         readOnlyDisplay: "readOnly",
-                        // cellBorder:1,
                         fields: [
                             {
                                 name: "canceledClasses",
@@ -3964,13 +3920,11 @@
         if(!resData || resData.length == 0)
             return false;
         let lastSession = resData.sortByProperty("sessionDate")[0];
-        //let firstSession = resData.sortByProperty("sessionDate")[resData.length-1]; check with start date !!!
         if(endDate < lastSession.sessionDate){
             simpleDialog("<spring:message code="message"/>",'<spring:message code="session.date.after.class.end.date"/>' , "0", "error");
             return true;
         }
     }
-    
     function getDaysOfClass(classId) {
         wait.show();
         isc.RPCManager.sendRequest({
@@ -3990,7 +3944,6 @@
             }
         });
     }
-
     function tabSet_class_status(classRecord) {
         if ((ListGrid_Class_JspClass.getSelectedRecord() === null) || (ListGrid_Class_JspClass.getSelectedRecord().classStatus === "4")) {
             TabSet_Class.disable();
@@ -4006,11 +3959,9 @@
             if (TabSet_Class.getSelectedTab().ID === "classPreCourseTestQuestionsTab") {
                 TabSet_Class.selectTab(0);
             }
-            //  TabSet_Class.getTab("classPreCourseTestQuestionsTab").hide();
         }
         </sec:authorize>
     }
-
     //*****check class is ready to end or no*****
     function checkEndingClass(oldValue) {
         let record = ListGrid_Class_JspClass.getSelectedRecord();
@@ -4059,7 +4010,6 @@
             }));
         }
     }
-
     function hasClassStarted(oldValue) {
         let record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record !== null) {
@@ -4140,7 +4090,6 @@
                     "workflowStatusCode": "0"
                 }];
                 wait.show()
-                ///// //disable until set permission to ending class// isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
             }
         }));
     }
@@ -4256,7 +4205,6 @@
             })
         );
     }
-
     function setSocieties() {
         var selectedSocieties = [];
         selectedSocieties.addAll(DynamicForm_Class_JspClass.getItem("targetSocieties").getValue());
@@ -4297,11 +4245,6 @@
                 });
         }
     }
-
-    // ---------------------------------------- Send To Workflow ---------------------------------------->>
-    //*****set save button status*****
-
-
     function saveButtonStatus() {
         let sRecord = VM_JspClass.getValues();
         wait.show();
@@ -4327,8 +4270,6 @@
 
         }));
     }
-
-    ////*****load term by year*****
     function load_term_by_year(value) {
         let criteria = '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
         if (ListGrid_Class_JspClass.implicitCriteria) {
@@ -4341,11 +4282,7 @@
         RestDataSource_Term_Filter.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
         DynamicForm_Term_Filter.getItem("termFilter").fetchData();
     }
-
-    ////*****load classes by term*****
     function load_classes_by_term(value) {
-        //id -> 61 = id lock in work group table
-        //id -> 81 = id unLock in work group table
         isc.RPCManager.sendRequest(TrDSRequest(hasAccessToChangeClassStatus+"61,81", "GET",null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 if (resp.data === "false" )
@@ -4384,8 +4321,6 @@
             createDialog("info", "<spring:message code="msg.select.term.ask"/>", "<spring:message code="message"/>")
         }
     }
-
-    ////*****load classes by department*****
     function load_classes_by_department(value) {
                 if (value !== undefined) {
                     let criteria = {
@@ -4414,8 +4349,6 @@
                 }
 
     }
-    ////******************************
-
     function setDefaultTerm() {
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "termScope", "GET", null,
             function (resp) {
@@ -4569,8 +4502,6 @@
             let data = {};
             data.classId = classRecord.id;
             data.status = false;
-            // if (ReturnDate_RE._value != undefined)
-            //     data.returnDate = ReturnDate_RE._value;
             data.sendDate = todayDate;
             data.evaluatorId = evaluatorId;
             data.evaluatorTypeId = evaluatorTypeId;
@@ -4894,7 +4825,6 @@
             }));
         }
     }
-
     function Training_Reaction_Form_Inssurance_JspClass(classRecord) {
         let QId = null;
         let criteria = {
@@ -4914,7 +4844,6 @@
             }
         }));
     }
-
     function create_evaluation_form_JspClass(id, questionnarieId, evaluatorId,
                                              evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
                                              evaluationLevel, classId) {
@@ -4934,9 +4863,6 @@
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
         }));
     }
-
-    //Amin HK
-    //Highlight a selected item in a radio group
     function highlightClassStauts(value, time) {
         IButton_Class_Save_JspClass.show();
             if ("5" === value)
