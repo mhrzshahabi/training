@@ -85,4 +85,7 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "And cs.evaluation_status_reaction = 1" +
             "", nativeQuery = true)
     List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode,@Param("evaluatorTypeId") Long evaluatorTypeId);
+
+
+    Evaluation findFirstByQuestionnaireId(Long QuestionnaireId);
 }

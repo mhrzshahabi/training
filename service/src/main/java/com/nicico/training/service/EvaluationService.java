@@ -127,7 +127,6 @@ public class EvaluationService implements IEvaluationService {
     @Transactional
     public EvaluationDTO.Info save(Evaluation evaluation) {
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
-        Long evaluationId = saved.getId();
         if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
             updateClassStudentInfo(saved, 1);
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
@@ -400,13 +399,11 @@ public class EvaluationService implements IEvaluationService {
     }
 
     public void updateQuestionnarieInfo(Long questionnarieId) {
-        List<Evaluation> list = evaluationDAO.findByQuestionnaireId(questionnarieId);
-        Optional<Questionnaire> byId = questionnaireDAO.findById(questionnarieId);
-        Questionnaire questionnaire = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        if (list != null && list.size() != 0)
-            questionnaire.setLockStatus(true);
-        else
-            questionnaire.setLockStatus(false);
+        Evaluation evaluation = evaluationDAO.findFirstByQuestionnaireId(questionnarieId);
+        Questionnaire questionnaire = questionnaireDAO.findFirstById(questionnarieId);
+        if (questionnaire==null)
+      throw  new TrainingException(TrainingException.ErrorType.NotFound);
+        questionnaire.setLockStatus(evaluation != null);
     }
 
     public List<EvaluationAnswer> createEvaluationAnswers(Evaluation evaluation) {
@@ -856,10 +853,7 @@ public class EvaluationService implements IEvaluationService {
         }
 
         behavioralGrade = (coWorkersGradeMean * scoreEvaluationPartnersEB + trainingGradeMean * scoreEvaluationRTEB + supervisorGradeMean * z7 + studentGradeMean * z8) / 100;
-        if (behavioralGrade >= minScoreEB)
-            behavioralPass = true;
-        else
-            behavioralPass = false;
+        behavioralPass = behavioralGrade >= minScoreEB;
 
         for (int i = 0; i < tclass.getClassStudents().size(); i++) {
             behavioralGrades[i] = (coWorkersGrade[i] * scoreEvaluationPartnersEB + studentGrade[i] * z8 + supervisorGrade[i] * z7 + trainingGrade[i] * scoreEvaluationRTEB) / 100;
