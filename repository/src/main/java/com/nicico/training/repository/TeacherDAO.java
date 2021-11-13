@@ -80,4 +80,7 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
             "left join TBL_CONTACT_INFO contact on contact.ID = info.F_CONTACT_INFO "+
             "WHERE contact.C_MOBILE like :mobile AND t.C_TEACHER_CODE= :nationalCode",nativeQuery = true)
     List<Map<String,Object>> findAllByNationalCodeAndMobileNumber(@Param("mobile") String mobileNumber,@Param("nationalCode") String nationalCode);
+
+
+
 }

@@ -112,6 +112,9 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     List<Tclass> findByTeacherId(Long teacherId);
 
+    @Query(value = "SELECT max(tClass.C_START_DATE) FROM TBL_CLASS tClass WHERE tClass.F_TEACHER = :teacherId", nativeQuery = true)
+    String findLastTeacherClassStartDate(Long teacherId);
+
     Tclass findTclassByIdEquals(Long classId);
 
     @EntityGraph(attributePaths = {"institute", "organizer", "course", "term", "classStudents", "classStudents.student", "course.category", "course.subCategory", "trainingPlaceSet", "teacher", "teacher.personality"})

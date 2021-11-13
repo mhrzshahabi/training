@@ -226,6 +226,10 @@ public class TeacherService implements ITeacherService {
 
 
         SearchDTO.SearchRs<TeacherDTO.Grid> searchRs = BaseService.<Teacher, TeacherDTO.Grid, TeacherDAO>optimizedSearch(teacherDAO, p->modelMapper.map(p, TeacherDTO.Grid.class), request);
+        for (TeacherDTO.Grid teacher: searchRs.getList()) {
+            String lastClassDate = tclassDAO.findLastTeacherClassStartDate(teacher.getId());
+            teacher.setLastClass(lastClassDate);
+        }
 
         return searchRs;
     }
