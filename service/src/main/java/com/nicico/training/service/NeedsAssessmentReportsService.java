@@ -522,6 +522,15 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         return rs;
     }
 
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> findNeedAssessmentByNationalCode(String nationalCode){
+        PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(nationalCode);
+        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(personalityInfo.getPostCode(), "Post", nationalCode,personalityInfo.getPersonnelNo());
+        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
+        rs.setTotalCount((long) needsAssessmentReportList.size());
+        rs.setList(needsAssessmentReportList);
+        return rs;
+    }
+
 
     @Transactional(readOnly = true)
     @Override

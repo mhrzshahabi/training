@@ -29,4 +29,7 @@ public interface INeedsAssessmentReportsService {
 
     void delete(Long id);
 
+    SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> findNeedAssessmentByNationalCode(String nationalCode);
+
+
 }
