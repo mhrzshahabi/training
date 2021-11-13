@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.NeedAssessmentGroupJobPromotionResponse;
+import com.nicico.training.dto.NeedAssessmentReportUserDTO;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.model.NeedAssessmentGroupResult;
 import com.nicico.training.model.NeedsAssessment;
@@ -29,7 +30,7 @@ public interface INeedsAssessmentReportsService {
 
     void delete(Long id);
 
-    SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> findNeedAssessmentByNationalCode(String nationalCode);
+    List<NeedAssessmentReportUserDTO> findNeedAssessmentByNationalCode(String nationalCode);
 
 
 }

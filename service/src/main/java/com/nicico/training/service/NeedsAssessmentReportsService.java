@@ -58,6 +58,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     private final ISkillService skillService;
     private final NeedAssessmentGroupResultDAO needAssessmentGroupResultDAO;
     protected EntityManager entityManager;
+    private final ParameterValueDAO parameterValueDAO;
 
     @Transactional(readOnly = true)
 //    @Override
@@ -117,9 +118,9 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
                             courseStatus += " - دوره معادل گذرانده شده است.";
                             Course course = needsAssessmentList.get(i).getSkill().getCourse().getEqualCourses().get(0).getEqualAndList().get(0);
                             List<EqualCourse> equalCourses = course.getEqualCourses();
-                            if (equalCourses.size() > 0){
-                                for (EqualCourse equalCourse: equalCourses){
-                                    if (passedCourseIds.contains(equalCourse.getEqualAndList().get(0).getId())){
+                            if (equalCourses.size() > 0) {
+                                for (EqualCourse equalCourse : equalCourses) {
+                                    if (passedCourseIds.contains(equalCourse.getEqualAndList().get(0).getId())) {
                                         courseStatus += "(";
                                         courseStatus += equalCourse.getEqualAndList().get(0).getTitleFa();
                                         courseStatus += ")";
@@ -514,27 +515,51 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchForBpms(SearchDTO.SearchRq searchRq, String postCode, String objectType, String nationalCode,String personnelNumber) {
-        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(postCode, objectType, nationalCode,personnelNumber);
+    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchForBpms(SearchDTO.SearchRq searchRq, String postCode, String objectType, String nationalCode, String personnelNumber) {
+        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(postCode, objectType, nationalCode, personnelNumber);
         SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
         rs.setTotalCount((long) needsAssessmentReportList.size());
         rs.setList(needsAssessmentReportList);
         return rs;
     }
 
-    public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> findNeedAssessmentByNationalCode(String nationalCode){
+    @Transactional(readOnly = true)
+    public List<NeedAssessmentReportUserDTO> findNeedAssessmentByNationalCode(String nationalCode) {
+        List<ParameterValue> allParameter = parameterValueDAO.findAll();
+        List<NeedAssessmentReportUserDTO> reportUserDTOS = new ArrayList<>();
         PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(nationalCode);
-        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(personalityInfo.getPostCode(), "Post", nationalCode,personalityInfo.getPersonnelNo());
-        SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> rs = new SearchDTO.SearchRs<>();
-        rs.setTotalCount((long) needsAssessmentReportList.size());
-        rs.setList(needsAssessmentReportList);
-        return rs;
+        List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(personalityInfo.getPostCode(), "Post", nationalCode, personalityInfo.getPersonnelNo());
+        Set<Long> assessmentsType = needsAssessmentReportList.stream().map(NeedsAssessmentReportsDTO.ReportInfo::getNeedsAssessmentPriorityId).collect(Collectors.toSet());
+        for (Long aLong : assessmentsType) {
+            NeedAssessmentReportUserDTO needAssessmentReportUserDTO = new NeedAssessmentReportUserDTO();
+            String title = allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(aLong)).collect(Collectors.toList()).get(0).getTitle();
+            needAssessmentReportUserDTO.setAssessment(title);
+            List<NeedAssessmentReportUserDTO.CompetenceInfo> competenceInfoList = new ArrayList<>();
+            needsAssessmentReportList.stream().filter(reportInfo -> reportInfo.getNeedsAssessmentPriorityId().equals(aLong)).collect(Collectors.toList()).forEach(reportInfo -> {
+                NeedAssessmentReportUserDTO.CompetenceInfo competenceInfo = new NeedAssessmentReportUserDTO.CompetenceInfo();
+                competenceInfo.setCompetence(reportInfo.getCompetence().getTitle());
+                competenceInfo.setCompetenceTypeName(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getCompetence().getCompetenceTypeId())).collect(Collectors.toList()).get(0).getTitle());
+                competenceInfo.setNeedsAssessmentDomainIdName(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getNeedsAssessmentDomainId())).collect(Collectors.toList()).get(0).getTitle());
+                competenceInfo.setSkillCode(reportInfo.getSkill().getCode());
+                competenceInfo.setSkill(reportInfo.getSkill().getTitleFa());
+                competenceInfo.setCourseCode(reportInfo.getSkill().getCourse().getCode());
+                competenceInfo.setCourseName(reportInfo.getSkill().getCourse().getTitleFa());
+                competenceInfo.setCourseDuration(reportInfo.getSkill().getCourse().getTheoryDuration());
+                competenceInfo.setCourseState(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getSkill().getCourse().getScoresState())).collect(Collectors.toList()).get(0).getTitle());
+                competenceInfoList.add(competenceInfo);
+            });
+            needAssessmentReportUserDTO.setCompetenceInfoList(competenceInfoList);
+            needAssessmentReportUserDTO.setNeedAssessmentCount(competenceInfoList.size());
+            //needAssessmentReportUserDTO.setNeedAssessmentDurationCount(competenceInfoList.stream().map(competenceInfo -> competenceInfo.getCourseDuration()).collect(Collectors.toList()).stream().);
+            reportUserDTOS.add(needAssessmentReportUserDTO);
+        }
+        return reportUserDTOS;
     }
 
 
     @Transactional(readOnly = true)
     @Override
-    public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseListForBpms( String postCode, String objectType, String nationalCode,String personnelNumber) {
+    public List<NeedsAssessmentReportsDTO.ReportInfo> getCourseListForBpms(String postCode, String objectType, String nationalCode, String personnelNumber) {
         Long passedCodeId = parameterValueService.getId("Passed");
         Long notPassedCodeId = parameterValueService.getId("false");
 
@@ -547,7 +572,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         if (nationalCode != null && !mustPass.isEmpty()) {
             try {
                 //1
-                PersonnelDTO.Info student = personnelService.getByPersonnelCodeAndNationalCode(nationalCode,personnelNumber);
+                PersonnelDTO.Info student = personnelService.getByPersonnelCodeAndNationalCode(nationalCode, personnelNumber);
                 if (student == null) {
                     throw new TrainingException(TrainingException.ErrorType.NotFound);
                 }
@@ -576,8 +601,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
                         }
                     }
                 }
-            }
-            catch (Exception e){
+            } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
 
             }
@@ -605,19 +629,19 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     public void addCriteriaForBpms(SearchDTO.CriteriaRq criteriaRq, String objectType, String postCode, boolean isFirstObject, boolean addFirstObject) {
         Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
         if (objectType.equals("Post")) {
-            Post currentPost = postDAO.findByCodeAndDeleted(postCode,null).orElseThrow(trainingExceptionSupplier);
+            Post currentPost = postDAO.findByCodeAndDeleted(postCode, null).orElseThrow(trainingExceptionSupplier);
             if (!isFirstObject && (currentPost.getDeleted() != null || currentPost.getEnabled() != null))
                 return;
             currentPost.getTrainingPostSet().forEach(trainingPost -> addCriteria(criteriaRq, "TrainingPost", trainingPost.getId(), false, addFirstObject));
             currentPost.getPostGroupSet().forEach(postGroup -> addCriteria(criteriaRq, "PostGroup", postGroup.getId(), false, addFirstObject));
         }
-            if (!isFirstObject || addFirstObject) {
-                List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-                list.add(makeNewCriteria("objectCode", postCode, EOperator.equals, null));
-                list.add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
-                criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.and, list));
-            }
+        if (!isFirstObject || addFirstObject) {
+            List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+            list.add(makeNewCriteria("objectCode", postCode, EOperator.equals, null));
+            list.add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
+            criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.and, list));
         }
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -700,7 +724,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
 
     @Override
-    public NeedAssessmentGroupResult createNeedAssessmentGroupResult(byte[] blobFile,String name) {
+    public NeedAssessmentGroupResult createNeedAssessmentGroupResult(byte[] blobFile, String name) {
         String s = UUID.randomUUID().toString();
         NeedAssessmentGroupResult needAssessmentGroupResult = new NeedAssessmentGroupResult();
         needAssessmentGroupResult.setBlobFile(blobFile);
@@ -715,8 +739,8 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     }
 
     @Override
-    public List<NeedAssessmentGroupJobPromotionResponseDto.Info> getGroupJobPromotionListByUser( String userName) {
-        List<NeedAssessmentGroupResult> list =  needAssessmentGroupResultDAO.findAllByCreatedByOrderByIdDesc(userName);
+    public List<NeedAssessmentGroupJobPromotionResponseDto.Info> getGroupJobPromotionListByUser(String userName) {
+        List<NeedAssessmentGroupResult> list = needAssessmentGroupResultDAO.findAllByCreatedByOrderByIdDesc(userName);
         return needAssessmentGroupResultMapper.toResultDtoList(list);
     }
 
