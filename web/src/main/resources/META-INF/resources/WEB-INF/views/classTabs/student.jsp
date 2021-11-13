@@ -442,7 +442,7 @@
                                             } else {
                                                 ErrorMsg.setContents('');
                                             }
-                                            MSG_userType = "classTeacher";
+                                            MSG_userType = "classTeacher2";
                                             MSG_classID = row.id;
 
                                             MSG_repeatOptions.getItem('maxRepeat').setValue(0);
@@ -2947,8 +2947,8 @@
         if (MSG_userType == "classStudentRegistered") {
             data.classStudentRegistered = MSG_msgContent.users;
             data.classID = MSG_classID;
-        } else if (MSG_userType == "classTeacher") {
-            data.classTeacher = MSG_msgContent.users;
+        } else if (MSG_userType == "classTeacher2") {
+            data.classTeacher2 = MSG_msgContent.users;
             data.classID = MSG_classID;
         } /*else if (MSG_userType == "classStudentHaventEvaluation") {
             data.classStudentHaventEvaluation = MSG_msgContent.users;

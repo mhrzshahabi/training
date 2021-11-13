@@ -258,8 +258,10 @@ public class SendMessageService implements ISendMessageService {
             else
                 institute = "ثبت نشده";
         }
+////////////////
 
-        if (jsonNode.has("classStudent")) {
+
+        if (jsonNode.has("classStudent")) {        //ارزیابی فراگیران
             jsonNode = jsonNode.get("classStudent");
             type = "classStudent";
 
@@ -268,7 +270,7 @@ public class SendMessageService implements ISendMessageService {
                     ids.add(objNode.asLong());
                 }
             }
-        } else if (jsonNode.has("classTeacher")) {
+        } else if (jsonNode.has("classTeacher")) {   //ارزیابی استاد
             jsonNode = jsonNode.get("classTeacher");
             type = "classTeacher";
 
@@ -277,7 +279,7 @@ public class SendMessageService implements ISendMessageService {
                     ids.add(objNode.asLong());
                 }
             }
-        } else if (jsonNode.has("classStudentRegistered")) {
+        } else if (jsonNode.has("classStudentRegistered")) { //کلاس  فراگیران
             jsonNode = jsonNode.get("classStudentRegistered");
             type = "classStudentRegistered";
 
@@ -286,13 +288,25 @@ public class SendMessageService implements ISendMessageService {
                     ids.add(objNode.asLong());
                 }
             }
+        }else if (jsonNode.has("classTeacher2")) { //کلاس  استاد
+            jsonNode = jsonNode.get("classTeacher2");
+            type = "classTeacher2";
+
+            if (jsonNode.isArray()) {
+                for (final JsonNode objNode : jsonNode) {
+                    ids.add(objNode.asLong());
+                }
+            }
         }
 
+
+//
+//
         if (ids.size() == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
-
+//
+//checked
         if (type.equals("classStudent")) {
 
             code = "CS";
