@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -43,6 +44,8 @@ public class QuestionBankDTO {
         private TclassDTO.InfoForQB tclass;
         private CourseDTO.InfoTuple course;
         private TeacherDTO.TeacherInfoTuple teacher;
+        private Date createdDate;
+        private String createdBy;
     }
 
     @Getter
