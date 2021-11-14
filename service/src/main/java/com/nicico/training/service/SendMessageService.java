@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.minidev.json.JSONObject;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,21 +48,21 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @Slf4j
 public class SendMessageService implements ISendMessageService {
 
-    private final MessageContactService messageContactService;
     private final MessageContactDAO messageContactDAO;
-    private final MessageParameterDAO messageParameterDAO;
     private final ClassStudentDAO classStudentDAO;
-    private final TclassDAO tclassDAO;
+    private final ComplexDAO complexDAO;
+    private final AffairsDAO affairsDAO;
     private final MessageContactLogDAO messageContactLogDAO;
     private final ModelMapper modelMapper;
     private final ClassStudentService classStudentService;
     private final TeacherService teacherService;
     private final TclassService tclassService;
     private final ParameterService parameterService;
+    private final ParameterValueService parameterValueService;
     private final MessageService messageService;
     private final SmsFeignClient smsFeignClient;
-    private final Environment environment;
-
+    @Value("${nicico.elsSmsUrl}")
+    private String elsSmsUrl;
     @Override
     public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
         JSONObject json = new JSONObject();
@@ -82,90 +83,90 @@ public class SendMessageService implements ISendMessageService {
 
     }
 
-    @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
-    @Transactional
-    @Override
-    public void scheduling() {
-
-        List<MessageContactDTO.AllMessagesForSend> masterList = messageContactService.getAllMessageContactForSend();
-        Integer cnt = masterList.size();
-
-        for (int i = 0; i < cnt; i++) {
-
-            if (masterList.get(i).getObjectType().equals("ClassStudent")) {
-                ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
-
-                if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
-                    messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
-                }
-            } else if (masterList.get(i).getObjectType().equals("Teacher")) {
-                Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
-
-                if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
-                    messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
-                }
-            }
-
-
-            List<String> numbers = new ArrayList<>();
-            numbers.add(masterList.get(i).getObjectMobile());
-
-            Map<String, String> paramValMap = new HashMap<>();
-
-            List<MessageParameter> listParameter = messageParameterDAO.findByMessageContactId(masterList.get(i).getMessageContactId());
-
-            for (MessageParameter parameter : listParameter) {
-                paramValMap.put(parameter.getName(), parameter.getValue());
-            }
-
-            try {
-
-                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers);
-                Long returnMessageId = null;
-
-                MessageContactLog log = new MessageContactLog();
-
-                log.setMessageContactId(masterList.get(i).getMessageContactId());
-
-                if (returnMessage == null) {
-                    log.setErrorMessage("Error Exception");
-                    log.setReturnMessageId(null);
-                    messageContactLogDAO.save(log);
-                } else {
-                    try {
-                        returnMessageId = Long.parseLong(returnMessage.get(0));
-                        MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
-                        messageContact.setLastSentDate(new Date());
-                        messageContact.setCountSent(messageContact.getCountSent() + 1);
-
-                        messageContactDAO.save(messageContact);
-
-                        log.setErrorMessage("");
-                        log.setReturnMessageId(returnMessageId.toString());
-                        messageContactLogDAO.save(log);
-
-                    } catch (Exception ex) {
-                        log.setErrorMessage(ex.getMessage());
-                        log.setReturnMessageId(null);
-                        messageContactLogDAO.save(log);
-                    }
-                }
-
-                MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
-
-                if (messageContact.getCountSent() >= masterList.get(i).getCountSend()) {
-                    messageContactDAO.deleteById(messageContact.getId());
-                } else {
-                    if (log.getReturnMessageId() != null) {
-                        messageContactDAO.updateAfterSendMessage((long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
-                    }
-                }
-            } catch (Exception ex) {
-
-            }
-        }
-    }
+//    @Scheduled(cron = "0 0 9 * * ?", zone = "Asia/Tehran")
+//    @Transactional
+//    @Override
+//    public void scheduling() {
+//
+//        List<MessageContactDTO.AllMessagesForSend> masterList = messageContactService.getAllMessageContactForSend();
+//        Integer cnt = masterList.size();
+//
+//        for (int i = 0; i < cnt; i++) {
+//
+//            if (masterList.get(i).getObjectType().equals("ClassStudent")) {
+//                ClassStudent model = classStudentDAO.findById(masterList.get(i).getObjectId()).orElse(null);
+//
+//                if (model != null && !model.getEvaluationStatusReaction().equals(1)) {
+//                    messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
+//                }
+//            } else if (masterList.get(i).getObjectType().equals("Teacher")) {
+//                Tclass model = tclassDAO.findById(masterList.get(i).getClassId()).orElse(null);
+//
+//                if (model != null && !model.getEvaluationStatusReactionTeacher().equals(1)) {
+//                    messageContactDAO.deleteById(masterList.get(i).getMessageContactId());
+//                }
+//            }
+//
+//
+//            List<String> numbers = new ArrayList<>();
+//            numbers.add(masterList.get(i).getObjectMobile());
+//
+//            Map<String, String> paramValMap = new HashMap<>();
+//
+//            List<MessageParameter> listParameter = messageParameterDAO.findByMessageContactId(masterList.get(i).getMessageContactId());
+//
+//            for (MessageParameter parameter : listParameter) {
+//                paramValMap.put(parameter.getName(), parameter.getValue());
+//            }
+//
+//            try {
+//
+//                List<String> returnMessage = syncEnqueue(masterList.get(i).getPid(), paramValMap, numbers);
+//                Long returnMessageId = null;
+//
+//                MessageContactLog log = new MessageContactLog();
+//
+//                log.setMessageContactId(masterList.get(i).getMessageContactId());
+//
+//                if (returnMessage == null) {
+//                    log.setErrorMessage("Error Exception");
+//                    log.setReturnMessageId(null);
+//                    messageContactLogDAO.save(log);
+//                } else {
+//                    try {
+//                        returnMessageId = Long.parseLong(returnMessage.get(0));
+//                        MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//
+//                        messageContact.setLastSentDate(new Date());
+//                        messageContact.setCountSent(messageContact.getCountSent() + 1);
+//
+//                        messageContactDAO.save(messageContact);
+//
+//                        log.setErrorMessage("");
+//                        log.setReturnMessageId(returnMessageId.toString());
+//                        messageContactLogDAO.save(log);
+//
+//                    } catch (Exception ex) {
+//                        log.setErrorMessage(ex.getMessage());
+//                        log.setReturnMessageId(null);
+//                        messageContactLogDAO.save(log);
+//                    }
+//                }
+//
+//                MessageContact messageContact = messageContactDAO.findById(masterList.get(i).getMessageContactId()).orElse(null);
+//
+//                if (messageContact.getCountSent() >= masterList.get(i).getCountSend()) {
+//                    messageContactDAO.deleteById(messageContact.getId());
+//                } else {
+//                    if (log.getReturnMessageId() != null) {
+//                        messageContactDAO.updateAfterSendMessage((long) (messageContact.getCountSent() + 1), new Date(), messageContact.getId());
+//                    }
+//                }
+//            } catch (Exception ex) {
+//
+//            }
+//        }
+//    }
 
 
     @Scheduled(cron = "0 30 17 1/1 * ?")
@@ -179,7 +180,7 @@ public class SendMessageService implements ISendMessageService {
         TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
 
 
-        int dayBeforeStartCourse = Integer.parseInt(Objects.requireNonNull(parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("dayBeforeStartCourse")).findFirst().orElse(null)).getValue())+1;
+        int dayBeforeStartCourse = Integer.parseInt(Objects.requireNonNull(parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("dayBeforeStartCourse")).findFirst().orElse(null)).getValue()) + 1;
         List<Object> list = classStudentDAO.findAllUserMobiles(DateUtil.todayDate(), DateUtil.convertMiToKh(LocalDate.now().plusDays(dayBeforeStartCourse).toString()));
         List<ClassStudentUser> classStudentUsers = new ArrayList<>();
         JSONObject json = new JSONObject();
@@ -204,8 +205,8 @@ public class SendMessageService implements ISendMessageService {
             LocalDate secondDate = LocalDate.parse(DateUtil.convertMiToKh(LocalDate.now().plusDays(-1).toString()), dtf);
             LocalDate courseStartDate = LocalDate.parse(classStudentUser.getStartDate(), dtf);
 
-            long daysBetween = ChronoUnit.DAYS.between(secondDate,courseStartDate );
-            if (daysBetween == dayBeforeStartCourse && null!=classStudentUser.getMobile()) {
+            long daysBetween = ChronoUnit.DAYS.between(secondDate, courseStartDate);
+            if (daysBetween == dayBeforeStartCourse && null != classStudentUser.getMobile()) {
                 json.put("classID", classStudentUser.getClassID());
                 json.put("classStudentRegistered", Collections.singletonList(classStudentUser.getClassStudentRegistered()));
 //                sendMessage(json.toString());
@@ -213,31 +214,27 @@ public class SendMessageService implements ISendMessageService {
         }
 
 
-
-
-
     }
 
-    public ResponseEntity sendMessage( @RequestBody String data) throws IOException {
+    public ResponseEntity sendMessage(@RequestBody String data) throws IOException {
         List<Long> ids = new ArrayList<>();
         String type = "";
         String link = "";
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
-//        String personelAddress = request.getRequestURL().toString().replace(request.getServletPath(), "");
         Long classId = null;
         String courseName = "";
         String courseStartDate = "";
         String courseEndDate = "";
         String institute = "";
+        String department = "";
+        String unit = "";
+        String duration = "";
         String oMessage = "";
-        Integer maxRepeat = 0;
-        Integer timeBMessages = 0;
-        String code = null;
-        String pid = "";
-
-        TotalResponse<ParameterValueDTO.Info> parameter = null;
+        int maxRepeat = 0;
+        int timeBMessages = 0;
+        ParameterValue parameterValue;
 
         ObjectMapper objectMapper = new ObjectMapper();
 
@@ -246,19 +243,33 @@ public class SendMessageService implements ISendMessageService {
         maxRepeat = Integer.parseInt(jsonNode.get("maxRepeat").asText(""));
         timeBMessages = Integer.parseInt(jsonNode.get("timeBMessages").asText(""));
         link = jsonNode.get("link").asText("");
-
+        TclassDTO.Info tclassDTO = null;
         if (jsonNode.has("classID")) {
             classId = jsonNode.get("classID").asLong();
-            TclassDTO.Info tclassDTO = tclassService.get(classId);
+            tclassDTO = tclassService.get(classId);
             courseName = tclassDTO.getCourse().getTitleFa();
             courseStartDate = tclassDTO.getStartDate();
             courseEndDate = tclassDTO.getEndDate();
-            if (null!=tclassDTO.getInstitute())
-            institute = tclassDTO.getInstitute().getTitleFa();
+            if (null != tclassDTO.getInstitute())
+                institute = tclassDTO.getInstitute().getTitleFa();
             else
                 institute = "ثبت نشده";
-        }
-////////////////
+            if (null != tclassDTO.getComplexId())
+                department = complexDAO.findById(tclassDTO.getComplexId() != null ? tclassDTO.getComplexId() : null).get().getTitle();
+            else
+                department = "ثبت نشده";
+            if (null != tclassDTO.getHDuration())
+                duration = tclassDTO.getHDuration().toString();
+            else
+                duration = "ثبت نشده";
+
+
+            if (null != tclassDTO.getAffairsId())
+                unit = affairsDAO.findById(tclassDTO.getAffairsId() != null ? tclassDTO.getAffairsId() : null).get().getTitle();
+            else
+                unit = "ثبت نشده";
+
+        } ////////////////
 
 
         if (jsonNode.has("classStudent")) {        //ارزیابی فراگیران
@@ -288,7 +299,7 @@ public class SendMessageService implements ISendMessageService {
                     ids.add(objNode.asLong());
                 }
             }
-        }else if (jsonNode.has("classTeacher2")) { //کلاس  استاد
+        } else if (jsonNode.has("classTeacher2")) { //کلاس  استاد
             jsonNode = jsonNode.get("classTeacher2");
             type = "classTeacher2";
 
@@ -300,77 +311,54 @@ public class SendMessageService implements ISendMessageService {
         }
 
 
-//
-//
         if (ids.size() == 0) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        if (oMessage.length() == 0) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            parameterValue = parameterValueService.getIdByDescription(oMessage);
+        }
+
 //
-//checked
-        if (type.equals("classStudent")) {
 
-            code = "CS";
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        searchRq.setCount(1000);
+        searchRq.setStartIndex(0);
+        searchRq.setSortBy("id");
+        searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
 
-            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-            searchRq.setCount(1000);
-            searchRq.setStartIndex(0);
-            searchRq.setSortBy("id");
-            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
+        switch (type) {
+            case "classStudent":
+            case "classStudentRegistered": {
+                SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
 
-            SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
+                searchRs.getList().forEach(p -> {
+                            mobiles.add(p.getStudent().getContactInfo().getSmSMobileNumber());
+                            fullName.add(p.getFullName());
+                            prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
+                        }
+                );
+                break;
+            }
+            case "classTeacher":
+            case "classTeacher2": {
+                SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
 
-            searchRs.getList().forEach(p -> {
-                        mobiles.add(p.getStudent().getContactInfo().getSmSMobileNumber());
-                        fullName.add(p.getFullName());
-                        prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
-                    }
-            );
-        } else if (type.equals("classTeacher")) {
-            code = "Teacher";
-
-            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-            searchRq.setCount(1000);
-            searchRq.setStartIndex(0);
-            searchRq.setSortBy("id");
-            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
-
-            SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
-
-            searchRs.getList().forEach(p -> {
-                        mobiles.add(p.getPersonality().getContactInfo().getMobile());
-                        fullName.add(p.getFullName());
-                        prefixFullName.add(p.getPersonality().getGenderId() == null ? "جناب آقای/سرکار خانم" : (p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
-                    }
-            );
-        } else if (type.equals("classStudentRegistered")) {
-
-            code = "CSR";
-
-            SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-            searchRq.setCount(1000);
-            searchRq.setStartIndex(0);
-            searchRq.setSortBy("id");
-            searchRq.setCriteria(makeNewCriteria("id", ids, EOperator.inSet, null));
-
-            SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, c -> modelMapper.map(c, ClassStudentDTO.ClassStudentInfo.class));
-
-            searchRs.getList().forEach(p -> {
-                        mobiles.add(p.getStudent().getContactInfo().getSmSMobileNumber());
-                        fullName.add(p.getFullName());
-                        prefixFullName.add(p.getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (p.getStudent().getGender().equals("مرد") ? "جناب آقای" : (p.getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
-                    }
-            );
+                searchRs.getList().forEach(p -> {
+                            mobiles.add(p.getPersonality().getContactInfo().getMobile());
+                            fullName.add(p.getFullName());
+                            prefixFullName.add(p.getPersonality().getGenderId() == null ? "جناب آقای/سرکار خانم" : (p.getPersonality().getGenderId() == 1 ? "جناب آقای" : (p.getPersonality().getGenderId() == 2 ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
+                        }
+                );
+                break;
+            }
         }
 
         MessageDTO.Create oMessageModel = new MessageDTO.Create();
 
         oMessageModel.setContextText(oMessage);
         oMessageModel.setContextHtml(oMessage);
-
-        parameter = parameterService.getByCode("MessageUserType");
-
-        String finalCode = code;
-        ParameterValueDTO.Info parameterValue = modelMapper.map(((TotalResponse) parameter).getResponse().getData().stream().filter(p -> ((ParameterValueDTO.Info) p).getCode().equals(finalCode)).toArray()[0], ParameterValueDTO.Info.class);
 
         oMessageModel.setUserTypeId(parameterValue.getId());
         oMessageModel.setInterval(0);
@@ -379,31 +367,9 @@ public class SendMessageService implements ISendMessageService {
         oMessageModel.setMessageContactList(new ArrayList<>());
 
         TotalResponse<ParameterValueDTO.Info> pIds = parameterService.getByCode("MessageContent");
-        String textMessage = "";
+        String textMessage = parameterValue.getDescription();
 
-        ParameterValueDTO.Info prmv;
-
-        if (type.equals("classStudent")) {
-
-            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS1")).findFirst().orElseThrow(null);
-            pid = prmv.getValue();
-            textMessage = prmv.getDescription();
-
-        } else if (type.equals("classTeacher")) {
-
-            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MTeacher2")).findFirst().orElseThrow(null);
-            pid = prmv.getValue();
-            textMessage = prmv.getDescription();
-
-        } else if (type.equals("classStudentRegistered")) {
-
-            prmv = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCSR")).findFirst().orElseThrow(null);
-            pid = prmv.getValue();
-            textMessage = prmv.getDescription();
-
-        }
-
-        oMessageModel.setPId(pid);
+        oMessageModel.setPId(parameterValue.getValue());
         oMessageModel.setContextText(textMessage);
         oMessageModel.setContextHtml(" ");
 
@@ -413,31 +379,55 @@ public class SendMessageService implements ISendMessageService {
 
             String tmpLink = "";
 
-            if (type.equals("classStudent")) {
-                messageContact.setObjectType("ClassStudent");
-                tmpLink = link;
-            } else if (type.equals("classTeacher")) {
-                messageContact.setObjectType("Teacher");
-                tmpLink = link;
-            } else if (type.equals("classStudentRegistered")) {
-                messageContact.setObjectType("ClassStudent");
-                tmpLink = link;
+            switch (type) {
+                case "classStudent":
+                case "classStudentRegistered":
+                    messageContact.setObjectType("ClassStudent");
+                    tmpLink = link;
+                    break;
+                case "classTeacher":
+                case "classTeacher2":
+                    messageContact.setObjectType("Teacher");
+                    tmpLink = link;
+                    break;
             }
 
             messageContact.setObjectMobile(mobiles.get(i));
 
             List<MessageParameterDTO.Create> parameters = new ArrayList<>();
+            parameters.add(new MessageParameterDTO.Create("mrms", prefixFullName.get(i)));
             parameters.add(new MessageParameterDTO.Create("prefix-full_name", prefixFullName.get(i)));
+            parameters.add(new MessageParameterDTO.Create("username", fullName.get(i)));
             parameters.add(new MessageParameterDTO.Create("full-name", fullName.get(i)));
+            parameters.add(new MessageParameterDTO.Create("classname", courseName));
             parameters.add(new MessageParameterDTO.Create("course-name", courseName));
+            parameters.add(new MessageParameterDTO.Create("personnel-address", elsSmsUrl));
+            parameters.add(new MessageParameterDTO.Create("institute", institute));
 
-            if (type.equals("classStudent")) {
-                parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
-            } else if (type.equals("classTeacher")) {
-                parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
-            } else if (type.equals("classStudentRegistered")) {
-                parameters.add(new MessageParameterDTO.Create("personnel-address", tmpLink));
-                parameters.add(new MessageParameterDTO.Create("institute", institute));
+            switch (type) {
+                case "classStudent":
+                case "classTeacher":
+                    parameters.add(new MessageParameterDTO.Create("url",elsSmsUrl ));
+                    break;
+                case "classStudentRegistered":
+                    parameters.add(new MessageParameterDTO.Create("url", elsSmsUrl));
+                    parameters.add(new MessageParameterDTO.Create("institute", institute));
+                    parameters.add(new MessageParameterDTO.Create("duration", duration));
+                    parameters.add(new MessageParameterDTO.Create("startdate", courseStartDate));
+                    parameters.add(new MessageParameterDTO.Create("enddate", courseEndDate));
+                    parameters.add(new MessageParameterDTO.Create("department", department));
+                    parameters.add(new MessageParameterDTO.Create("unit", unit));
+                    parameters.add(new MessageParameterDTO.Create("uurl", tmpLink));
+                    break;
+                case "classTeacher2":
+                    parameters.add(new MessageParameterDTO.Create("url", elsSmsUrl));
+                    parameters.add(new MessageParameterDTO.Create("duration", duration));
+                    parameters.add(new MessageParameterDTO.Create("startdate", courseStartDate));
+                    parameters.add(new MessageParameterDTO.Create("enddate", courseEndDate));
+                    parameters.add(new MessageParameterDTO.Create("department", department));
+                    parameters.add(new MessageParameterDTO.Create("unit", unit));
+                    parameters.add(new MessageParameterDTO.Create("uurl", tmpLink));
+                    break;
             }
 
             messageContact.setMessageParameterList(parameters);
@@ -454,7 +444,7 @@ public class SendMessageService implements ISendMessageService {
 
             MessageContact messageContact = messageContactDAO.findById(result.getMessageContactList().get(i).getId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-            List<String> returnMessage = syncEnqueue(pid, convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList()), numbers);
+            List<String> returnMessage = syncEnqueue(parameterValue.getValue(), convertMessageParameterToMap(oMessageModel.getMessageContactList().get(i).getMessageParameterList(), parameterValue.getDescription()), numbers);
             Long returnMessageId = null;
 
             MessageContactLog log = new MessageContactLog();
@@ -488,9 +478,8 @@ public class SendMessageService implements ISendMessageService {
         if (maxRepeat > 0) {
 
             if (type.equals("classStudent")) {
-                pid = pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS2")).findFirst().orElseThrow(null).getValue();
-                oMessageModel.setPId(pid);
-                oMessageModel.setContextText(pIds.getResponse().getData().stream().filter(p -> p.getCode().equals("MCS2")).findFirst().orElseThrow(null).getDescription());
+                oMessageModel.setPId(parameterValue.getValue());
+                oMessageModel.setContextText(parameterValue.getDescription());
                 oMessageModel.setContextHtml(" ");
             }
 
@@ -504,13 +493,25 @@ public class SendMessageService implements ISendMessageService {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    private Map<String, String> convertMessageParameterToMap(List<MessageParameterDTO.Create> model) {
+    private Map<String, String> convertMessageParameterToMap(List<MessageParameterDTO.Create> model, String message) {
+
+        int count = 0;
+
+        for (int i = 0; i < message.length(); i++) {
+            if (message.charAt(i) == '%')
+                count++;
+        }
+        String[] parts = message.split("%");
         Map<String, String> parameters = new HashMap<>();
 
-        for (MessageParameterDTO.Create item : model) {
-            parameters.put(item.getName(), item.getValue());
-        }
+        for (int z = 0; z <= count; z++) {
+            if (z % 2 != 0) {
+                String data = parts[z];
+                parameters.put(data, Objects.requireNonNull(model.stream().filter(p -> p.getName().equals(data)).findFirst().orElse(null)).getValue());
+            }
 
+        }
         return parameters;
+
     }
 }

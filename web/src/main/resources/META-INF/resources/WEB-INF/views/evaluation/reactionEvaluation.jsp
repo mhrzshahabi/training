@@ -580,13 +580,14 @@
 
                                         MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                                         MSG_repeatOptions.getItem('timeBMessages').setValue(1);
-                                        linkFormMLanding.getItem('link').setValue('https://mobiles.nicico.com/');
-                                        linkFormMLanding.getItem('link').setRequired(true);
+                                        linkFormMLanding.getItem('link').setValue('');
+                                        linkFormMLanding.getItem('link').setRequired(false);
                                         linkFormMLanding.getItem('link').enable();
                                         MSG_Window_MSG_Main.show();
                                         RestDataSource_Messages_reaction.fetchDataURL =  parameterValueUrl + "/messages/evaluation/student";
                                         MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_reaction;
                                         MSG_main_layout.members[0].getField("messageType").fetchData();
+
 
 
 
@@ -710,12 +711,14 @@
                                         MSG_classID = row.id;
                                         MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                                         MSG_repeatOptions.getItem('timeBMessages').setValue(1);
-                                        linkFormMLanding.getItem('link').setValue('https://mobiles.nicico.com/');
-                                        linkFormMLanding.getItem('link').setRequired(true);
+                                        linkFormMLanding.getItem('link').setValue('');
+                                        linkFormMLanding.getItem('link').setRequired(false);
                                         linkFormMLanding.getItem('link').enable();
                                         MSG_Window_MSG_Main.show();
-                                        RestDataSource_Messages.fetchDataURL =  parameterValueUrl + "/messages/evaluation/teacher";
-                                        MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages;
+
+
+                                        RestDataSource_Messages_reaction.fetchDataURL =  parameterValueUrl + "/messages/evaluation/teacher";
+                                        MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_reaction;
                                         MSG_main_layout.members[0].getField("messageType").fetchData();
 
                                     }

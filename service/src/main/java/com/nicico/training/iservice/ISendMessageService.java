@@ -13,7 +13,7 @@ public interface ISendMessageService {
 
     List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients);
 
-    void scheduling();
+//    void scheduling();
     void sendSmsForUsers() throws IOException;
 
     ResponseEntity sendMessage( @RequestBody String data) throws IOException;

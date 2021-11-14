@@ -322,9 +322,9 @@
                                                     MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                                                     MSG_repeatOptions.getItem('timeBMessages').setValue(1);
                                                     linkFormMLanding.getItem('link').setValue('');
-                                                    linkFormMLanding.getItem('link').setRequired(true);
+                                                    linkFormMLanding.getItem('link').setRequired(false);
                                                     linkFormMLanding.getItem('link').enable();
-                                                    linkFormMLanding.getItem('link').setValue('https://mobiles.nicico.com/');
+                                                    linkFormMLanding.getItem('link').setValue('');
 
                                                     MSG_Window_MSG_Main.show();
                                                     RestDataSource_Messages_student.fetchDataURL =  parameterValueUrl + "/messages/class/student";
@@ -448,9 +448,9 @@
                                             MSG_repeatOptions.getItem('maxRepeat').setValue(0);
                                             MSG_repeatOptions.getItem('timeBMessages').setValue(1);
                                             linkFormMLanding.getItem('link').setValue('');
-                                            linkFormMLanding.getItem('link').setRequired(true);
+                                                    linkFormMLanding.getItem('link').setRequired(false);
                                             linkFormMLanding.getItem('link').enable();
-                                            linkFormMLanding.getItem('link').setValue('https://mobiles.nicico.com/');
+                                            linkFormMLanding.getItem('link').setValue('');
 
                                             MSG_Window_MSG_Main.show();
                                             RestDataSource_Messages_student.fetchDataURL = parameterValueUrl + "/messages/class/teacher";

@@ -382,7 +382,7 @@
                         ID: "linkFormMLanding",
                         width: "100%",
                         fields: [
-                            { name: "link", title: "لینک", controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false, validateOnExit: true,
+                            { name: "link", title: "لینک کلاس مجازی : ", controlStyle : "inputRTL",cellStyle  : "inputRTL",showRTL :false, validateOnExit: true,
                                 validators: [TrValidators.WebsiteValidate],},
                             { name: "messageType",hidden: true}
                         ]

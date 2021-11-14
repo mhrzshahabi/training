@@ -81,4 +81,8 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
              grid.setTotalRows(infos.size());
              return new TotalResponse<>(grid);
      }
+
+    public ParameterValue getIdByDescription(String message) {
+      return   dao.findFirstByDescription(message);
+    }
 }

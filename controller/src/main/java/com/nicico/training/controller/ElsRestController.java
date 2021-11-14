@@ -68,6 +68,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.controller.util.AppUtils.getPrefix;
+
 @Slf4j
 @RestController
 @RequestMapping("/anonymous/els")
@@ -130,65 +132,21 @@ public class ElsRestController {
             List<ClassStudent> classStudents = classStudentService.getClassStudents(evaluation.getClassId());
             List<EvalTargetUser> students = classStudents.stream()
                     .map(classStudent -> evaluationBeanMapper.toTargetUser(classStudent.getStudent())).collect(Collectors.toList());
-//            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
             TclassDTO.Info tclass = iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
             for (EvalTargetUser evalTargetUser : students) {
 
-                paramValMap.put("user_name", evalTargetUser.getLastName());
-                paramValMap.put("evaluation_title", String.format("%15s", tclass.getTitleClass()));
+                paramValMap.put("user_name",getPrefix(evalTargetUser.getGender())+ evalTargetUser.getLastName());
+                paramValMap.put("evaluation_title",  tclass.getTitleClass());
                 paramValMap.put("url", elsSmsUrl);
                 sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(evalTargetUser.getCellNumber()));
             }
         } catch (Exception e) {
             log.error("Exception evaluation ", e);
         }
-
-
         iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
         response.setStatus(200);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
-
-//        SendEvalToElsResponse response = new SendEvalToElsResponse();
-//        Evaluation evaluation = evaluationService.getById(id);
-//        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
-//
-//        if (!evaluationBeanMapper.validateTargetUser(request.getTeacher())) {
-//            response.setMessage("اطلاعات استاد تکمیل نیست");
-//            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-//
-//            return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-//        } else {
-//            try {
-//                request = evaluationBeanMapper.removeInvalidUsers(request);
-//                if (!request.getTargetUsers().isEmpty()) {
-//                    BaseResponse baseResponse = client.sendEvaluation(request);
-//                    response.setMessage(baseResponse.getMessage());
-//                    response.setStatus(baseResponse.getStatus());
-//                    if (baseResponse.getStatus() == 200)
-//                        iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
-//
-//                } else {
-//                    response.setMessage("دوره فراگیری با اطلاعات کامل ندارد.");
-//                    response.setStatus(HttpStatus.NOT_FOUND.value());
-//                    return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-//                }
-//
-//            } catch (Exception r) {
-//
-//                if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
-//                    response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-//                    response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-//                    return new ResponseEntity<>(response, HttpStatus.REQUEST_TIMEOUT);
-//
-//                } else {
-//                    response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-//                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-//                    return new ResponseEntity<>(response, HttpStatus.NOT_ACCEPTABLE);
-//                }
-//            }
-//            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
-//        }
     }
 
     @GetMapping("/teacherEval/{id}")
@@ -199,11 +157,10 @@ public class ElsRestController {
         Evaluation evaluation = evaluationService.getById(id);
         try {
             EvalTargetUser teacher = evaluationBeanMapper.toTeacher(personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
-//            Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
             TclassDTO.Info tclass = iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
-            paramValMap.put("user_name", teacher.getLastName());
-            paramValMap.put("evaluation_title", String.format("%15s", tclass.getTitleClass()));
+            paramValMap.put("user_name", getPrefix(teacher.getGender())+teacher.getLastName());
+            paramValMap.put("evaluation_title",  tclass.getTitleClass());
             paramValMap.put("url", elsSmsUrl);
             sendMessageService.syncEnqueue("c76g6vfs4l", paramValMap, Collections.singletonList(teacher.getCellNumber()));
 
@@ -213,33 +170,6 @@ public class ElsRestController {
         iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
         return new ResponseEntity<>(response, HttpStatus.OK);
 
-//        SendEvalToElsResponse response = new SendEvalToElsResponse();
-//        Evaluation evaluation = evaluationService.getById(id);
-//        ElsEvalRequest request = evaluationBeanMapper.toElsEvalRequest(evaluation, questionnaireService.get(evaluation.getQuestionnaireId()), classStudentService.getClassStudents(evaluation.getClassId()), evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluation.getId())), personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
-//        try {
-//            request = evaluationBeanMapper.removeInvalidUsers(request);
-//            BaseResponse baseResponse = client.sendEvaluationToTeacher(request);
-//            response.setMessage(baseResponse.getMessage());
-//            response.setStatus(baseResponse.getStatus());
-//            if (baseResponse.getStatus() == 200)
-//                iTclassService.changeOnlineEvalTeacherStatus(evaluation.getClassId(), true);
-//            else
-//                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
-//
-//        } catch (Exception r) {
-//
-//            if (r.getCause() != null && r.getCause().getMessage() != null && r.getCause().getMessage().equals("Read timed out")) {
-//                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-//                response.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-//                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
-//
-//            } else {
-//                response.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-//                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-//                return new ResponseEntity(response, HttpStatus.valueOf(response.getStatus()));
-//            }
-//        }
-//        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/evaluations/userEval/{evalId}")
