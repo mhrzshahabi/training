@@ -806,3 +806,6 @@
 
     // MSG_sendMsgForm.setDisabled(true); // true == enable  false == disable
     // MSG_toggleMessageType('sms', true)   // true == enable  false == disable
+
+
+// </script>

@@ -1154,5 +1154,9 @@ public class TeacherRestController {
         return ResponseEntity.ok(iTeacherRoleService.findAllRoleByTeacherId(teacherId));
     }
 
+    @GetMapping("/getAllTeacherByCurrentTerm/")
+    public ResponseEntity<List<TclassDTO.TClassCurrentTerm>> getAllTeacherByCurrentTerm(@RequestParam Long termId) throws NoSuchFieldException, IllegalAccessException {
+        return ResponseEntity.ok(tclassService.getAllTeacherByCurrentTerm(termId));
+    }
 
 }

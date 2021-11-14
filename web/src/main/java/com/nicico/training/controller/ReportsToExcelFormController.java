@@ -3,8 +3,10 @@ package com.nicico.training.controller;
 import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.RequestItemDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
 import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
 import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.ViewTrainingNeedAssessment;
@@ -21,10 +23,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -35,6 +34,7 @@ public class ReportsToExcelFormController {
     private final ModelMapper modelMapper;
     private final MakeExcelOutputUtil makeExcelOutputUtil;
     private final IRequestItemService iRequestItemService;
+    private final ITclassService iTclassService;
     private final ViewTrainingNeedAssessmentDAO viewTrainingNeedAssessmentDAO;
     private final IViewNeedAssessmentInRangeTimeService iViewNeedAssessmentInRangeTimeService;
 
@@ -115,6 +115,22 @@ public class ReportsToExcelFormController {
         if (requestItems != null) resp.addAll(requestItems);
 
         byte[] bytes = makeExcelOutputUtil.makeOutput(resp, RequestItemDTO.Info.class, fieldNames, headers, true, title);
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
+    }
+
+    @Loggable
+    @PostMapping("/currentTermTeacher")
+    public void currentTermTeacher(@RequestParam("termId") Long termId,
+                                   HttpServletResponse response) throws Exception {
+
+        List<Object> resp = new ArrayList<>();
+        List<TclassDTO.TClassCurrentTerm> currentTermResult = iTclassService.getAllTeacherByCurrentTerm(termId);
+        if (currentTermResult != null) resp.addAll(currentTermResult);
+
+        String[] fieldNames = {"teacher.personality.nationalCode", "teacher.personality.firstNameFa", "teacher.personality.lastNameFa", "code", "titleClass", "startDate", "endDate"};
+        String[] headerNames = {"کدملی استاد", "نام استاد", "نام خانوادگی استاد", "کدکلاس", "عنوان کلاس", "تاریخ شروع", "تاریخ پایان"};
+
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, TclassDTO.TClassCurrentTerm.class, fieldNames, headerNames, false, "");
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
 
