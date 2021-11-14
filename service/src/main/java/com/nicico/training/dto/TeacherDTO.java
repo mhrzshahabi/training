@@ -112,6 +112,7 @@ public class TeacherDTO {
         private Set<CategoryDTO.Info> categories;
         private Set<SubcategoryDTO.Info> subCategories;
         private Integer version;
+        private String lastClass;
 
         public String getFullName() {
             return personality.getFirstNameFa() + " " + personality.getLastNameFa();

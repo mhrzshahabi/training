@@ -42,7 +42,8 @@
             {name: "personality.contactInfo.homeAddress.id"},
             {name: "personality.contactInfo.workAddress.id"},
             {name: "personality.accountInfo.id"},
-            {name: "personality.educationLevelId"}
+            {name: "personality.educationLevelId"},
+            {name: "lastClass", canFilter: false, canSort: false}
         ],
         fetchDataURL: teacherUrl + "spec-list-grid"
     });
@@ -260,6 +261,14 @@
                 title: "<spring:message code='status'/>",
                 align: "center",
                 type: "boolean"
+            },
+            {
+                name: "lastClass",
+                title: "آخرین دعوت استاد",
+                align: "center",
+                filterOnKeypress: false,
+                canFilter: false,
+                canSort: false,
             }
         ],
         filterEditorSubmit: function () {
