@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
 
 // <script>
     var teacherMethod = "POST";
@@ -124,11 +125,174 @@
         ],
         fetchDataURL: teacherUrl + "spec-list"
     });
+
+    var RestDataSource_Year_Filter_JspTeacher = isc.TrDS.create({
+        fields: [
+            {name: "year"}
+        ],
+        fetchDataURL: termUrl + "years",
+        autoFetchData: true
+    });
+
+    var RestDataSource_Term_Filter_JspTeacher = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "code"},
+            {name: "startDate"},
+            {name: "endDate"}
+        ],
+        fetchDataURL: termUrl + "spec-list"
+    });
+
     //----------------------------------------------------Menu-------------------------------------------------------
     let ToolStripExcel_JspTeacher = isc.ToolStripButtonExcel.create({
         click: function () {
            ExportToFile.downloadExcelRestUrl(null, ListGrid_Teacher_JspTeacher, teacherUrl + "spec-list-grid", 0, null, '', "اجرا - استاد", ListGrid_Teacher_JspTeacher.getCriteria(), null);
     }
+    });
+
+    let DynamicForm_Term_Filter_JspTeacher = isc.DynamicForm.create({
+        width: "600",
+        height:  "50",
+        numCols: 4,
+        colWidths: ["10%", "30%", "10%", "50%"],
+        fields: [
+            {
+                name: "yearFilter",
+                title: "<spring:message code='year'/>",
+                colSpan: 1,
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                displayField: "year",
+                valueField: "year",
+                optionDataSource: RestDataSource_Year_Filter_JspTeacher,
+                filterFields: ["year"],
+                sortField: ["year"],
+                sortDirection: "descending",
+                useClientFiltering: true,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                },
+                pickListFields: [
+                    {
+                        name: "year",
+                        title: "<spring:message code='year'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    }
+                ],
+                changed: function (form, item, value) {
+                    form.getItem("termFilter").setValue();
+                    load_term_by_year(value);
+                },
+                dataArrived: function (startRow, endRow, data) {
+                    if (data.allRows[0].year !== undefined) {
+                        load_term_by_year(data.allRows[0].year);
+                    }
+                }
+            },
+            {
+                name: "termFilter",
+                title: "<spring:message code='term'/>",
+                colSpan: 1,
+                textAlign: "center",
+                type: "SelectItem",
+                multiple: false,
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_Filter_JspTeacher,
+                sortField: ["code"],
+                sortDirection: "descending",
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        }
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        }
+                    }
+                ],
+                changed: function (form, item, value) {
+                },
+                dataArrived: function (startRow, endRow, data) {
+                }
+            }
+        ]
+    });
+    let IButtonSave_CurrentTermTeacherExcel_JspTeacher = isc.IButtonSave.create({
+        title: "دریاقت اکسل",
+        width: 150,
+        click: function () {
+
+            let termId = DynamicForm_Term_Filter_JspTeacher.getValue("termFilter");
+            let downloadForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "/training/reportsToExcel/currentTermTeacher",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "termId", type: "hidden"},
+                    ]
+            });
+
+            downloadForm.setValue("termId", termId);
+            downloadForm.show();
+            downloadForm.submitForm();
+
+            Window_Term_Filter_JspTeacher.close();
+        }
+    });
+    let Window_Term_Filter_JspTeacher= isc.Window.create({
+        width: "600",
+        height:  "100",
+        title: "انتخاب ترم",
+        items: [
+            isc.HLayout.create({
+                width: "100%",
+                height: "60",
+                members: [DynamicForm_Term_Filter_JspTeacher]
+            }),
+            isc.TrHLayoutButtons.create({
+                width: "100%",
+                height: "40",
+                members: [
+                    IButtonSave_CurrentTermTeacherExcel_JspTeacher,
+                    isc.IButtonCancel.create({
+                        click: function () {
+                            Window_Term_Filter_JspTeacher.close();
+                        }
+                    })
+                ]
+            })
+        ]
+    });
+    let ToolStripCurrentTermTeacherExcel_JspTeacher = isc.ToolStripButtonExcel.create({
+        title: "لیست اساتید ترم...",
+        click: function () {
+            getCurrentYear();
+            getCurrentTermByYear_TeacherJSP();
+            Window_Term_Filter_JspTeacher.show();
+        }
     });
 
     //----------------------------------------------------ListGrid------------------------------------------------------
@@ -295,7 +459,6 @@
         filterEditorSubmit: function () {
             ListGrid_Teacher_JspTeacher.invalidateCache();
         },
-        cellHeight: 43,
         filterOperator: "iContains",
         filterOnKeypress: false,
         autoFetchData: true,
@@ -750,8 +913,9 @@
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('Teacher_P')">
-            ToolStripButton_Print_JspTeacher,
             ToolStripExcel_JspTeacher,
+            ToolStripCurrentTermTeacherExcel_JspTeacher,
+            ToolStripButton_Print_JspTeacher,
             ToolStripButton_Print_InfoForm_JspTeacher,
             ToolStripButton_Print_Empty_InfoForm_JspTeacher,
             </sec:authorize>
@@ -1566,6 +1730,34 @@
         oLoadAttachments_Teacher.ListGrid_JspAttachment.filterByEditor();
         ListGrid_JspInternalTeachingHistory.filterByEditor();
 
+    }
+
+    function load_term_by_year(value) {
+        let criteria = '{"fieldName":"startDate","operator":"iStartsWith","value":"' + value + '"}';
+        RestDataSource_Term_Filter_JspTeacher.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
+        DynamicForm_Term_Filter_JspTeacher.getItem("termFilter").fetchData();
+    }
+
+    function getCurrentYear() {
+        let todayYear = todayDate.split("/")[0];
+        DynamicForm_Term_Filter_JspTeacher.getField("yearFilter").setValue(todayYear);
+        DynamicForm_Term_Filter_JspTeacher.getField("yearFilter").changed(DynamicForm_Term_Filter_JspTeacher, DynamicForm_Term_Filter_JspTeacher.getItem("yearFilter"), todayYear);
+    }
+
+    function getCurrentTermByYear_TeacherJSP() {
+        isc.RPCManager.sendRequest({
+            actionURL: termUrl + "getCurrentTerm/" + DynamicForm_Term_Filter_JspTeacher.getField("yearFilter").getValue(),
+            httpMethod: "GET",
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            useSimpleHttp: true,
+            contentType: "application/json; charset=utf-8",
+            showPrompt: false,
+            serverOutputAsString: false,
+            callback: function (resp) {
+                let termId = JSON.parse(resp.httpResponseText);
+                DynamicForm_Term_Filter_JspTeacher.getField("termFilter").setValue(termId);
+            }
+        });
     }
 
     // </script>

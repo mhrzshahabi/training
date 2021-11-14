@@ -860,4 +860,16 @@ public class TclassDTO {
         private String acceptancelimit;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassCurrentTerm")
+    public static class TClassCurrentTerm {
+        private String code;
+        private String titleClass;
+        private String startDate;
+        private String endDate;
+        private TeacherDTO.TeacherCurrentTerm teacher;
+    }
+
 }

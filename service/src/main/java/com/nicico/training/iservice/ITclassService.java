@@ -156,4 +156,6 @@ public interface ITclassService {
 
     boolean getScoreDependency();
 
-}
+    List<TclassDTO.TClassCurrentTerm> getAllTeacherByCurrentTerm(Long termId) throws NoSuchFieldException, IllegalAccessException;
+
+    }

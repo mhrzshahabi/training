@@ -327,4 +327,16 @@ public class TeacherDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @ApiModel("TeacherCurrentTerm")
+    public static class TeacherCurrentTerm {
+        private Long id;
+        private PersonalInfoDTO.PersonalInfoCustom personality;
+
+        public String getFullNameFa() {
+            return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
+        }
+    }
 }

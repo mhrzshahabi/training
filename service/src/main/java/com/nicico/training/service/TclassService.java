@@ -15,6 +15,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.ITermService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.mapper.ClassSession.SessionBeanMapper;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
@@ -51,7 +52,10 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Calendar;
 import java.util.stream.Collectors;
+
+import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh;
 
 @Slf4j
 @Service
@@ -1934,5 +1938,24 @@ public class TclassService implements ITclassService {
                     return true;
             }
         } else throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
+
+    @Transactional
+    @Override
+    public List<TclassDTO.TClassCurrentTerm> getAllTeacherByCurrentTerm(Long termId) throws NoSuchFieldException, IllegalAccessException {
+
+        List<TclassDTO.TClassCurrentTerm> list = new ArrayList<>();
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq  criteriaRq = makeNewCriteria("term.id", termId, EOperator.equals, null);
+        searchRq.setCriteria(criteriaRq);
+        SearchDTO.SearchRs<TclassDTO.Info> response = search(searchRq);
+
+        for (TclassDTO.Info tClassInfo : response.getList()) {
+            Tclass tClass = getTClass(tClassInfo.getId());
+            TclassDTO.TClassCurrentTerm tClassCurrentTerm = tclassBeanMapper.toTClassCurrentTerm(tClass);
+            list.add(tClassCurrentTerm);
+        }
+        return list;
     }
 }
