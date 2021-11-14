@@ -4,8 +4,11 @@ import com.nicico.training.model.enums.EQuestionLevel;
 import io.swagger.models.auth.In;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
@@ -120,6 +123,12 @@ public class QuestionBank extends Auditable {
     @Column(name = "targets")
     private List<Integer> questionTargets;
 
+    @CreatedDate
+    @Column(name = "D_CREATED_DATE", nullable = false, updatable = false)
+    protected Date createdDate;
 
+    @CreatedBy
+    @Column(name = "C_CREATED_BY", nullable = false, updatable = false)
+    protected String createdBy;
 }
 

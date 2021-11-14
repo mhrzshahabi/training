@@ -149,6 +149,16 @@
                 name: "course.titleFa",
                 title: "<spring:message code="course"/>",
                 filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "createdBy",
+                title: "<spring:message code="created.by.user"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "createdDate",
+                title: "<spring:message code="create.date"/>",
+                filterOperator: "iContains", autoFitWidth: true
             }
 
         ],
@@ -421,6 +431,20 @@
             {name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; }},
             {name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; }},
             {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
+            {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
+            {name: "createdBy"},
+            {
+                name: "createdDate",
+                width: "10%",
+                align: "center",
+                canFilter: false,
+                formatCellValue: function (value) {
+                    if (value) {
+                        let date = new Date (value);
+                        return date.toLocaleDateString('fa-IR');
+                    }
+                }
+            },
         ],
         autoFetchData: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
