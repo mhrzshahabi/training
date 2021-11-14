@@ -106,4 +106,11 @@ public class ParameterValueRestController {
     public ResponseEntity<TotalResponse<ParameterValueDTO>> getMessages(@PathVariable String type,@PathVariable String target) throws IOException {
         return new ResponseEntity<>(parameterValueService.getMessages(type,target), HttpStatus.OK);
     }
+
+    @Loggable
+    @PutMapping(value = "/edit-parameter-value/{id}")
+    public ResponseEntity editParameterValue(@RequestParam String value,@RequestParam String title,@RequestParam String des,@RequestParam String code,@PathVariable Long id) {
+        parameterValueService.editParameterValue(value,title,des,code,id);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
 }
