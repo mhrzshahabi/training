@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -42,8 +43,8 @@ import request.exam.*;
 import response.BaseResponse;
 import response.PaginationDto;
 import response.attendance.AttendanceListSaveResponse;
-import response.evaluation.EvalListResponse;
 import response.evaluation.ElsEvaluationsListResponse;
+import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
 import response.evaluation.dto.ElsContactEvaluationDto;
 import response.evaluation.dto.EvalAverageResult;
@@ -113,6 +114,7 @@ public class ElsRestController {
     private final IRoleService iRoleService;
     private final SendMessageService sendMessageService;
     private final IRequestService iRequestService;
+    private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
 
     @Value("${nicico.elsSmsUrl}")
     private String elsSmsUrl;
@@ -1353,6 +1355,12 @@ public class ElsRestController {
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
+    }
+
+
+    @GetMapping("/assessment")
+    List<NeedAssessmentReportUserDTO> findNeedAssessmentByNationalCode(@RequestParam String nationalCode) {
+        return iNeedsAssessmentReportsService.findNeedAssessmentByNationalCode(nationalCode);
     }
 
 
