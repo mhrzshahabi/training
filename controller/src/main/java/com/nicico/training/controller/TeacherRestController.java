@@ -276,6 +276,14 @@ public class TeacherRestController {
                 o.setValue(Long.parseLong(o.getValue().get(0)+""));
             if(o.getFieldName().equalsIgnoreCase("subCategories"))
                 o.setValue(Long.parseLong(o.getValue().get(0)+""));
+            if(o.getFieldName().equalsIgnoreCase("personnelStatus")) {
+                if (o.getValue().get(0).equals("false")){
+                    o.setValue(0);
+                } else if (o.getValue().get(0).equals("true")){
+                    o.setValue(1);
+                }
+            }
+
         }
 
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
