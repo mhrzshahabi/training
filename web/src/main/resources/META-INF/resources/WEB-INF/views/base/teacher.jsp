@@ -43,7 +43,12 @@
             {name: "personality.contactInfo.workAddress.id"},
             {name: "personality.accountInfo.id"},
             {name: "personality.educationLevelId"},
-            {name: "lastClass", canFilter: false, canSort: false}
+            {name: "lastClass", canFilter: false, canSort: false},
+            {name: "personnelStatus",
+                valueMap: {
+                    "true":  "<spring:message code='company.staff'/>",
+                    "false": "<spring:message code='external.teacher'/>"
+                }}
         ],
         fetchDataURL: teacherUrl + "spec-list-grid"
     });
@@ -269,6 +274,22 @@
                 filterOnKeypress: false,
                 canFilter: false,
                 canSort: false,
+            },
+            {
+                name: "personnelStatus",
+                title: "<spring:message code='teacher.type'/>",
+                align: "center",
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },
+                filterOperator: "equals",
+                valueMap: {
+                    "true": "<spring:message code='company.staff'/>",
+                    "false": "<spring:message code='external.teacher'/>"
+                }
             }
         ],
         filterEditorSubmit: function () {
