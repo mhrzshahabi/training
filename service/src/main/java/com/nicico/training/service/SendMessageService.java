@@ -243,6 +243,8 @@ public class SendMessageService implements ISendMessageService {
         maxRepeat = Integer.parseInt(jsonNode.get("maxRepeat").asText(""));
         timeBMessages = Integer.parseInt(jsonNode.get("timeBMessages").asText(""));
         link = jsonNode.get("link").asText("ثبت نشده");
+        if (link==null || link.length()==0)
+            link="ثبت نشده";
         TclassDTO.Info tclassDTO = null;
         if (jsonNode.has("classID")) {
             classId = jsonNode.get("classID").asLong();
