@@ -10,9 +10,10 @@ import java.util.List;
 public class NeedAssessmentReportUserDTO {
     private String assessment;
     private List<CompetenceInfo> competenceInfoList;
+    private Double needAssessmentDurationCount;
+    private Double needAssessmentDurationPass;
     private Integer needAssessmentCount;
     private Long needAssessmentPassCount;
-    private Float needAssessmentDurationCount;
 
 
 
