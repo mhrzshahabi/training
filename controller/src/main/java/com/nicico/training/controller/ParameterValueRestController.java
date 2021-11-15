@@ -114,7 +114,7 @@ public class ParameterValueRestController {
         return new ResponseEntity(null, HttpStatus.OK);
     }
     @Loggable
-    @PutMapping(value = "/edit-parameter-value/{id}")
+    @PutMapping(value = "/edit-parameter-value-des/{id}")
     public ResponseEntity editDescription(@PathVariable Long id) {
         parameterValueService.editDescription(id);
         return new ResponseEntity(null, HttpStatus.OK);
