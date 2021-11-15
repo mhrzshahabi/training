@@ -96,7 +96,7 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
     }
     public void editDescription(Long id) {
         ParameterValue parameterValue=dao.findFirstById(id);
-        parameterValue.setDescription(parameterValue.getDescription().replace("<br />"," "));
+        parameterValue.setDescription(parameterValue.getDescription().replace("<br />"," ").replace("<br/>"," "));
         dao.save(parameterValue);
     }
 }
