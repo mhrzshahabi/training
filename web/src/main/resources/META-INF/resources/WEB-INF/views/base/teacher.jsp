@@ -1308,7 +1308,6 @@
                     MinIoUploadHttpRequest(formData1, data.url, data.groupId, personalInfo_showTempAttach_result);
 
                 }));
-                // TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
             }
         }
     }
@@ -1333,7 +1332,6 @@
                     MinIoUploadHttpRequest(formData1, data.url, data.groupId, personalInfo_showTempAttach_result);
 
                 }));
-            // TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
         }
         }
     }
@@ -1456,7 +1454,6 @@
             }
         }
     }
-
     function teacher_get_one_result(rpcResponse) {
         selected_record = JSON.parse(rpcResponse.data);
         Edit_teacher();
@@ -1538,20 +1535,12 @@
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
                     }
                 }
-
         }));
     }
-
     function fillPersonalInfoByPersonnelNumber(personnelCode) {
         isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
             "callback: personnel_findOne_result(rpcResponse)"));
     }
-
-    // function  fillPersonalInfoByNationalCode(nationalCode){
-    //     isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/byNationalCode/" + nationalCode, "GET", null,
-    //         "callback: personnel_findOne_result(rpcResponse)"));
-    // }
-
     function fillWorkAddressFields(postalCode) {
         if (postalCode !== undefined)
             isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,
@@ -1715,10 +1704,8 @@
         ListGrid_JspTeacherCertification.clearFilterValues();
         ListGrid_JspPublication.clearFilterValues();
         ListGrid_JspForeignLangKnowledge.clearFilterValues();
-        // setTimeout(()=> {
         if(oLoadAttachments_Teacher)
         oLoadAttachments_Teacher.ListGrid_JspAttachment.clearFilterValues();
-        // },0);
         ListGrid_JspAcademicBK.filterByEditor();
         ListGrid_JspEmploymentHistory.filterByEditor();
         ListGrid_JspTeachingHistory.filterByEditor();

@@ -10,7 +10,6 @@
         final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
     %>
 
-
     var MSG_textEditorValue = "";
 
     var MSG_sendTypesItems = [];
@@ -18,7 +17,6 @@
     var MSG_attachFiles = [];
     var MSG_userType = "";
     var MSG_classID;
-    //data from API
     var MSG_msgs = [
         { id: 1, title: '001', text: 'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است، چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است، و برای شرایط فعلی تکنولوژی مورد نیاز، و کاربردهای متنوع با هدف بهبود ابزارهای کاربردی می باشد، کتابهای زیادی در شصت و سه درصد گذشته حال و آینده، شناخت فراوان جامعه و متخصصان را می طلبد، تا با نرم افزارها شناخت بیشتری را برای طراحان رایانه ای علی الخصوص طراحان خلاقی، و فرهنگ پیشرو در زبان فارسی ایجاد کرد، در این صورت می توان امید داشت که تمام و دشواری موجود در ارائه راهکارها، و شرایط سخت تایپ به پایان رسد و زمان مورد نیاز شامل حروفچینی دستاوردهای اصلی، و جوابگوی سوالات پیوسته اهل دنیای موجود طراحی اساسا مورد استفاده قرار گیرد.' },
         { id: 2, title: '002', text: 'لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ، و با استفاده از طراحان گرافیک است،' },
@@ -86,8 +84,6 @@
         },
     });
 
-
-
     var MSG_attachMsgBtn =  isc.HTMLFlow.create({
         align: "center",
         contents: "<form class=\"MSG-uploadButton\" method=\"POST\" id=\"form\" action=\"\" enctype=\"multipart/form-data\"><label for=\"MSG-file-upload\" class=\"MSG-custom-file-upload\"><img src='static/img/msg/attach.png'> فایل پیوست </label><input id=\"MSG-file-upload\" type=\"file\" name=\"file[]\" name=\"attachPic\" onchange=\"MSG_upload()\" /></form>"
@@ -120,11 +116,6 @@
         },
     });
 
-
-
-
-
-
     var OAUserRestDataSource = isc.RestDataSource.create({
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -153,9 +144,6 @@
     });
 
 
-
-
-
     var MSG_selectUsersForm = isc.DynamicForm.create({
         width: "80%",
         fields: [
@@ -174,13 +162,6 @@
 
                 pickListProperties: {
                     showFilterEditor:true,
-                },
-                changed: function (form, item, value) {
-                    /*if(MSG_selectUsersForm.getItem("multipleSelect").getValue() == null){
-                        MSG_sendMsgForm.disable();
-                    }else{
-                        MSG_sendMsgForm.enable();
-                    }*/
                 }
             }
         ]
@@ -262,8 +243,6 @@
 
         ]
     });
-
-
 
     var MSG_repeatOptions = isc.DynamicForm.create({
         width: 400,
@@ -390,19 +369,6 @@
                 ],
 
             }),
-            // isc.HLayout.create({
-            //     ID:'MSGAttachContainer',
-            //     width: "80%",
-            //     height: "100%",
-            //     membersMargin:10,
-            //     layoutTopMargin: 10,
-            //     alignment: 'right',
-            //     align: "right",
-            //     vAlign: "center",
-            //     members: [
-            //
-            //     ]
-            // }),
             isc.HLayout.create({
                 width: "80%",
                 height: "100%",
@@ -425,17 +391,6 @@
                             MSG_repeatOptions
                         ]
                     })
-                    /*MSG_selectDefaultMsgBtn, MSG_saveDefaultMsgBtn,
-                    isc.HLayout.create({
-                        width: "80%",
-                        height: "100%",
-                        alignment: 'left',
-                        align: "left",
-                        vAlign: "center",
-                        members: [
-                            MSG_attachMsgBtn
-                        ]
-                    })*/
                 ]
             }),
             isc.LayoutSpacer.create({height: 20}),
@@ -474,9 +429,6 @@
             MSG_action_Btns_HLayout
         ]
     });
-
-
-
 
     /////////////////////////////////////////Functions
 
@@ -580,8 +532,6 @@
         })
     }
 
-
-
     function selectSendMessageType(item){
         var itemID = item.parentElement.id;
         item.parentElement.classList.toggle('MSG-select-icon')
@@ -679,8 +629,6 @@
 
     }
 
-
-
     function  MSG_setMsgItems() {
         var MSG_msgItems = [];
         for (let i = 0; i < MSG_msgs.length; i++) {
@@ -705,9 +653,6 @@
     }
 
     MSG_setMsgItems();
-
-
-
 
     function MSG_removeAttach(id){
         var finded = MSGAttachContainer.members.find(function (item){
@@ -752,8 +697,6 @@
 
         return MSG_typeHtmlFlow;
     }
-
-
     function MSG_initMSG(){
         MSG_Window_MSG_Main.clear()
         MSG_main_layout.members[0].getField("messageType").clearValue();
@@ -801,11 +744,5 @@
             this.close();
         },
     });
-
-    /*----------------------------------setDisable-----------------------------*/
-
-    // MSG_sendMsgForm.setDisabled(true); // true == enable  false == disable
-    // MSG_toggleMessageType('sms', true)   // true == enable  false == disable
-
 
 // </script>

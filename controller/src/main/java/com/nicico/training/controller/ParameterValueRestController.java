@@ -113,4 +113,10 @@ public class ParameterValueRestController {
         parameterValueService.editParameterValue(value,title,des,code,id);
         return new ResponseEntity(null, HttpStatus.OK);
     }
+    @Loggable
+    @PutMapping(value = "/edit-parameter-value/{id}")
+    public ResponseEntity editDescription(@PathVariable Long id) {
+        parameterValueService.editDescription(id);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
 }
