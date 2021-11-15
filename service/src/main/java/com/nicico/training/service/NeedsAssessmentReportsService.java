@@ -60,6 +60,8 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     protected EntityManager entityManager;
     private final ParameterValueDAO parameterValueDAO;
 
+    public static final String PASS = "گذرانده";
+
     @Transactional(readOnly = true)
 //    @Override
     public SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq request, Long objectId, String objectType, Long personnelId) {
@@ -550,7 +552,9 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
             });
             needAssessmentReportUserDTO.setCompetenceInfoList(competenceInfoList);
             needAssessmentReportUserDTO.setNeedAssessmentCount(competenceInfoList.size());
-            //needAssessmentReportUserDTO.setNeedAssessmentDurationCount(competenceInfoList.stream().map(competenceInfo -> competenceInfo.getCourseDuration()).collect(Collectors.toList()).stream().);
+            needAssessmentReportUserDTO.setNeedAssessmentDurationCount(competenceInfoList.stream().mapToDouble(NeedAssessmentReportUserDTO.CompetenceInfo::getCourseDuration).sum());
+            needAssessmentReportUserDTO.setNeedAssessmentPassCount(competenceInfoList.stream().filter(competenceInfo -> competenceInfo.getCourseState().equalsIgnoreCase(PASS)).count());
+            needAssessmentReportUserDTO.setNeedAssessmentDurationPass(competenceInfoList.stream().filter(competenceInfo -> competenceInfo.getCourseState().equalsIgnoreCase(PASS)).mapToDouble(NeedAssessmentReportUserDTO.CompetenceInfo::getCourseDuration).sum());
             reportUserDTOS.add(needAssessmentReportUserDTO);
         }
         return reportUserDTOS;
