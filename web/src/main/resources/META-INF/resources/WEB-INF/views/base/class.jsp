@@ -5,7 +5,8 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <%@include file="../messenger/MLanding.jsp" %>
-<%@include file="teacher.jsp" %>
+<%--<%@include file="teacher.jsp" %>--%>
+<jsp:include page="teacher.jsp" />
 
 // <script>
     wait.show();

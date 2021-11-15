@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
 
 // <script>
     var teacherMethod = "POST";
@@ -1745,19 +1744,10 @@
     }
 
     function getCurrentTermByYear_TeacherJSP() {
-        isc.RPCManager.sendRequest({
-            actionURL: termUrl + "getCurrentTerm/" + DynamicForm_Term_Filter_JspTeacher.getField("yearFilter").getValue(),
-            httpMethod: "GET",
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            showPrompt: false,
-            serverOutputAsString: false,
-            callback: function (resp) {
-                let termId = JSON.parse(resp.httpResponseText);
-                DynamicForm_Term_Filter_JspTeacher.getField("termFilter").setValue(termId);
-            }
-        });
+        isc.RPCManager.sendRequest(TrDSRequest(termUrl + "getCurrentTerm/" + DynamicForm_Term_Filter_JspTeacher.getField("yearFilter").getValue(), "GET",null, function (resp) {
+            let termId = JSON.parse(resp.httpResponseText);
+            DynamicForm_Term_Filter_JspTeacher.getField("termFilter").setValue(termId);
+        }));
     }
 
     // </script>
