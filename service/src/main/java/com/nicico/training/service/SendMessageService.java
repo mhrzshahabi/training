@@ -509,7 +509,7 @@ public class SendMessageService implements ISendMessageService {
         for (int z = 0; z <= count; z++) {
             if (z % 2 != 0) {
                 String data = parts[z];
-                parameters.put(data, Objects.requireNonNull(model.stream().filter(p -> p.getName().equals(data)).findFirst().orElse(null)).getValue());
+                parameters.put(data.trim(), Objects.requireNonNull(model.stream().filter(p -> p.getName().equals(data.trim())).findFirst().orElse(null)).getValue());
             }
 
         }

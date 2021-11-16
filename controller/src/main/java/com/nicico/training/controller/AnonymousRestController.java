@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 
+import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -69,11 +70,24 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AnonymousRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
+    private final ParameterValueService parameterValueService;
 
     @PostMapping("/changeContactInfo")
     public void changeContactInfo(@RequestBody List<Long> ids) {
         personnelRegisteredService.changeContactInfo(ids);
     }
 
+    @Loggable
+    @PutMapping(value = "/edit-parameter-value/{id}")
+    public ResponseEntity editParameterValue(@RequestParam String value,@RequestParam String title,@RequestParam String des,@RequestParam String code,@PathVariable Long id) {
+        parameterValueService.editParameterValue(value,title,des,code,id);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
+    @Loggable
+    @PutMapping(value = "/edit-parameter-value-des/{id}")
+    public ResponseEntity editDescription(@PathVariable Long id) {
+        parameterValueService.editDescription(id);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
 
 }

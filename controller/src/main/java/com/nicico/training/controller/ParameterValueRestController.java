@@ -114,9 +114,22 @@ public class ParameterValueRestController {
         return new ResponseEntity(null, HttpStatus.OK);
     }
     @Loggable
-    @PutMapping(value = "/edit-parameter-value-des/{id}")
-    public ResponseEntity editDescription(@PathVariable Long id) {
+    @PutMapping(value = "/del-space-parameter-value-des/{id}")
+    public ResponseEntity deleteSpaceDescription(@PathVariable Long id) {
         parameterValueService.editDescription(id);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
+    @Loggable
+    @PutMapping(value = "/edit-des-parameter-value-des/{id}")
+    public ResponseEntity editDesDescription(@PathVariable Long id,@RequestParam String des) {
+        parameterValueService.editDesDescription(id,des);
+        return new ResponseEntity(null, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/edit-code-parameter-value-des/{id}")
+    public ResponseEntity editCodeDescription(@PathVariable Long id,@RequestParam String code) {
+        parameterValueService.editCodeDescription(id,code);
         return new ResponseEntity(null, HttpStatus.OK);
     }
 }
