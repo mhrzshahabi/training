@@ -87,6 +87,9 @@ public class QuestionBankRestController {
         }
 
         if (StringUtils.isNotEmpty(sortBy)) {
+            if (sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel")){
+                sortBy = "eQuestionLevelId";
+            }
             request.setSortBy(sortBy);
         }
 
