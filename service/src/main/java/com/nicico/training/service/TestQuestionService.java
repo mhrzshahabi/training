@@ -153,7 +153,7 @@ public class TestQuestionService implements ITestQuestionService {
         for (QuestionBankDTO.Exam q : testQuestionBanks) {
             if (q.getQuestionType().getCode().equals("Descriptive")) {
                 for (int i = 0; i <= q.getLines(); i++) {
-                    q.setQuestion(q.getQuestion() + "\n");
+                    q.setQuestion(wrap_dir("rtl", q.getQuestion()) + "\n");
                 }
             }
         }
@@ -169,6 +169,19 @@ public class TestQuestionService implements ITestQuestionService {
         JsonDataSource jsonDataSource = null;
         jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
+    }
+
+    /**
+     * to make an String RTL or LTR
+     *
+     * @param dir
+     * @param str
+     * @return changed String base of dir
+     */
+    public static String wrap_dir(String dir, String str) {
+        if (dir == "rtl") return '\u202B' + str + '\u202C';
+        else if (dir == "ltr") return '\u202A' + str + '\u202C';
+        else return str;
     }
 
     @Override
