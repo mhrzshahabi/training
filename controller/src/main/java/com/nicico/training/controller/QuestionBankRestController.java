@@ -77,8 +77,9 @@ public class QuestionBankRestController {
             if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
             {
                 for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-                    if(criterion.getFieldName()!=null) {
-                        if (criterion.getFieldName().equals("eQuestionLevel.id") || criterion.getFieldName().equals("eQuestionLevel")) {
+                    if (criterion.getFieldName() != null) {
+                        if (criterion.getFieldName().equals("eQuestionLevel.id") || criterion.getFieldName().equals("eQuestionLevel") ||
+                                criterion.getFieldName().equals("equestionLevel.id") || criterion.getFieldName().equals("equestionLevel")) {
                             criterion.setFieldName("eQuestionLevelId");
                         }
                     }
@@ -87,7 +88,8 @@ public class QuestionBankRestController {
         }
 
         if (StringUtils.isNotEmpty(sortBy)) {
-            if (sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel")){
+            if (sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel") ||
+                    sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel")){
                 sortBy = "eQuestionLevelId";
             }
             request.setSortBy(sortBy);

@@ -132,7 +132,7 @@
                 autoFitWidth: true
             },
             {
-                name: "eQuestionLevel.titleFa",
+                name: "equestionLevel.titleFa",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
@@ -435,7 +435,7 @@
             {name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; }},
             {
-                name: "eQuestionLevel.id",
+                name: "equestionLevel.id",
                 optionDataSource: EQuestionLevelDS_questionBank,
                 title: "درجه سختی سوال",
                 // textAlign: "center",
