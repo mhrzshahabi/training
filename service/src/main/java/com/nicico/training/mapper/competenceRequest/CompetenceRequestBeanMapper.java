@@ -6,6 +6,7 @@ import com.nicico.training.model.CompetenceRequest;
 import com.nicico.training.model.enums.RequestType;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Qualifier;
 
@@ -23,12 +24,12 @@ public interface CompetenceRequestBeanMapper {
     CompetenceRequestDTO.Info toCompetenceRequestDto(CompetenceRequest competenceRequestResponse);
 
 
-    @Qualifier("RequestTypeToInt")
+    @Named("RequestTypeToInt")
     default int RequestTypeToInt(RequestType requestType) {
         return requestType.getId();
     }
 
-    @Qualifier("intToRequestType")
+    @Named("intToRequestType")
     default RequestType intToRequestType(int id) {
         return Arrays.stream(RequestType.values())
                 .filter(e -> e.getId() == id)

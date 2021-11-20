@@ -9,9 +9,8 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
-@SpringBootApplication(scanBasePackages = {"com.nicico"}, exclude = {SecurityAutoConfiguration.class})
+@SpringBootApplication(scanBasePackages = {"com.nicico.*"}, exclude = {SecurityAutoConfiguration.class})
 @EnableJpaAuditing(modifyOnCreate = false, auditorAwareRef = "auditorProvider")
-@EnableJpaRepositories("com.nicico")
 @EnableScheduling
 @EnableFeignClients
 @EnableCaching

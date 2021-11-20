@@ -1,6 +1,6 @@
 package com.nicico.training.service;
 
-import com.google.common.base.Joiner;
+import com.ibm.icu.impl.locale.XCldrStub;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -173,7 +173,7 @@ public class CourseService implements ICourseService {
         final Course parentCourse = getCourse(id);
         if (parentCourse.getEqualCourses() != null && !parentCourse.getEqualCourses().isEmpty()) {
             parentCourse.getEqualCourses().forEach(eqCourse -> {
-                String idEQ1 = Joiner.on('_').join(eqCourse.getEqualAndList().stream().map(Course::getId).collect(Collectors.toList()));
+                String idEQ1 = XCldrStub.Joiner.on("_").join(eqCourse.getEqualAndList().stream().map(Course::getId).collect(Collectors.toList()));
                 StringBuilder nameEQ1 = new StringBuilder();
                 eqCourse.getEqualAndList().forEach(course -> {
                     nameEQ1.append(" و ").append("'").append(course.getTitleFa()).append("(").append(course.getCode()).append(")").append("'");

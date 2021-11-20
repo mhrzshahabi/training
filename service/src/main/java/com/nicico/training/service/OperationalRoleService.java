@@ -116,7 +116,7 @@ public class OperationalRoleService implements IOperationalRoleService {
 
     @Override
     public String getWorkGroup(Long postId) {
-         Optional<OperationalRole> operationalRole = operationalRoleDAO.findByPostIdsIn(postId);
+         Optional<OperationalRole> operationalRole = operationalRoleDAO.findByPostIds(postId);
          if (operationalRole.isPresent())
              return operationalRole.get().getTitle();
          else return "گروه کاری ثبت نشده";

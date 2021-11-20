@@ -6,7 +6,6 @@ import com.nicico.copper.activiti.domain.*;
 import com.nicico.copper.activiti.domain.iservice.IBusinessWorkflowEngine;
 import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.core.util.file.FileUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.bpmn.model.BpmnModel;
@@ -21,7 +20,6 @@ import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.lang3.StringEscapeUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +40,6 @@ import java.util.*;
 @RequestMapping("/api/workflow")
 public class WorkflowRestController {
 
-    private final FileUtil fileUtil;
     private final ObjectMapper objectMapper;
     private final TaskService taskService;
     private final RuntimeService runtimeService;
@@ -64,8 +61,8 @@ public class WorkflowRestController {
 
                 if (fileName != null && !fileName.substring(fileName.lastIndexOf('.')).equalsIgnoreCase(".bpmn"))
                     return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-
-                uploadedFile = fileUtil.upload(file, bpmnUploadDir);
+                //TODO CHECK WHAT'S GOING ON HERE
+                //uploadedFile = fileUtil.upload(file, bpmnUploadDir);
                 stream = new FileInputStream(uploadedFile);
                 DeploymentBuilder deployment = repositoryService.createDeployment().addInputStream(uploadedFile.getName(), stream);
                 Deployment deployId = deployment.deploy();

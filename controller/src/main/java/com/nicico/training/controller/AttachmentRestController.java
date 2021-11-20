@@ -11,7 +11,6 @@ import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.mapper.fms.AttachmentMapper;
 import com.nicico.training.model.Attachment;
 import dto.fms.AttachmentDto;
-import io.minio.errors.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;

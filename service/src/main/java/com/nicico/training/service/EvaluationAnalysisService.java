@@ -108,7 +108,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     @Transactional
     @Override
     public void updateLearningEvaluation(Long classId, String scoringMethod) {
-        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
+        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findAllBytClassId(classId);
 
         final Optional<Tclass> sById = tclassDAO.findById(classId);
         final Tclass tclass = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
@@ -173,7 +173,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     @Transactional
     @Override
     public void updateReactionEvaluation(Long classId) {
-        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
+        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findAllBytClassId(classId);
         Map<String,Object> reactionResult = tclassService.getFERAndFETGradeResult(classId);
 
         final Optional<Tclass> sById = tclassDAO.findById(classId);
@@ -255,7 +255,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     @Transactional
     @Override
     public void updateBehavioral(Long classId) {
-        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
+        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findAllBytClassId(classId);
         EvaluationDTO.BehavioralResult behavioralResult =  evaluationService.getBehavioralEvaluationResult(classId);
         final Optional<Tclass> sById = tclassDAO.findById(classId);
         final Tclass tclass = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
@@ -692,7 +692,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
 
         Tclass tclass = tclassService.getTClass(classId);
         Map<String, Object> FECRResult = null;
-        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findByTClassId(classId);
+        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findAllBytClassId(classId);
         if(evaluationAnalyses != null && evaluationAnalyses.size() != 0){
             FECRResult = tclassService.calculateEffectivenessEvaluation(evaluationAnalyses.get(0).getReactionGrade(),felGradeS,evaluationAnalyses.get(0).getBehavioralGrade(),tclass.getEvaluation());
         }

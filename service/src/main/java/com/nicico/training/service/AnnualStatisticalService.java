@@ -1,6 +1,6 @@
 package com.nicico.training.service;
 
-import com.google.common.reflect.TypeToken;
+import com.google.gson.reflect.TypeToken;
 import com.nicico.training.dto.AnnualStatisticalReportDTO;
 import com.nicico.training.iservice.IAnnualStatisticalReport;
 import com.nicico.training.model.AnnualStatisticalReport;

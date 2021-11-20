@@ -6,6 +6,7 @@ import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.enums.RequestItemState;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Qualifier;
 import response.requestItem.RequestItemWithDiff;
@@ -27,14 +28,14 @@ public interface RequestItemBeanMapper {
     RequestItemDTO.Info toRequestItemDiffDto(RequestItemWithDiff requestItemWithDiff);
 
 
-    @Qualifier("StateToStr")
+    @Named("StateToStr")
     default String StateToStr(RequestItemState state) {
         if (state!=null)
         return state.getTitleFa();
         else return "";
     }
 //
-    @Qualifier("strToState")
+    @Named("strToState")
     default RequestItemState strToState(String title) {
         return Arrays.stream(RequestItemState.values())
                 .filter(e -> e.getTitleFa().equals(title))

@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface EvaluationAnalysisDAO extends JpaRepository<EvaluationAnalysis, Long>, JpaSpecificationExecutor<EvaluationAnalysis> {
 
-    List<EvaluationAnalysis> findByTClassId(Long classId);
+    List<EvaluationAnalysis> findAllBytClassId(Long classId);
 
-    void deleteByTClassId(Long id);
+    void deleteBytClassId(Long id);
 }

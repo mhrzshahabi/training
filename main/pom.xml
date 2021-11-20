@@ -40,6 +40,8 @@
             <artifactId>ehcache</artifactId>
             <version>3.8.1</version>
         </dependency>
+
+
     </dependencies>
 
     <build>
@@ -67,8 +69,7 @@
                     <dependency>
                         <groupId>org.hibernate</groupId>
                         <artifactId>hibernate-core</artifactId>
-                        <!-- <version>${hibernate.version}</version> -->
-                        <version>5.3.7.Final</version> <!--Spring-2.1.2: 5.3.7.Final-->
+                        <version>${hibernate.version}</version>
                     </dependency>
 
                     <dependency>
@@ -96,28 +97,10 @@
                     </dependency>
 
                     <dependency>
-                        <groupId>org.springframework.data</groupId>
-                        <artifactId>spring-data-jpa</artifactId>
-                        <version>2.1.4.RELEASE</version>
-                    </dependency>
-
-                    <dependency>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-starter-data-jpa</artifactId>
-                        <version>2.1.4.RELEASE</version>
-                    </dependency>
-
-                    <dependency>
                         <groupId>javax.validation</groupId>
                         <artifactId>validation-api</artifactId>
                         <version>2.0.1.Final</version>
                     </dependency>
-<!--                    <dependency>-->
-<!--                        <groupId>org.ehcache</groupId>-->
-<!--                        <artifactId>ehcache</artifactId>-->
-<!--                        <version>3.8.1</version>-->
-<!--                    </dependency>-->
-
                 </dependencies>
             </plugin>
         </plugins>

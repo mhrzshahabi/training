@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.core.util.file.FileInfo;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.InstituteDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
@@ -257,7 +256,6 @@ public class PersonalInfoRestController {
     @Transactional
     @PostMapping(value = "/addTempAttach")
     public ResponseEntity<String> addTempAttach(@RequestParam("file") MultipartFile file) throws IOException {
-        FileInfo fileInfo = new FileInfo();
         File destinationFile = null;
         String fileType = "";
         String fileName = "";
@@ -276,8 +274,8 @@ public class PersonalInfoRestController {
                 fileName = "Teacher_Photo"+fileType;
                 destinationFile = new File(tempUploadDir + File.separator + fileName);
                 file.transferTo(destinationFile);
-                fileInfo.setFileName(destinationFile.getPath());
-                fileInfo.setFileSize(file.getSize());
+               // fileInfo.setFileName(destinationFile.getPath());
+              //  fileInfo.setFileSize(file.getSize());
                 BufferedImage readImage = null;
                 readImage = ImageIO.read(new File(tempUploadDir + "/" + fileName));
                 int h = readImage.getHeight();
@@ -315,7 +313,8 @@ public class PersonalInfoRestController {
     @Transactional
     @PostMapping(value = "/addAttach/{Id}")
     public ResponseEntity<String> addAttach(@RequestParam("file") MultipartFile file, @PathVariable Long Id) {
-        FileInfo fileInfo = new FileInfo();
+        //TODO CHECK WHAT THE HELL IS GOING ON
+       // FileInfo fileInfo = new FileInfo();
         File destinationFile = null;
         String fileName = "";
         try {
@@ -330,8 +329,8 @@ public class PersonalInfoRestController {
                 fileName = "Teacher_Photo"+"_"+Id+fileType;
                 destinationFile = new File(personUploadDir + File.separator + fileName);
                 file.transferTo(destinationFile);
-                fileInfo.setFileName(destinationFile.getPath());
-                fileInfo.setFileSize(file.getSize());
+              //  fileInfo.setFileName(destinationFile.getPath());
+              // fileInfo.setFileSize(file.getSize());
                 personalInfo.setPhoto(fileName);
             } else
                 return new ResponseEntity<>(fileName, HttpStatus.NO_CONTENT);

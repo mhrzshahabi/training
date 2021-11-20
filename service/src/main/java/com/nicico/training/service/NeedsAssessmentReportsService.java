@@ -10,7 +10,7 @@ import com.nicico.training.mapper.needAssessmentGroupResult.NeedAssessmentGroupR
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections.map.MultiValueMap;
+import org.apache.commons.collections4.map.MultiValueMap;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
