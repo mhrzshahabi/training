@@ -265,7 +265,7 @@
                 filterOnKeypress: true,
                 filterOperator: "equals"
             },
-            // {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
+            {name: "sendForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true},
             {
                 name: "saveResults",
                 title: " ",
