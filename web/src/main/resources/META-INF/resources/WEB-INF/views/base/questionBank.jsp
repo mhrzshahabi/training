@@ -1496,6 +1496,8 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
                     QuestionBankDF_questionBank.getItem("descriptiveAnswer").disable();
                     QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").enable();
+                    QuestionBankDF_questionBank.getItem("hasAttachment").disable();
+
 
                     //QuestionBankDF_questionBank.getItem("option1").setRequired(true);
                     //QuestionBankDF_questionBank.getItem("option2").setRequired(true);
@@ -1513,7 +1515,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
                     QuestionBankDF_questionBank.getItem("descriptiveAnswer").enable();
                     QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").disable();
-
+                    QuestionBankDF_questionBank.getItem("hasAttachment").enable();
                     //QuestionBankDF_questionBank.getItem("option1").setRequired(false);
                     //QuestionBankDF_questionBank.getItem("option2").setRequired(false);
                     QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(false);
