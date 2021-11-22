@@ -2,7 +2,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
@@ -471,6 +473,95 @@
             ListGrid_REFR.fetchData(reportCriteria_REFR);
         }
     });
+    IButton_Excel_Report = isc.IButtonSave.create({
+        top: 260,
+        baseStyle: 'MSG-btn-orange',
+        icon: "<spring:url value="excel.png"/>",
+        title: "درخواست گزارش اکسل",
+        width: 300,
+        click: function () {
+
+            reportCriteria_REFR = null;
+            let form = DynamicForm_CriteriaForm_REFR;
+
+            if(form.getValue("endDate") == null || form.getValue("startDate") == null) {
+                createDialog("info","بازه کلاس مشخص نشده است");
+                return;
+            }
+
+            if(form.getValue("endDate") < form.getValue("startDate")) {
+                createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
+                return;
+            }
+            //TODO xaniar: plz create the critera
+            data_values = DynamicForm_CriteriaForm_REFR.getValuesAsAdvancedCriteria();
+            console.log("data_values:", data_values);
+
+            for (let i = 0; i < data_values.criteria.size(); i++) {
+
+                if (data_values.criteria[i].fieldName === "courseCategory") {
+                    data_values.criteria[i].fieldName = "categoryTitleFa";
+                    data_values.criteria[i].operator = "inSet";
+                } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
+                    data_values.criteria[i].fieldName = "subCategoryTitleFa";
+                    data_values.criteria[i].operator = "inSet";
+                } else if (data_values.criteria[i].fieldName === "startDate") {
+                    data_values.criteria[i].fieldName = "classStartDate";
+                    data_values.criteria[i].operator = "greaterOrEqual";
+                } else if (data_values.criteria[i].fieldName === "endDate") {
+                    data_values.criteria[i].fieldName = "classEndDate";
+                    data_values.criteria[i].operator = "lessOrEqual";
+                }
+            }
+
+            excelData = [];
+            excelData.add({
+                rowNum: "ردیف",
+                classCode: "کد کلاس",
+                complex: "مجتمع کلاس",
+                teacherNationalCode: "کد ملی استاد",
+                teacherName: "نام استاد",
+                teacherFamily: "نام خانوادگی استاد",
+                isPersonnel: "نوع استاد",
+                classStartDate: "تاریخ شروع",
+                classEndDate: "تاریخ پایان",
+                courseTitleFa: "نام دوره",
+                categoryTitleFa: "گروه",
+                subCategoryTitleFa: "زیرگروه",
+                studentsGradeToTeacher: "<spring:message code="reaction.formula.students.grade.to.teacher"/>",
+                trainingGradeToTeacher: "<spring:message code="reaction.formula.training.grade.to.teacher"/>",
+                teacherGradeToClass: "<spring:message code="reaction.formula.teacher.grade.to.class"/>",
+                answeredStudentsNum: "<spring:message code="reaction.formula.answered.students.num"/>",
+                allStudentsNum: "<spring:message code="reaction.formula.all.students.num"/>",
+                reactionEvaluationGrade: "<spring:message code="reaction.formula.reaction.evaluation.grade"/>",
+                evaluatedPercent: "<spring:message code="reaction.formula.evaluated.percent"/>",
+                evaluationStatus: "<spring:message code="reaction.formula.evaluation.status"/>"
+            });
+
+            wait.show();
+            isc.RPCManager.sendRequest({
+                // TODO xanir: plz add the link and criteria
+                actionURL: viewReactionEvaluationFormulaReportUrl + "/getExcelReport",
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                willHandleError: true,
+                httpMethod: "POST",
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                data: JSON.stringify(data_values),
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        IButton_Excel_Report.setDisabled(true)
+                    } else {
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                    }
+                }
+            });
+
+        }
+    });
     IButton_Clear_REFR = isc.IButtonSave.create({
         top: 260,
         title: "پاک کردن",
@@ -522,8 +613,9 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_Report_REFR,
-            IButton_Clear_REFR
+            // IButton_Report_REFR,
+            IButton_Clear_REFR,
+            IButton_Excel_Report
         ]
     });
     var ListGrid_REFR = isc.TrLG.create({
@@ -603,10 +695,10 @@
         border: "2px solid blue",
         padding: 20,
         members: [
-            ToolStrip_Actions_REFR,
+            // ToolStrip_Actions_REFR,
             VLayOut_CriteriaForm_REFR,
             HLayOut_Confirm_REFR,
-            ListGrid_REFR
+            // ListGrid_REFR
         ]
     });
 
