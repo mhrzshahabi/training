@@ -21,7 +21,15 @@
                         if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
                             oPersonnelInformationDetails.set_PersonnelInfo_Details(null);
                         }
-                    } else {
+                    } else if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_synonym_Personnel") {
+                        synonmPersonnelInfoListGrid_PersonnelList.clearFilterValues();
+                        synonmPersonnelInfoListGrid_PersonnelList.filterByEditor();
+                        synonmPersonnelInfoListGrid_PersonnelList.invalidateCache();
+                        if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                            oPersonnelInformationDetails.set_PersonnelInfo_Details(null);
+                        }
+                    }
+                    else {
                         PersonnelInfoListGrid_RegisteredPersonnelList.clearFilterValues();
                         PersonnelInfoListGrid_RegisteredPersonnelList.filterByEditor();
                         PersonnelInfoListGrid_RegisteredPersonnelList.invalidateCache();
@@ -176,6 +184,102 @@
                 },
                 fetchDataURL: personnelUrl + "/iscList"
             });
+            var synonPersonnelInfoDS_PersonnelList = isc.TrDS.create({
+                fields: [
+                    {name: "id", primaryKey: true, hidden: true},
+                    {
+                        name: "firstName",
+                        title: "<spring:message code="firstName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "lastName",
+                        title: "<spring:message code="lastName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "nationalCode",
+                        title: "<spring:message code="national.code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "companyName",
+                        title: "<spring:message code="company.name"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "personnelNo",
+                        title: "<spring:message code="personnel.no"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "personnelNo2",
+                        title: "<spring:message code="personnel.no.6.digits"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "postTitle",
+                        title: "<spring:message code="post"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "postCode",
+                        title: "<spring:message code="post.code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "ccpArea",
+                        title: "<spring:message code="reward.cost.center.area"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "ccpAssistant",
+                        title: "<spring:message code="reward.cost.center.assistant"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "ccpAffairs",
+                        title: "<spring:message code="reward.cost.center.affairs"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "ccpSection",
+                        title: "<spring:message code="reward.cost.center.section"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "ccpUnit",
+                        title: "<spring:message code="reward.cost.center.unit"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "contactInfo.smSMobileNumber",
+                        title: "<spring:message code="mobile"/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "contactInfo.email",
+                        title: "<spring:message code="email"/>",
+                        filterOperator: "iContains"
+                    }
+                ],
+                // transformRequest: function (dsRequest) {
+                //     let mobileFilter = dsRequest.data?.criteria?.filter(r => r.fieldName == 'contactInfo.smSMobileNumber')[0];
+                //     dsRequest?.sortBy?.forEach(r => {
+                //         dsRequest.sortBy[dsRequest?.sortBy.indexOf(r)] = r.replace('contactInfo.smSMobileNumber', 'contactInfo.mobile');
+                //     })
+                //
+                //     return this.Super("transformRequest", arguments);
+                // },
+                fetchDataURL: personnelUrl + "/Synonym/iscList"
+            });
 
 
             /*var PersonnelInfoDS_WebService_PersonnelList = isc.TrDS.create({
@@ -260,6 +364,58 @@
             var PersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
                 <sec:authorize access="hasAuthority('Personnel_R')">
                 dataSource: PersonnelInfoDS_PersonnelList,
+                </sec:authorize>
+                selectionType: "single",
+                dataPageSize: 20,
+                allowAdvancedCriteria: true,
+                autoFetchData: true,
+                fields: [
+                    {name: "id", hidden: true},
+                    {name: "firstName"},
+                    {name: "lastName"},
+                    {
+                        name: "nationalCode",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    },
+                    {name: "companyName"},
+                    {
+                        name: "personnelNo",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    },
+                    {
+                        name: "personnelNo2",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    },
+                    {name: "postTitle"},
+                    {
+                        name: "postCode",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9]"
+                        }
+                    },
+                    {name: "ccpArea"},
+                    {name: "ccpAssistant"},
+                    {name: "ccpAffairs"},
+                    {name: "ccpSection"},
+                    {name: "ccpUnit"},
+                    {name: "contactInfo.smSMobileNumber"},
+                    {name: "contactInfo.email"}
+                ],
+                recordClick: function () {
+                    if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
+                        oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedRecord());
+                    }
+                }
+            });
+            var synonmPersonnelInfoListGrid_PersonnelList = isc.TrLG.create({
+                <sec:authorize access="hasAuthority('Personnel_R')">
+                dataSource: synonPersonnelInfoDS_PersonnelList,
                 </sec:authorize>
                 selectionType: "single",
                 dataPageSize: 20,
@@ -540,6 +696,11 @@
             ID: "PersonnelList_Tab",
             tabBarPosition: "top",
             tabs: [
+                {
+                    id: "PersonnelList_Tab_synonym_Personnel",
+                    title: "<spring:message code='personnel.tab.synonym.personel'/>",
+                    pane: synonmPersonnelInfoListGrid_PersonnelList
+                },
                 {
                     id: "PersonnelList_Tab_Personnel",
                     title: "<spring:message code='personnel.tab.persone'/>",
