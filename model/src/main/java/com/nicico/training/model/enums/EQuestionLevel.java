@@ -17,4 +17,8 @@ public enum EQuestionLevel {
 
     private final Integer id;
     private final String titleFa;
+
+    public String getLiteral() {
+        return name();
+    }
 }
