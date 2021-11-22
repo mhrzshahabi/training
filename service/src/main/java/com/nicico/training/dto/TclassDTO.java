@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import response.tclass.ElsSessionDetailDto;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -870,6 +871,23 @@ public class TclassDTO {
         private String startDate;
         private String endDate;
         private TeacherDTO.TeacherCurrentTerm teacher;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassDataService")
+    public static class TClassDataService {
+        private String classCode;
+        private String courseCode;
+        private String courseTitle;
+        private String categoryName;
+        private String studentsNum;
+        private String teacherCode;
+        private String teacherName;
+        private String supervisorName;
+        private String organizerName;
+        private List<ElsSessionDetailDto> sessions;
     }
 
 }

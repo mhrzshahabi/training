@@ -9,6 +9,7 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
+import org.springframework.web.bind.annotation.PathVariable;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
@@ -157,5 +158,7 @@ public interface ITclassService {
     boolean getScoreDependency();
 
     List<TclassDTO.TClassCurrentTerm> getAllTeacherByCurrentTerm(Long termId) throws NoSuchFieldException, IllegalAccessException;
+
+    TclassDTO.TClassDataService getTClassDataService(@PathVariable String classCode);
 
     }

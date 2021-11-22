@@ -11,9 +11,9 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
 import com.nicico.training.model.TClassAudit;
-import org.modelmapper.ModelMapper;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
@@ -40,6 +40,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import response.BaseResponse;
+import response.tclass.ElsSessionResponse;
 import response.tclass.TclassCreateResponse;
 
 import javax.servlet.http.HttpServletResponse;
@@ -58,6 +59,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class TclassRestController {
 
     private final TclassService tClassService;
+    private final ITclassService iTclassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ClassAlarmService classAlarmService;
@@ -834,6 +836,12 @@ public class TclassRestController {
     @GetMapping(value = "/scoreDependsOnEvaluation")
     public boolean getScoreDependency() {
         return tClassService.getScoreDependency();
+    }
+
+    @Loggable
+    @GetMapping("/getTClassDataService/{classCode}")
+    public TclassDTO.TClassDataService getTClassDataService(@PathVariable String classCode) {
+        return iTclassService.getTClassDataService(classCode);
     }
 
 }
