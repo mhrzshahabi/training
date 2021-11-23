@@ -47,7 +47,6 @@
 
                             let tab = mainTabSet.tabs[mainTabSet.selectedTab];
                             if (tab.title == '<spring:message code="personnel.information"/>') {
-                                debugger
                                 switch (PersonnelList_Tab.getSelectedTab().id) {
                                     case "PersonnelList_Tab_synonym_Personnel":
                                         personnelType = 3 ;

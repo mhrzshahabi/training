@@ -152,4 +152,10 @@ public class SynonymPersonnel implements Serializable {
     @Transient
   private String workYears;
 
+    @Transient
+  private Post post;
+
+    @Transient
+  private Department department;
+
 }
