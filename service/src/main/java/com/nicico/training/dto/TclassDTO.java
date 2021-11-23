@@ -4,6 +4,8 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.ClassStudent;
+import com.nicico.training.model.Term;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -119,7 +121,6 @@ public class TclassDTO {
     }
 
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -192,6 +193,7 @@ public class TclassDTO {
             else return 0;
         }
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -870,6 +872,29 @@ public class TclassDTO {
         private String startDate;
         private String endDate;
         private TeacherDTO.TeacherCurrentTerm teacher;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassTimeDetails")
+    public static class TClassTimeDetails {
+
+        private String classCode;
+        private String courseCode;
+        private String courseTitleFa;
+        private String termTitleFa;
+        private String startDate;
+        private String endDate;
+        private  Long group;
+        private  Set<ClassSessionDTO.AttendanceClearForm> classSessions;
+        private Long studentsCount;
+        private TeacherDTO.TeacherInfo teacherInfo;
+        private String supervisorName;
+        private String plannerName;
+        private String organizer;
+
+
     }
 
 }
