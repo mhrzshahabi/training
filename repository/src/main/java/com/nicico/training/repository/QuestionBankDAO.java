@@ -44,6 +44,6 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
 
     Page<QuestionBank> findAllByTeacherId(Long teacherId, Pageable pageable);
 
-
+    Page<QuestionBank> findAll(Pageable pageable);
 
 }

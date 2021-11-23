@@ -56,6 +56,7 @@ public class QuestionBankDTO {
     @ApiModel("QuestionBank-CreateRq")
     public static class FullInfo extends QuestionBankDTO {
 
+        private Long id;
         private String option1;
         private String option2;
         private String option3;
