@@ -137,4 +137,13 @@ public class QuestionBankService implements IQuestionBankService {
         return questionBankDAO.findAllByTeacherId(teacherId,pageable);
     }
 
+    @Transactional
+    @Override
+    public Page<QuestionBank> findAll(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                Sort.Order.desc("id")
+        ));
+        return questionBankDAO.findAll(pageable);
+    }
+
 }
