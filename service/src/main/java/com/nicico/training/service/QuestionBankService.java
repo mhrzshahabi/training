@@ -81,6 +81,7 @@ public class QuestionBankService implements IQuestionBankService {
             model.setCodeId(1);
         model.setCode(model.getCodeId().toString());
         model.setEQuestionLevel(eQuestionLevelConverter.convertToEntityAttribute(request.getQuestionLevelId()));
+        model.setEQuestionLevelId(request.getQuestionLevelId());
         return save(model);
     }
 
@@ -95,6 +96,7 @@ public class QuestionBankService implements IQuestionBankService {
         model.setCategoryId(request.getCategoryId());
         model.setSubCategoryId(request.getSubCategoryId());
         model.setEQuestionLevel(eQuestionLevelConverter.convertToEntityAttribute(request.getQuestionLevelId()));
+        model.setEQuestionLevelId(request.getQuestionLevelId());
 
         QuestionBank updating = new QuestionBank();
         modelMapper.map(model, updating);
