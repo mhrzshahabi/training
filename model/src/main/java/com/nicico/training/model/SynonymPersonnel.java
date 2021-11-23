@@ -1,16 +1,24 @@
 package com.nicico.training.model;
 
 import lombok.*;
+import lombok.experimental.Accessors;
+import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
+
 
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-
-@Table(name = "tbl_SynonymPersonnel")
-public class SynonymPersonnel {
+@Subselect("select * from view_synonym_personnel")
+@DiscriminatorValue("viewSynonymPersonnel")
+public class SynonymPersonnel implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -140,6 +148,8 @@ public class SynonymPersonnel {
     //
     @Column(name = "c_username")
     private String userName;
-
+  //
+    @Transient
+  private String workYears;
 
 }

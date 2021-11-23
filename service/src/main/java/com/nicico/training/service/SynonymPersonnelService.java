@@ -11,20 +11,17 @@ import com.nicico.training.repository.SynonymPersonnelDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 @Service
 @RequiredArgsConstructor
 public class SynonymPersonnelService  {
     private final SynonymPersonnelDAO dao;
+    private final ModelMapper modelMapper;
 
-    public TotalResponse<SynonymPersonnel> getData(NICICOCriteria nicicoCriteria) {
-        GridResponse<SynonymPersonnel> gridResponse = new GridResponse<>();
-        gridResponse.setData(dao.getData());
-        gridResponse.setEndRow(5);
-        gridResponse.setTotalRows(5);
-        gridResponse.setStartRow(nicicoCriteria.get_startRow());
-        return new TotalResponse<>(gridResponse);
+    @Transactional(readOnly = true)
+    public TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request) {
+        return SearchUtil.search(dao, request, SynonymPersonnel -> modelMapper.map(SynonymPersonnel, PersonnelDTO.Info.class));
     }
-
 }

@@ -14,6 +14,7 @@ import com.nicico.training.dto.SysUserInfoModel;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.PersonnelRegistered;
+import com.nicico.training.model.SynonymPersonnel;
 import com.nicico.training.model.ViewActivePersonnelInRegistering;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class PersonnelService implements IPersonnelService {
 
     private final PersonnelDAO personnelDAO;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
+    private final SynonymPersonnelDAO synonymPersonnelDAO;
     private final ModelMapper modelMapper;
     private final PostDAO postDAO;
     private final TclassDAO tclassDAO;
@@ -254,6 +256,7 @@ public class PersonnelService implements IPersonnelService {
     public PersonnelDTO.DetailInfo findPersonnel(Long personnelType, Long personnelId, String nationalCode, String personnelNo) {
 
         PersonnelRegistered personnelRegistered = null;
+        SynonymPersonnel synonymPersonnel = null;
         Personnel personnel = null;
         List<Personnel> personnels = null;
         List<PersonnelRegistered> personnelRegistereds = null;
@@ -261,12 +264,14 @@ public class PersonnelService implements IPersonnelService {
         nationalCode = nationalCode.trim();
         personnelNo = personnelNo.trim();
 
-        if (personnelId > 0 && (personnelType == 1 || personnelType == 2)) {
+        if (personnelId > 0 && (personnelType == 1 || personnelType == 2 || personnelType == 3)) {
 
             if (personnelType == 1) {
                 personnel = personnelDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             } else if (personnelType == 2) {
                 personnelRegistered = personnelRegisteredDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            }else {
+                synonymPersonnel = synonymPersonnelDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             }
 
         } else if (StringUtils.isNotEmpty(nationalCode)) {
@@ -318,9 +323,13 @@ public class PersonnelService implements IPersonnelService {
             Long trainingTime = tclassDAO.getStudentTrainingTime(personnel.getNationalCode(), personnelNo, DateUtil.getYear());
             personnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
-        } else {
+        } else if (personnelRegistereds != null){
             Long trainingTime = tclassDAO.getStudentTrainingTime(personnelRegistered.getNationalCode(), personnelNo, DateUtil.getYear());
             personnelRegistered.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
+
+        } else if (synonymPersonnel != null){
+            Long trainingTime = tclassDAO.getStudentTrainingTime(synonymPersonnel.getNationalCode(), personnelNo, "DateUtil.getYear()");
+            synonymPersonnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
         }
         PersonnelDTO.DetailInfo result = null;
@@ -342,8 +351,11 @@ public class PersonnelService implements IPersonnelService {
                 result.setPostAssignmentDate(DateUtil.convertMiToKh(formatter.format(personnel.getPostAssignmentDate())));
             }
 
-        } else {
+        } else if (personnelRegistereds != null){
             result = modelMapper.map(personnelRegistered, PersonnelDTO.DetailInfo.class);
+        } else if (synonymPersonnel != null) {
+            result = modelMapper.map(synonymPersonnel, PersonnelDTO.DetailInfo.class);
+
         }
 
 

@@ -47,7 +47,18 @@
 
                             let tab = mainTabSet.tabs[mainTabSet.selectedTab];
                             if (tab.title == '<spring:message code="personnel.information"/>') {
-                                personnelType=PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? 1 : 2;
+                                debugger
+                                switch (PersonnelList_Tab.getSelectedTab().id) {
+                                    case "PersonnelList_Tab_synonym_Personnel":
+                                        personnelType = 3 ;
+                                        break;
+                                    case "PersonnelList_Tab_Personnel":
+                                        personnelType = 1 ;
+                                        break;
+                                    case "PersonnelList_Tab_RegisteredPersonnel":
+                                        personnelType = 2 ;
+                                        break;
+                                }
                             }
 
                             isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/findPersonnel/" + personnelType + "/" + personnelId + "/" + (nationalCode??' ') + "/" + personnelNo, "GET", null, function (resp) {

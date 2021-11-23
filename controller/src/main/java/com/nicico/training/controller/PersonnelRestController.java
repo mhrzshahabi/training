@@ -77,9 +77,12 @@ public class PersonnelRestController {
     }
 
     @GetMapping(value = "/Synonym/iscList")
-    public ResponseEntity<TotalResponse<SynonymPersonnel>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+//    public ResponseEntity<TotalResponse<SynonymPersonnel>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+        public ResponseEntity<TotalResponse<PersonnelDTO.Info>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(synonymPersonnelService.getData(nicicoCriteria), HttpStatus.OK);
+//        return new ResponseEntity<>(synonymPersonnelService.getData(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(synonymPersonnelService.search(nicicoCriteria), HttpStatus.OK);
+
     }
 
     @Loggable
