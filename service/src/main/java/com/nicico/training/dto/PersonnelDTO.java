@@ -128,6 +128,7 @@ public class PersonnelDTO implements Serializable {
         private String complexTitle;
         private String address;
         private String phone;
+        private String email;
         private ContactInfoDTO.Info contactInfo;
         private Long postId;
 

@@ -9,7 +9,6 @@ import com.nicico.training.model.Personnel;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public interface IPersonnelService {
 

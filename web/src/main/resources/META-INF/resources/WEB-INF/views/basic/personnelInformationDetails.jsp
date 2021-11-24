@@ -47,7 +47,17 @@
 
                             let tab = mainTabSet.tabs[mainTabSet.selectedTab];
                             if (tab.title == '<spring:message code="personnel.information"/>') {
-                                personnelType=PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? 1 : 2;
+                                switch (PersonnelList_Tab.getSelectedTab().id) {
+                                    case "PersonnelList_Tab_synonym_Personnel":
+                                        personnelType = 3 ;
+                                        break;
+                                    case "PersonnelList_Tab_Personnel":
+                                        personnelType = 1 ;
+                                        break;
+                                    case "PersonnelList_Tab_RegisteredPersonnel":
+                                        personnelType = 2 ;
+                                        break;
+                                }
                             }
 
                             isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/findPersonnel/" + personnelType + "/" + personnelId + "/" + (nationalCode??' ') + "/" + personnelNo, "GET", null, function (resp) {
@@ -152,8 +162,7 @@
                             wait.close();
                         }));
                     } else if (this.PersonnelInfo_Tab.getSelectedTab().id === "PersonnelInfo_Tab_JobInfo") {
-
-                        if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
+                        if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" || PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_synonym_Personnel") {
                             RestDataSource_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + selectedPersonnel.nationalCode;
                             ListGrid_PersonnelJobExperiences.fetchData();
                             ListGrid_PersonnelJobExperiences.invalidateCache();
@@ -1542,6 +1551,7 @@
                     },
                     {
                         id: "PersonnelInfo_Tab_ContactInfo",
+                        disabled: true,
                         title: "<spring:message code="contact.information"/>",
                         pane: isc.VLayout.create({
                             width: "30%",

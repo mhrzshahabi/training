@@ -40,4 +40,6 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
     List<Department> getRoot();
 
     Optional<Department> getByCode(String code);
+
+    Optional<Department> findFirstById(Long departmentId);
 }

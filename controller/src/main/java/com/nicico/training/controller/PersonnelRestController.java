@@ -19,16 +19,14 @@ import com.nicico.training.dto.SysUserInfoModel;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
-import com.nicico.training.model.PersonalInfo;
-import com.nicico.training.model.Personnel;
+import com.nicico.training.model.*;
 
-import com.nicico.training.model.Post;
-import com.nicico.training.model.ViewActivePersonnel;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.ViewActivePersonnelDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.PersonnelService;
+import com.nicico.training.service.SynonymPersonnelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -61,6 +59,7 @@ public class PersonnelRestController {
     final ReportUtil reportUtil;
     private final MessageSource messageSource;
     private final PersonnelService personnelService;
+    private final SynonymPersonnelService synonymPersonnelService;
     private final PersonnelDAO personnelDAO;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final IContactInfoService contactInfoService;
@@ -75,6 +74,15 @@ public class PersonnelRestController {
     public ResponseEntity<TotalResponse<PersonnelDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(personnelService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/Synonym/iscList")
+//    public ResponseEntity<TotalResponse<SynonymPersonnel>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+        public ResponseEntity<TotalResponse<PersonnelDTO.Info>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+//        return new ResponseEntity<>(synonymPersonnelService.getData(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(synonymPersonnelService.search(nicicoCriteria), HttpStatus.OK);
+
     }
 
     @Loggable
