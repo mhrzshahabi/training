@@ -53,8 +53,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh;
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -1898,17 +1896,6 @@ public class TclassService implements ITclassService {
         Tclass tclass = getClassByCode(classCode);
         if (tclass != null)
             return sessionBeanMapper.toGetElsSessionResponse(tclass);
-        else
-            throw new TrainingException(TrainingException.ErrorType.NotFound);
-    }
-
-    @Override
-    @Transactional
-    public TclassDTO.TClassDataService getTClassDataService(String classCode) {
-
-        Tclass tclass = getClassByCode(classCode);
-        if (tclass != null)
-            return sessionBeanMapper.toGetTClassDataService(tclass);
         else
             throw new TrainingException(TrainingException.ErrorType.NotFound);
     }

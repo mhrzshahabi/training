@@ -4,8 +4,6 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.ClassStudent;
-import com.nicico.training.model.Term;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -13,7 +11,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import response.tclass.ElsSessionDetailDto;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -887,15 +884,13 @@ public class TclassDTO {
         private String termTitleFa;
         private String startDate;
         private String endDate;
-        private  Long group;
-        private  Set<ClassSessionDTO.AttendanceClearForm> classSessions;
+        private Long group;
+        private Set<ClassSessionDTO.AttendanceClearForm> classSessions;
         private Long studentsCount;
         private TeacherDTO.TeacherInfo teacherInfo;
         private String supervisorName;
         private String plannerName;
         private String organizer;
-
-
     }
 
     @Getter
@@ -903,16 +898,16 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TClassDataService")
     public static class TClassDataService {
+
         private String classCode;
         private String courseCode;
         private String courseTitle;
-        private String categoryName;
-        private String studentsNum;
-        private String teacherCode;
-        private String teacherName;
+        private  Long group;
+        private Long studentsCount;
         private String supervisorName;
         private String organizerName;
-        private List<ElsSessionDetailDto> sessions;
+        private TeacherDTO.TeacherInfo teacherInfo;
+        private Set<ClassSessionDTO.AttendanceClearForm> sessions;
     }
 
 }

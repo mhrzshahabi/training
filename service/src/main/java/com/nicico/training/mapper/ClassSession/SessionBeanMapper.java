@@ -3,7 +3,6 @@ package com.nicico.training.mapper.ClassSession;
 
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.Tclass;
 import org.mapstruct.Mapper;
@@ -63,43 +62,6 @@ public abstract class SessionBeanMapper {
         elsSessionResponse.setUsers(elsSessionUsersDtos);
         elsSessionResponse.setSessions(elsSessionDetailDtos);
         return elsSessionResponse;
-    }
-
-    public TclassDTO.TClassDataService toGetTClassDataService(Tclass tclass) {
-
-        TclassDTO.TClassDataService tClassDataService = new TclassDTO.TClassDataService();
-        List<ElsSessionDetailDto> sessions = new ArrayList<>();
-
-        tclass.getClassSessions().forEach(session -> {
-
-            Calendar calendar = Calendar.getInstance();
-            Date gregorianSessionDate = convertToGregorianDate(session.getSessionDate());
-            calendar.setTime(gregorianSessionDate);
-
-            ElsSessionDetailDto elsSessionDetailDto = new ElsSessionDetailDto();
-            elsSessionDetailDto.setSessionId(session.getId());
-            elsSessionDetailDto.setDay(session.getDayName());
-            elsSessionDetailDto.setStartTime(session.getSessionStartHour());
-            elsSessionDetailDto.setEndTime(session.getSessionEndHour());
-            elsSessionDetailDto.setDateOfHolding(calendar.getTime().getTime());
-            elsSessionDetailDto.setAttendances(null);
-            elsSessionDetailDto.setTeacherAttendancePermission(null);
-
-            sessions.add(elsSessionDetailDto);
-        });
-        sessions.sort(Comparator.comparing(ElsSessionDetailDto::getDateOfHolding));
-
-        tClassDataService.setClassCode(tclass.getCode());
-        tClassDataService.setCourseCode(tclass.getCourse().getCode());
-        tClassDataService.setCourseTitle(tclass.getCourse().getTitleFa());
-        tClassDataService.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
-        tClassDataService.setStudentsNum(String.valueOf(tclass.getClassStudents().size()));
-        tClassDataService.setTeacherCode(tclass.getTeacher().getTeacherCode());
-        tClassDataService.setSupervisorName(tclass.getSupervisor().getFirstName() + " " + tclass.getSupervisor().getLastName());
-        tClassDataService.setOrganizerName(tclass.getOrganizer().getTitleFa());
-        tClassDataService.setSessions(sessions);
-
-        return tClassDataService;
     }
 
     protected Date convertToGregorianDate(String jalaliDate) {
