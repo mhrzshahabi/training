@@ -967,13 +967,41 @@ public class ElsRestController {
         }
     }
 
-    @PostMapping("/sendQuestions")
-    public BaseResponse addQuestions(HttpServletRequest header, @RequestBody ElsQuestionBankDto elsQuestionBankDto) {
+    @GetMapping("/questionBank/{page}/{size}")
+    public ElsQuestionBankDto getQuestionBank(HttpServletRequest header, @PathVariable Integer page, @PathVariable Integer size) {
 
-        BaseResponse response = new BaseResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
-                questionBankBeanMapper.toQuestionBankCreate(elsQuestionBankDto);
+                Page<QuestionBank> questionBankList = questionBankService.findAll(page, size);
+                ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), null);
+                PaginationDto paginationDto = new PaginationDto();
+                paginationDto.setCurrent(page);
+                paginationDto.setSize(size);
+                paginationDto.setTotal(questionBankList.getTotalPages());
+                paginationDto.setLast(questionBankList.getTotalPages() - 1);
+                paginationDto.setTotalItems(questionBankList.get().count());
+                questionBankDto.setPagination(paginationDto);
+                return questionBankDto;
+            } catch (Exception e) {
+                ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                elsQuestionDto.setStatus(500);
+                dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                return dto;
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @PostMapping("/sendQuestions")
+    public ElsAddQuestionResponse addQuestions(HttpServletRequest header, @RequestBody ElsQuestionBankDto elsQuestionBankDto) {
+
+        ElsAddQuestionResponse response = new ElsAddQuestionResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                List<QuestionBankDTO.Create> questionBankList = questionBankBeanMapper.toQuestionBankCreate(elsQuestionBankDto);
+                response.setQuestionId(questionBankList.get(0).getId());
                 response.setMessage("ذخیره سوالات با موفقیت انجام شد");
                 response.setStatus(HttpStatus.OK.value());
                 return response;
