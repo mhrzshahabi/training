@@ -322,4 +322,12 @@ public class PersonnelDTO implements Serializable {
         private String personnelNo;
         private String ccpAffairs;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class PersonnelName{
+        private String firstName;
+        private String lastName;
+    }
 }

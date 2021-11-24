@@ -223,4 +223,11 @@ public class PersonalInfoDTO {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    public static class FullName{
+        private String firstNameFa;
+        private String lastNameFa;
+    }
+
 }
