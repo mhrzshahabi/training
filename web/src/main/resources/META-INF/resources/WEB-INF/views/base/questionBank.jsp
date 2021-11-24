@@ -561,6 +561,15 @@
                 ],
                 endRow: false,
                 startRow: true,
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
                 pickListProperties: {
                     showFilterEditor: true
                 },
