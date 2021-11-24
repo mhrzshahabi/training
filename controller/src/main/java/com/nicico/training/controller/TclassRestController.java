@@ -13,7 +13,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
 import com.nicico.training.model.TClassAudit;
-import org.modelmapper.ModelMapper;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
@@ -73,7 +72,7 @@ public class TclassRestController {
     private final MessageSource messageSource;
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
-     private final TclassAuditMapper tclassBeanMapper;
+     private final TclassAuditMapper tclassAuditMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -818,7 +817,7 @@ public class TclassRestController {
     @GetMapping(value = "/audit/{classId}")
     public ResponseEntity<TclassDTO.InfoForAudit.TclassAuditSpecRs> getClassAuditData(@PathVariable Long classId) {
         List<TClassAudit> list=tClassService.getAuditData(classId);
-        List<TclassDTO.InfoForAudit> dto=tclassBeanMapper.toTclassesResponse(list);
+        List<TclassDTO.InfoForAudit> dto = tclassAuditMapper.toTclassesResponse(list);
         final TclassDTO.SpecAuditRs specResponse = new TclassDTO.SpecAuditRs();
         final TclassDTO.TclassAuditSpecRs specRs = new TclassDTO.TclassAuditSpecRs();
         specResponse.setData(dto)

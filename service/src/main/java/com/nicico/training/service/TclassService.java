@@ -15,7 +15,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.iservice.ITermService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.mapper.ClassSession.SessionBeanMapper;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
@@ -52,10 +51,7 @@ import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.Calendar;
 import java.util.stream.Collectors;
-
-import static com.nicico.copper.common.util.date.DateUtil.convertMiToKh;
 
 @Slf4j
 @Service
