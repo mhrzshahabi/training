@@ -32,7 +32,8 @@ public class ServiceTaskCompetence implements JavaDelegate {
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
 
         if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-            mainConfirmBoss = "pourfathian_a";
+//            mainConfirmBoss = "pourfathian_a";
+            mainConfirmBoss = "hajizadeh_mh";
         }
 
 

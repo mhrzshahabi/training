@@ -186,7 +186,7 @@ public class PersonnelService implements IPersonnelService {
     @Override
     @Transactional
     public PersonnelDTO.PersonalityInfo getByNationalCode(String nationalCode) {
-        Personnel[] optionalPersonnel = personnelDAO.findByNationalCode(nationalCode);
+        Personnel[] optionalPersonnel = personnelDAO.findByNationalCodeAndDeleted(nationalCode,0);
         if (optionalPersonnel != null && optionalPersonnel.length != 0)
             return modelMapper.map(optionalPersonnel[0], PersonnelDTO.PersonalityInfo.class);
         else

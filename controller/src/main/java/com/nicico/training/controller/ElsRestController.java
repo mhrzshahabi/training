@@ -1000,7 +1000,7 @@ public class ElsRestController {
         ElsAddQuestionResponse response = new ElsAddQuestionResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
-                List<QuestionBankDTO.Create> questionBankList = questionBankBeanMapper.toQuestionBankCreate(elsQuestionBankDto);
+                List<QuestionBankDTO.Info> questionBankList = questionBankBeanMapper.toQuestionBankCreate(elsQuestionBankDto);
                 response.setQuestionId(questionBankList.get(0).getId());
                 response.setMessage("ذخیره سوالات با موفقیت انجام شد");
                 response.setStatus(HttpStatus.OK.value());
