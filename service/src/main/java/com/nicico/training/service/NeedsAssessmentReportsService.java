@@ -526,9 +526,10 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     }
 
     @Transactional(readOnly = true)
-    public List<NeedAssessmentReportUserDTO> findNeedAssessmentByNationalCode(String nationalCode) {
+    public NeedAssessmentReportUserObj findNeedAssessmentByNationalCode(String nationalCode) {
         List<ParameterValue> allParameter = parameterValueDAO.findAll();
         List<NeedAssessmentReportUserDTO> reportUserDTOS = new ArrayList<>();
+        NeedAssessmentReportUserObj needAssessmentReportUserObj = new NeedAssessmentReportUserObj();
         PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(nationalCode);
         if (personalityInfo!=null && personalityInfo.getPostCode()!=null && personalityInfo.getPersonnelNo()!=null){
             List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(personalityInfo.getPostCode(), "Post", nationalCode, personalityInfo.getPersonnelNo());
@@ -558,8 +559,11 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
                 needAssessmentReportUserDTO.setNeedAssessmentDurationPass(competenceInfoList.stream().filter(competenceInfo -> competenceInfo.getCourseState().equalsIgnoreCase(PASS)).mapToDouble(NeedAssessmentReportUserDTO.CompetenceInfo::getCourseDuration).sum());
                 reportUserDTOS.add(needAssessmentReportUserDTO);
         }
+            needAssessmentReportUserObj.setReportUserDTOS(reportUserDTOS);
+            needAssessmentReportUserObj.setCode(personalityInfo.getPostCode());
+            needAssessmentReportUserObj.setPostTitle(personalityInfo.getPostTitle());
         }
-        return reportUserDTOS;
+        return needAssessmentReportUserObj;
     }
 
 

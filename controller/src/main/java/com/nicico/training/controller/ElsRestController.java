@@ -1317,7 +1317,7 @@ public class ElsRestController {
 
 
     @GetMapping("/assessment")
-    List<NeedAssessmentReportUserDTO> findNeedAssessmentByNationalCode(@RequestParam String nationalCode) {
+    NeedAssessmentReportUserObj findNeedAssessmentByNationalCode(@RequestParam String nationalCode) {
         return iNeedsAssessmentReportsService.findNeedAssessmentByNationalCode(nationalCode);
     }
 
