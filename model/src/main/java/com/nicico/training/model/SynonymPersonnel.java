@@ -148,14 +148,17 @@ public class SynonymPersonnel implements Serializable {
     //
     @Column(name = "c_username")
     private String userName;
-  //
+    //
+    @Column(name = "email")
+    private String email;
+    //
     @Transient
-  private String workYears;
+    private String workYears;
 
     @Transient
-  private Post post;
+    private Post post;
 
     @Transient
-  private Department department;
+    private Department department;
 
 }

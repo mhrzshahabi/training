@@ -260,12 +260,12 @@
                         filterOperator: "iContains"
                     },
                     {
-                        name: "contactInfo.smSMobileNumber",
+                        name: "phone",
                         title: "<spring:message code="mobile"/>",
                         filterOperator: "iContains"
                     },
                     {
-                        name: "contactInfo.email",
+                        name: "email",
                         title: "<spring:message code="email"/>",
                         filterOperator: "iContains"
                     }
@@ -456,8 +456,8 @@
                     {name: "ccpAffairs"},
                     {name: "ccpSection"},
                     {name: "ccpUnit"},
-                    {name: "contactInfo.smSMobileNumber"},
-                    {name: "contactInfo.email"}
+                    {name: "phone"},
+                    {name: "email"}
                 ],
                 recordClick: function () {
                     if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
@@ -473,8 +473,16 @@
                     {fieldName: "deleted", operator: "equals", value: 0}
                 ]
             };
+            let criteriaActiveSynonymPersonnel = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {fieldName: "deleted", operator: "equals", value: 0}
+                ]
+            };
 
             PersonnelInfoListGrid_PersonnelList.implicitCriteria = criteriaActivePersonnel;
+            synonmPersonnelInfoListGrid_PersonnelList.implicitCriteria = criteriaActiveSynonymPersonnel;
 
             /*var PersonnelInfoListGrid_WebService_PersonnelList = isc.TrLG.create({
                 dataSource: PersonnelInfoDS_WebService_PersonnelList,
@@ -698,7 +706,7 @@
             tabs: [
                 {
                     id: "PersonnelList_Tab_synonym_Personnel",
-                    title: "<spring:message code='personnel.tab.synonym.personel'/>",
+                    title: "<spring:message code='PersonnelList_Tab_synonym_Personnel'/>",
                     pane: synonmPersonnelInfoListGrid_PersonnelList
                 },
                 {
@@ -719,6 +727,15 @@
                 } else {
                     if (oPersonnelInformationDetails != null)
                         oPersonnelInformationDetails.PersonnelInfo_Tab.enableTab(oPersonnelInformationDetails.PersonnelInfo_Tab.tabs.filter(q => q.id === "PersonnelInfo_Tab_JobInfo").first());
+                }
+
+                    if (tab.title === "<spring:message code='PersonnelList_Tab_synonym_Personnel'/>") {
+
+                        if (oPersonnelInformationDetails != null)
+                        oPersonnelInformationDetails.PersonnelInfo_Tab.disableTab(oPersonnelInformationDetails.PersonnelInfo_Tab.tabs.filter(q => q.id === "PersonnelInfo_Tab_ContactInfo").first());
+                } else {
+                    if (oPersonnelInformationDetails != null)
+                        oPersonnelInformationDetails.PersonnelInfo_Tab.enableTab(oPersonnelInformationDetails.PersonnelInfo_Tab.tabs.filter(q => q.id === "PersonnelInfo_Tab_ContactInfo").first());
                 }
                 if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
                     oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedTab().id === "PersonnelList_Tab_Personnel" ?
@@ -778,8 +795,20 @@
                                 }
 
                                 ExportToFile.downloadExcelRestUrl(null, PersonnelInfoListGrid_PersonnelList, personnelUrl + "/iscList", 0, null, '', "گزارش پرسنل شرکتي", implicitCriteria, null);
-                            } else {
+                            } else if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_RegisteredPersonnel"){
                                 ExportToFile.downloadExcel(null, PersonnelInfoListGrid_RegisteredPersonnelList, 'registeredPersonnelInformationReport', 0, null, '', "گزارش پرسنل افراد متفرقه", PersonnelInfoListGrid_RegisteredPersonnelList.data.criteria, null);
+                            } else  if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_synonym_Personnel") {
+                                let implicitCriteria = JSON.parse(JSON.stringify(synonmPersonnelInfoListGrid_PersonnelList.getImplicitCriteria())) ;
+
+                                let criteria = synonmPersonnelInfoListGrid_PersonnelList.getCriteria();
+
+                                if(synonmPersonnelInfoListGrid_PersonnelList.getCriteria().criteria){
+                                    for (let i = 0; i < criteria.criteria.length ; i++) {
+                                        implicitCriteria.criteria.push(criteria.criteria[i]);
+                                    }
+                                }
+
+                                ExportToFile.downloadExcelRestUrl(null, synonmPersonnelInfoListGrid_PersonnelList, personnelUrl + "/Synonym/iscList", 0, null, '', "گزارش پرسنل کل سازمان", implicitCriteria, null);
                             }
                         }
                     }),
