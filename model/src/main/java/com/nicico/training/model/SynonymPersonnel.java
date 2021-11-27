@@ -62,9 +62,6 @@ public class SynonymPersonnel implements Serializable {
     @Column(name = "post_code")
     private String postCode;
 
-    @Column(name = "employment_type_title")
-    private String employmentTypeTitle;
-
     //
     @Column(name = "work_place_title")
     private String workPlaceTitle;
