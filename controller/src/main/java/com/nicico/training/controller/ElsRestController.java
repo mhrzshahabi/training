@@ -2,7 +2,6 @@ package com.nicico.training.controller;
 
 
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.minio.MinIoClient;
@@ -117,6 +116,7 @@ public class ElsRestController {
     private final SendMessageService sendMessageService;
     private final IRequestService iRequestService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
+    private final ISelfDeclarationService iSelfDeclarationService;
 
     @Value("${nicico.elsSmsUrl}")
     private String elsSmsUrl;
@@ -136,8 +136,8 @@ public class ElsRestController {
             Map<String, String> paramValMap = new HashMap<>();
             for (EvalTargetUser evalTargetUser : students) {
 
-                paramValMap.put("user_name",getPrefix(evalTargetUser.getGender())+ evalTargetUser.getLastName());
-                paramValMap.put("evaluation_title",  tclass.getTitleClass());
+                paramValMap.put("user_name", getPrefix(evalTargetUser.getGender()) + evalTargetUser.getLastName());
+                paramValMap.put("evaluation_title", tclass.getTitleClass());
                 paramValMap.put("url", elsSmsUrl);
                 sendMessageService.syncEnqueue("1ax63fg1dr", paramValMap, Collections.singletonList(evalTargetUser.getCellNumber()));
             }
@@ -159,8 +159,8 @@ public class ElsRestController {
             EvalTargetUser teacher = evaluationBeanMapper.toTeacher(personalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId()));
             TclassDTO.Info tclass = iTclassService.get(evaluation.getClassId());
             Map<String, String> paramValMap = new HashMap<>();
-            paramValMap.put("user_name", getPrefix(teacher.getGender())+teacher.getLastName());
-            paramValMap.put("evaluation_title",  tclass.getTitleClass());
+            paramValMap.put("user_name", getPrefix(teacher.getGender()) + teacher.getLastName());
+            paramValMap.put("evaluation_title", tclass.getTitleClass());
             paramValMap.put("url", elsSmsUrl);
             sendMessageService.syncEnqueue("c76g6vfs4l", paramValMap, Collections.singletonList(teacher.getCellNumber()));
 
@@ -1319,6 +1319,26 @@ public class ElsRestController {
     @GetMapping("/assessment")
     NeedAssessmentReportUserObj findNeedAssessmentByNationalCode(@RequestParam String nationalCode) {
         return iNeedsAssessmentReportsService.findNeedAssessmentByNationalCode(nationalCode);
+    }
+
+    @PostMapping("/self-declaration")
+    SelfDeclaration createMobileSelfDeclaration(@RequestBody SelfDeclarationDTO selfDeclarationDTO) {
+        return iSelfDeclarationService.create(selfDeclarationDTO);
+    }
+
+    @GetMapping("/self-declaration/isPresent")
+    boolean selfDeclarationIsPresent(@RequestParam String number) {
+        return iSelfDeclarationService.findByNumber(number);
+    }
+
+    @DeleteMapping("/self-declaration")
+    boolean removeMobileSelfDeclaration(@RequestParam String nationalCode , @RequestParam String mobileNumber) {
+        return iSelfDeclarationService.remove(nationalCode,mobileNumber);
+    }
+
+    @GetMapping("/self-declaration")
+    List<SelfDeclaration> findAllMobileSelfDeclarationByNationalCode(@RequestParam String nationalCode) {
+        return iSelfDeclarationService.findByNationalCode(nationalCode);
     }
 
 

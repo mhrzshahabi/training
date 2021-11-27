@@ -314,4 +314,7 @@
     <changeSet author="nick (generated)" id="1634364181560-551">
         <createSequence sequenceName="SEQ_OPERATIONAL_ROLE_ID"/>
     </changeSet>
+    <changeSet author="nima (generated)" id="1637992881035-556">
+        <createSequence sequenceName="self_declaration_id"/>
+    </changeSet>
 </databaseChangeLog>

@@ -3272,4 +3272,16 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="nima (generated)" id="1637992881035-559">
+        <createTable tableName="tbl_self_declaration">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_self_declarationPK"/>
+            </column>
+            <column name="CREATE_DATE" type="TIMESTAMP"/>
+            <column name="MOBILE_NUMBER" type="VARCHAR2(255 CHAR)"/>
+            <column name="NATIONAL_CODE" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>
