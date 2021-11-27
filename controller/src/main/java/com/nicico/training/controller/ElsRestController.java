@@ -1327,8 +1327,8 @@ public class ElsRestController {
     }
 
     @GetMapping("/self-declaration/isPresent")
-    boolean selfDeclarationIsPresent(@RequestParam String number) {
-        return iSelfDeclarationService.findByNumber(number);
+    boolean selfDeclarationIsPresent(@RequestParam String mobileNumber) {
+        return iSelfDeclarationService.findByNumber(mobileNumber);
     }
 
     @DeleteMapping("/self-declaration")
