@@ -1882,7 +1882,7 @@ public abstract class EvaluationBeanMapper {
                     break;
                 }
                 case "5": {
-                    examResultDto.setScore("-");
+                    examResultDto.setScore(examResultDto.getScore());
                     examResultDto.setResultStatus("نمره نهایی");
                     break;
                 }
