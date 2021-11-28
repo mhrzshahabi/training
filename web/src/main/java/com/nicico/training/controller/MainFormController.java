@@ -254,6 +254,9 @@ public class MainFormController {
         return "run/class-contract";
     }
 
+    @RequestMapping("/selfDeclaration")
+    public String showSelfDeclarationForm() { return "base/selfDeclaration"; }
+
     @PostMapping("/print/{entityUrl}/{type}")
     public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String entityUrl, @PathVariable String type) {
         String token = request.getParameter("myToken");
