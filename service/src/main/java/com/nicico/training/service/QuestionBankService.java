@@ -102,7 +102,7 @@ public class QuestionBankService implements IQuestionBankService {
         modelMapper.map(model, updating);
         modelMapper.map(request, updating);
 
-
+        updating.setId(id);
         updating.setQuestionTargets(request.getQuestionTargets());
         QuestionBank save = questionBankDAO.save(updating);
 
