@@ -367,7 +367,7 @@
     var IButton_NeedAssessment_add2_Report = isc.IButtonSave.create({
         top: 200,
         autoFit: true,
-        title: "اضافه کردن به لیست",
+        title: "اضافه کردن تکی به لیست ",
         click: function () {
             if (DynamicForm_needAssessment_MainReport.getValue("personnelCode") == null || DynamicForm_needAssessment_MainReport.getValue("personnelCode") == undefined) {
                 createDialog("info", " پرسنلی انتخاب نشده.");
@@ -392,6 +392,119 @@
             // this.addData({'id': dropRecords[i].id, 'title': dropRecords[i].title});
 
         }
+    });
+    var IButton_NeedAssessment_add2_ReportSample = isc.IButton.create({
+        top: 200,
+        autoFit: true,
+        title: "فرمت فایل ورودی",
+        click: function () {
+            window.open("excel/groupNeed.xlsx");
+
+        }
+    });
+    var fileNeedAssmentGroupDinamicForm = isc.DynamicForm.create({
+        height: "100%",
+        width:"100%",
+        numCols: 4,
+        colWidths: ["10%","40%","20%","20%"],
+        fields: [
+            {
+                ID:"fileNeedAssmentGroupDinamicForm",
+                name:"fileNeedAssmentGroupDinamicForm",
+                type:"imageFile",
+                title:"مسیر فایل",
+            }
+        ]
+    });
+    var uploadGropNeed = isc.DynamicForm.create({
+        height: "100%",
+        width:"100%",
+        numCols: 4,
+        colWidths: ["10%","40%","20%","20%"],
+        fields: [
+            {
+                type: "button",
+                startRow:false,
+                title: "اضافه کردن کلی به لیست",
+                click:function () {
+                    // let address=DynamicForm_GroupInsert_FileUploader_JspGoal.getValue();
+                    // if(address==null){
+                    //     createDialog("info", "فايل خود را انتخاب نماييد.");
+                    // }else{
+                    //     var ExcelToJSON = function() {
+                    //
+                    //         this.parseExcel = function(file) {
+                    //             var reader = new FileReader();
+                    //             var records = [];
+                    //
+                    //             reader.onload = function(e) {
+                    //                 var data = e.target.result;
+                    //                 var workbook = XLSX.read(data, {
+                    //                     type: 'binary'
+                    //                 });
+                    //                 var isEmpty=true;
+                    //                 workbook.SheetNames.forEach(function(sheetName) {
+                    //                     var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+                    //                     for(let i=0;i<XL_row_object.length;i++){
+                    //                         if(GroupSelectedPersonnelsLG_Goal.data.filter(function (item) {
+                    //                             return item.titleEn==Object.values(XL_row_object[i])[0] && item.titleFa==Object.values(XL_row_object[i])[1];
+                    //                         }).length==0){
+                    //                             let current={titleEn:Object.values(XL_row_object[i])[0], titleFa:Object.values(XL_row_object[i])[1]};
+                    //                             records.add(current);
+                    //                             isEmpty=false;
+                    //                             continue;
+                    //                         }
+                    //                         else{
+                    //                             isEmpty=false;
+                    //                             continue;
+                    //                         }
+                    //                     }
+                    //                     DynamicForm_GroupInsert_FileUploader_JspGoal.setValue('');
+                    //                 });
+                    //
+                    //                 if(records.length > 0){
+                    //
+                    //                     let uniqueRecords = [];
+                    //
+                    //                     for (let i=0; i < records.length; i++) {
+                    //                         if (uniqueRecords.filter(function (item) {return item.titleFa == records[i].titleFa && item.titleEn == records[i].titleEn;}).length==0) {
+                    //                             uniqueRecords.push(records[i]);
+                    //                         }
+                    //                     }
+                    //                     GroupSelectedPersonnelsLG_Goal.setData(GroupSelectedPersonnelsLG_Goal.data.concat(uniqueRecords));
+                    //                     GroupSelectedPersonnelsLG_Goal.invalidateCache();
+                    //                     GroupSelectedPersonnelsLG_Goal.fetchData();
+                    //
+                    //                     createDialog("info", "فایل به لیست اضافه شد.");
+                    //                 }else{
+                    //                     if(isEmpty){
+                    //                         createDialog("info", "خطا در محتویات فایل");
+                    //                     }else{
+                    //                         createDialog("info", "هدف جدیدی برای اضافه کردن وجود ندارد.");
+                    //                     }
+                    //                 }
+                    //             };
+                    //
+                    //             reader.onerror = function(ex) {
+                    //                 createDialog("info", "خطا در باز کردن فایل");
+                    //             };
+                    //
+                    //             reader.readAsBinaryString(file);
+                    //         };
+                    //     };
+                    //     let split=$('[name="DynamicForm_GroupInsert_FileUploader_JspGoal"]')[0].files[0].name.split('.');
+                    //
+                    //     if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
+                    //         var xl2json = new ExcelToJSON();
+                    //         xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_JspGoal"]')[0].files[0]);
+                    //     }else{
+                    //         createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+                    //     }
+                    //
+                    // }
+                }
+            }
+        ]
     });
 
     function print_OperationalUnitListGrid2(ref, name) {
@@ -686,12 +799,15 @@ top: 260,
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        width: "70%",
+        width: "50%",
         height: "1%",
         alignLayout: "center",
         padding: 4,
         members: [
             IButton_NeedAssessment_add2_Report,
+            IButton_NeedAssessment_add2_ReportSample,
+            fileNeedAssmentGroupDinamicForm,
+            uploadGropNeed
         ]
     });
     var HLayOut_inputs_report = isc.TrHLayoutButtons.create({
