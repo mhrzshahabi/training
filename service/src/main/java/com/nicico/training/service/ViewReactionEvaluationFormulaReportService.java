@@ -7,13 +7,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+
 @RequiredArgsConstructor
 @Service
 public class ViewReactionEvaluationFormulaReportService extends BaseService<ViewReactionEvaluationFormulaReport, Long, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDAO> {
 
+    private ViewReactionEvaluationFormulaReportDAO viewReactionEvaluationFormulaReportDAO;
+
+
     @Autowired
     ViewReactionEvaluationFormulaReportService(ViewReactionEvaluationFormulaReportDAO viewReactionEvaluationFormulaReportDAO) {
         super(new ViewReactionEvaluationFormulaReport(), viewReactionEvaluationFormulaReportDAO);
+        this.viewReactionEvaluationFormulaReportDAO = viewReactionEvaluationFormulaReportDAO;
+
     }
+
+
 
 }

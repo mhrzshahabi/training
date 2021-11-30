@@ -493,9 +493,7 @@
                 createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
                 return;
             }
-            //TODO xaniar: plz create the critera
             data_values = DynamicForm_CriteriaForm_REFR.getValuesAsAdvancedCriteria();
-            console.log("data_values:", data_values);
 
             for (let i = 0; i < data_values.criteria.size(); i++) {
 
@@ -516,49 +514,45 @@
 
             excelData = [];
             excelData.add({
-                rowNum: "ردیف",
-                classCode: "کد کلاس",
+                class_code: "کد کلاس",
+                class_status: "وضعیت کلاس",
                 complex: "مجتمع کلاس",
-                teacherNationalCode: "کد ملی استاد",
-                teacherName: "نام استاد",
-                teacherFamily: "نام خانوادگی استاد",
-                isPersonnel: "نوع استاد",
-                classStartDate: "تاریخ شروع",
-                classEndDate: "تاریخ پایان",
-                courseTitleFa: "نام دوره",
-                categoryTitleFa: "گروه",
-                subCategoryTitleFa: "زیرگروه",
-                studentsGradeToTeacher: "<spring:message code="reaction.formula.students.grade.to.teacher"/>",
-                trainingGradeToTeacher: "<spring:message code="reaction.formula.training.grade.to.teacher"/>",
-                teacherGradeToClass: "<spring:message code="reaction.formula.teacher.grade.to.class"/>",
-                answeredStudentsNum: "<spring:message code="reaction.formula.answered.students.num"/>",
-                allStudentsNum: "<spring:message code="reaction.formula.all.students.num"/>",
-                reactionEvaluationGrade: "<spring:message code="reaction.formula.reaction.evaluation.grade"/>",
-                evaluatedPercent: "<spring:message code="reaction.formula.evaluated.percent"/>",
-                evaluationStatus: "<spring:message code="reaction.formula.evaluation.status"/>"
+                teacher_national_code: "کد ملی استاد",
+                teacher: " استاد",
+                is_personnel: "نوع استاد",
+                class_start_date: "تاریخ شروع",
+                class_end_date: "تاریخ پایان",
+                course_code: "کد دوره",
+                course_titlefa: "نام دوره",
+                category_titlefa: "گروه",
+                sub_category_titlefa: "زیرگروه",
+                student: "فراگیر",
+                student_per_number: " شماره پرسنلی فراگیر",
+                student_post_title: " پست فراگیر",
+                student_post_code: "کد پست فراگیر",
+                student_hoze: "حوزه فراگیر",
+                student_omor: "امور فراگیر",
+                total_std: "تعداد کل فراگیران کلاس",
+                training_grade_to_teacher: "نمره ارزیابی آموزش به استاد",
+                teacher_grade_to_class: "نمره ارزیابی استاد به کلاس",
+                reactione_evaluation_grade: "نمره ارزیابی واکنشی  کلاس",
+                final_teacher: "نمره ارزیابی نهایی  مدرس",
+
             });
 
-            wait.show();
-            isc.RPCManager.sendRequest({
-                // TODO xanir: plz add the link and criteria
-                actionURL: viewReactionEvaluationFormulaReportUrl + "/getExcelReport",
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                willHandleError: true,
-                httpMethod: "POST",
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data_values),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    wait.close();
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        IButton_Excel_Report.setDisabled(true)
-                    } else {
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                    }
-                }
+            let downloadForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "/training/export/excel/formula",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "criteria", type: "hidden"},
+                    ]
             });
+            downloadForm.setValue("criteria", JSON.stringify(data_values));
+            downloadForm.show();
+            downloadForm.submitForm();
 
         }
     });
@@ -572,6 +566,8 @@
             DynamicForm_CriteriaForm_REFR.clearValues();
             DynamicForm_CriteriaForm_REFR.clearErrors();
             ListGrid_REFR.setFilterEditorCriteria(null);
+            IButton_Excel_Report.setDisabled(false)
+
         }
     });
     HLayout_Acceptance_REFR = isc.HLayout.create({
