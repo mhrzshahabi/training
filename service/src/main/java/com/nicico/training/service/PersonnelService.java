@@ -9,6 +9,8 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ImportedPersonnelAndPostModel;
+import com.nicico.training.dto.ImportedPersonnelAndPostRequest;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.SysUserInfoModel;
 import com.nicico.training.iservice.IPersonnelService;
@@ -37,6 +39,7 @@ public class PersonnelService implements IPersonnelService {
     private final SynonymPersonnelDAO synonymPersonnelDAO;
     private final ModelMapper modelMapper;
     private final PostDAO postDAO;
+    private final TrainingPostDAO trainingPostDAO;
     private final DepartmentDAO departmentDAO;
     private final TclassDAO tclassDAO;
     private final ViewActivePersonnelInRegisteringDAO viewActivePersonnelInRegisteringDAO;
@@ -190,6 +193,32 @@ public class PersonnelService implements IPersonnelService {
     @Override
     public Personnel getByPersonnelNumber(String personnelCode) {
         return personnelDAO.findPersonnelDataByPersonnelNumber(personnelCode);
+    }
+
+    @Override
+    public Set<ImportedPersonnelAndPostModel> getImportPostAndPersonnel(List<ImportedPersonnelAndPostRequest> personnelNos) {
+        Set<ImportedPersonnelAndPostModel> list= new HashSet<>();
+        for(ImportedPersonnelAndPostRequest importedPersonnelAndPostRequest:personnelNos){
+            Personnel    personnel= personnelDAO.findPersonnelDataByPersonnelNumber(importedPersonnelAndPostRequest.getPerssonelNumber());
+            Optional<TrainingPost> optionalPost = trainingPostDAO.findFirstByCode(importedPersonnelAndPostRequest.getCodePost());
+            if (personnel == null || !optionalPost.isPresent() ){
+                continue;
+            }
+            else{
+                TrainingPost post=optionalPost.get();
+                ImportedPersonnelAndPostModel importedPersonnelAndPostModel=new ImportedPersonnelAndPostModel();
+                importedPersonnelAndPostModel.setPersonnelId(personnel.getId().toString());
+                importedPersonnelAndPostModel.setPersonnelPersonnelNo(personnel.getPersonnelNo());
+                importedPersonnelAndPostModel.setPersonnelFirstName(personnel.getFirstName());
+                importedPersonnelAndPostModel.setPersonnelLastName(personnel.getLastName());
+                importedPersonnelAndPostModel.setPersonnelNationalCode(personnel.getNationalCode());
+                importedPersonnelAndPostModel.setPostId(post.getId().toString());
+                importedPersonnelAndPostModel.setPostCode(post.getCode());
+                importedPersonnelAndPostModel.setPostTitle(post.getTitleFa());
+                list.add(importedPersonnelAndPostModel);
+            }
+        }
+        return list;
     }
 
     //Unused

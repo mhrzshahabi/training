@@ -409,8 +409,8 @@
         colWidths: ["10%","40%","20%","20%"],
         fields: [
             {
-                ID:"fileNeedAssmentGroupDinamicForm",
-                name:"fileNeedAssmentGroupDinamicForm",
+                ID:"fileNeedAssmentGroupDinamicFormimage",
+                name:"fileNeedAssmentGroupDinamicFormimage",
                 type:"imageFile",
                 title:"مسیر فایل",
             }
@@ -427,81 +427,85 @@
                 startRow:false,
                 title: "اضافه کردن کلی به لیست",
                 click:function () {
-                    // let address=DynamicForm_GroupInsert_FileUploader_JspGoal.getValue();
-                    // if(address==null){
-                    //     createDialog("info", "فايل خود را انتخاب نماييد.");
-                    // }else{
-                    //     var ExcelToJSON = function() {
-                    //
-                    //         this.parseExcel = function(file) {
-                    //             var reader = new FileReader();
-                    //             var records = [];
-                    //
-                    //             reader.onload = function(e) {
-                    //                 var data = e.target.result;
-                    //                 var workbook = XLSX.read(data, {
-                    //                     type: 'binary'
-                    //                 });
-                    //                 var isEmpty=true;
-                    //                 workbook.SheetNames.forEach(function(sheetName) {
-                    //                     var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
-                    //                     for(let i=0;i<XL_row_object.length;i++){
-                    //                         if(GroupSelectedPersonnelsLG_Goal.data.filter(function (item) {
-                    //                             return item.titleEn==Object.values(XL_row_object[i])[0] && item.titleFa==Object.values(XL_row_object[i])[1];
-                    //                         }).length==0){
-                    //                             let current={titleEn:Object.values(XL_row_object[i])[0], titleFa:Object.values(XL_row_object[i])[1]};
-                    //                             records.add(current);
-                    //                             isEmpty=false;
-                    //                             continue;
-                    //                         }
-                    //                         else{
-                    //                             isEmpty=false;
-                    //                             continue;
-                    //                         }
-                    //                     }
-                    //                     DynamicForm_GroupInsert_FileUploader_JspGoal.setValue('');
-                    //                 });
-                    //
-                    //                 if(records.length > 0){
-                    //
-                    //                     let uniqueRecords = [];
-                    //
-                    //                     for (let i=0; i < records.length; i++) {
-                    //                         if (uniqueRecords.filter(function (item) {return item.titleFa == records[i].titleFa && item.titleEn == records[i].titleEn;}).length==0) {
-                    //                             uniqueRecords.push(records[i]);
-                    //                         }
-                    //                     }
-                    //                     GroupSelectedPersonnelsLG_Goal.setData(GroupSelectedPersonnelsLG_Goal.data.concat(uniqueRecords));
-                    //                     GroupSelectedPersonnelsLG_Goal.invalidateCache();
-                    //                     GroupSelectedPersonnelsLG_Goal.fetchData();
-                    //
-                    //                     createDialog("info", "فایل به لیست اضافه شد.");
-                    //                 }else{
-                    //                     if(isEmpty){
-                    //                         createDialog("info", "خطا در محتویات فایل");
-                    //                     }else{
-                    //                         createDialog("info", "هدف جدیدی برای اضافه کردن وجود ندارد.");
-                    //                     }
-                    //                 }
-                    //             };
-                    //
-                    //             reader.onerror = function(ex) {
-                    //                 createDialog("info", "خطا در باز کردن فایل");
-                    //             };
-                    //
-                    //             reader.readAsBinaryString(file);
-                    //         };
-                    //     };
-                    //     let split=$('[name="DynamicForm_GroupInsert_FileUploader_JspGoal"]')[0].files[0].name.split('.');
-                    //
-                    //     if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
-                    //         var xl2json = new ExcelToJSON();
-                    //         xl2json.parseExcel($('[name="DynamicForm_GroupInsert_FileUploader_JspGoal"]')[0].files[0]);
-                    //     }else{
-                    //         createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
-                    //     }
-                    //
-                    // }
+                    let address=fileNeedAssmentGroupDinamicFormimage.getValue();
+                    if(address==null){
+                        createDialog("info", "فايل خود را انتخاب نماييد.");
+                    }else{
+                        var ExcelToJSON = function() {
+
+                            this.parseExcel = function(file) {
+                                var reader = new FileReader();
+                                var records = [];
+
+                                reader.onload = function(e) {
+                                    var data = e.target.result;
+                                    var workbook = XLSX.read(data, {
+                                        type: 'binary'
+                                    });
+                                    var isEmpty=true;
+                                    workbook.SheetNames.forEach(function(sheetName) {
+                                        var XL_row_object = XLSX.utils.sheet_to_row_object_array(workbook.Sheets[sheetName]);
+
+                                        for(let i=0;i<XL_row_object.length;i++){
+                                                let current={perssonelNumber:Object.values(XL_row_object[i])[0], codePost:Object.values(XL_row_object[i])[1]};
+                                                records.add(current);
+                                                isEmpty=false;
+                                        }
+                                    });
+
+                                    if(records.length > 0){
+                                        wait.show();
+                                        isc.RPCManager.sendRequest(TrDSRequest(needAssessmentForGroup, "POST", JSON.stringify(records.toArray()), function (resp) {
+                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                wait.close();
+                                                createDialog("info", "فایل به لیست اضافه شد.");
+                                                fileNeedAssmentGroupDinamicFormimage.setValue('');
+                                                let excelData= JSON.parse(resp.data)
+                                                for(let i=0;i<excelData.length;i++){
+                                                    needAssessmentGrid1.addData({
+                                                        'personnelId': excelData[i].personnelId,
+                                                        'personnelPersonnelNo': excelData[i].personnelPersonnelNo,
+                                                        'personnelFirstName': excelData[i].personnelFirstName,
+                                                        'personnelLastName': excelData[i].personnelLastName,
+                                                        'personnelNationalCode': excelData[i].personnelNationalCode,
+                                                        'postId': excelData[i].postId,
+                                                        'postCode': excelData[i].postCode,
+                                                        'postTitle': excelData[i].postTitle
+                                                    });
+                                                }
+
+                                            } else {
+                                                wait.close();
+                                                createDialog("info", "خطایی رخ داده است");
+                                            }
+                                        }));
+
+                                    }else{
+                                        if(isEmpty){
+                                            createDialog("info", "خطا در محتویات فایل");
+                                        }else{
+                                            createDialog("info", "هدف جدیدی برای اضافه کردن وجود ندارد.");
+                                        }
+                                    }
+                                };
+
+                                reader.onerror = function(ex) {
+                                    createDialog("info", "خطا در باز کردن فایل");
+                                };
+
+                                reader.readAsBinaryString(file);
+                            };
+                        };
+                        let split=$('[name="fileNeedAssmentGroupDinamicFormimage"]')[0].files[0].name.split('.');
+
+                        if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
+                            var xl2json = new ExcelToJSON();
+                            xl2json.parseExcel($('[name="fileNeedAssmentGroupDinamicFormimage"]')[0].files[0]);
+                        }else{
+                            createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
+                        }
+
+                    }
                 }
             }
         ]
