@@ -898,7 +898,8 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TClassDataService")
     public static class TClassDataService {
-
+        private String classStatus;
+        private String classType;
         private String classCode;
         private String courseCode;
         private String courseTitle;

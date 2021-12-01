@@ -5,6 +5,7 @@ import com.nicico.training.model.*;
 import org.mapstruct.*;
 import org.springframework.transaction.annotation.Transactional;
 import response.tclass.dto.TclassDto;
+import java.util.List;
 
 import java.util.Set;
 
@@ -30,6 +31,9 @@ public interface TclassBeanMapper {
             @Mapping(target = "supervisorName",source = "supervisor",ignore = false,qualifiedByName = "getSupervisorName")
     })
     TclassDTO.TClassTimeDetails toTcClassTimeDetail(Tclass tclass);
+
+    List<TclassDTO.TClassTimeDetails> toTclassTimeDetailList(List<Tclass> tclasses);
+
 
     @Mappings({
             @Mapping(target = "classCode", source = "code"),

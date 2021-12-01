@@ -126,7 +126,10 @@ public class TrainingException extends NICICOException {
         TestQuestionNotFound(404),
         SkillSubCatIsNotEqualWithNASubCat(408),
         SkillCatIsNotEqualWithNACat(411),
-        NeedsAssessmentIsNotEditable(412);
+        NeedsAssessmentIsNotEditable(412),
+        InvalidClassStatus(405),
+        InvalidClassType(405);
+
 
         private final Integer httpStatusCode;
 

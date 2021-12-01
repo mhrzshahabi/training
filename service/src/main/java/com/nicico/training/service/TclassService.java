@@ -13,6 +13,8 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
+import com.nicico.training.dto.enums.ClassStatusDTO;
+import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.iservice.IWorkGroupService;
@@ -1954,4 +1956,30 @@ public class TclassService implements ITclassService {
         }
         return list;
     }
+
+    @Override
+    @Transactional
+    public List<Tclass> getClassesViaTypeAndStatus(ClassStatusDTO status, ClassTypeDTO classType) {
+        if(!(status.name()).equals("CANCEL") && (!status.name().equals("PLANNING"))  && !(status.name().equals("FINISH")) && !(status.name().equals("LOCK") ) && !(status.name().equals("INPROGRESS"))) {
+            throw new TrainingException(TrainingException.ErrorType.InvalidClassStatus);
+        }
+        if(!(classType.name()).equals("JOBTRAINING") && !(classType.name().equals("NOTPRESENCE")) && !(classType.name().equals("PRESENCE")) && !(classType.name().equals("RETRAINING") ) && !(classType.name().equals("SEMINAR")) && !(classType.name().equals("VIRTUAL" )) && !(classType.name().equals("WORKSHOP" ) ) ){
+            throw new TrainingException(TrainingException.ErrorType.InvalidClassType);
+        }
+
+
+        List<Long> longs=new ArrayList<>();
+        List<ParameterValue> parameterValues = parameterValueDAO.findAllByTitle(classType.getValue());
+        if(parameterValues!=null)
+            parameterValues.forEach(parameterValue -> longs.add(parameterValue.getId()));
+
+
+        List<Tclass> list=tclassDAO.findAllClassWithThisFilter(longs,status.getKey()+"");
+
+
+
+
+        return list;
+    }
+
 }
