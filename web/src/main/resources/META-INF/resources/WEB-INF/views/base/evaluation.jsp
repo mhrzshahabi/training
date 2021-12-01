@@ -44,7 +44,7 @@
             {name: "tclassSupervisor"},
             {name: "tclassTeachingType"},
             {name: "classTeacherOnlineEvalStatus"},
-            {name: "classStudentOnlineEvalStatus"}
+            {name: "teachingMethodTitle"}
         ],
         fetchDataURL: viewClassDetailUrl + "/iscList",
         implicitCriteria: {
@@ -511,22 +511,10 @@
                 autoFithWidth: true
             },
             {
-                name: "tclassTeachingType",
+                name: "teachingMethodTitle",
                 title: "روش آموزش",
-                filterOperator: "equals",
-                filterEditorProperties: {
-                    pickListProperties: {
-                        showFilterEditor: false,
-                        autoFitWidthApproach: "both"
-                    }
-                },
-                valueMap: [
-                    "حضوری",
-                    "غیر حضوری",
-                    "مجازی",
-                    "عملی و کارگاهی",
-                    "آموزش حین کار(OJT)"
-                ]
+                filterOperator: "iContains",
+                autoFithWidth: true
             },
             {name: "classScoringMethod", hidden: true},
             {name: "classPreCourseTest", hidden: true},
