@@ -35,7 +35,7 @@ public class LMSController {
     @GetMapping("/getCourseDetails/{classCode}")
     public ResponseEntity<TclassDTO.TClassTimeDetails> getCourseTimeDetails(@PathVariable String classCode) {
 
-        Tclass tclass= iTclassService.getClassByCode(classCode);
+       Tclass tclass= iTclassService.getClassByCode(classCode);
         if (tclass != null) {
             TclassDTO.TClassTimeDetails tClassTimeDetails = tclassBeanMapper.toTcClassTimeDetail(tclass);
             return ResponseEntity.ok(tClassTimeDetails);
@@ -53,8 +53,16 @@ public class LMSController {
             throw new TrainingException(TrainingException.ErrorType.TclassNotFound);
     }
 
+    /**
+     * classStatus  should be like this PLANNING,INPROGRESS,...
+     * classType should be like this JOBTRAINING,RETRAINING,...
+     *
+     * @param classStatus
+     * @param classType
+     * @return
+     */
     @GetMapping("/getCourseDetails")
-    public ResponseEntity<List<TclassDTO.TClassTimeDetails>> getCourseTimeDetailsViaStatusAndType(@RequestHeader ClassStatusDTO classStatus, @RequestHeader ClassTypeDTO classType){
+    public ResponseEntity<List<TclassDTO.TClassTimeDetails>> getCourseTimeDetailsViaStatusAndType(@RequestParam ClassStatusDTO classStatus, @RequestParam ClassTypeDTO classType){
         List<Tclass> classes=iTclassService.getClassesViaTypeAndStatus(classStatus,classType);
         List<TclassDTO.TClassTimeDetails> classDTOs=  tclassBeanMapper.toTclassTimeDetailList(classes);
         return ResponseEntity.ok(classDTOs);
