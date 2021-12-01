@@ -13,6 +13,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -99,6 +100,25 @@ public class ClassSessionDTO implements Serializable {
 
             return todayDate.compareTo(startingDate) >= 0 ? false : true;
         }
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassSessionsDetail")
+    public static class TClassSessionsDetail {
+        private String classCode;
+        private String courseCode;
+        private String courseTitleFa;
+        private Long group;
+        private String sessionDate;
+        private String sessionStartHour;
+        private String sessionEndHour;
+        private Long studentsCount;
+        private TeacherDTO.TeacherInfo teacherInfo;
+        private String supervisorName;
+        private String plannerName;
     }
 
     //*********************************
