@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -261,23 +262,39 @@
 
     var Menu_ListGrid_Institute_Institute = isc.Menu.create({
         width: 150,
-        data: [{
-            title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_Institute_Institute_refresh();
-            }
-        }, {
-            title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
-                ListGrid_Institute_Institute_Add();
-            }
-        }, {
-            title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
-                ListGrid_Institute_Institute_Edit();
-            }
-        }, {
-            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
-                ListGrid_Institute_Institute_Remove();
-            }
-        }, {isSeparator: true},
+        data: [
+            <sec:authorize access="hasAuthority('Institute_R')">
+            {
+                title: "<spring:message code='refresh'/>",
+                icon: "<spring:url value="refresh.png"/>",
+                click: function () {
+                    ListGrid_Institute_Institute_refresh();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Institute_C')">
+            {
+                title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
+                    ListGrid_Institute_Institute_Add();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Institute_U')">
+            {
+                title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                    ListGrid_Institute_Institute_Edit();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Institute_D')">
+            {
+                title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                    ListGrid_Institute_Institute_Remove();
+                }
+            },
+            </sec:authorize>
+            {isSeparator: true},
+            <sec:authorize access="hasAuthority('Institute_P')">
             {
                 title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                     ListGrid_institute_print("pdf");
@@ -296,8 +313,9 @@
                 click: function () {
                     ListGrid_institute_print("html");
                 }
-            }]
-
+            }
+            </sec:authorize>
+        ]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -307,7 +325,9 @@
     var ListGrid_Institute_Institute = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('Institute_R')">
         dataSource: RestDataSource_Institute_Institute,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Institute_Institute,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -406,9 +426,11 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
+        <sec:authorize access="hasAuthority('Institute_U')">
         doubleClick: function () {
             ListGrid_Institute_Institute_Edit();
         },
+        </sec:authorize>
         selectionChanged: function (record, state) {
             if (record == null) {
                 RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + "equipment-dummy";
@@ -546,9 +568,11 @@
         dataPageSize: 50,
         autoFetchData: false,
         showFilterEditor: false,
+        <sec:authorize access="hasAuthority('Institute_U')">
         doubleClick: function () {
             Function_Institute_TrainingPlace_Edit();
         },
+        </sec:authorize>
         selectionChanged: function (record, state) {
             if (record == null) {
                 RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = "";
@@ -1706,7 +1730,11 @@
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_Equipment_Add, ToolStripButton_Institute_Equipment_Delete, ToolStripButton_Institute_Equipment_Export2EXcel
+            <sec:authorize access="hasAuthority('Institute_U')">
+            ToolStripButton_Institute_Equipment_Add,
+            ToolStripButton_Institute_Equipment_Delete,
+            ToolStripButton_Institute_Equipment_Export2EXcel
+            </sec:authorize>
         ]
     });
 
@@ -1949,7 +1977,11 @@
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_Teacher_Add, ToolStripButton_Institute_Teacher_Delete, ToolStripButton_Institute_Teacher_Export2EXcel
+            <sec:authorize access="hasAuthority('Institute_U')">
+            ToolStripButton_Institute_Teacher_Add,
+            ToolStripButton_Institute_Teacher_Delete,
+            ToolStripButton_Institute_Teacher_Export2EXcel
+            </sec:authorize>
         ]
     });
 
@@ -2230,7 +2262,12 @@
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_Account_Add, ToolStripButton_Institute_Account_Edit, ToolStripButton_Institute_Account_Remove,ToolStripButton_Institute_Account_Export2EXcel
+            <sec:authorize access="hasAuthority('Institute_U')">
+            ToolStripButton_Institute_Account_Add,
+            ToolStripButton_Institute_Account_Edit,
+            ToolStripButton_Institute_Account_Remove,
+            ToolStripButton_Institute_Account_Export2EXcel
+            </sec:authorize>
         ]
     });
 
@@ -2579,10 +2616,12 @@
         width: "20",
         center: true,
         members: [
+            <sec:authorize access="hasAuthority('Institute_U')">
             ToolStripButton_Institute_TrainingPlace_Add,
             ToolStripButton_Institute_TrainingPlace_Edit,
             ToolStripButton_Institute_TrainingPlace_Remove,
             ToolStripButton_Institute_TrainingPlace_Export2EXcel
+            </sec:authorize>
         ]
     });
 
@@ -3164,7 +3203,11 @@
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_TrainingPlace_Equipment_Add, ToolStripButton_Institute_TrainingPlace_Equipment_Remove,ToolStripButton_Institute_TrainingPlace_Equipment_Export2EXcel
+            <sec:authorize access="hasAuthority('Institute_U')">
+            ToolStripButton_Institute_TrainingPlace_Equipment_Add,
+            ToolStripButton_Institute_TrainingPlace_Equipment_Remove,
+            ToolStripButton_Institute_TrainingPlace_Equipment_Export2EXcel
+            </sec:authorize>
         ]
     });
 
@@ -3243,17 +3286,27 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Institute_C')">
             ToolStripButton_Institute_Institute_Add,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Institute_U')">
             ToolStripButton_Institute_Institute_Edit,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Institute_D')">
             ToolStripButton_Institute_Institute_Remove,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Institute_P')">
             ToolStripButton_Institute_Institute_Print,
             ToolStripButton_Institute_Institute_Export2EXcel,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Institute_R')">
                     ToolStripButton_Institute_Institute_Refresh
+                    </sec:authorize>
                 ]
             })
         ]
@@ -3357,7 +3410,9 @@
         height: "100%",
         members: [
             VLayout_Institute_Institute_Head_Body,
+            <sec:authorize access="hasAuthority('Institute_R')">
             VLayout_Institute_Institute_Detail_Body
+            </sec:authorize>
         ]
     });
 

@@ -365,7 +365,6 @@
                     ListGrid_class_edit();
                 }
             },
-            </sec:authorize>
             {
                 title: "لغو کلاس",
                 click: function () {
@@ -378,7 +377,7 @@
                     alternativeClass_JspClass(ListGrid_Class_JspClass.getSelectedRecord())
                 }
             },
-
+            </sec:authorize>
             <sec:authorize access="hasAuthority('Tclass_D')">
             {
                 title: "<spring:message code='remove'/>",
@@ -438,8 +437,10 @@
         dataPageSize: 15,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
+        <sec:authorize access="hasAuthority('Tclass_U')">
         showRecordComponents: true,
         showRecordComponentsByCell: true,
+        </sec:authorize>
         showRollOver:false,
         selectionType: "single",
         autoFetchData: false,
@@ -2830,7 +2831,9 @@
             ToolStrip_Excel_JspClass,
             </sec:authorize>
 
+            <sec:authorize access="hasAuthority('Tclass_C')">
             HLayout_Training_Actions,
+            </sec:authorize>
 
             <sec:authorize access="hasAuthority('Tclass_R')">
             DynamicForm_Term_Filter,
@@ -2902,11 +2905,13 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})
             },
             </sec:authorize>
+            <sec:authorize access="hasAuthority('TclassClassDocumentsTab')">
             {
                 ID: "classDocumentsTab",
                 title: "مستندات کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/classDocuments-tab"})
             },
+            </sec:authorize>
             <sec:authorize access="hasAuthority('TclassAlarmsTab')">
             {
                 ID: "classAlarmsTab",
@@ -2928,20 +2933,27 @@
                 title: "<spring:message code="attachments"/>",
             },
             </sec:authorize>
+            <sec:authorize access="hasAuthority('TclassEvaluationInfoTab')">
             {
                 ID: "classEvaluationInfo",
                 title: "مشاهده وضعیت ارزیابی کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/evaluation-info-tab"})
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('TclassCostsTab')">
             {
                 ID: "classCosts",
                 title: "ثبت هزینه کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-costs-tab"})
-            },   {
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('TclassFinishTab')">
+            {
                 ID: "classFinish",
                 title: "اختتام کلاس",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/class-finish-tab"})
             },
+            </sec:authorize>
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())

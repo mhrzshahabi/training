@@ -643,12 +643,16 @@
     var ListGrid_ClassCheckList = isc.TrLG.create({
         selectionType: "none",
         showFilterEditor: true,
+        <sec:authorize access="hasAuthority('TclassCheckListTab_R')">
         dataSource: RestDataSource_ClassCheckList,
+        </sec:authorize>
         styleName: "myparent",
         filterOperator: "iContains",
         allowFilterExpressions: true,
         filterOnKeypress: false,
+        <sec:authorize access="hasAuthority('TclassCheckListTab_classStatus_ShowOption')">
         canRemoveRecords: true,
+        </sec:authorize>
         removeRecordClick: function (rowNum) {
             let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='verify.delete'/>");
@@ -706,7 +710,6 @@
         padding: 20,
         colWidths: ["1%", "20%", "15%", "30"],
         items: [
-            <sec:authorize access="hasAnyAuthority('TclassCheckListTab_classStatus','TclassCheckListTab_classStatus_ShowOption')">
             {
                 name: "checkList",
                 ID: "checkListDynamicFormField",
@@ -789,7 +792,6 @@
                     }
                 }
             },
-            </sec:authorize>
         ]
     });
 
@@ -797,8 +799,11 @@
     var HLayout_Body_Top = isc.HLayout.create({
         width: "100%",
         height: "50%",
-
-        members: [DynamicForm_ClassCheckList],
+        members: [
+            <sec:authorize access="hasAuthority('TclassCheckListTab_classStatus_ShowOption')">
+            DynamicForm_ClassCheckList
+            </sec:authorize>
+        ],
     });
 
 
@@ -1203,9 +1208,7 @@
             }
             if (classRecord.classStatus === "3")
             {
-                <sec:authorize access="hasAuthority('TclassCheckListTab_classStatus')">
                 DynamicForm_ClassCheckList.setVisibility(true)
-                </sec:authorize>
             }
             ListGrid_ClassCheckList.fetchData();
             ListGrid_ClassCheckList.invalidateCache();
