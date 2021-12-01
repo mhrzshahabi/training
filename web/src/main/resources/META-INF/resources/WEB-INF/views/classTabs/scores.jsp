@@ -104,7 +104,7 @@
             ListGrid_Class_Student.invalidateCache();
         }
     });
-    <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore','TclassScoresTab_classStatus')">
+    <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore')">
     var Button1 = isc.IButton.create({
         disabled: true,
         title: "<spring:message code="change.all.to.pass.with.out.score"/>",
@@ -118,7 +118,7 @@
     })
     </sec:authorize>
 
-    <sec:authorize access="hasAnyAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore','TclassScoresTab_classStatus')">
+    <sec:authorize access="hasAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore')">
     var Button3 = isc.IButton.create({
         disabled: true,
         title: "مردود/غیبت غیر مجاز",
@@ -229,7 +229,7 @@
     })
     </sec:authorize>
 
-    <sec:authorize access="hasAnyAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore','TclassScoresTab_classStatus')">
+    <sec:authorize access="hasAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore')">
     var Button2 = isc.IButton.create({
         disabled: true,
         title: "<spring:message code="delete.scoreState.failureReason.score"/>",
@@ -249,7 +249,7 @@
     })
     </sec:authorize>
 
-    <sec:authorize access="hasAnyAuthority('TclassScoresTab_P','TclassScoresTab_classStatus')">
+    <sec:authorize access="hasAuthority('TclassScoresTab_P')">
     var print_score = isc.IButton.create({
         title: "<spring:message code="print"/>",
         width: "14%",
@@ -265,16 +265,16 @@
             isc.Label.create({
                 ID: "totalsLabel_scores"
             }),
-            <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore','TclassScoresTab_classStatus')">
+            <sec:authorize access="hasAuthority('TclassScoresTab_changeAlltoPassWithOutScore')">
             Button1,
             </sec:authorize>
 
-            <sec:authorize access="hasAnyAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore','TclassScoresTab_classStatus')">
+            <sec:authorize access="hasAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore')">
             Button2,
             Button3,
             </sec:authorize>
 
-            <sec:authorize access="hasAnyAuthority('TclassScoresTab_P','TclassScoresTab_classStatus')">
+            <sec:authorize access="hasAuthority('TclassScoresTab_P')">
             print_score,
             isc.ToolStripButtonExcel.create({
                 click: function () {
@@ -287,7 +287,7 @@
             }),
             </sec:authorize>
 
-            <sec:authorize access="hasAnyAuthority('TclassScoresTab_R','TclassScoresTab_classStatus')">
+            <sec:authorize access="hasAuthority('TclassScoresTab_R')">
             isc.ToolStrip.create({
                 width: "50%",
                 align: "left",
@@ -304,17 +304,21 @@
     var ListGrid_Class_Student = isc.TrLG.create({
        // ID: "ListGrid_Class_Student1",
         selectionType: "single",
-        editOnFocus: true,
         showRowNumbers: false,
+        <sec:authorize access="hasAnyAuthority('TclassScoresTab_U')">
         editByCell: true,
+        editOnFocus: true,
         editEvent: "click",
         modalEditing: true,
         autoSaveEdits: false,
         canSelectCells: true,
+        </sec:authorize>
         // initialSort: [
         //     {property: "student.firstName", direction: "descending", primarySort: true}
         // ],
+        <sec:authorize access="hasAnyAuthority('TclassScoresTab_R')">
         dataSource: RestDataSource_ClassStudent,
+        </sec:authorize>
         fields: [
             {
                 name: "student.firstName",
@@ -469,7 +473,9 @@
                 title: "نوع ارزشی",
                 showIf: "false",
                 filterOperator: "iContains",
+                <sec:authorize access="hasAnyAuthority('TclassScoresTab_U')">
                 canEdit: true,
+                </sec:authorize>
                 canSort:false,
                 editorType: "SelectItem",
                 valueMap: {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"},
@@ -568,10 +574,12 @@
                 ID: "score_id",
                 title: "<spring:message code="score"/>",
                 filterOperator: "iContains",
+                <sec:authorize access="hasAnyAuthority('TclassScoresTab_U')">
                 canEdit: true,
+                editEvent: "click",
+                </sec:authorize>
                 canSort:false,
                 validateOnChange: false,
-                editEvent: "click",
                 change: function (form, item, value) {
 
                     if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod == "2") {
@@ -667,8 +675,6 @@
             else
           ListGrid_Class_Student.invalidateCache()
         },
-
-
         dataArrived: function () {
             var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (myMap.get(classRecord.scoringMethod) === "ارزشی") {
@@ -693,7 +699,7 @@
             }
         },
         gridComponents: [ToolStrip_Actions, "filterEditor", "header", "body"],
-
+        <sec:authorize access="hasAnyAuthority('TclassScoresTab_U')">
         canEditCell: function (rowNum, colNum) {
             var record = this.getRecord(rowNum);
             var fieldName = this.getFieldName(colNum);
@@ -766,6 +772,7 @@
             }
             return true;
         },
+        </sec:authorize>
         getCellCSSText:function (record,rowNum,colNum) {
 
             if (record.save==true)
@@ -1039,29 +1046,45 @@
             if (classRecord.scoringMethod == "1") {
                 ListGrid_Class_Student.showField('valence');
                 ListGrid_Class_Student.hideField('score');
+                <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore')">
                 Button1.setDisabled(true);
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore')">
                 Button2.setDisabled(false);
                 Button3.setDisabled(true);
+                </sec:authorize>
             } else if (classRecord.scoringMethod == "3") {
                 score_value = 20;
                 ListGrid_Class_Student.hideField('valence');
                 ListGrid_Class_Student.showField('score');
+                <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore')">
                 Button1.setDisabled(true);
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore')">
                 Button2.setDisabled(false);
                 Button3.setDisabled(false);
+                </sec:authorize>
             } else if (classRecord.scoringMethod == "2") {
                 score_value = 100;
                 ListGrid_Class_Student.hideField('valence');
                 ListGrid_Class_Student.showField('score');
+                <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore')">
                 Button1.setDisabled(true);
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore')">
                 Button2.setDisabled(false);
                 Button3.setDisabled(false);
+                </sec:authorize>
             } else if (classRecord.scoringMethod == "4") {
                 ListGrid_Class_Student.hideField('score');
                 ListGrid_Class_Student.hideField('valence');
+                <sec:authorize access="hasAnyAuthority('TclassScoresTab_changeAlltoPassWithOutScore')">
                 Button1.setDisabled(false);
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassScoresTab_deleteScoreStateFailureReasonScore')">
                 Button2.setDisabled(true);
                 Button3.setDisabled(true);
+                </sec:authorize>
             }
 
             if (classRecord.classStatus === "3") {
@@ -1075,9 +1098,7 @@
             }
 
             if (classRecord.classStatus === "3") {
-                <sec:authorize access="hasAuthority('TclassScoresTab_classStatus')">
                 ToolStrip_Actions.setVisibility(true)
-                </sec:authorize>
             }
             ListGrid_Class_Student.invalidateCache();
             ListGrid_Class_Student.fetchData();

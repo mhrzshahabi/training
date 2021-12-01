@@ -21,7 +21,7 @@
         let StudentMenu_student = isc.Menu.create({
             data: [
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
+                <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
                 {
                     title: "<spring:message code="refresh"/>",
                     icon: "<spring:url value="refresh.png"/>",
@@ -32,7 +32,7 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
+                <sec:authorize access="hasAuthority('TclassStudentsTab_ADD')">
                 {
                     title: "<spring:message code="add"/>",
                     icon: "<spring:url value="create.png"/>",
@@ -42,7 +42,7 @@
                 },
                 </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_D','TclassStudentsTab_classStatus')">
+                <sec:authorize access="hasAuthority('TclassStudentsTab_D')">
                 {
                     title: "<spring:message code="remove"/>",
                     icon: "<spring:url value="remove.png"/>",
@@ -52,7 +52,7 @@
                 },
                 </sec:authorize>
 
-                <%--                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_E','TclassStudentsTab_classStatus')">--%>
+                <%--                <sec:authorize access="hasAuthority('TclassStudentsTab_E')">--%>
                 <%--                {--%>
                 <%--                    title: "<spring:message code="evaluation"/>",--%>
                 <%--                    icon: "<spring:url value="remove.png"/>",--%>
@@ -80,15 +80,15 @@
         let StudentTS_student = isc.ToolStrip.create({
             members: [
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_classStatus')">
+                <sec:authorize access="hasAuthority('TclassStudentsTab_ADD')">
                 btnAdd_student_class,
                 </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_D','TclassStudentsTab_classStatus')">
+                <sec:authorize access="hasAuthority('TclassStudentsTab_D')">
                 btnRemove_student_class,
                 </sec:authorize>
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_P','TclassStudentsTab_classStatus')">
+                <sec:authorize access="hasAuthority('TclassStudentsTab_P')">
                 isc.ToolStripButtonExcel.create({
                     click: function () {
 
@@ -217,6 +217,7 @@
                 }),
                 </sec:authorize>
 
+                <sec:authorize access="hasAuthority('TclassStudentsTab_MSG')">
                 isc.IButton.create({
                     baseStyle: 'MSG-btn-orange',
                     icon: '../static/img/msg/mail.svg',
@@ -470,13 +471,12 @@
                         }));
                     }
                 }),
-
-
+                </sec:authorize>
 
                 isc.LayoutSpacer.create({width: "*"}),
                 isc.Label.create({ID: "StudentsCount_student"}),
 
-                <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
+                <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
                 isc.ToolStripButtonRefresh.create({
                     click: function () {
                         refreshStudentsLG_student();
@@ -777,7 +777,7 @@
 
         let StudentsLG_student = isc.TrLG.create({
             ID: "StudentsLG_student",
-            <sec:authorize access="hasAnyAuthority('TclassStudentsTab_R','TclassStudentsTab_classStatus')">
+            <sec:authorize access="hasAuthority('TclassStudentsTab_R')">
             dataSource: StudentsDS_student,
             </sec:authorize>
             // selectionType: "single",
@@ -850,7 +850,9 @@
                     displayField: "title",
                     autoFitWidth: true,
                     filterOnKeypress: true,
+                    <sec:authorize access="hasAuthority('TclassStudentsTab_U')">
                     canEdit: true,
+                    </sec:authorize>
                     changed: function (form, item, value) {
                         ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
                     }
@@ -2652,7 +2654,7 @@
                     btnAdd_student_class.setVisibility(false);
                     btnRemove_student_class.setVisibility(false);
                 } else {
-                    <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_E','TclassStudentsTab_P','TclassStudentsTab_R')">
+                    <sec:authorize access="hasAnyAuthority('TclassStudentsTab_ADD','TclassStudentsTab_D','TclassStudentsTab_P','TclassStudentsTab_R')">
                     StudentTS_student.setVisibility(true)
 
                     </sec:authorize>

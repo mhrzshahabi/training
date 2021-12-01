@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -386,23 +387,38 @@
 
     var Menu_ListGrid_PersonnelReg_JspPersonnelReg = isc.Menu.create({
         width: 150,
-        data: [{
-            title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_personnelReg_refresh();
-            }
-        }, {
-            title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
-                ListGrid_personnelReg_add();
-            }
-        }, {
-            title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
-                ListGrid_personnelReg_edit();
-            }
-        }, {
-            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
-                ListGrid_personnelReg_remove();
-            }
-        }, {isSeparator: true},
+        data: [
+            <sec:authorize access="hasAuthority('Personnel_Registered_R')">
+            {
+                title: "<spring:message code='refresh'/>",
+                icon: "<spring:url value="refresh.png"/>",
+                click: function () {
+                    ListGrid_personnelReg_refresh();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Personnel_Registered_C')">
+            {
+                title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
+                    ListGrid_personnelReg_add();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Personnel_Registered_U')">
+            {
+                title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                    ListGrid_personnelReg_edit();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Personnel_Registered_D')">
+            {
+                title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                    ListGrid_personnelReg_remove();
+                }
+            },
+            </sec:authorize>
+            {isSeparator: true},
             <%--    {--%>
             <%--    title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
             <%--        ListGrid_personnelReg_print("pdf");--%>
@@ -1427,19 +1443,30 @@
         width: "100%",
         membersMargin: 5,
         members: [
-
+            <sec:authorize access="hasAuthority('Personnel_Registered_C')">
             ToolStripButton_Add_JspPersonnelReg,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Personnel_Registered_U')">
             ToolStripButton_Edit_JspPersonnelReg,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Personnel_Registered_D')">
             ToolStripButton_Remove_JspPersonnelReg,
+            </sec:authorize>
             // ToolStripButton_Print_JspPersonnelReg
+            <sec:authorize access="hasAuthority('Personnel_Registered_P')">
             ToolStripButton_Export2EXcel_JspPersonnelReg,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Personnel_Registered_C')">
             ToolStripButton_Add_List_JspPersonnelReg,
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Personnel_Registered_R')">
                     ToolStripButton_Refresh_JspPersonnelReg,
+                    </sec:authorize>
                 ]
             })
         ]
@@ -1452,12 +1479,15 @@
     var ListGrid_PersonnelReg_JspPersonnelReg = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('Personnel_Registered_R')">
         dataSource: RestDataSource_PersonnelReg_JspPersonnelReg,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_PersonnelReg_JspPersonnelReg,
+        <sec:authorize access="hasAuthority('Personnel_Registered_U')">
         doubleClick: function () {
             ListGrid_personnelReg_edit();
         },
-
+        </sec:authorize>
         selectionType: "single",
 
 

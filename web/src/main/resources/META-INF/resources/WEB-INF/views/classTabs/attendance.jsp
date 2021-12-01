@@ -181,9 +181,9 @@
             oAttendanceLoadAttachments_Job.DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
         }
     });
-    <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
     var ToolStrip_Attendance_JspAttendance = isc.ToolStrip.create({
         members: [
+            <sec:authorize access="hasAuthority('TclassAttendanceTab_ShowOption')">
             isc.ToolStripButton.create({
                 title: "تبدیل همه به 'نامشخص'",
                 click: function () {
@@ -424,6 +424,7 @@
                     });
                 }
             }),
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -438,9 +439,7 @@
             })
         ]
     });
-    </sec:authorize>
 
-    <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
         numCols: 8,
@@ -1063,9 +1062,7 @@
             },
         ],
     });
-    </sec:authorize>
 
-    <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_classStatus','TclassAttendanceTab_ShowOption')">
     var TrHLayoutButtons= isc.TrHLayoutButtons.create({
         members: [
             isc.IButtonSave.create({
@@ -1142,7 +1139,6 @@
         ]
 
     })
-    </sec:authorize>
 
     function checkFinalSave(){
         if (Object.keys(selfTaughts).length==0) {
@@ -1159,14 +1155,28 @@
         autoSaveEdits: false,
         filterOnKeypress: true,
         dataPageSize: 200,
+        <sec:authorize access="hasAuthority('TclassAttendanceTab_R')">
         dataSource: "attendanceDS",
+        </sec:authorize>
         modalEditing: true,
         editEvent: "none",
         editOnFocus: true,
         editByCell: true,
         showHeaderContextMenu:false,
-        gridComponents: [DynamicForm_Attendance, ToolStrip_Attendance_JspAttendance, "header", "filterEditor", "body",TrHLayoutButtons ],
+        gridComponents: [
+            <sec:authorize access="hasAuthority('TclassAttendanceTab_R')">
+            DynamicForm_Attendance,
+            </sec:authorize>
+<%--            <sec:authorize access="hasAuthority('TclassAttendanceTab_ShowOption')">--%>
+            ToolStrip_Attendance_JspAttendance,
+<%--            </sec:authorize>--%>
+            "header", "filterEditor", "body",
+            <sec:authorize access="hasAuthority('TclassAttendanceTab_ShowOption')">
+            TrHLayoutButtons
+            </sec:authorize>
+        ],
         canHover:true,
+        <sec:authorize access="hasAuthority('TclassAttendanceTab_ShowOption')">
         canEditCell(rowNum, colNum){
             if (attendanceGrid.getSelectedRecord()!==null)
                 return (colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh");
@@ -1276,6 +1286,7 @@
                 }
             }, 100)
         },
+        </sec:authorize>
         getCellCSSText: function (record, rowNum, colNum){
             if(this.getFieldName(colNum).startsWith("se") || (this.getFieldName(colNum).valueOf()) == new String("state").valueOf()){
                 let key = this.getFieldName(colNum);
@@ -1339,8 +1350,9 @@
                         else{
                             ListGrid_Attendance_AttendanceJSP.setData([]);
                         }
-                        ToolStrip_Attendance_JspAttendance.getMember("teacherAttendancePermission").setDisabled(!data.hasPermission);
 
+                        if (ToolStrip_Attendance_JspAttendance.getMember("teacherAttendancePermission") != null)
+                            ToolStrip_Attendance_JspAttendance.getMember("teacherAttendancePermission").setDisabled(!data.hasPermission);
 
                     }
                     else{
@@ -1386,24 +1398,18 @@
 
         if(classGridRecordInAttendanceJsp.classStatus === "3")
         {
-            <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_ShowOption')">
             ToolStrip_Attendance_JspAttendance.setVisibility(false)
             TrHLayoutButtons.setVisibility(false)
-            </sec:authorize>
         }
         else
         {
-            <sec:authorize access="hasAnyAuthority('TclassAttendanceTab_ShowOption')">
             ToolStrip_Attendance_JspAttendance.setVisibility(true)
             TrHLayoutButtons.setVisibility(true)
-            </sec:authorize>
         }
         if (classGridRecordInAttendanceJsp.classStatus === "3")
         {
-            <sec:authorize access="hasAuthority('TclassAttendanceTab_classStatus')">
             ToolStrip_Attendance_JspAttendance.setVisibility(true)
             TrHLayoutButtons.setVisibility(true)
-            </sec:authorize>
         }
     }
 

@@ -298,11 +298,9 @@
     var ListGrid_Teacher_JspTeacher = isc.TrLG.create({
         width: "100%",
         height: "100%",
-
         <sec:authorize access="hasAuthority('Teacher_R')">
         dataSource: RestDataSource_Teacher_JspTeacher,
         </sec:authorize>
-
         <sec:authorize access="hasAuthority('Teacher_U')">
         rowDoubleClick: function () {
             ListGrid_teacher_edit(null,"teacher");
@@ -902,15 +900,12 @@
             <sec:authorize access="hasAuthority('Teacher_C')">
             ToolStripButton_Add_JspTeacher,
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('Teacher_U')">
             ToolStripButton_Edit_JspTeacher,
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('Teacher_D')">
             ToolStripButton_Remove_JspTeacher,
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('Teacher_P')">
             ToolStripExcel_JspTeacher,
             ToolStripCurrentTermTeacherExcel_JspTeacher,
@@ -918,11 +913,9 @@
             ToolStripButton_Print_InfoForm_JspTeacher,
             ToolStripButton_Print_Empty_InfoForm_JspTeacher,
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('Teacher_E')">
             ToolStripButton_Evaluation_JspTeacher,
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('Teacher_R')">
             isc.ToolStrip.create({
                 width: "100%",

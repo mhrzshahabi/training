@@ -124,7 +124,7 @@
             width: "100%",
             height: "100%",
 
-            <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_classStatus')">
+            <sec:authorize access="hasAuthority('TclassSessionsTab_R')">
             dataSource: RestDataSource_session,
             </sec:authorize>
             // contextMenu: Menu_ListGrid_session,
@@ -261,9 +261,11 @@
                     canFilter: false
                 }
             ],
+            <sec:authorize access="hasAuthority('TclassSessionsTab_U')">
             doubleClick: function () {
                 show_SessionEditForm();
             },
+            </sec:authorize>
             getCellCSSText: function (record, rowNum, colNum) {
                 let result="background-color : ";
                 let blackColor="; color:black";
@@ -344,15 +346,12 @@
         });
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
-        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_R','TclassSessionsTab_classStatus')">
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
             click: function () {
                 ListGrid_session.invalidateCache();
             }
         })
-        </sec:authorize>
 
-        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_C','TclassSessionsTab_classStatus')">
         var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
             title: "<spring:message code="create" />",
             click:
@@ -360,26 +359,20 @@
                     create_Session();
                 }
         })
-        </sec:authorize>
 
-        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_U','TclassSessionsTab_classStatus')">
         var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
             click: function () {
                 show_SessionEditForm();
             }
         })
-        </sec:authorize>
 
-        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_D','TclassSessionsTab_classStatus')">
         var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
             title: "<spring:message code="remove.and.group.remove" />",
             click: function () {
                 remove_Session();
             }
         })
-        </sec:authorize>
 
-        <sec:authorize access="hasAnyAuthority('TclassSessionsTab_P','TclassSessionsTab_classStatus')">
         var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
             click: function () {
                 print_SessionListGrid("pdf");
@@ -399,29 +392,34 @@
                     }
                 })]
         });
-        </sec:authorize>
 
         var ToolStrip_session = isc.ToolStrip.create({
             width: "100%",
             members: [
 
+                <sec:authorize access="hasAuthority('TclassSessionsTab_C')">
                 ToolStripButton_Add,
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassSessionsTab_U')">
                 ToolStripButton_Edit,
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassSessionsTab_D')">
                 ToolStripButton_Remove,
+                </sec:authorize>
 
-
-
+                <sec:authorize access="hasAuthority('TclassSessionsTab_P')">
                 ToolStripButton_Print,
                 ToolStrip_Excel_JspClass,
-
-
+                </sec:authorize>
 
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
+                        <sec:authorize access="hasAuthority('TclassSessionsTab_R')">
                         ToolStripButton_Refresh
+                        </sec:authorize>
                     ]
                 })
 
@@ -1196,9 +1194,7 @@
 
                 if (classRecord.classStatus === "3")
                 {
-                    <sec:authorize access="hasAuthority('TclassSessionsTab_classStatus')">
                     ToolStrip_session.setVisibility(true)
-                    </sec:authorize>
                 }
 
                 ListGrid_session.invalidateCache();
