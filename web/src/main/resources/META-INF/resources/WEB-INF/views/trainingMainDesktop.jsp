@@ -1150,7 +1150,9 @@
             return true;
         }
     </script>
+    <sec:authorize access="hasAuthority('NICICO_Ticketing')">
     <script src="<spring:url value='/js/nicico-ticket.js' />"></script>
+    </sec:authorize>
 
 
     <script src="<spring:url value='/js/dateReformat.js' />"></script>
