@@ -758,8 +758,10 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         List<Double> postScores = new ArrayList<>();
 
         for (ClassStudent classStudent : classStudents) {
-            if(classStudent.getScore() != null || classStudent.getValence() != null)
+            if(classStudent.getScore() != null || classStudent.getValence() != null){
                 resultSet.setHavePostTest("true");
+
+            }
 
             if(scoringMethod.equalsIgnoreCase("1") && classStudent.getValence()!=null) {
                 if(classStudent.getPreTestScore() != null)
