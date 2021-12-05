@@ -201,7 +201,7 @@
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("preTestMeanScore").setValue(record.preTestMeanScore);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("postTestMeanScore").setValue(record.postTestMeanScore);
-        DynamicForm_Learning_EvaluationAnalysis_Header.getField("learningRate").setValue(record.postTestMeanScore);
+        DynamicForm_Learning_EvaluationAnalysis_Header.getField("learningRate").setValue(record.learningRate);
         // DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePreTest").setValue(record.havePreTest);
         // DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePostTest").setValue(record.havePostTest);
 

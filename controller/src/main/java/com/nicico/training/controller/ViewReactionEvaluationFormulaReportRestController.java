@@ -56,10 +56,10 @@ public class ViewReactionEvaluationFormulaReportRestController {
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
 
-    @Loggable
-    @PostMapping(value = "/getExcelReport")
-    public void getExcelReport(HttpServletRequest iscRq) throws IOException {
-        // TODO xaniar:
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-    }
+//    @Loggable
+//    @PostMapping(value = "/getExcelReport")
+//    public void getExcelReport(HttpServletRequest iscRq) throws IOException {
+//        // TODO xaniar:
+//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+//    }
 }

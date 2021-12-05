@@ -733,8 +733,9 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             resultSet.setFeclpass(FECRPass.toString());
 
         Integer classHasPreTest = tclassDAO.checkIfClassHasPreTest(classId);
-        if(classHasPreTest != null && classHasPreTest.equals(new Integer(1)))
+        if(classHasPreTest != null && classHasPreTest.equals(new Integer(1))){
             resultSet.setHavePreTest("true");
+        }
         else
             resultSet.setHavePreTest("false");
 
@@ -754,12 +755,21 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         map.put("1004", 100);
 
         int studentCount = 0;
+        float maxPastScore = 0;
+        float learningRate = 0;
+        float minPreScore = 0;
         List<Double> preScores = new ArrayList<>();
         List<Double> postScores = new ArrayList<>();
 
         for (ClassStudent classStudent : classStudents) {
             if(classStudent.getScore() != null || classStudent.getValence() != null){
                 resultSet.setHavePostTest("true");
+                if (classStudent.getScore()>maxPastScore){
+                    maxPastScore=classStudent.getScore();
+                }
+                if (classStudent.getPreTestScore()!= null && classStudent.getPreTestScore()<minPreScore){
+                    minPreScore=classStudent.getPreTestScore();
+                }
 
             }
 
@@ -800,7 +810,27 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         }
         else
             resultSet.setTstudent("بر اساس توزیع تی استیودنت با ضریب اطمینان 95 درصد فراگیران بعد از شرکت در کلاس پیشرفت چشمگیری نداشته اند.");
+
+        if(scoringMethod.equalsIgnoreCase("3")){
+            minPreScore=minPreScore*5;
+            maxPastScore=maxPastScore*5;
+        }
+        resultSet.setMinPreTest(minPreScore);
+        resultSet.setMaxPastTest(maxPastScore);
+        resultSet.setLearningRate(calculateLearningRate(resultSet.getPostTestMeanScore(),resultSet.getPreTestMeanScore(),minPreScore,maxPastScore));
+
         return resultSet;
+    }
+
+    private Float calculateLearningRate(String postTestMeanScore, String preTestMeanScore, float minPreScore, float maxPastScore) {
+        float pastMean=postTestMeanScore != null && !postTestMeanScore.isEmpty() ? Float.parseFloat(postTestMeanScore) : 0F;
+        float preMean=preTestMeanScore != null && !preTestMeanScore.isEmpty() ? Float.parseFloat(preTestMeanScore) : 0F;
+
+        if (maxPastScore-minPreScore==0 )
+            return 0F;
+        else{
+            return (pastMean - preMean) / (maxPastScore - minPreScore);
+        }
     }
 
     //------------------------------------------------TStudent----------------------------------------------------------
