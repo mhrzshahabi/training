@@ -230,6 +230,7 @@ public class EvaluationAnalysisRestController {
         EvaluationDTO.EvaluationLearningResult result = evaluationAnalysisService.evaluationAnalysistLearningResultTemp(Long.parseLong(recordId),scoringMethod);
 
         params.put("score", result.getPostTestMeanScore());
+        params.put("learningRate", result.getLearningRate().toString());
         params.put("preTestScore", result.getPreTestMeanScore());
         params.put("ScoreEvaluation",result.getFelgrade());
         if(result.getFelpass() != null && result.getFelpass().equalsIgnoreCase("true"))
