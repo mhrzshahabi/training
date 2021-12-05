@@ -144,6 +144,7 @@ public class TclassDTO {
         private ParameterValueDTO targetPopulationType;
         private ParameterValueDTO holdingClassType;
         private ParameterValueDTO teachingMethod;
+        private Long hDuration;
         //*********************************
         //******old code for alarms********
         // private String hasWarning;

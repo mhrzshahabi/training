@@ -530,6 +530,14 @@
                 filterOperator: "iContains",
             },
             {
+                name: "hduration",
+                title: "<spring:message code='duration'/>",
+                align: "center",
+                width: 40,
+                filterOperator: "equals",
+
+            },
+            {
                 name: "group",
                 title: "<spring:message code='group'/>",
                 align: "center",
