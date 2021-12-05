@@ -205,6 +205,8 @@ public class PersonnelDTO implements Serializable {
         private PostDTO.PersonnelInfo post;
         private DepartmentDTO.Info department;
         private ContactInfoDTO.Info contactInfo;
+        private String email;
+
     }
 
     @Getter

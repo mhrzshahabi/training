@@ -329,7 +329,18 @@
             this.tabSelectedPersonnelInfo_Tab=function tabSelectedPersonnelInfo_Tab(){
                 let tab = mainTabSet.tabs[mainTabSet.selectedTab];
                 if (tab.title == '<spring:message code="personnel.information"/>') {
-                    this.set_PersonnelInfo_Details(PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel" ? PersonnelInfoListGrid_PersonnelList.getSelectedRecord() : PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord());
+                    switch(PersonnelList_Tab.getSelectedTab().id){
+                        case "PersonnelList_Tab_Personnel":
+                            this.set_PersonnelInfo_Details(PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
+                            break;
+                        case "PersonnelList_Tab_RegisteredPersonnel":
+                            this.set_PersonnelInfo_Details(PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord());
+                            break;
+                        case "PersonnelList_Tab_synonym_Personnel":
+                            this.set_PersonnelInfo_Details(synonmPersonnelInfoListGrid_PersonnelList.getSelectedRecord());
+                            break;
+                    }
+
                 } else if (tab.title == '<spring:message code="class"/>') {
 
                     //if (ClassStudentWin_student.isVisible()) {

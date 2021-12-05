@@ -738,8 +738,17 @@
                         oPersonnelInformationDetails.PersonnelInfo_Tab.enableTab(oPersonnelInformationDetails.PersonnelInfo_Tab.tabs.filter(q => q.id === "PersonnelInfo_Tab_ContactInfo").first());
                 }
                 if (oPersonnelInformationDetails!=null && typeof (oPersonnelInformationDetails.set_PersonnelInfo_Details) != 'undefined') {
-                    oPersonnelInformationDetails.set_PersonnelInfo_Details(this.getSelectedTab().id === "PersonnelList_Tab_Personnel" ?
-                        PersonnelInfoListGrid_PersonnelList.getSelectedRecord() : PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord());
+                    switch(this.getSelectedTab().id){
+                        case "PersonnelList_Tab_Personnel":
+                            oPersonnelInformationDetails.set_PersonnelInfo_Details(PersonnelInfoListGrid_PersonnelList.getSelectedRecord());
+                            break;
+                        case "PersonnelList_Tab_RegisteredPersonnel":
+                            oPersonnelInformationDetails.set_PersonnelInfo_Details(PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord());
+                            break;
+                        case "PersonnelList_Tab_synonym_Personnel":
+                            oPersonnelInformationDetails.set_PersonnelInfo_Details(synonmPersonnelInfoListGrid_PersonnelList.getSelectedRecord());
+                            break;
+                    }
                 }
             }
         });
