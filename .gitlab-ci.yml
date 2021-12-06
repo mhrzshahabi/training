@@ -7,7 +7,7 @@ stages:
 
 build-dev:
   stage: build
-  image: devops01.icico.net.ir/maven-3.8.3
+  image: devops01.icico.net.ir/maven:3.8.3
   only:
     - dev
   script:
