@@ -27,7 +27,7 @@ public interface TclassBeanMapper {
             @Mapping(target = " plannerName",source = "planner",ignore = false,qualifiedByName = "getSupervisorName"),
             @Mapping(target = "teacherInfo.teacherCode",source = "teacher.teacherCode"),
             @Mapping(target = "teacherInfo.teacherName",source = "teacher",qualifiedByName = "getTeacherName"),
-            @Mapping(target = "classSessions",source = "classSessions", ignore = false,qualifiedByName = "toClassSessionDTOS"),
+            @Mapping(target = "classSessions",source = "classSessions", ignore = true,qualifiedByName = "toClassSessionDTOS"),
             @Mapping(target = "supervisorName",source = "supervisor",ignore = false,qualifiedByName = "getSupervisorName")
     })
     TclassDTO.TClassTimeDetails toTcClassTimeDetail(Tclass tclass);
@@ -43,7 +43,7 @@ public interface TclassBeanMapper {
             @Mapping(target = "organizerName", source = "organizer.titleFa"),
             @Mapping(target = "teacherInfo.teacherCode", source = "teacher.teacherCode"),
             @Mapping(target = "teacherInfo.teacherName", source = "teacher", qualifiedByName = "getTeacherName"),
-            @Mapping(target = "sessions", source = "classSessions", ignore = false, qualifiedByName = "toClassSessionDTOS"),
+            @Mapping(target = "sessions", source = "classSessions", ignore = true, qualifiedByName = "toClassSessionDTOS"),
             @Mapping(target = "supervisorName", source = "supervisor", ignore = false, qualifiedByName = "getSupervisorName")
     })
     TclassDTO.TClassDataService getTClassDataService(Tclass tclass);
