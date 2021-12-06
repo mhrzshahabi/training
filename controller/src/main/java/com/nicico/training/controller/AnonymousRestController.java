@@ -79,8 +79,8 @@ public class AnonymousRestController {
 
     @Loggable
     @PutMapping(value = "/edit-parameter-value/{id}")
-    public ResponseEntity editParameterValue(@RequestParam String value,@RequestParam String title,@RequestParam String des,@RequestParam String code,@PathVariable Long id) {
-        parameterValueService.editParameterValue(value,title,des,code,id);
+    public ResponseEntity editParameterValue(@RequestParam String des,@RequestParam String code,@PathVariable Long id) {
+        parameterValueService.editParameterValue(des,code,id);
         return new ResponseEntity(null, HttpStatus.OK);
     }
     @Loggable

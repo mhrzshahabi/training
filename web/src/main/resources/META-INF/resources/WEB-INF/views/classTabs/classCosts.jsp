@@ -5,6 +5,8 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 
+// <script>
+
     var Wait_JspClassCosts = null;
     var ClassID_JspClassCosts = null;
 
@@ -89,9 +91,11 @@
         overflow: "scroll",
         members: [
             DynamicForm_JspClassCosts,
+            <sec:authorize access="hasAuthority('TclassCostsTab_C')">
             isc.TrHLayoutButtons.create({
                 members: [saveButton_JspClassCosts]
             })
+            </sec:authorize>
         ]
     });
 
@@ -106,3 +110,5 @@
             DynamicForm_JspClassCosts.getField("studentCostCurrency").setValue(619);
         ClassID_JspClassCosts = classId;
     }
+
+// </script>

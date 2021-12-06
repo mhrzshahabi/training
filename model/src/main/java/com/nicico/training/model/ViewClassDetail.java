@@ -147,4 +147,7 @@ public class ViewClassDetail extends Auditable {
 
     @Column(name = "complex_id")
     private Long complexId;
+
+    @Column(name = "teaching_method_title")
+    private String teachingMethodTitle;
 }

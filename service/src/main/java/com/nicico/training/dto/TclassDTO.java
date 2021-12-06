@@ -119,7 +119,6 @@ public class TclassDTO {
     }
 
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -192,6 +191,7 @@ public class TclassDTO {
             else return 0;
         }
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -870,6 +870,45 @@ public class TclassDTO {
         private String startDate;
         private String endDate;
         private TeacherDTO.TeacherCurrentTerm teacher;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassTimeDetails")
+    public static class TClassTimeDetails {
+
+        private String classCode;
+        private String courseCode;
+        private String courseTitleFa;
+        private String termTitleFa;
+        private String startDate;
+        private String endDate;
+        private Long group;
+        private Set<ClassSessionDTO.AttendanceClearForm> classSessions;
+        private Long studentsCount;
+        private TeacherDTO.TeacherInfo teacherInfo;
+        private String supervisorName;
+        private String plannerName;
+        private String organizer;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassDataService")
+    public static class TClassDataService {
+        private String classStatus;
+        private String classType;
+        private String classCode;
+        private String courseCode;
+        private String courseTitle;
+        private  Long group;
+        private Long studentsCount;
+        private String supervisorName;
+        private String organizerName;
+        private TeacherDTO.TeacherInfo teacherInfo;
+        private Set<ClassSessionDTO.AttendanceClearForm> sessions;
     }
 
 }

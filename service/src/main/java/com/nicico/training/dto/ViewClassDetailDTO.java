@@ -62,6 +62,7 @@ public class ViewClassDetailDTO implements Serializable {
         private Boolean classTeacherOnlineEvalStatus;
         private Boolean classStudentOnlineEvalStatus;
         private Long complexId;
+        private String teachingMethodTitle;
 
         public String getTeacherFullName() {
             return (teacherFirstName + " " + teacherLastName);

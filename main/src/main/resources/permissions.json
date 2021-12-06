@@ -345,6 +345,18 @@
       "title": "منوی امنیت - گزارش لاگین کاربران"
     },
 
+
+
+
+    {
+      "code": "NICICO_Ticketing",
+      "title": "پشتیبانی سیستم"
+    },
+
+
+
+
+
     {"code": "Parameter_C", "title": "ایجاد پارامتر"},
     {"code": "Parameter_R", "title": "مشاهده پارامتر"},
     {"code": "AccountInfo_C", "title": "ایجاد اطلاعات حساب"},
@@ -599,6 +611,11 @@
     {"code": "Tclass_U", "title": "ویرایش کلاس"},
     {"code": "Tclass_D", "title": "حذف کلاس"},
     {"code": "Tclass_P", "title": "چاپ کلاس"},
+    {"code": "Personnel_Registered_C", "title": "ایجاد قراگیر متفرقه"},
+    {"code": "Personnel_Registered_R", "title": "مشاهده قراگیر متفرقه"},
+    {"code": "Personnel_Registered_U", "title": "ویرایش قراگیر متفرقه"},
+    {"code": "Personnel_Registered_D", "title": "حذف قراگیر متفرقه"},
+    {"code": "Personnel_Registered_P", "title": "چاپ قراگیر متفرقه"},
     {"code": "Teacher_C", "title": "ایجاد استاد"},
     {"code": "Teacher_E", "title": "ارزيابي استاد"},
     {"code": "Teacher_R", "title": "مشاهده استاد"},
@@ -647,11 +664,15 @@
     {"code": "QuestionnaireQuestion_P","title": "چاپ پرسشنامه - پرسشنامه - مقدار"},
     {"code": "TclassSessionsTab", "title": "کلاس - تب جلسات"},
     {"code": "TclassCheckListTab", "title": "کلاس - تب چک لیست"},
+    {"code": "TclassClassDocumentsTab", "title": "کلاس - تب مستندات کلاس"},
     {"code": "TclassStudentsTab", "title": "کلاس - تب فراگیران"},
     {"code": "TclassAttachmentsTab", "title": "کلاس - تب ضمائم"},
     {"code": "TclassAttendanceTab", "title": "کلاس - تب حضور غیاب"},
     {"code": "TclassScoresTab", "title": "کلاس - تب ثبت نمرات"},
     {"code": "TclassAlarmsTab", "title": "کلاس - تب هشدارها"},
+    {"code": "TclassEvaluationInfoTab", "title": "کلاس - تب وضعیت ارزیابی کلاس"},
+    {"code": "TclassCostsTab", "title": "کلاس - تب هزینه کلاس"},
+    {"code": "TclassFinishTab", "title": "کلاس - تب اختتام کلاس"},
     {"code": "TclassPreCourseTestQuestionsTab", "title": "کلاس - تب سوالات پیش آزمون"},
     {"code": "TclassteacherInformationTab", "title": "کلاس - تب مدرسان"},
     {"code": "TclassSessionsTab_C", "title": "کلاس - تب جلسات - ایجاد"},
@@ -660,10 +681,11 @@
     {"code": "TclassSessionsTab_P", "title": "کلاس - تب جلسات - چاپ"},
     {"code": "TclassSessionsTab_R", "title": "کلاس - تب جلسات - مشاهده"},
     {"code": "TclassStudentsTab_ADD", "title": "کلاس - تب فراگیران - افزودن"},
+    {"code": "TclassStudentsTab_U", "title": "کلاس - تب فراگیران - ویرایش"},
     {"code": "TclassStudentsTab_D", "title": "کلاس - تب فراگیران - حذف"},
-    {"code": "TclassStudentsTab_E", "title": "کلاس - تب فراگیران - ارزیابی"},
     {"code": "TclassStudentsTab_R", "title": "کلاس - تب فراگیران - مشاهده "},
     {"code": "TclassStudentsTab_P", "title": "کلاس - تب فراگیران - چاپ "},
+    {"code": "TclassStudentsTab_MSG", "title": "کلاس - تب فراگیران - ارسال پیام "},
     {"code": "TclassAttachmentsTab_C", "title": "کلاس - تب ضمائم - ایجاد"},
     {"code": "TclassAttachmentsTab_U", "title": "کلاس - تب ضمائم - ویرایش"},
     {"code": "TclassAttachmentsTab_D", "title": "کلاس - تب ضمائم - حذف"},
@@ -682,9 +704,26 @@
     {"code": "TclassScoresTab_deleteScoreStateFailureReasonScore", "title": "کلاس - ثبت نمرات -حذف وضعیت قبولی/دلایل مردودی/نمره"},
     {"code": "TclassScoresTab_P", "title": "کلاس - ثبت نمرات - چاپ"},
     {"code": "TclassScoresTab_R", "title": "کلاس - ثبت نمرات - مشاهده"},
+    {"code": "TclassScoresTab_U", "title": "کلاس - ثبت نمرات - ویرایش"},
 
+    {"code": "TclassAttendanceTab_R", "title": "کلاس - تب حضور غیاب - مشاهده"},
     {"code": "TclassAttendanceTab_ShowOption", "title": "کلاس - تب حضور غیاب - نمایش گزینه ها"},
+    {"code": "TclassCheckListTab_R", "title": "کلاس - تب چک لیست - مشاهده"},
     {"code": "TclassCheckListTab_classStatus_ShowOption", "title": "کلاس - تب چک لیست - نمایش گزینه ها"},
+    {"code": "TclassClassDocumentsTab_R", "title": "کلاس - تب مستندات کلاس - مشاهده"},
+    {"code": "TclassClassDocumentsTab_C", "title": "کلاس - تب مستندات کلاس - ایجاد"},
+    {"code": "TclassClassDocumentsTab_U", "title": "کلاس - تب مستندات کلاس - ویرایش"},
+    {"code": "TclassClassDocumentsTab_D", "title": "کلاس - تب مستندات کلاس - حذف"},
+    {"code": "TclassClassDocumentsTab_P", "title": "کلاس - تب مستندات کلاس - چاپ"},
+    {"code": "TclassAlarmsTab_R", "title": "کلاس - تب هشدار ها - مشاهده"},
+    {"code": "TclassAlarmsTab_P", "title": "کلاس - تب هشدار ها - چاپ"},
+    {"code": "TclassteacherInformationTab_R", "title": "کلاس - تب مدرسان - مشاهده"},
+    {"code": "TclassteacherInformationTab_P", "title": "کلاس - تب مدرسان - چاپ"},
+    {"code": "TclassEvaluationInfoTab_R", "title": "کلاس - تب وضعیت ارزیابی کلاس - مشاهده"},
+    {"code": "TclassEvaluationInfoTab_P", "title": "کلاس - تب وضعیت ارزیابی کلاس - چاپ"},
+    {"code": "TclassCostsTab_C", "title": "کلاس - تب هزینه کلاس - ایجاد"},
+
+
     {"code": "TclassPreCourseTestQuestionsTab_ShowOption", "title": "کلاس - سوالات پیش آزمون - نمایش گزینه ها"},
     {"code": "Menu_Organizational_chart", "title": "درخت سازمانی"},
     {"code": "Menu_Categories_performance", "title": "گزارش عملکرد سازمانی "},

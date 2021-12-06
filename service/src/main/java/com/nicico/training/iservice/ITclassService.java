@@ -16,6 +16,8 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import org.springframework.transaction.annotation.Transactional;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import response.tclass.ElsSessionResponse;
+import com.nicico.training.dto.enums.ClassStatusDTO;
+import com.nicico.training.dto.enums.ClassTypeDTO;
 
 import java.util.List;
 import java.util.Map;
@@ -158,4 +160,7 @@ public interface ITclassService {
 
     List<TclassDTO.TClassCurrentTerm> getAllTeacherByCurrentTerm(Long termId) throws NoSuchFieldException, IllegalAccessException;
 
-    }
+    List<Tclass> getClassesViaTypeAndStatus(ClassStatusDTO status, ClassTypeDTO type);
+
+
+}

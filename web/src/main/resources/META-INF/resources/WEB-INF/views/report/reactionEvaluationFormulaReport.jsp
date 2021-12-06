@@ -2,7 +2,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
@@ -471,6 +473,89 @@
             ListGrid_REFR.fetchData(reportCriteria_REFR);
         }
     });
+    IButton_Excel_Report = isc.IButtonSave.create({
+        top: 260,
+        baseStyle: 'MSG-btn-orange',
+        icon: "<spring:url value="excel.png"/>",
+        title: "درخواست گزارش اکسل",
+        width: 300,
+        click: function () {
+
+            reportCriteria_REFR = null;
+            let form = DynamicForm_CriteriaForm_REFR;
+
+            if(form.getValue("endDate") == null || form.getValue("startDate") == null) {
+                createDialog("info","بازه کلاس مشخص نشده است");
+                return;
+            }
+
+            if(form.getValue("endDate") < form.getValue("startDate")) {
+                createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
+                return;
+            }
+            data_values = DynamicForm_CriteriaForm_REFR.getValuesAsAdvancedCriteria();
+
+            for (let i = 0; i < data_values.criteria.size(); i++) {
+
+                if (data_values.criteria[i].fieldName === "courseCategory") {
+                    data_values.criteria[i].fieldName = "categoryTitleFa";
+                    data_values.criteria[i].operator = "inSet";
+                } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
+                    data_values.criteria[i].fieldName = "subCategoryTitleFa";
+                    data_values.criteria[i].operator = "inSet";
+                } else if (data_values.criteria[i].fieldName === "startDate") {
+                    data_values.criteria[i].fieldName = "classStartDate";
+                    data_values.criteria[i].operator = "greaterOrEqual";
+                } else if (data_values.criteria[i].fieldName === "endDate") {
+                    data_values.criteria[i].fieldName = "classEndDate";
+                    data_values.criteria[i].operator = "lessOrEqual";
+                }
+            }
+
+            excelData = [];
+            excelData.add({
+                class_code: "کد کلاس",
+                class_status: "وضعیت کلاس",
+                complex: "مجتمع کلاس",
+                teacher_national_code: "کد ملی استاد",
+                teacher: " استاد",
+                is_personnel: "نوع استاد",
+                class_start_date: "تاریخ شروع",
+                class_end_date: "تاریخ پایان",
+                course_code: "کد دوره",
+                course_titlefa: "نام دوره",
+                category_titlefa: "گروه",
+                sub_category_titlefa: "زیرگروه",
+                student: "فراگیر",
+                student_per_number: " شماره پرسنلی فراگیر",
+                student_post_title: " پست فراگیر",
+                student_post_code: "کد پست فراگیر",
+                student_hoze: "حوزه فراگیر",
+                student_omor: "امور فراگیر",
+                total_std: "تعداد کل فراگیران کلاس",
+                training_grade_to_teacher: "نمره ارزیابی آموزش به استاد",
+                teacher_grade_to_class: "نمره ارزیابی استاد به کلاس",
+                reactione_evaluation_grade: "نمره ارزیابی واکنشی  کلاس",
+                final_teacher: "نمره ارزیابی نهایی  مدرس",
+
+            });
+
+            let downloadForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "/training/export/excel/formula",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "criteria", type: "hidden"},
+                    ]
+            });
+            downloadForm.setValue("criteria", JSON.stringify(data_values));
+            downloadForm.show();
+            downloadForm.submitForm();
+
+        }
+    });
     IButton_Clear_REFR = isc.IButtonSave.create({
         top: 260,
         title: "پاک کردن",
@@ -481,6 +566,8 @@
             DynamicForm_CriteriaForm_REFR.clearValues();
             DynamicForm_CriteriaForm_REFR.clearErrors();
             ListGrid_REFR.setFilterEditorCriteria(null);
+            IButton_Excel_Report.setDisabled(false)
+
         }
     });
     HLayout_Acceptance_REFR = isc.HLayout.create({
@@ -522,8 +609,9 @@
         alignLayout: "center",
         padding: 10,
         members: [
-            IButton_Report_REFR,
-            IButton_Clear_REFR
+            // IButton_Report_REFR,
+            IButton_Clear_REFR,
+            IButton_Excel_Report
         ]
     });
     var ListGrid_REFR = isc.TrLG.create({
@@ -603,10 +691,10 @@
         border: "2px solid blue",
         padding: 20,
         members: [
-            ToolStrip_Actions_REFR,
+            // ToolStrip_Actions_REFR,
             VLayOut_CriteriaForm_REFR,
             HLayOut_Confirm_REFR,
-            ListGrid_REFR
+            // ListGrid_REFR
         ]
     });
 

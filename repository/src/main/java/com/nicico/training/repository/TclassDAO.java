@@ -189,4 +189,8 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Query(value = "select * from tbl_class_aud  where ID = :classId ORDER BY rev", nativeQuery = true)
     List<Tclass> getAuditData(long classId);
+
+    @Query(value = "SELECT * FROM TBL_CLASS WHERE c_status = :status And f_teaching_method_id IN (:longs)", nativeQuery = true)
+    List<Tclass> findAllClassWithThisFilter(List<Long> longs, String status);
+
 }

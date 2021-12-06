@@ -135,9 +135,9 @@ public abstract class QuestionBankBeanMapper {
         return elsQuestionBankDto;
     }
 
-    public List<QuestionBankDTO.Create> toQuestionBankCreate(ElsQuestionBankDto elsQuestionBankDto) {
+    public List<QuestionBankDTO.Info> toQuestionBankCreate(ElsQuestionBankDto elsQuestionBankDto) {
 
-        List<QuestionBankDTO.Create> questionBankDtoList = new ArrayList<>();
+        List<QuestionBankDTO.Info> questionBankDtoList = new ArrayList<>();
 
         String nationalCode = elsQuestionBankDto.getNationalCode();
         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
@@ -222,7 +222,7 @@ public abstract class QuestionBankBeanMapper {
                 }
             }
 
-            questionBankDtoList.add(create);
+            questionBankDtoList.add(info);
         });
         return questionBankDtoList;
     }

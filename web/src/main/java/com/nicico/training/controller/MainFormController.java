@@ -254,6 +254,9 @@ public class MainFormController {
         return "run/class-contract";
     }
 
+    @RequestMapping("/selfDeclaration")
+    public String showSelfDeclarationForm() { return "base/selfDeclaration"; }
+
     @PostMapping("/print/{entityUrl}/{type}")
     public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String entityUrl, @PathVariable String type) {
         String token = request.getParameter("myToken");
@@ -305,6 +308,11 @@ public class MainFormController {
     @GetMapping("/edit-needs-assessment")
     public String showEditNeedsAssessmentForm() {
         return "needsAssessment/edit-needs-assessment";
+    }
+
+    @GetMapping("/show-other-needs-assessment")
+    public String showOtherNeedsAssessmentForm() {
+        return "needsAssessment/show-need-assessment";
     }
 
     @GetMapping("/diff-needs-assessment")

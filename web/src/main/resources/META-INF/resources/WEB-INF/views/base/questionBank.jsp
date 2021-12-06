@@ -132,6 +132,11 @@
                 autoFitWidth: true
             },
             {
+                name: "equestionLevel.titleFa",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
                 name: "tclass.startDate",
                 title: "<spring:message code='start.date'/>",
                 align: "center",
@@ -429,8 +434,36 @@
             {name: "course.titleFa",sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; }},
+            {
+                name: "equestionLevel.id",
+                optionDataSource: EQuestionLevelDS_questionBank,
+                title: "درجه سختی سوال",
+                // textAlign: "center",
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "titleFa",
+                filterOnKeypress: true,
+                filterEditorProperties:{
+                    optionDataSource: EQuestionLevelDS_questionBank,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    autoFetchData: true,
+                    filterFields: ["id","titleFa"],
+                    textMatchStyle: "substring",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {
+                        showFilterEditor: false,
+                        autoFitWidthApproach: "both"
+                    },
+                    pickListFields: [
+                        {name: "titleFa"}
+                    ]
+                },
+                sortNormalizer: function (record) {
+                    return record.eQuestionLevel?.titleFa;
+                }
+            },
             {name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; }},
-            {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
             {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
             {name: "createdBy"},
             {
@@ -528,6 +561,15 @@
                 ],
                 endRow: false,
                 startRow: true,
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
                 pickListProperties: {
                     showFilterEditor: true
                 },
@@ -1463,6 +1505,8 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
                     QuestionBankDF_questionBank.getItem("descriptiveAnswer").disable();
                     QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").enable();
+                    QuestionBankDF_questionBank.getItem("hasAttachment").disable();
+
 
                     //QuestionBankDF_questionBank.getItem("option1").setRequired(true);
                     //QuestionBankDF_questionBank.getItem("option2").setRequired(true);
@@ -1480,7 +1524,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
                     QuestionBankDF_questionBank.getItem("descriptiveAnswer").enable();
                     QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").disable();
-
+                    QuestionBankDF_questionBank.getItem("hasAttachment").enable();
                     //QuestionBankDF_questionBank.getItem("option1").setRequired(false);
                     //QuestionBankDF_questionBank.getItem("option2").setRequired(false);
                     QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(false);

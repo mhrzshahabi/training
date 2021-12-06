@@ -68,6 +68,12 @@
                 baseStyle: "evaluation-code",
                 canEdit: false
             },
+            {
+                name: "learningRate",
+                title: " نرخ یادگیری",
+                baseStyle: "evaluation-code",
+                canEdit: false
+            },
             // {
             //     name: "havePreTest",
             //     title:"پیش آزمون",
@@ -158,6 +164,8 @@
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('preTestMeanScore').titleStyle = 'evaluation-code-title';
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('postTestMeanScore').setCellStyle('evaluation-code-label');
     DynamicForm_Learning_EvaluationAnalysis_Header.getItem('postTestMeanScore').titleStyle = 'evaluation-code-title';
+    DynamicForm_Learning_EvaluationAnalysis_Header.getItem('learningRate').setCellStyle('evaluation-code-label');
+    DynamicForm_Learning_EvaluationAnalysis_Header.getItem('learningRate').titleStyle = 'evaluation-code-title';
     // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePreTest').setCellStyle('evaluation-code-label');
     // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePreTest').titleStyle = 'evaluation-code-title';
     // DynamicForm_Learning_EvaluationAnalysis_Header.getItem('havePostTest').setCellStyle('evaluation-code-label');
@@ -193,6 +201,7 @@
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("preTestMeanScore").setValue(record.preTestMeanScore);
         DynamicForm_Learning_EvaluationAnalysis_Header.getField("postTestMeanScore").setValue(record.postTestMeanScore);
+        DynamicForm_Learning_EvaluationAnalysis_Header.getField("learningRate").setValue(record.learningRate);
         // DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePreTest").setValue(record.havePreTest);
         // DynamicForm_Learning_EvaluationAnalysis_Header.getField("havePostTest").setValue(record.havePostTest);
 

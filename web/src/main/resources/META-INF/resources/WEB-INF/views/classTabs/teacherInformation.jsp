@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-//<script>
+// <script>
 
 let classRecord;
 
@@ -41,54 +41,56 @@ let classRecord;
     });
 
      var ListGrid_teacherInformation = isc.TrLG.create({
-     dataSource: RestDataSource_teacherInformation,
-     fields: [
-     {
-     name: "personality.firstNameFa",
-     title: "<spring:message code="firstName"/>",
-     align: "center",
-     filterOperator: "iContains",
-     sortNormalizer(record){
-     return record.personality.firstNameFa
-     },
-     },
-     {
-     name: "personality.lastNameFa",
-     title: "<spring:message code="lastName"/>",
-     align: "center",
-     filterOperator: "iContains",
-     sortNormalizer(record){
-     return record.personality.lastNameFa
-     },
-     },
+        <sec:authorize access="hasAuthority('TclassteacherInformationTab_R')">
+         dataSource: RestDataSource_teacherInformation,
+        </sec:authorize>
+         fields: [
+         {
+         name: "personality.firstNameFa",
+         title: "<spring:message code="firstName"/>",
+         align: "center",
+         filterOperator: "iContains",
+         sortNormalizer(record){
+         return record.personality.firstNameFa
+         },
+         },
+         {
+         name: "personality.lastNameFa",
+         title: "<spring:message code="lastName"/>",
+         align: "center",
+         filterOperator: "iContains",
+         sortNormalizer(record){
+         return record.personality.lastNameFa
+         },
+         },
 
-     {
-     name: "personality.contactInfo.mobile",
-     title: "<spring:message code="mobile"/>",
-     align: "center",
-     filterOperator: "iContains",
-     filterEditorProperties: {
-     keyPressFilter: "[0-9]"
-     },
-     sortNormalizer(record){
-         let tmp = record.personality?.contactInfo?.mobile;
-         return tmp ? "" : tmp;
-     },
-     },
-     {
-     name: "personality.nationalCode",
-     title: "<spring:message code="national.code"/>",
-     align: "center",
-     filterOperator: "iContains",
-     filterEditorProperties: {
-     keyPressFilter: "[0-9]"
-     },
-     sortNormalizer(record){
-     return record.personality.nationalCode
-     },
-     },
-     ],
-     filterOnKeypress: false,
+         {
+         name: "personality.contactInfo.mobile",
+         title: "<spring:message code="mobile"/>",
+         align: "center",
+         filterOperator: "iContains",
+         filterEditorProperties: {
+         keyPressFilter: "[0-9]"
+         },
+         sortNormalizer(record){
+             let tmp = record.personality?.contactInfo?.mobile;
+             return tmp ? "" : tmp;
+         },
+         },
+         {
+         name: "personality.nationalCode",
+         title: "<spring:message code="national.code"/>",
+         align: "center",
+         filterOperator: "iContains",
+         filterEditorProperties: {
+         keyPressFilter: "[0-9]"
+         },
+         sortNormalizer(record){
+         return record.personality.nationalCode
+         },
+         },
+         ],
+         filterOnKeypress: false,
      });
     //*************************************************************************************
     //DynamicForm & Window
@@ -132,6 +134,7 @@ let classRecord;
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('TclassteacherInformationTab_P')">
                     isc.ToolStripButtonExcel.create({
                         click: function () {
                             let classRecord = ListGrid_Class_JspClass.getSelectedRecord();
@@ -140,9 +143,12 @@ let classRecord;
                             }
                         }
                     }),
+                    </sec:authorize>
                     isc.LayoutSpacer.create({width: "*"}),
                     infoButton,
+                    <sec:authorize access="hasAuthority('TclassteacherInformationTab_R')">
                     ToolStripButton_Refresh,
+                    </sec:authorize>
                 ]
             })
         ]

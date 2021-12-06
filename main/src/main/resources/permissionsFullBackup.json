@@ -645,7 +645,6 @@
     {"code": "TclassSessionsTab_R", "title": "کلاس - تب جلسات - مشاهده"},
     {"code": "TclassStudentsTab_ADD", "title": "کلاس - تب فراگیران - افزودن"},
     {"code": "TclassStudentsTab_D", "title": "کلاس - تب فراگیران - حذف"},
-    {"code": "TclassStudentsTab_E", "title": "کلاس - تب فراگیران - ارزیابی"},
     {"code": "TclassStudentsTab_R", "title": "کلاس - تب فراگیران - مشاهده "},
     {"code": "TclassStudentsTab_P", "title": "کلاس - تب فراگیران - چاپ "},
     {"code": "TclassAttachmentsTab_C", "title": "کلاس - تب ضمائم - ایجاد"},

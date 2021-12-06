@@ -13,39 +13,30 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PersonnelRegisteredDTO;
-import com.nicico.training.dto.SysUserInfoModel;
-import com.nicico.training.dto.ViewActivePersonnelDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
-import com.nicico.training.model.PersonalInfo;
-import com.nicico.training.model.Personnel;
+import com.nicico.training.model.*;
 
-import com.nicico.training.model.Post;
-import com.nicico.training.model.ViewActivePersonnel;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.ViewActivePersonnelDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.PersonnelService;
+import com.nicico.training.service.SynonymPersonnelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -61,6 +52,7 @@ public class PersonnelRestController {
     final ReportUtil reportUtil;
     private final MessageSource messageSource;
     private final PersonnelService personnelService;
+    private final SynonymPersonnelService synonymPersonnelService;
     private final PersonnelDAO personnelDAO;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final IContactInfoService contactInfoService;
@@ -75,6 +67,15 @@ public class PersonnelRestController {
     public ResponseEntity<TotalResponse<PersonnelDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(personnelService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/Synonym/iscList")
+//    public ResponseEntity<TotalResponse<SynonymPersonnel>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+        public ResponseEntity<TotalResponse<PersonnelDTO.Info>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+//        return new ResponseEntity<>(synonymPersonnelService.getData(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(synonymPersonnelService.search(nicicoCriteria), HttpStatus.OK);
+
     }
 
     @Loggable
@@ -237,12 +238,18 @@ public class PersonnelRestController {
     @GetMapping(value = "/fetchAndUpdateLastHrMobile/{type}/{id}")
     public ResponseEntity fetchAndUpdateLastHrMobile(HttpServletRequest iscRq, @PathVariable Long id,@PathVariable String type) {
         Long infoId = contactInfoService.fetchAndUpdateLastHrMobile(id, type, iscRq.getHeader("Authorization")).getId();
-        return new ResponseEntity(infoId, HttpStatus.OK);
+        return new ResponseEntity<>(infoId, HttpStatus.OK);
     }
 
     @GetMapping("/minio/validation")
     public SysUserInfoModel validatingUserRequest() {
         return personnelService.minioValidate();
+    }
+    @PostMapping("/import/post-personnel")
+    public  ResponseEntity<Set<ImportedPersonnelAndPostModel>> importPostAndPersonnel(@RequestBody List<ImportedPersonnelAndPostRequest> personnelNos) {
+        Set<ImportedPersonnelAndPostModel> list= personnelService.getImportPostAndPersonnel(personnelNos);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+
     }
 
 }

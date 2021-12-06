@@ -259,7 +259,9 @@ var saveActionUrlClassDocument;
     var ListGrid_JspClassDocuments = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('TclassClassDocumentsTab_R')">
         dataSource: RestDataSource_Document_JspClassDocuments,
+        </sec:authorize>
         selectionType: "single",
         sortField: 1,
         sortDirection: "descending",
@@ -399,9 +401,16 @@ var saveActionUrlClassDocument;
         membersMargin: 5,
         members:
             [
+                <sec:authorize access="hasAuthority('TclassClassDocumentsTab_C')">
                 ToolStripButton_Add_JspClassDocuments,
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassClassDocumentsTab_U')">
                 ToolStripButton_Edit_JspClassDocuments,
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassClassDocumentsTab_D')">
                 ToolStripButton_Remove_JspClassDocuments,
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('TclassClassDocumentsTab_P')">
                 isc.ToolStripButtonExcel.create({
                     click: function () {
 
@@ -411,12 +420,15 @@ var saveActionUrlClassDocument;
                         }
                     }
                 }),
+                </sec:authorize>
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
+                        <sec:authorize access="hasAuthority('TclassClassDocumentsTab_R')">
                         ToolStripButton_Refresh_JspClassDocuments
+                        </sec:authorize>
                     ]
                 })
             ]

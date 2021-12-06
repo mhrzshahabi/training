@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.enums.EQuestionLevel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -44,6 +45,7 @@ public class QuestionBankDTO {
         private TclassDTO.InfoForQB tclass;
         private CourseDTO.InfoTuple course;
         private TeacherDTO.TeacherInfoTuple teacher;
+        private EQuestionLevel eQuestionLevel;
         private Date createdDate;
         private String createdBy;
     }
@@ -54,6 +56,7 @@ public class QuestionBankDTO {
     @ApiModel("QuestionBank-CreateRq")
     public static class FullInfo extends QuestionBankDTO {
 
+        private Long id;
         private String option1;
         private String option2;
         private String option3;

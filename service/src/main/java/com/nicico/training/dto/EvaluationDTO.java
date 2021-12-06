@@ -113,6 +113,9 @@ public class EvaluationDTO implements Serializable {
         private String feclpass;
         private String tstudent;
         private Float studentCount;
+        private Float maxPastTest;
+        private Float minPreTest;
+        private Float learningRate;
     }
 
     @Getter

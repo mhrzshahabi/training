@@ -9,12 +9,12 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ImportedPersonnelAndPostModel;
+import com.nicico.training.dto.ImportedPersonnelAndPostRequest;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.SysUserInfoModel;
 import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.model.Personnel;
-import com.nicico.training.model.PersonnelRegistered;
-import com.nicico.training.model.ViewActivePersonnelInRegistering;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -28,9 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -38,8 +36,11 @@ public class PersonnelService implements IPersonnelService {
 
     private final PersonnelDAO personnelDAO;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
+    private final SynonymPersonnelDAO synonymPersonnelDAO;
     private final ModelMapper modelMapper;
     private final PostDAO postDAO;
+    private final TrainingPostDAO trainingPostDAO;
+    private final DepartmentDAO departmentDAO;
     private final TclassDAO tclassDAO;
     private final ViewActivePersonnelInRegisteringDAO viewActivePersonnelInRegisteringDAO;
 
@@ -57,13 +58,25 @@ public class PersonnelService implements IPersonnelService {
     @Transactional(readOnly = true)
     @Override
     public PersonnelDTO.Info get(Long id) {
-        return modelMapper.map(getPersonnel(id), PersonnelDTO.Info.class);
+        Personnel personnel=getPersonnel(id);
+        if (personnel!=null)
+            return modelMapper.map(getPersonnel(id), PersonnelDTO.Info.class);
+        else {
+            SynonymPersonnel synonymPersonnel=getSynonymPersonnel(id);
+            return modelMapper.map(synonymPersonnel, PersonnelDTO.Info.class);
+
+        }
     }
 
     @Transactional(readOnly = true)
     @Override
     public Personnel getPersonnel(Long id) {
-        return personnelDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Optional<Personnel> optionalPersonnel=personnelDAO.findById(id);
+        return optionalPersonnel.orElse(null);
+    }
+    public SynonymPersonnel getSynonymPersonnel(Long id) {
+        Optional<SynonymPersonnel> optionalPersonnel=synonymPersonnelDAO.findById(id);
+        return optionalPersonnel.orElse(null);
     }
 
     @Transactional(readOnly = true)
@@ -182,11 +195,37 @@ public class PersonnelService implements IPersonnelService {
         return personnelDAO.findPersonnelDataByPersonnelNumber(personnelCode);
     }
 
+    @Override
+    public Set<ImportedPersonnelAndPostModel> getImportPostAndPersonnel(List<ImportedPersonnelAndPostRequest> personnelNos) {
+        Set<ImportedPersonnelAndPostModel> list= new HashSet<>();
+        for(ImportedPersonnelAndPostRequest importedPersonnelAndPostRequest:personnelNos){
+            Personnel    personnel= personnelDAO.findPersonnelDataByPersonnelNumber(importedPersonnelAndPostRequest.getPerssonelNumber());
+            Optional<TrainingPost> optionalPost = trainingPostDAO.findFirstByCode(importedPersonnelAndPostRequest.getCodePost());
+            if (personnel == null || !optionalPost.isPresent() ){
+                continue;
+            }
+            else{
+                TrainingPost post=optionalPost.get();
+                ImportedPersonnelAndPostModel importedPersonnelAndPostModel=new ImportedPersonnelAndPostModel();
+                importedPersonnelAndPostModel.setPersonnelId(personnel.getId().toString());
+                importedPersonnelAndPostModel.setPersonnelPersonnelNo(personnel.getPersonnelNo());
+                importedPersonnelAndPostModel.setPersonnelFirstName(personnel.getFirstName());
+                importedPersonnelAndPostModel.setPersonnelLastName(personnel.getLastName());
+                importedPersonnelAndPostModel.setPersonnelNationalCode(personnel.getNationalCode());
+                importedPersonnelAndPostModel.setPostId(post.getId().toString());
+                importedPersonnelAndPostModel.setPostCode(post.getCode());
+                importedPersonnelAndPostModel.setPostTitle(post.getTitleFa());
+                list.add(importedPersonnelAndPostModel);
+            }
+        }
+        return list;
+    }
+
     //Unused
     @Override
     @Transactional
     public PersonnelDTO.PersonalityInfo getByNationalCode(String nationalCode) {
-        Personnel[] optionalPersonnel = personnelDAO.findByNationalCode(nationalCode);
+        Personnel[] optionalPersonnel = personnelDAO.findByNationalCodeAndDeleted(nationalCode,0);
         if (optionalPersonnel != null && optionalPersonnel.length != 0)
             return modelMapper.map(optionalPersonnel[0], PersonnelDTO.PersonalityInfo.class);
         else
@@ -254,6 +293,7 @@ public class PersonnelService implements IPersonnelService {
     public PersonnelDTO.DetailInfo findPersonnel(Long personnelType, Long personnelId, String nationalCode, String personnelNo) {
 
         PersonnelRegistered personnelRegistered = null;
+        SynonymPersonnel synonymPersonnel = null;
         Personnel personnel = null;
         List<Personnel> personnels = null;
         List<PersonnelRegistered> personnelRegistereds = null;
@@ -261,12 +301,14 @@ public class PersonnelService implements IPersonnelService {
         nationalCode = nationalCode.trim();
         personnelNo = personnelNo.trim();
 
-        if (personnelId > 0 && (personnelType == 1 || personnelType == 2)) {
+        if (personnelId > 0 && (personnelType == 1 || personnelType == 2 || personnelType == 3)) {
 
             if (personnelType == 1) {
                 personnel = personnelDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             } else if (personnelType == 2) {
                 personnelRegistered = personnelRegisteredDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            } else {
+                synonymPersonnel = synonymPersonnelDAO.findById(personnelId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             }
 
         } else if (StringUtils.isNotEmpty(nationalCode)) {
@@ -318,9 +360,24 @@ public class PersonnelService implements IPersonnelService {
             Long trainingTime = tclassDAO.getStudentTrainingTime(personnel.getNationalCode(), personnelNo, DateUtil.getYear());
             personnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
 
-        } else {
+        } else if (personnelRegistereds != null) {
             Long trainingTime = tclassDAO.getStudentTrainingTime(personnelRegistered.getNationalCode(), personnelNo, DateUtil.getYear());
             personnelRegistered.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
+
+        } else if (synonymPersonnel != null) {
+            Long trainingTime = tclassDAO.getStudentTrainingTime(synonymPersonnel.getNationalCode(), personnelNo, "DateUtil.getYear()");
+            synonymPersonnel.setWorkYears(trainingTime == null ? "عدم آموزش در سال " + DateUtil.getYear() : trainingTime.toString() + " ساعت آموزش در سال " + DateUtil.getYear());
+            if (synonymPersonnel.getPostId() != null) {
+                Optional<Post> optionalPost = postDAO.findFirstById(synonymPersonnel.getPostId());
+                if (optionalPost.isPresent())
+                    synonymPersonnel.setPost(optionalPost.get());
+            }
+            if (synonymPersonnel.getDepartmentId() != null) {
+                Optional<Department> optionalDepartment = departmentDAO.findFirstById(synonymPersonnel.getDepartmentId());
+                if (optionalDepartment.isPresent())
+                    synonymPersonnel.setDepartment(optionalDepartment.get());
+            }
+
 
         }
         PersonnelDTO.DetailInfo result = null;
@@ -342,8 +399,22 @@ public class PersonnelService implements IPersonnelService {
                 result.setPostAssignmentDate(DateUtil.convertMiToKh(formatter.format(personnel.getPostAssignmentDate())));
             }
 
-        } else {
+        } else if (personnelRegistereds != null) {
             result = modelMapper.map(personnelRegistered, PersonnelDTO.DetailInfo.class);
+        } else if (synonymPersonnel != null) {
+
+            result = modelMapper.map(synonymPersonnel, PersonnelDTO.DetailInfo.class);
+
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+            if (synonymPersonnel.getBirthDate() != null) {
+                result.setBirthDate(DateUtil.convertMiToKh(formatter.format(synonymPersonnel.getBirthDate())));
+            }
+
+            if (synonymPersonnel.getEmploymentDate() != null) {
+                result.setEmploymentDate(DateUtil.convertMiToKh(formatter.format(synonymPersonnel.getEmploymentDate())));
+            }
+
         }
 
 
@@ -451,12 +522,12 @@ public class PersonnelService implements IPersonnelService {
     public SysUserInfoModel minioValidate() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         SysUserInfoModel model = new SysUserInfoModel();
-        if (principal!=null){
+        if (principal != null) {
             model.setUserId(principal.toString());
             model.setCellNumber("");
             model.setAuthorities(new HashSet<>());
             model.setStatus(200);
-        }else {
+        } else {
             Set<String> emptyAuthorities = new HashSet<>();
             model.setUserId("");
             model.setCellNumber("");

@@ -1908,6 +1908,30 @@
             })]
     });
 
+    var ViewLoader_Eval_Person  = isc.ViewLoader.create({
+        autoDraw:false,
+        width: "1810",
+        height: 900,
+        loadingMessage: " loading! ..."
+    });
+
+    var personWindow = isc.Window.create({
+        title: "نمایش نیازسنجی",
+        border: "1px solid gray",
+        // placement:"fillScreen",
+        width: "1820",
+        height: 900,
+        autoSize:true,
+        autoCenter: true,
+        isModal: false,
+        showModalMask: true,
+        autoDraw: false,
+        dismissOnEscape: true,
+        closeClick : function () { this.Super("closeClick", arguments)},
+        items: [
+            ViewLoader_Eval_Person
+        ]
+    });
 
     let HLayout_Bottom = isc.TrHLayout.create({
         members: [
@@ -1935,6 +1959,16 @@
                         showResizeBar: true,
                         members: [
                             Label_Help_JspNeedsAssessment,
+                            isc.Button.create({
+                                width: "140",
+                                align: "left",
+                                margin: 2,
+                                title: "نیازسنجی دیگر پست ها",
+                                click: function () {
+                                    ViewLoader_Eval_Person.setViewURL("web/show-other-needs-assessment/");
+                                    personWindow.show();
+                                }
+                            }),
                             isc.Button.create({
                                 width: "140",
                                 align: "left",

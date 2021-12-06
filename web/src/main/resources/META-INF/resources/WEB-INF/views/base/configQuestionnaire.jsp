@@ -234,16 +234,18 @@
         },
         </sec:authorize>
         getCellCSSText: function (record) {
-            if (record.domain.code === "SAT")
-                return "color:red;font-size: 12px;";
-            if (record.domain.code === "EQP")
-                return "color:blue;font-size: 12px;";
-            if (record.domain.code === "CLASS")
-                return "color:black;font-size: 12px;";
-            if (record.domain.code === "Content")
-                return "color:green;font-size: 12px;";
-            if (record.domain.code === "TRAINING")
-                return "color:gray;font-size: 12px;";
+            if (record.domain !== undefined) {
+                if (record.domain.code === "SAT")
+                    return "color:red;font-size: 12px;";
+                if (record.domain.code === "EQP")
+                    return "color:blue;font-size: 12px;";
+                if (record.domain.code === "CLASS")
+                    return "color:black;font-size: 12px;";
+                if (record.domain.code === "Content")
+                    return "color:green;font-size: 12px;";
+                if (record.domain.code === "TRAINING")
+                    return "color:gray;font-size: 12px;";
+            }
         },
         filterEditorSubmit: function () {
             ListGrid_JspConfigQuestionnaire.invalidateCache();

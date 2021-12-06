@@ -339,4 +339,13 @@ public class TeacherDTO {
             return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
         }
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class  TeacherInfo{
+        private String teacherCode;
+        private String teacherName;
+
+
+    }
 }

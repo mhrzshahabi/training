@@ -128,6 +128,7 @@ public class PersonnelDTO implements Serializable {
         private String complexTitle;
         private String address;
         private String phone;
+        private String email;
         private ContactInfoDTO.Info contactInfo;
         private Long postId;
 
@@ -204,6 +205,8 @@ public class PersonnelDTO implements Serializable {
         private PostDTO.PersonnelInfo post;
         private DepartmentDTO.Info department;
         private ContactInfoDTO.Info contactInfo;
+        private String email;
+
     }
 
     @Getter
@@ -321,5 +324,13 @@ public class PersonnelDTO implements Serializable {
         private String lastName;
         private String personnelNo;
         private String ccpAffairs;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    public static class PersonnelName{
+        private String firstName;
+        private String lastName;
     }
 }

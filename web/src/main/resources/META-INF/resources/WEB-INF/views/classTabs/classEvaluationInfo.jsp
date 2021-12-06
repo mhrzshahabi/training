@@ -5,7 +5,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 
-//<script>
+// <script>
 //     var Wait_JspClassEvaluationInfo = null;
 
     var showTeacherTotalGrade = true;
@@ -16,6 +16,7 @@
         numCols: 2,
         margin: 5,
         fields: [
+            <sec:authorize access="hasAuthority('TclassEvaluationInfoTab_P')">
             {
                 type: "button",
                 title: "ارسال به Excel",
@@ -36,10 +37,13 @@
                     }
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('TclassEvaluationInfoTab_R')">
             {name: "teacherGradeToClass", title: "نمره ارزیابی مدرس به کلاس", canEdit: false, type: "StaticTextItem"},
             {name: "trainingGradeToTeacher", title: "نمره ارزیابی مسئول آموزش به مدرس", canEdit: false, type: "StaticTextItem"},
             {name: "studentsGradeToClass", title: "نمره ارزیابی واکنشی کلاس", canEdit: false, type: "StaticTextItem"},
             {name: "teacherTotalGrade", title: "نمره ارزیابی نهایی مدرس", canEdit: false, type: "StaticTextItem"}
+            </sec:authorize>
         ]
     });
 

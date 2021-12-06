@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface TrainingPostDAO extends BaseDAO<TrainingPost, Long>{
 
@@ -15,4 +16,7 @@ public interface TrainingPostDAO extends BaseDAO<TrainingPost, Long>{
 
     @Query(value = "SELECT DISTINCT  p.C_AREA FROM TBL_TRAINING_POST p WHERE p.C_AREA is not null order by p.C_AREA", nativeQuery = true)
     List<String> findAllArea();
+
+    //used only for needAssessment
+    Optional<TrainingPost> findFirstByCode(String code);
 }

@@ -3,13 +3,15 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ImportedPersonnelAndPostModel;
+import com.nicico.training.dto.ImportedPersonnelAndPostRequest;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.SysUserInfoModel;
 import com.nicico.training.model.Personnel;
+import java.util.Set;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Function;
 
 public interface IPersonnelService {
 
@@ -56,4 +58,5 @@ public interface IPersonnelService {
 
     Personnel getByPersonnelNumber(String personnelCode);
 
+    Set<ImportedPersonnelAndPostModel> getImportPostAndPersonnel(List<ImportedPersonnelAndPostRequest> personnelNos);
 }
