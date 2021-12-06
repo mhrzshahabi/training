@@ -5,7 +5,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.iservice.IAddressService;
-import com.nicico.training.model.ContactInfo;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
