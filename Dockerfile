@@ -1,4 +1,4 @@
-FROM devops01.icico.net.ir/jdk-8u222:01
+FROM devops01.icico.net.ir/openjdk:17
 
 COPY main/target/*.jar /app.jar
 
