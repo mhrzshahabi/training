@@ -1995,8 +1995,13 @@ public class TclassService implements ITclassService {
         if (tclass != null) {
             Optional<Course> course= courseDAO.findById(tclass.getCourseId());
             StringBuilder courseTitle= new StringBuilder("");
-            Optional<Complex> complex = complexDAO.findById(tclass.getComplexId());
             StringBuilder complexTitle= new StringBuilder("");
+
+            if (tclass.getComplexId()!=null){
+                Optional<Complex> complex = complexDAO.findById(tclass.getComplexId());
+                complex.ifPresent(value -> complexTitle.append(value.getTitle()));
+            }
+
             StringBuilder teacherFullName= new StringBuilder("");
             StringBuilder teacherNationalCode= new StringBuilder("");
 
@@ -2008,7 +2013,6 @@ public class TclassService implements ITclassService {
             }
 
             course.ifPresent(value -> courseTitle.append(value.getTitleFa()));
-            complex.ifPresent(value -> complexTitle.append(value.getTitle()));
 
 
             ElsClassDetailResponse elsClassDto=new ElsClassDetailResponse();
