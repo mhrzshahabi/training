@@ -3283,5 +3283,49 @@ WHERE
         </createTable>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="1638875566000-1">
+        <createTable tableName="REV_INFO_CLASS_STUDENT">
+            <column autoIncrement="true" name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="REV_INFO_CLASS_STUDENT_PK"/>
+            </column>
+            <column name="REVTSTMP" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="namdari (generated)" id="1638875566000-2">
+        <createTable tableName="TBL_CLASS_STUDENT_AUD">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_CLASS_STUDENT_AUDPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_CLASS_STUDENT_AUDPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="e_enabled" type="number(19, 0)"/>
+            <column name="e_deleted" type="number(19, 0)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
+
+            <column name="student_id" type="NUMBER(19, 0)"/>
+            <column name="class_id" type="NUMBER(19, 0)"/>
+            <column name="failure_reason_id" type="NUMBER(19, 0)"/>
+            <column name="scores_state_id" type="NUMBER(19, 0)"/>
+            <column name="DESCRIPTIVEـSCORE" type="FLOAT"/>
+            <column name="TEST_SCORE" type="FLOAT"/>
+            <column name="score" type="FLOAT"/>
+
+
+        </createTable>
+    </changeSet>
+    <changeSet author="namdari (generated)" id="1638875566000-3">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_CLASS_STUDENT_AUD"
+                                 constraintName="FK_TBL_CLASS_STUDENT_AUD_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REV_INFO_CLASS_STUDENT"
+                                 validate="true"/>
+    </changeSet>
+
+
 
 </databaseChangeLog>
