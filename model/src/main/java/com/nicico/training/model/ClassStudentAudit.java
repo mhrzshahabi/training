@@ -32,6 +32,21 @@ public class ClassStudentAudit implements Serializable {
     @Column(name = "class_id")
     private Long tclassId;
 
+    @Column(name = "failure_reason_id")
+    private Long failureReasonId;
+
+    @Column(name = "score")
+    private Float score;
+
+    @Column(name = "scores_state_id")
+    private Long scoresStateId;
+
+    @Column(name = "TEST_SCORE")
+    private Float testScore;
+
+    @Column(name = "DESCRIPTIVEـSCORE")
+    private Float descriptiveScore;
+
     @Column(name = "C_CREATED_BY")
     private String createdBy;
 

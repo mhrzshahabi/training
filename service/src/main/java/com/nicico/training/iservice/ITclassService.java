@@ -15,6 +15,7 @@ import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
 import org.springframework.transaction.annotation.Transactional;
 import request.evaluation.TeacherEvaluationAnswerDto;
+import response.tclass.ElsClassDetailResponse;
 import response.tclass.ElsSessionResponse;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
@@ -143,8 +144,6 @@ public interface ITclassService {
 
     BaseResponse changeClassStatusToInProcess(Long classId);
 
-    EvalAverageResult getStudentsAverageGradeToTeacher(Set<ClassStudent> classStudents);
-
     void changeClassToOnlineStatus(Long classId, boolean state);
 
     Tclass getClassByCode(String classCode);
@@ -163,4 +162,5 @@ public interface ITclassService {
     List<Tclass> getClassesViaTypeAndStatus(ClassStatusDTO status, ClassTypeDTO type);
 
 
+    ElsClassDetailResponse getClassDetail(String classCode);
 }
