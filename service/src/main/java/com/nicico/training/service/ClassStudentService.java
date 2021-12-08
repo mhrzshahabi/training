@@ -145,7 +145,7 @@ public class ClassStudentService implements IClassStudentService {
             nameList = null;
         Map<String, String> map = new HashMap();
         map.put("names", nameList);
-        map.put("accepted", new Integer(request.size() - invalStudents.size()).toString());
+        map.put("accepted", Integer.toString(request.size() - invalStudents.size()));
         return map;
     }
 

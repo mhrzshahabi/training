@@ -40,7 +40,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     public Long getStudentTrainingTime(String national_code, String personnel_no, String year);
 
     @Query(value = " SELECT  " +
-            "    c.id, '<b class=\"clickableCell\">' || c.c_code || '</b>', c.c_title_class, c.n_h_duration , c.c_start_date, c.c_end_date, c.c_status as classStatus_id,  " +
+            "    c.id,c.c_code, c.c_title_class, c.n_h_duration , c.c_start_date, c.c_end_date, c.c_status as classStatus_id,  " +
             "    case when c.c_status = 1 then 'برنامه ریزی' when c.c_status = 2 then 'در حال اجرا' when c.c_status = 3 then 'پایان یافته' end as classStatus,  " +
             "    cs.scores_state_id, " +
             "    '(<b class=\"'|| case when scores_state_id = 400 or scores_state_id =401 then 'acceptRTL' when scores_state_id = 403 then 'rejectedRTL' end ||'\">' || pa.c_title || '</b>)' || case when cs.score is not null then ' نمره: ' || cs.score else '' end || case when   cs.failure_reason_id is not null then ' <' ||  pa2.c_title || '>' else '' end as score_state,   " +

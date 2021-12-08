@@ -3283,15 +3283,8 @@ WHERE
         </createTable>
     </changeSet>
 
+
     <changeSet author="namdari (generated)" id="1638875566000-1">
-        <createTable tableName="REV_INFO_CLASS_STUDENT">
-            <column autoIncrement="true" name="REV" type="NUMBER(10, 0)">
-                <constraints primaryKey="true" primaryKeyName="REV_INFO_CLASS_STUDENT_PK"/>
-            </column>
-            <column name="REVTSTMP" type="NUMBER(19, 0)"/>
-        </createTable>
-    </changeSet>
-    <changeSet author="namdari (generated)" id="1638875566000-2">
         <createTable tableName="TBL_CLASS_STUDENT_AUD">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="TBL_CLASS_STUDENT_AUDPK"/>
@@ -3319,10 +3312,10 @@ WHERE
 
         </createTable>
     </changeSet>
-    <changeSet author="namdari (generated)" id="1638875566000-3">
+    <changeSet author="namdari (generated)" id="1638875566000-2">
         <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_CLASS_STUDENT_AUD"
                                  constraintName="FK_TBL_CLASS_STUDENT_AUD_REV" deferrable="false"
-                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REV_INFO_CLASS_STUDENT"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
                                  validate="true"/>
     </changeSet>
 
