@@ -657,16 +657,23 @@ public class EvaluationService implements IEvaluationService {
             evaluationAnswerFullData.setDescription(evaluation.getDescription());
 
             if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
-                QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
-                evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
-                evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
-                evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
-                evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
+                Optional<QuestionnaireQuestion> optionalQuestionnaireQuestion = questionnaireQuestionDAO.findById(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(optionalQuestionnaireQuestion.map(QuestionnaireQuestion::getOrder).orElse(null));
+                evaluationAnswerFullData.setWeight(optionalQuestionnaireQuestion.map(QuestionnaireQuestion::getWeight).orElse(null));
+                if (optionalQuestionnaireQuestion.isPresent() && optionalQuestionnaireQuestion.get().getEvaluationQuestionId()!=null){
+                    Optional<EvaluationQuestion> optionalEvaluationQuestion=evaluationQuestionDAO.findById(optionalQuestionnaireQuestion.get().getEvaluationQuestionId());
+                    evaluationAnswerFullData.setQuestion(optionalEvaluationQuestion.map(EvaluationQuestion::getQuestion).orElse(null));
+                    evaluationAnswerFullData.setDomainId(optionalEvaluationQuestion.map(EvaluationQuestion::getDomainId).orElse(null));
+                }else {
+                    evaluationAnswerFullData.setQuestion(null);
+                    evaluationAnswerFullData.setDomainId(null);
+
+                }
             } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
-                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
-                evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
-                evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
-                evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
+                Optional<DynamicQuestion> optionalDynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswerFullData.getEvaluationQuestionId());
+                evaluationAnswerFullData.setOrder(optionalDynamicQuestion.map(DynamicQuestion::getOrder).orElse(null));
+                evaluationAnswerFullData.setWeight(optionalDynamicQuestion.map(DynamicQuestion::getWeight).orElse(null));
+                evaluationAnswerFullData.setQuestion(optionalDynamicQuestion.map(DynamicQuestion::getQuestion).orElse(null));
                 evaluationAnswerFullData.setDomainId(183L);
             }
 

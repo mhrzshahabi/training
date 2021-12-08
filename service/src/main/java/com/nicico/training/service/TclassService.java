@@ -15,9 +15,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
-import com.nicico.training.iservice.IEvaluationService;
-import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.ClassSession.SessionBeanMapper;
 import com.nicico.training.mapper.TrainingClassBeanMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
@@ -25,6 +23,8 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
 import com.nicico.training.repository.*;
 import com.nicico.training.utility.persianDate.MyUtils;
+import dto.exam.ClassType;
+import dto.exam.CourseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -33,6 +33,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import request.evaluation.StudentEvaluationAnswerDto;
@@ -43,6 +44,7 @@ import response.evaluation.dto.AveragePerQuestion;
 import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
 import response.evaluation.dto.TeacherEvaluationAnswer;
+import response.tclass.ElsClassDetailResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.dto.TclassDto;
 
@@ -55,6 +57,9 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.utility.persianDate.MyUtils.*;
+import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -66,6 +71,7 @@ public class TclassService implements ITclassService {
     private final TclassDAO tclassDAO;
     private final TclassAuditDAO tclassAuditDAO;
     private final TeacherDAO teacherDAO;
+    private final PersonalInfoDAO personalInfoDAO;
     private final ClassSessionDAO classSessionDAO;
     private final LockClassDAO lockClassDAO;
     private final EvaluationDAO evaluationDAO;
@@ -98,6 +104,8 @@ public class TclassService implements ITclassService {
     private final TclassBeanMapper tclassBeanMapper;
     private final SessionBeanMapper sessionBeanMapper;
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
+    private final ComplexDAO complexDAO;
+    private final ClassStudentDAO classStudentDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -1807,13 +1815,12 @@ public class TclassService implements ITclassService {
     @Transactional(readOnly = true)
     public EvalAverageResult getEvaluationAverageResultToTeacher(Long classId) {
         Tclass tclass = getTClass(classId);
-        Set<ClassStudent> classStudents = tclass.getClassStudents();
-        EvalAverageResult studentsAverageGradeToTeacher = getStudentsAverageGradeToTeacher(classStudents);
-        return studentsAverageGradeToTeacher;
+        List<ClassStudent> classStudents = classStudentDAO.findAllByTclassId(tclass.getId());
+        return getStudentsAverageGradeToTeacher(classStudents);
     }
 
     @Transactional
-    public EvalAverageResult getStudentsAverageGradeToTeacher(Set<ClassStudent> classStudents) {
+    public EvalAverageResult getStudentsAverageGradeToTeacher(List<ClassStudent> classStudents) {
 
         Map<String, Double> answeredStudentsNo = new HashMap<>();
         Map<String, Double> questionsAverageGrade = new HashMap<>();
@@ -1981,5 +1988,63 @@ public class TclassService implements ITclassService {
 
         return list;
     }
+
+    @Override
+    public ElsClassDetailResponse getClassDetail(String classCode) {
+        Tclass tclass= getClassByCode(classCode);
+        if (tclass != null) {
+            Optional<Course> course= courseDAO.findById(tclass.getCourseId());
+            StringBuilder courseTitle= new StringBuilder("");
+            StringBuilder complexTitle= new StringBuilder("");
+
+            if (tclass.getComplexId()!=null){
+                Optional<Complex> complex = complexDAO.findById(tclass.getComplexId());
+                complex.ifPresent(value -> complexTitle.append(value.getTitle()));
+            }
+
+            StringBuilder teacherFullName= new StringBuilder("");
+            StringBuilder teacherNationalCode= new StringBuilder("");
+
+            Optional<Teacher> teacher = teacherDAO.findById(tclass.getTeacherId());
+            if (teacher.isPresent()){
+                Optional<PersonalInfo> personalInfo = personalInfoDAO.findById(teacher.get().getPersonalityId());
+                personalInfo.ifPresent(value -> teacherFullName.append(value.getFirstNameFa()).append(" ").append(value.getLastNameFa()));
+                personalInfo.ifPresent(value -> teacherNationalCode.append(value.getNationalCode()));
+            }
+
+            course.ifPresent(value -> courseTitle.append(value.getTitleFa()));
+
+
+            ElsClassDetailResponse elsClassDto=new ElsClassDetailResponse();
+            elsClassDto.setId(tclass.getId());
+            elsClassDto.setCode(tclass.getCode());
+            elsClassDto.setTitle(tclass.getTitleClass());
+            elsClassDto.setName(courseTitle.toString());
+            elsClassDto.setCapacity(tclass.getMaxCapacity() == null ? null : Integer.valueOf(tclass.getMaxCapacity().toString()));
+            elsClassDto.setDuration(tclass.getHDuration() == null ? null : Integer.valueOf(tclass.getHDuration().toString()));
+            elsClassDto.setLocation(complexTitle.toString());
+            elsClassDto.setCourseStatus(tclass.getClassStatus() == null ? null : getCourseStatus(Integer.parseInt(tclass.getClassStatus())));
+            elsClassDto.setClassType(tclass.getTeachingMethodId() == null ? null : getClassType(Integer.parseInt(tclass.getTeachingMethodId().toString())));
+            //todo this property must be remove in els
+            elsClassDto.setCourseType(null);
+            elsClassDto.setCoursePrograms(getPrograms2(tclass));
+
+            Date startDate = getEpochDate(tclass.getStartDate(), "08:00");
+            Date endDate = getEpochDate(tclass.getEndDate(), "23:59");
+            elsClassDto.setStart_Date(startDate.getTime());
+            elsClassDto.setStartDate(String.valueOf(startDate.getTime()));
+            elsClassDto.setFinishDate(String.valueOf(endDate.getTime()));
+            elsClassDto.setFinish_Date(endDate.getTime());
+            elsClassDto.setInstructor(teacherFullName.toString());
+            elsClassDto.setInstructorNationalCode(teacherNationalCode.toString());
+            elsClassDto.setEvaluationId(null);
+            EvalAverageResult evaluationAverageResultToInstructor = getEvaluationAverageResultToTeacher(tclass.getId());
+            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage() == null ? null :evaluationAverageResultToInstructor.getTotalAverage());
+            return elsClassDto;
+        } else
+            throw new TrainingException(TrainingException.ErrorType.TclassNotFound);
+    }
+
+
 
 }

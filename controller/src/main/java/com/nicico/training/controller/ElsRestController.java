@@ -53,6 +53,7 @@ import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
 import response.question.dto.*;
+import response.tclass.ElsClassDetailResponse;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
@@ -1341,5 +1342,27 @@ public class ElsRestController {
         return iSelfDeclarationService.findByNationalCode(nationalCode);
     }
 
+    @GetMapping("/class-detail/{classCode}")
+    public ElsClassDetailResponse getClassDetail(HttpServletRequest header, @PathVariable String classCode) {
 
+        ElsClassDetailResponse elsClassDetailResponse = new ElsClassDetailResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+            try {
+                elsClassDetailResponse = tclassService.getClassDetail(classCode.trim());
+                elsClassDetailResponse.setStatus(200);
+                return elsClassDetailResponse;
+
+            } catch (Exception e) {
+
+                elsClassDetailResponse.setStatus(HttpStatus.NOT_FOUND.value());
+                elsClassDetailResponse.setMessage("کلاس موردنظر یافت نشد");
+                return elsClassDetailResponse;
+            }
+        } else {
+            elsClassDetailResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsClassDetailResponse.setMessage("دسترسی موردنظر یافت نشد");
+            return elsClassDetailResponse;
+        }
+    }
 }

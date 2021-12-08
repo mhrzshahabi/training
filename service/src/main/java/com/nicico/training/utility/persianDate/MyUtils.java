@@ -1,6 +1,14 @@
 package com.nicico.training.utility.persianDate;
 
+import com.nicico.training.model.Tclass;
+import dto.exam.ClassType;
+import dto.exam.CourseStatus;
 import net.jcip.annotations.ThreadSafe;
+import response.tclass.dto.CourseProgramDTO;
+import response.tclass.dto.WeekDays;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides static helper methods, in order to remove boilerplate code.
@@ -119,5 +127,335 @@ public class MyUtils {
                 .replace("٦", "6").replace("7", "٧").replace("٨", "8").replace("٩", "9").replace("٠", "0")
                 .replace("۱", "1").replace("۲", "2").replace("۳", "3").replace("۴", "4").replace("۵", "5")
                 .replace("۶", "6").replace("۷", "7").replace("۸", "8").replace("۹", "9").replace("۰", "0");
+    }
+
+    public static List<CourseProgramDTO> getPrograms2(Tclass tclass) {
+        List<CourseProgramDTO> programs = new ArrayList<>();
+        if (null != (tclass.getSaturday()) && tclass.getSaturday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(1));
+                program.setStartTime("8");
+                program.setEndTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(1));
+                program.setStartTime("10");
+                program.setEndTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(1));
+                program.setStartTime("12");
+                program.setEndTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(1));
+                program.setStartTime("14");
+                program.setEndTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(1));
+                program.setStartTime("16");
+                program.setEndTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getSunday()) && tclass.getSunday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(2));
+                program.setStartTime("8");
+                program.setEndTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(2));
+                program.setStartTime("10");
+                program.setEndTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(2));
+                program.setStartTime("12");
+                program.setEndTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(2));
+                program.setStartTime("14");
+                program.setEndTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(2));
+                program.setStartTime("16");
+                program.setEndTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getMonday()) && tclass.getMonday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(3));
+                program.setStartTime("8");
+                program.setEndTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(3));
+                program.setStartTime("10");
+                program.setEndTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(3));
+                program.setStartTime("12");
+                program.setEndTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(3));
+                program.setStartTime("14");
+                program.setEndTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(3));
+                program.setStartTime("16");
+                program.setEndTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getTuesday()) && tclass.getTuesday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(4));
+                program.setStartTime("8");
+                program.setEndTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(4));
+                program.setStartTime("10");
+                program.setEndTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(4));
+                program.setStartTime("12");
+                program.setEndTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(4));
+                program.setStartTime("14");
+                program.setEndTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(4));
+                program.setStartTime("16");
+                program.setEndTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getWednesday()) && tclass.getWednesday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(5));
+                program.setStartTime("8");
+                program.setEndTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(5));
+                program.setStartTime("10");
+                program.setEndTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(5));
+                program.setStartTime("12");
+                program.setEndTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(5));
+                program.setStartTime("14");
+                program.setEndTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(5));
+                program.setStartTime("16");
+                program.setEndTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getThursday()) && tclass.getThursday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(6));
+                program.setStartTime("8");
+                program.setEndTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(6));
+                program.setStartTime("10");
+                program.setEndTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(6));
+                program.setStartTime("12");
+                program.setEndTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(6));
+                program.setStartTime("14");
+                program.setEndTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(6));
+                program.setStartTime("16");
+                program.setEndTime("18");
+                programs.add(program);
+            }
+
+
+        }
+        if (null != (tclass.getFriday()) && tclass.getFriday()) {
+
+
+            if (null != (tclass.getFirst()) && tclass.getFirst()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(7));
+                program.setStartTime("8");
+                program.setEndTime("10");
+                programs.add(program);
+
+            }
+            if (null != (tclass.getSecond()) && tclass.getSecond()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(7));
+                program.setStartTime("10");
+                program.setEndTime("12");
+                programs.add(program);
+            }
+            if (null != (tclass.getThird()) && tclass.getThird()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(7));
+                program.setStartTime("12");
+                program.setEndTime("14");
+                programs.add(program);
+            }
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(7));
+                program.setStartTime("14");
+                program.setEndTime("16");
+                programs.add(program);
+            }
+            if (null != (tclass.getFifth()) && tclass.getFifth()) {
+                CourseProgramDTO program = new CourseProgramDTO();
+                program.setDay(getWeekDays(7));
+                program.setStartTime("16");
+                program.setEndTime("18");
+                programs.add(program);
+            }
+
+
+        }
+
+        return programs;
+    }
+
+
+    public static WeekDays getWeekDays(int id) {
+        for (WeekDays entry : WeekDays.values()) {
+            if (entry.getKey()==id) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+
+
+    public static ClassType getClassType(int id) {
+        for (ClassType entry : ClassType.values()) {
+            if (entry.getKey()==id) {
+                return entry;
+            }
+        }
+        return null;
+    }
+
+    public static CourseStatus getCourseStatus(int id) {
+        for (CourseStatus entry : CourseStatus.values()) {
+            if (entry.getKey()==id) {
+                return entry;
+            }
+        }
+        return null;
     }
 }
