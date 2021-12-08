@@ -28,6 +28,8 @@ public class OperationalRoleDTO {
     public static class Info extends OperationalRoleDTO {
         private Long id;
         private OperationalUnitDTO.Info operationalUnit;
+        private Set<CategoryDTO.CategoryInfoTuple> categories;
+        private Set<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
     }
 
     @Getter
@@ -35,6 +37,8 @@ public class OperationalRoleDTO {
     @Accessors(chain = true)
     @ApiModel("OperationalRole - Create")
     public static class Create extends OperationalRoleDTO {
+        private List<Long> categories;
+        private List<Long> subCategories;
     }
 
     @Getter
@@ -43,6 +47,8 @@ public class OperationalRoleDTO {
     @ApiModel("OperationalRole - Update")
     public static class Update extends OperationalRoleDTO {
         private Integer version;
+        private List<Long> categories;
+        private List<Long> subCategories;
     }
 
 

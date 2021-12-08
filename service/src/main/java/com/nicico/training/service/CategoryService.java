@@ -25,6 +25,7 @@ import response.question.dto.ElsCategoryDto;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +52,16 @@ public class CategoryService implements ICategoryService {
 
         return modelMapper.map(cAll, new TypeToken<List<CategoryDTO.Info>>() {
         }.getType());
+    }
+
+    @Override
+    public Set<Category> getCategoriesByIds(List<Long> categoryIds) {
+        if (!categoryIds.isEmpty() && categoryIds.size() > 0) {
+            List<Category> list = categoryDAO.findAllById(categoryIds);
+            Set<Category> set = list.stream().collect(Collectors.toSet());
+            return set;
+        } else
+            return null;
     }
 
     @Transactional

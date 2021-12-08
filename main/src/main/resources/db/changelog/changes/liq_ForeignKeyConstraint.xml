@@ -1299,4 +1299,16 @@
     <changeSet author="nick (generated)" id="1634467547507-577">
         <addForeignKeyConstraint baseColumnNames="F_OPERATIONAL_ROLE" baseTableName="TBL_OPERATIONAL_ROLE_POST_IDS" constraintName="FKOperationalRoleINOperationalPostUserIds" deferrable="false" initiallyDeferred="false" referencedColumnNames="ID" referencedTableName="tbl_operational_role" validate="true"/>
     </changeSet>
+    <changeSet author="nick (generated)" id="1638772362566-572">
+        <addForeignKeyConstraint baseColumnNames="F_OPERATIONAL_ROLE" baseTableName="TBL_OPERATIONAL_ROLE_CATEGORY" constraintName="FKOperationalRoleInOperationalRoleCategory" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_OPERATIONAL_ROLE" validate="true"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1638772362566-588">
+        <addForeignKeyConstraint baseColumnNames="F_CATEGORY" baseTableName="TBL_OPERATIONAL_ROLE_CATEGORY" constraintName="FKCategoryInOperationalRoleCategory" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_CATEGORY" validate="true"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1638772362566-586">
+        <addForeignKeyConstraint baseColumnNames="F_OPERATIONAL_ROLE" baseTableName="TBL_OPERATIONAL_ROLE_SUBCATEGORY" constraintName="FKOperationalRoleInOperationalRoleSubCategory" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_OPERATIONAL_ROLE" validate="true"/>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1638772362566-583">
+        <addForeignKeyConstraint baseColumnNames="F_SUBCATEGORY" baseTableName="TBL_OPERATIONAL_ROLE_SUBCATEGORY" constraintName="FKSubCategoryInOperationalRoleSubCategory" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_SUB_CATEGORY" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

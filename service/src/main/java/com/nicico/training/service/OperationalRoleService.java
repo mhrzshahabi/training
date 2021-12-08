@@ -3,16 +3,20 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.AccountInfoDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.mapper.operationalRole.OperationalRoleBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.ComplexDAO;
 import com.nicico.training.repository.OperationalRoleDAO;
 import com.nicico.training.repository.OperationalUnitDAO;
+import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,17 +34,16 @@ public class OperationalRoleService implements IOperationalRoleService {
     private final OperationalRoleDAO operationalRoleDAO;
     private final OperationalUnitDAO operationalUnitDAO;
     private final ComplexDAO complexDAO;
-    private final OperationalRoleBeanMapper mapper;
+    private final ModelMapper modelMapper;
 
     @Transactional
     @Override
-    public OperationalRoleDTO.Info create(OperationalRoleDTO.Create request) {
+    public OperationalRole create(OperationalRole creating) {
         try {
-            Complex complex = complexDAO.getOne(request.getComplexId());
+            Complex complex = complexDAO.getById(creating.getComplexId());
             String complexParameterCode = complex.getCode().trim().substring(0,3);
-            OperationalUnit operationalUnit = operationalUnitDAO.findById(request.getOperationalUnitId()).get();
+            OperationalUnit operationalUnit = operationalUnitDAO.findById(creating.getOperationalUnitId()).get();
             String generatedRoleCode = complexParameterCode + operationalUnit.getUnitCode();
-            OperationalRole creating = mapper.toOperationalRole(request);
 //            creating.setOperationalUnit(operationalUnit);
             Random rand = new Random();
             String random4Code = String.format("%04d", rand.nextInt(10000));
@@ -50,7 +53,7 @@ public class OperationalRoleService implements IOperationalRoleService {
                 finalCode = generatedRoleCode + random4Code;
             }
             creating.setCode(finalCode);
-            return mapper.toOperationalRoleInfoDto(operationalRoleDAO.save(creating));
+            return operationalRoleDAO.save(creating);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -82,20 +85,15 @@ public class OperationalRoleService implements IOperationalRoleService {
 
     @Override
     public SearchDTO.SearchRs<OperationalRoleDTO.Info> search(SearchDTO.SearchRq searchRq) {
-        return SearchUtil.search(operationalRoleDAO, searchRq, job -> mapper.toOperationalRoleInfoDto(job));
+        return SearchUtil.search(operationalRoleDAO, searchRq, role -> modelMapper.map(role, OperationalRoleDTO.Info.class));
 
     }
 
     @Transactional
     @Override
-    public OperationalRoleDTO.Info update(Long id, OperationalRoleDTO.Update request) {
-        final OperationalRole operationalRole = getOperationalRole(id);
-        OperationalRole updating = new OperationalRole();
-        updating = mapper.copyOperationalRoleFrom(operationalRole);
-        updating.setUserIds(request.getUserIds());
-        updating.setPostIds(request.getPostIds());
+    public OperationalRole update(Long id, OperationalRole updating) {
         try {
-            return mapper.toOperationalRoleInfoDto(operationalRoleDAO.save(updating));
+            return operationalRoleDAO.save(updating);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -120,6 +118,13 @@ public class OperationalRoleService implements IOperationalRoleService {
          if (operationalRole.isPresent())
              return operationalRole.get().getTitle();
          else return "گروه کاری ثبت نشده";
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<OperationalRoleDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRs<OperationalRoleDTO.Info> searchRs = BaseService.<OperationalRole, OperationalRoleDTO.Info, OperationalRoleDAO>optimizedSearch(operationalRoleDAO, p -> modelMapper.map(p, OperationalRoleDTO.Info.class), searchRq);
+        return searchRs;
     }
 
 }

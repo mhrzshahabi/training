@@ -50,4 +50,16 @@ public class OperationalRole extends Auditable {
 
     @Column(name = "COMPLEX_ID")
     private Long complexId;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "TBL_OPERATIONAL_ROLE_CATEGORY",
+            joinColumns = {@JoinColumn(name = "F_OPERATIONAL_ROLE", referencedColumnName = "ID")},
+            inverseJoinColumns = {@JoinColumn(name = "F_CATEGORY", referencedColumnName = "ID")})
+    private Set<Category> categories;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "TBL_OPERATIONAL_ROLE_SUBCATEGORY",
+            joinColumns = {@JoinColumn(name = "F_OPERATIONAL_ROLE", referencedColumnName = "ID")},
+            inverseJoinColumns = {@JoinColumn(name = "F_SUBCATEGORY", referencedColumnName = "ID")})
+    private Set<Subcategory> subCategories;
 }

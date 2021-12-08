@@ -9,6 +9,8 @@
     var saveActionUrlOperationalRole;
     var wait_Permission;
     let departmentCriteria = [];
+    let hasRoleCategoriesChanged = false;
+    let selected_record = null;
     //--------------------------------------------------------------------------------------------------------------------//
     /*DS*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -102,6 +104,20 @@
         // fetchDataURL: viewPostUrl + "/rolePostList"
     });
 
+    var RestDataSource_Categories_OperationalRole = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true}
+        ],
+        cacheAllData: true,
+        fetchDataURL: categoryUrl + "iscList"
+    });
+
+    var RestDataSource_SubCategories_OperationalRole = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"},{name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -119,6 +135,7 @@
         }, {
             title: "<spring:message code='edit'/>", click: function () {
                 let record = ListGrid_JspOperationalRole.getSelectedRecord();
+                selected_record = record;
                 PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
                 ListGrid_OperationalRole_Edit();
             }
@@ -209,6 +226,7 @@
         ],
         rowDoubleClick: function (record) {
             PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
+            selected_record = record;
             ListGrid_OperationalRole_Edit();
         },
         filterEditorSubmit: function () {
@@ -264,6 +282,95 @@
                 validateOnExit: true,
                 length: 255,
                 canSort: false,
+            },
+            {
+                name: "categories",
+                title: "<spring:message code='education.categories'/>",
+                // editorType: "MultiComboBoxItem",
+                length: 255,
+                type: "SelectItem",
+
+                pickListWidth: 200,
+                multiple: true,
+                textAlign: "center",
+                autoFetchData: false,
+                optionDataSource: RestDataSource_Categories_OperationalRole,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                operator: "inSet",
+                // filterOnKeypress: true,
+                autoFitButtons: true,
+                titleVAlign: "top",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                changed: function () {
+                    hasRoleCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_JspOperationalRole.getField("subCategories");
+                    subCategoryField.clearValue();
+                    if (this.value === null || this.getValue() === null || this.getValue() === undefined || this.getValue() === "") {
+                        hasRoleCategoriesChanged = false;
+                        subCategoryField.clearValue();
+                        DynamicForm_JspOperationalRole.getField("subCategories").disable();
+                        return;
+                    }
+
+                    subCategoryField.enable();
+                    if (subCategoryField.getValue() === undefined)
+                        return;
+                    var subCategories = subCategoryField.getSelectedRecords();
+                    let categoryIds = this.getValue();
+                    var SubCats = [];
+                    for (var i = 0; i < subCategories.length; i++) {
+                        if (categoryIds.contains(subCategories[i].categoryId))
+                            SubCats.add(subCategories[i].id);
+                    }
+                    subCategoryField.setValue(SubCats);
+                    subCategoryField.focus(this.form, subCategoryField);
+                }
+            },
+            {
+                name: "subCategories",
+                title: "<spring:message code='sub.education.categories'/>",
+                // editorType: "MultiComboBoxItem",
+                length: 255,
+                type: "SelectItem",
+
+                operator: "inSet",
+                filterOnKeypress: true,
+                autoFitButtons: true,
+                titleVAlign: "top",
+
+                pickListWidth: 200,
+                multiple: true, textAlign: "center",
+                autoFetchData: true,
+                disabled: true,
+                optionDataSource: RestDataSource_SubCategories_OperationalRole,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                focus: function () {
+                    if (hasRoleCategoriesChanged) {
+                        console.log("hasRoleCategoriesChanged", hasRoleCategoriesChanged);
+                        hasRoleCategoriesChanged = false;
+                        var ids = DynamicForm_JspOperationalRole.getField("categories").getValue();
+                        if (ids === []) {
+                            RestDataSource_SubCategories_OperationalRole.implicitCriteria = null;
+                        } else {
+                            console.log("ids in subCategories :", ids);
+                            RestDataSource_SubCategories_OperationalRole.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
             },
             {
                 name: "postIds",
@@ -470,6 +577,7 @@
     var ToolStripButton_Edit_JspOperationalRole = isc.ToolStripButtonEdit.create({
         click: function () {
             let record = ListGrid_JspOperationalRole.getSelectedRecord();
+            selected_record = record;
             if (record == null || record.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
@@ -539,6 +647,25 @@
             saveActionUrlOperationalRole = operationalRoleUrl + "/" + record.id;
             DynamicForm_JspOperationalRole.clearValues();
             DynamicForm_JspOperationalRole.editRecord(record);
+            var categoryIds = selected_record.categories;
+            var subCategoryIds = selected_record.subCategories;
+            if (categoryIds === null || categoryIds.length === 0)
+                DynamicForm_JspOperationalRole.getField("subCategories").disable();
+            else {
+                DynamicForm_JspOperationalRole.getField("subCategories").enable();
+                var catIds = [];
+                for (let i = 0; i < categoryIds.length; i++)
+                    catIds.add(categoryIds[i].id);
+                DynamicForm_JspOperationalRole.getField("categories").setValue(catIds);
+                hasRoleCategoriesChanged = true;
+                DynamicForm_JspOperationalRole.getField("subCategories").focus(null, null);
+            }
+            if (subCategoryIds != null && subCategoryIds.length > 0) {
+                var subCatIds = [];
+                for (let i = 0; i < subCategoryIds.length; i++)
+                    subCatIds.add(subCategoryIds[i].id);
+                DynamicForm_JspOperationalRole.getField("subCategories").setValue(subCatIds);
+            }
             Window_JspOperationalRole.show();
         }
     }
