@@ -149,14 +149,14 @@ public class MyUtils {
                 program.setEndTime("12");
                 programs.add(program);
             }
-            if (null != (tclass.getThird()) && tclass.getThird()) {
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(1));
                 program.setStartTime("12");
                 program.setEndTime("14");
                 programs.add(program);
             }
-            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+            if (null != (tclass.getThird()) && tclass.getThird()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(1));
                 program.setStartTime("14");
@@ -191,14 +191,14 @@ public class MyUtils {
                 program.setEndTime("12");
                 programs.add(program);
             }
-            if (null != (tclass.getThird()) && tclass.getThird()) {
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(2));
                 program.setStartTime("12");
                 program.setEndTime("14");
                 programs.add(program);
             }
-            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+            if (null != (tclass.getThird()) && tclass.getThird()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(2));
                 program.setStartTime("14");
@@ -233,14 +233,14 @@ public class MyUtils {
                 program.setEndTime("12");
                 programs.add(program);
             }
-            if (null != (tclass.getThird()) && tclass.getThird()) {
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(3));
                 program.setStartTime("12");
                 program.setEndTime("14");
                 programs.add(program);
             }
-            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+            if (null != (tclass.getThird()) && tclass.getThird()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(3));
                 program.setStartTime("14");
@@ -275,14 +275,14 @@ public class MyUtils {
                 program.setEndTime("12");
                 programs.add(program);
             }
-            if (null != (tclass.getThird()) && tclass.getThird()) {
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(4));
                 program.setStartTime("12");
                 program.setEndTime("14");
                 programs.add(program);
             }
-            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+            if (null != (tclass.getThird()) && tclass.getThird()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(4));
                 program.setStartTime("14");
@@ -317,14 +317,14 @@ public class MyUtils {
                 program.setEndTime("12");
                 programs.add(program);
             }
-            if (null != (tclass.getThird()) && tclass.getThird()) {
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(5));
                 program.setStartTime("12");
                 program.setEndTime("14");
                 programs.add(program);
             }
-            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+            if (null != (tclass.getThird()) && tclass.getThird()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(5));
                 program.setStartTime("14");
@@ -359,14 +359,14 @@ public class MyUtils {
                 program.setEndTime("12");
                 programs.add(program);
             }
-            if (null != (tclass.getThird()) && tclass.getThird()) {
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(6));
                 program.setStartTime("12");
                 program.setEndTime("14");
                 programs.add(program);
             }
-            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+            if (null != (tclass.getThird()) && tclass.getThird()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(6));
                 program.setStartTime("14");
@@ -401,14 +401,14 @@ public class MyUtils {
                 program.setEndTime("12");
                 programs.add(program);
             }
-            if (null != (tclass.getThird()) && tclass.getThird()) {
+            if (null != (tclass.getFourth()) && tclass.getFourth()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(7));
                 program.setStartTime("12");
                 program.setEndTime("14");
                 programs.add(program);
             }
-            if (null != (tclass.getFourth()) && tclass.getFourth()) {
+            if (null != (tclass.getThird()) && tclass.getThird()) {
                 CourseProgramDTO program = new CourseProgramDTO();
                 program.setDay(getWeekDays(7));
                 program.setStartTime("14");
