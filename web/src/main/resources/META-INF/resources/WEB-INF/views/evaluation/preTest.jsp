@@ -1302,6 +1302,7 @@
                             allResultScores=results
 
                             ListGrid_Result_preTest.setData(results);
+                            hideFields2(ListGrid_Result_preTest,JSON.parse(resp.data).examType)
 
                             let Window_result_preTest = isc.Window.create({
                                 width: 1324,
@@ -1364,6 +1365,29 @@
                 createDialog("info", "پیش آزمون برای آزمون آنلاین ارسال نشده است", "<spring:message code="error"/>");
             }
         });
+    }
+    function hideFields2(form,examType) {
+        switch (examType) {
+            case "چند گزینه ای":
+                form.getField("descriptiveResult").hidden = true;
+                form.getField("testResult").hidden = false;
+
+                break;
+            case "تشریحی":
+                form.getField("descriptiveResult").hidden = false;
+                form.getField("testResult").hidden = true;
+                break;
+            case "تستی-تشریحی":
+                form.getField("descriptiveResult").hidden = false;
+                form.getField("testResult").hidden = false;
+                break;
+
+            default:
+                form.getField("descriptiveResult").hidden = false;
+                form.getField("testResult").hidden = false;
+
+        }
+
     }
     function sendFinalScoreToOnlineExam2(form) {
         wait.show();
