@@ -3427,6 +3427,7 @@
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
     const classAuditUrl = rootUrl + "/tclass/audit/";
+    const classStudentHistoryUrl = rootUrl + "/class-student/history/";
     const classFinishUrl = rootUrl + "/tclass/finish/";
     const targetSocietyUrl = rootUrl + "/target-society/";
     const calenderCurrentTermUrl = rootUrl + "/calenderCurrentTerm/";

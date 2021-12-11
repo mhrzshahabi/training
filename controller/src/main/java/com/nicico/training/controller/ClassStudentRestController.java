@@ -13,7 +13,10 @@ import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
+import com.nicico.training.mapper.tclass.TclassStudentMapper;
+import com.nicico.training.model.ClassStudentHistory;
 import com.nicico.training.model.ContactInfo;
+import com.nicico.training.model.TClassAudit;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.CalendarTool;
@@ -57,6 +60,8 @@ import static com.nicico.training.utility.persianDate.PersianDate.convertFtomTim
 public class ClassStudentRestController {
 
     private final ObjectMapper objectMapper;
+    private final ClassStudentHistoryService classStudentHistoryService;
+    private final TclassStudentMapper tclassStudentMapper;
     private final ReportUtil reportUtil;
     private final ClassStudentService classStudentService;
     private final ClassStudentDAO classStudentDAO;
@@ -493,6 +498,22 @@ public class ClassStudentRestController {
             return list;
         }
 
+    }
+    @Loggable
+    @GetMapping(value = "/history/{classId}")
+    public ResponseEntity<ClassStudentHistoryDTO.InfoForAudit.TclassAuditSpecRs> history(@PathVariable Long classId) throws IOException, ParseException {
+
+        List<ClassStudentHistory> list=classStudentHistoryService.getAllHistoryWithClassId(classId);
+        List<ClassStudentHistoryDTO.InfoForAudit> dto = tclassStudentMapper.toTclassesResponse(list);
+        final ClassStudentHistoryDTO.SpecAuditRs specResponse = new ClassStudentHistoryDTO.SpecAuditRs();
+        final ClassStudentHistoryDTO.TclassAuditSpecRs specRs = new ClassStudentHistoryDTO.TclassAuditSpecRs();
+        specResponse.setData(dto)
+                .setStartRow(0)
+                .setEndRow(dto.size())
+                .setTotalRows( dto.size());
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 

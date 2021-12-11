@@ -46,6 +46,7 @@ public class ClassStudentService implements IClassStudentService {
 
     private final ClassStudentDAO classStudentDAO;
     private final AttendanceDAO attendanceDAO;
+    private final ClassStudentHistoryService classStudentHistoryService;
     private final ITclassService tclassService;
     private final StudentService studentService;
     //    private final IPersonnelService personnelService;
@@ -168,6 +169,7 @@ public class ClassStudentService implements IClassStudentService {
         } else {
             classStudentDAO.deleteById(id);
             attendanceDAO.deleteAllByClassIdAndStudentId(classSession.getTclassId(), classSession.getStudentId());
+            classStudentHistoryService.save(classSession);
             return "";
         }
 
@@ -177,7 +179,11 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public void delete(ClassStudentDTO.Delete request) {
         final List<ClassStudent> studentList = classStudentDAO.findAllById(request.getIds());
-        classStudentDAO.deleteAll(studentList);
+        for (ClassStudent classStudent : studentList){
+            delete(classStudent.getId());
+        }
+//        classStudentDAO.deleteAll(studentList);
+//        classStudentHistoryService.saveList(studentList);
     }
 
     @Transactional

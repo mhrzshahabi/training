@@ -317,4 +317,7 @@
     <changeSet author="nima (generated)" id="1637992881035-556">
         <createSequence sequenceName="self_declaration_id"/>
     </changeSet>
+    <changeSet author="namdari (generated)" id="1639202499000-02">
+        <createSequence sequenceName="seq_class_student_history_id"/>
+    </changeSet>
 </databaseChangeLog>

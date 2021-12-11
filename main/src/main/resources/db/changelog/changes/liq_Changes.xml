@@ -3319,6 +3319,36 @@ WHERE
                                  validate="true"/>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="1639202499000-1">
+        <createTable tableName="TBL_CLASS_STUDENT_HISTORY">
 
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_CLASS_STUDENT_HISTORYPK"/>
+            </column>
+            <column name="C_CREATED_BY" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="D_CREATED_DATE" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="E_DELETED" type="NUMBER(19, 0)"/>
+            <column name="E_ENABLED" type="NUMBER(19, 0)"/>
+            <column name="C_LAST_MODIFIED_BY" type="VARCHAR2(255 CHAR)"/>
+            <column name="D_LAST_MODIFIED_DATE" type="TIMESTAMP"/>
+            <column name="N_VERSION" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="student_id" type="NUMBER(19, 0)"/>
+            <column name="class_id" type="NUMBER(19, 0)"/>
+            <column name="failure_reason_id" type="NUMBER(19, 0)"/>
+            <column name="scores_state_id" type="NUMBER(19, 0)"/>
+            <column name="DESCRIPTIVEـSCORE" type="FLOAT"/>
+            <column name="TEST_SCORE" type="FLOAT"/>
+            <column name="score" type="FLOAT"/>
+
+
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
