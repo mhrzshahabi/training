@@ -637,6 +637,38 @@ public class ElsRestController {
         return baseResponse;
     }
 
+    @PostMapping("/pre/test/{id}")
+    public BaseResponse setPreTestScores(@PathVariable long id, @RequestBody List<ExamResult> examResult) {
+        BaseResponse baseResponse = new BaseResponse();
+        BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
+        if (checkValidScores.getStatus() != 200) {
+            baseResponse.setStatus(checkValidScores.getStatus());
+            baseResponse.setMessage(checkValidScores.getMessage());
+
+        } else {
+            String scoringMethod = iTclassService.get(id).getScoringMethod();
+            boolean checkScoreInRange = evaluationBeanMapper.checkScoreInRange(scoringMethod, examResult);
+            if (!checkScoreInRange) {
+                baseResponse.setStatus(406);
+                baseResponse.setMessage("نمرات نهایی وارد شده از بیشترین مقدار روش نمره دهی کلاس بیشتر است");
+
+            } else {
+                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id);
+                try {
+                    baseResponse = client.sendScoresToEls(requestDto);
+                    if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
+                        return baseResponse;
+                } catch (Exception e) {
+                    baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                    baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                    return baseResponse;
+
+                }
+            }
+        }
+        return baseResponse;
+    }
+
     @GetMapping(value = "/extendedList/{sourceExamId}")
     public ResponseEntity<ResendExamTimes> getResendExamTimes(@PathVariable long sourceExamId) {
         ResendExamTimes resendExamTimes = client.getResendExamTimes(sourceExamId);
