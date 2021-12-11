@@ -253,4 +253,7 @@ public class TestQuestionService implements ITestQuestionService {
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
 
+    public long getPreTestId(long id) {
+       return testQuestionDAO.findTestQuestionByTclassAndPreTestQuestion(id,true).getId();
+    }
 }

@@ -14,6 +14,8 @@
     var scoringMethod_preTest;
     var questionData;
     let totalScore = 0;
+    let sourceExamId = 0;
+    let allResultScores;
     var scoreLabel = isc.Label.create({
         contents: "مجموع بارم وارد شده : ",
         border: "0px solid black",
@@ -403,7 +405,7 @@
                     });
                 }else{*/
 
-                    ListGrid_AllQuestions_PreTestJSP.fetchData();
+                ListGrid_AllQuestions_PreTestJSP.fetchData();
                 //}
 
                 questionsSelection=false;
@@ -940,9 +942,9 @@
 
                                                                     questionData.map(item => {
                                                                         if(!item.score)
-                                                                    item.score = '0';
-                                                                    return item;
-                                                                });
+                                                                            item.score = '0';
+                                                                        return item;
+                                                                    });
                                                                     let record = data[0];
                                                                     isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/getClassStudent/"+record.tclass.id, "GET",null, function (resp) {
                                                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -1231,14 +1233,14 @@
                 {name: "testResult", title: 'نمره تستی' ,align: "center", width: "10%"},
                 {name: "descriptiveResult", title: 'نمره تشریحی' ,align: "center", width: "10%",
                     change: function(form, item, value, oldValue) {
-                        // setDescriptiveResultValue(value, form)
-                    },canEdit:false, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+                        setDescriptiveResultValue2(value, form)
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 },
-                // {name: "finalResult", title: 'نمره نهایی(با ارفاق)' ,align: "center", width: "15%",
-                //     change: function(form, item, value, oldValue) {
-                //         setFinalResultValue(value, form)
-                //     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
-                // },
+                {name: "finalResult", title: 'نمره نهایی(با ارفاق)' ,align: "center", width: "15%",
+                    change: function(form, item, value, oldValue) {
+                        setFinalResultValue2(value, form)
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+                },
                 {name: "resultStatus", title: 'وضعیت فراگیر' ,align: "center", width: "10%"},
                 { name: "iconField", title: "نتایج", width: "10%",align:"center"},
                 { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
@@ -1256,7 +1258,7 @@
                             if  (record.resultStatus ==="بدون پاسخ") {
                                 createDialog("warning", "دانشجو مورد نظر به سوالی پاسخ نداده است", "اخطار"); }
                             else
-                            ListGrid_show_preTest_results(record.answers);
+                                ListGrid_show_preTest_results(record.answers);
                         }
                     });
                     return button;
@@ -1270,7 +1272,7 @@
                             if  (record.resultStatus ==="بدون پاسخ") {
                                 createDialog("warning", "دانشجو مورد نظر به سوالی پاسخ نداده است", "اخطار"); }
                             else
-                            printElsPreTest("pdf", testQId, record.nationalCode, "ElsExam.jasper", record.surname, record.lastName);
+                                printElsPreTest("pdf", testQId, record.nationalCode, "ElsExam.jasper", record.surname, record.lastName);
                         }
                     });
                     return button2;
@@ -1297,6 +1299,8 @@
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                             let results = JSON.parse(resp.data).data;
+                            allResultScores=results
+
                             ListGrid_Result_preTest.setData(results);
 
                             let Window_result_preTest = isc.Window.create({
@@ -1325,6 +1329,12 @@
                                                     isc.IButtonCancel.create({
                                                         click: function () {
                                                             Window_result_preTest.close();
+                                                        }
+                                                    }),
+                                                    isc.IButtonSave.create({
+                                                        title: "<spring:message code="sendScoreToOnlineExam"/>", width: 300,
+                                                        click: function () {
+                                                            sendFinalScoreToOnlineExam2(Window_result_preTest);
                                                         }
                                                     })
                                                 ]
@@ -1355,7 +1365,32 @@
             }
         });
     }
+    function sendFinalScoreToOnlineExam2(form) {
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/pre/test/" +sourceExamId, "POST", JSON.stringify(allResultScores), function (resp) {
+            let respText = JSON.parse(resp.httpResponseText);
+            if (respText.status === 200 || respText.status === 201) {
+                form.close();
+                createDialog("info", "ثبت نمرات انجام شد");
 
+            } else {
+                createDialog("warning", respText.message, "اخطار");
+
+            }
+            wait.close();
+
+        }));
+    }
+    function setDescriptiveResultValue2(value, form) {
+
+        let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
+        allResultScores[index].descriptiveResult = value;
+
+    }
+    function setFinalResultValue2(value, form) {
+        let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
+        allResultScores[index].finalResult = value;
+    }
     function ListGrid_show_preTest_results(answers) {
 
         let dynamicForm_Answers_List = isc.DynamicForm.create({
@@ -1374,16 +1409,16 @@
                 valueMap: {}
             };
 
-                let correctAnswer="<span class=\"correctAnswer\"></span>";
-                if (answers[i].examinerAnswer!==null && answers[i].examinerAnswer!==undefined)
-                  correctAnswer = "<div class=\"correctAnswer\" ><span>"+customSplit2(answers[i].examinerAnswer,150)+"</span></div>";
-                else
+            let correctAnswer="<span class=\"correctAnswer\"></span>";
+            if (answers[i].examinerAnswer!==null && answers[i].examinerAnswer!==undefined)
+                correctAnswer = "<div class=\"correctAnswer\" ><span>"+customSplit2(answers[i].examinerAnswer,150)+"</span></div>";
+            else
                 correctAnswer = "<span class=\"correctAnswer\">جوابی برای این سوال توسط استاد ثبت نشده</span>";
 
-                      let mark="<span class=\"mark\"></span>";
-                if (answers[i].mark!==null && answers[i].mark!==undefined)
-                  mark = "<div class=\"mark\" ><span>"+" ( "+answers[i].mark +" نمره ) "+"</span></div>";
-                else
+            let mark="<span class=\"mark\"></span>";
+            if (answers[i].mark!==null && answers[i].mark!==undefined)
+                mark = "<div class=\"mark\" ><span>"+" ( "+answers[i].mark +" نمره ) "+"</span></div>";
+            else
                 mark = "<span class=\"mark\">( بارم ثبت نشده )</span>";
 
 
@@ -1482,29 +1517,29 @@
             text_FormItem.title = (i+1)+"-"+ customSplit2(answers[i].question, 150)  +"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+
                 " جواب استاد :"+ "\n"+ "  "+correctAnswer+ "\n";
 
-                // correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
-                text_FormItem.value = answers[i].answer;
-                text_FormItem.name = answers[i].answer;
+            // correct_FormItem.title = "بارم این سوال : "+answers[i].mark + "  و جواب صحیح طراح سوال:  ";
+            text_FormItem.value = answers[i].answer;
+            text_FormItem.name = answers[i].answer;
 
-                if(answers[i].type === "چند گزینه ای") {
-                    radio_FormItem.title = (i+1)+"-"+customSplit2(answers[i].question, 150)+"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+option1Files+ "\n"+option2Files+ "\n"+option3Files+ "\n"+option4Files+
-                        " جواب استاد :"+  "\n"+ "  "+correctAnswer;
-                    radio_FormItem.name = i+"";
-                    if(answers[i].options.length > 0) {
-                        for(let j = 0; j< answers[i].options.length; j++){
-                            let key = answers[i].options[j].title;
-                            let value = answers[i].options[j].title;
-                            radio_FormItem.valueMap[key] = value;
-                        }
+            if(answers[i].type === "چند گزینه ای") {
+                radio_FormItem.title = (i+1)+"-"+customSplit2(answers[i].question, 150)+"   "+mark+" "+files+ "\n\n"+answerFiles+ "\n\n"+option1Files+ "\n"+option2Files+ "\n"+option3Files+ "\n"+option4Files+
+                    " جواب استاد :"+  "\n"+ "  "+correctAnswer;
+                radio_FormItem.name = i+"";
+                if(answers[i].options.length > 0) {
+                    for(let j = 0; j< answers[i].options.length; j++){
+                        let key = answers[i].options[j].title;
+                        let value = answers[i].options[j].title;
+                        radio_FormItem.valueMap[key] = value;
                     }
+                }
 
-                    dynamicForm_Answers_List.addField(radio_FormItem)
-                    if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
-                         dynamicForm_Answers_List.getField(i).setValue(answers[i].answer);
-                    }
-               } else {
-                    dynamicForm_Answers_List.addField(text_FormItem)
-                      }
+                dynamicForm_Answers_List.addField(radio_FormItem)
+                if(radio_FormItem.valueMap.hasOwnProperty(answers[i].answer)) {
+                    dynamicForm_Answers_List.getField(i).setValue(answers[i].answer);
+                }
+            } else {
+                dynamicForm_Answers_List.addField(text_FormItem)
+            }
             // text_FormItem.title = (i+1)+"-"+answers[i].question;
             // text_FormItem.value = answers[i].answer;
             // text_FormItem.name = answers[i].answer;
@@ -1683,6 +1718,7 @@
                 height: "30",
                 margin: 3,
                 click: function () {
+                    sourceExamId=ListGrid_class_Evaluation.getSelectedRecord().id
                     loadPreExamResult(ListGrid_class_Evaluation.getSelectedRecord());
                 }
             }),
@@ -1737,14 +1773,14 @@
                     });
                     if (ids && ids.length > 0) {
                         let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");
-                    dialog.addProperties({
-                        buttonClick: function (button, index) {
-                            this.close();
-                            if (index === 0) {
-                                var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
-                                var activeClassId = activeClass.id;
-                                let JSONObj = {"ids": ids};
-                                wait.show();
+                        dialog.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 0) {
+                                    var activeClass = ListGrid_class_Evaluation.getSelectedRecord();
+                                    var activeClassId = activeClass.id;
+                                    let JSONObj = {"ids": ids};
+                                    wait.show();
 
                                     isc.RPCManager.sendRequest({
                                         httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -1787,9 +1823,9 @@
                                             }
                                         }
                                     });
+                                }
                             }
-                        }
-                    })
+                        })
                     }else{
                         isc.say("سوالي انتخاب نشده است.");
                     }
@@ -1920,11 +1956,11 @@
         criteriaForm.show();
         criteriaForm.submitForm();
     }
-       function customSplit2(str, maxLength){
-    if(str.length <= maxLength)
-        return str;
-    var reg = new RegExp(".{1," + maxLength + "}","g");
-    var parts = str.match(reg);
-    return parts.join('\n');
-}
-//</script>
+    function customSplit2(str, maxLength){
+        if(str.length <= maxLength)
+            return str;
+        var reg = new RegExp(".{1," + maxLength + "}","g");
+        var parts = str.match(reg);
+        return parts.join('\n');
+    }
+    //</script>
