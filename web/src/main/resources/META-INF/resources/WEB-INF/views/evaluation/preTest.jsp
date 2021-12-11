@@ -1224,12 +1224,25 @@
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
-                {name: "surname", title: 'نام',align: "center", width: "15%"},
+                {name: "cellNumber", title: 'موبایل',align: "center", width: "10%",  hidden: true},
+                {name: "surname", title: 'نام',align: "center", width: "10%"},
                 {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "15%"},
-                {name: "score", title: 'نمره' ,align: "center", width: "10%"},
+                {name: "score", title: 'نمره کسب شده دانشجو' ,align: "center", width: "15%"},
+                {name: "testResult", title: 'نمره تستی' ,align: "center", width: "10%"},
+                {name: "descriptiveResult", title: 'نمره تشریحی' ,align: "center", width: "10%",
+                    change: function(form, item, value, oldValue) {
+                        // setDescriptiveResultValue(value, form)
+                    },canEdit:false, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+                },
+                // {name: "finalResult", title: 'نمره نهایی(با ارفاق)' ,align: "center", width: "15%",
+                //     change: function(form, item, value, oldValue) {
+                //         setFinalResultValue(value, form)
+                //     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+                // },
                 {name: "resultStatus", title: 'وضعیت فراگیر' ,align: "center", width: "10%"},
                 { name: "iconField", title: "نتایج", width: "10%",align:"center"},
                 { name: "iconField2", title: "چاپ گزارش", width: "10%",align:"center"},
+
 
             ],
             createRecordComponent: function (record, colNum) {
@@ -1287,7 +1300,7 @@
                             ListGrid_Result_preTest.setData(results);
 
                             let Window_result_preTest = isc.Window.create({
-                                width: 1024,
+                                width: 1324,
                                 height: 768,
                                 keepInParentRect: true,
                                 title: "مشاهده نتایج آزمون",
