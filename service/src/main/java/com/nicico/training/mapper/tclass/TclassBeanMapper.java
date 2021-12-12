@@ -52,7 +52,7 @@ public interface TclassBeanMapper {
     default Long getStudentsCount(Set<ClassStudent> classStudents){
 
         if(classStudents!=null)
-        return classStudents.stream().count();
+        return (long) classStudents.size();
         else
             return 0L;
     }
@@ -62,7 +62,7 @@ public interface TclassBeanMapper {
 
         String s = null;
         if(personnel!=null) {
-            if (personnel.getFirstName().equals(null) && personnel.getLastName() != null) {
+            if (personnel.getFirstName()!=null && personnel.getLastName() != null) {
                 s = personnel.getLastName();
             }
             if (personnel.getLastName() == null && personnel.getFirstName() != null) {
@@ -81,11 +81,10 @@ public interface TclassBeanMapper {
    @Named("getTeacherName")
     default String getTeacherName(Teacher teacher){
        String s = null;
-   String firstName=    teacher.getPersonality().getFirstNameFa();
-   String lastName=teacher.getPersonality().getLastNameFa();
-
-       if(teacher!=null) {
-           if (firstName.equals(null) && lastName != null) {
+       if(teacher!=null && teacher.getPersonality()!=null) {
+           String firstName=    teacher.getPersonality().getFirstNameFa();
+           String lastName=teacher.getPersonality().getLastNameFa();
+           if (firstName!=null && lastName != null) {
                s =lastName;
            }
            if (lastName == null && firstName != null) {
