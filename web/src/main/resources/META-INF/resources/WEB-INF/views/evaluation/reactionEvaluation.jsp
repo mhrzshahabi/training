@@ -833,7 +833,7 @@
         title: "نمایش لیست کاربران کلاس بااطلاعات ناقص",
         baseStyle: "sendFile",
         click: function () {
-            showOnline‌InCompleteUsers();
+            showOnlineInCompleteUsers();
         }
     });
 
@@ -1821,7 +1821,7 @@
         }
 
     }
-    function showOnline‌InCompleteUsers(){
+    function showOnlineInCompleteUsers(){
 
         if (ListGrid_student_RE.getData().localData.size() == 0){
             createDialog("info", "کلاس هیچ شرکت کننده ای ندارد");
