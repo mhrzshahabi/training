@@ -1379,34 +1379,34 @@
 
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "" + data.evaluatorId, "GET", null, function (resp) {
-
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    toElsRquest(data,type);
 
-                    let teacherInfo = JSON.parse(resp.httpResponseText)
-                    wait.close()
-                    if (teacherInfo.personality !== null) {
-                        let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, null, null);
-                        if (!isValid) {
-                            let stop = isc.Dialog.create({
-                                message: "کدملی مدرس بدرستی ثبت نشده است؛"+" "+
-                                    "<spring:message code='msg.check.teacher.mobile.ncode.message'/>",
-                                icon: "[SKIN]stop.png",
-                                title: "<spring:message code='message'/>"
-                            });
-                            stop.show();
-                            return;
-                        } else {
-                            toElsRquest(data,type);
-                        }
-                    } else {
-                        let stop = isc.Dialog.create({
-                            message: "کدملی مدرس بدرستی ثبت نشده است؛",
-                            icon: "[SKIN]stop.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        stop.show();
-                        return;
-                    }
+                    <%--let teacherInfo = JSON.parse(resp.httpResponseText)--%>
+                    <%--wait.close()--%>
+                    <%--if (teacherInfo.personality !== null) {--%>
+                    <%--    let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, null, null);--%>
+                    <%--    if (!isValid) {--%>
+                    <%--        let stop = isc.Dialog.create({--%>
+                    <%--            message: "کدملی مدرس بدرستی ثبت نشده است؛"+" "+--%>
+                    <%--                "<spring:message code='msg.check.teacher.mobile.ncode.message'/>",--%>
+                    <%--            icon: "[SKIN]stop.png",--%>
+                    <%--            title: "<spring:message code='message'/>"--%>
+                    <%--        });--%>
+                    <%--        stop.show();--%>
+                    <%--        return;--%>
+                    <%--    } else {--%>
+                    <%--        toElsRquest(data,type);--%>
+                    <%--    }--%>
+                    <%--} else {--%>
+                    <%--    let stop = isc.Dialog.create({--%>
+                    <%--        message: "کدملی مدرس بدرستی ثبت نشده است؛",--%>
+                    <%--        icon: "[SKIN]stop.png",--%>
+                    <%--        title: "<spring:message code='message'/>"--%>
+                    <%--    });--%>
+                    <%--    stop.show();--%>
+                    <%--    return;--%>
+                    <%--}--%>
                 } else {
                     wait.close();
                     return;
@@ -1729,87 +1729,89 @@
                     }
                 });
 
-                let gridData = ListGrid_student_RE.getData().localData;
-                let inValidStudents = [];
+                studentsToElsRquest(data, type);
 
-                for (let i = 0; i < gridData.length; i++) {
+                <%--let gridData = ListGrid_student_RE.getData().localData;--%>
+                <%--let inValidStudents = [];--%>
 
-                    let studentData = gridData[i].student;
-                    // if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
-                    if (!NCodeAndMobileValidation(studentData.nationalCode, null, null)) {
-                        inValidStudents.add({
-                            firstName: studentData.firstName,
-                            lastName: studentData.lastName
-                        });
-                    }
-                }
+                <%--for (let i = 0; i < gridData.length; i++) {--%>
 
-                if (inValidStudents.length) {
+                <%--    let studentData = gridData[i].student;--%>
+                <%--    // if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {--%>
+                <%--    if (!NCodeAndMobileValidation(studentData.nationalCode, null, null)) {--%>
+                <%--        inValidStudents.add({--%>
+                <%--            firstName: studentData.firstName,--%>
+                <%--            lastName: studentData.lastName--%>
+                <%--        });--%>
+                <%--    }--%>
+                <%--}--%>
 
-                    let DynamicForm_InValid_Students = isc.DynamicForm.create({
-                        width: 600,
-                        height: 100,
-                        padding: 6,
-                        titleAlign: "right",
-                        fields: [
-                            {
-                                name: "text",
-                                width: "100%",
-                                colSpan: 2,
-                                value: "کدملی فراگیران با اسامی زیر صحیح نیست؛"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
-                                showTitle: false,
-                                editorType: 'staticText'
-                            },
-                            {
-                                type: "RowSpacerItem"
-                            },
-                            {
-                                name: "invalidNames",
-                                width: "100%",
-                                colSpan: 2,
-                                title: "<spring:message code="title"/>",
-                                showTitle: false,
-                                editorType: 'textArea',
-                                canEdit: false
-                            }
-                        ]
-                    });
+                <%--if (inValidStudents.length) {--%>
 
-                    let names = "";
-                    for (var j = 0; j < inValidStudents.length; j++) {
+                <%--    let DynamicForm_InValid_Students = isc.DynamicForm.create({--%>
+                <%--        width: 600,--%>
+                <%--        height: 100,--%>
+                <%--        padding: 6,--%>
+                <%--        titleAlign: "right",--%>
+                <%--        fields: [--%>
+                <%--            {--%>
+                <%--                name: "text",--%>
+                <%--                width: "100%",--%>
+                <%--                colSpan: 2,--%>
+                <%--                value: "کدملی فراگیران با اسامی زیر صحیح نیست؛"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",--%>
+                <%--                showTitle: false,--%>
+                <%--                editorType: 'staticText'--%>
+                <%--            },--%>
+                <%--            {--%>
+                <%--                type: "RowSpacerItem"--%>
+                <%--            },--%>
+                <%--            {--%>
+                <%--                name: "invalidNames",--%>
+                <%--                width: "100%",--%>
+                <%--                colSpan: 2,--%>
+                <%--                title: "<spring:message code="title"/>",--%>
+                <%--                showTitle: false,--%>
+                <%--                editorType: 'textArea',--%>
+                <%--                canEdit: false--%>
+                <%--            }--%>
+                <%--        ]--%>
+                <%--    });--%>
 
-                        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");
-                    }
-                    DynamicForm_InValid_Students.setValue("invalidNames", names);
+                <%--    let names = "";--%>
+                <%--    for (var j = 0; j < inValidStudents.length; j++) {--%>
 
-                    let Window_InValid_Students = isc.Window.create({
-                        width: 600,
-                        height: 150,
-                        numCols: 2,
-                        title: "فراگیران با کدملی ناقص",
-                        items: [
-                            DynamicForm_InValid_Students,
-                            isc.MyHLayoutButtons.create({
-                                members: [
-                                    isc.IButtonSave.create({
-                                        title: "<spring:message code="continue"/>",
-                                        click: function () {
+                <%--        names = names.concat(inValidStudents[j].firstName + " " + inValidStudents[j].lastName  + "\n");--%>
+                <%--    }--%>
+                <%--    DynamicForm_InValid_Students.setValue("invalidNames", names);--%>
 
-                                            studentsToElsRquest(data, type);
-                                            Window_InValid_Students.close();
-                                        }}),
-                                    isc.IButtonCancel.create({
-                                        title: "<spring:message code="cancel"/>",
-                                        click: function () {
-                                            Window_InValid_Students.close();
-                                        }
-                                    })],
-                            })]
-                    });
-                    Window_InValid_Students.show();
-                } else {
-                    studentsToElsRquest(data, type);
-                }
+                <%--    let Window_InValid_Students = isc.Window.create({--%>
+                <%--        width: 600,--%>
+                <%--        height: 150,--%>
+                <%--        numCols: 2,--%>
+                <%--        title: "فراگیران با کدملی ناقص",--%>
+                <%--        items: [--%>
+                <%--            DynamicForm_InValid_Students,--%>
+                <%--            isc.MyHLayoutButtons.create({--%>
+                <%--                members: [--%>
+                <%--                    isc.IButtonSave.create({--%>
+                <%--                        title: "<spring:message code="continue"/>",--%>
+                <%--                        click: function () {--%>
+
+                <%--                            studentsToElsRquest(data, type);--%>
+                <%--                            Window_InValid_Students.close();--%>
+                <%--                        }}),--%>
+                <%--                    isc.IButtonCancel.create({--%>
+                <%--                        title: "<spring:message code="cancel"/>",--%>
+                <%--                        click: function () {--%>
+                <%--                            Window_InValid_Students.close();--%>
+                <%--                        }--%>
+                <%--                    })],--%>
+                <%--            })]--%>
+                <%--    });--%>
+                <%--    Window_InValid_Students.show();--%>
+                <%--} else {--%>
+                <%--    studentsToElsRquest(data, type);--%>
+                <%--}--%>
             } else {
 
                 createDialog("info", "فرم ارزیابی برای همه ی شرکت کنندگان صادر نشده است.");
