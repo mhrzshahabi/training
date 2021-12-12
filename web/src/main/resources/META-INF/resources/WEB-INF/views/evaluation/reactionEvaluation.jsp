@@ -1284,11 +1284,7 @@
         let isValid = true;
         if (nationalCode===undefined || nationalCode===null) {
             isValid = false;
-        } else if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode))) {
-            isValid = false;
-        } else {
-            isValid = true;
-        }
+        } else isValid = !(nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)));
         return isValid;
 
         // let isValid = true;
