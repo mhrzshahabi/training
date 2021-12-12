@@ -484,6 +484,10 @@ public class MainFormController {
     public String classStudentHistoryRemoveReport() {
         return "report/classStudentHistoryRemoveReport";
     }
+    @RequestMapping("/classStudentHistoryAddReport")
+    public String classStudentHistoryAddReport() {
+        return "report/classStudentHistoryAddReport";
+    }
 
     @RequestMapping("/request")
     public String showRequestsForm() {

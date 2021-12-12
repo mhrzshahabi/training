@@ -28,9 +28,11 @@ public class ClassStudentHistoryDTO {
     @ApiModel("InfoForAudit")
     public static class InfoForAudit extends ClassStudentHistoryDTO {
 
+        private Long id;
         private String student;
         private String code;
         private String createdBy;
+        private Date createdDate;
         private String modifiedBy;
 
     }

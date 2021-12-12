@@ -14,6 +14,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.mapper.tclass.TclassStudentMapper;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.ClassStudentHistory;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.TClassAudit;
@@ -505,6 +506,22 @@ public class ClassStudentRestController {
 
         List<ClassStudentHistory> list=classStudentHistoryService.getAllHistoryWithClassId(classId);
         List<ClassStudentHistoryDTO.InfoForAudit> dto = tclassStudentMapper.toTclassesResponse(list);
+        final ClassStudentHistoryDTO.SpecAuditRs specResponse = new ClassStudentHistoryDTO.SpecAuditRs();
+        final ClassStudentHistoryDTO.TclassAuditSpecRs specRs = new ClassStudentHistoryDTO.TclassAuditSpecRs();
+        specResponse.setData(dto)
+                .setStartRow(0)
+                .setEndRow(dto.size())
+                .setTotalRows( dto.size());
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+  @Loggable
+    @GetMapping(value = "/add/history/{classId}")
+    public ResponseEntity<ClassStudentHistoryDTO.InfoForAudit.TclassAuditSpecRs> historyAdd(@PathVariable Long classId) throws IOException, ParseException {
+
+        List<ClassStudent> list=classStudentService.getClassStudents(classId);
+        List<ClassStudentHistoryDTO.InfoForAudit> dto = tclassStudentMapper.toTclassesStudentResponse(list);
         final ClassStudentHistoryDTO.SpecAuditRs specResponse = new ClassStudentHistoryDTO.SpecAuditRs();
         final ClassStudentHistoryDTO.TclassAuditSpecRs specRs = new ClassStudentHistoryDTO.TclassAuditSpecRs();
         specResponse.setData(dto)

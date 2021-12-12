@@ -4,6 +4,7 @@ import com.nicico.training.dto.ClassStudentHistoryDTO;
 
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.ClassStudentHistory;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +27,12 @@ public abstract class TclassStudentMapper {
     public abstract List<ClassStudentHistoryDTO.InfoForAudit> toTclassesResponse(List<ClassStudentHistory> tclasss);
 
 
+    @Mappings({
+            @Mapping(source = "tclassId", target = "code",qualifiedByName = "getClassCodeFromClassId"),
+            @Mapping(source = "studentId", target = "student",qualifiedByName = "getStudentFromStudentId"),
+    })
+    abstract ClassStudentHistoryDTO.InfoForAudit toClassStudentDTO(ClassStudent tclass);
+    public abstract List<ClassStudentHistoryDTO.InfoForAudit> toTclassesStudentResponse(List<ClassStudent> tclasss);
 
     @Named("getClassCodeFromClassId")
     String getClassCodeFromClassId(Long classId) {

@@ -434,6 +434,19 @@
                         createTab(this.title, "<spring:url value="web/classStudentHistoryRemoveReport"/>");}
 
                 }
+            } ,{isSeparator: true},
+            {
+                title: "تاریخچه افزودن فراگیران کلاس",
+                click: function () {
+                    let record = JSON.parse(JSON.stringify(ListGrid_Class_JspClass.getSelectedRecord()));
+                    if (record == null || record.id == null) {
+                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                    } else {
+                        if (mainTabSet.getTab("تاریخچه افزودن فراگیران کلاس") != null)
+                            mainTabSet.removeTab("تاریخچه افزودن فراگیران کلاس")
+                        createTab(this.title, "<spring:url value="web/classStudentHistoryAddReport"/>");}
+
+                }
             }
         ]
     });

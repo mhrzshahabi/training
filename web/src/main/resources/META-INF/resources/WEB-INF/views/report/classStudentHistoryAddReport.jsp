@@ -11,7 +11,7 @@
     //----------------------------------------------------Default Rest--------------------------------------------------
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
-    RestDataSource_History_class_student_REFR = isc.TrDS.create({
+    RestDataSource_History_Add_class_student_REFR = isc.TrDS.create({
          fields: [
 
              {name: "createdBy"},
@@ -20,12 +20,12 @@
               {name: "student"},
              {
                  name: "createdDate",
-                 title: "تاریخ حذف",
+                 title: "<spring:message code="create.date"/>",
                  filterOperator: "iContains", autoFitWidth: true
              }
 
          ],
-        fetchDataURL:classStudentHistoryUrl+record.id ,
+        fetchDataURL:classStudentAddHistoryUrl+record.id ,
 
     });
 
@@ -35,10 +35,10 @@
 
 
     //----------------------------------- layOut -----------------------------------------------------------------------
-    var ListGrid_History_class_student_REFR = isc.TrLG.create({
+    var ListGrid_History_ADD_class_student_REFR = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_History_class_student_REFR,
+        dataSource: RestDataSource_History_Add_class_student_REFR,
         dataPageSize: 100,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -59,7 +59,7 @@
              },
             {
                 name: "createdBy",
-                title: "حذف کننده",
+                title: "ایجاد کننده",
                 align: "center",
                 filterOperator: "equals",
             },
@@ -85,11 +85,11 @@
 
         ]
     });
-    var VLayout_Body_History_class_student_REFR = isc.TrVLayout.create({
+    var VLayout_Body_History_Add_class_student_REFR = isc.TrVLayout.create({
         border: "2px solid blue",
         padding: 20,
         members: [
-            ListGrid_History_class_student_REFR
+            ListGrid_History_ADD_class_student_REFR
         ]
     });
 
