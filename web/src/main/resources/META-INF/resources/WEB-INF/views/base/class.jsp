@@ -73,6 +73,7 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "group"},
+            {name: "hduration",canFilter: false},
             {name: "classCancelReasonId"},
             {name: "titleClass", autoFitWidth: true},
             {name: "startDate", autoFitWidth: true},
@@ -560,7 +561,7 @@
                 title: "<spring:message code='duration'/>",
                 align: "center",
                 width: 40,
-                filterOperator: "equals",
+                filterOperator: "iContains",
 
             },
             {
