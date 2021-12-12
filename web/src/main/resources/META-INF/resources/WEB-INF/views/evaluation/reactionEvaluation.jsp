@@ -220,6 +220,7 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         sortField: 5,
+        dataPageSize: 200,
         sortDirection: "descending",
         fields: [
             {name: "student.firstName"},
@@ -1281,26 +1282,35 @@
     function NCodeAndMobileValidation(nationalCode, mobileNum, gender) {
 
         let isValid = true;
-
-        if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null)
-        {
+        if (nationalCode===undefined || nationalCode===null) {
             isValid = false;
-        }
-        else
-        {
-            if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
-                isValid = false;
-
-            if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
-                isValid = false;
-
-            if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
-                isValid = false;
-
-            if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
-                isValid = false;
+        } else if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode))) {
+            isValid = false;
+        } else {
+            isValid = true;
         }
         return isValid;
+
+        // let isValid = true;
+        // if (nationalCode===undefined || nationalCode===null || mobileNum===undefined || mobileNum===null)
+        // {
+        //     isValid = false;
+        // }
+        // else
+        // {
+        //     if (nationalCode.length !== 10 || !(/^-?\d+$/.test(nationalCode)))
+        //         isValid = false;
+        //
+        //     if((mobileNum.length !== 10 && mobileNum.length !== 11) || !(/^-?\d+$/.test(mobileNum)))
+        //         isValid = false;
+        //
+        //     if(mobileNum.length === 10 && !mobileNum.startsWith("9"))
+        //         isValid = false;
+        //
+        //     if(mobileNum.length === 11 && !mobileNum.startsWith("09"))
+        //         isValid = false;
+        // }
+        // return isValid;
     }
 
     function toElsRquest(data,type) {
@@ -1367,21 +1377,18 @@
             data.questionnaireTypeId = 140;
             data.evaluationLevelId = 154;
 
-            // wait.show();
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "" + data.evaluatorId, "GET", null, function (resp) {
 
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                     let teacherInfo = JSON.parse(resp.httpResponseText)
-                    if (teacherInfo.personality !== null && teacherInfo.personality.contactInfo !== null
-                        && teacherInfo.personality.contactInfo !== undefined
-                    )
-                    {
-                        let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, teacherInfo.personality.contactInfo.mobile, teacherInfo.personality.genderId);
+                    wait.close()
+                    if (teacherInfo.personality !== null) {
+                        let isValid = NCodeAndMobileValidation(teacherInfo.personality.nationalCode, null, null);
                         if (!isValid) {
-
                             let stop = isc.Dialog.create({
-                                message: "<spring:message code='msg.check.teacher.mobile.ncode'/>"+" "+
+                                message: "کدملی مدرس بدرستی ثبت نشده است؛"+" "+
                                     "<spring:message code='msg.check.teacher.mobile.ncode.message'/>",
                                 icon: "[SKIN]stop.png",
                                 title: "<spring:message code='message'/>"
@@ -1389,14 +1396,11 @@
                             stop.show();
                             return;
                         } else {
-
                             toElsRquest(data,type);
                         }
-
                     } else {
-
                         let stop = isc.Dialog.create({
-                            message: "<spring:message code='msg.check.teacher.mobile.ncode'/>",
+                            message: "کدملی مدرس بدرستی ثبت نشده است؛",
                             icon: "[SKIN]stop.png",
                             title: "<spring:message code='message'/>"
                         });
@@ -1404,7 +1408,7 @@
                         return;
                     }
                 } else {
-                    wait.close()
+                    wait.close();
                     return;
                 }
             }));
@@ -1731,8 +1735,8 @@
                 for (let i = 0; i < gridData.length; i++) {
 
                     let studentData = gridData[i].student;
-                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
-
+                    // if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, null, null)) {
                         inValidStudents.add({
                             firstName: studentData.firstName,
                             lastName: studentData.lastName
@@ -1752,7 +1756,7 @@
                                 name: "text",
                                 width: "100%",
                                 colSpan: 2,
-                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                value: "کدملی فراگیران با اسامی زیر صحیح نیست؛"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
                                 showTitle: false,
                                 editorType: 'staticText'
                             },
@@ -1782,7 +1786,7 @@
                         width: 600,
                         height: 150,
                         numCols: 2,
-                        title: "<spring:message code='invalid.students.window'/>",
+                        title: "فراگیران با کدملی ناقص",
                         items: [
                             DynamicForm_InValid_Students,
                             isc.MyHLayoutButtons.create({
@@ -1839,8 +1843,8 @@
                 for (let i = 0; i < gridData.length; i++) {
 
                     let studentData = gridData[i].student;
-
-                    if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
+                    // if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
+                    if (!NCodeAndMobileValidation(studentData.nationalCode, null, null)) {
 
                         inValidStudents.add({
                             firstName: studentData.firstName,
@@ -1861,7 +1865,7 @@
                                 name: "text",
                                 width: "100%",
                                 colSpan: 2,
-                                value: "<spring:message code='msg.check.student.mobile.ncode'/>"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
+                                value: "کدملی فراگیران با اسامی زیر صحیح نیست؛"+" "+"<spring:message code='msg.check.student.mobile.ncode.message'/>",
                                 showTitle: false,
                                 editorType: 'staticText'
                             },
@@ -1891,7 +1895,7 @@
                         width: 600,
                         height: 150,
                         numCols: 2,
-                        title: "<spring:message code='invalid.students.window'/>",
+                        title: "فراگیران با کدملی ناقص",
                         items: [
                             DynamicForm_InValid_Students,
                             isc.MyHLayoutButtons.create({
