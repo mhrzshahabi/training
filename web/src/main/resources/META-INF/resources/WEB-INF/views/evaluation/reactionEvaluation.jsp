@@ -833,6 +833,7 @@
         title: "نمایش لیست کاربران کلاس بااطلاعات ناقص",
         baseStyle: "sendFile",
         click: function () {
+            console.log("1")
             showOnlineInCompleteUsers();
         }
     });
@@ -1280,6 +1281,7 @@
     });
 
     function NCodeAndMobileValidation(nationalCode, mobileNum, gender) {
+        console.log("4")
 
         let isValid = true;
         if (nationalCode===undefined || nationalCode===null) {
@@ -1818,6 +1820,7 @@
 
     }
     function showOnlineInCompleteUsers(){
+        console.log("2")
 
         if (ListGrid_student_RE.getData().localData.size() == 0){
             createDialog("info", "کلاس هیچ شرکت کننده ای ندارد");
@@ -1839,8 +1842,11 @@
                 let inValidStudents = [];
 
                 for (let i = 0; i < gridData.length; i++) {
+                    console.log("3")
 
                     let studentData = gridData[i].student;
+                    console.log(studentData.nationalCode)
+
                     // if (!NCodeAndMobileValidation(studentData.nationalCode, studentData.contactInfo.smSMobileNumber, studentData.gender)) {
                     if (!NCodeAndMobileValidation(studentData.nationalCode, null, null)) {
 
