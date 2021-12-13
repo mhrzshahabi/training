@@ -10,6 +10,7 @@ import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.mapper.operationalRole.OperationalRoleBeanMapper;
 import com.nicico.training.model.OperationalRole;
+import com.nicico.training.model.Subcategory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,7 +21,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -54,11 +57,12 @@ public class OperationalRoleRestController {
             updating = mapper.copyOperationalRoleFrom(operationalRole);
             updating.setUserIds(request.getUserIds());
             updating.setPostIds(request.getPostIds());
+            updating.setCategories(arrivedUpdate.getCategories());
             if (!arrivedUpdate.getCategories().isEmpty() && arrivedUpdate.getCategories().size() != 0) {
-                updating.setCategories(arrivedUpdate.getCategories());
-                if (!arrivedUpdate.getSubCategories().isEmpty() && arrivedUpdate.getSubCategories().size() != 0) {
-                    updating.setSubCategories(arrivedUpdate.getSubCategories());
-                }
+                updating.setSubCategories(arrivedUpdate.getSubCategories());
+            } else {
+                Set<Subcategory> subcategories = new HashSet<>();
+                updating.setSubCategories(subcategories);
             }
             OperationalRole result1 = operationalRoleService.update(id, updating);
             OperationalRoleDTO.Info result = mapper.toOperationalRoleInfoDto(result1);
