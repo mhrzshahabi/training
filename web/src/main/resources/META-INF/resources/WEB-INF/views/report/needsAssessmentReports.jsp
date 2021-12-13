@@ -12,6 +12,7 @@
                 if (ReportTypeDF_NABOP.getItem("reportType").getItem(idx)) {
                     ReportTypeDF_NABOP.getItem("reportType").getItem(idx).setDisabled(false);
                     ReportTypeDF_NABOP.getItem("personnelId").show();
+                    ReportTypeDF_NABOP.getItem("SynonymPersonnelId").hide();
                 }
             });
             hideRadioButtons=false;
@@ -19,6 +20,8 @@
     ////////////////////////////////////
 
     let titleReportExcel;
+    let PersonnelSelected;
+    let SynonymPersonnelSelected;
     var passedStatusId_NABOP = 216;
     var priorities_NABOP;
     var wait_NABOP;
@@ -403,10 +406,99 @@
         fetchDataURL: personnelUrl + "/iscList"
     });
 
+    var SynonymPersonnelInfoDS_NABOP = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "companyName",
+                title: "<spring:message code="company.name"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo",
+                title: "<spring:message code="personnel.no"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo2",
+                title: "<spring:message code="personnel.no.6.digits"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "postTitle",
+                title: "<spring:message code="post"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postCode",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "ccpArea",
+                title: "<spring:message code="reward.cost.center.area"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "ccpAssistant",
+                title: "<spring:message code="reward.cost.center.assistant"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "ccpAffairs",
+                title: "<spring:message code="reward.cost.center.affairs"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "ccpSection",
+                title: "<spring:message code="reward.cost.center.section"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "ccpUnit",
+                title: "<spring:message code="reward.cost.center.unit"/>",
+                filterOperator: "iContains"
+            },
+            {name: "postId", hidden: true}
+
+        ],
+        fetchDataURL: personnelUrl + "/Synonym/iscList"
+    });
+
     Menu_Personnel_NABOP = isc.Menu.create({
         data: [{
             title: "<spring:message code="refresh"/>", click: function () {
                 refreshLG(PersonnelsLG_NABOP);
+            }
+        }]
+    });
+
+    Menu_SynonymPersonnel_NABOP = isc.Menu.create({
+        data: [{
+            title: "<spring:message code="refresh"/>", click: function () {
+                refreshLG(SynonymPersonnelLG_NABOP);
             }
         }]
     });
@@ -447,7 +539,63 @@
             {name: "ccpSection"},
             {name: "ccpUnit"},
         ],
-        rowDoubleClick: "Select_Person_NABOP()",
+        rowDoubleClick: function () {
+            SynonymPersonnelSelected = false;
+            PersonnelSelected = true;
+            Select_Person_NABOP();
+        },
+        implicitCriteria: {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [{fieldName: "deleted", operator: "equals", value: 0}]
+        }
+    });
+
+    SynonymPersonnelLG_NABOP = isc.TrLG.create({
+        dataSource: SynonymPersonnelInfoDS_NABOP,
+        autoFitWidthApproach: "both",
+        contextMenu: Menu_SynonymPersonnel_NABOP,
+        selectionType: "single",
+        fields: [
+            {name: "firstName"},
+            {name: "lastName"},
+            {
+                name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName"},
+            {
+                name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {
+                name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postTitle"},
+            {
+                name: "postCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                }
+            },
+            {name: "ccpArea"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpSection"},
+            {name: "ccpUnit"},
+        ],
+        rowDoubleClick: function () {
+            SynonymPersonnelSelected = true;
+            PersonnelSelected = false;
+            Select_Person_NABOP();
+        },
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
             operator: "and",
@@ -457,7 +605,19 @@
 
     IButton_Personnel_Ok_NABOP = isc.IButtonSave.create({
         title: "<spring:message code="select"/>",
-        click: "Select_Person_NABOP()"
+        click: function () {
+            SynonymPersonnelSelected = false;
+            PersonnelSelected = true;
+            Select_Person_NABOP();
+        }
+    });
+    IButton_SynonymPersonnel_Ok_NABOP = isc.IButtonSave.create({
+        title: "<spring:message code="select"/>",
+        click: function () {
+            SynonymPersonnelSelected = true;
+            PersonnelSelected = false;
+            Select_Person_NABOP();
+        }
     });
 
     HLayout_Personnel_Ok_NABOP = isc.TrHLayoutButtons.create({
@@ -468,9 +628,23 @@
         members: [IButton_Personnel_Ok_NABOP]
     });
 
+    HLayout_SynonymPersonnel_Ok_NABOP = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        padding: 10,
+        members: [IButton_SynonymPersonnel_Ok_NABOP]
+    });
+
     ToolStripButton_Personnel_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
         click: function () {
             refreshLG(PersonnelsLG_NABOP);
+        }
+    });
+
+    ToolStripButton_SynonymPersonnel_Refresh_NABOP = isc.ToolStripButtonRefresh.create({
+        click: function () {
+            refreshLG(SynonymPersonnelLG_NABOP);
         }
     });
 
@@ -480,6 +654,15 @@
         border: '0px',
         members: [
             ToolStripButton_Personnel_Refresh_NABOP
+        ]
+    });
+
+    ToolStrip_SynonymPersonnel_Actions_NABOP = isc.ToolStrip.create({
+        width: "100%",
+        align: "left",
+        border: '0px',
+        members: [
+            ToolStripButton_SynonymPersonnel_Refresh_NABOP
         ]
     });
 
@@ -496,6 +679,23 @@
                 ToolStrip_Personnel_Actions_NABOP,
                 PersonnelsLG_NABOP,
                 HLayout_Personnel_Ok_NABOP
+            ]
+        })]
+    });
+
+    Window_SynonymPersonnel_NABOP = isc.Window.create({
+        placement: "fillScreen",
+        title: "<spring:message code='PersonnelList_Tab_synonym_Personnel'/>",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 1024,
+        items: [isc.TrVLayout.create({
+            members: [
+                ToolStrip_SynonymPersonnel_Actions_NABOP,
+                SynonymPersonnelLG_NABOP,
+                HLayout_SynonymPersonnel_Ok_NABOP
             ]
         })]
     });
@@ -601,11 +801,11 @@
     });
 
     ReportTypeDF_NABOP = isc.DynamicForm.create({
-        numCols: 3,
+        numCols: 4,
         padding: 5,
         titleAlign: "left",
         styleName: "teacher-form",
-        colWidths: ["10%", "5%", "85%"],
+        colWidths: ["10%", "10%", "5%", "75%"],
         fields: [
             {
                 name: "reportType",
@@ -621,6 +821,19 @@
                 vertical: false,
                 defaultValue: 0,
                 changed: setReportType_NABOP
+            },
+            {
+                name: "SynonymPersonnelId",
+                title: "<spring:message code="PersonnelList_Tab_synonym_Personnel"/>",
+                type: "ButtonItem",
+                align: "right",
+                autoFit: true,
+                startRow: false,
+                endRow: false,
+                click() {
+                    SynonymPersonnelLG_NABOP.fetchData();
+                    Window_SynonymPersonnel_NABOP.show();
+                }
             },
             {
                 name: "personnelId",
@@ -1011,7 +1224,13 @@
     }
 
     function Select_Person_NABOP(selected_Person) {
-        selected_Person = (selected_Person == null) ? PersonnelsLG_NABOP.getSelectedRecord() : selected_Person;
+        if (SynonymPersonnelSelected) {
+            selected_Person = (selected_Person == null) ? SynonymPersonnelLG_NABOP.getSelectedRecord() : selected_Person;
+        }
+        else if (PersonnelSelected) {
+            selected_Person = (selected_Person == null) ? PersonnelsLG_NABOP.getSelectedRecord() : selected_Person;
+        }
+
         if (selected_Person == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
@@ -1025,6 +1244,7 @@
             selectedPerson_NABOP = selected_Person;
             setTitle_NABOP();
             Window_Personnel_NABOP.close();
+            Window_SynonymPersonnel_NABOP.close();
         } else {
             createDialog("info", "<spring:message code="personnel.without.postCode"/>");
         }
@@ -1036,6 +1256,7 @@
             selectedObject_NABOP = JSON.parse(resp.httpResponseText);
             setTitle_NABOP();
             Window_Personnel_NABOP.close();
+            Window_SynonymPersonnel_NABOP.close();
         } else if (resp.httpResponseCode === 404 && resp.httpResponseText === "PostNotFound") {
             createDialog("info", "<spring:message code='needsAssessmentReport.postCode.not.Found'/>");
         } else {
@@ -1116,10 +1337,13 @@
 
         if (ReportTypeDF_NABOP.getValue("reportType") === "0") {
             reportType_NABOP = "0";
-            if (!hideRadioButtons)
-            changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("personnelId").show() : ReportTypeDF_NABOP.getItem("personnelId").hide();
+            if (!hideRadioButtons) {
+                changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("personnelId").show() : ReportTypeDF_NABOP.getItem("personnelId").hide();
+                changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("SynonymPersonnelId").show() : ReportTypeDF_NABOP.getItem("SynonymPersonnelId").hide();
+            }
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport'/>" + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + getFormulaMessage("...", 2, "red", "b");
             ReportTypeDF_NABOP.getItem("objectId").hide();
+            ReportTypeDF_NABOP.getItem("SynonymPersonnelId").hide();
             CoursesLG_NABOP.showField("skill.course.scoresState");
             CoursesLG_NABOP.showField("skill.course.scoresStatus");
             CoursesLG_NABOP.getField("skill.course.theoryDuration").summaryFunction = fullSummaryFunc_NABOP;
@@ -1127,6 +1351,7 @@
         } else if (ReportTypeDF_NABOP.getValue("reportType") === "1") {
             reportType_NABOP = "1";
             ReportTypeDF_NABOP.getItem("personnelId").hide();
+            ReportTypeDF_NABOP.getItem("SynonymPersonnelId").hide();
             changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("objectId").show() : ReportTypeDF_NABOP.getItem("objectId").hide();
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.post/job/postGrade'/> " + postName;
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post/job/postGrade'/>");
@@ -1138,6 +1363,7 @@
             reportType_NABOP = "2";
             changeablePerson_NABOP ? ReportTypeDF_NABOP.getItem("personnelId").show() : ReportTypeDF_NABOP.getItem("personnelId").hide();
             changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("objectId").show() : ReportTypeDF_NABOP.getItem("objectId").hide();
+            changeableObject_NABOP ? ReportTypeDF_NABOP.getItem("SynonymPersonnelId").show() : ReportTypeDF_NABOP.getItem("SynonymPersonnelId").hide();
             ReportTypeDF_NABOP.getItem("objectId").setTitle("<spring:message code='needsAssessmentReport.choose.post'/>");
             DynamicForm_Title_NABOP.getItem("Title_NASB").title = "<spring:message code='needsAssessmentReport.job.promotion'/> " + " <spring:message code='Mrs/Mr'/> " + personName + " <spring:message code='in.post'/> " + postName;
             CoursesLG_NABOP.showField("skill.course.scoresState");
