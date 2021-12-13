@@ -607,4 +607,323 @@ public class ExportController {
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/" + fileName, params, jsonDataSource, response);
     }
+
+
+    @PostMapping(value = {"/excel/un-passed"})
+    public void getExcelDataForUnPassedReport(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
+
+        List<Object>    data=  dao.getAllUnPassedNa();
+
+
+
+        String fileFullPath = "export.xlsx";
+        Workbook workbook = null;
+        FileInputStream in = null;
+        try {
+
+            String[] headers = new String[23];
+            String[] columns = new String[23];
+
+
+            for (int z = 0; z < 23; z++) {
+
+                switch (z) {
+                    case 0: {
+                        headers[z] = "کد ملی فراگیر";
+                        columns[z] = "student";
+                        break;
+                    }
+                    case 1: {
+                        headers[z] = " شماره پرسنلی فراگیر";
+                        columns[z] = "student_per_number";
+                        break;
+                    }
+                    case 2: {
+                        headers[z] = " کد پست فراگیر";
+                        columns[z] = "student_post_code";
+                        break;
+                    }
+                    case 3: {
+                        headers[z] = " عنوان پست فراگیر";
+                        columns[z] = "student_post_title";
+                        break;
+                    }
+                    case 4: {
+                        headers[z] = " حوزه فراگیر";
+                        columns[z] = "student_hoze";
+                        break;
+                    }
+                    case 5: {
+                        headers[z] = " امور فراگیر";
+                        columns[z] = "student_omor";
+                        break;
+                    }
+                    case 6: {
+                        headers[z] = " کد کلاس";
+                        columns[z] = "class_code";
+
+                        break;
+                    }
+                    case 7: {
+                        headers[z] = "مجتمع کلاس";
+                        columns[z] = "complex";
+                        break;
+                    }
+                    case 8: {
+                        headers[z] = "تاریخ شروع کلاس";
+                        columns[z] = "class_start_date";
+                        break;
+                    }
+                    case 9: {
+                        headers[z] = "تاریخ انتهای کلاس";
+                        columns[z] = "class_end_date";
+                        break;
+                    }
+                    case 10: {
+                        headers[z] = "وضعیت کلاس";
+                        columns[z] = "class_status";
+                        break;
+                    }
+                    case 11: {
+                        headers[z] = "استاد";
+                        columns[z] = "teacher";
+                        break;
+                    }
+                    case 12: {
+                        headers[z] = "کد ملی استاد";
+                        columns[z] = "teacher_national_code";
+                        break;
+                    }
+                    case 13: {
+                        headers[z] = "نوع استاد";
+                        columns[z] = "is_personnel";
+                        break;
+                    }
+                    case 14: {
+                        headers[z] = "کد دوره";
+                        columns[z] = "course_code";
+                        break;
+                    }
+                    case 15: {
+                        headers[z] = "عنوان دوره";
+                        columns[z] = "course_titlefa";
+                        break;
+                    }
+                    case 16: {
+                        headers[z] = "گروه";
+                        columns[z] = "category_titlefa";
+                        break;
+                    }
+                    case 17: {
+                        headers[z] = "زیرگروه";
+                        columns[z] = "sub_category_titlefa";
+                        break;
+                    }
+                    case 18: {
+                        headers[z] = "تعداد فراگیر این کلاس";
+                        columns[z] = "total_std";
+                        break;
+                    }
+                    case 19: {
+                        headers[z] = "ارزیابی مسئول آموزش از استاد";
+                        columns[z] = "training_grade_to_teacher";
+                        break;
+                    }
+                    case 20: {
+                        headers[z] = "ارزیابی استاد از کلاس";
+                        columns[z] = "teacher_grade_to_class";
+                        break;
+                    }
+                    case 21: {
+                        headers[z] = "میانگین ارزیابی واکنشی فراگیران کلاس";
+                        columns[z] = "reactione_evaluation_grade";
+                        break;
+                    }
+                    case 22: {
+                        headers[z] = "ارزیابی نهایی استاد در کلاس";
+                        columns[z] = "final_teacher";
+                        break;
+                    }
+                }
+            }
+
+            workbook = new XSSFWorkbook();
+            CreationHelper createHelper = workbook.getCreationHelper();
+            Sheet sheet = workbook.createSheet("گزارش excel");
+            sheet.setRightToLeft(true);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setFontHeightInPoints((short) 12);
+            headerFont.setColor(IndexedColors.BLUE_GREY.getIndex());
+
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+
+            Row headerRow2 = sheet.createRow(0);
+            Cell cell2 = headerRow2.createCell(0);
+            cell2.setCellValue("گزارش ارزیابی واکنشی");
+
+            sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
+
+            Row headerRow = sheet.createRow(1);
+
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerCellStyle);
+            }
+
+            CellStyle dateCellStyle = workbook.createCellStyle();
+            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+
+            int rowNum = 1;
+//            for (Object map : data) {
+//                Row row = sheet.createRow(++rowNum);
+//
+//                for (int i = 0; i < columns.length; i++) {
+//
+//                    switch (columns[i]) {
+//                        case "class_code": {
+//                            row.createCell(i).setCellValue(map.getClass_code());
+//                            break;
+//                        }
+//                        case "complex": {
+//                            row.createCell(i).setCellValue(map.getComplex());
+//                            break;
+//                        }
+//                        case "teacher_national_code": {
+//                            row.createCell(i).setCellValue(map.getTeacher_national_code());
+//                            break;
+//                        }
+//                        case "teacher": {
+//                            row.createCell(i).setCellValue(map.getTeacher());
+//                            break;
+//                        }
+//                        case "is_personnel": {
+//                            row.createCell(i).setCellValue(map.getIs_personnel());
+//                            break;
+//                        }
+//                        case "class_start_date": {
+//                            row.createCell(i).setCellValue(map.getClass_start_date());
+//                            break;
+//                        }
+//                        case "class_end_date": {
+//                            row.createCell(i).setCellValue(map.getClass_end_date());
+//                            break;
+//                        }
+//                        case "course_code": {
+//                            row.createCell(i).setCellValue(map.getCourse_code());
+//                            break;
+//                        }
+//                        case "course_titlefa": {
+//                            row.createCell(i).setCellValue(map.getCourse_titlefa());
+//                            break;
+//                        }
+//                        case "category_titlefa": {
+//                            row.createCell(i).setCellValue(map.getCategory_titlefa());
+//                            break;
+//                        }
+//                        case "sub_category_titlefa": {
+//                            row.createCell(i).setCellValue(map.getSub_category_titlefa());
+//                            break;
+//                        }
+//                        case "student": {
+//                            row.createCell(i).setCellValue(map.getStudent());
+//                            break;
+//                        }
+//                        case "class_status": {
+//                            row.createCell(i).setCellValue(map.getClass_status());
+//                            break;
+//                        }
+//
+//                        case "student_per_number": {
+//                            row.createCell(i).setCellValue(map.getStudent_per_number());
+//                            break;
+//                        } case "student_post_title": {
+//                            row.createCell(i).setCellValue(map.getStudent_post_title());
+//                            break;
+//                        } case "student_post_code": {
+//                            row.createCell(i).setCellValue(map.getStudent_post_code());
+//                            break;
+//                        } case "student_hoze": {
+//                            row.createCell(i).setCellValue(map.getStudent_hoze());
+//                            break;
+//                        } case "student_omor": {
+//                            row.createCell(i).setCellValue(map.getStudent_omor());
+//                            break;
+//                        } case "total_std": {
+//                            row.createCell(i).setCellValue(map.getTotal_std());
+//                            break;
+//                        } case "training_grade_to_teacher": {
+//                            row.createCell(i).setCellValue(map.getTraining_grade_to_teacher());
+//                            break;
+//                        } case "teacher_grade_to_class": {
+//                            row.createCell(i).setCellValue(map.getTeacher_grade_to_class());
+//                            break;
+//                        } case "reactione_evaluation_grade": {
+//                            row.createCell(i).setCellValue(map.getReactione_evaluation_grade());
+//                            break;
+//                        } case "final_teacher": {
+//                            row.createCell(i).setCellValue(map.getFinal_teacher());
+//                            break;
+//                        }
+//                    }
+//
+//                }
+//            }
+
+            for (int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            CellStyle mine = workbook.createCellStyle();
+            mine.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            mine.setFillBackgroundColor(IndexedColors.BLUE_GREY.getIndex());
+            sheet.getRow(0).setRowStyle(mine);
+
+
+            FileOutputStream fileOut = new FileOutputStream(fileFullPath);
+            workbook.write(fileOut);
+            fileOut.close();
+
+            File file = new File(fileFullPath);
+            in = new FileInputStream(file);
+            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
+            String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+            String headerKey = "Content-Disposition";
+            String headerValue;
+            response.setContentType(mimeType);
+            headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(headerKey, headerValue);
+            response.setContentLength((int) file.length());
+            OutputStream outStream = response.getOutputStream();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+            outStream.flush();
+            in.close();
+
+        } catch (Exception ex) {
+        } finally {
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }

@@ -2357,7 +2357,7 @@
                             },
                             <%--{isSeparator: true},--%>
                             <%--{--%>
-                            <%--    title: "گزارش دوره های گذرانده/نگذرانده شده بر اساس نیازسنجی",--%>
+                            <%--    title: "گزارش دوره های نگذرانده شده بر اساس نیازسنجی",--%>
                             <%--    click: function () {--%>
                             <%--        createTab(this.title, "<spring:url value="web/CoursePassedOrUnPassedInNAReport"/>");--%>
                             <%--    }--%>
