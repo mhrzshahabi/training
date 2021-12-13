@@ -470,6 +470,11 @@ public class MainFormController {
         return "report/reactionEvaluationCommentsReport";
     }
 
+    @RequestMapping("/CoursePassedOrUnPassedInNAReport")
+    public String CoursePassedOrUnPassedInNAReport() {
+        return "report/CoursePassedOrUnPassedInNAReport";
+    }
+
     @RequestMapping("/coursesEvaluationReport")
     public String coursesEvaluationReport() {
         return "report/coursesEvaluationReport";

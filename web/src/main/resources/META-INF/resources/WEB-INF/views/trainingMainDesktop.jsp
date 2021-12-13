@@ -2355,7 +2355,14 @@
                                     createTab(this.title, "<spring:url value="/students-in-canceled-class-report/show-form"/>");
                                 }
                             },
-                            {isSeparator: true},
+                            <%--{isSeparator: true},--%>
+                            <%--{--%>
+                            <%--    title: "گزارش دوره های گذرانده/نگذرانده شده بر اساس نیازسنجی",--%>
+                            <%--    click: function () {--%>
+                            <%--        createTab(this.title, "<spring:url value="web/CoursePassedOrUnPassedInNAReport"/>");--%>
+                            <%--    }--%>
+                            <%--},--%>
+                            <%--{isSeparator: true},--%>
                         ]
                 },
                 {isSeparator: true},
