@@ -8,6 +8,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
+import com.nicico.training.mapper.operationalRole.OperationalRoleBeanMapper;
+import com.nicico.training.model.OperationalRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -28,13 +30,15 @@ public class OperationalRoleRestController {
 
     private final IOperationalRoleService operationalRoleService;
     private final ObjectMapper objectMapper;
-
+    private final OperationalRoleBeanMapper mapper;
 
     @Loggable
     @PostMapping
     public ResponseEntity create(@RequestBody OperationalRoleDTO.Create request) {
         try {
-            return new ResponseEntity<>(operationalRoleService.create(request), HttpStatus.OK);
+            OperationalRole creating = mapper.toOperationalRole(request);
+            OperationalRoleDTO.Info info = mapper.toOperationalRoleInfoDto(operationalRoleService.create(creating));
+            return new ResponseEntity<>(info, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -44,7 +48,21 @@ public class OperationalRoleRestController {
     @PutMapping("/{id}")
     public ResponseEntity update( @RequestBody OperationalRoleDTO.Update request, @PathVariable Long id) {
         try {
-            return new ResponseEntity<>(operationalRoleService.update(id, request), HttpStatus.OK);
+            final OperationalRole operationalRole = operationalRoleService.getOperationalRole(id);
+            OperationalRole updating;
+            OperationalRole arrivedUpdate = mapper.toOperationalRoleFromOperationalRoleUpdateDto(request);
+            updating = mapper.copyOperationalRoleFrom(operationalRole);
+            updating.setUserIds(request.getUserIds());
+            updating.setPostIds(request.getPostIds());
+            if (!arrivedUpdate.getCategories().isEmpty() && arrivedUpdate.getCategories().size() != 0) {
+                updating.setCategories(arrivedUpdate.getCategories());
+                if (!arrivedUpdate.getSubCategories().isEmpty() && arrivedUpdate.getSubCategories().size() != 0) {
+                    updating.setSubCategories(arrivedUpdate.getSubCategories());
+                }
+            }
+            OperationalRole result1 = operationalRoleService.update(id, updating);
+            OperationalRoleDTO.Info result = mapper.toOperationalRoleInfoDto(result1);
+            return new ResponseEntity<>(result, HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -58,7 +76,14 @@ public class OperationalRoleRestController {
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         searchRq.setDistinct(true);
-        SearchDTO.SearchRs<OperationalRoleDTO.Info> searchRs = operationalRoleService.search(searchRq);
+        SearchDTO.SearchRs<OperationalRoleDTO.Info> searchRs = null;
+        try {
+            searchRs = operationalRoleService.deepSearch(searchRq);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 

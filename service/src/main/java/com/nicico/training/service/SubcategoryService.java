@@ -25,7 +25,9 @@ import response.question.dto.ElsSubCategoryDto;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -122,6 +124,16 @@ public class SubcategoryService implements ISubcategoryService {
         final Subcategory subCategory = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
 
         return modelMapper.map(subCategory.getCategory(), CategoryDTO.Info.class);
+    }
+
+    @Override
+    public Set<Subcategory> getSubcategoriesByIds(List<Long> subCategoryIds) {
+        if (!subCategoryIds.isEmpty() && subCategoryIds.size() > 0) {
+            List<Subcategory> list = subCategoryDAO.findAllById(subCategoryIds);
+            Set<Subcategory> set = list.stream().collect(Collectors.toSet());
+            return set;
+        } else
+            return null;
     }
 
     @Transactional(readOnly = true)

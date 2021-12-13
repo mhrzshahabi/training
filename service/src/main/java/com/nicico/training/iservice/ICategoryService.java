@@ -7,14 +7,19 @@ package com.nicico.training.iservice;/* com.nicico.training.iservice
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
+import com.nicico.training.model.Category;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 public interface ICategoryService {
     CategoryDTO.Info get(Long id);
 
     List<CategoryDTO.Info> list();
+
+    Set<Category> getCategoriesByIds(List<Long> categoryIds);
+
 
     CategoryDTO.Info create(CategoryDTO.Create request);
 

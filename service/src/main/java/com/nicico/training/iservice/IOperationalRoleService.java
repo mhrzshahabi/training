@@ -2,12 +2,13 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
+import com.nicico.training.model.OperationalRole;
 
 import java.util.List;
 import java.util.Set;
 
 public interface IOperationalRoleService {
-    OperationalRoleDTO.Info create(OperationalRoleDTO.Create request);
+    OperationalRole create(OperationalRole creating);
 
     List<Long> getUsedPostIdsInRoles(Long roleId);
 
@@ -17,9 +18,13 @@ public interface IOperationalRoleService {
 
     SearchDTO.SearchRs<OperationalRoleDTO.Info> search(SearchDTO.SearchRq searchRq);
 
-    OperationalRoleDTO.Info update(Long id, OperationalRoleDTO.Update request);
+    OperationalRole update(Long id, OperationalRole updating);
 
     void deleteAll(List<Long> request);
 
+    OperationalRole getOperationalRole(Long id);
+
     String getWorkGroup(Long postId);
+
+    SearchDTO.SearchRs<OperationalRoleDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException;
 }

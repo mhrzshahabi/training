@@ -8,8 +8,11 @@ com.nicico.training.iservice
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
+import com.nicico.training.model.Category;
+import com.nicico.training.model.Subcategory;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 
 public interface ISubcategoryService {
@@ -33,4 +36,5 @@ public interface ISubcategoryService {
 
     CategoryDTO.Info getCategory(Long categoryId);
 
+    Set<Subcategory> getSubcategoriesByIds(List<Long> subCategoryIds);
 }

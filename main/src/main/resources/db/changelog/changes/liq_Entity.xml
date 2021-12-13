@@ -3337,4 +3337,25 @@
             <column name="POST_IDS" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
+
+    <changeSet author="nick (generated)" id="1638772362566-559">
+        <createTable tableName="TBL_OPERATIONAL_ROLE_CATEGORY">
+            <column name="F_OPERATIONAL_ROLE" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="F_CATEGORY" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="nick (generated)" id="1638772362566-560">
+        <createTable tableName="TBL_OPERATIONAL_ROLE_SUBCATEGORY">
+            <column name="F_OPERATIONAL_ROLE" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="F_SUBCATEGORY" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
