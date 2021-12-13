@@ -10419,6 +10419,55 @@ ORDER BY
             ]]>
         </createView>
     </changeSet>
+    <changeSet author="namdari" id="1639388515000-01">
+        <createView viewName="view_course_passed_or_not_passed_na_report" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    * FROM(
+SELECT
+
+        rowNum as id,
+
+    na.course_code,
+    na.course_title_fa,
+    na.personnel_personnel_no,
+    na.personnel_cpp_affairs,
+    na.personnel_cpp_area,
+    na.personnel_cpp_assistant,
+    na.personnel_cpp_section,
+    na.personnel_cpp_title,
+    na.personnel_cpp_unit,
+    na.personnel_company_name,
+    na.personnel_complex_title,
+    na.personnel_education_level_title,
+    na.personnel_first_name,
+    na.personnel_last_name,
+    na.personnel_national_code,
+    na.personnel_emp_no,
+    na.personnel_post_code,
+    na.personnel_post_title,
+    CASE
+            WHEN passed.class_student_scores_state_id IN (
+                400,
+                401
+            ) THEN 216
+            ELSE 399
+        END
+    AS is_passed
+FROM
+    view_personnel_course_na_report na
+    LEFT JOIN view_student_classstudent_class_term_course passed ON na.personnel_national_code = passed.student_national_code
+                                                                    AND na.course_id = passed.course_id
+                                                                    AND passed.class_student_scores_state_id IN (
+        400,
+        401
+    )
+    ORDER BY
+    na.personnel_national_code)
+
+            ]]>
+        </createView>
+    </changeSet>
 
 
 </databaseChangeLog>

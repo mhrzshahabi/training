@@ -9,6 +9,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.IPersonnelCoursePassedOrNotPaseedNAReportViewService;
+import com.nicico.training.model.PersonnelCoursePassedOrNotPaseedNAReportView;
 import com.nicico.training.model.ViewReactionEvaluationFormulaReport;
 import com.nicico.training.repository.ViewReactionEvaluationFormulaReportDAO;
 import com.nicico.training.service.*;
@@ -50,6 +52,7 @@ public class ExportController {
     private final CourseService courseService;
     private final WorkGroupService workGroupService;
     private final ViewReactionEvaluationFormulaReportDAO dao;
+    private final IPersonnelCoursePassedOrNotPaseedNAReportViewService personnelCoursePassedOrNotPaseedNAReportViewService;
 
     @PostMapping(value = {"/excel"})
     public void getAttach(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
@@ -610,9 +613,11 @@ public class ExportController {
 
 
     @PostMapping(value = {"/excel/un-passed"})
-    public void getExcelDataForUnPassedReport(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
+    public void getExcelDataForUnPassedReport(final HttpServletResponse response, @RequestParam(value = "passedOrUnPassed") String passedOrUnPassed
+            , @RequestParam(value = "courseCategory") String courseCategory
+    ) {
 
-        List<Object>    data=  dao.getAllUnPassedNa();
+        List<PersonnelCoursePassedOrNotPaseedNAReportView>    data=  personnelCoursePassedOrNotPaseedNAReportViewService.getPassedOrUnPassed();
 
 
 
@@ -621,129 +626,105 @@ public class ExportController {
         FileInputStream in = null;
         try {
 
-            String[] headers = new String[23];
-            String[] columns = new String[23];
+            String[] headers = new String[18];
+            String[] columns = new String[18];
 
 
             for (int z = 0; z < 23; z++) {
 
                 switch (z) {
                     case 0: {
-                        headers[z] = "کد ملی فراگیر";
-                        columns[z] = "student";
+                        headers[z] = "ردیف";
+                        columns[z] = "id";
                         break;
                     }
                     case 1: {
-                        headers[z] = " شماره پرسنلی فراگیر";
-                        columns[z] = "student_per_number";
+                        headers[z] = " کد دوره";
+                        columns[z] = "course_code";
                         break;
                     }
                     case 2: {
-                        headers[z] = " کد پست فراگیر";
-                        columns[z] = "student_post_code";
+                        headers[z] = "عنوان دوره";
+                        columns[z] = "course_title_fa";
                         break;
                     }
                     case 3: {
-                        headers[z] = " عنوان پست فراگیر";
-                        columns[z] = "student_post_title";
+                        headers[z] = "پرسنلی فراگیر";
+                        columns[z] = "personnel_personnel_no";
                         break;
                     }
                     case 4: {
-                        headers[z] = " حوزه فراگیر";
-                        columns[z] = "student_hoze";
+                        headers[z] = " امور فراگیر";
+                        columns[z] = "personnel_cpp_affairs";
                         break;
                     }
                     case 5: {
-                        headers[z] = " امور فراگیر";
-                        columns[z] = "student_omor";
+                        headers[z] = " حوزه فراگیر";
+                        columns[z] = "personnel_cpp_area";
                         break;
                     }
                     case 6: {
-                        headers[z] = " کد کلاس";
-                        columns[z] = "class_code";
+                        headers[z] = " معاونت فراگیر";
+                        columns[z] = "personnel_cpp_assistant";
 
                         break;
                     }
                     case 7: {
-                        headers[z] = "مجتمع کلاس";
-                        columns[z] = "complex";
+                        headers[z] = "قسمت فراگیر";
+                        columns[z] = "personnel_cpp_section";
                         break;
                     }
                     case 8: {
-                        headers[z] = "تاریخ شروع کلاس";
-                        columns[z] = "class_start_date";
+                        headers[z] = "عنوان دپارتمان فراگیر";
+                        columns[z] = "personnel_cpp_title";
                         break;
                     }
                     case 9: {
-                        headers[z] = "تاریخ انتهای کلاس";
-                        columns[z] = "class_end_date";
+                        headers[z] = "شرکت فراگیر";
+                        columns[z] = "personnel_company_name";
                         break;
                     }
                     case 10: {
-                        headers[z] = "وضعیت کلاس";
-                        columns[z] = "class_status";
+                        headers[z] = "مجتمع";
+                        columns[z] = "personnel_complex_title";
                         break;
                     }
                     case 11: {
-                        headers[z] = "استاد";
-                        columns[z] = "teacher";
+                        headers[z] = "مدرک فراگیر";
+                        columns[z] = "personnel_education_level_title";
                         break;
                     }
                     case 12: {
-                        headers[z] = "کد ملی استاد";
-                        columns[z] = "teacher_national_code";
+                        headers[z] = " نام فراگیر";
+                        columns[z] = "personnel_first_name";
                         break;
                     }
                     case 13: {
-                        headers[z] = "نوع استاد";
-                        columns[z] = "is_personnel";
+                        headers[z] = " نام خانوادگی فراگیر";
+                        columns[z] = "personnel_last_name";
                         break;
                     }
                     case 14: {
-                        headers[z] = "کد دوره";
-                        columns[z] = "course_code";
+                        headers[z] = " کد ملی فراگیر";
+                        columns[z] = "personnel_national_code";
                         break;
                     }
                     case 15: {
-                        headers[z] = "عنوان دوره";
-                        columns[z] = "course_titlefa";
+                        headers[z] = " شماره پرسنلی 6 رقمی فراگیر";
+                        columns[z] = "personnel_emp_no";
                         break;
                     }
                     case 16: {
-                        headers[z] = "گروه";
-                        columns[z] = "category_titlefa";
+                        headers[z] = " کد پست فراگیر";
+                        columns[z] = "personnel_post_code";
                         break;
                     }
                     case 17: {
-                        headers[z] = "زیرگروه";
-                        columns[z] = "sub_category_titlefa";
+                        headers[z] = " عنوان پست فراگیر";
+                        columns[z] = "personnel_post_title";
                         break;
                     }
-                    case 18: {
-                        headers[z] = "تعداد فراگیر این کلاس";
-                        columns[z] = "total_std";
-                        break;
-                    }
-                    case 19: {
-                        headers[z] = "ارزیابی مسئول آموزش از استاد";
-                        columns[z] = "training_grade_to_teacher";
-                        break;
-                    }
-                    case 20: {
-                        headers[z] = "ارزیابی استاد از کلاس";
-                        columns[z] = "teacher_grade_to_class";
-                        break;
-                    }
-                    case 21: {
-                        headers[z] = "میانگین ارزیابی واکنشی فراگیران کلاس";
-                        columns[z] = "reactione_evaluation_grade";
-                        break;
-                    }
-                    case 22: {
-                        headers[z] = "ارزیابی نهایی استاد در کلاس";
-                        columns[z] = "final_teacher";
-                        break;
-                    }
+
                 }
             }
 
@@ -761,7 +742,8 @@ public class ExportController {
 
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
-            cell2.setCellValue("گزارش ارزیابی واکنشی");
+            cell2.setCellValue("گزارش دوره های گذرانده پرسنل");
+//            cell2.setCellValue("گزارش دوره های نگذرانده پرسنل");
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -777,100 +759,88 @@ public class ExportController {
             dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
 
             int rowNum = 1;
-//            for (Object map : data) {
-//                Row row = sheet.createRow(++rowNum);
-//
-//                for (int i = 0; i < columns.length; i++) {
-//
-//                    switch (columns[i]) {
-//                        case "class_code": {
-//                            row.createCell(i).setCellValue(map.getClass_code());
-//                            break;
-//                        }
-//                        case "complex": {
-//                            row.createCell(i).setCellValue(map.getComplex());
-//                            break;
-//                        }
-//                        case "teacher_national_code": {
-//                            row.createCell(i).setCellValue(map.getTeacher_national_code());
-//                            break;
-//                        }
-//                        case "teacher": {
-//                            row.createCell(i).setCellValue(map.getTeacher());
-//                            break;
-//                        }
-//                        case "is_personnel": {
-//                            row.createCell(i).setCellValue(map.getIs_personnel());
-//                            break;
-//                        }
-//                        case "class_start_date": {
-//                            row.createCell(i).setCellValue(map.getClass_start_date());
-//                            break;
-//                        }
-//                        case "class_end_date": {
-//                            row.createCell(i).setCellValue(map.getClass_end_date());
-//                            break;
-//                        }
-//                        case "course_code": {
-//                            row.createCell(i).setCellValue(map.getCourse_code());
-//                            break;
-//                        }
-//                        case "course_titlefa": {
-//                            row.createCell(i).setCellValue(map.getCourse_titlefa());
-//                            break;
-//                        }
-//                        case "category_titlefa": {
-//                            row.createCell(i).setCellValue(map.getCategory_titlefa());
-//                            break;
-//                        }
-//                        case "sub_category_titlefa": {
-//                            row.createCell(i).setCellValue(map.getSub_category_titlefa());
-//                            break;
-//                        }
-//                        case "student": {
-//                            row.createCell(i).setCellValue(map.getStudent());
-//                            break;
-//                        }
-//                        case "class_status": {
-//                            row.createCell(i).setCellValue(map.getClass_status());
-//                            break;
-//                        }
-//
-//                        case "student_per_number": {
-//                            row.createCell(i).setCellValue(map.getStudent_per_number());
-//                            break;
-//                        } case "student_post_title": {
-//                            row.createCell(i).setCellValue(map.getStudent_post_title());
-//                            break;
-//                        } case "student_post_code": {
-//                            row.createCell(i).setCellValue(map.getStudent_post_code());
-//                            break;
-//                        } case "student_hoze": {
-//                            row.createCell(i).setCellValue(map.getStudent_hoze());
-//                            break;
-//                        } case "student_omor": {
-//                            row.createCell(i).setCellValue(map.getStudent_omor());
-//                            break;
-//                        } case "total_std": {
-//                            row.createCell(i).setCellValue(map.getTotal_std());
-//                            break;
-//                        } case "training_grade_to_teacher": {
-//                            row.createCell(i).setCellValue(map.getTraining_grade_to_teacher());
-//                            break;
-//                        } case "teacher_grade_to_class": {
-//                            row.createCell(i).setCellValue(map.getTeacher_grade_to_class());
-//                            break;
-//                        } case "reactione_evaluation_grade": {
-//                            row.createCell(i).setCellValue(map.getReactione_evaluation_grade());
-//                            break;
-//                        } case "final_teacher": {
-//                            row.createCell(i).setCellValue(map.getFinal_teacher());
-//                            break;
-//                        }
-//                    }
-//
-//                }
-//            }
+            for (PersonnelCoursePassedOrNotPaseedNAReportView map : data) {
+                Row row = sheet.createRow(++rowNum);
+
+                for (int i = 0; i < columns.length; i++) {
+
+                    switch (columns[i]) {
+                        case "id": {
+                            row.createCell(i).setCellValue(map.getId());
+                            break;
+                        }
+                        case "course_code": {
+                            row.createCell(i).setCellValue(map.getCourseCode());
+                            break;
+                        }
+                        case "course_title_fa": {
+                            row.createCell(i).setCellValue(map.getCourseTitleFa());
+                            break;
+                        }
+                        case "personnel_personnel_no": {
+                            row.createCell(i).setCellValue(map.getPersonnelPersonnelNo());
+                            break;
+                        }
+                        case "personnel_cpp_affairs": {
+                            row.createCell(i).setCellValue(map.getPersonnelCcpAffairs());
+                            break;
+                        }
+                        case "personnel_cpp_area": {
+                            row.createCell(i).setCellValue(map.getPersonnelCcpArea());
+                            break;
+                        }
+                        case "personnel_cpp_assistant": {
+                            row.createCell(i).setCellValue(map.getPersonnelCcpAssistant());
+                            break;
+                        }
+                        case "personnel_cpp_section": {
+                            row.createCell(i).setCellValue(map.getPersonnelCcpSection());
+                            break;
+                        }
+                        case "personnel_cpp_title": {
+                            row.createCell(i).setCellValue(map.getPersonnelCcpTitle());
+                            break;
+                        }
+                        case "personnel_cpp_unit": {
+                            row.createCell(i).setCellValue(map.getPersonnelCcpUnit());
+                            break;
+                        }
+                        case "personnel_company_name": {
+                            row.createCell(i).setCellValue(map.getPersonnelCompanyName());
+                            break;
+                        }
+                        case "personnel_complex_title": {
+                            row.createCell(i).setCellValue(map.getPersonnelComplexTitle());
+                            break;
+                        }
+                        case "personnel_education_level_title": {
+                            row.createCell(i).setCellValue(map.getPersonnelEducationLevelTitle());
+                            break;
+                        }
+
+                        case "personnel_first_name": {
+                            row.createCell(i).setCellValue(map.getPersonnelFirstName());
+                            break;
+                        } case "personnel_last_name": {
+                            row.createCell(i).setCellValue(map.getPersonnelLastName());
+                            break;
+                        } case "personnel_national_code": {
+                            row.createCell(i).setCellValue(map.getPersonnelNationalCode());
+                            break;
+                        } case "personnel_emp_no": {
+                            row.createCell(i).setCellValue(map.getPersonnelPersonnelNo2());
+                            break;
+                        } case "personnel_post_code": {
+                            row.createCell(i).setCellValue(map.getPersonnelPostCode());
+                            break;
+                        } case "personnel_post_title": {
+                            row.createCell(i).setCellValue(map.getPersonnelPostTitle());
+                            break;
+                        }
+                    }
+
+                }
+            }
 
             for (int i = 0; i < columns.length; i++) {
                 sheet.autoSizeColumn(i);

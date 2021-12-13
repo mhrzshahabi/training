@@ -61,6 +61,20 @@
                 ],
                 changed: function () {
                 }
+            },
+            {
+                name: "passedOrUnPassed",
+                title: "گذرانده / نگذرانده",
+                textAlign: "center",
+                colSpan: 2,
+                titleColSpan: 1,
+                type: "radioGroup",
+                textMatchStyle: "exact",
+                width: "*",
+                valueMap: {
+                    "unPassed": "نگذرانده",
+                    "passed": "گذرانده"
+                },
             }
         ]
     });
@@ -76,33 +90,10 @@
                 createDialog("info","گروه کاری را مشخص کنید");
                 return;
             }
-
-            //
-            // excelData = [];
-            // excelData.add({
-            //     rowNum: "ردیف",
-            //     course_code: "کد دوره",
-            //     course_title_fa: "عنوان دوره",
-            //     personnel_personnel_no: "شماره پرسنلی ده رقمی",
-            //     personnel_cpp_affairs: "امور",
-            //     personnel_cpp_assistant: "معاونت",
-            //     personnel_cpp_section: "قسمت",
-            //     personnel_cpp_unit: "واحد",
-            //     personnel_company_name: "شرکت",
-            //     personnel_complex_title: "مجتمع",
-            //     personnel_education_level_title: "مدرک تحصیلی",
-            //     personnel_first_name: "نام فراگیر",
-            //     personnel_last_name: "نام خانوادگی فراگیر",
-            //     personnel_national_code: "کد ملی فراگیر",
-            //     personnel_emp_no: "کد پرسنلی 6 رقمی",
-            //     personnel_post_code: "کد پست",
-            //     personnel_post_title: "عنوان پست",
-            //
-            //
-            // });
-
-            let data_values = DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("courseCategory").getValue();
-
+            if(DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("passedOrUnPassed").getValue()===undefined || DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("passedOrUnPassed").getValue()===null) {
+                createDialog("info","گذرانده / نگذرانده را مشخص کنید");
+                return;
+            }
             let downloadForm = isc.DynamicForm.create({
                 method: "POST",
                 action: "/training/export/excel/un-passed",
@@ -110,14 +101,14 @@
                 canSubmit: true,
                 fields:
                     [
-                        {name: "criteria", type: "hidden"},
+                        {name: "courseCategory", type: "hidden"},
+                        {name: "passedOrUnPassed", type: "hidden"},
                     ]
             });
-            downloadForm.setValue("criteria", JSON.stringify(data_values));
+            downloadForm.setValue("courseCategory", JSON.stringify(DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("courseCategory").getValue()));
+            downloadForm.setValue("passedOrUnPassed", JSON.stringify(DynamicForm_CriteriaForm_REFR_Passed_UnPassed.getField("passedOrUnPassed").getValue()));
             downloadForm.show();
             downloadForm.submitForm();
-
-
         }
     });
     IButton_Clear_REFR_Passed_UnPassed = isc.IButtonSave.create({
