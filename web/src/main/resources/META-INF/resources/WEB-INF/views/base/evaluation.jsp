@@ -3,6 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@include file="../messenger/MLanding.jsp" %>
+<jsp:include page="teacher.jsp" />
 
 // <script>
     //----------------------------------------- DataSources ------------------------------------------------------------
@@ -18,6 +19,7 @@
             {name: "instituteId"},
             {name: "teacherId"},
             {name: "teacherFullName"},
+            {name: "teacherLastName"},
             {name: "tclassStudentsCount"},
             {name: "tclassCode"},
             {name: "tclassStartDate"},
@@ -47,13 +49,16 @@
             {name: "teachingMethodTitle"}
         ],
         fetchDataURL: viewClassDetailUrl + "/iscList",
+
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
             operator: "and",
             criteria: [
                 {fieldName: "tclassStudentsCount", operator: "notEqual", value: 0},
                 {fieldName: "evaluation", operator: "notNull"},
-                {fieldName: "tclassStatus", operator: "notEqual", value: "1"}]
+                {fieldName: "tclassStatus", operator: "notEqual", value: "1"},
+
+            ]
         },
     });
 
@@ -429,11 +434,13 @@
                 }
             },
             {
-                name: "teacherFullName",
+                name: "teacherLastName",
                 title: "<spring:message code='teacher'/>",
-                canSort: false,
-                canFilter: false,
-                autoFitWidth: true
+                canFilter: true,
+                filterOperator: "iContains",
+                formatCellValue: function (value, record, field) {
+                    return record.teacherFullName;
+                }
             },
             {
                 name: "instituteTitleFa",
@@ -526,6 +533,35 @@
             {name: "classStudentOnlineEvalStatus", title: "classStudentOnlineEvalStatus", hidden: true},
             {name: "classTeacherOnlineEvalStatus", title: "classTeacherOnlineEvalStatus", hidden: true},
         ],
+        getCellCSSText: function (record, rowNum, colNum) {
+            let style;
+            if (this.isSelected(record)) {
+                style =  "background-color:" + "#fe9d2a;";
+            } else if (record.workflowEndingStatusCode === 2) {
+                style =  "background-color:" + "#bef5b8;";
+            } else {
+                if (record.classStatus === "1")
+                    style =  "background-color:" + "#ffffff;";
+                else if (record.classStatus === "2")
+                    style =  "background-color:" + "#fff9c4;";
+                else if (record.classStatus === "3")
+                    style =  "background-color:" + "#cdedf5;";
+                else if (record.classStatus === "4")
+                    style =  "color:" + "#d6d6d7;";
+            }
+            if (this.getFieldName(colNum) == "teacherLastName") {
+                style +=  "color: #0066cc;text-decoration: underline !important;cursor: pointer !important;}"
+            }
+            return style;
+        },
+
+        cellClick: function (record, rowNum, colNum) {
+
+            if (this.getFieldName(colNum) == "teacherLastName") {
+                ListGrid_teacher_edit(record.teacherId,"evaluation")
+            }
+        },
+
         selectionUpdated: function () {
             loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
             set_Evaluation_Tabset_status();

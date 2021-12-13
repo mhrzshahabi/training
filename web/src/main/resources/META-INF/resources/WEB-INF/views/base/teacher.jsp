@@ -1213,6 +1213,8 @@
                 TabSet_Bottom_JspTeacher.updateTab(TeacherAttachmentsTab, oLoadAttachments_Teacher.VLayout_Body_JspAttachment);
                 if(tab_selected==="class") {
                     oLoadAttachments_Teacher.ToolStrip_Actions_JspAttachment.setVisibility(false);
+                } else if (tab_selected==="evaluation") {
+                    oLoadAttachments_Teacher.ToolStrip_Actions_JspAttachment.setVisibility(false);
                 }
                 clearTabFilters(oLoadAttachments_Teacher);
             },0);
@@ -1227,6 +1229,8 @@
         TabSet_Bottom_JspTeacher.show();
         TabSet_Bottom_JspTeacher.selectTab(0);
         if(tab_selected==="class") {
+            hiddenVisibilityButtons();
+        } else if (tab_selected==="evaluation") {
             hiddenVisibilityButtons();
         }
     }
