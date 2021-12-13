@@ -57,7 +57,6 @@ public class ClassDocumentRestController {
         return new ResponseEntity<>(flag, httpStatus);
 
     }
-
     @GetMapping(value = "/checkLetterNum/{classId}/{letterNum}")
     public ResponseEntity<Boolean> checkLetterNum(@PathVariable Long classId, @PathVariable String letterNum){
         Boolean checkLetterNum = classDocumentService.checkLetterNum(classId, letterNum);
