@@ -225,11 +225,8 @@ public class PersonnelService implements IPersonnelService {
     @Override
     @Transactional
     public PersonnelDTO.PersonalityInfo getByNationalCode(String nationalCode) {
-        Personnel[] optionalPersonnel = personnelDAO.findByNationalCodeAndDeleted(nationalCode,0);
-        if (optionalPersonnel != null && optionalPersonnel.length != 0)
-            return modelMapper.map(optionalPersonnel[0], PersonnelDTO.PersonalityInfo.class);
-        else
-            return null;
+        Optional<Personnel> optionalPersonnel = personnelDAO.findByNationalCodeAndDeleted(nationalCode,0);
+        return optionalPersonnel.map(personnel -> modelMapper.map(personnel, PersonnelDTO.PersonalityInfo.class)).orElse(null);
     }
 
     //Unused
@@ -514,8 +511,8 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     public boolean isPresent(String nationalCode) {
-        Personnel[] personnels = personnelDAO.findByNationalCode(nationalCode);
-        return personnels.length > 0;
+        Optional<Personnel>  personnels = personnelDAO.findByNationalCode(nationalCode);
+        return personnels.isPresent();
     }
 
     @Override
