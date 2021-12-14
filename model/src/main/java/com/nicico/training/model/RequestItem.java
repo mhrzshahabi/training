@@ -1,14 +1,11 @@
 package com.nicico.training.model;
 
 import com.nicico.training.model.enums.RequestItemState;
-import com.nicico.training.model.enums.RequestType;
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
 @Getter
 @Setter
@@ -29,6 +26,9 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "personnel_number")
     private String personnelNumber;
 
+    @Column(name = "emp_no")
+    private String personnelNo2;
+
     @Column(name = "name")
     private String name;
 
@@ -44,12 +44,11 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "work_group_code")
     private String workGroupCode;
 
-    @Transient
+    @Column(name = "national_code")
     private String nationalCode;
 
     @Column(name = "state")
     private RequestItemState state;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_competence_id", insertable = false, updatable = false)
@@ -57,6 +56,5 @@ public class RequestItem extends Auditable implements Serializable {
 
     @Column(name = "f_competence_id")
     private Long competenceReqId;
-
 
 }

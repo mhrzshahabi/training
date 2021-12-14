@@ -11,16 +11,11 @@ import com.nicico.training.iservice.ICompetenceRequestService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
-import com.nicico.training.model.CompetenceRequest;
-import com.nicico.training.model.Personnel;
-import com.nicico.training.model.Post;
-import com.nicico.training.model.RequestItem;
+import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.model.enums.RequestItemState;
 import com.nicico.training.repository.RequestItemDAO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +34,7 @@ public class RequestItemService implements IRequestItemService {
     private final RequestItemDAO requestItemDAO;
     private final ICompetenceRequestService competenceRequestService;
     private final IPersonnelService personnelService;
+    private final SynonymPersonnelService synonymPersonnelService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final IPostService iPostService;
     private final ParameterValueService parameterValueService;
@@ -54,7 +50,7 @@ public class RequestItemService implements IRequestItemService {
         CompetenceRequest competenceRequest = competenceRequestService.get(requestItem.getCompetenceReqId());
         requestItem.setCompetenceReq(competenceRequest);
         RequestItem saved = requestItemDAO.save(requestItem);
-        saved.setNationalCode(getNationalCode(saved.getPersonnelNumber()));
+//        saved.setNationalCode(getNationalCode(saved.getPersonnelNumber()));
         return saved;
     }
 
@@ -69,8 +65,10 @@ public class RequestItemService implements IRequestItemService {
         requestItem.setName(newData.getName());
         requestItem.setWorkGroupCode(newData.getWorkGroupCode());
         requestItem.setPersonnelNumber(newData.getPersonnelNumber());
+        requestItem.setPersonnelNo2(newData.getPersonnelNo2());
         requestItem.setPost(newData.getPost());
         requestItem.setState(newData.getState());
+        requestItem.setNationalCode(newData.getNationalCode());
         return getRequestDiff(requestItem);
     }
 
@@ -115,13 +113,6 @@ public class RequestItemService implements IRequestItemService {
         } else {
             list = requestItemDAO.findAll(NICICOSpecification.of(request));
         }
-        for (RequestItem requestItem : list) {
-            requestItem.setNationalCode(getNationalCode(requestItem.getPersonnelNumber()));
-            Optional<Post> optionalPost = iPostService.isPostExist(requestItem.getPost());
-            requestItem.setState(getRequestState(requestItem.getPersonnelNumber(), optionalPost.isPresent(),requestItem.getPost(), requestItem.getNationalCode()));
-
-        }
-
         return list;
 
     }
@@ -132,9 +123,9 @@ public class RequestItemService implements IRequestItemService {
         List<RequestItem> temp=new ArrayList<>();
         if (!requestItems.isEmpty()){
           Long competenceReqId=  requestItems.get(0).getCompetenceReqId();
-            List<RequestItem> list=getListWithCompetenceRequest(competenceReqId);
+            List<RequestItem> list = getListWithCompetenceRequest(competenceReqId);
             for (RequestItem requestItem:requestItems){
-                if (!(!list.isEmpty() && list.stream().anyMatch(q -> q.getPersonnelNumber().equals(requestItem.getPersonnelNumber()))))
+                if (!(!list.isEmpty() && list.stream().anyMatch(q -> q.getNationalCode().equals(requestItem.getNationalCode()))))
                     temp.add(requestItem);
             }
             if (list.isEmpty())
@@ -144,7 +135,7 @@ public class RequestItemService implements IRequestItemService {
         List<RequestItemWithDiff> requestItemWithDiffList = new ArrayList<>();
         for (RequestItem requestItem : temp) {
             RequestItemWithDiff data = getRequestDiff(requestItem);
-            if (data.isPersonnelNumberCorrect()) {
+            if (data.isNationalCodeCorrect()) {
                 requestItemWithDiffList.add(data);
             }
 
@@ -158,7 +149,7 @@ public class RequestItemService implements IRequestItemService {
     private int getWrongCount(List<RequestItemWithDiff> list) {
         int wrongCount = 0;
         for (RequestItemWithDiff data : list) {
-            if (!(data.isPersonnelNumberCorrect() && data.isAffairsCorrect() && data.isLastNameCorrect() && data.isNameCorrect())) {
+            if (!(data.isPersonnelNumberCorrect()  && data.isPersonnelNo2Correct() && data.isAffairsCorrect() && data.isLastNameCorrect() && data.isNameCorrect())) {
                 wrongCount++;
             }
         }
@@ -166,57 +157,72 @@ public class RequestItemService implements IRequestItemService {
     }
 
     private RequestItemWithDiff getRequestDiff(RequestItem requestItem) {
-        Personnel personnel = personnelService.getByPersonnelNumber(requestItem.getPersonnelNumber());
+
+        SynonymPersonnel synonymPersonnel = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
         RequestItemWithDiff requestItemWithDiff = new RequestItemWithDiff();
-        requestItemWithDiff.setPersonnelNumber(requestItem.getPersonnelNumber());
-        requestItemWithDiff.setName(requestItem.getName());
-        requestItemWithDiff.setLastName(requestItem.getLastName());
-        requestItemWithDiff.setPost(requestItem.getPost());
-        requestItemWithDiff.setAffairs(requestItem.getAffairs());
-        Optional<Post> optionalPost = iPostService.isPostExist(requestItem.getPost());
-        if (!optionalPost.isPresent()){
-            requestItemWithDiff.setWorkGroupCode("پست وجود ندارد");
-            requestItem.setWorkGroupCode("پست وجود ندارد");
-        } else {
-            String workGroupCode=iOperationalRoleService.getWorkGroup(optionalPost.get().getId());
-            requestItemWithDiff.setWorkGroupCode(workGroupCode);
-            requestItem.setWorkGroupCode(workGroupCode);
-        }
-        if (personnel != null) {
-            String state=getRequestState(personnel.getPersonnelNo(), optionalPost.isPresent(),requestItem.getPost(), personnel.getNationalCode()).getTitleFa();
-            requestItemWithDiff.setState(state);
-            requestItem.setState(stateTypeConverter.strToRequestItemState(state));
-            requestItemWithDiff.setPersonnelNumberCorrect(true);
-            requestItemWithDiff.setNationalCode(personnel.getNationalCode());
-            if (personnel.getFirstName() != null && personnel.getFirstName().trim().equals(requestItem.getName().trim())) {
+
+        if (synonymPersonnel != null) {
+            requestItemWithDiff.setPersonnelNumber(requestItem.getPersonnelNumber());
+            requestItemWithDiff.setPersonnelNo2(requestItem.getPersonnelNo2());
+            requestItemWithDiff.setName(requestItem.getName());
+            requestItemWithDiff.setLastName(requestItem.getLastName());
+            requestItemWithDiff.setPost(requestItem.getPost());
+            requestItemWithDiff.setAffairs(requestItem.getAffairs());
+            requestItemWithDiff.setState(requestItem.getState() != null ? stateTypeConverter.requestItemStateToStr(requestItem.getState()) : null);
+            requestItemWithDiff.setNationalCode(requestItem.getNationalCode());
+            Optional<Post> optionalPost = iPostService.isPostExist(requestItem.getPost());
+
+            if (!optionalPost.isPresent()) {
+                requestItemWithDiff.setWorkGroupCode("پست وجود ندارد");
+                requestItem.setWorkGroupCode("پست وجود ندارد");
+            } else {
+                String workGroupCode = iOperationalRoleService.getWorkGroup(optionalPost.get().getId());
+                requestItemWithDiff.setWorkGroupCode(workGroupCode);
+                requestItem.setWorkGroupCode(workGroupCode);
+            }
+
+            requestItemWithDiff.setNationalCodeCorrect(true);
+            requestItemWithDiff.setNationalCode(synonymPersonnel.getNationalCode());
+            requestItemWithDiff.setCurrentPostCode(synonymPersonnel.getPostCode());
+            requestItemWithDiff.setCurrentPostTitle(synonymPersonnel.getPostTitle());
+
+            if (synonymPersonnel.getPersonnelNo() != null && requestItem.getPersonnelNumber() != null && synonymPersonnel.getPersonnelNo().trim().equals(requestItem.getPersonnelNumber().trim())) {
+                requestItemWithDiff.setPersonnelNumberCorrect(true);
+            } else {
+                requestItemWithDiff.setCorrectPersonnelNumber(synonymPersonnel.getPersonnelNo());
+                requestItemWithDiff.setPersonnelNumberCorrect(false);
+            }
+            if (synonymPersonnel.getPersonnelNo2() != null && requestItem.getPersonnelNo2() != null && synonymPersonnel.getPersonnelNo2().trim().equals(requestItem.getPersonnelNo2().trim())) {
+                requestItemWithDiff.setPersonnelNo2Correct(true);
+            } else {
+                requestItemWithDiff.setCorrectPersonnelNo2(synonymPersonnel.getPersonnelNo2());
+                requestItemWithDiff.setPersonnelNo2Correct(false);
+            }
+            if (synonymPersonnel.getFirstName() != null && requestItem.getName() != null && synonymPersonnel.getFirstName().trim().equals(requestItem.getName().trim())) {
                 requestItemWithDiff.setNameCorrect(true);
             } else {
-                requestItemWithDiff.setCorrectName(personnel.getFirstName());
+                requestItemWithDiff.setCorrectName(synonymPersonnel.getFirstName());
                 requestItemWithDiff.setNameCorrect(false);
             }
-            if (personnel.getLastName() != null && personnel.getLastName().trim().equals(requestItem.getLastName().trim())) {
+            if (synonymPersonnel.getLastName() != null && requestItem.getLastName() != null && synonymPersonnel.getLastName().trim().equals(requestItem.getLastName().trim())) {
                 requestItemWithDiff.setLastNameCorrect(true);
             } else {
-                requestItemWithDiff.setCorrectLastName(personnel.getLastName());
+                requestItemWithDiff.setCorrectLastName(synonymPersonnel.getLastName());
                 requestItemWithDiff.setLastNameCorrect(false);
             }
-            if (personnel.getCcpAffairs() != null && personnel.getCcpAffairs().trim().equals(requestItem.getAffairs().trim())) {
+            if (synonymPersonnel.getCcpAffairs() != null && requestItem.getAffairs() != null && synonymPersonnel.getCcpAffairs().trim().equals(requestItem.getAffairs().trim())) {
                 requestItemWithDiff.setAffairsCorrect(true);
             } else {
-                requestItemWithDiff.setCorrectAffairs(personnel.getCcpAffairs());
+                requestItemWithDiff.setCorrectAffairs(synonymPersonnel.getCcpAffairs());
                 requestItemWithDiff.setAffairsCorrect(false);
             }
             RequestItem savedItem = create(requestItem, requestItem.getCompetenceReqId());
             requestItemWithDiff.setId(savedItem.getId());
             requestItemWithDiff.setCompetenceReqId(savedItem.getCompetenceReqId());
         } else {
-            requestItemWithDiff.setPersonnelNumberCorrect(false);
-            requestItemWithDiff.setAffairsCorrect(false);
-            requestItemWithDiff.setLastNameCorrect(false);
-            requestItemWithDiff.setNameCorrect(false);
+            requestItemWithDiff.setNationalCodeCorrect(false);
         }
         return requestItemWithDiff;
-
     }
 
     private RequestItemState getRequestState(String personnelNumber, boolean isPostExist,String post, String nationalCode) {
@@ -231,14 +237,10 @@ public class RequestItemService implements IRequestItemService {
                     return RequestItemState.Impeded;
                 else
                     return RequestItemState.Unimpeded;
-
-
             }
         } else {
             return RequestItemState.PostMissed;
         }
-
-
     }
 
 
@@ -257,6 +259,16 @@ public class RequestItemService implements IRequestItemService {
             infoList.add(info);
         });
         return infoList;
+    }
+
+    @Override
+    public RequestItemWithDiff validData(Long id) {
+        Optional<RequestItem> requestItemOptional = requestItemDAO.findById(id);
+        if (requestItemOptional.isPresent()) {
+            RequestItem requestItem = requestItemOptional.get();
+            return getRequestDiff(requestItem);
+        } else
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
 
 }

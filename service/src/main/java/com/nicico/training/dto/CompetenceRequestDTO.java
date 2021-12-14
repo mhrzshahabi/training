@@ -15,10 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
-
 public class CompetenceRequestDTO {
-
 
     @NotEmpty
     @ApiModelProperty(required = true)

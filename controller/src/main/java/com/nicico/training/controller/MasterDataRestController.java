@@ -14,8 +14,6 @@ import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewPostDTO;
-import com.nicico.training.model.ClassSession;
-import com.nicico.training.model.ParameterValue;
 import com.nicico.training.service.MasterDataService;
 import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
@@ -206,7 +204,7 @@ public class MasterDataRestController {
 
             List<JobExpResponse> jobExperiences = masterDataClient.getPostRecords(postCode, token);
             List<JobExpResponse.postInfo> postInfoList = new ArrayList<>();
-            jobExperiences.forEach(item -> {
+            jobExperiences.stream().filter(q -> q.getSsn() != null).collect(Collectors.toList()).forEach(item -> {
                 PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(item.getSsn());
                 JobExpResponse.postInfo postInfo = modelMapper.map(item, JobExpResponse.postInfo.class);
                 postInfo.setFirstName(personalityInfo.getFirstName());
