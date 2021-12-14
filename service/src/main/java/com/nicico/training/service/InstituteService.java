@@ -291,15 +291,27 @@ public class InstituteService implements IInstituteService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<InstituteDTO.Info> search(SearchDTO.SearchRq request) {
-        modelMapper.typeMap(Institute.class, InstituteDTO.Info.class).addMapping(
-                Institute::getParentInstitute,
-                (info, o) -> {
-                    if (o != null)
-                        info.setParentInstitute(modelMapper.map(o, InstituteDTO.InstituteInfoTuple.class));
-                    else
-                        info.setParentInstitute(null);
-                });
-        return SearchUtil.search(instituteDAO, request, institute -> modelMapper.map(institute, InstituteDTO.Info.class));
+        SearchDTO.SearchRs<InstituteDTO.Info> infoSearchRs=SearchUtil.search(instituteDAO, request, institute -> modelMapper.map(institute, InstituteDTO.Info.class));
+
+        for (InstituteDTO.Info info:infoSearchRs.getList()){
+            if (info.getParentInstituteId()!=null){
+                InstituteDTO.InstituteInfoTuple parentInstitute=new InstituteDTO.InstituteInfoTuple();
+                try {
+                    Institute parent= getInstitute(info.getParentInstituteId());
+                    parentInstitute.setId(parent.getId());
+                    parentInstitute.setTitleEn(parent.getTitleEn());
+                    parentInstitute.setTitleFa(parent.getTitleFa());
+                    info.setParentInstitute(parentInstitute);
+                }catch (Exception e){
+                    info.setParentInstitute(null);
+                }
+
+            }else {
+                info.setParentInstitute(null);
+            }
+        }
+
+        return infoSearchRs;
     }
 
     @Transactional
