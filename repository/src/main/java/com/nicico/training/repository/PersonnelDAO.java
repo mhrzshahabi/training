@@ -17,7 +17,7 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     Optional<Personnel> findFirstByPersonnelNo(String personnelNo);
 
-    Optional<Personnel[]> findOneByNationalCodeAndDeleted(String nationalCode,Integer deleted);
+    Optional<Personnel> findFirstByNationalCodeAndDeleted(String nationalCode,Integer deleted);
 
     Personnel[] findByNationalCodeAndDeleted(String nationalCode,Integer deleted);
 

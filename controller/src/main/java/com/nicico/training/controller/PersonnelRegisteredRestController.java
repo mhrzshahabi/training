@@ -83,7 +83,7 @@ public class PersonnelRegisteredRestController {
     public ResponseEntity<PersonnelRegisteredDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
 
         Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredService.getByNationalCode(nationalCode);
-        Optional<Personnel[]> optionalPersonnel = iPersonnelService.getOneByNationalCodeAndDeleted(nationalCode, 0);
+        Optional<Personnel> optionalPersonnel = iPersonnelService.getOneByNationalCodeAndDeleted(nationalCode, 0);
 
         if (((optionalPersonnel.map(personalInfo -> modelMapper.map(personalInfo, PersonnelDTO.Info.class)).orElse(null)) != null)
                 || ((optionalPersonnelReg.map(personalInfo -> modelMapper.map(personalInfo, PersonnelRegisteredDTO.Info.class)).orElse(null)) != null)) {

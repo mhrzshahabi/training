@@ -48,7 +48,7 @@ public interface IPersonnelService {
 
     List<Long> inDepartmentIsPlanner(String mojtameCode);
 
-    Optional<Personnel[]> getOneByNationalCodeAndDeleted(String nationalCode, int i);
+    Optional<Personnel> getOneByNationalCodeAndDeleted(String nationalCode, int i);
 
 //    <R> R getPOrRegisteredP(Long id, Function<Object, R> converter);
 

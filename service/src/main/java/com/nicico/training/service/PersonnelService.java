@@ -500,8 +500,8 @@ public class PersonnelService implements IPersonnelService {
     }
 
     @Override
-    public Optional<Personnel[]> getOneByNationalCodeAndDeleted(String nationalCode, int deleted) {
-        return personnelDAO.findOneByNationalCodeAndDeleted(nationalCode, deleted);
+    public Optional<Personnel> getOneByNationalCodeAndDeleted(String nationalCode, int deleted) {
+        return personnelDAO.findFirstByNationalCodeAndDeleted(nationalCode, deleted);
     }
 
 //    @Transactional(readOnly = true)
