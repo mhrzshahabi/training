@@ -54,6 +54,6 @@ public interface PersonnelCoursePassedOrNotPaseedNAReportViewDAO extends JpaRepo
             "    )\n" +
             "    ORDER BY\n" +
             "    na.personnel_national_code)\n" +
-            "    WHERE is_passed = :passedOrUnPassed", nativeQuery = true)
-    List<PersonnelCoursePassedOrNotPaseedNAReportView> getPassedOrUnPassed(String passedOrUnPassed);
+            "    WHERE is_passed = (:passedOrUnPassed) AND (:query)", nativeQuery = true)
+    List<PersonnelCoursePassedOrNotPaseedNAReportView> getPassedOrUnPassed(String query, String passedOrUnPassed);
 }

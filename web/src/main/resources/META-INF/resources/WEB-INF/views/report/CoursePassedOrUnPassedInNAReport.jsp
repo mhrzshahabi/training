@@ -130,7 +130,8 @@
         width: "100%",
         alignLayout: "center",
         members: [
-            DynamicForm_CriteriaForm_REFR_Passed_UnPassed]
+            DynamicForm_CriteriaForm_REFR_Passed_UnPassed
+        ]
     });
     var HLayOut_Confirm_REFR_Passed_UnPassed = isc.TrHLayoutButtons.create({
         layoutMargin: 5,

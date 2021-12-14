@@ -617,7 +617,15 @@ public class ExportController {
             , @RequestParam(value = "courseCategory") String courseCategory
     ) {
 
-        List<PersonnelCoursePassedOrNotPaseedNAReportView>    data=  personnelCoursePassedOrNotPaseedNAReportViewService.getPassedOrUnPassed();
+        String isPassed=passedOrUnPassed.replace("\"", "");
+        String catgories=courseCategory.replace("\"", "").replace("[","").replace("]","");
+        List<Long> catIds=new ArrayList<>();
+         final String[] discagem = catgories.split(",");
+        for (int i = 0; i < discagem.length; i++) {
+            catIds.add(Long.valueOf(discagem[i]));
+        }
+
+        List<PersonnelCoursePassedOrNotPaseedNAReportView>    data=  personnelCoursePassedOrNotPaseedNAReportViewService.getPassedOrUnPassed(catIds,isPassed);
 
 
 
@@ -626,100 +634,96 @@ public class ExportController {
         FileInputStream in = null;
         try {
 
-            String[] headers = new String[18];
-            String[] columns = new String[18];
+            String[] headers = new String[17];
+            String[] columns = new String[17];
 
 
             for (int z = 0; z < 23; z++) {
 
                 switch (z) {
+
                     case 0: {
-                        headers[z] = "ردیف";
-                        columns[z] = "id";
-                        break;
-                    }
-                    case 1: {
                         headers[z] = " کد دوره";
                         columns[z] = "course_code";
                         break;
                     }
-                    case 2: {
+                    case 1: {
                         headers[z] = "عنوان دوره";
                         columns[z] = "course_title_fa";
                         break;
                     }
-                    case 3: {
+                    case 2: {
                         headers[z] = "پرسنلی فراگیر";
                         columns[z] = "personnel_personnel_no";
                         break;
                     }
-                    case 4: {
+                    case 3: {
                         headers[z] = " امور فراگیر";
                         columns[z] = "personnel_cpp_affairs";
                         break;
                     }
-                    case 5: {
+                    case 4: {
                         headers[z] = " حوزه فراگیر";
                         columns[z] = "personnel_cpp_area";
                         break;
                     }
-                    case 6: {
+                    case 5: {
                         headers[z] = " معاونت فراگیر";
                         columns[z] = "personnel_cpp_assistant";
 
                         break;
                     }
-                    case 7: {
+                    case 6: {
                         headers[z] = "قسمت فراگیر";
                         columns[z] = "personnel_cpp_section";
                         break;
                     }
-                    case 8: {
+                    case 7: {
                         headers[z] = "عنوان دپارتمان فراگیر";
                         columns[z] = "personnel_cpp_title";
                         break;
                     }
-                    case 9: {
+                    case 8: {
                         headers[z] = "شرکت فراگیر";
                         columns[z] = "personnel_company_name";
                         break;
                     }
-                    case 10: {
+                    case 9: {
                         headers[z] = "مجتمع";
                         columns[z] = "personnel_complex_title";
                         break;
                     }
-                    case 11: {
+                    case 10: {
                         headers[z] = "مدرک فراگیر";
                         columns[z] = "personnel_education_level_title";
                         break;
                     }
-                    case 12: {
+                    case 11: {
                         headers[z] = " نام فراگیر";
                         columns[z] = "personnel_first_name";
                         break;
                     }
-                    case 13: {
+                    case 12: {
                         headers[z] = " نام خانوادگی فراگیر";
                         columns[z] = "personnel_last_name";
                         break;
                     }
-                    case 14: {
+                    case 13: {
                         headers[z] = " کد ملی فراگیر";
                         columns[z] = "personnel_national_code";
                         break;
                     }
-                    case 15: {
+                    case 14: {
                         headers[z] = " شماره پرسنلی 6 رقمی فراگیر";
                         columns[z] = "personnel_emp_no";
                         break;
                     }
-                    case 16: {
+                    case 15: {
                         headers[z] = " کد پست فراگیر";
                         columns[z] = "personnel_post_code";
                         break;
                     }
-                    case 17: {
+                    case 16: {
                         headers[z] = " عنوان پست فراگیر";
                         columns[z] = "personnel_post_title";
                         break;
@@ -742,8 +746,10 @@ public class ExportController {
 
             Row headerRow2 = sheet.createRow(0);
             Cell cell2 = headerRow2.createCell(0);
+            if (isPassed.equals("unPassed"))
+            cell2.setCellValue("گزارش دوره های نگذرانده پرسنل");
+            else
             cell2.setCellValue("گزارش دوره های گذرانده پرسنل");
-//            cell2.setCellValue("گزارش دوره های نگذرانده پرسنل");
 
             sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
 
@@ -765,10 +771,7 @@ public class ExportController {
                 for (int i = 0; i < columns.length; i++) {
 
                     switch (columns[i]) {
-                        case "id": {
-                            row.createCell(i).setCellValue(map.getId());
-                            break;
-                        }
+
                         case "course_code": {
                             row.createCell(i).setCellValue(map.getCourseCode());
                             break;
