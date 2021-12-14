@@ -35,4 +35,6 @@ public interface IPostService {
 
     SearchDTO.SearchRs<PostDTO.Info> unassignedSearch(SearchDTO.SearchRq request);
 
+    PostDTO.needAssessmentInfo getNeedAssessmentInfo(String postCode);
+
 }

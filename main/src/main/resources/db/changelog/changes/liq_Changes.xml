@@ -3283,6 +3283,17 @@ WHERE
         </createTable>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-027">
+        <addColumn tableName="tbl_request_item">
+            <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-028">
+        <addColumn tableName="tbl_request_item">
+            <column name="national_code" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
     <changeSet author="namdari (generated)" id="1638875566000-1">
         <createTable tableName="TBL_CLASS_STUDENT_AUD">

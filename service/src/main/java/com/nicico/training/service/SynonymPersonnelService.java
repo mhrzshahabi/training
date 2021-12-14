@@ -3,7 +3,6 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.model.SynonymPersonnel;
@@ -23,5 +22,9 @@ public class SynonymPersonnelService  {
     @Transactional(readOnly = true)
     public TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(dao, request, SynonymPersonnel -> modelMapper.map(SynonymPersonnel, PersonnelDTO.Info.class));
+    }
+
+    public SynonymPersonnel getByNationalCode(String nationalCode) {
+        return dao.findSynonymPersonnelDataByNationalCode(nationalCode);
     }
 }

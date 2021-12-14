@@ -144,4 +144,14 @@ public class PostService implements IPostService {
         return SearchUtil.search(postDAO, request, post -> modelMapper.map(post, PostDTO.Info.class));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public PostDTO.needAssessmentInfo getNeedAssessmentInfo(String postCode) {
+        Optional<Post> optionalPost = postDAO.findByCodeAndDeleted(postCode, null);
+        if (optionalPost.isPresent())
+            return modelMapper.map(optionalPost.get(), PostDTO.needAssessmentInfo.class);
+        else
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
+
 }

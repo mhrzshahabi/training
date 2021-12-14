@@ -8,7 +8,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
-import java.util.Date;
 import java.util.List;
 
 
@@ -21,6 +20,8 @@ public class RequestItemDTO {
     @ApiModelProperty(required = true)
     private String personnelNumber;
 
+    private String personnelNo2;
+
     private String name;
 
     private String lastName;
@@ -28,6 +29,10 @@ public class RequestItemDTO {
     private String affairs;
 
     private String post;
+
+    private String currentPostTitle;
+
+    private String currentPostCode;
 
     private String workGroupCode;
 
@@ -58,6 +63,7 @@ public class RequestItemDTO {
     @Accessors(chain = true)
     @ApiModel("RequestItemRq")
     public static class Create extends RequestItemDTO {
+        private String nationalCode;
     }
 
 

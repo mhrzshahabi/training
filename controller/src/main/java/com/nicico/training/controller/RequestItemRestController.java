@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import response.requestItem.RequestItemDto;
 import response.requestItem.RequestItemWithDiff;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -90,6 +91,21 @@ public class RequestItemRestController {
         List<RequestItem> requestItems = requestItemService.getList();
         List<RequestItemDTO.Info> res = requestItemBeanMapper.toRequestItemDTODtos(requestItems);
         return new ResponseEntity<>(res, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/valid-data/{id}")
+    public ResponseEntity<ISC<RequestItemWithDiff>> validData(HttpServletRequest iscRq, @PathVariable Long id) throws IOException {
+
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        List<RequestItemWithDiff> requestItemWithDiffList = new ArrayList<>();
+        RequestItemWithDiff requestItemWithDiff = requestItemService.validData(id);
+        requestItemWithDiffList.add(requestItemWithDiff);
+        SearchDTO.SearchRs<RequestItemWithDiff> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setList(requestItemWithDiffList);
+        searchRs.setTotalCount((long) requestItemWithDiffList.size());
+        ISC<RequestItemWithDiff> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
+
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
 
     @Loggable
