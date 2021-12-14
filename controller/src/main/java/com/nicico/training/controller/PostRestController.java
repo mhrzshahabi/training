@@ -85,6 +85,16 @@ public class PostRestController {
         }
     }
 
+    @GetMapping("/getNeedAssessment")
+    public ResponseEntity getNeedAssessmentInfo(HttpServletRequest request) {
+        try {
+            String postCode = request.getParameter("postCode");
+            return new ResponseEntity<>(postService.getNeedAssessmentInfo(postCode), HttpStatus.OK);
+        } catch (TrainingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
     @GetMapping(value = "/unassigned-iscList")
     public ResponseEntity<ISC<PostDTO.Info>> unassignedList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);

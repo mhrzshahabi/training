@@ -475,6 +475,10 @@ public abstract class EnumsConverter {
                     .findFirst()
                     .orElse(null);
         }
+
+        public String requestItemStateToStr(RequestItemState state) {
+            return state.getTitleFa();
+        }
     }
 
 }

@@ -32,4 +32,7 @@ public interface IRequestItemService {
     List<RequestItem> getListWithCompetenceRequest(Long id);
 
     List<RequestItemDTO.Info> getItemListWithCompetenceRequest(Long id);
+
+    RequestItemWithDiff validData(Long id);
+
 }

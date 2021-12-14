@@ -3,12 +3,15 @@ ghazanfari_f, 8/29/2019, 10:48 AM
 */
 package com.nicico.training.dto;
 
+import com.nicico.copper.common.util.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -64,5 +67,22 @@ public class PostDTO implements Serializable {
         private Long deleted;
         private JobDTO.Info job;
         private PostGradeDTO.Info postGrade;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonnelInfo")
+    public static class needAssessmentInfo {
+        private Date lastModifiedDateNA;
+        private String modifiedByNA;
+
+        public String getLastModifiedDateNA() {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            if(lastModifiedDateNA != null)
+                return DateUtil.convertMiToKh(formatter.format(lastModifiedDateNA));
+            return "آپ دیت نشده";
+        }
+
     }
 }
