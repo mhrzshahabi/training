@@ -58,7 +58,7 @@ public abstract class OperationalRoleBeanMapper {
     @Named("getSubCategoriesByIds")
     Set<Subcategory> getSubCategoriesByIds(List<Long> subCategoryIds) {
         Set<Subcategory> subcategories = new HashSet<>();
-        if (subCategoryIds != null && subcategories.size() > 0) {
+        if (subCategoryIds != null && subCategoryIds.size() > 0) {
             subcategories = iSubcategoryService.getSubcategoriesByIds(subCategoryIds);
         }
         return subcategories;
