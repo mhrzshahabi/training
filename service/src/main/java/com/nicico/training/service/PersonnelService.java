@@ -511,7 +511,7 @@ public class PersonnelService implements IPersonnelService {
 
     @Override
     public boolean isPresent(String nationalCode) {
-        Optional<Personnel>  personnels = personnelDAO.findByNationalCode(nationalCode);
+        Optional<Personnel>  personnels = personnelDAO.findFirstByNationalCode(nationalCode);
         return personnels.isPresent();
     }
 

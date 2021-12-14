@@ -21,7 +21,7 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     Optional<Personnel> findByNationalCodeAndDeleted(String nationalCode,Integer deleted);
 
-    Optional<Personnel>  findByNationalCode(String nationalCode);
+    Optional<Personnel>  findFirstByNationalCode(String nationalCode);
 
     @Query(value = "SELECT * FROM tbl_personnel where national_code = :national_code AND Personnel_No = :Personnel_No AND ROWNUM < 2", nativeQuery = true)
     Personnel findByNationalCodeAndPersonnelNo(String national_code,String Personnel_No);
