@@ -38,7 +38,8 @@
             {name: "personality.firstNameFa"},
             {name: "personality.lastNameFa"},
             {name: "personality.nationalCode"},
-            {name: "grade"}
+            {name: "grade"},
+            {name: "hasPhone"},
         ],
         fetchDataURL: teacherUrl + "fullName-list"
     });
@@ -1079,6 +1080,16 @@
                         title: "<spring:message code='students.to.teacher.grade'/>",
                         titleAlign: "center",
                         filterOperator: "iContains",
+                    }, {
+                        name: "hasPhone",
+                        title: "موبایل",
+                        titleAlign: "center",
+                        canFilter: false,
+                        filterOperator: "iContains",
+                        valueMap: {
+                            true: "<span style='color:#228a00; font-size:12px;'>" + "ثبت شده" + "</span>",
+                            false: "<span style='color:#ff0000; font-size:12px;'>" + "ثبت نشده" + "</span>",
+                        }
                     },
                 ],
                 icons: [{

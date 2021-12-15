@@ -6,6 +6,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.model.*;
@@ -29,6 +30,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import static com.nicico.training.utility.persianDate.MyUtils.checkMobileFormat;
 import static java.lang.Math.round;
 
 @Service
@@ -56,6 +58,7 @@ public class CourseService implements ICourseService {
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
     private final EnumsConverter.ETheoTypeConverter eTheoTypeConverter = new EnumsConverter.ETheoTypeConverter();
     private final CourseBeanMapper beanMapper;
+    private final IContactInfoService contactInfoService;
 
     @Autowired
     protected EntityManager entityManager;
@@ -609,11 +612,12 @@ public class CourseService implements ICourseService {
                     Tclass tclass = max.get();
                     teacherDTO.setGrade(String.valueOf(tclassService.getStudentsGradeToTeacher(tclass.getClassStudents())));
                 }
+                teacherDTO.setHasPhone(checkTeacherPhone(teacher));
                 sendingList.add(teacherDTO);
             }
         }
 
-        if (teacherId != 0 && sendingList.stream().filter(p -> p.getId() == teacherId).count() == 0) {
+        if (teacherId != 0 && sendingList.stream().noneMatch(p -> p.getId().equals(teacherId))) {
             Teacher teacher = teacherDAO.findById(teacherId).orElse(null);
 
             if (teacher != null) {
@@ -633,6 +637,14 @@ public class CourseService implements ICourseService {
 //        }.getType());
     }
 
+    private boolean checkTeacherPhone(Teacher teacher) {
+        if (teacher==null || teacher.getPersonality()==null || teacher.getPersonality().getContactInfoId()==null)
+            return false;
+        ContactInfoDTO.Info  contactInfo= contactInfoService.get(teacher.getPersonality().getContactInfoId());
+       String mobile=contactInfo.getMobile();
+       return checkMobileFormat(mobile);
+
+    }
 
     @Transactional(readOnly = true)
     @Override

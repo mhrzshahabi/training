@@ -4,11 +4,14 @@ import com.nicico.training.model.Tclass;
 import dto.exam.ClassType;
 import dto.exam.CourseStatus;
 import net.jcip.annotations.ThreadSafe;
+import org.apache.commons.lang3.StringUtils;
 import response.tclass.dto.CourseProgramDTO;
 import response.tclass.dto.WeekDays;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * This class provides static helper methods, in order to remove boilerplate code.
@@ -457,5 +460,17 @@ public class MyUtils {
             }
         }
         return null;
+    }
+
+    public static boolean checkMobileFormat(String mobileNumber) {
+        if (mobileNumber == null || mobileNumber.equals("")) {
+            return false;
+        } else {
+            mobileNumber = StringUtils.leftPad(mobileNumber, 11, "0");
+            String regexStr = "^09\\d{9}";
+            Pattern pattern = Pattern.compile(regexStr);
+            Matcher matcher = pattern.matcher(mobileNumber);
+            return matcher.find();
+        }
     }
 }

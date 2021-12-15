@@ -288,6 +288,7 @@ public class TeacherDTO {
         private Long id;
         private PersonalInfoDTO personality;
         private String grade;
+        private boolean hasPhone;
 
         public String getFullNameFa() {
             return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
