@@ -176,8 +176,12 @@
         dataSource: RestDataSource_All_FinalTest,
         selectionAppearance: "checkbox",
         selectionType: "simple",
-        sortField: "id",
+        // sortField: "id",
+        initialSort: [
+            {property: "id", direction: "descending", primarySort: true}
+        ],
         showRecordComponents: true,
+        canSort:true,
         showRecordComponentsByCell: true,
         filterOnKeypress: false,
         allowAdvancedCriteria: true,
@@ -416,6 +420,7 @@
 
                 ListGrid_AllQuestions_FinalTestJSP.dataSource=RestDataSource_All_FinalTest;
                 ListGrid_AllQuestions_FinalTestJSP.setFields([
+                    {name: "id", primaryKey: true, hidden: true},
                     {
                         name: "code",
                         title: "<spring:message code="code"/>",
