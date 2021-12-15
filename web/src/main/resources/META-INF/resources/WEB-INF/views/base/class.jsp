@@ -19,6 +19,7 @@
     var isReadOnlyClass = true;
     var societies = [];
     let termId = null;
+    let teacherForceToHasPhone = true;
     let termStart = null;
     let termEnd = null;
     let firstLoad = true;
@@ -26,7 +27,12 @@
     let OJT = false;
     let lastDate = null;
     let departmentCriteria = [];let yearCriteria = [];let mainTermCriteria = [];
-
+    //----------------------------------------------------Default Rest--------------------------------------------------
+    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "teacherForceToHasOhone", "GET", null, function (resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            teacherForceToHasPhone = JSON.parse(resp.data);
+        }
+    }));
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1134,6 +1140,20 @@
                             }
                         });
                     }
+                },
+                changed: function (form, item, value) {
+                    let selectedRecord = item.getSelectedRecord();
+                    if (selectedRecord != null && selectedRecord.hasPhone) {
+                        return;
+                    } else {
+                        if (teacherForceToHasPhone){
+                            form.clearValue("teacherId");
+                            createDialog("info", "برای این استاد شماره تلفن معتبر ثبت نشده است !");
+                            return;
+
+                        }
+                    }
+
                 }
             },
             {

@@ -2045,6 +2045,20 @@ public class TclassService implements ITclassService {
             throw new TrainingException(TrainingException.ErrorType.TclassNotFound);
     }
 
+    @Override
+    public boolean getTeacherForceToHasPhone() {
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("ClassConfig");
+        ParameterValueDTO.Info info = parameters.getResponse().getData().stream().filter(p -> p.getCode().equals("teacherForceToHasOhone")).findFirst().orElse(null);
+        if (info != null) {
+            switch (info.getValue()) {
+                case "بله":
+                    return true;
+                case "خیر":
+                    return false;
+                default:
+                    return true;
+            }
+        } else throw new TrainingException(TrainingException.ErrorType.NotFound);    }
 
 
 }

@@ -834,5 +834,10 @@ public class TclassRestController {
     public boolean getScoreDependency() {
         return tClassService.getScoreDependency();
     }
+    @Loggable
+    @GetMapping(value = "/teacherForceToHasOhone")
+    public boolean getTeacherForceToHasPhone() {
+        return tClassService.getTeacherForceToHasPhone();
+    }
 
 }
