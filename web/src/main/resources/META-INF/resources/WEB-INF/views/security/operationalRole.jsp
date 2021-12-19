@@ -79,26 +79,42 @@
     });
 
 
+    <%--let PostDS_OperationalRole = isc.TrDS.create({--%>
+    <%--    fields: [--%>
+    <%--        {name: "id", primaryKey: true, hidden: true},--%>
+    <%--        {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},--%>
+    <%--        {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "postGradeTitleFa", hidden: true, title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "assistance", hidden: true, title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "affairs", hidden: true, title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "section", hidden: true, title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "unit", hidden: true, title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "costCenterCode", hidden: true, title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "costCenterTitleFa", hidden: true, title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--        {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},--%>
+    <%--        {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},--%>
+    <%--        {name: "lastModifiedDateNA", hidden: true, title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},--%>
+    <%--        {name: "modifiedByNA", hidden: true, title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},--%>
+    <%--        {name: "enabled", hidden: true, title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}--%>
+    <%--    ],--%>
+    <%--    // fetchDataURL: viewPostUrl + "/iscList"--%>
+    <%--    // fetchDataURL: viewPostUrl + "/rolePostList"--%>
+    <%--});--%>
+
     let PostDS_OperationalRole = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
             {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "postGradeTitleFa", hidden: true, title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "assistance", hidden: true, title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "affairs", hidden: true, title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "section", hidden: true, title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "unit", hidden: true, title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterCode", hidden: true, title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "costCenterTitleFa", hidden: true, title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "lastModifiedDateNA", hidden: true, title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "modifiedByNA", hidden: true, title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
-            {name: "enabled", hidden: true, title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
+            {
+                name: "postGradeTitleFa",
+                title: "<spring:message code="post.grade.title"/>",
+                filterOperator: "iContains"
+            },
         ],
         // fetchDataURL: viewPostUrl + "/iscList"
         // fetchDataURL: viewPostUrl + "/rolePostList"
@@ -129,14 +145,16 @@
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
-                PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + 0;
+                // PostDS_OperationalRole.fetchDataURL = viewPostUrl+"/rolePostList/0";
+                PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + 0;
                 ListGrid_OperationalRole_Add();
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
                 let record = ListGrid_JspOperationalRole.getSelectedRecord();
                 selected_record = record;
-                PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
+                // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
+                PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
                 ListGrid_OperationalRole_Edit();
             }
         }, {
@@ -172,13 +190,18 @@
                 filterOperator: "iContains"
             },
             {
-                name: "description",
-                title: "<spring:message code="description"/>",
+                name: "code",
+                title: "<spring:message code="code"/>",
                 filterOperator: "iContains"
             },
             {
                 name: "operationalUnit.operationalUnit",
                 title: "<spring:message code="unitName"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "description",
+                title: "<spring:message code="description"/>",
                 filterOperator: "iContains"
             },
             {
@@ -225,7 +248,7 @@
             }
         ],
         rowDoubleClick: function (record) {
-            PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
+            PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
             selected_record = record;
             ListGrid_OperationalRole_Edit();
         },
@@ -581,14 +604,14 @@
             if (record == null || record.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
-                PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
+                PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
                 ListGrid_OperationalRole_Edit();
             }
         }
     });
     var ToolStripButton_Add_JspOperationalRole = isc.ToolStripButtonCreate.create({
         click: function () {
-            PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + 0;
+            PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + 0;
             ListGrid_OperationalRole_Add();
         }
     });
