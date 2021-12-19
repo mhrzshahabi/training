@@ -250,6 +250,7 @@ public class PersonnelDTO implements Serializable {
         private Boolean isInNA;
         private Long scoreState;
 
+        private ContactInfoDTO.Info contactInfo;
 
         @Getter(AccessLevel.NONE)
         private String fullName;

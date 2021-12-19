@@ -2817,7 +2817,6 @@
                     let data = JSON.parse(resp.data);
                     let allRowsOK = true;
                     var students = [];
-
                     function checkIfAlreadyExist(currentVal) {
                         return SelectedPersonnelsLG_student.data.some(function (item) {
                             return (item.nationalCode === currentVal.nationalCode);
@@ -2867,7 +2866,21 @@
                                     list[i].error = true;
                                     list[i].hasWarning = "warning";
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">این شخص قبلا اضافه شده است.</span>";
-                                } else {
+                                }  else if (studentForceToHasPhone && ( person.contactInfo===undefined ||  person.contactInfo==null || person.contactInfo.mobile===undefined
+                                    || person.contactInfo.mobile==null)) {
+                                    allRowsOK = false;
+                                    list[i].firstName = person.firstName;
+                                    list[i].lastName = person.lastName;
+                                    list[i].nationalCode = person.nationalCode;
+                                    list[i].personnelNo1 = person.personnelNo;
+                                    list[i].personnelNo2 = person.personnelNo2;
+                                    list[i].isInNA = person.isInNA;
+                                    list[i].scoreState = person.scoreState;
+                                    list[i].error = true;
+                                    list[i].hasWarning = "warning";
+                                    list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">اطلاعات شخص مورد نظر ناقص است. شماره تلفن برای این شخص وارد نشده است.</span>";
+                                }
+                                else {
                                     list[i].firstName = person.firstName;
                                     list[i].lastName = person.lastName;
                                     list[i].nationalCode = person.nationalCode;

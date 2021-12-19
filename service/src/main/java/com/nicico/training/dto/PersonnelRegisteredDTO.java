@@ -148,6 +148,7 @@ public class PersonnelRegisteredDTO {
         private Long postId;
         private Boolean isInNA;
         private Long scoreState;
+        private ContactInfoDTO.Info contactInfo;
 
 
         @Getter(AccessLevel.NONE)
