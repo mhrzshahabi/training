@@ -231,4 +231,8 @@ public class ViewStatisticsUnitReport implements Serializable {
     @Column(name = "evaluationanalysis_b_teacher_status")
     private Boolean evaluationTeacherStatus;
     //////////////////////////////////////////
+
+    @Column(name = "teaching_method_title")
+    private String teachingMethodTitle;
+
 }
