@@ -45,7 +45,7 @@
                 1: "عمومي", 2: "فني", 3: "مديريتي"}},
             {name: "courseDuration", title:"<spring:message code='course_theoryDuration'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "courseTheoType", title:"<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "classTeachingType", title: "<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "teachingMethodTitle", title: "<spring:message code="teaching.type"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "classReason", title: "<spring:message code="training.request"/>", filterOperator: "iContains", autoFitWidth: true, valueMap: {
                     "1": "نیازسنجی", "2": "درخواست واحد", "3": "نیاز موردی"}},
             {name: "classTargetPopulationTypeId", title: "دوره ویژه", filterOperator: "iContains", autoFitWidth: true},
@@ -315,7 +315,7 @@
             {name: "courseETechnicalType"},
             {name: "courseDuration"},
             {name: "courseTheoType"},
-            {name: "classTeachingType"},
+            {name: "teachingMethodTitle"},
             {name: "classReason"},
             {
                 name: "classTargetPopulationTypeId",

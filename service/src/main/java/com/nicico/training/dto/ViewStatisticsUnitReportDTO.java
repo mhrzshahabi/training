@@ -159,5 +159,8 @@ public class ViewStatisticsUnitReportDTO {
 
         private Boolean evaluationTeacherStatus;
         //////////////////////////////////////////
+
+        private String teachingMethodTitle;
+
     }
 }
