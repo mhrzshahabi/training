@@ -19,7 +19,8 @@
     var isReadOnlyClass = true;
     var societies = [];
     let termId = null;
-    let teacherForceToHasPhone = true;
+    var teacherForceToHasPhone = true;
+    var studentForceToHasPhone = true;
     let termStart = null;
     let termEnd = null;
     let firstLoad = true;
@@ -33,6 +34,13 @@
             teacherForceToHasPhone = JSON.parse(resp.data);
         }
     }));
+
+    isc.RPCManager.sendRequest(TrDSRequest(classUrl + "studentForceToHasPhone", "GET", null, function (resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            studentForceToHasPhone = JSON.parse(resp.data);
+        }
+    }));
+    //--------
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//

@@ -839,5 +839,10 @@ public class TclassRestController {
     public boolean getTeacherForceToHasPhone() {
         return tClassService.getTeacherForceToHasPhone();
     }
+ @Loggable
+    @GetMapping(value = "/studentForceToHasPhone")
+    public boolean getStudentForceToHasPhone() {
+        return tClassService.getStudentForceToHasPhone();
+    }
 
 }

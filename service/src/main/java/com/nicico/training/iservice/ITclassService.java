@@ -165,4 +165,6 @@ public interface ITclassService {
     ElsClassDetailResponse getClassDetail(String classCode);
 
     boolean getTeacherForceToHasPhone();
+
+    boolean getStudentForceToHasPhone();
 }

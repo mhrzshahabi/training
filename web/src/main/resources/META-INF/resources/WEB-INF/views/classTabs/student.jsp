@@ -1474,6 +1474,7 @@
                 if (typeof (current) == "undefined") {
                     return;
                 }
+                //personel
                 if (current.nationalCode == "" || current.nationalCode == null || typeof (current.nationalCode) == "undefined") {
                     isc.Dialog.create({
                         message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
@@ -1492,21 +1493,40 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        current.applicantCompanyName = current.companyName;
-                        current.presenceTypeId = studentDefaultPresenceId;
-                        current.registerTypeId = 1;
+                        //personel zaza
+                        if (studentForceToHasPhone && ( current.mobile===undefined
+                            || current.mobile==null)){
+                            isc.Dialog.create({
+                                message: "اطلاعات شخص مورد نظر با کد ملی " +current.nationalCode +"  ناقص است. شماره تلفن برای این شخص وارد نشده است.",
+                                icon: "[SKIN]stop.png",
+                                title: "<spring:message code="message"/>",
+                                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                }
 
-                        SelectedPersonnelsLG_student.addData({...current});
-                        PersonnelsLG_student.findAll({
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
-                        }).setProperty("enabled", false);
+                            });
 
-                        delete current.isClicked;
-                        current.isChecked = true;
+                            studentSelection = true;
+                            PersonnelsLG_student.deselectRecord(current)
+                            studentSelection = false;
+                        }else {
+                            current.applicantCompanyName = current.companyName;
+                            current.presenceTypeId = studentDefaultPresenceId;
+                            current.registerTypeId = 1;
 
-                        PersonnelsLG_student.redraw();
+                            SelectedPersonnelsLG_student.addData({...current});
+                            PersonnelsLG_student.findAll({
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
+                            }).setProperty("enabled", false);
+
+                            delete current.isClicked;
+                            current.isChecked = true;
+
+                            PersonnelsLG_student.redraw();
+                        }
                     }
 
                     function checkIfAlreadyExist(currentVal) {
@@ -1754,6 +1774,7 @@
                 if (typeof (current) == "undefined") {
                     return;
                 }
+                //reg
                 if (current.nationalCode == "" || current.nationalCode == null || typeof (current.nationalCode) == "undefined") {
                     isc.Dialog.create({
                         message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
@@ -1772,16 +1793,36 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        current.applicantCompanyName = current.companyName;
-                        current.presenceTypeId = studentDefaultPresenceId;
-                        current.registerTypeId = 2;
+                        //reg zaza
+                        if (studentForceToHasPhone && ( current.contactInfo===undefined ||  current.contactInfo==null || current.contactInfo.mobile===undefined
+                            || current.contactInfo.mobile==null)){
+                            isc.Dialog.create({
+                                message: "اطلاعات شخص مورد نظر با کد ملی " +current.nationalCode +"  ناقص است. شماره تلفن برای این شخص وارد نشده است.",
+                                icon: "[SKIN]stop.png",
+                                title: "<spring:message code="message"/>",
+                                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                }
 
-                        SelectedPersonnelsLG_student.data.add(Object.assign({}, current));
-                        PersonnelsRegLG_student.findAll({
-                            _constructor: "AdvancedCriteria",
-                            operator: "and",
-                            criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
-                        }).setProperty("enabled", false);
+                            });
+
+                            studentSelection = true;
+                            PersonnelsRegLG_student.deselectRecord(current);
+                            studentSelection = false;
+                        } else {
+                            current.applicantCompanyName = current.companyName;
+                            current.presenceTypeId = studentDefaultPresenceId;
+                            current.registerTypeId = 2;
+
+                            SelectedPersonnelsLG_student.data.add(Object.assign({}, current));
+                            PersonnelsRegLG_student.findAll({
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
+                            }).setProperty("enabled", false);
+                        }
+
                     }
                     delete current.isClicked;
                     current.isChecked = true;
