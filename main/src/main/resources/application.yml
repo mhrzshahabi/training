@@ -295,6 +295,12 @@ spring:
   cache:
     jcache:
       config: classpath:ehcache.xml
+  logging:
+    level:
+      org:
+        hibernate:
+          type: TRACE
+          SQL: TRACE
 nicico:
   security:
 #    sys-password: password

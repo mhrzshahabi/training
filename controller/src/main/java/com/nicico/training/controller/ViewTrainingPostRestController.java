@@ -6,10 +6,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
-import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.JobDTO;
-import com.nicico.training.dto.PostGradeDTO;
-import com.nicico.training.dto.ViewTrainingPostDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -18,10 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -81,6 +75,28 @@ public class ViewTrainingPostRestController {
         }else {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
+    }
+
+    @GetMapping(value = "/rolePostList/{roleId}")
+    public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> rolePostList(HttpServletRequest iscRq, @PathVariable Long roleId) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        List<Long> usedPostIds = iOperationalRoleService.getUsedPostIdsInRoles(roleId);
+        if (usedPostIds != null && usedPostIds.size() > 0) {
+            List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+            criteriaList.add(makeNewCriteria("id", usedPostIds, EOperator.notInSet, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, criteriaList);
+            if (searchRq.getCriteria() != null) {
+                if (searchRq.getCriteria().getCriteria() != null)
+                    searchRq.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    searchRq.getCriteria().setCriteria(criteriaList);
+            } else {
+                searchRq.setCriteria(criteriaRq);
+            }
+        }
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Info> searchRs = viewTrainingPostService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/iscListReport")
