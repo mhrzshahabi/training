@@ -616,7 +616,9 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             dataSource: RestDataSource_Questions_finalTest,
             showRecordComponents: true,
             showRecordComponentsByCell: true,
-
+            initialSort: [
+                {property: "id", direction: "ascending", primarySort: true}
+            ],
             fields: [
                  {name: "id",hidden:true},
                 {name: "question", title: 'سوال',  width: "20%"},

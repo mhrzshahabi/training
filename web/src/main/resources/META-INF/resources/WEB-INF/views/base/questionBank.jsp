@@ -482,7 +482,10 @@
         autoFetchData: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
         contextMenu: QuestionBankMenu_questionBank,
-        sortField: "id",
+        // sortField: "id",
+        initialSort: [
+            {property: "id", direction: "descending", primarySort: true}
+        ],
         filterOperator: "iContains",
         filterOnKeypress: false,
         allowAdvancedCriteria: true,
