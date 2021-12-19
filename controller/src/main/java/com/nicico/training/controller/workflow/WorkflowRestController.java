@@ -98,8 +98,10 @@ public class WorkflowRestController {
 
     @GetMapping(value = {"/allProcessInstance/list"})
     public ResponseEntity<TotalResponse<CustomProcessInstance>> getAllProcessInstanceList(final Map<String, Object> params, final HttpServletRequest httpRequest) {
-
-        return getTotalResponseInJson(httpRequest, businessWorkflowEngine.getProcessInstance());
+       List<CustomProcessInstance> processInstances=  businessWorkflowEngine.getProcessInstance();
+       if(processInstances!=null && processInstances.size()>1)
+       processInstances.sort(Comparator.comparing(CustomProcessInstance::getStartDateEn).reversed());
+        return getTotalResponseInJson(httpRequest, processInstances);
     }
 
     @GetMapping(value = "/groupTask/list")
@@ -125,6 +127,9 @@ public class WorkflowRestController {
     public ResponseEntity<TotalResponse<UserTask>> getUserTasks(HttpServletRequest request, HttpServletResponse res,
                                                                 @RequestParam(value = "usr", required = false) String usr) {
         List<UserTask> userTasksByName = businessWorkflowEngine.getUserTasks(usr);
+        if(userTasksByName!=null && userTasksByName.size()>1) {
+            userTasksByName.sort(Comparator.comparing(UserTask::getId).reversed());
+        }
         checkDescriptionTask(userTasksByName);
         Map resp = new HashMap() {{
             put("response", new HashMap() {{
