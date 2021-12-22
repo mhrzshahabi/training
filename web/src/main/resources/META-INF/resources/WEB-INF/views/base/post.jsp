@@ -734,21 +734,26 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = CoursesLG_POST.getCriteria();
 
-                    if(typeof(criteria.operator)=='undefined'){
-                        criteria._constructor="AdvancedCriteria";
-                        criteria.operator="and";
+                    debugger;
+                    let record = PostLG_post.getSelectedRecord();
+                    if (record == null)
+                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                    else {
+                        let criteria = CoursesLG_POST.getCriteria();
+                        if(typeof(criteria.operator)=='undefined'){
+                            criteria._constructor="AdvancedCriteria";
+                            criteria.operator="and";
+                        }
+                        if(typeof(criteria.criteria)=='undefined'){
+                            criteria.criteria=[];
+                        }
+                        criteria.criteria.push({fieldName: "objectId", operator: "equals", value: PostLG_post.getSelectedRecord().id});
+                        criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Post"});
+                        // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+
+                        ExportToFile.downloadExcel(null, CoursesLG_POST , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی پست انفرادی - کدپست: " + record.code + " " + "عنوان پست: " + record.titleFa, criteria, null);
                     }
-
-                    if(typeof(criteria.criteria)=='undefined'){
-                        criteria.criteria=[];
-                    }
-                    criteria.criteria.push({fieldName: "objectId", operator: "equals", value: PostLG_post.getSelectedRecord().id});
-                    criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "Post"});
-                    // criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
-
-                    ExportToFile.downloadExcel(null, CoursesLG_POST , "NeedsAssessmentReport", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]
