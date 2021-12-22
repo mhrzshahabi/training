@@ -1,8 +1,7 @@
 package com.nicico.training.controller;
 
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassSessionDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
@@ -33,24 +32,35 @@ public class LMSController {
     private final ClassSessionMapper classSessionMapper;
 
     @GetMapping("/getCourseDetails/{classCode}")
-    public ResponseEntity<TclassDTO.TClassTimeDetails> getCourseTimeDetails(@PathVariable String classCode) {
-
+    public ResponseEntity<TclassTimeDetailBaseDTO> getCourseTimeDetails(@PathVariable String classCode) {
+        TclassTimeDetailBaseDTO tclassTimeDetailBaseDTO=new TclassTimeDetailBaseDTO();
        Tclass tclass= iTclassService.getClassByCode(classCode);
         if (tclass != null) {
             TclassDTO.TClassTimeDetails tClassTimeDetails = tclassBeanMapper.toTcClassTimeDetail(tclass);
-            return ResponseEntity.ok(tClassTimeDetails);
-        } else
-            throw new TrainingException(TrainingException.ErrorType.TclassNotFound);
+            tclassTimeDetailBaseDTO.setStatus(200);
+            tclassTimeDetailBaseDTO.setData(tClassTimeDetails);
+        } else{
+            tclassTimeDetailBaseDTO.setStatus(409);
+            tclassTimeDetailBaseDTO.setData(null);
+            tclassTimeDetailBaseDTO.setMessage("کلاس موجود نیست");
+        }
+        return ResponseEntity.ok(tclassTimeDetailBaseDTO);
     }
 
     @GetMapping("/getTClassDataService/{classCode}")
-    public TclassDTO.TClassDataService  getTClassDataService(@PathVariable String classCode) {
+    public ResponseEntity<TclassDataBaseDTO>  getTClassDataService(@PathVariable String classCode) {
+        TclassDataBaseDTO tclassDataBaseDTO=new TclassDataBaseDTO();
 
         Tclass tclass = iTclassService.getClassByCode(classCode);
-        if (tclass != null)
-            return tclassBeanMapper.getTClassDataService(tclass);
-        else
-            throw new TrainingException(TrainingException.ErrorType.TclassNotFound);
+        if (tclass != null){
+            tclassDataBaseDTO.setStatus(200);
+            tclassDataBaseDTO.setData(tclassBeanMapper.getTClassDataService(tclass));
+        } else{
+            tclassDataBaseDTO.setStatus(409);
+            tclassDataBaseDTO.setData(null);
+            tclassDataBaseDTO.setMessage("کلاس موجود نیست");
+        }
+        return ResponseEntity.ok(tclassDataBaseDTO);
     }
 
     /**
@@ -62,10 +72,13 @@ public class LMSController {
      * @return
      */
     @GetMapping("/getCourseDetails")
-    public ResponseEntity<List<TclassDTO.TClassTimeDetails>> getCourseTimeDetailsViaStatusAndType(@RequestParam ClassStatusDTO classStatus, @RequestParam ClassTypeDTO classType){
+    public ResponseEntity<TclassBaseDTO> getCourseTimeDetailsViaStatusAndType(@RequestParam ClassStatusDTO classStatus, @RequestParam ClassTypeDTO classType){
         List<Tclass> classes=iTclassService.getClassesViaTypeAndStatus(classStatus,classType);
         List<TclassDTO.TClassTimeDetails> classDTOs=  tclassBeanMapper.toTclassTimeDetailList(classes);
-        return ResponseEntity.ok(classDTOs);
+        TclassBaseDTO tclassBaseDTO=new TclassBaseDTO();
+        tclassBaseDTO.setStatus(200);
+        tclassBaseDTO.setData(classDTOs);
+        return ResponseEntity.ok(tclassBaseDTO);
     }
 
 
@@ -77,14 +90,20 @@ public class LMSController {
      * @return
      */
     @GetMapping("/getTClassSessionsByDate/")
-    public ResponseEntity<List<ClassSessionDTO.TClassSessionsDetail>> getTClassSessionsByDate(@RequestParam String classCode,
+    public ResponseEntity<TclassSessionDetailBaseDTO> getTClassSessionsByDate(@RequestParam String classCode,
                                                                                               @RequestParam String sessionDate) {
+        TclassSessionDetailBaseDTO tclassSessionDetailBaseDTO=new TclassSessionDetailBaseDTO();
         Tclass tclass = iTclassService.getClassByCode(classCode);
         if (tclass != null) {
             List<ClassSession> classSessions = iClassSession.getClassSessionsByDate(tclass.getId(), sessionDate);
             List<ClassSessionDTO.TClassSessionsDetail> tClassSessionsDetails = classSessionMapper.toClassSessionDetailsList(classSessions);
-            return ResponseEntity.ok(tClassSessionsDetails);
-        } else
-            throw new TrainingException(TrainingException.ErrorType.TclassNotFound);
+            tclassSessionDetailBaseDTO.setData(tClassSessionsDetails);
+            tclassSessionDetailBaseDTO.setStatus(200);
+        } else{
+            tclassSessionDetailBaseDTO.setData(null);
+            tclassSessionDetailBaseDTO.setStatus(409);
+            tclassSessionDetailBaseDTO.setMessage("کلاس موجود نیست");
+        }
+        return ResponseEntity.ok(tclassSessionDetailBaseDTO);
     }
 }
