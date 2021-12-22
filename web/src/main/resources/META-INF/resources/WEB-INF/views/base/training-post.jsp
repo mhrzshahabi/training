@@ -4,7 +4,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -1538,21 +1537,26 @@
         members: [
             isc.ToolStripButtonExcel.create({
                 click: function () {
-                    let criteria = CourseLG_TrainingPost_Jsp.getCriteria();
 
-                    if(typeof(criteria.operator)=='undefined'){
-                        criteria._constructor="AdvancedCriteria";
-                        criteria.operator="and";
+                    debugger;
+                    let record = ListGrid_TrainingPost_Jsp.getSelectedRecord();
+                    if (record == null)
+                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                    else {
+                        let criteria = CourseLG_TrainingPost_Jsp.getCriteria();
+                        if(typeof(criteria.operator)=='undefined'){
+                            criteria._constructor="AdvancedCriteria";
+                            criteria.operator="and";
+                        }
+                        if(typeof(criteria.criteria)=='undefined'){
+                            criteria.criteria=[];
+                        }
+                        criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_TrainingPost_Jsp.getSelectedRecord().id});
+                        criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGroup"});
+                        criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
+
+                        ExportToFile.downloadExcel(null, CourseLG_TrainingPost_Jsp , "NeedsAssessment", 0, null, '',"لیست نیازسنجی پست - کدپست: " + record.code + " " + "عنوان پست: " + record.titleFa, criteria, null);
                     }
-
-                    if(typeof(criteria.criteria)=='undefined'){
-                        criteria.criteria=[];
-                    }
-                    criteria.criteria.push({fieldName: "objectId", operator: "equals", value: ListGrid_TrainingPost_Jsp.getSelectedRecord().id});
-                    criteria.criteria.push({fieldName: "objectType", operator: "equals", value: "PostGroup"});
-                    criteria.criteria.push({fieldName: "personnelNo", operator: "equals", value: null});
-
-                    ExportToFile.downloadExcel(null, CourseLG_TrainingPost_Jsp , "NeedsAssessment", 0, null, '',"لیست نیازسنجی - آموزش"  , criteria, null);
                 }
             })
         ]
