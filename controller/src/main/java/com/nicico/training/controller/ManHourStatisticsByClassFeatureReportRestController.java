@@ -31,15 +31,14 @@ public class ManHourStatisticsByClassFeatureReportRestController {
     public ResponseEntity<ReportResponse> list(@RequestParam String fromDate,
                                                @RequestParam String toDate,
                                                @RequestParam ReportFor reportFor,
-                                               @RequestParam Long depId,
+                                               @RequestParam(required = false) Long depId,
                                                @RequestParam List<GroupBy> groupBys) {
 
         Map<GroupBy, List<ClassFeatures>> allData = new HashMap<>();
 
-        for (int i = 0; i < groupBys.size(); i++) {
-            List<ClassFeatures> list = new ArrayList<>();
-            service.getReportForMultipleDepartment(fromDate, toDate, reportFor ,depId, groupBys.get(i)).forEach(dto -> list.add(dto));
-            allData.put(groupBys.get(i), list);
+        for (GroupBy groupBy : groupBys) {
+            List<ClassFeatures> list = new ArrayList<>(service.getReportForMultipleDepartment(fromDate, toDate, reportFor, depId, groupBy));
+            allData.put(groupBy, list);
         }
         SpecRs specRs = new SpecRs()
                 .setAllData(allData);
