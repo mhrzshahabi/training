@@ -599,12 +599,12 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         }
     function setDescriptiveResultValue(value, form) {
 
-         let index = allResultScores.findIndex(f => f.cellNumber === form.values.cellNumber)
+         let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
             allResultScores[index].descriptiveResult = value;
 
         }
     function setFinalResultValue(value, form) {
-   let index = allResultScores.findIndex(f => f.cellNumber === form.values.cellNumber)
+   let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
             allResultScores[index].finalResult = value;
         }
     function loadExamForScores(record) {

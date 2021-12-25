@@ -18,7 +18,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.lang.reflect.Method;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,12 +73,12 @@ public class ContactInfoService implements IContactInfoService {
                 personnelDAO.saveAndFlush(personnel);
                 break;
             case "RegisteredPersonnel":
-                PersonnelRegistered personnelRegistered = personnelRegisteredDAO.getOne(id);
+                PersonnelRegistered personnelRegistered = personnelRegisteredDAO.getById(id);
                 personnelRegistered.setContactInfo(contactInfo);
                 personnelRegisteredDAO.saveAndFlush(personnelRegistered);
                 break;
             case "Student":
-                Student student = studentDAO.getOne(id);
+                Student student = studentDAO.getById(id);
                 student.setContactInfo(contactInfo);
                 studentDAO.saveAndFlush(student);
                 break;
@@ -137,10 +136,65 @@ public class ContactInfoService implements IContactInfoService {
         modelMapper.map(request, cUpdating);
 
         try {
-            return modelMapper.map(contactInfoDAO.saveAndFlush(cUpdating), ContactInfoDTO.Info.class);
+            ContactInfo contactInfo1=contactInfoDAO.saveAndFlush(cUpdating);
+            boolean savedToAllRepos= updateAllRepositoriesWithThisContactInfo(record,contactInfo1);
+            if (savedToAllRepos)
+            return modelMapper.map(contactInfo1, ContactInfoDTO.Info.class);
+            else{
+                msg = messageSource.getMessage("msg.mobile.not.saved.in.all.repositories", null, locale);
+                throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, msg, msg);
+
+            }
+
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
+    }
+
+    @Override
+    public boolean updateAllRepositoriesWithThisContactInfo(Object record, ContactInfo contactInfo1) {
+        String recordNc = "";
+            if (record instanceof Student) {
+                recordNc = ((Student) record).getNationalCode();
+            } else if (record instanceof Personnel) {
+                recordNc = ((Personnel) record).getNationalCode();
+            } else if (record instanceof PersonnelRegistered) {
+                recordNc = ((PersonnelRegistered) record).getNationalCode();
+            }
+
+//
+        //        update all student
+        List<Student> studentList = studentDAO.findByNationalCode(recordNc);
+            if (!studentList.isEmpty()){
+                for (Student student:studentList){
+                    student.setContactInfo(contactInfo1);
+                    student.setContactInfoId(contactInfo1.getId());
+                    studentDAO.saveAndFlush(student);
+                }
+            }
+
+//      update all    personnelRegistered
+        List<PersonnelRegistered> personnelRegisteredList = personnelRegisteredDAO.findAllByNationalCodeOrderByIdDesc(recordNc);
+        if (!personnelRegisteredList.isEmpty()){
+            for (PersonnelRegistered personnelRegistered:personnelRegisteredList){
+                personnelRegistered.setContactInfo(contactInfo1);
+                personnelRegistered.setContactInfoId(contactInfo1.getId());
+                personnelRegisteredDAO.saveAndFlush(personnelRegistered);
+            }
+        }
+
+
+
+//           update all     personnel
+        List<Personnel> personnelList = personnelDAO.findAllByNationalCodeOrderByIdDesc(recordNc);
+        if (!personnelList.isEmpty()){
+            for (Personnel personnel:personnelList){
+                personnel.setContactInfo(contactInfo1);
+                personnel.setContactInfoId(contactInfo1.getId());
+                personnelDAO.saveAndFlush(personnel);
+            }
+        }
+        return true;
     }
 
     @Transactional

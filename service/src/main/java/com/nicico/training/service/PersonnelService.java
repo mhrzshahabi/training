@@ -396,7 +396,7 @@ public class PersonnelService implements IPersonnelService {
                 result.setPostAssignmentDate(DateUtil.convertMiToKh(formatter.format(personnel.getPostAssignmentDate())));
             }
 
-        } else if (personnelRegistereds != null) {
+        } else if (personnelRegistered != null) {
             result = modelMapper.map(personnelRegistered, PersonnelDTO.DetailInfo.class);
         } else if (synonymPersonnel != null) {
 

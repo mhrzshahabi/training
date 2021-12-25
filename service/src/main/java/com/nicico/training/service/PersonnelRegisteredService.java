@@ -9,6 +9,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
+import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonnelRegistered;
@@ -35,6 +36,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     private final ModelMapper modelMapper;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
     private final ContactInfoDAO contactInfoDAO;
+    private final IContactInfoService contactInfoService;
 
     //Unused
     @Transactional(readOnly = true)
@@ -67,11 +69,11 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     @Override
     public void createList(List<PersonnelRegistered> requests) {
         for (PersonnelRegistered personnelRegistered : requests) {
-            List<PersonnelRegistered> personnelRegistereds=personnelRegisteredDAO.findAllByMobile(personnelRegistered.getContactInfo().getMobile());
-            if (personnelRegistereds.isEmpty()){
+            List<PersonnelRegistered> personnelRegistereds = personnelRegisteredDAO.findAllByMobile(personnelRegistered.getContactInfo().getMobile());
+            if (personnelRegistereds.isEmpty()) {
                 ContactInfo contactInfo = contactInfoDAO.save(modelMapper.map(personnelRegistered.getContactInfo(), ContactInfo.class));
                 personnelRegistered.setContactInfo(contactInfo);
-            }else {
+            } else {
                 personnelRegistered.setContactInfo(null);
             }
             personnelRegistered.setActive(1);
@@ -102,7 +104,12 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         }
 
         //zaza update phone
-        return save(updating);
+        boolean savedToAllRepos = contactInfoService.updateAllRepositoriesWithThisContactInfo(personnelRegistered, updating.getContactInfo());
+        if (savedToAllRepos)
+            return save(updating);
+        else
+        throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, null, null);
+
     }
 
     @Transactional
@@ -247,19 +254,19 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
 
     @Override
     public List<Map<String, Object>> findByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber) {
-        return personnelRegisteredDAO.findAllByNationalCodeAndMobileNumber(mobileNumber,nationalCode);
+        return personnelRegisteredDAO.findAllByNationalCodeAndMobileNumber(mobileNumber, nationalCode);
     }
 
     @Override
     public Map<String, String> getReapeatlyPhones() {
-        List<Object> list= personnelRegisteredDAO.getReapeatlyPhones();
-        Map<String, String> map=new HashMap<>();
-            if (list.size() > 0) {
-                for (Object o : list) {
-                    Object[] arr = (Object[]) o;
-                    map.put((arr[0] == null ? "" : arr[0].toString()),arr[1].toString());
-                }
+        List<Object> list = personnelRegisteredDAO.getReapeatlyPhones();
+        Map<String, String> map = new HashMap<>();
+        if (list.size() > 0) {
+            for (Object o : list) {
+                Object[] arr = (Object[]) o;
+                map.put((arr[0] == null ? "" : arr[0].toString()), arr[1].toString());
             }
+        }
 
         return map;
     }

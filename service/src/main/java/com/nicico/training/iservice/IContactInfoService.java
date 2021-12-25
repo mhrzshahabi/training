@@ -33,6 +33,7 @@ public interface IContactInfoService {
     Map<String, Object> nationalCodeOfMobile(String mobile);
 
     Object getCorrespondingRecordOfContactInfo(Long id, Long parentId);
+    boolean  updateAllRepositoriesWithThisContactInfo(Object record, ContactInfo contactInfo1);
 
     //Boolean has
 }
