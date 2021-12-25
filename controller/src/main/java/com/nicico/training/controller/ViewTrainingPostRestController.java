@@ -48,7 +48,6 @@ public class ViewTrainingPostRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
-    //tavasoli it should be changed to load training posts
     @GetMapping(value = "/rolePostIscList")
     public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> rolePostIscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
@@ -81,22 +80,38 @@ public class ViewTrainingPostRestController {
     public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> rolePostList(HttpServletRequest iscRq, @PathVariable Long roleId) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
-        List<Long> usedPostIds = iOperationalRoleService.getUsedPostIdsInRoles(roleId);
-        if (usedPostIds != null && usedPostIds.size() > 0) {
-            List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
-            criteriaList.add(makeNewCriteria("id", usedPostIds, EOperator.notInSet, null));
-            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, criteriaList);
-            if (searchRq.getCriteria() != null) {
-                if (searchRq.getCriteria().getCriteria() != null)
-                    searchRq.getCriteria().getCriteria().add(criteriaRq);
-                else
-                    searchRq.getCriteria().setCriteria(criteriaList);
-            } else {
-                searchRq.setCriteria(criteriaRq);
-            }
-        }
+//        List<Long> usedPostIds = iOperationalRoleService.getUsedPostIdsInRoles(roleId);
+//        if (usedPostIds != null && usedPostIds.size() > 0) {
+//            List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
+//            criteriaList.add(makeNewCriteria("id", usedPostIds, EOperator.notInSet, null));
+//            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, criteriaList);
+//            if (searchRq.getCriteria() != null) {
+//                if (searchRq.getCriteria().getCriteria() != null)
+//                    searchRq.getCriteria().getCriteria().add(criteriaRq);
+//                else
+//                    searchRq.getCriteria().setCriteria(criteriaList);
+//            } else {
+//                searchRq.setCriteria(criteriaRq);
+//            }
+//        }
         SearchDTO.SearchRs<ViewTrainingPostDTO.Info> searchRs = viewTrainingPostService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/roleUsedPostList/{roleId}")
+    public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> roleUsedPostList(HttpServletRequest iscRq, @PathVariable Long roleId) throws IOException {
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Info> response;
+        response = iOperationalRoleService.getRoleUsedPostList(roleId);
+
+        final ViewTrainingPostDTO.SpecRs specResponse = new ViewTrainingPostDTO.SpecRs();
+        final ViewTrainingPostDTO.PostSpecRs specRs = new ViewTrainingPostDTO.PostSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(0)
+                .setEndRow(response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     @GetMapping(value = "/iscListReport")

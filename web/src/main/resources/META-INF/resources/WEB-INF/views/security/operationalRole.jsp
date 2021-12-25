@@ -120,6 +120,36 @@
         // fetchDataURL: viewPostUrl + "/rolePostList"
     });
 
+    let PostDS_just_Show_OperationalRole = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
+        ],
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            return this.Super("transformRequest", arguments);
+        },
+        // fetchDataURL: viewTrainingPostUrl + "/iscList"
+    });
+
     var RestDataSource_Categories_OperationalRole = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -155,7 +185,7 @@
                 selected_record = record;
                 // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
                 PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
-                ListGrid_OperationalRole_Edit();
+                ListGrid_OperationalRole_Edit(selected_record);
             }
         }, {
             title: "<spring:message code='remove'/>", click: function () {
@@ -250,12 +280,23 @@
         rowDoubleClick: function (record) {
             PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
             selected_record = record;
-            ListGrid_OperationalRole_Edit();
+            ListGrid_OperationalRole_Edit(selected_record);
         },
         filterEditorSubmit: function () {
             ListGrid_JspOperationalRole.invalidateCache();
         }
     });
+
+
+    var ListGrid_Post_OperationalRole = isc.TrLG.create({
+        // selectionType: "single",
+        dataSource: PostDS_just_Show_OperationalRole,
+        // autoFetchData: true,
+        // rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
+    });
+
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*DynamicForm */
@@ -308,7 +349,7 @@
             },
             {
                 name: "categories",
-                title: "<spring:message code='education.categories'/>",
+                title: "<spring:message code='educational.category'/>",
                 // editorType: "MultiComboBoxItem",
                 length: 255,
                 type: "SelectItem",
@@ -355,7 +396,7 @@
             },
             {
                 name: "subCategories",
-                title: "<spring:message code='sub.education.categories'/>",
+                title: "<spring:message code='educational.sub.category'/>",
                 // editorType: "MultiComboBoxItem",
                 length: 255,
                 type: "SelectItem",
@@ -397,7 +438,8 @@
             },
             {
                 name: "postIds",
-                type: "MultiComboBoxItem",
+                hidden: true,
+                // type: "MultiComboBoxItem",
                 title: "<spring:message code="post"/>",
                 optionDataSource: PostDS_OperationalRole,
                 valueField: "id",
@@ -526,6 +568,36 @@
                 OperationalRole_save_result));
         }
     });
+    var IButton_Show_Selected_Posts_JspOperationalRole = isc.ToolStripButton.create({
+        title: "لیست پست های انتخاب شده",
+        top: 260,
+        click: function () {
+            ListGrid_Post_OperationalRole.invalidateCache();
+            // PostDS_just_Show_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleUsedPostList/" + DynamicForm_JspOperationalRole.getField("id").getValue();
+            // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + 0;
+
+            ListGrid_Post_OperationalRole.fetchData();
+            Window_show_Operational_Role_Post.show();
+        }
+    });
+
+    var Window_show_Operational_Role_Post = isc.Window.create({
+        title: "لیست پست های انفرادی",
+        align: "center",
+        placement: "fillScreen",
+        border: "1px solid gray",
+        minWidth: 1024,
+        closeClick: function () {
+            // ListGrid_Post_OperationalRole.invalidateCache();
+            this.hide();
+        },
+        items: [isc.TrVLayout.create({
+            members: [
+                ListGrid_Post_OperationalRole
+            ]
+        })]
+    });
+
 
     var IButton_Cancel_JspOperationalRole = isc.IButtonCancel.create({
         click: function () {
@@ -539,7 +611,7 @@
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_Save_JspOperationalRole, IButton_Cancel_JspOperationalRole]
+        members: [IButton_Save_JspOperationalRole, IButton_Cancel_JspOperationalRole, IButton_Show_Selected_Posts_JspOperationalRole]
     });
 
     var Window_JspOperationalRole = isc.Window.create({
@@ -605,7 +677,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
                 PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
-                ListGrid_OperationalRole_Edit();
+                ListGrid_OperationalRole_Edit(selected_record);
             }
         }
     });
@@ -654,17 +726,22 @@
 
     function ListGrid_OperationalRole_Add() {
         methodOperationalRole = "POST";
+        // IButton_Show_Selected_Posts_JspOperationalRole.disable();
+        IButton_Show_Selected_Posts_JspOperationalRole.hide();
+        // ListGrid_Post_OperationalRole.invalidateCache();
         // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/";
         saveActionUrlOperationalRole = operationalRoleUrl;
         DynamicForm_JspOperationalRole.clearValues();
         Window_JspOperationalRole.show();
     }
 
-    function ListGrid_OperationalRole_Edit() {
-        let record = ListGrid_JspOperationalRole.getSelectedRecord();
+    function ListGrid_OperationalRole_Edit(record) {
+        // ListGrid_Post_OperationalRole.invalidateCache();
+        IButton_Show_Selected_Posts_JspOperationalRole.show();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            PostDS_just_Show_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleUsedPostList/" + record.id;
             methodOperationalRole = "PUT";
             // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/iscList";
             saveActionUrlOperationalRole = operationalRoleUrl + "/" + record.id;

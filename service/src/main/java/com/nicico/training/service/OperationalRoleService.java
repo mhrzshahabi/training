@@ -6,13 +6,12 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AccountInfoDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.mapper.operationalRole.OperationalRoleBeanMapper;
+import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.ComplexDAO;
-import com.nicico.training.repository.OperationalRoleDAO;
-import com.nicico.training.repository.OperationalUnitDAO;
-import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -21,10 +20,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -32,9 +28,11 @@ import java.util.Set;
 public class OperationalRoleService implements IOperationalRoleService {
 
     private final OperationalRoleDAO operationalRoleDAO;
+    private final ViewTrainingPostDAO viewTrainingPostDAO;
     private final OperationalUnitDAO operationalUnitDAO;
     private final ComplexDAO complexDAO;
     private final ModelMapper modelMapper;
+    private final ViewTrainingPostMapper viewTrainingPostMapper;
 
     @Transactional
     @Override
@@ -127,4 +125,13 @@ public class OperationalRoleService implements IOperationalRoleService {
         return searchRs;
     }
 
+    @Override
+    public SearchDTO.SearchRs<ViewTrainingPostDTO.Info> getRoleUsedPostList(Long roleId) {
+        List<ViewTrainingPost> viewTrainingPosts = viewTrainingPostDAO.getRoleUsedPostList(roleId);
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Info> rs = new SearchDTO.SearchRs<>();
+        List<ViewTrainingPostDTO.Info> dtoList = new ArrayList<>();
+        rs.setTotalCount((long) viewTrainingPosts.size());
+        rs.setList(viewTrainingPostMapper.changeToViewTrainingPostDtoInfo(viewTrainingPosts, dtoList));
+        return rs;
+    }
 }

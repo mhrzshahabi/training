@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
+import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.model.OperationalRole;
 
 import java.util.List;
@@ -27,4 +28,6 @@ public interface IOperationalRoleService {
     String getWorkGroup(Long postId);
 
     SearchDTO.SearchRs<OperationalRoleDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException;
+
+    SearchDTO.SearchRs<ViewTrainingPostDTO.Info> getRoleUsedPostList(Long roleId);
 }
