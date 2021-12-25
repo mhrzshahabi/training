@@ -20,12 +20,13 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.event.EventDto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.nicico.training.utility.persianDate.PersianDate.convertToTimeZone;
+import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Service
 @RequiredArgsConstructor
@@ -247,5 +248,19 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     @Override
     public List<Map<String, Object>> findByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber) {
         return personnelRegisteredDAO.findAllByNationalCodeAndMobileNumber(mobileNumber,nationalCode);
+    }
+
+    @Override
+    public Map<String, String> getReapeatlyPhones() {
+        List<Object> list= personnelRegisteredDAO.getReapeatlyPhones();
+        Map<String, String> map=new HashMap<>();
+            if (list.size() > 0) {
+                for (Object o : list) {
+                    Object[] arr = (Object[]) o;
+                    map.put((arr[0] == null ? "" : arr[0].toString()),arr[1].toString());
+                }
+            }
+
+        return map;
     }
 }

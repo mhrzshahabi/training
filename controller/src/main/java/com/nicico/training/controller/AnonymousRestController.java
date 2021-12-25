@@ -29,6 +29,11 @@ public class AnonymousRestController {
         needsAssessmentTempService.removeUnCompleteNa(code);
     }
 
+    @GetMapping("/get-reapeatly")
+    public Map<String,String> getReapeatlyPhones() {
+       return personnelRegisteredService.getReapeatlyPhones();
+    }
+
 
 //    @Loggable
 //    @PutMapping(value = "/edit-parameter-value/{id}")

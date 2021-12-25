@@ -50,6 +50,16 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
             "left join TBL_CONTACT_INFO contact on contact.ID = registered.F_CONTACT_INFO "+
             "WHERE contact.C_MOBILE like :mobile AND registered.NATIONAL_CODE = :nationalCode",nativeQuery = true)
     List<Map<String,Object>> findAllByNationalCodeAndMobileNumber(@Param("mobile") String mobileNumber, @Param("nationalCode") String nationalCode);
+
+    @Query(value = "\n" +
+            "SELECT\n" +
+            "    f_contact_info,COUNT(*)\n" +
+            "FROM tbl_personnel_registered\n" +
+            "GROUP BY\n" +
+            "    f_contact_info\n" +
+            "    HAVING \n" +
+            "    COUNT(*) > 1" , nativeQuery = true)
+    List<Object> getReapeatlyPhones();
 }
 
 
