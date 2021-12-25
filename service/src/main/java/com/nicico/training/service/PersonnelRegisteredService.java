@@ -100,6 +100,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
             updating.setDeleted(null);
         }
 
+        //zaza update phone
         return save(updating);
     }
 
