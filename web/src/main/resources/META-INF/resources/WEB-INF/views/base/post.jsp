@@ -735,7 +735,6 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
 
-                    debugger;
                     let record = PostLG_post.getSelectedRecord();
                     if (record == null)
                         createDialog("info", "<spring:message code='msg.no.records.selected'/>");

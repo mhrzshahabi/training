@@ -1538,7 +1538,6 @@
             isc.ToolStripButtonExcel.create({
                 click: function () {
 
-                    debugger;
                     let record = ListGrid_TrainingPost_Jsp.getSelectedRecord();
                     if (record == null)
                         createDialog("info", "<spring:message code='msg.no.records.selected'/>");
