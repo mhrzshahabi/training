@@ -318,6 +318,7 @@
                         }
                         var data = editMobileForm.getValues();
                         delete data.emobileForSMS;
+                        delete data.emobileForCN;
                         wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(rootUrl.concat("/contactInfo/").concat(data.id), "PUT", JSON.stringify(data), (r) => {
                             if (r.httpResponseCode == 406) {

@@ -1270,6 +1270,7 @@
         align: "center",
         icon: "[SKIN]/actions/cancel.png",
         click: function () {
+            ListGrid_personnelReg_refresh();
             Window_PersonnelReg_JspPersonnelReg.close();
         }
     });
@@ -1373,6 +1374,7 @@
         dismissOnEscape: false,
         border: "1px solid gray",
         closeClick: function () {
+            ListGrid_personnelReg_refresh();
             this.Super("closeClick", arguments);
         },
         items: [isc.VLayout.create({
