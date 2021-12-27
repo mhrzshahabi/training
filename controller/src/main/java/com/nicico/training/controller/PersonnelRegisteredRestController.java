@@ -98,7 +98,6 @@ public class PersonnelRegisteredRestController {
     public ResponseEntity<PersonnelRegisteredDTO.Info> update(@PathVariable Long id, @Validated @RequestBody PersonnelRegisteredDTO.Update request) {
         return new ResponseEntity<>(personnelRegisteredService.update(id, request), HttpStatus.OK);
     }
-
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_personnelRegistered')")
