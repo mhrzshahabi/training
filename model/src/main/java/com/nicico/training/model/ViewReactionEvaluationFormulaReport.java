@@ -75,4 +75,8 @@ public class ViewReactionEvaluationFormulaReport implements Serializable {
     private String training_grade_to_teacher;
     @Column(name = "total_std")
     private String total_std;
+    @Column(name = "javab_dade")
+    private String javab_dade;
+    @Column(name = "miangin_javab_dade")
+    private String miangin_javab_dade;
 }

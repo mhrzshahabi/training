@@ -229,11 +229,11 @@ public class ExportController {
         FileInputStream in = null;
         try {
 
-            String[] headers = new String[23];
-            String[] columns = new String[23];
+            String[] headers = new String[25];
+            String[] columns = new String[25];
 
 
-            for (int z = 0; z < 23; z++) {
+            for (int z = 0; z < 25; z++) {
 
                 switch (z) {
                     case 0: {
@@ -350,6 +350,16 @@ public class ExportController {
                     case 22: {
                         headers[z] = "ارزیابی نهایی استاد در کلاس";
                         columns[z] = "final_teacher";
+                        break;
+                    }
+                    case 23: {
+                        headers[z] = "تعداد دانشجویان جواب داده به ارزیابی این کلاس";
+                        columns[z] = "tedadJavabDade";
+                        break;
+                    }
+                    case 24: {
+                        headers[z] = "درصد مشارکت فراگیران";
+                        columns[z] = "mianginJavabDadeHa";
                         break;
                     }
                 }
@@ -473,6 +483,12 @@ public class ExportController {
                             break;
                         } case "final_teacher": {
                             row.createCell(i).setCellValue(map.getFinal_teacher());
+                            break;
+                         } case "tedadJavabDade": {
+                            row.createCell(i).setCellValue(map.getJavab_dade());
+                            break;
+                        }  case "mianginJavabDadeHa": {
+                            row.createCell(i).setCellValue(map.getMiangin_javab_dade());
                             break;
                         }
                     }
@@ -638,7 +654,7 @@ public class ExportController {
             String[] columns = new String[17];
 
 
-            for (int z = 0; z < 23; z++) {
+            for (int z = 0; z < 25; z++) {
 
                 switch (z) {
 
