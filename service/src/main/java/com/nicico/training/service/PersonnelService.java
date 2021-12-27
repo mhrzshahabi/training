@@ -369,8 +369,8 @@ public class PersonnelService implements IPersonnelService {
                 if (optionalPost.isPresent())
                     synonymPersonnel.setPost(optionalPost.get());
             }
-            if (synonymPersonnel.getDepartmentId() != null) {
-                Optional<Department> optionalDepartment = departmentDAO.findFirstById(synonymPersonnel.getDepartmentId());
+            if (synonymPersonnel.getDepartmentCode() != null) {
+                Optional<Department> optionalDepartment = departmentDAO.getByCode(synonymPersonnel.getDepartmentCode());
                 if (optionalDepartment.isPresent())
                     synonymPersonnel.setDepartment(optionalDepartment.get());
             }
