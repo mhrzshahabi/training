@@ -671,7 +671,7 @@
                 filterOnKeypress: true,
                 hidden: true
             },
-            {name: "sendClassToOnlineBtn", canFilter: false, title: "ارسال به آزمون آنلاین", width: "145"},
+            {name: "sendClassToOnlineBtn", canFilter: false, title: "ارسال به آزمون آنلاین", width: "145",hidden: true},
             {name: "targetPopulationTypeId", hidden: true},
             {name: "holdingClassTypeId", hidden: true},
             {name: "teachingMethodId", hidden: true},
