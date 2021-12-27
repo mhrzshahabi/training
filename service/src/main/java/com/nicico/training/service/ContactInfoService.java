@@ -152,6 +152,7 @@ public class ContactInfoService implements IContactInfoService {
     }
 
     @Override
+    @Transactional
     public boolean updateAllRepositoriesWithThisContactInfo(Object record, ContactInfo contactInfo1) {
         String recordNc = "";
             if (record instanceof Student) {
