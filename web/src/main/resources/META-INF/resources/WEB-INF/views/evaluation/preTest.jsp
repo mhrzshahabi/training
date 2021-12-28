@@ -261,7 +261,11 @@
         dataSource: RestDataSource_All_PreTest,
         selectionAppearance: "checkbox",
         selectionType: "simple",
-        sortField: "id",
+        // sortField: "id",
+        canSort:true,
+        initialSort: [
+            {property: "id", direction: "descending", primarySort: true}
+        ],
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         gridComponents: [Lable_AllQuestions_PreTest, "filterEditor", "header", "body"],
@@ -523,6 +527,7 @@
 
                 ListGrid_AllQuestions_PreTestJSP.dataSource=RestDataSource_All_PreTest;
                 ListGrid_AllQuestions_PreTestJSP.setFields([
+                    {name: "id", primaryKey: true, hidden: true},
                     {
                         name: "code",
                         title: "<spring:message code="code"/>",
@@ -719,6 +724,7 @@
                 ListGrid_AllQuestions_PreTestJSP.dataSource=RestDataSource_All_PreTest;
 
                 ListGrid_AllQuestions_PreTestJSP.setFields([
+                    {name: "id", primaryKey: true, hidden: true},
                     {
                         name: "questionBank.code",
                         title: "<spring:message code="code"/>",
