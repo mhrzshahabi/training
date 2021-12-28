@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
 
 
 @Repository
@@ -13,5 +14,8 @@ public interface SynonymPersonnelDAO extends JpaRepository<SynonymPersonnel, Lon
 
     @Query(value = "select * from view_synonym_personnel where national_code = :nationalCode AND  deleted = 0" , nativeQuery = true)
     SynonymPersonnel findSynonymPersonnelDataByNationalCode(String nationalCode);
+
+
+    Optional<SynonymPersonnel> findByPersonnelNoAndDeleted(String nationalCode, Integer deleted);
 
 }

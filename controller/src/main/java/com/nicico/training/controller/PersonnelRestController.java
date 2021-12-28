@@ -79,6 +79,13 @@ public class PersonnelRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/Synonym/byPersonnelCode/{personnelCode}")
+    public ResponseEntity<ViewActivePersonnelDTO.PersonalityInfo> findSynonymPersonnelByPersonnelCode(@PathVariable String personnelCode) {
+        ViewActivePersonnelDTO.PersonalityInfo personalInfoDTO = synonymPersonnelService.getByPersonnelCode(personnelCode);
+        return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping(value = "/checkPersonnelNos/{courseId}")
     public ResponseEntity<List<PersonnelDTO.InfoForStudent>> checkPersonnelNos(@PathVariable Long courseId, @RequestBody List<String> personnelNos) {
         List<PersonnelDTO.InfoForStudent> list = personnelService.checkPersonnelNos(personnelNos, courseId);

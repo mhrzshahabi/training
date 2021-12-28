@@ -53,7 +53,10 @@
                 }
             }
         ],
-        fetchDataURL: viewActivePersonnelUrl + "/iscList"
+        //add synonym for choose teachers
+        // fetchDataURL: viewActivePersonnelUrl + "/iscList"
+        fetchDataURL: synonymPersonnel + "/iscList"
+
     });
 
     //----------------------------------------------------Variables-----------------------------------------------------
@@ -172,7 +175,8 @@
 
             {
                 name: "personnelCode",
-                title: "<spring:message code='personnel.no'/>",
+                // title: "شماره پرسنلی",
+                title: "شماره پرسنلی(کل سازمان)",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 width: "*",

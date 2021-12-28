@@ -1535,7 +1535,9 @@
         }));
     }
     function fillPersonalInfoByPersonnelNumber(personnelCode) {
-        isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
+        //add synonym for choose teachers
+        // isc.RPCManager.sendRequest(TrDSRequest(viewActivePersonnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
+        isc.RPCManager.sendRequest(TrDSRequest(synonymPersonnel + "/byPersonnelCode/" + personnelCode, "GET", null,
             "callback: personnel_findOne_result(rpcResponse)"));
     }
     function fillWorkAddressFields(postalCode) {
