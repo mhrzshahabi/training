@@ -122,7 +122,7 @@ public class AddressService implements IAddressService {
 
     @Override
     public Address getAddress(Long id) {
-        return addressDAO.getOne(id);
+        return addressDAO.getById(id);
     }
 
     @Transactional(readOnly = true)

@@ -45,7 +45,7 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
         ParameterValue parameterValue;
         final List<ParameterValue> parameterValues = new ArrayList<>();
         for (ParameterValueDTO.ConfigUpdate config : rq) {
-            parameterValue = dao.getOne(config.getId());
+            parameterValue = dao.getById(config.getId());
             modelMapper.map(config, parameterValue);
             parameterValues.add(parameterValue);
         }

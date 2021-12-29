@@ -375,7 +375,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public List<GoalDTO.Info> getGoalWithOut(Long courseId) {
-        Course one = courseDAO.getOne(courseId);
+        Course one = courseDAO.getById(courseId);
         List<Goal> goalSet = one.getGoalSet();
         List<Goal> all = goalDAO.findAll();
         all.removeAll(goalSet);
@@ -391,7 +391,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public void getCourseIdvGoalsId(Long courseId, List<Long> goalIdList) {
-        Course one = courseDAO.getOne(courseId);
+        Course one = courseDAO.getById(courseId);
         List<Goal> goalSet = one.getGoalSet();
         for (Long aLong : goalIdList) {
             if(goalSet.stream().map(Goal::getId).anyMatch(a->a.equals(aLong)))
@@ -411,7 +411,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public void removeCourseSGoal(Long courseId, List<Long> goalIdList) {
-        Course one = courseDAO.getOne(courseId);
+        Course one = courseDAO.getById(courseId);
         List<Goal> goalSet = one.getGoalSet();
         for (Long aLong : goalIdList) {
             final Optional<Goal> ById = goalDAO.findById(aLong);
@@ -426,7 +426,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public List<SkillDTO.Info> getSkill(Long courseId) {
-        Course one = courseDAO.getOne(courseId);
+        Course one = courseDAO.getById(courseId);
         Set<Skill> skillSet = one.getSkillSet();
         List<SkillDTO.Info> skillInfo = new ArrayList<>();
         Optional.ofNullable(skillSet)
@@ -440,7 +440,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public List<SkillDTO.Info> getMainObjective(Long courseId) {
-        Course one = courseDAO.getOne(courseId);
+        Course one = courseDAO.getById(courseId);
         Set<Skill> skillSet = one.getSkillMainObjectiveSet();
         List<SkillDTO.Info> skillInfo = new ArrayList<>();
         Optional.ofNullable(skillSet)
@@ -455,7 +455,7 @@ public class CourseService implements ICourseService {
     @Override
     public List<JobDTO.Info> getJob(Long courseId) {
         Set<Job> jobSet = new HashSet<>();
-        Course one = courseDAO.getOne(courseId);
+        Course one = courseDAO.getById(courseId);
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
             List<NeedsAssessment> needAssessments = skill.getNeedsAssessments();
@@ -475,7 +475,7 @@ public class CourseService implements ICourseService {
     @Override
     public List<PostDTO.Info> getPost(Long courseId) {
         Set<Post> postSet = new HashSet<>();
-        Course one = courseDAO.getOne(courseId);
+        Course one = courseDAO.getById(courseId);
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
             List<NeedsAssessment> needAssessments = skill.getNeedsAssessments();

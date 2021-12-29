@@ -91,7 +91,7 @@ public class SyllabusService implements ISyllabusService {
     @Override
     public List<SyllabusDTO.Info> getSyllabusCourse(Long courseId) {
         List<SyllabusDTO.Info> syllabusInfoTuples = new ArrayList<>();
-        Course one = courseDAO.getOne(courseId);
+        Course one = courseDAO.getById(courseId);
         List<Goal> goalSet = one.getGoalSet();
         for (Goal goal : goalSet) {
             Optional.ofNullable(goal.getSyllabusSet())

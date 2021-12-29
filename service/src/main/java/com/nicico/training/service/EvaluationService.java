@@ -277,13 +277,13 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerFullData.setDescription(evaluation.getDescription());
 
                 if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
-                    QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getById(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
                     evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
                     evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
                     evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
                 } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
-                    DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getById(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                     evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
                     evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());

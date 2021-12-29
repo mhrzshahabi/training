@@ -44,7 +44,7 @@ public class AuthorizationUtil {
 
         Locale locale = LocaleContextHolder.getLocale();
         String standardPermissionKey = getStandardPermissionKey(entityName, actionTypeStr);
-        if (StringUtils.isEmpty(standardPermissionKey))
+        if (StringUtils.hasText(standardPermissionKey))
             throw new TrainingException(TrainingException.ErrorType.Forbidden, "", messageSource.getMessage("validator.permission.action-type.is.empty", null, locale));
         if (!SecurityUtil.hasAuthority(standardPermissionKey))
             throw new TrainingException(TrainingException.ErrorType.Unauthorized, "", messageSource.getMessage("validator.permission.access-denied", new Object[]{standardPermissionKey}, locale));

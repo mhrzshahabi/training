@@ -308,7 +308,7 @@ public class ContactInfoService implements IContactInfoService {
                 break;
             case "RegisteredPersonnel":
                 for (Long id : ids) {
-                    PersonnelRegistered personnelRegistered = personnelRegisteredDAO.getOne(id);
+                    PersonnelRegistered personnelRegistered = personnelRegisteredDAO.getById(id);
                     ContactInfo contactInfo = personnelRegistered.getContactInfo();
                     if (personnelRegistered.getContactInfoId() == null) {
                         contactInfo = new ContactInfo();

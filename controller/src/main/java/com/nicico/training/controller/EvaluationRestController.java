@@ -100,13 +100,13 @@ public class EvaluationRestController {
             evaluationAnswerFullData.setDescription(evaluation.getDescription());
 
             if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
-                QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getById(evaluationAnswerFullData.getEvaluationQuestionId());
                 evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
                 evaluationAnswerFullData.setWeight(questionnaireQuestion.getWeight());
                 evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
                 evaluationAnswerFullData.setDomainId(questionnaireQuestion.getEvaluationQuestion().getDomainId());
             } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L) || evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
-                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getById(evaluationAnswerFullData.getEvaluationQuestionId());
                 evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 evaluationAnswerFullData.setWeight(dynamicQuestion.getWeight());
                 evaluationAnswerFullData.setQuestion(dynamicQuestion.getQuestion());
@@ -890,7 +890,7 @@ public class EvaluationRestController {
                 evaluationAnswerFullData.setDescription(evaluation.getDescription());
 
                 if (evaluationAnswerFullData.getQuestionSourceId().equals(199L)) {
-                    QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    QuestionnaireQuestion questionnaireQuestion = questionnaireQuestionDAO.getById(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setOrder(questionnaireQuestion.getOrder());
                     if (questionnaireQuestion.getEvaluationQuestion().getDomainId().equals(54L))
                         evaluationAnswerFullData.setQuestion("امکانات: " + questionnaireQuestion.getEvaluationQuestion().getQuestion());
@@ -901,11 +901,11 @@ public class EvaluationRestController {
                     else
                         evaluationAnswerFullData.setQuestion(questionnaireQuestion.getEvaluationQuestion().getQuestion());
                 } else if (evaluationAnswerFullData.getQuestionSourceId().equals(200L)) {
-                    DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getById(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setQuestion("هدف اصلی: " + dynamicQuestion.getQuestion());
                     evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 } else if (evaluationAnswerFullData.getQuestionSourceId().equals(201L)) {
-                    DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getOne(evaluationAnswerFullData.getEvaluationQuestionId());
+                    DynamicQuestion dynamicQuestion = dynamicQuestionDAO.getById(evaluationAnswerFullData.getEvaluationQuestionId());
                     evaluationAnswerFullData.setQuestion("هدف: " + dynamicQuestion.getQuestion());
                     evaluationAnswerFullData.setOrder(dynamicQuestion.getOrder());
                 }

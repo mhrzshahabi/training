@@ -669,7 +669,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
             List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseList(Long.valueOf(dto.getPostId()), "TrainingPost", Long.valueOf(dto.getPersonnelId()));
             TrainingPost currentTrainingPost = trainingPostDAO.findById(Long.valueOf(dto.getPostId())).orElseThrow(trainingExceptionSupplier);
 
-            Personnel personnel = personnelDAO.getOne(Long.valueOf(dto.getPersonnelId()));
+            Personnel personnel = personnelDAO.getById(Long.valueOf(dto.getPersonnelId()));
             for (NeedsAssessmentReportsDTO.ReportInfo reportInfo : needsAssessmentReportList
             ) {
                 NeedAssessmentGroupJobPromotionResponse response = new NeedAssessmentGroupJobPromotionResponse();

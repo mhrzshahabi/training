@@ -213,7 +213,12 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
 
         try {
 
-            T updating = tType.newInstance();
+            T updating = null;
+            try {
+                updating = tType.getDeclaredConstructor().newInstance();
+            } catch (InvocationTargetException | NoSuchMethodException e) {
+                e.printStackTrace();
+            }
 
             modelMapper.map(entity, updating);
             modelMapper.map(request, updating);
@@ -270,7 +275,12 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
                 final Optional<T> entityById = repository.findById(id);
                 final T entity = entityById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-                T updating = tType.newInstance();
+                T updating = null;
+                try {
+                    updating = tType.getDeclaredConstructor().newInstance();
+                } catch (InvocationTargetException | NoSuchMethodException e) {
+                    e.printStackTrace();
+                }
                 modelMapper.map(entity, updating);
                 modelMapper.map(request, updating);
 

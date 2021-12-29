@@ -36,7 +36,7 @@ public class InstituteAccountService implements IInstituteAccountService {
     public AccountInfoDTO.CreateOrUpdate save(AccountInfoDTO.CreateOrUpdate account){
         AccountInfo accountInfo=modelMapper.map(account, AccountInfo.class);
         accountInfo.setInstituteId(account.getInstituteId());
-        accountInfo.setInstitute(instituteDAO.getOne(account.getInstituteId()));
+        accountInfo.setInstitute(instituteDAO.getById(account.getInstituteId()));
 
         final AccountInfo saved = accountInfoDAO.saveAndFlush(accountInfo);
         return modelMapper.map(saved, AccountInfoDTO.CreateOrUpdate.class);

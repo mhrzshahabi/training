@@ -150,7 +150,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             if(learningResult.containsKey("felPass") && learningResult.get("felPass") != null)
                 evaluationAnalysis.setLearningPass(Boolean.parseBoolean(learningResult.get("felPass").toString()));
             evaluationAnalysis.setTClassId(classId);
-            evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
+            evaluationAnalysis.setTClass(tclassDAO.getById(classId));
 
             Map<String,Object> effectivenessResult = null;
 
@@ -235,7 +235,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 evaluationAnalysis.setTeacherPass(Boolean.parseBoolean(reactionResult.get("FETPass").toString()));
 
             evaluationAnalysis.setTClassId(classId);
-            evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
+            evaluationAnalysis.setTClass(tclassDAO.getById(classId));
             Map<String,Object> effectivenessResult = null;
 
             if(reactionResult.containsKey("FERGrade") && reactionResult.get("FERGrade") != null)
@@ -296,7 +296,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             }
 
             evaluationAnalysis.setTClassId(classId);
-            evaluationAnalysis.setTClass(tclassDAO.getOne(classId));
+            evaluationAnalysis.setTClass(tclassDAO.getById(classId));
             Map<String,Object> effectivenessResult = null;
             if(behavioralResult.getBehavioralGrade() != null && behavioralResult.getBehavioralGrade() != 0)
                 effectivenessResult = tclassService.calculateEffectivenessEvaluation(evaluationAnalysis.getReactionGrade(),

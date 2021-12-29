@@ -158,4 +158,11 @@ public class SynonymPersonnel implements Serializable {
     @Transient
     private Department department;
 
+
+    @Column(name = "employment_status_id")
+    private Integer employmentStatusId;
+
+    @Column(name = "employment_status_title")
+    private String employmentStatus;
+
 }

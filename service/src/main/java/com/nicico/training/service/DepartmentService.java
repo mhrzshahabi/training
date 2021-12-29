@@ -332,8 +332,10 @@ public class DepartmentService extends GenericService<Department, Long, Departme
             departments.add(society);
         }
         for (DepartmentDTO.TSociety child : infoList) {
-            departments.addAll(findDeparmentAnccestor(anccestorId, child.getParentId()));
-            departments.add(child);
+            if (child.getParentId()!=null && anccestorId!=null){
+                departments.addAll(findDeparmentAnccestor(anccestorId, child.getParentId()));
+                departments.add(child);
+            }
         }
         return new ArrayList<>(departments);
     }
@@ -341,22 +343,23 @@ public class DepartmentService extends GenericService<Department, Long, Departme
     @Override
     public DepartmentDTO.Info getByCode(String code) {
         Optional<Department> optional = departmentDAO.getByCode(code);
-        if (optional.isPresent())
-            return modelMapper.map(optional.get(), DepartmentDTO.Info.class);
-        return null;
+        return optional.map(department -> modelMapper.map(department, DepartmentDTO.Info.class)).orElse(null);
     }
 
 
     private List<DepartmentDTO.TSociety> findDeparmentAnccestor(Long anccestorId, Long parentId) {
         List<DepartmentDTO.TSociety> parents = new ArrayList<>();
         DepartmentDTO.TSociety parent = modelMapper.map(get(parentId), DepartmentDTO.TSociety.class);
-        if (parent.getParentId().equals(anccestorId)) {
-            parents.add(parent);
-            return parents;
-        } else {
-            parents.add(parent);
-            parents.addAll(findDeparmentAnccestor(anccestorId, parent.getParentId()));
+        if (parent.getParentId()!=null ){
+            if (parent.getParentId().equals(anccestorId)) {
+                parents.add(parent);
+                return parents;
+            } else {
+                parents.add(parent);
+                parents.addAll(findDeparmentAnccestor(anccestorId, parent.getParentId()));
+            }
         }
+
         return parents;
     }
 }
