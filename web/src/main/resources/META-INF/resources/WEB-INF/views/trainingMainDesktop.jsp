@@ -43,6 +43,7 @@
     <script src="<spring:url value='/js/xlsx.full.min.js' />"></script>
     <script src="<spring:url value='/js/svg-inject.min.js' />"></script>
     <script src="<spring:url value='/js/loadjs.min.js' />"></script>
+    <script src="<spring:url value='/js/VersionsWindow.js' />"></script>
 
     <script>
         // const set1 = new Set([1, 2, 3, 4, 5]);
@@ -1548,6 +1549,26 @@
     <%--height: "100%",--%>
     <%--styleName: "mainHeaderStyleOnline header-logo-title",--%>
     <%--contents: "<span><spring:message code="training.system.version"/></span>"--%>
+    <%--});--%>
+
+    var versionLbl = isc.Label.create({
+        width: "100%",
+        // height: 25,
+        topPadding: 7,
+        top: 450,
+        align: "left",
+        contents: "اطلاعات نسخه",
+        dynamicContents: false,
+        icon: 'info.png',
+        iconClick: "isc.VersionsWindow.create();",
+        iconOrientation: 'right'
+
+    });
+    <%--var trVersion = "${trainingVersion}";--%>
+    <%--var versionHLayout = isc.HLayout.create({--%>
+    <%--    width: "10%",--%>
+    <%--    align: "center",--%>
+    <%--    members: [versionLbl]--%>
     <%--});--%>
 
     var label_Username = isc.Label.create({
@@ -3071,6 +3092,7 @@
         members: [headerLogo,
             // ticket,
             // headerFlow,
+            versionLbl,
             headerExitHLayout],
     });
 
@@ -4346,6 +4368,13 @@
             }
         }
     });
+
+    <%--const localVer=localStorage.getItem('trainingVersion')--%>
+    <%--if(!localVer || localVer !== "${trainingVersion}")--%>
+    <%--{--%>
+    <%--    isc.VersionsWindow.create({newVersion:"${trainingVersion}"});--%>
+    <%--    localStorage.setItem('trainingVersion',"${trainingVersion}");--%>
+    <%--}--%>
 
 </script>
 <nicico-ticket></nicico-ticket>
