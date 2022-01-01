@@ -18,6 +18,7 @@ import java.util.*;
 public class AnonymousRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final IClassStudentService classStudentService;
 
     @PostMapping("/changeContactInfo")
     public void changeContactInfo(@RequestBody List<Long> ids) {
@@ -32,6 +33,12 @@ public class AnonymousRestController {
     @GetMapping("/get-reapeatly")
     public Map<String,String> getReapeatlyPhones() {
        return personnelRegisteredService.getReapeatlyPhones();
+    }
+
+
+    @PostMapping("/test-add-student")
+    public void testAddStudent(@RequestBody String classCode) {
+        classStudentService.testAddStudent(classCode);
     }
 
 

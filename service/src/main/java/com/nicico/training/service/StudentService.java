@@ -235,4 +235,8 @@ public class StudentService implements IStudentService {
             roleList.add("USER");
         return roleList;
     }
+
+    public List<Student> getTestStudentList() {
+        return studentDAO.getTestStudentList();
+    }
 }

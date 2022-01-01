@@ -281,10 +281,30 @@
                 //ExportToFile.downloadExcelFromClient(this.ListGrid_PersonnelTraining, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها");
                 let tab = mainTabSet.tabs[mainTabSet.selectedTab];
                 if (tab.title == '<spring:message code="personnel.information"/>') {
-                    nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
-                    personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
-                    restUrl = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
-                    ExportToFile.downloadExcelRestUrl(null, this.ListGrid_PersonnelTraining, restUrl, 0, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", this.ListGrid_PersonnelTraining.getCriteria(), null);
+                    switch(PersonnelList_Tab.getSelectedTab().id){
+                        case "PersonnelList_Tab_Personnel":
+                            nationalCode = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
+                            personnelNo = PersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
+                            restUrl = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
+                            ExportToFile.downloadExcelRestUrl(null, this.ListGrid_PersonnelTraining, restUrl, 0, PersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", this.ListGrid_PersonnelTraining.getCriteria(), null);
+
+                            break;
+                        case "PersonnelList_Tab_RegisteredPersonnel":
+                            nationalCode = PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord().nationalCode;
+                            personnelNo = PersonnelInfoListGrid_RegisteredPersonnelList.getSelectedRecord().personnelNo;
+                            restUrl = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
+                            ExportToFile.downloadExcelRestUrl(null, this.ListGrid_PersonnelTraining, restUrl, 0, PersonnelInfoListGrid_RegisteredPersonnelList, '', "اطلاعات پرسنل - آموزش ها", this.ListGrid_PersonnelTraining.getCriteria(), null);
+
+                            break;
+                        case "PersonnelList_Tab_synonym_Personnel":
+                            nationalCode = synonmPersonnelInfoListGrid_PersonnelList.getSelectedRecord().nationalCode;
+                            personnelNo = synonmPersonnelInfoListGrid_PersonnelList.getSelectedRecord().personnelNo;
+                            restUrl = classUrl + "personnel-training/" + nationalCode + "/" + personnelNo;
+                            ExportToFile.downloadExcelRestUrl(null, this.ListGrid_PersonnelTraining, restUrl, 0, synonmPersonnelInfoListGrid_PersonnelList, '', "اطلاعات پرسنل - آموزش ها", this.ListGrid_PersonnelTraining.getCriteria(), null);
+
+                            break;
+                    }
+
 
                 } else if (tab.title == '<spring:message code="class"/>') {
                     let fName = null;

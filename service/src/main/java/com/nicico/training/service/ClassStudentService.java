@@ -78,8 +78,7 @@ public class ClassStudentService implements IClassStudentService {
         List<String> invalStudents = new ArrayList<>();
         Tclass tclass = tclassService.getTClass(classId);
         TeacherDTO.Info teacher = iTeacherService.get(tclass.getTeacherId());
-        if (teacher.getTeacherCode()!=null)
-        {
+        if (teacher.getTeacherCode() != null) {
             //check for know students and teacher is equal or not
             ClassStudentDTO.Create checkTeacher = request.stream()
                     .filter(q -> teacher.getTeacherCode().equals(q.getNationalCode()))
@@ -179,7 +178,7 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public void delete(ClassStudentDTO.Delete request) {
         final List<ClassStudent> studentList = classStudentDAO.findAllById(request.getIds());
-        for (ClassStudent classStudent : studentList){
+        for (ClassStudent classStudent : studentList) {
             delete(classStudent.getId());
         }
 //        classStudentDAO.deleteAll(studentList);
@@ -257,40 +256,40 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     @Transactional
     public BaseResponse updateScore(ElsExamScore elsExamScore) {
-        BaseResponse response =new BaseResponse();
+        BaseResponse response = new BaseResponse();
         setScoreLoop:
-        for (ElsStudentScore examScore:elsExamScore.getStudentScores()){
-            TestQuestionDTO.fullInfo testQuestionDTO=testQuestionService.get(elsExamScore.getExamId());
+        for (ElsStudentScore examScore : elsExamScore.getStudentScores()) {
+            TestQuestionDTO.fullInfo testQuestionDTO = testQuestionService.get(elsExamScore.getExamId());
             Long classStudentId = getStudentId(testQuestionDTO.getTclass().getId(), examScore.getNationalCode());
-            ClassStudent classStudent= getClassStudent(classStudentId);
-            if (checkScoreInRange(testQuestionDTO.getTclass().getScoringMethod(),examScore.getScore())) {
-                switch (elsExamScore.getType()){
-                    case "test":{
-                        if (classStudent.getTestScore()!=null){
+            ClassStudent classStudent = getClassStudent(classStudentId);
+            if (checkScoreInRange(testQuestionDTO.getTclass().getScoringMethod(), examScore.getScore())) {
+                switch (elsExamScore.getType()) {
+                    case "test": {
+                        if (classStudent.getTestScore() != null) {
                             response.setStatus(406);
-                            response.setMessage("نمره ی تستی کاربر با کد ملی : "+examScore.getNationalCode()+"  یک بار برای این دانشجو ذخیره شده است");
+                            response.setMessage("نمره ی تستی کاربر با کد ملی : " + examScore.getNationalCode() + "  یک بار برای این دانشجو ذخیره شده است");
                             break setScoreLoop;
-                        }else {
+                        } else {
                             classStudent.setTestScore(examScore.getScore());
                             saveOrUpdate(classStudent);
                             response.setStatus(200);
                         }
                         break;
                     }
-                    case "descriptive":{
+                    case "descriptive": {
                         classStudent.setDescriptiveScore(examScore.getScore());
                         saveOrUpdate(classStudent);
                         response.setStatus(200);
                         break;
                     }
-                    case "final":{
-                        if (classStudent.getScore()!=null){
+                    case "final": {
+                        if (classStudent.getScore() != null) {
                             response.setStatus(406);
-                            response.setMessage("نمره ی نهایی کاربر با کد ملی : "+examScore.getNationalCode()+"  یک بار برای این دانشجو ذخیره شده است");
+                            response.setMessage("نمره ی نهایی کاربر با کد ملی : " + examScore.getNationalCode() + "  یک بار برای این دانشجو ذخیره شده است");
                             break setScoreLoop;
-                        }else {
+                        } else {
                             classStudent.setScore(examScore.getScore());
-                            classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(testQuestionDTO.getTclass().getAcceptancelimit(),examScore.getScore())).getId());
+                            classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(testQuestionDTO.getTclass().getAcceptancelimit(), examScore.getScore())).getId());
                             saveOrUpdate(classStudent);
                             response.setStatus(200);
                         }
@@ -302,31 +301,28 @@ public class ClassStudentService implements IClassStudentService {
                         break setScoreLoop;
 
                 }
-            }else {
+            } else {
                 response.setStatus(406);
-                response.setMessage("نمره ی وارد شده کاربر با کد ملی : "+examScore.getNationalCode()+"  با روش نمره دهی این آزمون مطابقت ندارد");
+                response.setMessage("نمره ی وارد شده کاربر با کد ملی : " + examScore.getNationalCode() + "  با روش نمره دهی این آزمون مطابقت ندارد");
                 break;
             }
         }
-        if (response.getStatus()==200)
-        return response;
+        if (response.getStatus() == 200)
+            return response;
         else
-            throw new TrainingException(TrainingException.ErrorType.registerNotAccepted, null,response.getMessage());
-
-
-
+            throw new TrainingException(TrainingException.ErrorType.registerNotAccepted, null, response.getMessage());
 
 
     }
 
     @Override
     public ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size) {
-        ElsClassListDto dto=new ElsClassListDto();
-        List<Object> list=classStudentDAO.findAllClassByTeacher(nationalCode,page+1,size);
-        long count= classStudentDAO.findAllCountClassByTeacher(nationalCode).size();
-        long totalPage=0;
-        if (count!=0 && size!=0){
-            totalPage=count/size;
+        ElsClassListDto dto = new ElsClassListDto();
+        List<Object> list = classStudentDAO.findAllClassByTeacher(nationalCode, page + 1, size);
+        long count = classStudentDAO.findAllCountClassByTeacher(nationalCode).size();
+        long totalPage = 0;
+        if (count != 0 && size != 0) {
+            totalPage = count / size;
         }
 
         List<ElsClassDto> result = new ArrayList<>();
@@ -335,14 +331,14 @@ public class ClassStudentService implements IClassStudentService {
             ElsClassDto elsClassDto = new ElsClassDto();
             Object[] arr = (Object[]) o;
             Long classId = Long.parseLong(arr[1].toString());
-            Tclass tclass= tclassService.getTClass(classId);
+            Tclass tclass = tclassService.getTClass(classId);
 
             elsClassDto.setClassId(classId);
             elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
             elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
             elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
             elsClassDto.setCapacity(arr[6] == null ? null : Integer.valueOf(arr[6].toString()));
-            elsClassDto.setDuration(arr[7] == null ? null :  Integer.valueOf(arr[7].toString()));
+            elsClassDto.setDuration(arr[7] == null ? null : Integer.valueOf(arr[7].toString()));
             elsClassDto.setLocation(arr[8] == null ? null : arr[8].toString());
             elsClassDto.setCourseStatus(arr[9] == null ? null : getCourseStatus(Integer.parseInt(arr[9].toString())));
             elsClassDto.setClassType(arr[10] == null ? null : getClassType(Integer.parseInt(arr[10].toString())));
@@ -360,86 +356,109 @@ public class ClassStudentService implements IClassStudentService {
             elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
             result.add(elsClassDto);
         }
-
-
-
-        PaginationDto paginationDto = new PaginationDto();
-                            paginationDto.setCurrent(page);
-                            paginationDto.setSize(size);
-                            if (totalPage!=0){
-                                paginationDto.setTotal(totalPage+1);
-                                paginationDto.setLast((int) (totalPage));
-                            }else{
-                                paginationDto.setTotal(0);
-                                paginationDto.setLast(0);}
-                            paginationDto.setTotalItems(count);
-        dto.setPaginationDto(paginationDto);
-        dto.setList(result);
-
-return dto;
-    }
-
-    @Override
-    public ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size) {
-        ElsClassListDto dto=new ElsClassListDto();
-        List<Object> list=classStudentDAO.findAllClassByStudent(nationalCode,page+1,size);
-        long count= classStudentDAO.findAllCountClassByStudent(nationalCode).size();
-        long totalPage=0;
-        if (count!=0 && size!=0){
-            totalPage=count/size;
-        }
-
-        List<ElsClassDto> result = new ArrayList<>();
-        for (Object o : list) {
-
-            ElsClassDto elsClassDto = new ElsClassDto();
-            Object[] arr = (Object[]) o;
-            Long classId = Long.parseLong(arr[1].toString());
-            Tclass tclass= tclassService.getTClass(classId);
-
-            elsClassDto.setClassId(classId);
-            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
-            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
-            elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
-            elsClassDto.setCapacity(arr[6] == null ? null : Integer.valueOf(arr[6].toString()));
-            elsClassDto.setDuration(arr[7] == null ? null :  Integer.valueOf(arr[7].toString()));
-            elsClassDto.setLocation(arr[8] == null ? null : arr[8].toString());
-            elsClassDto.setCourseStatus(arr[9] == null ? null : getCourseStatus(Integer.parseInt(arr[9].toString())));
-            elsClassDto.setClassType(arr[10] == null ? null : getClassType(Integer.parseInt(arr[10].toString())));
-            //todo this property must be remove in els
-            elsClassDto.setCourseType(null);
-            elsClassDto.setCoursePrograms(getPrograms2(tclass));
-
-            Date startDate = getEpochDate(arr[11].toString(), "08:00");
-            Date endDate = getEpochDate(arr[12].toString(), "23:59");
-            elsClassDto.setStartDate(startDate.getTime());
-            elsClassDto.setFinishDate(endDate.getTime());
-            elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
-            elsClassDto.setEvaluationId(arr[14] == null ? null : Long.valueOf(arr[14].toString()));
-            EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
-            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
-
-            result.add(elsClassDto);
-        }
-
 
 
         PaginationDto paginationDto = new PaginationDto();
         paginationDto.setCurrent(page);
         paginationDto.setSize(size);
-        if (totalPage!=0){
-            paginationDto.setTotal(totalPage+1);
+        if (totalPage != 0) {
+            paginationDto.setTotal(totalPage + 1);
             paginationDto.setLast((int) (totalPage));
-        }else{
+        } else {
             paginationDto.setTotal(0);
-            paginationDto.setLast(0);}
+            paginationDto.setLast(0);
+        }
         paginationDto.setTotalItems(count);
         dto.setPaginationDto(paginationDto);
         dto.setList(result);
 
-        return dto;    }
+        return dto;
+    }
+
+    @Override
+    public ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size) {
+        ElsClassListDto dto = new ElsClassListDto();
+        List<Object> list = classStudentDAO.findAllClassByStudent(nationalCode, page + 1, size);
+        long count = classStudentDAO.findAllCountClassByStudent(nationalCode).size();
+        long totalPage = 0;
+        if (count != 0 && size != 0) {
+            totalPage = count / size;
+        }
+
+        List<ElsClassDto> result = new ArrayList<>();
+        for (Object o : list) {
+
+            ElsClassDto elsClassDto = new ElsClassDto();
+            Object[] arr = (Object[]) o;
+            Long classId = Long.parseLong(arr[1].toString());
+            Tclass tclass = tclassService.getTClass(classId);
+
+            elsClassDto.setClassId(classId);
+            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
+            elsClassDto.setCapacity(arr[6] == null ? null : Integer.valueOf(arr[6].toString()));
+            elsClassDto.setDuration(arr[7] == null ? null : Integer.valueOf(arr[7].toString()));
+            elsClassDto.setLocation(arr[8] == null ? null : arr[8].toString());
+            elsClassDto.setCourseStatus(arr[9] == null ? null : getCourseStatus(Integer.parseInt(arr[9].toString())));
+            elsClassDto.setClassType(arr[10] == null ? null : getClassType(Integer.parseInt(arr[10].toString())));
+            //todo this property must be remove in els
+            elsClassDto.setCourseType(null);
+            elsClassDto.setCoursePrograms(getPrograms2(tclass));
+
+            Date startDate = getEpochDate(arr[11].toString(), "08:00");
+            Date endDate = getEpochDate(arr[12].toString(), "23:59");
+            elsClassDto.setStartDate(startDate.getTime());
+            elsClassDto.setFinishDate(endDate.getTime());
+            elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
+            elsClassDto.setEvaluationId(arr[14] == null ? null : Long.valueOf(arr[14].toString()));
+            EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
+            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
+
+            result.add(elsClassDto);
+        }
 
 
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setCurrent(page);
+        paginationDto.setSize(size);
+        if (totalPage != 0) {
+            paginationDto.setTotal(totalPage + 1);
+            paginationDto.setLast((int) (totalPage));
+        } else {
+            paginationDto.setTotal(0);
+            paginationDto.setLast(0);
+        }
+        paginationDto.setTotalItems(count);
+        dto.setPaginationDto(paginationDto);
+        dto.setList(result);
+
+        return dto;
+    }
+
+    @Override
+    @Transactional
+    public void testAddStudent(String classCode) {
+        Tclass clsss = tclassService.getClassByCode(classCode);
+
+        List<ClassStudent>classStudentList=getClassStudents(clsss.getId());
+        List<Student> studentList = studentService.getTestStudentList();
+        for (Student student : studentList) {
+            ClassStudent classStudent = new ClassStudent();
+            classStudent.setTclass(clsss);
+            classStudent.setTclassId(clsss.getId());
+            classStudent.setStudent(student);
+            classStudent.setStudentId(student.getId());
+            classStudent.setApplicantCompanyName(student.getCompanyName());
+                if (classStudentList.stream().noneMatch(q -> q.getStudentId().equals(student.getId())) && validateMelliCode(student.getNationalCode()) ){
+                    classStudentDAO.save(classStudent);
+                } else {
+                    System.out.println(student.getNationalCode()+"/unSave");
+                }
+
+        }
+
+    }
 
 
     @Transactional
@@ -449,39 +468,69 @@ return dto;
 
 
     public Long getStudentId(Long classId, String nationalCode) {
-        List<Long> studentIds=classStudentDAO.getClassStudentIdByClassCodeAndNationalCode(classId, nationalCode);
+        List<Long> studentIds = classStudentDAO.getClassStudentIdByClassCodeAndNationalCode(classId, nationalCode);
         if (!studentIds.isEmpty())
-        return studentIds.get(0);
+            return studentIds.get(0);
         else return null;
     }
 
     public boolean checkScoreInRange(String scoringMethod, Float score) {
         if (scoringMethod.equals("3") || scoringMethod.equals("2")) {
 
-            if (scoringMethod.equals("3") )
-            {
-                    if ( score!=null) {
-                        return (score <= 20F && score >= 0);
-                    }
-            }
-            else
-            {
-                if ( score!=null) {
+            if (scoringMethod.equals("3")) {
+                if (score != null) {
+                    return (score <= 20F && score >= 0);
+                }
+            } else {
+                if (score != null) {
                     return (score <= 100F && score >= 0);
                 }
             }
             return true;
-        }
-        else
+        } else
             return false;
     }
 
     private String getStateByScore(String acceptancelimit, Float score) {
-        if (score >= Double.parseDouble(acceptancelimit)){
+        if (score >= Double.parseDouble(acceptancelimit)) {
             return "PassdByGrade";
-        }else {
+        } else {
             return "TotalFailed";
         }
 
+    }
+
+    public boolean validateMelliCode(String melliCode) {
+
+        String[] identicalDigits = {"0000000000", "1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999"};
+
+        if (melliCode.trim().isEmpty()) {
+            return false; // National Code is empty
+        } else if (melliCode.length() != 10) {
+            return false; // National Code is less or more than 10 digits
+        } else if (Arrays.asList(identicalDigits).contains(melliCode)) {
+            return false; // Fake National Code
+        } else {
+            int sum = 0;
+
+            for (int i = 0; i < 9; i++) {
+                sum += Character.getNumericValue(melliCode.charAt(i)) * (10 - i);
+            }
+
+            int lastDigit;
+            int divideRemaining = sum % 11;
+
+            if (divideRemaining < 2) {
+                lastDigit = divideRemaining;
+            } else {
+                lastDigit = 11 - (divideRemaining);
+            }
+
+            if (Character.getNumericValue(melliCode.charAt(9)) == lastDigit) {
+                return true;
+            } else {
+                return false; // Invalid MelliCode
+            }
+        }
     }
 }

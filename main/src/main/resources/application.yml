@@ -232,11 +232,13 @@ nicico:
 #    sys-password: password
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
   minioUrl: 'http://devapp01.icico.net.ir/fms'
-  elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
+#  elsUrl: 'http://devapp01.icico.net.ir/els/api/training'
   hrmClient: 'http://devapp01.icico.net.ir/hrm/api/v1'
   sms: 'http://devops01.icico.net.ir'
   masterDataUrl: 'http://devapp01.icico.net.ir/master-data/api/v3'
   elsSmsUrl: 'http://devapp01.icico.net.ir'
+  elsUrl: 'http://172.16.6.192:8080/els/api/training'
+
 
   upload:
     dir: /var/nicico/${spring.application.name}/upload

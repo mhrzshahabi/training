@@ -156,4 +156,26 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "WHERE\n" +
             "    ts.national_code = :nationalCode AND (ttq.c_date = :startDate OR ttq.b_is_pre_test_question = 1)", nativeQuery = true)
     List<Map<String, Object>> findAllThisDateExamsByNationalCode(@Param("nationalCode") String nationalCode, @Param("startDate") String startDate);
+
+
+    @Query(value = "SELECT\n" +
+            "    *\n" +
+            "FROM\n" +
+            "    (\n" +
+            "        SELECT\n" +
+            "          \n" +
+            "            DISTINCT *\n" +
+            "        FROM\n" +
+            "            tbl_student\n" +
+            "            WHERE deleted is null\n" +
+            "            AND\n" +
+            "            tbl_student.company_name is not NULL\n" +
+            "        ORDER BY\n" +
+            "            id DESC\n" +
+            "            \n" +
+            "    )\n" +
+            "WHERE\n" +
+            "    ROWNUM <= 1000", nativeQuery = true)
+    List<Student> getTestStudentList();
+
 }

@@ -45,4 +45,6 @@ public interface IClassStudentService {
     ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size);
 
     ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size);
+
+    void testAddStudent(String classCode);
 }
