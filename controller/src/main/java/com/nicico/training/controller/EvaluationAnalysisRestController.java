@@ -394,7 +394,7 @@ public class EvaluationAnalysisRestController {
             iterator.remove();
         }
 
-//        params.put("XYChartDataSource", allchartData);
+        params.put("XYChartDataSource", allchartData);
         params.put("XYNotPassedChartDataSource",allNotPassedChartData);
         params.put("todayDate",DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
