@@ -493,6 +493,13 @@
             ]
         });
 
+        let SynonymPersonnelsTS_student = isc.ToolStrip.create({
+            members: [
+                isc.LayoutSpacer.create({width: "*"}),
+                isc.Label.create({ID: "SynonymPersonnelsCount_student"}),
+            ]
+        });
+
         let RegisteredTS_student = isc.ToolStrip.create({
             members: [
                 isc.LayoutSpacer.create({width: "*"}),
@@ -988,7 +995,6 @@
             },//end getCellCSSText
             cellClick: function (record, rowNum, colNum) {
                 if (colNum === 6) {
-                    //console.log(record);
                     selectedRecord_addStudent_class = {
                         firstName: record.student.firstName,
                         lastName: record.student.lastName,
@@ -1378,6 +1384,97 @@
             fetchDataURL: viewActivePersonnelInRegisteringUrl + "/spec-list",
         });
 
+        var SynonymPersonnelsDS_student = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true, hidden: true},
+                {
+                    name: "firstName",
+                    title: "<spring:message code="firstName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "lastName",
+                    title: "<spring:message code="lastName"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "nationalCode",
+                    title: "<spring:message code="national.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "companyName",
+                    title: "<spring:message code="company.name"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo",
+                    title: "<spring:message code="personnel.no"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "personnelNo2",
+                    title: "<spring:message code="personnel.no.6.digits"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "postGradeTitle",
+                    title: "<spring:message code="post.grade"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "postGradeCode",
+                    title: "<spring:message code="post.grade.code"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "postTitle",
+                    title: "<spring:message code="post"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "postCode",
+                    title: "<spring:message code="post.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "ccpArea",
+                    title: "<spring:message code="reward.cost.center.area"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpAssistant",
+                    title: "<spring:message code="reward.cost.center.assistant"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpAffairs",
+                    title: "<spring:message code="reward.cost.center.affairs"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpSection",
+                    title: "<spring:message code="reward.cost.center.section"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "ccpUnit",
+                    title: "<spring:message code="reward.cost.center.unit"/>",
+                    filterOperator: "iContains"
+                },
+                {name: "postId", hidden: true}
+
+            ],
+            fetchDataURL: personnelUrl + "/Synonym/iscList"
+        });
+
         let PersonnelsLG_student = isc.TrLG.create({
             ID: "PersonnelsLG_student",
             dataSource: PersonnelDS_student,
@@ -1588,6 +1685,214 @@
                     window_class_Information.show();
 
 
+                }
+            }
+        });
+
+        let SynonymPersonnelsLG_student = isc.TrLG.create({
+            ID: "SynonymPersonnelsLG_student",
+            dataSource: SynonymPersonnelsDS_student,
+            selectionType: "single",
+            fields: [
+                {name: "id", hidden: true},
+                {name: "firstName"},
+                {name: "lastName"},
+                {
+                    name: "nationalCode",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "companyName", hidden: true},
+                {
+                    name: "personnelNo",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {
+                    name: "personnelNo2",
+                    filterEditorProperties: {
+                        keyPressFilter: "[0-9]"
+                    }
+                },
+                {name: "postTitle"},
+                {name: "ccpArea"},
+                {name: "ccpAssistant", hidden: true},
+                {name: "ccpAffairs", hidden: true},
+                {name: "ccpSection", hidden: true},
+                {name: "ccpUnit", hidden: true}
+            ],
+            gridComponents: [SynonymPersonnelsTS_student, "filterEditor", "header", "body"],
+            selectionAppearance: "checkbox",
+            dataArrived: function (startRow, endRow) {
+                let lgNationalCodes = StudentsLG_student.data.localData.map(function (item) {
+                    return item.student.nationalCode;
+                });
+                let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function (item) {
+                    return item['nationalCode'];
+                });
+
+                let nationals = lgNationalCodes.concat(selectedNationalCodes);
+
+                let findRows = SynonymPersonnelsLG_student.findAll({
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
+                });
+                studentSelection = true;
+                findRows.forEach(current => current.isChecked = true);
+
+                SynonymPersonnelsLG_student.setSelectedState(findRows);
+                findRows.setProperty("enabled", false);
+
+                studentSelection = false;
+            },
+            getCellCSSText: rowStyle,
+            rowClick: function (record, recordNum, fieldNum) {
+                if (Object.keys(previousSelectedRow).length > 1) {
+                    previousSelectedRow.data.isClicked = !previousSelectedRow.data.isClicked;
+                    this.getCellCSSText(previousSelectedRow.data, previousSelectedRow.row, previousSelectedRow.col);
+                    SynonymPersonnelsLG_student.redraw();
+                }
+                record.isClicked = true;
+                selectedRow = record;
+                previousSelectedRow = {data: selectedRow, row: recordNum, col: fieldNum};
+                listGridType = "SynonymPersonnelsLG_student";
+                this.getCellCSSText(record, recordNum, fieldNum);
+            },
+            dataChanged: function () {
+                this.Super("dataChanged", arguments);
+                totalRows = this.data.getLength();
+                if (totalRows >= 0 && this.data.lengthIsKnown()) {
+                    SynonymPersonnelsCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                } else {
+                    SynonymPersonnelsCount_student.setContents("&nbsp;");
+                }
+            },
+            selectionUpdated: function () {
+
+                if (studentSelection) {
+                    return;
+                }
+
+                let current = SynonymPersonnelsLG_student.getSelection().filter(function (x) {
+                    return x.enabled != false
+                })[0];//.filter(p->p.enabled==false);
+
+                if (typeof (current) == "undefined") {
+                    return;
+                }
+                //personel
+                if (current.nationalCode == "" || current.nationalCode == null || typeof (current.nationalCode) == "undefined") {
+                    isc.Dialog.create({
+                        message: "اطلاعات شخص مورد نظر ناقص است. کد ملی برای این شخص وارد نشده است.",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+
+                    studentSelection = true;
+                    SynonymPersonnelsLG_student.deselectRecord(current)
+                    studentSelection = false;
+                } else if (!nationalCodeExists(current.nationalCode)) {
+                    if (checkIfAlreadyExist(current)) {
+                        return '';
+                    } else {
+                        if (studentForceToHasPhone && ( current.mobile===undefined
+                            || current.mobile==null)){
+                            isc.Dialog.create({
+                                message: "اطلاعات شخص مورد نظر با کد ملی " +current.nationalCode +"  ناقص است. شماره تلفن برای این شخص وارد نشده است.",
+                                icon: "[SKIN]stop.png",
+                                title: "<spring:message code="message"/>",
+                                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                                buttonClick: function (button, index) {
+                                    this.close();
+                                }
+
+                            });
+
+                            studentSelection = true;
+                            SynonymPersonnelsLG_student.deselectRecord(current)
+                            studentSelection = false;
+                        }else {
+                            current.applicantCompanyName = current.companyName;
+                            current.presenceTypeId = studentDefaultPresenceId;
+                            current.registerTypeId = 1;
+
+                            SelectedPersonnelsLG_student.addData({...current});
+                            SynonymPersonnelsLG_student.findAll({
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "nationalCode", operator: "equals", value: current.nationalCode}]
+                            }).setProperty("enabled", false);
+
+                            delete current.isClicked;
+                            current.isChecked = true;
+
+                            SynonymPersonnelsLG_student.redraw();
+                        }
+                    }
+
+                    function checkIfAlreadyExist(currentVal) {
+                        return SelectedPersonnelsLG_student.data.some(function (item) {
+                            return (item.nationalCode === currentVal.nationalCode);
+                        });
+                    }
+                } else {
+                    isc.Dialog.create({
+                        message: "<spring:message code="student.is.duplicate"/>",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+                    studentSelection = true;
+                    SynonymPersonnelsLG_student.deselectRecord(current);
+                    studentSelection = false;
+                }
+            },
+            cellClick: function (record, rowNum, colNum) {
+                if (colNum === 5) {
+                    selectedRecord_addStudent_class = {
+                        firstName: record.firstName,
+                        lastName: record.lastName,
+                        postTitle: record.postTitle,
+                        ccpArea: record.ccpArea,
+                        ccpAffairs: record.ccpAffairs,
+                        personnelNo: record.personnelNo,
+                        nationalCode: record.nationalCode,
+                        postCode: record.postCode,
+                    }
+
+                    let window_class_Information = isc.Window.create({
+                        title: "<spring:message code="personnel.information"/>",
+                        width: "70%",
+                        minWidth: 500,
+                        autoSize: false,
+                        height: "50%",
+                        closeClick: deleteCachedValue,
+                        items: [isc.VLayout.create({
+                            width: "100%",
+                            height: "100%",
+                            //members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/test/"})]
+                        })]
+                    });
+
+                    if (!loadjs.isDefined('personnel-information-details')) {
+                        loadjs('<spring:url value='web/personnel-information-details/' />', 'personnel-information-details');
+                    }
+
+                    loadjs.ready('personnel-information-details', function () {
+                        oPersonnelInformationDetails = new loadPersonnelInformationDetails();
+                        window_class_Information.addMember(oPersonnelInformationDetails.PersonnelInfo_Tab);
+                    });
+                    window_class_Information.show();
                 }
             }
         });
@@ -1975,6 +2280,43 @@
             ]
         });
 
+        let synonym_Personnel_List_VLayout = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            autoDraw: false,
+            border: "0px solid red", layoutMargin: 5,
+            members: [
+                isc.SectionStack.create({
+                    sections: [{
+                        title: "<spring:message code="all.persons"/>",
+                        expanded: true,
+                        canCollapse: false,
+                        align: "center",
+                        items: [
+                            // isc.TrHLayoutButtons.create({
+                            //     layoutMargin: 0,
+                            //     showEdges: false,
+                            //     edgeImage: "",
+                            //     width: "100%",
+                            //     height: "40",
+                            //     padding: 0,
+                            //     members: [
+                            //         isc.ToolStripButtonAdd.create({
+                            //             title: 'اضافه کردن گروهي',
+                            //             click: function () {
+                            //                 groupFilter("اضافه کردن گروهی", personnelUrl + "/Synonym/checkPersonnelNos", checkPersonnelNosResponse, true, true,
+                            //                     ListGrid_Class_JspClass.getSelectedRecord().courseId);
+                            //             }
+                            //         })
+                            //     ]
+                            // }),
+                            SynonymPersonnelsLG_student
+                        ]
+                    }]
+                }),
+            ]
+        });
+
         let personnelTabs = isc.TabSet.create({
             height: "50%",
             width: "100%",
@@ -1987,6 +2329,10 @@
                 {
                     title: "<spring:message code='personnel.tab.registered'/>",
                     pane: registered_List_VLayout
+                },
+                {
+                    title: "<spring:message code='PersonnelList_Tab_synonym_Personnel'/>",
+                    pane: synonym_Personnel_List_VLayout
                 }
             ]
         });
@@ -2311,6 +2657,8 @@
             PersonnelsLG_student.invalidateCache();
             PersonnelsLG_student.setImplicitCriteria(cr);
             PersonnelsLG_student.fetchData();
+            SynonymPersonnelsLG_student.invalidateCache();
+            SynonymPersonnelsLG_student.fetchData();
             PersonnelsRegLG_student.invalidateCache();
             PersonnelsRegLG_student.fetchData();
             SelectedPersonnelsLG_student.setData([]);
