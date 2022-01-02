@@ -59,4 +59,6 @@ public interface ITeacherService {
 
     Long getTeacherIdByNationalCode(String nationalCode);
 
+    List<Teacher> getActiveTeachers();
+
 }

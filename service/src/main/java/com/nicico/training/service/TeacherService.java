@@ -901,6 +901,12 @@ public class TeacherService implements ITeacherService {
         return teacherDAO.getTeacherId(nationalCode);
     }
 
+    @Override
+    public List<Teacher> getActiveTeachers() {
+     List<Teacher> activeTeachers= teacherDAO.findAllActiveTeacher();
+     return activeTeachers;
+    }
+
     @Transactional
     public String getTeacherNationalCodeById(Long teacherId) {
         return teacherDAO.getTeacherNationalCode(teacherId);
