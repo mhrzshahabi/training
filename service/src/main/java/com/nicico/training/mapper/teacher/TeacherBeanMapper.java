@@ -2,6 +2,7 @@ package com.nicico.training.mapper.teacher;
 
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.TeacherInfoDTO;
+import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
@@ -14,7 +15,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN,uses = {TclassBeanMapper.class})
 public interface TeacherBeanMapper {
     TeacherInCourseDto toTeacherInCourseDto (Teacher teacher);
 
@@ -28,7 +29,7 @@ public interface TeacherBeanMapper {
             @Mapping(target="nationalCode",source = "personality.nationalCode"),
             @Mapping(target = "firstName",source = "personality.firstNameFa"),
             @Mapping(target = "lastName",source = "personality.lastNameFa"),
-            @Mapping(target = "fullName",source = "teacher",qualifiedByName = "getFullName"),
+            @Mapping(target = "fullName",source = "teacher",qualifiedByName = "getTeacherName"),
             @Mapping(target = "mobileNumber",source = "personality.contactInfo.mobile"),
             @Mapping(target = "emailAddress",source = "personality.contactInfo.email"),
             @Mapping(target="birthCertificateNumber",source = "personality.birthCertificate"),
@@ -40,10 +41,7 @@ public interface TeacherBeanMapper {
     List<TeacherInfoDTO> toTeacherInfoDTOs(List<Teacher> teachers);
 
 
-    @Named("getFullName")
-    default String getFullName(Teacher teacher){
-        return teacher.getPersonality().getFirstNameFa()+" "+teacher.getPersonality().getLastNameFa();
-    }
+
     @Named("getTeacherStatus")
     default String getTeacherStatus(Teacher teacher){
         String status;
