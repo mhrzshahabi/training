@@ -403,7 +403,8 @@ public class EvaluationAnalysisRestController {
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(tableData) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-        reportUtil.export("/reports/reactionEvaluationReport.jasper", params, jsonDataSource, response);
+        //to add pie chart change file to reactionEvaluationReport.jasper
+        reportUtil.export("/reports/reactionEvaluationReport1.jasper", params, jsonDataSource, response);
     }
 
     public static class ChartData{
