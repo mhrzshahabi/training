@@ -106,4 +106,7 @@ public class LMSController {
         }
         return ResponseEntity.ok(tclassSessionDetailBaseDTO);
     }
+
+    @GetMapping("/getNeedAssessmentByNationalCodeAndPastCode/{nationalCode}/{postCode}")
+    public ResponseEntity<NAReportF>
 }
