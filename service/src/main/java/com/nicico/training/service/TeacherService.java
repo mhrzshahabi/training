@@ -909,6 +909,7 @@ public class TeacherService implements ITeacherService {
     public Page<Teacher> getActiveTeachers(int page, int size) {
         Pageable pageable= PageRequest.of(page,size, Sort.by(
                 Sort.Order.asc("id")));
+
         Page<Teacher> activeTeachers= teacherDAO.findAllActiveTeacher(pageable);
      return activeTeachers;
     }
