@@ -30,6 +30,7 @@ public class LMSController {
     private final IClassSession iClassSession;
     private final TclassBeanMapper tclassBeanMapper;
     private final ClassSessionMapper classSessionMapper;
+    private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
 
     @GetMapping("/getCourseDetails/{classCode}")
     public ResponseEntity<TclassTimeDetailBaseDTO> getCourseTimeDetails(@PathVariable String classCode) {
@@ -108,5 +109,7 @@ public class LMSController {
     }
 
     @GetMapping("/getNeedAssessmentByNationalCodeAndPastCode/{nationalCode}/{postCode}")
-    public ResponseEntity<NAReportF>
+    public ResponseEntity<NAReportForLMSResponseDTO> getNeedAseessmentByNationalCodeAndPostCode(@PathVariable String nationalCode,@PathVariable String postCode){
+        iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
+    }
 }

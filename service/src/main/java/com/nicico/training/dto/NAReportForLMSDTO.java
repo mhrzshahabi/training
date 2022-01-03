@@ -2,6 +2,8 @@ package com.nicico.training.dto;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class NAReportForLMSDTO {
     private String personnelNo;
