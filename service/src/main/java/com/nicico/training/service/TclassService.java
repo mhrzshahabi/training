@@ -23,8 +23,6 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
 import com.nicico.training.repository.*;
 import com.nicico.training.utility.persianDate.MyUtils;
-import dto.exam.ClassType;
-import dto.exam.CourseStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -32,14 +30,17 @@ import org.modelmapper.TypeToken;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerList;
 import response.BaseResponse;
+import response.PaginationDto;
 import response.evaluation.dto.AveragePerQuestion;
 import response.evaluation.dto.EvalAverageResult;
 import response.evaluation.dto.EvaluationAnswerObject;
@@ -106,6 +107,7 @@ public class TclassService implements ITclassService {
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
     private final ComplexDAO complexDAO;
     private final ClassStudentDAO classStudentDAO;
+
 
     @Transactional(readOnly = true)
     @Override
@@ -1987,6 +1989,50 @@ public class TclassService implements ITclassService {
 
 
         return list;
+    }
+
+    public ClassBaseResponse getClassViaTypeAndStatusAndTermInfo(ClassStatusDTO status, ClassTypeDTO classType, String year, String term, int page, int size){
+        ClassBaseResponse classBaseResponse=new ClassBaseResponse();
+        if(!(status.name()).equals("CANCEL") && (!status.name().equals("PLANNING"))  && !(status.name().equals("FINISH")) && !(status.name().equals("LOCK") ) && !(status.name().equals("INPROGRESS"))) {
+            classBaseResponse.setStatus(409);
+            classBaseResponse.setMessage("وضعیت کلاس معتبر نیست");
+            classBaseResponse.setData(null);
+            return classBaseResponse;
+        }
+        if(!(classType.name()).equals("JOBTRAINING") && !(classType.name().equals("NOTPRESENCE")) && !(classType.name().equals("PRESENCE")) && !(classType.name().equals("RETRAINING") ) && !(classType.name().equals("SEMINAR")) && !(classType.name().equals("VIRTUAL" )) && !(classType.name().equals("WORKSHOP" ) ) ){
+            classBaseResponse.setStatus(409);
+            classBaseResponse.setMessage("وضعیت کلاس معتبر نیست");
+            classBaseResponse.setData(null);
+            return classBaseResponse;
+        }
+
+        Term classTerm=new Term();
+        List<Long> longs=new ArrayList<>();
+        List<ParameterValue> parameterValues = parameterValueDAO.findAllByTitle(classType.getValue());
+        if(parameterValues!=null)
+            parameterValues.forEach(parameterValue -> longs.add(parameterValue.getId()));
+        if( termDAO.getTermByCode(year+"-"+term)!=null) {
+            classTerm = termDAO.getTermByCode(year + "-" + term);
+            Pageable pageable=PageRequest.of(page,size,  Sort.by(
+                    Sort.Order.asc("id")));
+           Page<Tclass> classList = tclassDAO.findAllClassWithTermFilter(longs, status.getKey() + "", classTerm.getId(), pageable);
+            classBaseResponse.setStatus(200);
+            classBaseResponse.setData(classList.stream().toList());
+            PaginationDto paginationDto=new PaginationDto();
+            paginationDto.setCurrent(page);
+            paginationDto.setSize(size);
+            paginationDto.setTotal(classList.getTotalPages());
+            paginationDto.setTotalItems(classList.get().count());
+            classBaseResponse.setPaginationDto(paginationDto);
+            return classBaseResponse;
+        }else{
+            classBaseResponse.setStatus(409);
+            classBaseResponse.setMessage("با ترم یا سال وارد شده اطلاعاتی ثبت نشده است");
+            classBaseResponse.setData(null);
+            return classBaseResponse;
+        }
+
+
     }
 
     @Override

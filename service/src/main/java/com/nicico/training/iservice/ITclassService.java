@@ -4,9 +4,9 @@ package com.nicico.training.iservice;
 */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ClassBaseResponse;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
 import request.evaluation.StudentEvaluationAnswerDto;
@@ -22,7 +22,6 @@ import com.nicico.training.dto.enums.ClassTypeDTO;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 public interface ITclassService {
 
@@ -160,7 +159,7 @@ public interface ITclassService {
     List<TclassDTO.TClassCurrentTerm> getAllTeacherByCurrentTerm(Long termId) throws NoSuchFieldException, IllegalAccessException;
 
     List<Tclass> getClassesViaTypeAndStatus(ClassStatusDTO status, ClassTypeDTO type);
-
+   ClassBaseResponse getClassViaTypeAndStatusAndTermInfo(ClassStatusDTO status, ClassTypeDTO type, String year, String term,int page, int size);
 
     ElsClassDetailResponse getClassDetail(String classCode);
 
