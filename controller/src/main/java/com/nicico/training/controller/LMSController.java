@@ -1,10 +1,10 @@
 package com.nicico.training.controller;
 
-import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
@@ -30,6 +30,7 @@ public class LMSController {
     private final IClassSession iClassSession;
     private final TclassBeanMapper tclassBeanMapper;
     private final ClassSessionMapper classSessionMapper;
+    private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
 
     @GetMapping("/getCourseDetails/{classCode}")
     public ResponseEntity<TclassTimeDetailBaseDTO> getCourseTimeDetails(@PathVariable String classCode) {
@@ -105,5 +106,21 @@ public class LMSController {
             tclassSessionDetailBaseDTO.setMessage("کلاس موجود نیست");
         }
         return ResponseEntity.ok(tclassSessionDetailBaseDTO);
+    }
+
+    @GetMapping("/getNeedAssessmentByNationalCode/{nationalCode}")
+    public ResponseEntity<NAReportForLMSResponseDTO>  getNeedAssessmentByNationalCode(@PathVariable String nationalCode) {
+
+        NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
+        NAReportForLMSDTO naReportForLMSDTO = iNeedsAssessmentReportsService.findNeedAssessmentForLMSByNationalCode(nationalCode);
+        if (naReportForLMSDTO.getNationalCode() != null) {
+            naReportForLMSResponseDTO.setData(naReportForLMSDTO);
+            naReportForLMSResponseDTO.setStatus(200);
+        } else {
+            naReportForLMSResponseDTO.setData(null);
+            naReportForLMSResponseDTO.setStatus(404);
+            naReportForLMSResponseDTO.setMessage("پرسنل یافت نشد");
+        }
+        return ResponseEntity.ok(naReportForLMSResponseDTO);
     }
 }

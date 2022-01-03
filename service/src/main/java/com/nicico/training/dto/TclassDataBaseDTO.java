@@ -1,7 +1,4 @@
 package com.nicico.training.dto;
-/* com.nicico.training.dto
-@Author:roya
-*/
 
 import lombok.Getter;
 import lombok.Setter;
