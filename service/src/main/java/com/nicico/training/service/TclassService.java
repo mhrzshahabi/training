@@ -2021,7 +2021,7 @@ public class TclassService implements ITclassService {
             PaginationDto paginationDto=new PaginationDto();
             paginationDto.setCurrent(page);
             paginationDto.setSize(size);
-            paginationDto.setTotal(classList.getTotalPages());
+            paginationDto.setTotal(classList.getTotalPages()-1);
             paginationDto.setTotalItems(classList.get().count());
             classBaseResponse.setPaginationDto(paginationDto);
             return classBaseResponse;
