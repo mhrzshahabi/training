@@ -5,13 +5,17 @@ import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
+import com.nicico.training.mapper.student.StudentMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.ClassSession;
+import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +34,8 @@ public class LMSController {
     private final IClassSession iClassSession;
     private final TclassBeanMapper tclassBeanMapper;
     private final ClassSessionMapper classSessionMapper;
+    private final IStudentService iStudentService;
+    private final StudentMapper studentMapper;
 
     @GetMapping("/getCourseDetails/{classCode}")
     public ResponseEntity<TclassTimeDetailBaseDTO> getCourseTimeDetails(@PathVariable String classCode) {
@@ -81,7 +87,6 @@ public class LMSController {
         return ResponseEntity.ok(tclassBaseDTO);
     }
 
-
     /**
      * date  should be like this "1395/07/18"
      *
@@ -91,19 +96,36 @@ public class LMSController {
      */
     @GetMapping("/getTClassSessionsByDate/")
     public ResponseEntity<TclassSessionDetailBaseDTO> getTClassSessionsByDate(@RequestParam String classCode,
-                                                                                              @RequestParam String sessionDate) {
-        TclassSessionDetailBaseDTO tclassSessionDetailBaseDTO=new TclassSessionDetailBaseDTO();
+                                                                              @RequestParam String sessionDate) {
+        TclassSessionDetailBaseDTO tclassSessionDetailBaseDTO = new TclassSessionDetailBaseDTO();
         Tclass tclass = iTclassService.getClassByCode(classCode);
         if (tclass != null) {
             List<ClassSession> classSessions = iClassSession.getClassSessionsByDate(tclass.getId(), sessionDate);
             List<ClassSessionDTO.TClassSessionsDetail> tClassSessionsDetails = classSessionMapper.toClassSessionDetailsList(classSessions);
             tclassSessionDetailBaseDTO.setData(tClassSessionsDetails);
             tclassSessionDetailBaseDTO.setStatus(200);
-        } else{
+        } else {
             tclassSessionDetailBaseDTO.setData(null);
             tclassSessionDetailBaseDTO.setStatus(409);
             tclassSessionDetailBaseDTO.setMessage("کلاس موجود نیست");
         }
         return ResponseEntity.ok(tclassSessionDetailBaseDTO);
+    }
+
+    /**
+     *return all active students in system
+     * @param page
+     * @param size
+     * @return
+     */
+    @GetMapping("/getAllActiveStudents/{page}/{size}")
+    public ResponseEntity<ActiveStudentsBaseDTO> getAllActiveStudents(@PathVariable Integer page, @PathVariable Integer size) {
+        ActiveStudentsBaseDTO activeStudentsBaseDTO = new ActiveStudentsBaseDTO();
+        Page<Student> studentInfoList = iStudentService.getAllActiveStudents(page, size);
+        List<StudentDTO.LmsInfo> infos = studentMapper.toStudentLmsInfoDto(studentInfoList.getContent());
+        activeStudentsBaseDTO.setInfos(infos);
+        activeStudentsBaseDTO.setStatus(200);
+
+        return ResponseEntity.ok(activeStudentsBaseDTO);
     }
 }

@@ -8,6 +8,7 @@ import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.model.Student;
+import org.springframework.data.domain.Page;
 import response.tclass.ElsStudentAttendanceListResponse;
 
 import java.util.List;
@@ -44,4 +45,6 @@ public interface IStudentService {
     Set<String> findAllRoleByNationalCode(String nationalCode);
 
      List<Student> getStudentByNationalCode(String nationalCode);
+
+    Page<Student> getAllActiveStudents(Integer page, Integer size);
 }

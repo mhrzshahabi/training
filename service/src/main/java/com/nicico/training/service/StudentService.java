@@ -20,6 +20,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -76,6 +80,16 @@ public class StudentService implements IStudentService {
     public List<Student> getStudentByNationalCode(String nationalCode) {
         List<Student> list = studentDAO.findByNationalCode(nationalCode);
         return list;
+    }
+
+    @Override
+    public Page<Student> getAllActiveStudents(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page, size
+                , Sort.by(
+                        Sort.Order.asc("LAST_NAME")
+                )
+        );
+        return studentDAO.findAllByDeletedIsNull(pageable);
     }
 
     @Transactional(readOnly = true)

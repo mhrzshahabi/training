@@ -87,6 +87,28 @@ public class StudentDTO {
 
     @Getter
     @Setter
+    @Accessors
+    @ApiModel("Student - LMS - Info")
+    public static class LmsInfo {
+        private Long id;
+        @ApiModelProperty(required = true)
+        private String firstName;
+        @ApiModelProperty(required = true)
+        private String lastName;
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        @ApiModelProperty(required = true)
+        private String personnelNo;
+        private String birthCertificateNo;
+        private String companyName;
+        private String personnelNo2;
+        private ContactInfoDTO.Info contactInfo;
+        private String peopleType;
+
+    }
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("Student - Create")
     public static class Create extends StudentDTO {
