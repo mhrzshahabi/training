@@ -32,6 +32,7 @@ public interface INeedsAssessmentReportsService {
     void delete(Long id);
 
     NeedAssessmentReportUserObj findNeedAssessmentByNationalCode(String nationalCode);
+    NeedAssessmentReportUserObj findNeedAssessmentByNationalCodeAndPostCode(String nationalCode,String postCode);
 
 
 }

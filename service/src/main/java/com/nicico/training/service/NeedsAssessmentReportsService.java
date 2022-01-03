@@ -566,6 +566,49 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         return needAssessmentReportUserObj;
     }
 
+    @Override
+    public NeedAssessmentReportUserObj findNeedAssessmentByNationalCodeAndPostCode(String nationalCode, String postCode) {
+        List<ParameterValue> allParameter = parameterValueDAO.findAll();
+        List<NeedAssessmentReportUserDTO> reportUserDTOS = new ArrayList<>();
+        NeedAssessmentReportUserObj needAssessmentReportUserObj = new NeedAssessmentReportUserObj();
+        PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(nationalCode);
+        if (personalityInfo!=null  && personalityInfo.getPersonnelNo()!=null){
+            if(getCourseListForBpms(postCode,"Post",nationalCode,personalityInfo.getPersonnelNo())!=null) {
+                List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(postCode, "Post", nationalCode, personalityInfo.getPersonnelNo());
+                Set<Long> assessmentsType = needsAssessmentReportList.stream().map(NeedsAssessmentReportsDTO.ReportInfo::getNeedsAssessmentPriorityId).collect(Collectors.toSet());
+                for (Long aLong : assessmentsType) {
+                    NeedAssessmentReportUserDTO needAssessmentReportUserDTO = new NeedAssessmentReportUserDTO();
+                    String title = allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(aLong)).collect(Collectors.toList()).get(0).getTitle();
+                    needAssessmentReportUserDTO.setAssessment(title);
+                    List<NeedAssessmentReportUserDTO.CompetenceInfo> competenceInfoList = new ArrayList<>();
+                    needsAssessmentReportList.stream().filter(reportInfo -> reportInfo.getNeedsAssessmentPriorityId().equals(aLong)).collect(Collectors.toList()).forEach(reportInfo -> {
+                        NeedAssessmentReportUserDTO.CompetenceInfo competenceInfo = new NeedAssessmentReportUserDTO.CompetenceInfo();
+                        competenceInfo.setCompetence(reportInfo.getCompetence().getTitle());
+                        competenceInfo.setCompetenceTypeName(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getCompetence().getCompetenceTypeId())).collect(Collectors.toList()).get(0).getTitle());
+                        competenceInfo.setNeedsAssessmentDomainIdName(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getNeedsAssessmentDomainId())).collect(Collectors.toList()).get(0).getTitle());
+                        competenceInfo.setSkillCode(reportInfo.getSkill().getCode());
+                        competenceInfo.setSkill(reportInfo.getSkill().getTitleFa());
+                        competenceInfo.setCourseCode(reportInfo.getSkill().getCourse().getCode());
+                        competenceInfo.setCourseName(reportInfo.getSkill().getCourse().getTitleFa());
+                        competenceInfo.setCourseDuration(reportInfo.getSkill().getCourse().getTheoryDuration());
+                        competenceInfo.setCourseState(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getSkill().getCourse().getScoresState())).collect(Collectors.toList()).get(0).getTitle());
+                        competenceInfoList.add(competenceInfo);
+                    });
+
+                    needAssessmentReportUserDTO.setCompetenceInfoList(competenceInfoList);
+                    needAssessmentReportUserDTO.setNeedAssessmentCount(competenceInfoList.size());
+                    needAssessmentReportUserDTO.setNeedAssessmentDurationCount(competenceInfoList.stream().mapToDouble(NeedAssessmentReportUserDTO.CompetenceInfo::getCourseDuration).sum());
+                    needAssessmentReportUserDTO.setNeedAssessmentPassCount(competenceInfoList.stream().filter(competenceInfo -> competenceInfo.getCourseState().equalsIgnoreCase(PASS)).count());
+                    needAssessmentReportUserDTO.setNeedAssessmentDurationPass(competenceInfoList.stream().filter(competenceInfo -> competenceInfo.getCourseState().equalsIgnoreCase(PASS)).mapToDouble(NeedAssessmentReportUserDTO.CompetenceInfo::getCourseDuration).sum());
+                    reportUserDTOS.add(needAssessmentReportUserDTO);
+                }
+            }
+            needAssessmentReportUserObj.setReportUserDTOS(reportUserDTOS);
+            needAssessmentReportUserObj.setCode(personalityInfo.getPostCode());
+            needAssessmentReportUserObj.setPostTitle(personalityInfo.getPostTitle());
+        }
+    }
+
 
     @Transactional(readOnly = true)
     @Override

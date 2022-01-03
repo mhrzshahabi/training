@@ -5,6 +5,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
@@ -110,6 +111,6 @@ public class LMSController {
 
     @GetMapping("/getNeedAssessmentByNationalCodeAndPastCode/{nationalCode}/{postCode}")
     public ResponseEntity<NAReportForLMSResponseDTO> getNeedAseessmentByNationalCodeAndPostCode(@PathVariable String nationalCode,@PathVariable String postCode){
-        iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
-    }
+       = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
+
 }
