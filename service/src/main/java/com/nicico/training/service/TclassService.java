@@ -2014,7 +2014,7 @@ public class TclassService implements ITclassService {
         if( termDAO.getTermByCode(year+"-"+term)!=null) {
             classTerm = termDAO.getTermByCode(year + "-" + term);
             Pageable pageable=PageRequest.of(page,size,  Sort.by(
-                    Sort.Order.asc("id")));
+                    Sort.Order.asc("c_title_class")));
            Page<Tclass> classList = tclassDAO.findAllClassWithTermFilter(longs, status.getKey() + "", classTerm.getId(), pageable);
             classBaseResponse.setStatus(200);
             classBaseResponse.setData(classList.stream().toList());
