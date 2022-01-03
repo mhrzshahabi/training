@@ -16,9 +16,11 @@ import com.nicico.training.model.Tclass;
 import com.nicico.training.model.Teacher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import response.PaginationDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,9 +116,9 @@ public class LMSController {
         return ResponseEntity.ok(tclassSessionDetailBaseDTO);
     }
 
-    @GetMapping("/getActiveTeachers")
-    public ResponseEntity<TeacherInfoBaseDTO> getActiveTeachers(){
-       List<Teacher> teachers= iTeacherService.getActiveTeachers();
+    @GetMapping("/getActiveTeachers/{page}/{size}")
+    public ResponseEntity<TeacherInfoBaseDTO> getActiveTeachers(@PathVariable("page")  int page,@PathVariable("size") int size){
+      Page<Teacher> teachers= iTeacherService.getActiveTeachers(page,size);
        TeacherInfoBaseDTO teacherInfoBaseDTO=new TeacherInfoBaseDTO();
         if(teachers==null) {
             teacherInfoBaseDTO.setMessage("استاد فعالی وجود ندارد");
@@ -125,10 +127,16 @@ public class LMSController {
         }
         else {
             teacherInfoBaseDTO.setStatus(200);
-            teacherInfoBaseDTO.setData(teacherBeanMapper.toTeacherInfoDTOs(teachers));
+            teacherInfoBaseDTO.setData(teacherBeanMapper.toTeacherInfoDTOs(teachers.stream().toList()));
+            PaginationDto paginationDto=new PaginationDto();
+            paginationDto.setSize(size);
+            paginationDto.setTotal(teachers.getTotalPages()-1);
+            paginationDto.setTotalItems(teachers.get().count());
+            teacherInfoBaseDTO.setPaginationDto(paginationDto);
         }
 
       return ResponseEntity.ok(teacherInfoBaseDTO);
 
     }
+
 }

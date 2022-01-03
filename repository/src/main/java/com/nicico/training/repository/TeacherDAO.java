@@ -82,6 +82,6 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     List<Map<String,Object>> findAllByNationalCodeAndMobileNumber(@Param("mobile") String mobileNumber,@Param("nationalCode") String nationalCode);
 
     @Query(value = "SELECT\n" + " * FROM tbl_teacher WHERE e_deleted is NULL AND b_enabled= 1",nativeQuery = true)
-    List<Teacher> findAllActiveTeacher();
+    Page<Teacher> findAllActiveTeacher(Pageable pageable);
 
 }

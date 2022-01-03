@@ -18,6 +18,10 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.teacher.dto.TeacherInCourseDto;
@@ -902,8 +906,10 @@ public class TeacherService implements ITeacherService {
     }
 
     @Override
-    public List<Teacher> getActiveTeachers() {
-     List<Teacher> activeTeachers= teacherDAO.findAllActiveTeacher();
+    public Page<Teacher> getActiveTeachers(int page, int size) {
+        Pageable pageable= PageRequest.of(page,size, Sort.by(
+                Sort.Order.asc("id")));
+        Page<Teacher> activeTeachers= teacherDAO.findAllActiveTeacher(pageable);
      return activeTeachers;
     }
 

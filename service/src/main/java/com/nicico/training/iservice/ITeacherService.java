@@ -5,9 +5,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.model.Category;
-import com.nicico.training.model.Role;
 import com.nicico.training.model.Subcategory;
 import com.nicico.training.model.Teacher;
+import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -59,6 +59,6 @@ public interface ITeacherService {
 
     Long getTeacherIdByNationalCode(String nationalCode);
 
-    List<Teacher> getActiveTeachers();
+    Page<Teacher> getActiveTeachers(int page, int size);
 
 }
