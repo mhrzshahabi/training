@@ -1,7 +1,9 @@
 package com.nicico.training.mapper.tclass;
 
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.model.*;
+import com.nicico.training.model.enums.ClassStatus;
 import org.mapstruct.*;
 import org.springframework.transaction.annotation.Transactional;
 import response.tclass.dto.TclassDto;
@@ -28,7 +30,10 @@ public interface TclassBeanMapper {
             @Mapping(target = "teacherInfo.teacherCode",source = "teacher.teacherCode"),
             @Mapping(target = "teacherInfo.teacherName",source = "teacher",qualifiedByName = "getTeacherName"),
             @Mapping(target = "classSessions",source = "classSessions", ignore = true,qualifiedByName = "toClassSessionDTOS"),
-            @Mapping(target = "supervisorName",source = "supervisor",ignore = false,qualifiedByName = "getSupervisorName")
+            @Mapping(target = "supervisorName",source = "supervisor",ignore = false,qualifiedByName = "getSupervisorName"),
+            @Mapping(target = "classStatus",source = "tclass",qualifiedByName = "getClassStatus"),
+            @Mapping(target = "classType",source = "tclass.teachingType")
+
     })
     TclassDTO.TClassTimeDetails toTcClassTimeDetail(Tclass tclass);
 
@@ -98,6 +103,19 @@ public interface TclassBeanMapper {
            }
        }
        return s;
+   }
+
+   @Named("getClassStatus")
+    default String getClassStatus(Tclass tclass){
+      switch (tclass.getClassStatus()){
+          case "1":return "برنامه ریزی";
+          case "2": return "در حال اجرا";
+          case "3": return "پایان یافته";
+          case"4": return "لغو شده";
+          case"5":return "اختتام";
+          default: return null;
+      }
+
    }
 
 }

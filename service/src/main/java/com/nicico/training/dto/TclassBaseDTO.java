@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import response.BaseResponse;
+import response.PaginationDto;
 
 import javax.validation.constraints.NotNull;
 import java.util.*;
@@ -21,4 +22,5 @@ import java.util.*;
 @Accessors(chain = true)
 public class TclassBaseDTO extends BaseResponse {
     private List<TclassDTO.TClassTimeDetails> data;
+    private PaginationDto pagination;
 }

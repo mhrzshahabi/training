@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import response.PaginationDto;
@@ -114,6 +115,30 @@ public class LMSController {
             tclassSessionDetailBaseDTO.setMessage("کلاس موجود نیست");
         }
         return ResponseEntity.ok(tclassSessionDetailBaseDTO);
+    }
+
+    /**
+     * @param classStatus should be like this PLANNING,INPROGRESS,...
+     * @param classType should be like this JOBTRAINING,RETRAINING,...
+     * @param year  should be like this  "1395"
+     * @param term  should be like "1" ,"2" , "3" or "4"
+     * @return
+     */
+    @GetMapping("/getClassDetailsViaYearAndTErm/{page}/{size}")
+    public ResponseEntity<TclassBaseDTO> getCourseDetailsViaStatusAndTypeAndYearAndTerm(@RequestParam ClassStatusDTO classStatus, @RequestParam ClassTypeDTO classType,
+                                                                                        @RequestParam String year, @RequestParam String term, @PathVariable("page") int page, @PathVariable("size") int size){
+      ClassBaseResponse classBaseResponse=  iTclassService.getClassViaTypeAndStatusAndTermInfo(classStatus,classType,year,term,page,size);
+      TclassBaseDTO tclassBaseDTO=new TclassBaseDTO();
+      tclassBaseDTO.setStatus(classBaseResponse.getStatus());
+      tclassBaseDTO.setMessage(classBaseResponse.getMessage());
+      if(classBaseResponse.getData()!=null){
+         tclassBaseDTO.setData(tclassBeanMapper.toTclassTimeDetailList(classBaseResponse.getData()));
+         tclassBaseDTO.setPagination(classBaseResponse.getPaginationDto());
+      }
+      else{
+          tclassBaseDTO.setData(null);
+      }
+      return ResponseEntity.ok(tclassBaseDTO);
     }
 
     @GetMapping("/getActiveTeachers/{page}/{size}")
