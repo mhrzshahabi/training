@@ -4,6 +4,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.IStudentService;
 import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.ITclassService;
@@ -122,6 +123,17 @@ public class LMSController {
         return ResponseEntity.ok(tclassSessionDetailBaseDTO);
     }
 
+    @GetMapping("/getNeedAssessmentByNationalCodeAndPastCode/{nationalCode}/{postCode}")
+    public ResponseEntity<NAReportForLMSResponseDTO> getNeedAssessmentByNationalCodeAndPostCode(@RequestParam String nationalCode,@RequestParam String postCode){
+        NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
+        NAReportForLMSDTO  naReportForLMSDTO=new NAReportForLMSDTO();
+
+            naReportForLMSResponseDTO = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
+
+
+        return ResponseEntity.ok(naReportForLMSResponseDTO);
+    }
+
     /**
      *return all active students in system
      * @param page
@@ -203,3 +215,7 @@ public class LMSController {
     }
 
 }
+
+
+
+

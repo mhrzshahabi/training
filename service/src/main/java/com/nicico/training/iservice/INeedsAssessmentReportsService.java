@@ -30,6 +30,7 @@ public interface INeedsAssessmentReportsService {
     void delete(Long id);
 
     NeedAssessmentReportUserObj findNeedAssessmentByNationalCode(String nationalCode);
+    NAReportForLMSResponseDTO findNeedAssessmentByNationalCodeAndPostCode(String nationalCode, String postCode);
 
     NAReportForLMSDTO findNeedAssessmentForLMSByNationalCode(String nationalCode);
 
