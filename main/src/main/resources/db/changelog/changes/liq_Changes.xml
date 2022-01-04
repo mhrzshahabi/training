@@ -3362,4 +3362,40 @@ WHERE
         </createTable>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-029">
+        <createTable tableName="TBL_REQUEST_ITEM_AUD">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_REQUEST_ITEM_AUDPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_REQUEST_ITEM_AUDPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="e_enabled" type="number(19, 0)"/>
+            <column name="e_deleted" type="number(19, 0)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
+
+            <column name="personnel_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="name" type="VARCHAR2(255 CHAR)"/>
+            <column name="last_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="post" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_group_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="state" type="NUMBER(10, 0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-030">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_REQUEST_ITEM_AUD"
+                                 constraintName="FK_TBL_REQUEST_ITEM_AUD_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
+                                 validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>

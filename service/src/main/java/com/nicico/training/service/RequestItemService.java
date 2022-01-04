@@ -85,7 +85,9 @@ public class RequestItemService implements IRequestItemService {
     @Override
 //    @CacheEvict(value = "searchIRequestItemService", key = "{#id}", allEntries = true)
     public void delete(Long id) {
-        requestItemDAO.deleteById(id);
+        RequestItem requestItem = get(id);
+        requestItem.setDeleted(75L);
+        requestItemDAO.saveAndFlush(requestItem);
     }
 
     @Override
@@ -259,6 +261,11 @@ public class RequestItemService implements IRequestItemService {
             infoList.add(info);
         });
         return infoList;
+    }
+
+    @Override
+    public List<Long> getAllRequestItemIdsWithCompetenceId(Long competenceId) {
+        return requestItemDAO.findAllRequestItemIdsWithCompetenceId(competenceId);
     }
 
     @Override

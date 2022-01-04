@@ -16,6 +16,7 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.service.MasterDataService;
 import com.nicico.training.service.PersonnelService;
+import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -87,7 +88,7 @@ public class MasterDataRestController {
         List<CompetenceWebserviceDTO.TupleInfo> roots = modelMapper.map(masterDataService.getDepartmentsByParentCode("RootByType?peopleType=Personal"), new TypeToken<List<CompetenceWebserviceDTO.TupleInfo>>() {
         }.getType());
         for (CompetenceWebserviceDTO.TupleInfo root : roots)
-            root.setParentId(new Long(0));
+            root.setParentId(0L);
         return new ResponseEntity<>(roots, HttpStatus.OK);
     }
 
@@ -188,6 +189,8 @@ public class MasterDataRestController {
             ISC<JobExpResponse> isc = new ISC<>(response);
             return new ResponseEntity<>(isc, HttpStatus.OK);
 
+        } catch (FeignException fe) {
+            throw new TrainingException(TrainingException.ErrorType.Unknown);
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
@@ -222,6 +225,8 @@ public class MasterDataRestController {
             ISC<JobExpResponse.postInfo> isc = new ISC<>(response);
             return new ResponseEntity<>(isc, HttpStatus.OK);
 
+        } catch (FeignException fe) {
+            throw new TrainingException(TrainingException.ErrorType.Unknown);
         } catch (Exception e) {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
