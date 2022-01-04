@@ -92,6 +92,11 @@ public class StudentService implements IStudentService {
         return studentDAO.findAllByDeletedIsNull(pageable);
     }
 
+    @Override
+    public List<Student> getAllStudentsOfClassByClassCode(String classCode) {
+        return studentDAO.getAllStudentsOfClassByClassCode(classCode);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<StudentDTO.Info> list() {
