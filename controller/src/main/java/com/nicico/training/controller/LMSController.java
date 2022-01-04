@@ -6,16 +6,23 @@ import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
+import com.nicico.training.mapper.teacher.TeacherBeanMapper;
+import com.nicico.training.mapper.teacher.TeacherBeanMapperImpl;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.Teacher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import response.PaginationDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -28,8 +35,10 @@ public class LMSController {
 
     private final ITclassService iTclassService;
     private final IClassSession iClassSession;
+    private final ITeacherService iTeacherService;
     private final TclassBeanMapper tclassBeanMapper;
     private final ClassSessionMapper classSessionMapper;
+    private final TeacherBeanMapper teacherBeanMapper;
 
     @GetMapping("/getCourseDetails/{classCode}")
     public ResponseEntity<TclassTimeDetailBaseDTO> getCourseTimeDetails(@PathVariable String classCode) {
@@ -106,4 +115,28 @@ public class LMSController {
         }
         return ResponseEntity.ok(tclassSessionDetailBaseDTO);
     }
+
+    @GetMapping("/getActiveTeachers/{page}/{size}")
+    public ResponseEntity<TeacherInfoBaseDTO> getActiveTeachers(@PathVariable("page")  int page,@PathVariable("size") int size){
+      Page<Teacher> teachers= iTeacherService.getActiveTeachers(page,size);
+       TeacherInfoBaseDTO teacherInfoBaseDTO=new TeacherInfoBaseDTO();
+        if(teachers==null) {
+            teacherInfoBaseDTO.setMessage("استاد فعالی وجود ندارد");
+            teacherInfoBaseDTO.setStatus(409);
+            teacherInfoBaseDTO.setData(null);
+        }
+        else {
+            teacherInfoBaseDTO.setStatus(200);
+            teacherInfoBaseDTO.setData(teacherBeanMapper.toTeacherInfoDTOs(teachers.stream().toList()));
+            PaginationDto paginationDto=new PaginationDto();
+            paginationDto.setSize(size);
+            paginationDto.setTotal(teachers.getTotalPages()-1);
+            paginationDto.setTotalItems(teachers.get().count());
+            teacherInfoBaseDTO.setPaginationDto(paginationDto);
+        }
+
+      return ResponseEntity.ok(teacherInfoBaseDTO);
+
+    }
+
 }
