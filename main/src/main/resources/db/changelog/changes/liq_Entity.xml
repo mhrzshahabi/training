@@ -3358,4 +3358,67 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-034">
+        <createTable tableName="tbl_file_label">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_file_labelpk"/>
+            </column>
+            <column name="C_CREATED_BY" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="D_CREATED_DATE" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="E_DELETED" type="NUMBER(19, 0)"/>
+            <column name="E_ENABLED" type="NUMBER(19, 0)"/>
+            <column name="C_LAST_MODIFIED_BY" type="VARCHAR2(255 CHAR)"/>
+            <column name="D_LAST_MODIFIED_DATE" type="TIMESTAMP"/>
+            <column name="N_VERSION" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_label_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-036">
+        <createTable tableName="tbl_help_files">
+            <column name="ID" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_help_filespk"/>
+            </column>
+            <column name="C_CREATED_BY" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="D_CREATED_DATE" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="E_DELETED" type="NUMBER(19, 0)"/>
+            <column name="E_ENABLED" type="NUMBER(19, 0)"/>
+            <column name="C_LAST_MODIFIED_BY" type="VARCHAR2(255 CHAR)"/>
+            <column name="D_LAST_MODIFIED_DATE" type="TIMESTAMP"/>
+            <column name="N_VERSION" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_file_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="group_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="key" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-038">
+        <createTable tableName="TBL_HELP_FILES_LABEL">
+            <column name="F_HELP_FILES" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="F_FILE_LABEL" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
