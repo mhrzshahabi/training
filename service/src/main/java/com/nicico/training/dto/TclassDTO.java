@@ -892,6 +892,8 @@ public class TclassDTO {
         private String supervisorName;
         private String plannerName;
         private String organizer;
+        private String classStatus;
+        private String classType;
     }
 
     @Getter

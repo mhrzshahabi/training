@@ -1,25 +1,33 @@
 package com.nicico.training.controller;
 
-import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.IStudentService;
+import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
 import com.nicico.training.mapper.student.StudentMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
+import com.nicico.training.mapper.teacher.TeacherBeanMapper;
+import com.nicico.training.mapper.teacher.TeacherBeanMapperImpl;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.Teacher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import response.PaginationDto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -32,8 +40,11 @@ public class LMSController {
 
     private final ITclassService iTclassService;
     private final IClassSession iClassSession;
+    private final ITeacherService iTeacherService;
     private final TclassBeanMapper tclassBeanMapper;
     private final ClassSessionMapper classSessionMapper;
+    private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
+    private final TeacherBeanMapper teacherBeanMapper;
     private final IStudentService iStudentService;
     private final StudentMapper studentMapper;
 
@@ -112,6 +123,17 @@ public class LMSController {
         return ResponseEntity.ok(tclassSessionDetailBaseDTO);
     }
 
+    @GetMapping("/getNeedAssessmentByNationalCodeAndPastCode/{nationalCode}/{postCode}")
+    public ResponseEntity<NAReportForLMSResponseDTO> getNeedAssessmentByNationalCodeAndPostCode(@RequestParam String nationalCode,@RequestParam String postCode){
+        NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
+        NAReportForLMSDTO  naReportForLMSDTO=new NAReportForLMSDTO();
+
+            naReportForLMSResponseDTO = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
+
+
+        return ResponseEntity.ok(naReportForLMSResponseDTO);
+    }
+
     /**
      *return all active students in system
      * @param page
@@ -152,4 +174,72 @@ public class LMSController {
 
         return ResponseEntity.ok(activeStudentsBaseDTO);
     }
+
+    @GetMapping("/getNeedAssessmentByNationalCode/{nationalCode}")
+    public ResponseEntity<NAReportForLMSResponseDTO>  getNeedAssessmentByNationalCode(@PathVariable String nationalCode) {
+
+        NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
+        NAReportForLMSDTO naReportForLMSDTO = iNeedsAssessmentReportsService.findNeedAssessmentForLMSByNationalCode(nationalCode);
+        if (naReportForLMSDTO.getNationalCode() != null) {
+            naReportForLMSResponseDTO.setData(naReportForLMSDTO);
+            naReportForLMSResponseDTO.setStatus(200);
+        } else {
+            naReportForLMSResponseDTO.setData(null);
+            naReportForLMSResponseDTO.setStatus(404);
+            naReportForLMSResponseDTO.setMessage("پرسنل یافت نشد");
+        }
+        return ResponseEntity.ok(naReportForLMSResponseDTO);
+    }
+
+    /**
+     * @param classStatus should be like this PLANNING,INPROGRESS,...
+     * @param classType should be like this JOBTRAINING,RETRAINING,...
+     * @param year  should be like this  "1395"
+     * @param term  should be like "1" ,"2" , "3" or "4"
+     * @return
+     */
+    @GetMapping("/getClassDetailsViaYearAndTErm/{page}/{size}")
+    public ResponseEntity<TclassBaseDTO> getCourseDetailsViaStatusAndTypeAndYearAndTerm(@RequestParam ClassStatusDTO classStatus, @RequestParam ClassTypeDTO classType,
+                                                                                        @RequestParam String year, @RequestParam String term, @PathVariable("page") int page, @PathVariable("size") int size){
+      ClassBaseResponse classBaseResponse=  iTclassService.getClassViaTypeAndStatusAndTermInfo(classStatus,classType,year,term,page,size);
+      TclassBaseDTO tclassBaseDTO=new TclassBaseDTO();
+      tclassBaseDTO.setStatus(classBaseResponse.getStatus());
+      tclassBaseDTO.setMessage(classBaseResponse.getMessage());
+      if(classBaseResponse.getData()!=null){
+         tclassBaseDTO.setData(tclassBeanMapper.toTclassTimeDetailList(classBaseResponse.getData()));
+         tclassBaseDTO.setPagination(classBaseResponse.getPaginationDto());
+      }
+      else{
+          tclassBaseDTO.setData(null);
+      }
+      return ResponseEntity.ok(tclassBaseDTO);
+    }
+
+    @GetMapping("/getActiveTeachers/{page}/{size}")
+    public ResponseEntity<TeacherInfoBaseDTO> getActiveTeachers(@PathVariable("page")  int page,@PathVariable("size") int size){
+      Page<Teacher> teachers= iTeacherService.getActiveTeachers(page,size);
+       TeacherInfoBaseDTO teacherInfoBaseDTO=new TeacherInfoBaseDTO();
+        if(teachers==null) {
+            teacherInfoBaseDTO.setMessage("استاد فعالی وجود ندارد");
+            teacherInfoBaseDTO.setStatus(409);
+            teacherInfoBaseDTO.setData(null);
+        }
+        else {
+            teacherInfoBaseDTO.setStatus(200);
+            teacherInfoBaseDTO.setData(teacherBeanMapper.toTeacherInfoDTOs(teachers.stream().toList()));
+            PaginationDto paginationDto=new PaginationDto();
+            paginationDto.setSize(size);
+            paginationDto.setTotal(teachers.getTotalPages()-1);
+            paginationDto.setTotalItems(teachers.get().count());
+            teacherInfoBaseDTO.setPaginationDto(paginationDto);
+        }
+
+      return ResponseEntity.ok(teacherInfoBaseDTO);
+
+    }
+
 }
+
+
+
+

@@ -833,13 +833,24 @@
 
     var ToolStripButton_PrintJasper = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ سوالات پیش آزمون",
+        title: "چاپ pdf سوالات پیش آزمون",
         click: function () {
             let params = {};
             let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
             params.teacher = ListGrid_class_Evaluation.getSelectedRecord().teacherFullName;
 
             printPreTest(data, params, "testForm.jasper");
+        }
+    });
+    var ToolStripButton_PrintJasperWord = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "چاپ word سوالات پیش آزمون",
+        click: function () {
+            let params = {};
+            let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
+            params.teacher = ListGrid_class_Evaluation.getSelectedRecord().teacherFullName;
+
+            printPreTest(data, params, "testForm.jasper","WORD");
         }
     });
 
@@ -1730,7 +1741,7 @@
             ToolStripButton_InsertQuestionFromLatestQuestions_PreTest,
             ToolStripButton_PrintJasper,
             ToolStripButton_RegisterScorePreTest,
-
+            ToolStripButton_PrintJasperWord,
             isc.IButton.create({
                 // disabled: ListGrid_class_Evaluation.getSelectedRecord().onlineFinalExamStatus,
                 title: "بارم بندی و ارسال پیش آزمون",

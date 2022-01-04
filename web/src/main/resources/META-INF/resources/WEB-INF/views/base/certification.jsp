@@ -9,7 +9,6 @@
 // <script>
 
     let saveMethod = null;
-
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
     RestDataSource_Competence_Request = isc.TrDS.create({
@@ -50,6 +49,24 @@
             {name: "competenceReqId", hidden: true}
         ],
         fetchDataURL: requestItemUrl + "/spec-list"
+    });
+    RestDataSource_Competence_Request_Item_Audit = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "nationalCode", title: "کدملی", filterOperator: "iContains"},
+            {name: "personnelNumber", title: "شماره پرسنلی 10 رقمی", filterOperator: "iContains"},
+            {name: "personnelNo2", title: "شماره پرسنلی 6 رقمی", filterOperator: "iContains"},
+            {name: "name", title: "نام", filterOperator: "iContains"},
+            {name: "lastName", title: "نام خانوادگی", filterOperator: "iContains"},
+            {name: "affairs", title: "امور", filterOperator: "iContains"},
+            {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
+            {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
+            {name: "state.titleFa", title: "وضعیت", filterOperator: "iContains"},
+            {name: "lastModifiedDate", title: "تغییر داده شده درتاریخ"},
+            {name: "lastModifiedBy", title: "تغییر داده شده توسط"},
+            {name: "revType", title: "نوع تغییر"},
+            {name: "deleted", hidden: true}
+        ]
     });
     RestDataSource_Competence_Request_Item_Valid_Data = isc.TrDS.create({
         fields: [
@@ -208,6 +225,23 @@
             })
         ]
     });
+    Menu_Requests_Certification = isc.Menu.create({
+        data: [
+            {
+                title: "<spring:message code="refresh"/>",
+                click: function () {
+                    ListGrid_Competence_Request.invalidateCache();
+                }
+            },
+            {
+                title: "تاریخچه تغییرات آیتم های درخواست",
+                click: function () {
+                    let competenceId = ListGrid_Competence_Request.getSelectedRecord().id;
+                    showRequestItemsAudit(competenceId);
+                }
+            }
+        ]
+    });
 
     //----------------------------------------------------Request Window------------------------------------------------
 
@@ -321,6 +355,7 @@
         height: "100%",
         <sec:authorize access="hasAuthority('CompetenceRequest_R')">
         dataSource: RestDataSource_Competence_Request,
+        contextMenu: Menu_Requests_Certification,
         </sec:authorize>
         autoFetchData: true,
         styleName: 'expandList',
@@ -450,7 +485,6 @@
                                                         for (let i=0;i<XL_row_object.length;i++) {
                                                             if(ListGrid_Competence_Request_Items.getData().filter(c =>
                                                                 c.nationalCode === Object.values(XL_row_object[i])[0]).length === 0) {
-                                                                // debugger;
                                                                 let current = {
                                                                     nationalCode: XL_row_object[i]["کدملی"],
                                                                     personnelNumber: XL_row_object[i]["شماره پرسنلی 10 رقمی"],
@@ -1297,14 +1331,14 @@
                     width: "10%",
                     align: "center",
                     canEdit: false,
-                    autoFetchData: false,
-                    optionDataSource: RestDataSource_Competence_Request_Category,
-                    displayField: "titleFa",
-                    valueField: "id",
-                    filterFields: ["titleFa"],
-                    pickListProperties: {
-                        showFilterEditor: false
-                    }
+                    // autoFetchData: false,
+                    // optionDataSource: RestDataSource_Competence_Request_Category,
+                    // displayField: "titleFa",
+                    // valueField: "id",
+                    // filterFields: ["titleFa"],
+                    // pickListProperties: {
+                    //     showFilterEditor: false
+                    // }
                 },
                 {
                     name: "state",
@@ -1361,7 +1395,6 @@
 
         RestDataSource_Competence_Request_Item_Valid_Data.fetchDataURL = requestItemUrl + "/valid-data/" + requestItemId;
         ListGrid_Request_Item_Valid_Data.fetchData();
-        ListGrid_Request_Item_Valid_Data.invalidateCache();
         Window_Request_Item_Valid_Data.show();
     }
     function editRequestItem(record) {
@@ -1451,6 +1484,126 @@
                 break;
             }
         }
+    }
+    function showRequestItemsAudit(competenceId) {
+
+        let ListGrid_Request_Item_Show_Audit = isc.TrLG.create({
+            canAutoFitFields: true,
+            width: "100%",
+            height: 600,
+            <sec:authorize access="hasAuthority('CompetenceRequest_R')">
+            dataSource: RestDataSource_Competence_Request_Item_Audit,
+            </sec:authorize>
+            setAutoFitExtraRecords: true,
+            autoFetchData: false,
+            showFilterEditor: false,
+            fields: [
+                {
+                    name: "id",
+                    hidden: true,
+                    primaryKey: true
+                },
+                {
+                    name: "nationalCode",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "personnelNumber",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "personnelNo2",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "name",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "lastName",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "affairs",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "post",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "workGroupCode",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "state.titleFa",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "lastModifiedDate",
+                    width: "10%",
+                    align: "center",
+                    formatCellValue: function (value) {
+                        if (value) {
+                            let date = new Date (value);
+                            return date.toLocaleString('fa-IR');
+                        }
+                    }
+                },
+                {
+                    name: "lastModifiedBy",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "revType",
+                    width: "10%",
+                    align: "center",
+                    formatCellValue: function (value, record) {
+                        if (value === 0)
+                            return "اضافه شده";
+                        else if (value === 1) {
+                            if (record.deleted === 75)
+                                return "حذف شده";
+                            else
+                                return "ویرایش شده";
+                        } else
+                            return "";
+                    }
+                }
+            ]
+        });
+
+        let Window_Request_Item_Show_Audit = isc.Window.create({
+            width: "90%",
+            height: 625,
+            numCols: 2,
+            title: "تاریخچه تغییرات آیتم های درخواست",
+            items: [
+                ListGrid_Request_Item_Show_Audit,
+                isc.MyHLayoutButtons.create({
+                    members: [
+                        isc.IButtonCancel.create({
+                            title: "<spring:message code="close"/>",
+                            click: function () {
+                                Window_Request_Item_Show_Audit.close();
+                            }
+                        })]
+                })]
+        });
+
+        RestDataSource_Competence_Request_Item_Audit.fetchDataURL = requestItemAuditUrl + "/change-list/" + competenceId;
+        ListGrid_Request_Item_Show_Audit.fetchData();
+        Window_Request_Item_Show_Audit.show();
     }
 
     function competenceRequestTotalAll(records) {

@@ -28,6 +28,10 @@
       "code": "Menu_BasicInfo_Personnel",
       "title": "منوی اطلاعات پایه - اطلاعات پرسنلی"
     },
+    {
+      "code": "Menu_BasicInfo_HelpFiles",
+      "title": "منوی اطلاعات پایه - فایل های آموزشی"
+    },
 
 
     {
@@ -662,6 +666,13 @@
     {"code": "QuestionnaireQuestion_U","title": "ویرایش پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_D","title": "حذف پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_P","title": "چاپ پرسشنامه - پرسشنامه - مقدار"},
+    {"code": "HelpFiles_C","title": "ایجاد فایل آموزشی"},
+    {"code": "HelpFiles_R","title": "مشاهده فایل آموزشی"},
+    {"code": "HelpFiles_U","title": "ویرایش فایل آموزشی"},
+    {"code": "HelpFiles_D","title": "حذف فایل آموزشی"},
+    {"code": "HelpFiles_Download","title": "دانلود فایل آموزشی"},
+    {"code": "FileLabel_C","title": "مدیریت برچسب ها"},
+
     {"code": "TclassSessionsTab", "title": "کلاس - تب جلسات"},
     {"code": "TclassCheckListTab", "title": "کلاس - تب چک لیست"},
     {"code": "TclassClassDocumentsTab", "title": "کلاس - تب مستندات کلاس"},
