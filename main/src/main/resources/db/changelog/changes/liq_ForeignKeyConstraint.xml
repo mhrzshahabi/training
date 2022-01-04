@@ -1311,4 +1311,11 @@
     <changeSet author="nick (generated)" id="1638772362566-583">
         <addForeignKeyConstraint baseColumnNames="F_SUBCATEGORY" baseTableName="TBL_OPERATIONAL_ROLE_SUBCATEGORY" constraintName="FKSubCategoryInOperationalRoleSubCategory" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_SUB_CATEGORY" validate="true"/>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-039">
+        <addForeignKeyConstraint baseColumnNames="F_HELP_FILES" baseTableName="TBL_HELP_FILES_LABEL" constraintName="FKHelpFilesInHelpFilesLabel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_HELP_FILES" validate="true"/>
+    </changeSet>
+    <changeSet author="MShahabi" id="1799887766557-040">
+        <addForeignKeyConstraint baseColumnNames="F_FILE_LABEL" baseTableName="TBL_HELP_FILES_LABEL" constraintName="FKFileLabelInHelpFilesLabel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_FILE_LABEL" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
