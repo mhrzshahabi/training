@@ -110,7 +110,21 @@ public class LMSController {
     }
 
     @GetMapping("/getNeedAssessmentByNationalCodeAndPastCode/{nationalCode}/{postCode}")
-    public ResponseEntity<NAReportForLMSResponseDTO> getNeedAseessmentByNationalCodeAndPostCode(@PathVariable String nationalCode,@PathVariable String postCode){
-       = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
+    public ResponseEntity<NAReportForLMSResponseDTO> getNeedAsseessmentByNationalCodeAndPostCode(@PathVariable String nationalCode,@PathVariable String postCode){
+        NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
+        NAReportForLMSDTO naReportForLMSDTO  = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
+        if (naReportForLMSDTO.getNationalCode() != null) {
+            naReportForLMSResponseDTO.setData(naReportForLMSDTO);
+            naReportForLMSResponseDTO.setStatus(200);
+        } else {
+            naReportForLMSResponseDTO.setData(null);
+            naReportForLMSResponseDTO.setStatus(404);
+            naReportForLMSResponseDTO.setMessage("پرسنل یافت نشد");
+        }
+        return ResponseEntity.ok(naReportForLMSResponseDTO);
+    }
 
 }
+
+
+

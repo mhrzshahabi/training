@@ -567,47 +567,38 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
     }
 
     @Override
-    public NeedAssessmentReportUserObj findNeedAssessmentByNationalCodeAndPostCode(String nationalCode, String postCode) {
-        List<ParameterValue> allParameter = parameterValueDAO.findAll();
-        List<NeedAssessmentReportUserDTO> reportUserDTOS = new ArrayList<>();
-        NeedAssessmentReportUserObj needAssessmentReportUserObj = new NeedAssessmentReportUserObj();
-        PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(nationalCode);
-        if (personalityInfo!=null  && personalityInfo.getPersonnelNo()!=null){
-            if(getCourseListForBpms(postCode,"Post",nationalCode,personalityInfo.getPersonnelNo())!=null) {
-                List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(postCode, "Post", nationalCode, personalityInfo.getPersonnelNo());
-                Set<Long> assessmentsType = needsAssessmentReportList.stream().map(NeedsAssessmentReportsDTO.ReportInfo::getNeedsAssessmentPriorityId).collect(Collectors.toSet());
-                for (Long aLong : assessmentsType) {
-                    NeedAssessmentReportUserDTO needAssessmentReportUserDTO = new NeedAssessmentReportUserDTO();
-                    String title = allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(aLong)).collect(Collectors.toList()).get(0).getTitle();
-                    needAssessmentReportUserDTO.setAssessment(title);
-                    List<NeedAssessmentReportUserDTO.CompetenceInfo> competenceInfoList = new ArrayList<>();
-                    needsAssessmentReportList.stream().filter(reportInfo -> reportInfo.getNeedsAssessmentPriorityId().equals(aLong)).collect(Collectors.toList()).forEach(reportInfo -> {
-                        NeedAssessmentReportUserDTO.CompetenceInfo competenceInfo = new NeedAssessmentReportUserDTO.CompetenceInfo();
-                        competenceInfo.setCompetence(reportInfo.getCompetence().getTitle());
-                        competenceInfo.setCompetenceTypeName(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getCompetence().getCompetenceTypeId())).collect(Collectors.toList()).get(0).getTitle());
-                        competenceInfo.setNeedsAssessmentDomainIdName(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getNeedsAssessmentDomainId())).collect(Collectors.toList()).get(0).getTitle());
-                        competenceInfo.setSkillCode(reportInfo.getSkill().getCode());
-                        competenceInfo.setSkill(reportInfo.getSkill().getTitleFa());
-                        competenceInfo.setCourseCode(reportInfo.getSkill().getCourse().getCode());
-                        competenceInfo.setCourseName(reportInfo.getSkill().getCourse().getTitleFa());
-                        competenceInfo.setCourseDuration(reportInfo.getSkill().getCourse().getTheoryDuration());
-                        competenceInfo.setCourseState(allParameter.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getSkill().getCourse().getScoresState())).collect(Collectors.toList()).get(0).getTitle());
-                        competenceInfoList.add(competenceInfo);
-                    });
+    public NAReportForLMSDTO findNeedAssessmentByNationalCodeAndPostCode(String nationalCode, String postCode) {
+        NAReportForLMSDTO naReportForLMSDTO = new NAReportForLMSDTO();
+        List<NAReportDetailForLMSDTO> naReportDetailForLMSDTOList = new ArrayList<>();
 
-                    needAssessmentReportUserDTO.setCompetenceInfoList(competenceInfoList);
-                    needAssessmentReportUserDTO.setNeedAssessmentCount(competenceInfoList.size());
-                    needAssessmentReportUserDTO.setNeedAssessmentDurationCount(competenceInfoList.stream().mapToDouble(NeedAssessmentReportUserDTO.CompetenceInfo::getCourseDuration).sum());
-                    needAssessmentReportUserDTO.setNeedAssessmentPassCount(competenceInfoList.stream().filter(competenceInfo -> competenceInfo.getCourseState().equalsIgnoreCase(PASS)).count());
-                    needAssessmentReportUserDTO.setNeedAssessmentDurationPass(competenceInfoList.stream().filter(competenceInfo -> competenceInfo.getCourseState().equalsIgnoreCase(PASS)).mapToDouble(NeedAssessmentReportUserDTO.CompetenceInfo::getCourseDuration).sum());
-                    reportUserDTOS.add(needAssessmentReportUserDTO);
-                }
+        List<ParameterValue> parameterValues = parameterValueDAO.findAll();
+        PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(nationalCode);
+        if (personalityInfo != null  && personalityInfo.getPostCode()!=null && personalityInfo.getPersonnelNo() != null) {
+            List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(personalityInfo.getPostCode(), "Post", nationalCode, personalityInfo.getPersonnelNo());
+            Set<Long> priorityIds = needsAssessmentReportList.stream().map(NeedsAssessmentReportsDTO.ReportInfo::getNeedsAssessmentPriorityId).collect(Collectors.toSet());
+            for (Long priorityId : priorityIds) {
+                NAReportDetailForLMSDTO naReportDetailForLMSDTO = new NAReportDetailForLMSDTO();
+                String assessmentPriorityTitle = parameterValues.stream().filter(parameterValue -> parameterValue.getId().equals(priorityId)).collect(Collectors.toList()).get(0).getTitle();
+                needsAssessmentReportList.stream().filter(reportInfo -> reportInfo.getNeedsAssessmentPriorityId().equals(priorityId)).collect(Collectors.toList()).forEach(reportInfo -> {
+                    naReportDetailForLMSDTO.setCourseCode(reportInfo.getSkill().getCourse().getCode());
+                    naReportDetailForLMSDTO.setCourseName(reportInfo.getSkill().getCourse().getTitleFa());
+                    naReportDetailForLMSDTO.setCourseState(parameterValues.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getSkill().getCourse().getScoresState())).collect(Collectors.toList()).get(0).getTitle());
+                    naReportDetailForLMSDTO.setNeedAssessmentPriority(assessmentPriorityTitle);
+                    naReportDetailForLMSDTOList.add(naReportDetailForLMSDTO);
+                });
             }
-            needAssessmentReportUserObj.setReportUserDTOS(reportUserDTOS);
-            needAssessmentReportUserObj.setCode(personalityInfo.getPostCode());
-            needAssessmentReportUserObj.setPostTitle(personalityInfo.getPostTitle());
+            naReportForLMSDTO.setPersonnelNo(personalityInfo.getPersonnelNo());
+            naReportForLMSDTO.setPersonnelNo2(personalityInfo.getPersonnelNo2());
+            naReportForLMSDTO.setNationalCode(personalityInfo.getNationalCode());
+            naReportForLMSDTO.setFirstName(personalityInfo.getFirstName());
+            naReportForLMSDTO.setLastName(personalityInfo.getLastName());
+            naReportForLMSDTO.setPostCode(personalityInfo.getPostCode());
+            naReportForLMSDTO.setPostTitle(personalityInfo.getPostTitle());
+            naReportForLMSDTO.setReportDetailList(naReportDetailForLMSDTOList);
         }
+        return naReportForLMSDTO;
     }
+
 
 
     @Transactional(readOnly = true)
