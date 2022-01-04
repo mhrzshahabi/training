@@ -14,4 +14,6 @@ public class NAReportForLMSDTO {
     private String postCode;
     private String postTitle;
     private List<NAReportDetailForLMSDTO> reportDetailList;
+    private String Message;
+    private int status;
 }

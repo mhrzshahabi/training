@@ -38,5 +38,9 @@ public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExec
     public int updateModifications(Long objectId, Date modificationDate, String userName);
 
     Optional<Post> findFirstById(Long id);
+    @Query(value = "SELECT    * FROM tbl_post where e_deleted is NULL AND c_code= :code ",nativeQuery = true)
+    Post findByDeletedAndPostFilter(String code);
+
+
 
 }
