@@ -5,10 +5,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -25,7 +23,6 @@ public class CompetenceRequest extends Auditable {
     @SequenceGenerator(name = "competence_req_seq", sequenceName = "seq_competence_req_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
-
 
     @Column(name = "applicant")
     private String applicant;
