@@ -576,14 +576,14 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
         List<ParameterValue> parameterValues = parameterValueDAO.findAll();
         if(personnelService.getByNationalCode(nationalCode)==null) {
-            naReportForLMSDTO.setMessage("کدملی معتبر نیست");
-            naReportForLMSDTO.setStatus(409);
+            naReportForLMSResponseDTO.setMessage("کدملی معتبر نیست");
+            naReportForLMSResponseDTO.setStatus(409);
             naReportForLMSResponseDTO.setData(naReportForLMSDTO);
             return naReportForLMSResponseDTO;
         }
         if( postDAO.findByDeletedAndPostFilter(postCode)==null){
-            naReportForLMSDTO.setMessage("کدپست معتبر نیست");
-            naReportForLMSDTO.setStatus(409);
+            naReportForLMSResponseDTO.setMessage("کدپست معتبر نیست");
+            naReportForLMSResponseDTO.setStatus(409);
             naReportForLMSResponseDTO.setData(naReportForLMSDTO);
             return naReportForLMSResponseDTO;
         }
