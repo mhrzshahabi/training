@@ -85,6 +85,12 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
     }
 
+//    @Loggable
+//    @PostMapping(value = "/Synonym/checkPersonnelNos/{courseId}")
+//    public ResponseEntity<List<PersonnelDTO.InfoForStudent>> checkSynonymPersonnelNos(@PathVariable Long courseId, @RequestBody List<String> personnelNos) {
+//        List<PersonnelDTO.InfoForStudent> list = synonymPersonnelService.checkSynonymPersonnelNos(personnelNos, courseId);
+//        return new ResponseEntity<>(list, HttpStatus.OK);
+//    }
     @Loggable
     @PostMapping(value = "/checkPersonnelNos/{courseId}")
     public ResponseEntity<List<PersonnelDTO.InfoForStudent>> checkPersonnelNos(@PathVariable Long courseId, @RequestBody List<String> personnelNos) {

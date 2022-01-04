@@ -781,13 +781,24 @@
 
     var ToolStripButton_PrintJasper = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ سوالات آزمون نهایی",
+        title: "چاپ pdf سوالات آزمون نهایی",
         click: function () {
             let params = {};
             let data = ListGrid_FinalTest.getData().localData.get(0).testQuestionId;
             params.teacher = FinalTestLG_finalTest.getSelectedRecord().tclass.teacher;//ListGrid_FinalTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
 
             print(data, params, "testForm.jasper");
+        }
+    });
+    var ToolStripButton_PrintJasperWord = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "چاپ word سوالات آزمون نهایی",
+        click: function () {
+            let params = {};
+            let data = ListGrid_FinalTest.getData().localData.get(0).testQuestionId;
+            params.teacher = FinalTestLG_finalTest.getSelectedRecord().tclass.teacher;//ListGrid_FinalTest.getData().localData.get(0).questionBank.teacher.fullNameFa;
+
+            print(data, params, "testForm.jasper","WORD");
         }
     });
     var ToolStripButton_Export2EXcel = isc.ToolStripButtonExcel.create({
@@ -806,6 +817,7 @@
             ToolStripButton_InsertQuestionFromLatestQuestions_FinalTest,
             ToolStripButton_PrintJasper,
             ToolStripButton_Export2EXcel,
+            ToolStripButton_PrintJasperWord,
             //ToolStripButton_PrintJasper,
             isc.ToolStrip.create({
                 width: "100%",

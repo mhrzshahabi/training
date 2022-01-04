@@ -115,6 +115,7 @@ public class PersonnelDTO implements Serializable {
         private String jobTitle;
         private String postCode;
         private String postGradeTitle;
+        private String postGradeCode;
         private String workPlace;
         private String workYears;
         private String workMonths;

@@ -450,7 +450,6 @@
                                                         for (let i=0;i<XL_row_object.length;i++) {
                                                             if(ListGrid_Competence_Request_Items.getData().filter(c =>
                                                                 c.nationalCode === Object.values(XL_row_object[i])[0]).length === 0) {
-                                                                // debugger;
                                                                 let current = {
                                                                     nationalCode: XL_row_object[i]["کدملی"],
                                                                     personnelNumber: XL_row_object[i]["شماره پرسنلی 10 رقمی"],

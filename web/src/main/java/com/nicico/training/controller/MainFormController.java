@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
@@ -15,6 +16,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/web")
 @RequiredArgsConstructor
 public class MainFormController {
+
+    @Value("${nicico.minioQuestionsGroup}")
+    private String groupId;
+    @Value("${nicico.minioUrl}")
+    private String minioUrl;
 
     @RequestMapping("/parameter")
     public String showParameterForm() {
@@ -172,6 +178,13 @@ public class MainFormController {
 
     @RequestMapping("/usersLoginReport")
     public String showUsersLoginReportForm() { return "security/usersLoginReport"; }
+
+    @RequestMapping("/helpFiles")
+    public String showHelpFileForm(HttpServletRequest request) {
+        request.setAttribute("groupId", groupId);
+        request.setAttribute("minioUrl", minioUrl);
+        return "security/helpFile";
+    }
 
     @RequestMapping("/mobileVerify")
     public String showMobileVerifyForm() { return "security/mobileVerify"; }

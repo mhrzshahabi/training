@@ -1277,6 +1277,8 @@
     const testQuestionUrl = rootUrl + "/test-question";
     const viewStudentsInCanceledClassReportUrl = rootUrl + "/view-students-in-canceled-class-report";
     const loginLogUrl = rootUrl + "/log";
+    const helpFilesUrl = rootUrl + "/help-files";
+    const fileLabelUrl = rootUrl + "/file-label";
     const competenceRequestUrl = rootUrl + "/competence-request";
     const RequestItemWithDiff = rootUrl + "/request-item/list";
     const requestItemUrl = rootUrl + "/request-item";
@@ -1753,7 +1755,17 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="web/departmentChart"/>");
                     }
+                },
+
+                <sec:authorize access="hasAuthority('Menu_BasicInfo_HelpFiles')">
+                {
+                    title: "<spring:message code='users.training'/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/helpFiles/"/>");
+                    }
                 }
+                </sec:authorize>
+
             ]
         }),
     });
