@@ -833,7 +833,7 @@
 
     var ToolStripButton_PrintJasper = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ سوالات پیش آزمون",
+        title: "چاپ pdf سوالات پیش آزمون",
         click: function () {
             let params = {};
             let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
@@ -844,7 +844,7 @@
     });
     var ToolStripButton_PrintJasperWord = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ سوالات پیش آزمون",
+        title: "چاپ word سوالات پیش آزمون",
         click: function () {
             let params = {};
             let data = ListGrid_PreTest.getData().localData.get(0).testQuestionId;
