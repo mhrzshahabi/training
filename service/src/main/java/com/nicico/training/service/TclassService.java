@@ -279,37 +279,37 @@ public class TclassService implements ITclassService {
         if (!attendances.isEmpty()) {
             for (Attendance a : attendances) {
                 if (!a.getState().equals("0")) {
-                    resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
+                    resp.sendError(409, messageSource.getMessage("class.delete.failure.attendances", null, LocaleContextHolder.getLocale()));
                     return;
                 }
             }
         }
         if (!tclass.getClassSessions().isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("class.delete.failure.sessions", null, LocaleContextHolder.getLocale()));
             return;
         }
         if (!tclass.getClassStudents().isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("class.delete.failure.classStudents", null, LocaleContextHolder.getLocale()));
             return;
         }
         List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
 
         if (!classCheckLists.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.classStudents", null, LocaleContextHolder.getLocale()));
             return;
         }
 
         List<ClassDocument> classDocuments = classDocumentDAO.findClassDocumentByTclassId(id);
 
         if (!classDocuments.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.docs", null, LocaleContextHolder.getLocale()));
             return;
         }
 
         List<Attachment> attachments = attachmentDAO.findAttachmentByObjectTypeAndObjectId("Tclass", id);
 
         if (!attachments.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.attachment", null, LocaleContextHolder.getLocale()));
             return;
         }
 
