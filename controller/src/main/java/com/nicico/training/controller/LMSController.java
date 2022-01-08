@@ -111,10 +111,9 @@ public class LMSController {
 
     @GetMapping("/getNeedAssessmentByNationalCodeAndPastCode/{nationalCode}/{postCode}")
     public ResponseEntity<NAReportForLMSResponseDTO> getNeedAssessmentByNationalCodeAndPostCode(@RequestParam String nationalCode,@RequestParam String postCode){
-        NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
-        NAReportForLMSDTO  naReportForLMSDTO=new NAReportForLMSDTO();
 
-            naReportForLMSResponseDTO = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
+
+      NAReportForLMSResponseDTO   naReportForLMSResponseDTO = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
 
 
         return ResponseEntity.ok(naReportForLMSResponseDTO);

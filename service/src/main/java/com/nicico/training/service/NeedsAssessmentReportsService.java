@@ -576,7 +576,7 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
         List<ParameterValue> parameterValues = parameterValueDAO.findAll();
         if(personnelService.getByNationalCode(nationalCode)==null) {
-            naReportForLMSResponseDTO.setMessage("کدملی معتبر نیست");
+            naReportForLMSResponseDTO.setMessage("پرسنلی با این کدملی موجود نیست");
             naReportForLMSResponseDTO.setStatus(409);
             naReportForLMSResponseDTO.setData(naReportForLMSDTO);
             return naReportForLMSResponseDTO;
