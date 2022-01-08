@@ -18,8 +18,10 @@ import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.model.Teacher;
+import com.nicico.training.service.ViewTrainingFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.parameters.P;
@@ -47,6 +49,8 @@ public class LMSController {
     private final TeacherBeanMapper teacherBeanMapper;
     private final IStudentService iStudentService;
     private final StudentMapper studentMapper;
+    private final ViewTrainingFileService viewTrainingFileService;
+
 
     @GetMapping("/getCourseDetails/{classCode}")
     public ResponseEntity<TclassTimeDetailBaseDTO> getCourseTimeDetails(@PathVariable String classCode) {
@@ -237,6 +241,25 @@ public class LMSController {
 
     }
 
+    /**
+     * return all the classes a student joined them with the results
+     * @param nationalCode
+     * @return list of the student's classes
+     */
+    @GetMapping("/getPersonnelClassesByNationalCode/{nationalCode}")
+    public ResponseEntity<PersonnelClassesHistoryDTO> getPersonnelClassesByNationalCode(@PathVariable String nationalCode) {
+        PersonnelClassesHistoryDTO personnelClassesHistoryDTO = new PersonnelClassesHistoryDTO();
+        if (nationalCode == null || nationalCode.equals("") || nationalCode.length() != 10 || !StringUtils.isNumeric(nationalCode)) {
+            personnelClassesHistoryDTO.setViewTrainingFileDTOS(null);
+            personnelClassesHistoryDTO.setStatus(405);
+            personnelClassesHistoryDTO.setMessage("مقدار کد ملی صحیح نیست");
+        } else {
+            List<ViewLmsTrainingFileDTO> viewTrainingFileDTOS = viewTrainingFileService.getDtoListByNationalCode(nationalCode);
+            personnelClassesHistoryDTO.setViewTrainingFileDTOS(viewTrainingFileDTOS);
+            personnelClassesHistoryDTO.setStatus(200);
+        }
+        return ResponseEntity.ok(personnelClassesHistoryDTO);
+    }
 }
 
 
