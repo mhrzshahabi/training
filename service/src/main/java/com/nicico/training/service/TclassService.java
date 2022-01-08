@@ -279,37 +279,37 @@ public class TclassService implements ITclassService {
         if (!attendances.isEmpty()) {
             for (Attendance a : attendances) {
                 if (!a.getState().equals("0")) {
-                    resp.sendError(409, messageSource.getMessage("class.delete.failure.attendances", null, LocaleContextHolder.getLocale()));
+                    resp.sendError(409, "class.delete.failure.attendances");
                     return;
                 }
             }
         }
         if (!tclass.getClassSessions().isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.sessions", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, "class.delete.failure.sessions");
             return;
         }
         if (!tclass.getClassStudents().isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.classStudents", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, "class.delete.failure.classStudents");
             return;
         }
         List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
 
         if (!classCheckLists.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.classStudents", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, "class.delete.failure.check.classStudents");
             return;
         }
 
         List<ClassDocument> classDocuments = classDocumentDAO.findClassDocumentByTclassId(id);
 
         if (!classDocuments.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.docs", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, "class.delete.failure.check.docs");
             return;
         }
 
         List<Attachment> attachments = attachmentDAO.findAttachmentByObjectTypeAndObjectId("Tclass", id);
 
         if (!attachments.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.attachment", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, "class.delete.failure.check.attachment");
             return;
         }
 
