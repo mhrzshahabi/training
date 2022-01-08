@@ -279,37 +279,37 @@ public class TclassService implements ITclassService {
         if (!attendances.isEmpty()) {
             for (Attendance a : attendances) {
                 if (!a.getState().equals("0")) {
-                    resp.sendError(409,"شسیشسیشسی");
+                    resp.sendError(409,"za");
                     return;
                 }
             }
         }
         if (!tclass.getClassSessions().isEmpty()) {
-            resp.sendError(409,"شسیشسیشسی");
+            resp.sendError(409,"za");
             return;
         }
         if (!tclass.getClassStudents().isEmpty()) {
-            resp.sendError(409,"شسیشسیشسی");
+            resp.sendError(409,"za");
             return;
         }
         List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
 
         if (!classCheckLists.isEmpty()) {
-            resp.sendError(409,"شسیشسیشسی");
+            resp.sendError(409,"za");
             return;
         }
 
         List<ClassDocument> classDocuments = classDocumentDAO.findClassDocumentByTclassId(id);
 
         if (!classDocuments.isEmpty()) {
-            resp.sendError(409,"شسیشسیشسی");
+            resp.sendError(409,"za");
             return;
         }
 
         List<Attachment> attachments = attachmentDAO.findAttachmentByObjectTypeAndObjectId("Tclass", id);
 
         if (!attachments.isEmpty()) {
-            resp.sendError(409,"شسیشسیشسی");
+            resp.sendError(409,"za");
             return;
         }
 
