@@ -9,6 +9,7 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.needAssessmentGroupResult.NeedAssessmentGroupResultMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
+import com.nicico.training.utility.persianDate.MyUtils;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.modelmapper.ModelMapper;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import request.needsassessment.NeedAssessmentGroupJobPromotionDto;
 import request.needsassessment.NeedAssessmentGroupJobPromotionRequestDto;
 import request.needsassessment.NeedAssessmentGroupJobPromotionResponseDto;
+
 
 import javax.persistence.EntityManager;
 import java.util.*;
@@ -578,6 +580,15 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
         PersonnelDTO.PersonalityInfo personalityInfo=new PersonnelDTO.PersonalityInfo();
 
         List<ParameterValue> parameterValues = parameterValueDAO.findAll();
+
+        if(!MyUtils.validateNationalCode(nationalCode)){
+            naReportForLMSResponseDTO.setMessage("کدملی معتبر نیست");
+            naReportForLMSResponseDTO.setStatus(409);
+            naReportForLMSResponseDTO.setData(naReportForLMSDTO);
+            return naReportForLMSResponseDTO;
+
+        }
+
         if(personnelService.getByNationalCode(nationalCode)==null) {
             naReportForLMSResponseDTO.setMessage("پرسنلی با این کدملی موجود نیست");
             naReportForLMSResponseDTO.setStatus(409);
