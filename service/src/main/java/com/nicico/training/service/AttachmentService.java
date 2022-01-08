@@ -13,6 +13,7 @@ import com.nicico.training.repository.AttachmentDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -291,9 +292,16 @@ public class AttachmentService implements IAttachmentService {
             throw new TrainingException(TrainingException.ErrorType.InvalidData);
     }
 
-
     @Override
     public List<MessagesAttDTO> findAllSessionsMessage(Long sessionId) {
         return null;
+    }
+
+    @Override
+    public List<AttachmentDTO.Info> findQuestionFilesByQuestionId(String questionBank, Long questionBankId) {
+
+        List<Attachment> attachmentList = attachmentDAO.findAttachmentByObjectTypeAndObjectId(questionBank, questionBankId);
+        return modelMapper.map(attachmentList, new TypeToken<List<AttachmentDTO.Info>>() {
+        }.getType());
     }
 }
