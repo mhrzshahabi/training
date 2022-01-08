@@ -44,17 +44,12 @@ public class FmsRestController {
         return client.createGroup(token,req);
 
     }
-
-    @PostMapping("uploadFile")
-    public UploadFmsRes uploadFile(String token, String groupId , MultipartFile file) {
-        return client.uploadFile(token,file,groupId);
-    }
-
-//    @PostMapping("downloadFile")
-//    public void downloadFile(@RequestParam(value = "data") String data) {
-////test fms
-//         client.downloadFile("Bearer 79cc3d16-70c0-4ff8-983d-cc879fcc734d",groupId,"1cebc875-1244-4566-889f-fcbdbe29d0c1");
+//
+//    @PostMapping("uploadFile")
+//    public UploadFmsRes uploadFile(String token, String groupId , MultipartFile file) {
+//        return client.uploadFile(token,file,groupId);
 //    }
+
 
     @GetMapping("config")
     public ResponseEntity<FmsConfig> getConfig() {
@@ -64,10 +59,10 @@ public class FmsRestController {
         return new ResponseEntity<>(fmsConfig, HttpStatus.OK);
     }
 
-    @PostMapping("download")
-    public void download(@RequestBody JsonObject object) {
-        FmsConfig fmsConfig=new FmsConfig();
-        fmsConfig.setGroupId(groupId);
-        fmsConfig.setUrl(minioUrl);
-    }
+//    @PostMapping("download")
+//    public void download(@RequestBody JsonObject object) {
+//        FmsConfig fmsConfig=new FmsConfig();
+//        fmsConfig.setGroupId(groupId);
+//        fmsConfig.setUrl(minioUrl);
+//    }
 }

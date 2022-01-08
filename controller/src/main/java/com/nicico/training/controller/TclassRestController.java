@@ -187,21 +187,17 @@ public class TclassRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity delete(@PathVariable Long id, HttpServletResponse resp) throws IOException {
+    public BaseResponse delete(@PathVariable Long id, HttpServletResponse resp) throws IOException {
+        BaseResponse baseResponse=new BaseResponse();
         try {
             if (workGroupService.isAllowUseId("Tclass", id)) {
-                tClassService.delete(id, resp);
-                return new ResponseEntity(HttpStatus.OK);
-            } else {
-//                tClassService.delete(id);
-                return new ResponseEntity(HttpStatus.UNAUTHORIZED);
-            }
-
-        } catch (DataIntegrityViolationException e) {
-            return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
-                    HttpStatus.NOT_ACCEPTABLE);
+                baseResponse   = tClassService.delete(id);
+                return baseResponse;
+            }}
+         catch (Exception e) {
+             baseResponse.setStatus(406);
         }
+        return baseResponse;
     }
 
     @Loggable

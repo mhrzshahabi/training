@@ -272,45 +272,53 @@ public class TclassService implements ITclassService {
     }
 
     @Transactional
-    public void delete(Long id, HttpServletResponse resp) throws IOException {
+    public BaseResponse delete(Long id) throws IOException {
+        BaseResponse response=new BaseResponse();
         Optional<Tclass> byId = tclassDAO.findById(id);
         Tclass tclass = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         List<Attendance> attendances = attendanceDAO.findBySessionIn(tclass.getClassSessions());
         if (!attendances.isEmpty()) {
             for (Attendance a : attendances) {
                 if (!a.getState().equals("0")) {
-                    resp.sendError(409, messageSource.getMessage("class.delete.failure.attendances", null, LocaleContextHolder.getLocale()));
-                    return;
-                }
+//                    resp.sendError(409, messageSource.getMessage("class.delete.failure.attendances", null, LocaleContextHolder.getLocale()));
+                    response.setMessage(messageSource.getMessage("class.delete.failure.attendances", null, LocaleContextHolder.getLocale()));
+                    response.setStatus(409);
+                    return response;                }
             }
         }
         if (!tclass.getClassSessions().isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.sessions", null, LocaleContextHolder.getLocale()));
-            return;
-        }
+//            resp.sendError(409, messageSource.getMessage("class.delete.failure.sessions", null, LocaleContextHolder.getLocale()));
+            response.setMessage(messageSource.getMessage("class.delete.failure.sessions", null, LocaleContextHolder.getLocale()));
+            response.setStatus(409);
+            return response;        }
         if (!tclass.getClassStudents().isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.classStudents", null, LocaleContextHolder.getLocale()));
-            return;
-        }
+//            resp.sendError(409, messageSource.getMessage("class.delete.failure.classStudents", null, LocaleContextHolder.getLocale()));
+            response.setMessage(messageSource.getMessage("class.delete.failure.classStudents", null, LocaleContextHolder.getLocale()));
+            response.setStatus(409);
+            return response;        }
         List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
 
         if (!classCheckLists.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.classStudents", null, LocaleContextHolder.getLocale()));
-            return;
-        }
+//            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.classStudents", null, LocaleContextHolder.getLocale()));
+            response.setMessage(messageSource.getMessage("class.delete.failure.check.classStudents", null, LocaleContextHolder.getLocale()));
+            response.setStatus(409);
+            return response;        }
 
         List<ClassDocument> classDocuments = classDocumentDAO.findClassDocumentByTclassId(id);
 
         if (!classDocuments.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.docs", null, LocaleContextHolder.getLocale()));
-            return;
-        }
+//            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.docs", null, LocaleContextHolder.getLocale()));
+            response.setMessage(messageSource.getMessage("class.delete.failure.check.docs", null, LocaleContextHolder.getLocale()));
+            response.setStatus(409);
+            return response;        }
 
         List<Attachment> attachments = attachmentDAO.findAttachmentByObjectTypeAndObjectId("Tclass", id);
 
         if (!attachments.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.attachment", null, LocaleContextHolder.getLocale()));
-            return;
+//            resp.sendError(409, messageSource.getMessage("class.delete.failure.check.attachment", null, LocaleContextHolder.getLocale()));
+           response.setMessage(messageSource.getMessage("class.delete.failure.check.attachment", null, LocaleContextHolder.getLocale()));
+            response.setStatus(409);
+            return response;
         }
 
 
@@ -348,6 +356,8 @@ public class TclassService implements ITclassService {
 //        for (AttachmentDTO.Info attachment : attachmentInfoList) {
 //            attachmentService.delete(attachment.getId());
 //        }
+        response.setStatus(200);
+        return response;
     }
 
     @Transactional
@@ -585,7 +595,7 @@ public class TclassService implements ITclassService {
     public void delete(TclassDTO.Delete request, HttpServletResponse resp) throws IOException {
         final List<Tclass> gAllById = tclassDAO.findAllById(request.getIds());
         for (Tclass tclass : gAllById) {
-            delete(tclass.getId(), resp);
+            delete(tclass.getId());
         }
     }
 

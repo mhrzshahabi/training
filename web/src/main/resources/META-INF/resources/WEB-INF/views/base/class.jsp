@@ -3862,8 +3862,8 @@
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         } else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {
             createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");
-        } else {
-            createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
+        } else if (resp.httpResponseCode === 409){
+            createDialog("info", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
         }
     }
     function class_finish_result(resp) {

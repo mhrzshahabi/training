@@ -1224,7 +1224,6 @@
     const changeClassStatusToLock = rootUrl + "/tclass/changeClassStatusToLock";
     const uploadFms = rootUrl + "/attachment/upload/fms";
     const getFmsConfig = rootUrl + "/fms/config";
-    const downloadFms = rootUrl + "/fms/downloadFile";
     const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const skillNAUrl = rootUrl + "/skill-na";
