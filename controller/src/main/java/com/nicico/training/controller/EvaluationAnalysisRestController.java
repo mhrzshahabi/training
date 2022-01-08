@@ -340,7 +340,7 @@ public class EvaluationAnalysisRestController {
             criteriaRq.getCriteria().add(criteriaRq1);
 
             SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
-            criteriaRq2.setValue(new Integer(0));
+            criteriaRq2.setValue(0);
             criteriaRq2.setOperator(EOperator.notEqual);
             criteriaRq2.setFieldName("tclassStudentsCount");
             criteriaRq.getCriteria().add(criteriaRq2);
@@ -394,11 +394,6 @@ public class EvaluationAnalysisRestController {
                     params.put("description",reportComments.getString(key.toString()));
             iterator.remove();
         }
-
-//
-//        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(allchartData);
-//        parameters.put("subReportDataSource", beanColDataSource);
-
 
         params.put("XYChartDataSource", allchartData);
         params.put("XYNotPassedChartDataSource",allNotPassedChartData);
@@ -605,7 +600,7 @@ public class EvaluationAnalysisRestController {
             criteriaRq.getCriteria().add(criteriaRq1);
 
             SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
-            criteriaRq2.setValue(new Integer(0));
+            criteriaRq2.setValue(0);
             criteriaRq2.setOperator(EOperator.notEqual);
             criteriaRq2.setFieldName("tclassStudentsCount");
             criteriaRq.getCriteria().add(criteriaRq2);
