@@ -47,4 +47,6 @@ public interface IStudentService {
      List<Student> getStudentByNationalCode(String nationalCode);
 
     Page<Student> getAllActiveStudents(Integer page, Integer size);
+
+    List<Student> getAllStudentsOfClassByClassCode(String classCode);
 }

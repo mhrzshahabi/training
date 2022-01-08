@@ -150,6 +150,30 @@ public class LMSController {
         return ResponseEntity.ok(activeStudentsBaseDTO);
     }
 
+    /**
+     * return students of a class by class code
+     * @param classCode
+     * @return
+     */
+    @GetMapping("/getClassStudents/{classCode}")
+    public ResponseEntity<ActiveStudentsBaseDTO> getClassStudents(@PathVariable String classCode) {
+        ActiveStudentsBaseDTO activeStudentsBaseDTO = new ActiveStudentsBaseDTO();
+        Tclass tclass = iTclassService.getClassByCode(classCode);
+        if (tclass != null) {
+            List<Student> students = iStudentService.getAllStudentsOfClassByClassCode(classCode);
+            List<StudentDTO.LmsInfo> infos = studentMapper.toStudentLmsInfoDto(students);
+
+            activeStudentsBaseDTO.setInfos(infos);
+            activeStudentsBaseDTO.setStatus(200);
+        } else {
+            activeStudentsBaseDTO.setInfos(null);
+            activeStudentsBaseDTO.setStatus(409);
+            activeStudentsBaseDTO.setMessage("کلاسی با این کد موجود نیست");
+        }
+
+        return ResponseEntity.ok(activeStudentsBaseDTO);
+    }
+
     @GetMapping("/getNeedAssessmentByNationalCode/{nationalCode}")
     public ResponseEntity<NAReportForLMSResponseDTO>  getNeedAssessmentByNationalCode(@PathVariable String nationalCode) {
 

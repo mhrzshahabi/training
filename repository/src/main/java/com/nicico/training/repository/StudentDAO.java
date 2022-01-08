@@ -182,4 +182,12 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
 
     @Query(value = "SELECT * FROM TBL_STUDENT st WHERE st.ACTIVE = 1 and st.DELETED is null ", nativeQuery = true)
     Page<Student> findAllByDeletedIsNull(Pageable pageable);
+
+    @Query(value = "SELECT ST.* " +
+            "FROM TBL_STUDENT ST " +
+            "         INNER JOIN TBL_CLASS_STUDENT TCS ON ST.ID = TCS.STUDENT_ID " +
+            "         INNER JOIN TBL_CLASS TC ON TCS.CLASS_ID = TC.ID " +
+            "WHERE TC.C_CODE = :classCode ", nativeQuery = true)
+    List<Student> getAllStudentsOfClassByClassCode(@Param("classCode") String classCode);
+
 }

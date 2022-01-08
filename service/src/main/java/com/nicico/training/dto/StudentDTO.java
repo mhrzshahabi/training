@@ -90,7 +90,6 @@ public class StudentDTO {
     @Accessors
     @ApiModel("Student - LMS - Info")
     public static class LmsInfo {
-        private Long id;
         @ApiModelProperty(required = true)
         private String firstName;
         @ApiModelProperty(required = true)
