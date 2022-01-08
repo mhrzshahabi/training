@@ -73,7 +73,7 @@
 		<band height="534">
 			<subreport isUsingCache="false" runToBottom="false">
 				<reportElement positionType="Float" x="8" y="73" width="537" height="300" uuid="8cddf419-f1d9-40b8-8f28-8fd7a48fcf97"/>
-				<dataSourceExpression><![CDATA[ new net.sf.jasperreports.engine.data.JREmptyDataSource(1)]]></dataSourceExpression>
+				<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{XYChartDataSource})]]></dataSourceExpression>
 				<subreportExpression><![CDATA["reports/sub_reports.jasper"]]></subreportExpression>
 			</subreport>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
