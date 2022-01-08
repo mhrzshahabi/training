@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -147,7 +148,8 @@ public class RequestItemRestController {
             }
         }
 
-        List<RequestItem> response = requestItemService.search(request, (long) id);
+        List<RequestItem> totalResponse = requestItemService.search(request, (long) id);
+        List<RequestItem> response = totalResponse.stream().filter(item -> item.getDeleted() == null).collect(Collectors.toList());
         List<RequestItemDTO.Info> res = requestItemBeanMapper.toRequestItemDTODtos(response);
 
         final RequestItemDTO.SpecRs specResponse = new RequestItemDTO.SpecRs();

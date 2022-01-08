@@ -4,6 +4,8 @@ package com.nicico.training.repository;
 */
 
 import com.nicico.training.model.Student;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -178,4 +180,6 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "    ROWNUM <= 1000", nativeQuery = true)
     List<Student> getTestStudentList();
 
+    @Query(value = "SELECT * FROM TBL_STUDENT st WHERE st.ACTIVE = 1 and st.DELETED is null ", nativeQuery = true)
+    Page<Student> findAllByDeletedIsNull(Pageable pageable);
 }

@@ -10,6 +10,7 @@ import request.needsassessment.NeedAssessmentGroupJobPromotionResponseDto;
 import java.util.List;
 
 public interface INeedsAssessmentReportsService {
+
     SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchForBpms(SearchDTO.SearchRq searchRq, String postCode, String objectType, String nationalCode,String personnelNumber);
 
     List<NeedAssessmentGroupJobPromotionResponse> createNeedAssessmentResultGroup(NeedAssessmentGroupJobPromotionRequestDto requestDto);
@@ -31,5 +32,6 @@ public interface INeedsAssessmentReportsService {
     NeedAssessmentReportUserObj findNeedAssessmentByNationalCode(String nationalCode);
     NAReportForLMSResponseDTO findNeedAssessmentByNationalCodeAndPostCode(String nationalCode, String postCode);
 
+    NAReportForLMSDTO findNeedAssessmentForLMSByNationalCode(String nationalCode);
 
 }

@@ -9,13 +9,12 @@ import java.util.List;
 @Data
 public class NeedAssessmentReportUserDTO {
     private String assessment;
+    private Integer assessmentOrdinary;
     private List<CompetenceInfo> competenceInfoList;
     private Double needAssessmentDurationCount;
     private Double needAssessmentDurationPass;
     private Integer needAssessmentCount;
     private Long needAssessmentPassCount;
-
-
 
 
     @Getter

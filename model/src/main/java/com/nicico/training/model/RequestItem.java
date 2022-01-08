@@ -3,6 +3,10 @@ package com.nicico.training.model;
 import com.nicico.training.model.enums.RequestItemState;
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -15,6 +19,8 @@ import java.io.Serializable;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_request_item")
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+@AuditOverride(forClass = Auditable.class)
 public class RequestItem extends Auditable implements Serializable {
 
     @Id
@@ -52,9 +58,11 @@ public class RequestItem extends Auditable implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_competence_id", insertable = false, updatable = false)
+    @NotAudited
     private CompetenceRequest competenceReq;
 
     @Column(name = "f_competence_id")
+    @NotAudited
     private Long competenceReqId;
 
 }

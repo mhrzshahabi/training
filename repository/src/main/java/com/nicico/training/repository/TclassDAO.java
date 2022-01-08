@@ -6,6 +6,8 @@ package com.nicico.training.repository;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.model.Teacher;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.lang.Nullable;
@@ -192,5 +194,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Query(value = "SELECT * FROM TBL_CLASS WHERE c_status = :status And f_teaching_method_id IN (:longs)", nativeQuery = true)
     List<Tclass> findAllClassWithThisFilter(List<Long> longs, String status);
+    @Query(value = "SELECT  * FROM TBL_CLASS WHERE c_status= :status And f_teaching_method_id IN (:longs) And  f_term= :termId ",nativeQuery = true)
+    Page<Tclass> findAllClassWithTermFilter(List<Long> longs, String status, Long termId, Pageable pageable);
 
 }

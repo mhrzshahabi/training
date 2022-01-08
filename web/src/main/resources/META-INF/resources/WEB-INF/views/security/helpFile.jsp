@@ -179,6 +179,9 @@
                 filterFields: ["labelName"],
                 pickListProperties: {
                     showFilterEditor: false
+                },
+                click: function (form, item) {
+                    item.fetchData();
                 }
             },
             {
