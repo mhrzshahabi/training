@@ -395,12 +395,12 @@ public class EvaluationAnalysisRestController {
             iterator.remove();
         }
 
-
-        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(allchartData);
+//
+//        JRBeanCollectionDataSource beanColDataSource = new JRBeanCollectionDataSource(allchartData);
 //        parameters.put("subReportDataSource", beanColDataSource);
 
 
-        params.put("XYChartDataSource", null);
+        params.put("XYChartDataSource", allchartData);
         params.put("XYNotPassedChartDataSource",allNotPassedChartData);
         params.put("todayDate",DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
