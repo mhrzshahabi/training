@@ -279,37 +279,37 @@ public class TclassService implements ITclassService {
         if (!attendances.isEmpty()) {
             for (Attendance a : attendances) {
                 if (!a.getState().equals("0")) {
-                    resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن حضور و غیاب قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+                    resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
                     return;
                 }
             }
         }
         if (!tclass.getClassSessions().isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن جلسه قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
             return;
         }
         if (!tclass.getClassStudents().isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن فراگیر قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
             return;
         }
         List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
 
         if (!classCheckLists.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن چک لیست قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
             return;
         }
 
         List<ClassDocument> classDocuments = classDocumentDAO.findClassDocumentByTclassId(id);
 
         if (!classDocuments.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن مستندات قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
             return;
         }
 
         List<Attachment> attachments = attachmentDAO.findAttachmentByObjectTypeAndObjectId("Tclass", id);
 
         if (!attachments.isEmpty()) {
-            resp.sendError(409, messageSource.getMessage("کلاس فوق بدلیل داشتن ضمائم قابل حذف نیست. ", null, LocaleContextHolder.getLocale()));
+            resp.sendError(409, messageSource.getMessage("zaza", null, LocaleContextHolder.getLocale()));
             return;
         }
 
