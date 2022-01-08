@@ -279,37 +279,37 @@ public class TclassService implements ITclassService {
         if (!attendances.isEmpty()) {
             for (Attendance a : attendances) {
                 if (!a.getState().equals("0")) {
-                    resp.sendError(409, "class.delete.failure.attendances");
+                    resp.sendError(409,"شسیشسیشسی");
                     return;
                 }
             }
         }
         if (!tclass.getClassSessions().isEmpty()) {
-            resp.sendError(409, "class.delete.failure.sessions");
+            resp.sendError(409,"شسیشسیشسی");
             return;
         }
         if (!tclass.getClassStudents().isEmpty()) {
-            resp.sendError(409, "class.delete.failure.classStudents");
+            resp.sendError(409,"شسیشسیشسی");
             return;
         }
         List<ClassCheckList> classCheckLists= classCheckListDAO.findClassCheckListByTclassId(id);
 
         if (!classCheckLists.isEmpty()) {
-            resp.sendError(409, "class.delete.failure.check.classStudents");
+            resp.sendError(409,"شسیشسیشسی");
             return;
         }
 
         List<ClassDocument> classDocuments = classDocumentDAO.findClassDocumentByTclassId(id);
 
         if (!classDocuments.isEmpty()) {
-            resp.sendError(409, "class.delete.failure.check.docs");
+            resp.sendError(409,"شسیشسیشسی");
             return;
         }
 
         List<Attachment> attachments = attachmentDAO.findAttachmentByObjectTypeAndObjectId("Tclass", id);
 
         if (!attachments.isEmpty()) {
-            resp.sendError(409, "class.delete.failure.check.attachment");
+            resp.sendError(409,"شسیشسیشسی");
             return;
         }
 
