@@ -3,9 +3,6 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-<%--
-  ~ Author: Mehran Golrokhi
-  --%>
 
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
@@ -1119,7 +1116,8 @@
                     click: function () {
 
                         if (record == null) {return;}
-                        downloadFinalTestFiles(record.group_id, record.key, record.fileName);
+                        // downloadFinalTestFiles(record.group_id, record.key, record.fileName);
+                        downloadFinalTestFiles(record.id);
                     }
                 });
             }
@@ -1143,18 +1141,35 @@
         }));
     }
 
-    function downloadFinalTestFiles(groupId, key, fileName) {
+    <%--function downloadFinalTestFiles(groupId, key, fileName) {--%>
+
+    <%--    let downloadForm = isc.DynamicForm.create({--%>
+    <%--        method: "GET",--%>
+    <%--        action: "minIo/downloadFile/" + groupId + "/" + key + "/" + fileName,--%>
+    <%--        target: "_Blank",--%>
+    <%--        canSubmit: true,--%>
+    <%--        fields: [--%>
+    <%--            {name: "token", type: "hidden"}--%>
+    <%--        ]--%>
+    <%--    });--%>
+    <%--    downloadForm.setValue("token", "<%=accessToken%>");--%>
+    <%--    downloadForm.show();--%>
+    <%--    downloadForm.submitForm();--%>
+    <%--}--%>
+
+    function downloadFinalTestFiles(id) {
 
         let downloadForm = isc.DynamicForm.create({
             method: "GET",
-            action: "minIo/downloadFile/" + groupId + "/" + key + "/" + fileName,
+            action: "attachment/download/" + id,
             target: "_Blank",
             canSubmit: true,
-            fields: [
-                {name: "token", type: "hidden"}
-            ]
+            fields:
+                [
+                    {name: "myToken", type: "hidden"}
+                ]
         });
-        downloadForm.setValue("token", "<%=accessToken%>");
+        downloadForm.setValue("myToken", "<%=accessToken%>");
         downloadForm.show();
         downloadForm.submitForm();
     }
