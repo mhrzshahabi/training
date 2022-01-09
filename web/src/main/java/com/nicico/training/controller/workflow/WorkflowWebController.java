@@ -70,6 +70,11 @@ public class WorkflowWebController {
         return "workflow/userCartableForm";
     }
 
+    @GetMapping("/userBPMSPortfolio/showForm")
+    public String showUserBPMSPortfolio() {
+        return "workflow/userPortfolio";
+    }
+
     @GetMapping("/groupCartable/showForm")
     public String showGroupCartable() {
         return "workflow/groupCartableForm";

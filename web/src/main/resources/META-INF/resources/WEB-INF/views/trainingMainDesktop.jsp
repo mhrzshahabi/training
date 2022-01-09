@@ -2137,6 +2137,14 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                {
+                    title: "شخصی جدید",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/workflow/userBPMSPortfolio/showForm"/>");
+                    }
+                },
+                {isSeparator: true},
+
                 <sec:authorize access="hasAuthority('Menu_Cartable_Personal')">
                 {
                     title: "<spring:message code="personal"/>",
