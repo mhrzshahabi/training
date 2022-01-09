@@ -1,25 +1,14 @@
 package com.nicico.training.controller;
 
-import com.google.gson.JsonObject;
-import com.nicico.training.controller.minio.MinIoClient;
-import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.controller.client.minio.MinIoClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import request.minio.CreateFmsGroupReq;
 import response.minio.CreateFmsGroupRes;
 import response.minio.FmsConfig;
-import response.minio.UploadFmsRes;
-
-import javax.activation.MimetypesFileTypeMap;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.*;
-import java.net.URLEncoder;
 
 
 @RestController

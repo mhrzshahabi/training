@@ -312,6 +312,10 @@ public class MainFormController {
     public String showCompetenceForm() {
         return "needsAssessment/competence";
     }
+    @GetMapping("/competenceV2")
+    public String showCompetenceV2Form() {
+        return "needsAssessment/competenceV2";
+    }
 
     @GetMapping("/needsAssessment")
     public String showNeedsAssessmentForm() {

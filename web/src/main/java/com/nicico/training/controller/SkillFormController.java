@@ -1,5 +1,5 @@
 package com.nicico.training.controller;/*
-com.nicico.training.controller.masterData
+com.nicico.training.controller.client.masterData
 @author : banifatemi
 @Date : 6/11/2019
 @Time :10:47 AM

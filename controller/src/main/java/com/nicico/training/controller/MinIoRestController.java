@@ -1,7 +1,7 @@
 package com.nicico.training.controller;
 
 
-import com.nicico.training.controller.minio.MinIoClient;
+import com.nicico.training.controller.client.minio.MinIoClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpHeaders;
