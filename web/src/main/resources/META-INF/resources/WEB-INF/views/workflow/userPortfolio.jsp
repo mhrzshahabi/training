@@ -7,142 +7,122 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
+<%--<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
+
 // <script>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+//-------------------------------------------------- Rest DataSources --------------------------------------------------
 
-    var Menu_ListGrid_UserTaskList = isc.Menu.create({
+    let RestDataSource_Processes_UserPortfolio = isc.TrDS.create({
+        fields: [
+            {name: "processInstanceId"},
+            {name: "processDefinitionId"},
+            {name: "taskId"},
+            {name: "name"},
+            {name: "tenantId"},
+            {name: "tenantTitle"},
+            {name: "owner"},
+            {name: "description"},
+            {name: "processDocumentation"},
+            {name: "postTitle"},
+            {name: "senderUserName"},
+            {name: "processStartTime"},
+            {name: "instanceDetails"},
+            {name: "taskDefinitionKey"},
+            {name: "processDefinitionKey"},
+            {name: "formListDTOS"}
+        ]
+        <%--transformRequest: function (dsRequest) {--%>
+
+        <%--    dsRequest.httpHeaders = {--%>
+        <%--        "Authorization": "Bearer <%= accessToken %>"--%>
+        <%--    };--%>
+        <%--    return this.Super("transformRequest", arguments);--%>
+        <%--},--%>
+        <%--fetchDataURL: workflowUrl + "/userTask/list?usr=${username}"--%>
+    });
+    let RestDataSource_Processes_History_UserPortfolio = isc.TrDS.create({
+        fields: [
+            {name: "processDefinitionKey"},
+            {name: "processDescription"},
+            {name: "processInstanceId"},
+            {name: "deploymentId"},
+            {name: "processVersion"},
+            {name: "startDate"},
+            {name: "endDate"},
+            {name: "duration"},
+            {name: "result"},
+            {name: "deleteReason"},
+            {name: "status"},
+            {name: "taskHistoryDetailList"},
+            {name: "comments"},
+            {name: "waitingStateInfos"},
+        ]
+    });
+
+//--------------------------------------------------- Process Layout ---------------------------------------------------
+
+    let ToolStripButton_Refresh_Processes_UserPortfolio = isc.ToolStripButtonRefresh.create({
+        title: "<spring:message code="refresh"/>",
+        click: function () {
+            ListGrid_Processes_UserPortfolio.clearFilterValues();
+            ListGrid_Processes_UserPortfolio.invalidateCache();
+            // activitiRefreshButton.click();
+        }
+    });
+    let ToolStripButton_Show_Processes_UserPortfolio = isc.ToolStripButton.create({
+            icon: "[SKIN]/actions/column_preferences.png",
+            title: "<spring:message code="show.workflow.job.form"/>",
+            click: function () {
+            }
+        });
+    let ToolStripButton_Show_Processes_History_UserPortfolio = isc.ToolStripButton.create({
+            icon: "[SKIN]/actions/column_preferences.png",
+            title: "<spring:message code="workflow.history"/>",
+            click: function () {
+            }
+        });
+    let ToolStrip_Actions_Processes_UserPortfolio = isc.ToolStrip.create({
+            width: "100%",
+            members: [
+                ToolStripButton_Show_Processes_UserPortfolio,
+                ToolStripButton_Show_Processes_History_UserPortfolio,
+                isc.ToolStrip.create(
+                    {
+                        width: "100%",
+                        align: "left",
+                        border: "0px",
+                        members: [
+                            ToolStripButton_Refresh_Processes_UserPortfolio
+                        ]
+                    }
+                )
+            ]
+        });
+    let Menu_Processes_UserPortfolio = isc.Menu.create({
         width: 150,
         data: [
             {
-                title: "<spring:message code="show.workflow.relation.job"/>", icon: "pieces/512/showProcForm.png",
+                title: "<spring:message code="show.workflow.relation.job"/>",
+                icon: "pieces/512/showProcForm.png",
                 click: function () {
                 }
             },
             {
-                title: "<spring:message code="workflow.history"/>", icon: "pieces/512/showProcForm.png",
+                title: "<spring:message code="workflow.history"/>",
+                icon: "pieces/512/showProcForm.png",
                 click: function () {
                 }
             }
         ]
     });
-
-    isc.ViewLoader.create({
-        ID: "taskConfirmViewLoader",
-        width: "100%",
-        height: "100%",
-        autoDraw: false,
-        viewURL: "",
-        loadingMessage: "Loading Grid.."
-    });
-
-    isc.Window.create({
-        ID: "taskConfirmationWindow",
-        title: "<spring:message code="complete.the.process"/>",
-        autoSize: false,
-        width: "80%",
-        height: "90%",
-        canDragReposition: true,
-        canDragResize: true,
-        autoDraw: false,
-        autoCenter: true,
-        isModal: false,
-        items: [
-            taskConfirmViewLoader
-        ]
-    });
-
-    var userTaskViewLoader = isc.ViewLoader.create({
-        width: "100%",
-        height: "100%",
-        autoDraw: false,
-        //border: "10px solid black",
-        viewURL: "",
-        loadingMessage: "<spring:message code="work.form.not.selected"/>"
-    });
-
-    userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + 0);
-    userTaskViewLoader.show();
-
-    var TSB_Refresh_userCartableForm = isc.ToolStripButtonRefresh.create({
-        title: "<spring:message code="refresh"/>",
-        click: function () {
-            ListGrid_UserTaskList.clearFilterValues();
-            ListGrid_UserTaskList.invalidateCache();
-            activitiRefreshButton.click();
-        }
-    });
-
-    var ToolStripButton_showUserTaskForm = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/column_preferences.png",
-        title: "<spring:message code="show.workflow.job.form"/>",
-        click: function () {
-        }
-    });
-
-    var ToolStripButton_showUserTaskHistoryForm = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/column_preferences.png",
-        title: "<spring:message code="workflow.history"/>",
-        click: function () {
-        }
-    });
-
-    var ToolStrip_UserTask_Actions = isc.ToolStrip.create({
-        width: "100%",
-        members: [
-            ToolStripButton_showUserTaskForm, ToolStripButton_showUserTaskHistoryForm,
-            isc.ToolStrip.create(
-                {
-                    width: "100%",
-                    align: "left",
-                    border: "0px",
-                    members: [TSB_Refresh_userCartableForm]
-                }
-            )
-        ]
-    });
-
-    var HLayout_UserTask_Actions = isc.HLayout.create({
-        width: "100%",
-        members: [
-            ToolStrip_UserTask_Actions
-        ]
-    });
-
-    var RestDataSource_UserTaskList = isc.TrDS.create({
-        fields: [
-
-            {name: "name", title: "<spring:message code="title"/>"},
-            {name: "startDateFa", title: "<spring:message code="creation.date"/>"},
-            {name: "cTime", title: "<spring:message code="time"/>"},
-            {name: "endTimeFa", title: "<spring:message code="end.date"/>", width: "30%"},
-            {name: "description", title: "<spring:message code="description"/>"},
-            {name: "taskDef", title: "<spring:message code="work.definition"/>"},
-            {name: "id", title: "id", type: "text"},
-            {name: "assignee", title: "assignee", type: "text"},
-            {name: "processInstanceId", title: "PID", type: "text"}
-
-        ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer <%= accessToken %>"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: workflowUrl + "/userTask/list?usr=${username}"
-    });
-
-    var ListGrid_UserTaskList = isc.ListGrid.create({
+    let ListGrid_Processes_UserPortfolio = isc.ListGrid.create({
         width: "100%",
         height: "100%",
         autoFetchData: true,
-        dataSource: RestDataSource_UserTaskList,
+        dataSource: RestDataSource_Processes_UserPortfolio,
         sortDirection: "descending",
-        contextMenu: Menu_ListGrid_UserTaskList,
+        contextMenu: Menu_Processes_UserPortfolio,
         doubleClick: function () {
         },
         fields: [
@@ -166,30 +146,63 @@
         selectionUpdated: function(record, recordList) {
         }
     });
-
-    var HLayout_UserTaskGrid = isc.HLayout.create({
+    let VLayout_Processes_UserPortfolio = isc.VLayout.create({
         width: "100%",
         height: "100%",
+        members: [ToolStrip_Actions_Processes_UserPortfolio, ListGrid_Processes_UserPortfolio]
+
+    });
+
+//------------------------------------------------ Process History Layout ----------------------------------------------
+
+    let ToolStripButton_Refresh_Processes_History_UserPortfolio = isc.ToolStripButtonRefresh.create({
+        title: "<spring:message code="refresh"/>",
+        click: function () {
+            ListGrid_Processes_History_UserPortfolio.clearFilterValues();
+            ListGrid_Processes_History_UserPortfolio.invalidateCache();
+        }
+    });
+    let ToolStrip_Actions_Processes_History_UserPortfolio = isc.ToolStrip.create({
+        width: "100%",
         members: [
-            ListGrid_UserTaskList
+            isc.ToolStrip.create(
+                {
+                    width: "100%",
+                    align: "left",
+                    border: "0px",
+                    members: [
+                        ToolStripButton_Refresh_Processes_History_UserPortfolio
+                    ]
+                }
+            )
         ]
     });
-
-    VLayout_Processes_UserPortfolio = isc.VLayout.create({
+    let ListGrid_Processes_History_UserPortfolio = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        members: [HLayout_UserTask_Actions, HLayout_UserTaskGrid]
-
+        autoFetchData: false,
+        dataSource: RestDataSource_Processes_History_UserPortfolio,
+        sortDirection: "descending",
+        doubleClick: function () {
+        },
+        fields: [
+            {name: "name", title: "<spring:message code="work.name"/>", width: "30%"},
+        ],
+        sortField: 0,
+        dataPageSize: 50,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        selectionUpdated: function(record, recordList) {
+        }
     });
-
-    VLayout_Processes_History_UserPortfolio = isc.VLayout.create({
+    let VLayout_Processes_History_UserPortfolio = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [userTaskViewLoader]
-
+        members: [ToolStrip_Actions_Processes_History_UserPortfolio, ListGrid_Processes_History_UserPortfolio]
     });
 
-    HLayout_Main_UserPortfolio = isc.HLayout.create({
+//----------------------------------------------------- Main Layout ----------------------------------------------------
+    let HLayout_Main_UserPortfolio = isc.HLayout.create({
         width: "100%",
         height: "100%",
         members: [
