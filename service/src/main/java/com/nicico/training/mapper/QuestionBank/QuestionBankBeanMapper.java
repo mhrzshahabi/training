@@ -6,16 +6,17 @@ import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ISubcategoryService;
-import com.nicico.training.model.ParameterValue;
-import com.nicico.training.model.QuestionBank;
+import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EQuestionLevel;
-import com.nicico.training.service.AttachmentService;
-import com.nicico.training.service.ParameterValueService;
-import com.nicico.training.service.TeacherService;
+import com.nicico.training.service.*;
+import com.nicico.training.utility.persianDate.MyUtils;
+import com.nicico.training.utility.persianDate.PersianDate;
 import dto.exam.EQuestionType;
+import org.apache.poi.ss.usermodel.DateUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import response.question.dto.ElsAttachmentDto;
 import response.question.dto.ElsQuestionBankDto;
 import response.question.dto.ElsQuestionDto;
@@ -47,6 +48,16 @@ public abstract class QuestionBankBeanMapper {
 
     @Autowired
     protected IQuestionBankService questionBankService;
+
+    @Autowired
+    protected CourseService courseService;
+
+    @Autowired
+    protected TclassService tclassService;
+
+    @Autowired
+    protected PersonalInfoService personalInfoService;
+
 
     public ElsQuestionBankDto toElsQuestionBank(List<QuestionBank> questionBankList, String nationalCode) {
 
@@ -124,6 +135,40 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setCorrectAnswer(questionBank.getDescriptiveAnswer());
             elsQuestionDto.setHasAttachment(questionBank.getHasAttachment());
             elsQuestionDto.setFiles(elsAttachmentDtoFiles);
+            elsQuestionDto.setQuestionCode(questionBank.getCode());
+            if(questionBank.getDisplayTypeId()!=null){
+             Long id= questionBank.getDisplayTypeId();
+           ParameterValue displayType=  parameterValueService.get(id);
+                elsQuestionDto.setDisplayType(displayType.getType());
+            }
+
+            if(questionBank.getTeacherId()!=null){
+             Teacher teacher= teacherService.getTeacher(questionBank.getTeacherId());
+             if(teacher.getPersonalityId()!=null)  {
+                 PersonalInfo personalInfo=personalInfoService.getPersonalInfo(teacher.getPersonalityId());
+                 if(personalInfo!=null) {
+                     String name = personalInfo.getFirstNameFa() != null ? personalInfo.getFirstNameFa() : "";
+                     String lastName = personalInfo.getLastNameFa() != null ? personalInfo.getLastNameFa() : "";
+                     elsQuestionDto.setTeacherFullName(name + " " + lastName);
+                 }
+              }
+            }
+
+            if(questionBank.getCourseId()!=null){
+               Course course= courseService.getCourse(questionBank.getCourseId());
+               elsQuestionDto.setCourseName(course.getTitleFa());
+            }
+
+
+            if(questionBank.getTclassId()!=null) {
+                Tclass tclass=tclassService.getTClass(questionBank.getTclassId());
+                elsQuestionDto.setClassName(tclass.getTitleClass());
+                elsQuestionDto.setClassCode(tclass.getCode());
+                elsQuestionDto.setStartDate(tclass.getStartDate());
+                elsQuestionDto.setFinishDate(tclass.getEndDate());
+            }
+            elsQuestionDto.setCreatedBy(questionBank.getCreatedBy()!=null ? questionBank.getCreatedBy() : null);
+            elsQuestionDto.setCreatedDate(questionBank.getCreatedDate()!=null? PersianDate.convertToTrainingPersianDate(questionBank.getCreatedDate()):null);
 //            elsQuestionDto.setDescription();
 //            elsQuestionDto.setAnswerTime();
 
