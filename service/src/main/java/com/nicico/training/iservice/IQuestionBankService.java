@@ -26,4 +26,5 @@ public interface IQuestionBankService {
     void delete(Long id);
 
     Page<QuestionBank> findAll(Integer page, Integer size);
+
 }
