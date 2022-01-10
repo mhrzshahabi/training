@@ -14,7 +14,6 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.collections4.map.MultiValueMap;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import request.needsassessment.NeedAssessmentGroupJobPromotionDto;
@@ -638,10 +637,11 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
 
     @Transactional(readOnly = true)
     @Override
-    public NAReportForLMSDTO findNeedAssessmentForLMSByNationalCode(String nationalCode) {
+    public NAReportForLMSResponseDTO findNeedAssessmentForLMSByNationalCode(String nationalCode) {
 
         NAReportForLMSDTO naReportForLMSDTO = new NAReportForLMSDTO();
         List<NAReportDetailForLMSDTO> naReportDetailForLMSDTOList = new ArrayList<>();
+        NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
 
         List<ParameterValue> parameterValues = parameterValueDAO.findAll();
         PersonnelDTO.PersonalityInfo personalityInfo = personnelService.getByNationalCode(nationalCode);
@@ -649,9 +649,9 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
             List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(personalityInfo.getPostCode(), "Post", nationalCode, personalityInfo.getPersonnelNo());
             Set<Long> priorityIds = needsAssessmentReportList.stream().map(NeedsAssessmentReportsDTO.ReportInfo::getNeedsAssessmentPriorityId).collect(Collectors.toSet());
             for (Long priorityId : priorityIds) {
-                NAReportDetailForLMSDTO naReportDetailForLMSDTO = new NAReportDetailForLMSDTO();
                 String assessmentPriorityTitle = parameterValues.stream().filter(parameterValue -> parameterValue.getId().equals(priorityId)).collect(Collectors.toList()).get(0).getTitle();
                 needsAssessmentReportList.stream().filter(reportInfo -> reportInfo.getNeedsAssessmentPriorityId().equals(priorityId)).collect(Collectors.toList()).forEach(reportInfo -> {
+                    NAReportDetailForLMSDTO naReportDetailForLMSDTO = new NAReportDetailForLMSDTO();
                     naReportDetailForLMSDTO.setCourseCode(reportInfo.getSkill().getCourse().getCode());
                     naReportDetailForLMSDTO.setCourseName(reportInfo.getSkill().getCourse().getTitleFa());
                     naReportDetailForLMSDTO.setCourseState(parameterValues.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getSkill().getCourse().getScoresState())).collect(Collectors.toList()).get(0).getTitle());
@@ -667,8 +667,14 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
             naReportForLMSDTO.setPostCode(personalityInfo.getPostCode());
             naReportForLMSDTO.setPostTitle(personalityInfo.getPostTitle());
             naReportForLMSDTO.setReportDetailList(naReportDetailForLMSDTOList);
+
+            naReportForLMSResponseDTO.setData(naReportForLMSDTO);
+            naReportForLMSResponseDTO.setStatus(200);
+        } else {
+            naReportForLMSResponseDTO.setData(null);
+            naReportForLMSResponseDTO.setStatus(200);
         }
-        return naReportForLMSDTO;
+        return naReportForLMSResponseDTO;
     }
 
     private Integer getNeedAssessmentOrdinary(Long needAssessmentId) {
