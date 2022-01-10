@@ -4,7 +4,6 @@ ghazanfari_f, 8/29/2019, 10:43 AM
 package com.nicico.training.repository;
 
 import com.nicico.training.model.QuestionBank;
-import com.nicico.training.model.Subcategory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -47,6 +46,6 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
 
     Page<QuestionBank> findAll(Pageable pageable);
    @Query(value = "SELECT * FROM tbl_question_bank WHERE (f_category_id = :categoryId OR f_category_id IS NULL ) AND (f_subcategory_id = :subCategoryId OR f_subcategory_id IS NULL)",nativeQuery = true)
-    Page<QuestionBank> findAllByCategory_IdAndSubCategory_Id(Long categoryId, Long subCategoryId,Pageable pageable);
+    List<QuestionBank> findAllByCategory_IdAndSubCategory_Id(Long categoryId, Long subCategoryId);
 
 }

@@ -1006,6 +1006,8 @@ public class ElsRestController {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                Page<QuestionBank> questionBankList= questionBankService.findAllByCategoryAndSubCategory(teacherId,page,size);
+
                 if (teacherId != null) {
                     Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId, page, size);
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);

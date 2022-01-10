@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -146,6 +147,21 @@ public class QuestionBankService implements IQuestionBankService {
         return questionBankDAO.findAll(pageable);
     }
 
+    @Override
+    public Page<QuestionBank> findAllByCategoryAndSubCategory(Long teacherId, Integer page, Integer size) {
+        List<QuestionBank> finalQuestionBank=new ArrayList<>();
+       Page<QuestionBank> questionBanks= getQuestionBankByTeacherId(teacherId,page,size);
+      List<QuestionBank> questionBankList= questionBanks.get().collect(Collectors.toList());
+      questionBankList.stream().forEach(questionBank -> {
+         List<QuestionBank> questionBankDao= questionBankDAO.findAllByCategory_IdAndSubCategory_Id(questionBank.getCategoryId(),questionBank.getSubCategoryId());
+         finalQuestionBank.addAll(questionBankDao);
+      });
+      finalQuestionBank.stream().distinct();
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                Sort.Order.desc("id")
+        ));
+      return finalQuestionBank;
+    }
 
 
 }

@@ -27,4 +27,8 @@ public interface IQuestionBankService {
 
     Page<QuestionBank> findAll(Integer page, Integer size);
 
+    Page<QuestionBank> findAllByCategoryAndSubCategory(Long teacherId,Integer page,Integer size);
+
+
+
 }
