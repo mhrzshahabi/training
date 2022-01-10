@@ -72,26 +72,26 @@ public class AppUtils {
     public static int getTotalPages(int total, int size) {
         return size == 0 ? 1 : (int) Math.ceil((double) total / (double) size);
     }
+
     public static String getPrefix(String gender) {
-        switch (gender){
-            case "مرد" :
-            case "Male" :
-            case "آقا" :
-            {
+        switch (gender) {
+            case "مرد":
+            case "Male":
+            case "آقا": {
                 return "جناب آقای ";
 
             }
-            case "زن" :
-            case "Female" :
-            case "خانم" :
-            {
+            case "زن":
+            case "Female":
+            case "خانم": {
                 return "سرکار خانم ";
             }
-            default:return "جناب آقای/سرکار خانم " ;
+            default:
+                return "جناب آقای/سرکار خانم ";
         }
     }
 
-//    @Qualifier("intToEnum")
+    //    @Qualifier("intToEnum")
 //    public static Gender toEnum(int key){
 //        return Arrays.stream(Gender.values())
 //                .filter(e -> e.getKey()== key)
@@ -106,5 +106,8 @@ public class AppUtils {
 //        return   gender.getKey();
 //
 //    }
+    public static String getTenantId() {
+        return "Training";
+    }
 
 }
