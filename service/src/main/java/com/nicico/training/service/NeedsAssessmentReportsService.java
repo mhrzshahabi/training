@@ -608,9 +608,10 @@ public class NeedsAssessmentReportsService implements INeedsAssessmentReportsSer
                 List<NeedsAssessmentReportsDTO.ReportInfo> needsAssessmentReportList = getCourseListForBpms(postCode, "Post", nationalCode, personalityInfo.getPersonnelNo());
                 Set<Long> priorityIds = needsAssessmentReportList.stream().map(NeedsAssessmentReportsDTO.ReportInfo::getNeedsAssessmentPriorityId).collect(Collectors.toSet());
                 for (Long priorityId : priorityIds) {
-                    NAReportDetailForLMSDTO naReportDetailForLMSDTO = new NAReportDetailForLMSDTO();
+
                     String assessmentPriorityTitle = parameterValues.stream().filter(parameterValue -> parameterValue.getId().equals(priorityId)).collect(Collectors.toList()).get(0).getTitle();
                     needsAssessmentReportList.stream().filter(reportInfo -> reportInfo.getNeedsAssessmentPriorityId().equals(priorityId)).collect(Collectors.toList()).forEach(reportInfo -> {
+                        NAReportDetailForLMSDTO naReportDetailForLMSDTO = new NAReportDetailForLMSDTO();
                         naReportDetailForLMSDTO.setCourseCode(reportInfo.getSkill().getCourse().getCode());
                         naReportDetailForLMSDTO.setCourseName(reportInfo.getSkill().getCourse().getTitleFa());
                         naReportDetailForLMSDTO.setCourseState(parameterValues.stream().filter(parameterValue -> parameterValue.getId().equals(reportInfo.getSkill().getCourse().getScoresState())).collect(Collectors.toList()).get(0).getTitle());
