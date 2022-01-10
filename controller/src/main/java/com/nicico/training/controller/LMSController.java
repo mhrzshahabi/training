@@ -6,30 +6,26 @@ import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.IStudentService;
-import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
 import com.nicico.training.mapper.student.StudentMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherBeanMapper;
-import com.nicico.training.mapper.teacher.TeacherBeanMapperImpl;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.service.ViewTrainingFileService;
+import com.nicico.training.utility.persianDate.MyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import response.PaginationDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -180,16 +176,13 @@ public class LMSController {
 
     @GetMapping("/getNeedAssessmentByNationalCode/{nationalCode}")
     public ResponseEntity<NAReportForLMSResponseDTO>  getNeedAssessmentByNationalCode(@PathVariable String nationalCode) {
-
         NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
-        NAReportForLMSDTO naReportForLMSDTO = iNeedsAssessmentReportsService.findNeedAssessmentForLMSByNationalCode(nationalCode);
-        if (naReportForLMSDTO.getNationalCode() != null) {
-            naReportForLMSResponseDTO.setData(naReportForLMSDTO);
-            naReportForLMSResponseDTO.setStatus(200);
+        if (MyUtils.validateNationalCode(nationalCode)) {
+            naReportForLMSResponseDTO = iNeedsAssessmentReportsService.findNeedAssessmentForLMSByNationalCode(nationalCode);
         } else {
             naReportForLMSResponseDTO.setData(null);
-            naReportForLMSResponseDTO.setStatus(404);
-            naReportForLMSResponseDTO.setMessage("پرسنل یافت نشد");
+            naReportForLMSResponseDTO.setStatus(409);
+            naReportForLMSResponseDTO.setMessage("کدملی معتبر نیست");
         }
         return ResponseEntity.ok(naReportForLMSResponseDTO);
     }
@@ -249,10 +242,10 @@ public class LMSController {
     @GetMapping("/getPersonnelClassesByNationalCode/{nationalCode}")
     public ResponseEntity<PersonnelClassesHistoryDTO> getPersonnelClassesByNationalCode(@PathVariable String nationalCode) {
         PersonnelClassesHistoryDTO personnelClassesHistoryDTO = new PersonnelClassesHistoryDTO();
-        if (nationalCode == null || nationalCode.equals("") || nationalCode.length() != 10 || !StringUtils.isNumeric(nationalCode)) {
+        if (!MyUtils.validateNationalCode(nationalCode)) {
             personnelClassesHistoryDTO.setViewTrainingFileDTOS(null);
-            personnelClassesHistoryDTO.setStatus(405);
-            personnelClassesHistoryDTO.setMessage("مقدار کد ملی صحیح نیست");
+            personnelClassesHistoryDTO.setStatus(409);
+            personnelClassesHistoryDTO.setMessage("کدملی معتبر نیست");
         } else {
             List<ViewLmsTrainingFileDTO> viewTrainingFileDTOS = viewTrainingFileService.getDtoListByNationalCode(nationalCode);
             personnelClassesHistoryDTO.setViewTrainingFileDTOS(viewTrainingFileDTOS);
