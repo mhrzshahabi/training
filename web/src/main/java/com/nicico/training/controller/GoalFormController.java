@@ -1,6 +1,6 @@
 package com.nicico.training.controller;
 
-/* com.nicico.training.controller.masterData
+/* com.nicico.training.controller.client.masterData
 @Author:jafari-h
 @Date:6/9/2019
 @Time:7:58 AM
