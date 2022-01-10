@@ -17,9 +17,9 @@
     isc.Menu.create({
         ID: "CompetenceMenu_competenceV2",
         data: [
-<%--            <sec:authorize access="hasAuthority('Competence_R')">--%>
-<%--            {title: "<spring:message code="refresh"/>", click: function () { refreshLG(CompetenceLG_competence); }},--%>
-<%--            </sec:authorize>--%>
+            <sec:authorize access="hasAuthority('Competence_R')">
+            {title: "<spring:message code="refresh"/>", click: function () { refreshLG(CompetenceLG_competenceV2); }},
+            </sec:authorize>
             <sec:authorize access="hasAuthority('Competence_C')">
             {title: "<spring:message code="create"/>", click: function () { createCompetence_competenceV2(); }},
             </sec:authorize>
@@ -349,37 +349,39 @@
         }
         let data = CompetenceDF_competenceV2.getValues();
         let entityTitle = data.title
-        wait.show();
-        isc.RPCManager.sendRequest(
-            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), (resp)=>{
-                <%--wait.close();--%>
-                <%--if(resp.httpResponseCode !== 226) {--%>
-                <%--    if(competenceMethod_competence === "POST") {--%>
-                <%--        if (resp.httpResponseCode === 401) { //bug fix--%>
-                <%--            simpleDialog("<spring:message code="message"/>", "<spring:message code='publication.title.duplicate'/>", 3000, "say");--%>
-                <%--            return;--%>
-                <%--        }--%>
+        if(competenceMethod_competence === "POST"){
+            sendCompetenceToWorkflowV2(data);
+        }
+        <%--isc.RPCManager.sendRequest(--%>
+        <%--    TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), (resp)=>{--%>
+        <%--        wait.close();--%>
+        <%--        if(resp.httpResponseCode !== 226) {--%>
+        <%--            if(competenceMethod_competence === "POST") {--%>
+        <%--                if (resp.httpResponseCode === 401) { //bug fix--%>
+        <%--                    simpleDialog("<spring:message code="message"/>", "<spring:message code='publication.title.duplicate'/>", 3000, "say");--%>
+        <%--                    return;--%>
+        <%--                }--%>
 
-                <%--        sendCompetenceToWorkflow(JSON.parse(resp.data));--%>
-                <%--    }//end post--%>
+        <%--                sendCompetenceToWorkflowV2(JSON.parse(resp.data));--%>
+        <%--            }//end post--%>
 
-                <%--    else if (resp.httpResponseCode === 401 && competenceMethod_competence === "PUT"){ //bug fix--%>
-                <%--        simpleDialog("<spring:message code="message"/>", "<spring:message code='publication.title.duplicate'/>", 3000, "say");--%>
-                <%--        return;--%>
-                <%--    }--%>
+        <%--            else if (resp.httpResponseCode === 401 && competenceMethod_competence === "PUT"){ //bug fix--%>
+        <%--                simpleDialog("<spring:message code="message"/>", "<spring:message code='publication.title.duplicate'/>", 3000, "say");--%>
+        <%--                return;--%>
+        <%--            }--%>
 
-                <%--    else if(JSON.parse(resp.data).workFlowStatusCode === 3 || JSON.parse(resp.data).workFlowStatusCode === 2){--%>
-                <%--        sendCompetenceToWorkflow(JSON.parse(resp.data));--%>
-                <%--    }--%>
-                <%--    studyResponse(resp, "action", '<spring:message code="competence"/>', CompetenceWin_competenceV2, CompetenceLG_competenceV2, "entityTitle");--%>
-                <%--}--%>
-                <%--else{--%>
-                <%--    let list = JSON.parse(resp.data);--%>
-                <%--    CompetenceWin_competenceV2.close();--%>
-                <%--    createDialog("warning", "شایستگی فوق در " + priorityList[list[0].objectType] + " " + getFormulaMessage(list[0].objectName, ) + " استفاده شده است. و قابل ویرایش نمیباشد.", "اخطار")--%>
-                <%--}--%>
-            })
-        );
+        <%--            // else if(JSON.parse(resp.data).workFlowStatusCode === 3 || JSON.parse(resp.data).workFlowStatusCode === 2){--%>
+        <%--            //     sendCompetenceToWorkflow(JSON.parse(resp.data));--%>
+        <%--            // }--%>
+        <%--            studyResponse(resp, "action", '<spring:message code="competence"/>', CompetenceWin_competenceV2, CompetenceLG_competenceV2, "entityTitle");--%>
+        <%--        }--%>
+        <%--        else{--%>
+        <%--            let list = JSON.parse(resp.data);--%>
+        <%--            CompetenceWin_competenceV2.close();--%>
+        <%--            createDialog("warning", "شایستگی فوق در " + priorityList[list[0].objectType] + " " + getFormulaMessage(list[0].objectName, ) + " استفاده شده است. و قابل ویرایش نمیباشد.", "اخطار")--%>
+        <%--        }--%>
+        <%--    })--%>
+        <%--);--%>
     }
 
     <%--function removeCompetence_competence() {--%>
@@ -437,32 +439,35 @@
         }
     }
 
-    <%--function sendCompetenceToWorkflow(record){--%>
-    <%--    let varParams = [{--%>
-    <%--        "processKey": "competenceWorkflow",--%>
-    <%--        "cId": record.id,--%>
-    <%--        "competenceTitle": "ایجاد شایستگی " + record.title,--%>
-    <%--        "competenceCreatorId": "${username}",--%>
-    <%--        "competenceCreator": userFullName,--%>
-    <%--        "REJECTVAL": "",--%>
-    <%--        "REJECT": "",--%>
-    <%--        "target": "/web/competence",--%>
-    <%--        "targetTitleFa": "شایستگی",--%>
-    <%--        "workflowStatus": "ثبت اولیه",--%>
-    <%--        "workflowStatusCode": "0",--%>
-    <%--        "workFlowName": "Competence",--%>
-    <%--    }];--%>
-    <%--    wait.show()--%>
-    <%--    isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), (resp)=>{--%>
-    <%--        wait.close()--%>
-    <%--        if (resp.httpResponseCode === 200) {--%>
-    <%--            simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");--%>
-    <%--        } else if (resp.httpResponseCode === 404) {--%>
-    <%--            simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");--%>
-    <%--        } else {--%>
-    <%--            simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");--%>
-    <%--        }--%>
-    <%--    }));--%>
-    <%--}--%>
+    function sendCompetenceToWorkflowV2(record){
+        debugger
+        let param={}
+        param.data={
+            "processDefinitionKey": "تعریف شایستگی",
+            "title": record.title + " شایستگی "
+        }
+        param.rq= {
+            "title": record.title,
+            "competenceTypeId": record.competenceTypeId,
+            "code": record.code,
+            "categoryId": record.categoryId,
+            "subCategoryId": record.subCategoryId,
+            "description": record.description,
+            "workFlowStatusCode": 0,
+        };
+        wait.show()
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsWorkflowUrl + "/processes/start-data-validation", "POST", JSON.stringify(param), (resp)=>{
+            wait.close()
+            if (resp.httpResponseCode === 200) {
+                CompetenceWin_competenceV2.close();
+                refreshLG(CompetenceLG_competenceV2);
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
+            } else if (resp.httpResponseCode === 404) {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
+            } else {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
+            }
+        }));
+    }
 
     //</script>
