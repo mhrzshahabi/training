@@ -59,4 +59,11 @@ public class Competence extends Auditable {
 
     @Column(name = "n_work_flow_code")
     private Long workFlowStatusCode;
+
+    @Column(name = "process_instance_id")
+    private String processInstanceId;
+
+
+    @Column(name = "return_detail")
+    private String returnDetail;
 }
