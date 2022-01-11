@@ -1001,6 +1001,12 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
+
+    /**
+     * return list of questions via teachers Category & Subcategory
+     * @param  nationalCode
+     * @return
+     */
     @GetMapping("questionBankByCategory/{nationalCode}/{page}/{size}")
     public ElsQuestionBankDto getQuestionBankViaCategoryAndSubCategory(HttpServletRequest header,@PathVariable String nationalCode, @PathVariable Integer page, @PathVariable Integer size ){
        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
