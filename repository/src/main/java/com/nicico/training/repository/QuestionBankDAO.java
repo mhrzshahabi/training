@@ -45,7 +45,8 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
     Page<QuestionBank> findAllByTeacherId(Long teacherId, Pageable pageable);
 
     Page<QuestionBank> findAll(Pageable pageable);
-   @Query(value = "SELECT * FROM tbl_question_bank WHERE (f_category_id = :categoryId OR f_category_id IS NULL ) AND (f_subcategory_id = :subCategoryId OR f_subcategory_id IS NULL)",nativeQuery = true)
-    List<QuestionBank> findAllByCategory_IdAndSubCategory_Id(Long categoryId, Long subCategoryId);
+
+   @Query(value = "SELECT * FROM tbl_question_bank WHERE (f_category_id IS NULL AND f_subcategory_id IS NULL ) OR (f_category_id IN (:categories) AND f_subcategory_id IN (:subCategories))",nativeQuery = true)
+   Page<QuestionBank> findAllWithCategoryAndSubCategory(List<Long> categories,List<Long> subCategories,Pageable pageable);
 
 }

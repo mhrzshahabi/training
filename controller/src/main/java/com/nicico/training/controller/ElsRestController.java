@@ -1001,15 +1001,17 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
-    @GetMapping("questionBank/{categoryId}/{subCategoryId}/{page}/{size}")
+    @GetMapping("questionBankByCategory/{nationalCode}/{page}/{size}")
     public ElsQuestionBankDto getQuestionBankViaCategoryAndSubCategory(HttpServletRequest header,@PathVariable String nationalCode, @PathVariable Integer page, @PathVariable Integer size ){
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                Page<QuestionBank> questionBankList= questionBankService.findAllByCategoryAndSubCategory(teacherId,page,size);
+
 
                 if (teacherId != null) {
-                    Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId, page, size);
+                    Teacher teacher=teacherService.getTeacher(teacherId);
+                    Page<QuestionBank> questionBankList = questionBankService.getQuestionsByCategoryAndSubCategory(teacher, page, size);
+
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
                     PaginationDto paginationDto = new PaginationDto();
                     paginationDto.setCurrent(page);
