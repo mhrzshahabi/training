@@ -1,15 +1,9 @@
-/*
-ghazanfari_f,
-1/14/2020,
-1:58 PM
-*/
 package com.nicico.training.service;
 
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.Competence;
 import com.nicico.training.model.NeedsAssessment;
 import com.nicico.training.model.NeedsAssessmentTemp;
@@ -18,8 +12,6 @@ import com.nicico.training.repository.NeedsAssessmentDAO;
 import com.nicico.training.repository.NeedsAssessmentTempDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
-import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -127,4 +119,13 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         }
         return needsAssessmentList;
     }
+
+    public CompetenceDTO.Info getProcessDetailByProcessInstanceId(String processInstanceId) {
+        Optional<Competence> competenceOptional = competenceDAO.findByProcessInstanceId(processInstanceId);
+        if (competenceOptional.isPresent())
+            return modelMapper.map(competenceOptional.get(), CompetenceDTO.Info.class);
+        else
+            return null;
+    }
+
 }

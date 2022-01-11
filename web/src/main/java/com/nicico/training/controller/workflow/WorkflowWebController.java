@@ -65,9 +65,21 @@ public class WorkflowWebController {
         return "workflow/processInstanceForm";
     }
 
+    // BPMS
+    @GetMapping("/bPMSProcesses/showForm")
+    public String showBPMSProcessesForm() {
+        return "workflow/bPMSProcesses";
+    }
+
     @GetMapping("/userCartable/showForm")
     public String showUserCartable() {
         return "workflow/userCartableForm";
+    }
+
+    // BPMS
+    @GetMapping("/userBPMSPortfolio/showForm")
+    public String showUserBPMSPortfolio() {
+        return "workflow/userPortfolio";
     }
 
     @GetMapping("/groupCartable/showForm")
