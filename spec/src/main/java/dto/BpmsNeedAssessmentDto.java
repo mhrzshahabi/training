@@ -12,7 +12,7 @@ public class BpmsNeedAssessmentDto {
 
     private Long id;
     @Getter(AccessLevel.NONE)
-    private CompetenceDTO competence;
+    private BpmsCompetenceDTO competence;
 //    private BpmsSkillDTO skill;
     private Long needsAssessmentDomainId;
     private Long needsAssessmentPriorityId;
@@ -21,7 +21,7 @@ public class BpmsNeedAssessmentDto {
 
     private TeacherInCourseDto teacher;
 
-    public CompetenceDTO getCompetence() {
+    public BpmsCompetenceDTO getCompetence() {
         return null;
     }
 

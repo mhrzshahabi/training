@@ -4,7 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
-import com.nicico.training.controller.minio.MinIoClient;
+import com.nicico.training.controller.client.minio.MinIoClient;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.MessagesAttDTO;
 import com.nicico.training.iservice.IAttachmentService;

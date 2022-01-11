@@ -9,7 +9,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
-import com.nicico.training.controller.masterData.MasterDataClient;
+import com.nicico.training.controller.client.masterData.MasterDataClient;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.PersonnelDTO;

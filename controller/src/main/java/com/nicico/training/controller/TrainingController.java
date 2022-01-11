@@ -20,7 +20,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping("/anonymous/bpms")
 @RequiredArgsConstructor
-public class BpmsController {
+public class TrainingController {
 
     private final INeedsAssessmentReportsService needsAssessmentReportsService;
 

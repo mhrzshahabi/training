@@ -1182,6 +1182,7 @@
     const oauthGroupUrl = rootUrl + "/oauth/groups";
     const oauthPermissionUrl = rootUrl + "/oauth/permissions";
     const workflowUrl = rootUrl + "/workflow";
+    const bpmsWorkflowUrl = rootUrl + "/bpms";
     const jobUrl = rootUrl + "/job";
     const postGroupUrl = rootUrl + "/post-group";
     const postGradeUrl = rootUrl + "/postGrade";
@@ -1797,6 +1798,15 @@
                     }
                 },
                 </sec:authorize>
+
+<%--                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="competenceV2"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="web/competenceV2/"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Skill')">
                 {

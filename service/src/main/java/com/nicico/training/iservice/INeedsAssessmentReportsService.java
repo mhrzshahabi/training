@@ -32,6 +32,6 @@ public interface INeedsAssessmentReportsService {
     NeedAssessmentReportUserObj findNeedAssessmentByNationalCode(String nationalCode);
     NAReportForLMSResponseDTO findNeedAssessmentByNationalCodeAndPostCode(String nationalCode, String postCode);
 
-    NAReportForLMSDTO findNeedAssessmentForLMSByNationalCode(String nationalCode);
+    NAReportForLMSResponseDTO findNeedAssessmentForLMSByNationalCode(String nationalCode);
 
 }
