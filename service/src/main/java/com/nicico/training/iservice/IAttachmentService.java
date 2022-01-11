@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface IAttachmentService {
+
     AttachmentDTO.Info get(Long id);
 
 //    List<AttachmentDTO.Info> list(String entityName, Long objectId);
@@ -28,10 +29,12 @@ public interface IAttachmentService {
     BaseResponse saveFmsFile(Attachment fmsUploadDto);
 
     QuestionAttachments getFiles(String questionBank, Long id);
+
     List<Long> getFileIds(String questionBank, Long id);
 
     void saveSessionAttachment(Long sessionId, Map<String, String> file, String fileName);
 
-
     List<MessagesAttDTO> findAllSessionsMessage(Long sessionId);
+
+    List<AttachmentDTO.Info> findQuestionFilesByQuestionId(String questionBank, Long questionBankId);
 }

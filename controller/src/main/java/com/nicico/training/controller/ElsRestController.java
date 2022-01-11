@@ -4,8 +4,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
-
-import com.nicico.training.controller.minio.MinIoClient;
+import com.nicico.training.controller.client.minio.MinIoClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ExamsType;

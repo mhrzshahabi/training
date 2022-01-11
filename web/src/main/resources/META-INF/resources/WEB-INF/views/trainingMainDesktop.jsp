@@ -1182,6 +1182,7 @@
     const oauthGroupUrl = rootUrl + "/oauth/groups";
     const oauthPermissionUrl = rootUrl + "/oauth/permissions";
     const workflowUrl = rootUrl + "/workflow";
+    const bpmsWorkflowUrl = rootUrl + "/bpms";
     const jobUrl = rootUrl + "/job";
     const postGroupUrl = rootUrl + "/post-group";
     const postGradeUrl = rootUrl + "/postGrade";
@@ -1224,7 +1225,6 @@
     const changeClassStatusToLock = rootUrl + "/tclass/changeClassStatusToLock";
     const uploadFms = rootUrl + "/attachment/upload/fms";
     const getFmsConfig = rootUrl + "/fms/config";
-    const downloadFms = rootUrl + "/fms/downloadFile";
     const changeClassStatusToUnLock = rootUrl + "/tclass/changeClassStatusToUnLock/";
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const skillNAUrl = rootUrl + "/skill-na";
@@ -1288,6 +1288,7 @@
     const selfDeclarationUrl = rootUrl + "/self-declaration";
     const needAssessmentForGroup = rootUrl + "/personnel/import/post-personnel";
     const synonymPersonnel = rootUrl + "/personnel/Synonym";
+    const minIoUrl = rootUrl + "/minIo";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1797,6 +1798,15 @@
                     }
                 },
                 </sec:authorize>
+
+<%--                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="competenceV2"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="web/competenceV2/"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Skill')">
                 {

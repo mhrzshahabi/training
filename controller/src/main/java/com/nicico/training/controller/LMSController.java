@@ -6,28 +6,26 @@ import com.nicico.training.dto.enums.ClassTypeDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.IStudentService;
-import com.nicico.training.iservice.INeedsAssessmentReportsService;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
 import com.nicico.training.mapper.student.StudentMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherBeanMapper;
-import com.nicico.training.mapper.teacher.TeacherBeanMapperImpl;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.model.Teacher;
+import com.nicico.training.service.ViewTrainingFileService;
+import com.nicico.training.utility.persianDate.MyUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import response.PaginationDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -47,6 +45,8 @@ public class LMSController {
     private final TeacherBeanMapper teacherBeanMapper;
     private final IStudentService iStudentService;
     private final StudentMapper studentMapper;
+    private final ViewTrainingFileService viewTrainingFileService;
+
 
     @GetMapping("/getCourseDetails/{classCode}")
     public ResponseEntity<TclassTimeDetailBaseDTO> getCourseTimeDetails(@PathVariable String classCode) {
@@ -125,10 +125,9 @@ public class LMSController {
 
     @GetMapping("/getNeedAssessmentByNationalCodeAndPastCode/{nationalCode}/{postCode}")
     public ResponseEntity<NAReportForLMSResponseDTO> getNeedAssessmentByNationalCodeAndPostCode(@RequestParam String nationalCode,@RequestParam String postCode){
-        NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
-        NAReportForLMSDTO  naReportForLMSDTO=new NAReportForLMSDTO();
 
-            naReportForLMSResponseDTO = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
+
+      NAReportForLMSResponseDTO   naReportForLMSResponseDTO = iNeedsAssessmentReportsService.findNeedAssessmentByNationalCodeAndPostCode(nationalCode,postCode);
 
 
         return ResponseEntity.ok(naReportForLMSResponseDTO);
@@ -151,18 +150,39 @@ public class LMSController {
         return ResponseEntity.ok(activeStudentsBaseDTO);
     }
 
+    /**
+     * return students of a class by class code
+     * @param classCode
+     * @return
+     */
+    @GetMapping("/getClassStudents/{classCode}")
+    public ResponseEntity<ActiveStudentsBaseDTO> getClassStudents(@PathVariable String classCode) {
+        ActiveStudentsBaseDTO activeStudentsBaseDTO = new ActiveStudentsBaseDTO();
+        Tclass tclass = iTclassService.getClassByCode(classCode);
+        if (tclass != null) {
+            List<Student> students = iStudentService.getAllStudentsOfClassByClassCode(classCode);
+            List<StudentDTO.LmsInfo> infos = studentMapper.toStudentLmsInfoDto(students);
+
+            activeStudentsBaseDTO.setInfos(infos);
+            activeStudentsBaseDTO.setStatus(200);
+        } else {
+            activeStudentsBaseDTO.setInfos(null);
+            activeStudentsBaseDTO.setStatus(409);
+            activeStudentsBaseDTO.setMessage("کلاسی با این کد موجود نیست");
+        }
+
+        return ResponseEntity.ok(activeStudentsBaseDTO);
+    }
+
     @GetMapping("/getNeedAssessmentByNationalCode/{nationalCode}")
     public ResponseEntity<NAReportForLMSResponseDTO>  getNeedAssessmentByNationalCode(@PathVariable String nationalCode) {
-
         NAReportForLMSResponseDTO naReportForLMSResponseDTO = new NAReportForLMSResponseDTO();
-        NAReportForLMSDTO naReportForLMSDTO = iNeedsAssessmentReportsService.findNeedAssessmentForLMSByNationalCode(nationalCode);
-        if (naReportForLMSDTO.getNationalCode() != null) {
-            naReportForLMSResponseDTO.setData(naReportForLMSDTO);
-            naReportForLMSResponseDTO.setStatus(200);
+        if (MyUtils.validateNationalCode(nationalCode)) {
+            naReportForLMSResponseDTO = iNeedsAssessmentReportsService.findNeedAssessmentForLMSByNationalCode(nationalCode);
         } else {
             naReportForLMSResponseDTO.setData(null);
-            naReportForLMSResponseDTO.setStatus(404);
-            naReportForLMSResponseDTO.setMessage("پرسنل یافت نشد");
+            naReportForLMSResponseDTO.setStatus(409);
+            naReportForLMSResponseDTO.setMessage("کدملی معتبر نیست");
         }
         return ResponseEntity.ok(naReportForLMSResponseDTO);
     }
@@ -214,6 +234,25 @@ public class LMSController {
 
     }
 
+    /**
+     * return all the classes a student joined them with the results
+     * @param nationalCode
+     * @return list of the student's classes
+     */
+    @GetMapping("/getPersonnelClassesByNationalCode/{nationalCode}")
+    public ResponseEntity<PersonnelClassesHistoryDTO> getPersonnelClassesByNationalCode(@PathVariable String nationalCode) {
+        PersonnelClassesHistoryDTO personnelClassesHistoryDTO = new PersonnelClassesHistoryDTO();
+        if (!MyUtils.validateNationalCode(nationalCode)) {
+            personnelClassesHistoryDTO.setViewTrainingFileDTOS(null);
+            personnelClassesHistoryDTO.setStatus(409);
+            personnelClassesHistoryDTO.setMessage("کدملی معتبر نیست");
+        } else {
+            List<ViewLmsTrainingFileDTO> viewTrainingFileDTOS = viewTrainingFileService.getDtoListByNationalCode(nationalCode);
+            personnelClassesHistoryDTO.setViewTrainingFileDTOS(viewTrainingFileDTOS);
+            personnelClassesHistoryDTO.setStatus(200);
+        }
+        return ResponseEntity.ok(personnelClassesHistoryDTO);
+    }
 }
 
 

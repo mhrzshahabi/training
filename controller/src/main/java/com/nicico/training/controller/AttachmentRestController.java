@@ -4,7 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
-import com.nicico.training.controller.minio.MinIoClient;
+import com.nicico.training.controller.client.minio.MinIoClient;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.MessagesAttDTO;
 import com.nicico.training.iservice.IAttachmentService;
@@ -19,7 +19,6 @@ import org.springframework.core.io.ByteArrayResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
@@ -27,14 +26,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import response.BaseResponse;
 
-import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.net.URLConnection;
-import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 
@@ -250,6 +244,12 @@ public class AttachmentRestController {
     @GetMapping(value = "/findAll/{sessionId}")
     public ResponseEntity<List<MessagesAttDTO>> findAllBySessionId(@PathVariable Long sessionId) {
         return new ResponseEntity<>(elsClient.findAllMessagesBySessionId(sessionId).getBody(), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/findQuestionFiles/{questionBankId}")
+    public ResponseEntity<List<AttachmentDTO.Info>> findQuestionFilesByQuestionId(@PathVariable Long questionBankId) {
+        return new ResponseEntity<>(attachmentService.findQuestionFilesByQuestionId("QuestionBank", questionBankId), HttpStatus.OK);
     }
 
 

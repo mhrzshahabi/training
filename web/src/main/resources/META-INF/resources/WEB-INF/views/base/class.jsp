@@ -3852,7 +3852,7 @@
 
     function class_delete_result(resp) {
         wait.close();
-        if (resp.httpResponseCode === 200) {
+        if (JSON.parse(resp.httpResponseText).status === 200) {
             ListGrid_Class_JspClass.invalidateCache();
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                 "<spring:message code="msg.command.done"/>");
@@ -3860,10 +3860,10 @@
                 OK.close();
             }, 3000);
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
-        } else if (resp.httpResponseCode === 406 && resp.httpResponseText === "NotDeletable") {
+        } else if (JSON.parse(resp.httpResponseText).status === 406) {
             createDialog("info", "<spring:message code='global.grid.record.cannot.deleted'/>");
-        } else {
-            createDialog("warning", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
+        } else if (JSON.parse(resp.httpResponseText).status === 409){
+            createDialog("info", (JSON.parse(resp.httpResponseText).message === undefined ? "خطا" : JSON.parse(resp.httpResponseText).message));
         }
     }
     function class_finish_result(resp) {

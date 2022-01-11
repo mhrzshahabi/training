@@ -1,11 +1,10 @@
-package com.nicico.training.controller.minio;
+package com.nicico.training.controller.client.minio;
 
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import request.minio.CreateFmsGroupReq;
-import response.BaseResponse;
 import response.minio.CreateFmsGroupRes;
 import response.minio.UploadFmsRes;
 

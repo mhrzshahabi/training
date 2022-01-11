@@ -151,9 +151,21 @@ public class TestQuestionService implements ITestQuestionService {
         Set<QuestionBankDTO.Exam> testQuestionBanks = getAllQuestionsByTestQuestionId(testQuestionId);
 
         for (QuestionBankDTO.Exam q : testQuestionBanks) {
-            if (q.getQuestionType().getCode().equals("Descriptive")) {
-                for (int i = 0; i <= q.getLines(); i++) {
-                    q.setQuestion(wrap_dir("rtl", q.getQuestion()) + "\n");
+            for (int i = 0; i <= q.getLines(); i++) {
+                q.setQuestion(wrap_dir("rtl", q.getQuestion()) + "\n");
+            }
+            if (q.getQuestionType().getCode().equals("MultipleChoiceAnswer")) {
+                if (q.getOption1() != null) {
+                    q.setOption1(wrap_dir("rtl", q.getOption1()));
+                }
+                if (q.getOption2() != null) {
+                    q.setOption2(wrap_dir("rtl", q.getOption2()));
+                }
+                if (q.getOption3() != null) {
+                    q.setOption3(wrap_dir("rtl", q.getOption3()));
+                }
+                if (q.getOption4() != null) {
+                    q.setOption4(wrap_dir("rtl", q.getOption4()));
                 }
             }
         }

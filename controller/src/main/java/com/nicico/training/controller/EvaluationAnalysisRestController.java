@@ -14,6 +14,7 @@ import com.nicico.training.service.*;
 import com.nicico.training.utility.PersianCharachtersUnicode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -339,7 +340,7 @@ public class EvaluationAnalysisRestController {
             criteriaRq.getCriteria().add(criteriaRq1);
 
             SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
-            criteriaRq2.setValue(new Integer(0));
+            criteriaRq2.setValue(0);
             criteriaRq2.setOperator(EOperator.notEqual);
             criteriaRq2.setFieldName("tclassStudentsCount");
             criteriaRq.getCriteria().add(criteriaRq2);
@@ -599,7 +600,7 @@ public class EvaluationAnalysisRestController {
             criteriaRq.getCriteria().add(criteriaRq1);
 
             SearchDTO.CriteriaRq criteriaRq2 = new SearchDTO.CriteriaRq();
-            criteriaRq2.setValue(new Integer(0));
+            criteriaRq2.setValue(0);
             criteriaRq2.setOperator(EOperator.notEqual);
             criteriaRq2.setFieldName("tclassStudentsCount");
             criteriaRq.getCriteria().add(criteriaRq2);

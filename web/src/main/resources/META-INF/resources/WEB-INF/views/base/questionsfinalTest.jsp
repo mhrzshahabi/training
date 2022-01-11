@@ -3,9 +3,6 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-<%--
-  ~ Author: Mehran Golrokhi
-  --%>
 
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
@@ -105,6 +102,15 @@
         fetchDataURL: subCategoryUrl + "iscList"
     });
 
+    RestDataSource_Files_FinalTest = isc.TrDS.create({
+        fields: [
+            {name: "fileName", title: "نام فایل"},
+            {name: "fileTypeId", title: "نوع فایل"},
+            {name: "group_id", title: "groupId", hidden: true},
+            {name: "key", title: "deleted", hidden: true},
+        ]
+    });
+
     //----------------------------------------- ListGrids --------------------------------------------------------------
     var ListGrid_FinalTest = isc.TrLG.create({
         width: "100%",
@@ -115,10 +121,11 @@
         selectionType: "single",
         fields: [
             {name: "id", hidden:true},
-            {name: "questionBank.question"},
-            {name: "questionBank.questionType.title"},
-            {name: "questionBank.displayType.title"},
-            {name: "OnDelete", title: " ", align: "center", width:30}
+            {name: "questionBank.question", width: "10%"},
+            {name: "questionBank.questionType.title", width: "10%"},
+            {name: "questionBank.displayType.title", width: "10%"},
+            {name: "OnDelete", title: " ", align: "center", width: 30},
+            {name: "questionFiles", showTitle: false, align: "center", canFilter: false, width: "140"}
         ],
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
@@ -165,6 +172,16 @@
                 });
                 recordCanvas.addMember(removeIcon);
                 return recordCanvas;
+            } else if (fieldName === "questionFiles") {
+                return isc.IButton.create({
+                    layoutAlign: "center",
+                    title: "فایل های سوال",
+                    width: "120",
+                    margin: 3,
+                    click: function () {
+                        showFinalTestFiles(record.questionBankId);
+                    }
+                });
             } else
                 return null;
         }
@@ -1037,8 +1054,6 @@
         criteriaForm.show();
         criteriaForm.submitForm();
     }
-
-
     function printEls(type,id,national,fileName,name,last) {
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -1049,4 +1064,114 @@
         criteriaForm.show();
         criteriaForm.submitForm();
     }
+
+    function showFinalTestFiles(questionBankId) {
+
+        let ListGrid_Files_FinalTest = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_Files_FinalTest,
+            showFilterEditor: false,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            initialSort: [
+                {property: "fileTypeId", direction: "ascending"}
+            ],
+            fields: [
+                {
+                    name: "fileName",
+                    align: "center",
+                    width: "10%"
+                },
+                {
+                    name: "fileTypeId",
+                    align: "center",
+                    valueMap: {
+                        1: "صورت سوال",
+                        2: "سوالات عملی",
+                        3: "فایل گزینه اول",
+                        4: "فایل گزینه دوم",
+                        5: "فایل گزینه سوم",
+                        6: "فایل گزینه چهارم",
+                    },
+                    width: "10%"
+                },
+                {
+                    name: "download",
+                    title: "دریافت فایل",
+                    align: "center",
+                    canFilter: false,
+                    width: "120"
+                }
+            ],
+            createRecordComponent: function (record, colNum) {
+
+                let fieldName = this.getFieldName(colNum);
+                if (record == null || fieldName !== "download")
+                    return null;
+
+                return isc.ToolStripButton.create({
+                    icon: "[SKIN]actions/download.png",
+                    width: "25",
+                    click: function () {
+
+                        if (record == null) {return;}
+                        // downloadFinalTestFiles(record.group_id, record.key, record.fileName);
+                        downloadFinalTestFiles(record.id);
+                    }
+                });
+            }
+        });
+        let Window_Files_FinalTest = isc.Window.create({
+            title: "نمایش فایل های سوال",
+            width: "40%",
+            height: "40%",
+            autoSize: false,
+            items: [ListGrid_Files_FinalTest]
+        });
+
+        isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "/findQuestionFiles/" + questionBankId, "GET", null, function (resp) {
+            if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let files = JSON.parse(resp.httpResponseText);
+                ListGrid_Files_FinalTest.setData(files);
+                Window_Files_FinalTest.show();
+            } else {
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+
+    <%--function downloadFinalTestFiles(groupId, key, fileName) {--%>
+
+    <%--    let downloadForm = isc.DynamicForm.create({--%>
+    <%--        method: "GET",--%>
+    <%--        action: "minIo/downloadFile/" + groupId + "/" + key + "/" + fileName,--%>
+    <%--        target: "_Blank",--%>
+    <%--        canSubmit: true,--%>
+    <%--        fields: [--%>
+    <%--            {name: "token", type: "hidden"}--%>
+    <%--        ]--%>
+    <%--    });--%>
+    <%--    downloadForm.setValue("token", "<%=accessToken%>");--%>
+    <%--    downloadForm.show();--%>
+    <%--    downloadForm.submitForm();--%>
+    <%--}--%>
+
+    function downloadFinalTestFiles(id) {
+
+        let downloadForm = isc.DynamicForm.create({
+            method: "GET",
+            action: "attachment/download/" + id,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "myToken", type: "hidden"}
+                ]
+        });
+        downloadForm.setValue("myToken", "<%=accessToken%>");
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
+
     //</script>
