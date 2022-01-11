@@ -8,6 +8,7 @@ import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
 import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.iservice.IBpmsService;
+import com.nicico.training.repository.PersonnelDAO;
 import dto.bpms.BpmsContent;
 import dto.bpms.BpmsDefinitionDto;
 import dto.bpms.BpmsStartParamsDto;
@@ -26,6 +27,7 @@ public class BpmsService implements IBpmsService {
 
     private final BpmsClientService client;
     private final ObjectMapper mapper;
+    private final PersonnelDAO personnelDAO;
 
 
     @Override
@@ -60,7 +62,16 @@ public class BpmsService implements IBpmsService {
     @Override
     public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId) {
         Map<String, Object> map = new HashMap<>();
-        map.put("assignTo", "3720228851");
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+//        String mainConfirmBoss = "ahmadi_z";
+        String mainConfirmBoss = "3621296476";
+        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
+//            mainConfirmBoss = "pourfathian_a";
+            mainConfirmBoss = "3149622123";
+//            mainConfirmBoss = "hajizadeh_mh";
+        }
+
+        map.put("assignTo", mainConfirmBoss);
         map.put("userId", SecurityUtil.getUserId());
         map.put("tenantId",tenantId);
         map.put("title", params.getData().get("title").toString());

@@ -18,6 +18,7 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -32,8 +33,7 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
 
     @Autowired
     private  MessageSource messageSource;
-    @Autowired
-    private CompetenceService competenceService;
+
     @Autowired
     private ParameterValueService parameterValueService;
 
@@ -86,7 +86,7 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     public CompetenceDTO.Info checkAndUpdate(Long id, CompetenceDTO.Update rq, HttpServletResponse response){
         try {
             if (!dao.existsByTitleAndIdIsNot(rq.getTitle(), id)) {
-                return update(id, rq);
+                return updateCompetence(id, rq);
             } else {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(401, messageSource.getMessage("publication.title.duplicate", null, locale));
@@ -95,6 +95,16 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
         return null;
+    }
+
+    private CompetenceDTO.Info updateCompetence(Long id, CompetenceDTO.Update rq) {
+        Competence currentCompany = competenceDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        modelMapper.map(rq, currentCompany);
+        try {
+            return modelMapper.map(competenceDAO.saveAndFlush(currentCompany), CompetenceDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.conflict);
+        }
     }
 
     @Transactional
@@ -128,4 +138,20 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
             return null;
     }
 
+
+    @Transactional
+    public BaseResponse updateStatus(String processInstanceId, Long i) {
+        BaseResponse response=new BaseResponse();
+       Optional<Competence> optionalCompetence = competenceDAO.findFirstByProcessInstanceId(processInstanceId);
+       if (optionalCompetence.isPresent()){
+           Competence competence =  optionalCompetence.get();
+           competence.setWorkFlowStatusCode(i);
+           dao.saveAndFlush(competence);
+           response.setStatus(200);
+       }else {
+           response.setStatus(404);
+       }
+           return response;
+
+    }
 }
