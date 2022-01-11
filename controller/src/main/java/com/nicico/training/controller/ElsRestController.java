@@ -4,6 +4,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+
 import com.nicico.training.controller.minio.MinIoClient;
 import com.nicico.training.controller.util.GeneratePdfReport;
 import com.nicico.training.dto.*;
@@ -972,6 +973,46 @@ public class ElsRestController {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
                 if (teacherId != null) {
                     Page<QuestionBank> questionBankList = questionBankService.getQuestionBankByTeacherId(teacherId, page, size);
+                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
+                    PaginationDto paginationDto = new PaginationDto();
+                    paginationDto.setCurrent(page);
+                    paginationDto.setSize(size);
+                    paginationDto.setTotal(questionBankList.getTotalPages());
+                    paginationDto.setLast(questionBankList.getTotalPages() - 1);
+                    paginationDto.setTotalItems(questionBankList.get().count());
+                    questionBankDto.setPagination(paginationDto);
+                    return questionBankDto;
+                } else {
+                    ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                    ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                    elsQuestionDto.setStatus(406);
+                    elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
+                    dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                    return dto;
+                }
+
+            } catch (Exception e) {
+                ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                elsQuestionDto.setStatus(500);
+                dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                return dto;
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+    @GetMapping("questionBankByCategory/{nationalCode}/{page}/{size}")
+    public ElsQuestionBankDto getQuestionBankViaCategoryAndSubCategory(HttpServletRequest header,@PathVariable String nationalCode, @PathVariable Integer page, @PathVariable Integer size ){
+       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+
+
+                if (teacherId != null) {
+                    Teacher teacher=teacherService.getTeacher(teacherId);
+                    Page<QuestionBank> questionBankList = questionBankService.getQuestionsByCategoryAndSubCategory(teacher, page, size);
+
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList.getContent(), nationalCode);
                     PaginationDto paginationDto = new PaginationDto();
                     paginationDto.setCurrent(page);

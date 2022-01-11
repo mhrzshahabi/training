@@ -6,7 +6,10 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.model.QuestionBank;
+import com.nicico.training.model.Teacher;
 import org.springframework.data.domain.Page;
+
+import java.util.List;
 
 
 public interface IQuestionBankService {
@@ -26,4 +29,8 @@ public interface IQuestionBankService {
     void delete(Long id);
 
     Page<QuestionBank> findAll(Integer page, Integer size);
+
+
+    Page<QuestionBank> getQuestionsByCategoryAndSubCategory(Teacher teacher,Integer page ,Integer size);
+
 }
