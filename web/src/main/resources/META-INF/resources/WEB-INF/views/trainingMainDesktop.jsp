@@ -1289,6 +1289,7 @@
     const needAssessmentForGroup = rootUrl + "/personnel/import/post-personnel";
     const synonymPersonnel = rootUrl + "/personnel/Synonym";
     const minIoUrl = rootUrl + "/minIo";
+    const bpmsUrl = rootUrl + "/bpms" ;
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2147,6 +2148,14 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                {
+                    title: "کارتابل شخصی",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/workflow/userBPMSPortfolio/showForm"/>");
+                    }
+                },
+                {isSeparator: true},
+
                 <sec:authorize access="hasAuthority('Menu_Cartable_Personal')">
                 {
                     title: "<spring:message code="personal"/>",
@@ -2187,8 +2196,15 @@
                             click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")
                             }
-                        }
+                        },
                         </sec:authorize>
+                        {isSeparator: true},
+                        {
+                            title: "تمام فرایندها جدید",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="/web/workflow/bPMSProcesses/showForm"/>")
+                            }
+                        }
                     ]
                 },
                 {isSeparator: true},

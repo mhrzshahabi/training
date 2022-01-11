@@ -1,0 +1,478 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
+<%@ page import="com.nicico.training.controller.util.AppUtils" %>
+<%@ page import="com.nicico.copper.core.SecurityUtil" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    final String tenantId = AppUtils.getTenantId();
+    final String userNationalCode = SecurityUtil.getNationalCode();
+%>
+
+<%--<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
+
+// <script>
+
+//-------------------------------------------------- Rest DataSources --------------------------------------------------
+    let RestDataSource_Processes_UserPortfolio = isc.TrDS.create({
+        fields: [
+            {name: "name", title: "عنوان تسک"},
+            {name: "deploymentId"},
+            {name: "tenantId", title: "زیرسیستم"},
+            {name: "createBy", title: "ایجاد کننده"},
+            {name: "title", title: "عنوان"},
+            {name: "processInstanceId", title: "شناسه فرایند"},
+            {name: "processDefinitionId"},
+            {name: "taskId"},
+            {name: "tenantTitle"},
+            {name: "date", title: "تاریخ"},
+            {name: "processStartTime", title: "تاریخ شروع فرایند"},
+            {name: "taskDefinitionKey"},
+            {name: "processDefinitionKey"}
+            // {name: "owner", title: "درخواست دهنده"},
+            // {name: "description"},
+            // {name: "processDocumentation"},
+            // {name: "postTitle"},
+            // {name: "senderUserName"},
+            // {name: "instanceDetails"},
+            // {name: "formListDTOS"}
+        ],
+        transformRequest: function (dsRequest) {
+
+            dsRequest.params = {
+                "userId": "3720228851",
+                "tenantId": "<%= tenantId %>",
+                "page": 0,
+                "size": 100
+            };
+            dsRequest.httpMethod = "POST";
+            <%--dsRequest.data = {--%>
+            <%--    &lt;%&ndash;"userId": "<%= userNationalCode %>",&ndash;%&gt;--%>
+            <%--    "userId": "3720228851",--%>
+            <%--    "tenantId": "<%= tenantId %>"--%>
+            <%--};--%>
+            return this.Super("transformRequest", arguments);
+        },
+        // transformResponse: function (dsResponse, dsRequest, data) {
+        //     ListGrid_Processes_UserPortfolio.setData(data.response.data.toArray());
+        //     return this.Super("transformResponse", arguments);
+        // },
+        fetchDataURL: bpmsUrl + "/tasks/search"
+    });
+    let RestDataSource_Processes_History_UserPortfolio = isc.TrDS.create({
+        fields: [
+            {name: "timeComing"},
+            {name: "waitingTime"},
+            {name: "taskDefinitionKey"},
+            {name: "assignee"},
+            {name: "taskId"},
+            {name: "name"},
+            {name: "post"},
+            {name: "approved"},
+            {name: "owner"}
+        ]
+    });
+    let RestDataSource_Processes_Detail_Competence_UserPortfolio = isc.TrDS.create({
+        fields: [
+            {name: "code"},
+            {name: "competenceType"},
+            {name: "category"},
+            {name: "subCategory"},
+            {name: "workFlowStatusCode"},
+            {name: "description"},
+            {name: "processInstanceId"}
+        ]
+    });
+
+//--------------------------------------------------- Process Layout ---------------------------------------------------
+    let ToolStripButton_Refresh_Processes_UserPortfolio = isc.ToolStripButtonRefresh.create({
+        title: "<spring:message code="refresh"/>",
+        click: function () {
+            ListGrid_Processes_UserPortfolio.clearFilterValues();
+            ListGrid_Processes_UserPortfolio.invalidateCache();
+        }
+    });
+    let ToolStripButton_Show_Processes_UserPortfolio = isc.ToolStripButton.create({
+            icon: "[SKIN]/actions/column_preferences.png",
+            title: "نمایش جزییات و تکمیل فرایند",
+            click: function () {
+                let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
+                showProcessAndCompletion(record);
+            }
+        });
+    let ToolStripButton_Show_Processes_History_UserPortfolio = isc.ToolStripButton.create({
+            icon: "[SKIN]/actions/column_preferences.png",
+            title: "<spring:message code="workflow.history"/>",
+            click: function () {
+            }
+        });
+    let ToolStrip_Actions_Processes_UserPortfolio = isc.ToolStrip.create({
+            width: "100%",
+            members: [
+                ToolStripButton_Show_Processes_UserPortfolio,
+                // ToolStripButton_Show_Processes_History_UserPortfolio,
+                isc.ToolStrip.create(
+                    {
+                        width: "100%",
+                        align: "left",
+                        border: "0px",
+                        members: [
+                            ToolStripButton_Refresh_Processes_UserPortfolio
+                        ]
+                    }
+                )
+            ]
+        });
+    let Menu_Processes_UserPortfolio = isc.Menu.create({
+        width: 150,
+        data: [
+            {
+                title: "<spring:message code="show.workflow.relation.job"/>",
+                icon: "pieces/512/showProcForm.png",
+                click: function () {
+                }
+            },
+            {
+                title: "<spring:message code="workflow.history"/>",
+                icon: "pieces/512/showProcForm.png",
+                click: function () {
+                }
+            }
+        ]
+    });
+    let ListGrid_Processes_UserPortfolio = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        autoFetchData: true,
+        dataSource: RestDataSource_Processes_UserPortfolio,
+        sortDirection: "descending",
+        contextMenu: Menu_Processes_UserPortfolio,
+        fields: [
+            {name: "name"},
+            {name: "deploymentId", hidden: true},
+            {name: "tenantId", hidden: true},
+            {name: "createBy"},
+            {name: "title"},
+            {name: "processInstanceId", hidden: true},
+            {name: "processDefinitionId", hidden: true},
+            {name: "taskId", hidden: true},
+            {name: "tenantTitle", hidden: true},
+            {name: "date"},
+            {name: "processStartTime"},
+            {name: "taskDefinitionKey", hidden: true},
+            {name: "processDefinitionKey", hidden: true}
+        ],
+        sortField: 0,
+        dataPageSize: 50,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        rowDoubleClick: function (record) {
+            showProcessAndCompletion(record);
+        },
+        selectionUpdated: function(record) {
+            showProcessHistory(record.processInstanceId);
+        }
+    });
+    let VLayout_Processes_UserPortfolio = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [ToolStrip_Actions_Processes_UserPortfolio, ListGrid_Processes_UserPortfolio]
+
+    });
+
+//------------------------------------------------ Process History Layout ----------------------------------------------
+    let ToolStripButton_Refresh_Processes_History_UserPortfolio = isc.ToolStripButtonRefresh.create({
+        title: "<spring:message code="refresh"/>",
+        click: function () {
+            ListGrid_Processes_History_UserPortfolio.clearFilterValues();
+            ListGrid_Processes_History_UserPortfolio.invalidateCache();
+        }
+    });
+    let ToolStrip_Actions_Processes_History_UserPortfolio = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            isc.ToolStrip.create(
+                {
+                    width: "100%",
+                    align: "left",
+                    border: "0px",
+                    members: [
+                        // ToolStripButton_Refresh_Processes_History_UserPortfolio
+                    ]
+                }
+            )
+        ]
+    });
+    let ListGrid_Processes_History_UserPortfolio = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        autoFetchData: false,
+        dataSource: RestDataSource_Processes_History_UserPortfolio,
+        sortDirection: "descending",
+        doubleClick: function () {
+        },
+        fields: [
+            {name: "timeComing", title: "زمان ورود به کارتابل"},
+            {name: "waitingTime", title: "زمان انتظار"},
+            {name: "taskDefinitionKey", hidden: true},
+            {name: "assignee", title: "منتسب شده به"},
+            {name: "taskId", hidden: true},
+            {name: "name", title: "عنوان تسک"},
+            {name: "post", title: "", hidden: true},
+            {name: "approved", title: "تایید شده"},
+            {name: "owner", title: "مالک"}
+        ],
+        sortField: 0,
+        dataPageSize: 50,
+        showFilterEditor: true,
+        filterOnKeypress: true
+    });
+    let VLayout_Processes_History_UserPortfolio = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [
+            ToolStrip_Actions_Processes_History_UserPortfolio,
+            ListGrid_Processes_History_UserPortfolio
+        ]
+    });
+
+//----------------------------------------------------- Main Layout ----------------------------------------------------
+    let HLayout_Main_UserPortfolio = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [
+            VLayout_Processes_UserPortfolio, VLayout_Processes_History_UserPortfolio
+        ]
+    });
+
+//------------------------------------------------------ Functions -----------------------------------------------------
+
+    function showProcessAndCompletion(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let Window_Completion_Return = isc.Window.create({
+                title: "عودت",
+                autoSize: false,
+                width: "30%",
+                height: "20%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    isc.DynamicForm.create({
+                        width: "100%",
+                        height: "100%",
+                        autoFocus: "true",
+                        cellPadding: 5,
+                        fields: [
+                            {
+                                name: "return",
+                                title: "دلیل عودت",
+                                type: "text"
+                            }
+                        ]
+                    }),
+                    isc.HLayout.create({
+                        width: "100%",
+                        align: "center",
+                        membersMargin: 10,
+                        members: [
+                            isc.Button.create({
+                                title: "<spring:message code='global.ok'/>",
+                                click: function () {
+                                    // TODO call return process API
+                                    Window_Completion_UserPortfolio.close();
+                                    Window_Completion_Return.close();
+                                }
+                            }),
+                            isc.Button.create({
+                                title: "<spring:message code='cancel'/>",
+                                click: function () {
+                                    Window_Completion_Return.close();
+                                }
+                            })
+                        ]
+                    })
+                ]
+            });
+            let DynamicForm_Completion_UserPortfolio = isc.DynamicForm.create({
+                colWidths: ["10%", "80%", "10%"],
+                width: "100%",
+                height: "100%",
+                numCols: "3",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let Button_Completion_Detail = isc.IButton.create({
+                title: "مشاهده جزییات",
+                align: "center",
+                width: "120",
+                click: function () {
+                    showProcessDetail(record.processInstanceId);
+                }
+            });
+            let Button_Completion_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "120",
+                click: function () {
+                    // TODO call confirm process API
+                }
+            });
+            let Button_Completion_Return = isc.IButton.create({
+                title: "عودت",
+                align: "center",
+                width: "120",
+                click: function () {
+                    Window_Completion_Return.show();
+                }
+            });
+            let Button_Completion_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "120",
+                click: function () {
+                    Window_Completion_UserPortfolio.close();
+                }
+            });
+            let HLayout_Completion_UserPortfolio = isc.HLayout.create({
+                width: "100%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_Completion_Detail,
+                    Button_Completion_Confirm,
+                    Button_Completion_Return,
+                    Button_Completion_Close
+                ]
+            });
+            let Window_Completion_UserPortfolio = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "40%",
+                height: "20%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_Completion_UserPortfolio,
+                    HLayout_Completion_UserPortfolio
+                ]
+            });
+            DynamicForm_Completion_UserPortfolio.setValue("title", record.title);
+            DynamicForm_Completion_UserPortfolio.setValue("createBy", record.createBy);
+            Window_Completion_UserPortfolio.show();
+        }
+    }
+    function showProcessHistory(processInstanceId) {
+
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/process-instance-history/details/" + processInstanceId , "GET", null, function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let taskHistory = JSON.parse(resp.httpResponseText);
+                ListGrid_Processes_History_UserPortfolio.setData(taskHistory);
+            } else {
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+    function showProcessDetail(processInstanceId) {
+
+        let DynamicForm_Processes_Detail_Competence = isc.DynamicForm.create({
+            dataSource: RestDataSource_Processes_Detail_Competence_UserPortfolio,
+            colWidths: ["40%", "60%"],
+            width: "100%",
+            height: "100%",
+            numCols: 2,
+            autoFocus: "true",
+            cellPadding: 5,
+            fields: [
+                {
+                    name: "code",
+                    title: "کد",
+                    type: "staticText"
+                },
+                {
+                    name: "competenceType.title",
+                    title: "نوع",
+                    type: "staticText"
+                },
+                {
+                    name: "category.titleFa",
+                    title: "گروه",
+                    type: "staticText"
+                },
+                {
+                    name: "subCategory.titleFa",
+                    title: "زیرگروه",
+                    type: "staticText"
+                },
+                {
+                    name: "workFlowStatusCode",
+                    title: "وضعیت گردش کار",
+                    type: "staticText",
+                    valueMap: {
+                        0: "ارسال به گردش کار",
+                        1: "عدم تایید",
+                        2: "تایید نهایی",
+                        3: "حذف گردش کار",
+                        4: "اصلاح شایستگی و ارسال به گردش کار"
+                    }
+                },
+                {
+                    name: "description",
+                    title: "توضیحات",
+                    type: "staticText"
+                }
+            ]
+        });
+        let Window_Processes_Detail_Competence = isc.Window.create({
+            title: "نمایش جزییات",
+            autoSize: false,
+            width: "25%",
+            height: "30%",
+            canDragReposition: true,
+            canDragResize: true,
+            autoDraw: false,
+            autoCenter: true,
+            isModal: false,
+            items: [
+                DynamicForm_Processes_Detail_Competence
+            ]
+        });
+
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/details/" + processInstanceId , "GET", null, function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                debugger;
+                let competence = JSON.parse(resp.httpResponseText);
+                DynamicForm_Processes_Detail_Competence.setValues(competence);
+                Window_Processes_Detail_Competence.show();
+            } else {
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+
+// </script>
