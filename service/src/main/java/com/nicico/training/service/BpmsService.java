@@ -6,14 +6,18 @@ import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
 import com.nicico.bpmsclient.service.BpmsClientService;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.iservice.IBpmsService;
 import dto.bpms.BpmsContent;
 import dto.bpms.BpmsDefinitionDto;
+import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -46,5 +50,24 @@ public class BpmsService implements IBpmsService {
     @Transactional
     public ProcessInstance startProcessWithData(StartProcessWithDataDTO startProcessDto) {
         return client.startProcessWithData(startProcessDto);
+    }
+
+    @Override
+    public ProcessInstance cancelProcessInstance(String processInstanceId) {
+        return client.cancelProcessInstance(processInstanceId);
+    }
+
+    @Override
+    public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("assignTo", "3720228851");
+        map.put("userId", SecurityUtil.getUserId());
+        map.put("tenantId",tenantId);
+        map.put("title", params.getData().get("title").toString());
+        map.put("createBy", SecurityUtil.getFullName());
+        StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
+        startProcessDto.setProcessDefinitionKey(getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());
+        startProcessDto.setVariables(map);
+        return startProcessDto;
     }
 }
