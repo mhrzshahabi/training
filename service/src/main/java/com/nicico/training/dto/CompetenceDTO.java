@@ -73,6 +73,7 @@ public class CompetenceDTO implements Serializable {
     @ApiModel("CompetenceDTO - Update")
     public static class Update extends Create {
         private Integer version;
+        private Long id;
     }
 
     @Getter
