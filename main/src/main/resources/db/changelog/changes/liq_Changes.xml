@@ -3398,4 +3398,21 @@ WHERE
                                  validate="true"/>
     </changeSet>
 
+
+    <changeSet author="namdari" id="1641876106000-1">
+        <addColumn tableName="tbl_competence">
+            <column name="process_instance_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1641876106000-2">
+        <modifyDataType tableName="tbl_competence" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
+        <addColumn tableName="tbl_competence">
+            <column name="return_detail" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+
+
 </databaseChangeLog>

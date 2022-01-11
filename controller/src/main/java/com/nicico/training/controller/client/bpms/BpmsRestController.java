@@ -68,6 +68,7 @@ public class BpmsRestController {
         BaseResponse res = new BaseResponse();
         try {
             ProcessInstance processInstance=  service.startProcessWithData(startProcessDto);
+            create.setProcessInstanceId(processInstance.getId());
             competenceService.checkAndCreate(create, response);
             res.setStatus(200);
 

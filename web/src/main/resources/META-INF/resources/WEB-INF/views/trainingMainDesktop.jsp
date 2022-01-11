@@ -1799,14 +1799,14 @@
                 },
                 </sec:authorize>
 
-<%--                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">--%>
-<%--                {--%>
-<%--                    title: "<spring:message code="competenceV2"/>",--%>
-<%--                    click: function () {--%>
-<%--                        createTab(this.title, "<spring:url value="web/competenceV2/"/>");--%>
-<%--                    }--%>
-<%--                },--%>
-<%--                </sec:authorize>--%>
+                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">
+                {
+                    title: "<spring:message code="competenceV2"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/competenceV2/"/>");
+                    }
+                },
+                </sec:authorize>
 
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Skill')">
                 {

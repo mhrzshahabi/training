@@ -26,9 +26,9 @@
 <%--            <sec:authorize access="hasAuthority('Competence_U')">--%>
 <%--            {title: "<spring:message code="edit"/>", click: function () { editCompetence_competence(); }},--%>
 <%--            </sec:authorize>--%>
-<%--            <sec:authorize access="hasAuthority('Competence_D')">--%>
-<%--            {title: "<spring:message code="remove"/>", click: function () { removeCompetence_competence(); }},--%>
-<%--            </sec:authorize>--%>
+            <sec:authorize access="hasAuthority('Competence_D')">
+            {title: "<spring:message code="remove"/>", click: function () { removeCompetence_competence(); }},
+            </sec:authorize>
         ]
     });
 
@@ -49,18 +49,18 @@
     isc.ToolStrip.create({
         ID: "CompetenceTS_competenceV2",
         members: [
-<%--            <sec:authorize access="hasAuthority('Competence_R')">--%>
-<%--            isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competence); }}),--%>
-<%--            </sec:authorize>--%>
+            <sec:authorize access="hasAuthority('Competence_R')">
+            isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competenceV2); }}),
+            </sec:authorize>
             <sec:authorize access="hasAuthority('Competence_C')">
             isc.ToolStripButtonCreate.create({click: function () { createCompetence_competenceV2(); }}),
             </sec:authorize>
 <%--            <sec:authorize access="hasAuthority('Competence_U')">--%>
 <%--            isc.ToolStripButtonEdit.create({click: function () { editCompetence_competence(); }}),--%>
 <%--            </sec:authorize>--%>
-<%--            <sec:authorize access="hasAuthority('Competence_D')">--%>
-<%--            isc.ToolStripButtonRemove.create({click: function () { removeCompetence_competence(); }}),--%>
-<%--            </sec:authorize>--%>
+            <sec:authorize access="hasAuthority('Competence_D')">
+            isc.ToolStripButtonRemove.create({click: function () { removeCompetence_competence(); }}),
+            </sec:authorize>
 <%--            <sec:authorize access="hasAuthority('Competence_P')">--%>
 <%--            ToolStrip_Competence_Export2EXcel,--%>
 <%--            </sec:authorize>--%>
