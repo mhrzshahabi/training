@@ -1182,6 +1182,7 @@
     const oauthGroupUrl = rootUrl + "/oauth/groups";
     const oauthPermissionUrl = rootUrl + "/oauth/permissions";
     const workflowUrl = rootUrl + "/workflow";
+    const bpmsWorkflowUrl = rootUrl + "/bpms";
     const jobUrl = rootUrl + "/job";
     const postGroupUrl = rootUrl + "/post-group";
     const postGradeUrl = rootUrl + "/postGrade";
