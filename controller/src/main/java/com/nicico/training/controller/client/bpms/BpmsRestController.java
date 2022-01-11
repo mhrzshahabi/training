@@ -1,10 +1,20 @@
 package com.nicico.training.controller.client.bpms;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
+import com.nicico.bpmsclient.model.flowable.process.ProcessInstanceHistory;
+import com.nicico.bpmsclient.model.flowable.task.TaskHistory;
+import com.nicico.bpmsclient.model.flowable.task.TaskInfo;
+import com.nicico.bpmsclient.model.request.TaskSearchDto;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.service.BpmsClientService;
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.controller.ISC;
 import com.nicico.training.controller.util.AppUtils;
+import com.nicico.training.mapper.bpms.BPMSBeanMapper;
+import dto.bpms.*;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.mapper.bpmsNeedAssessment.CompetenceBeanMapper;
@@ -17,8 +27,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import response.BaseResponse;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.List;
 
 
 @Slf4j
@@ -27,8 +41,10 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class BpmsRestController {
 
-    private final BpmsClientService client;
+    private final ObjectMapper mapper;
     private final IBpmsService service;
+    private final BpmsClientService client;
+    private final BPMSBeanMapper bpmsBeanMapper;
     private final CompetenceBeanMapper beanMapper;
     private final CompetenceService competenceService;
 
@@ -107,5 +123,39 @@ public class BpmsRestController {
         return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
     }
 
+    @GetMapping({"/tasks/user-assigned"})
+    List<TaskInfo> getUserTasks(@RequestParam("userId") String userId, @RequestParam("tenantId") String tenantId) {
+        return client.getUserTasks(userId, tenantId);
+    }
+
+    @PostMapping({"/tasks/search"})
+    public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchTask(HttpServletRequest iscRq, @RequestParam String userId, @RequestParam String tenantId, @RequestParam int page, @RequestParam int size) throws IOException {
+
+        TaskSearchDto taskSearchDto = new TaskSearchDto();
+        taskSearchDto.setUserId(userId);
+        taskSearchDto.setTenantId(tenantId);
+        Object object = client.searchTask(taskSearchDto, page, size);
+        BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
+        List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
+
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<BPMSUserTasksContentDto> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) bpmsUserTasksContentDtoList.size());
+        searchRs.setList(bpmsUserTasksContentDtoList);
+
+        ISC<BPMSUserTasksContentDto> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
+
+    @GetMapping({"/processes/process-instance-history/details/{processInstanceId}"})
+    List<TaskHistory> getProcessInstanceHistoryById(@PathVariable String processInstanceId) {
+        ProcessInstanceHistory processInstanceHistory = client.getProcessInstanceHistoryById(processInstanceId);
+        return processInstanceHistory.getTaskHistoryDetailList();
+    }
+
+    @GetMapping({"/processes/details/{processInstanceId}"})
+    ResponseEntity<CompetenceDTO.Info> getProcessDetailByProcessInstanceId(@PathVariable String processInstanceId) {
+        return new ResponseEntity<>(competenceService.getProcessDetailByProcessInstanceId(processInstanceId), HttpStatus.OK);
+    }
 
 }
