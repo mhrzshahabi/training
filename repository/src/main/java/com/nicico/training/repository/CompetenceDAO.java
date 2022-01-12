@@ -13,6 +13,7 @@ public interface CompetenceDAO extends BaseDAO<Competence, Long> {
     Optional<Competence> findByProcessInstanceId(String processInstanceId);
 
     Optional<Competence> findTopByCodeStartsWithOrderByCodeDesc(String code);
+    Optional<Competence> findFirstByProcessInstanceId(String code);
 
     @Modifying
     @Query(value = " update TBL_COMPETENCE set N_WORK_FLOW_CODE = :code where ID = :competenceId ", nativeQuery = true)
