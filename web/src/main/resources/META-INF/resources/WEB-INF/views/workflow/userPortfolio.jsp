@@ -9,6 +9,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
     final String tenantId = AppUtils.getTenantId();
     final String userNationalCode = SecurityUtil.getNationalCode();
+    final String userUserName = SecurityUtil.getUsername();
 %>
 
 <%--<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
@@ -42,24 +43,16 @@
         transformRequest: function (dsRequest) {
 
             dsRequest.params = {
-                "userId": "3720228851",
+                "userId": "<%= userNationalCode %>",
+                // "userId": "3720228851",
                 "tenantId": "<%= tenantId %>",
                 "page": 0,
                 "size": 100
             };
             dsRequest.httpMethod = "POST";
-            <%--dsRequest.data = {--%>
-            <%--    &lt;%&ndash;"userId": "<%= userNationalCode %>",&ndash;%&gt;--%>
-            <%--    "userId": "3720228851",--%>
-            <%--    "tenantId": "<%= tenantId %>"--%>
-            <%--};--%>
             return this.Super("transformRequest", arguments);
         },
-        // transformResponse: function (dsResponse, dsRequest, data) {
-        //     ListGrid_Processes_UserPortfolio.setData(data.response.data.toArray());
-        //     return this.Super("transformResponse", arguments);
-        // },
-        fetchDataURL: bpmsUrl + "/tasks/search"
+        fetchDataURL: bpmsUrl + "/tasks/searchByUserId"
     });
     let RestDataSource_Processes_History_UserPortfolio = isc.TrDS.create({
         fields: [
@@ -335,7 +328,7 @@
                 align: "center",
                 width: "120",
                 click: function () {
-                    // TODO call confirm process API
+                    confirmProcess(record.taskId, record.processInstanceId, Window_Completion_UserPortfolio);
                 }
             });
             let Button_Completion_Return = isc.IButton.create({
@@ -465,11 +458,31 @@
         isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/details/" + processInstanceId , "GET", null, function (resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                debugger;
                 let competence = JSON.parse(resp.httpResponseText);
                 DynamicForm_Processes_Detail_Competence.setValues(competence);
                 Window_Processes_Detail_Competence.show();
             } else {
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+    function confirmProcess(taskId, processInstanceId, window) {
+
+        let reviewTaskRequest = {
+          taskId: taskId,
+          approve: false,
+          userName: userUserName,
+          processInstanceId: processInstanceId
+        };
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/tasks/review", "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                window.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                ListGrid_Processes_UserPortfolio.invalidateCache();
+            } else {
+                window.close();
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             }
         }));

@@ -57,11 +57,9 @@ public class BpmsRestController {
     //confirm task
     @PostMapping({"/tasks/review"})
     void reviewTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto){
-        BaseResponse response =competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(),2L);
-        if (response.getStatus()==200)
-        client.reviewTask(reviewTaskRequestDto);
-        //todo
-
+        BaseResponse response = competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(),2L);
+        if (response.getStatus() == 200)
+            client.reviewTask(reviewTaskRequestDto);
     }
 
     @PostMapping({"/processes/definition-search/{page}/{size}"})
@@ -96,7 +94,8 @@ public class BpmsRestController {
         } catch (Exception e) {
             res.setStatus(406);
         }
-        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));    }
+        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+    }
 
 
     @PutMapping({"/processes/start-data-validation"})
@@ -122,7 +121,7 @@ public class BpmsRestController {
         return client.getUserTasks(userId, tenantId);
     }
 
-    @PostMapping({"/tasks/search"})
+    @PostMapping({"/tasks/searchByUserId"})
     public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchTask(HttpServletRequest iscRq, @RequestParam String userId, @RequestParam String tenantId, @RequestParam int page, @RequestParam int size) throws IOException {
 
         TaskSearchDto taskSearchDto = new TaskSearchDto();
