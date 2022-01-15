@@ -459,7 +459,7 @@
                 ListGrid_Processes_UserPortfolio.invalidateCache();
             } else {
                 window.close();
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                createDialog("info", "عملیات انجام نشد");
             }
         }));
     }
