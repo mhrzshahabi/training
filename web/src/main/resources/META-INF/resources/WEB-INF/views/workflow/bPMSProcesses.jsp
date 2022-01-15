@@ -7,7 +7,7 @@
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
     <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
 
-    let taskId = "a1e5b473-7218-11ec-a9d9-0242ac1f0007";
+    let taskId = "e4188b49-72ba-11ec-a9d9-0242ac1f0007";
     let deploymentId = "0a8ab1c8-71df-11ec-a985-0242ac1f0007";
 
     //-------------------------------------------------- Rest DataSources --------------------------------------------------
@@ -24,7 +24,6 @@
     });
 
 //----------------------------------------------------- Main Layout ----------------------------------------------------
-
     let Menu_BPMSProcesses = isc.Menu.create({
         width: 150,
         data: [
@@ -32,24 +31,10 @@
                 icon: "contact.png",
                 title: "<spring:message code="process.image"/>",
                 click: function () {
-                    Window_ShowImage_BPMSProcesses.addItem(showBPMSProcessImage(taskId, deploymentId));
-                    Window_ShowImage_BPMSProcesses.show();
-                }
-            },
-            {
-                title: "<spring:message code="process.status"/>", icon: "upload.png",
-                click: function () {
-
+                    showBPMSProcessImage(taskId, deploymentId);
                 }
             }
         ]
-    });
-
-    let Window_ShowImage_BPMSProcesses = isc.Window.create({
-        title: "تصویر فرایند",
-        width: "60%",
-        height: "60%",
-        align: "center",
     });
 
     let ToolStripButton_showForm_BPMSProcesses = isc.ToolStripButton.create({
@@ -64,8 +49,7 @@
         icon: "contact.png",
         title: "<spring:message code="process.image"/>",
         click: function () {
-            Window_ShowImage_BPMSProcesses.addItem(showBPMSProcessImage(taskId, deploymentId));
-            Window_ShowImage_BPMSProcesses.show();
+            showBPMSProcessImage(taskId, deploymentId);
         }
     });
 
@@ -154,22 +138,29 @@
     });
 
 //------------------------------------------------------ Functions -----------------------------------------------------
-    function getIframeUrl(taskId, deploymentId) {
-        const host = window.location.host;
-        const protocol = window.location.protocol;
-        return '${protocol}//${host}/workflow/iframe/task/detail?type=ext&taskId=${taskId}&deploymentId=${deploymentId}&token=Bearer ${accessToken}';
-    }
     function showBPMSProcessImage(taskId, deploymentId) {
 
-        const origin = window.location.origin
+        // TODO add origin to URL
+        let origin = window.location.origin;
         let imageFlow = isc.HTMLFlow.create({
-            width: 700,
-            height: 700,
+            width: "70%",
+            height: "60%",
             align: "center",
-            contents: '<div style="width: 100%;height: 98vh"><iframe width="100%" height="100%" ' +
-                'src="http://devapp01.icico.net.ir/workflow/iframe/task/detail?type=ext&taskId=a1e5b473-7218-11ec-a9d9-0242ac1f0007&deploymentId=0a8ab1c8-71df-11ec-a985-0242ac1f0007&token=Bearer <%= accessToken %>" frameborder="0" id="iframe_bpms"></iframe></div>'
+            contents: ""
         });
-        return imageFlow;
+        let Window_ShowImage_BPMSProcesses = isc.Window.create({
+            title: "تصویر فرایند",
+            width: "60%",
+            height: "60%",
+            align: "center",
+            items: []
+        });
+        imageFlow.setContents('');
+        imageFlow.setContents('<div style="width: 100%;height: 59vh"><iframe width="100%" height="100%" ' +
+            'src="http://devapp01.icico.net.ir/workflow/iframe/task/detail?type=ext&taskId='+ taskId +'&deploymentId='+ deploymentId +'&token' +
+            '=Bearer <%= accessToken %>" frameborder="0" id="iframe_bpms"></iframe></div>');
+        Window_ShowImage_BPMSProcesses.addItem(imageFlow);
+        Window_ShowImage_BPMSProcesses.show();
     }
 
-    // </script>
+// </script>
