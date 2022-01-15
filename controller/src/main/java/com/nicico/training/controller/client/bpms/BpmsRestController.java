@@ -69,12 +69,7 @@ public class BpmsRestController {
     //cancel task
     @PostMapping({"/processes/cancel-process/{processInstanceId}"})
     public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId, @RequestBody String reason){
-       BaseResponse response= competenceService.updateStatus(processInstanceId,1L);
-        if (response.getStatus()==200)
-           return service.cancelProcessInstance(processInstanceId);
-        else
-            return null;
-        //todo
+           return service.cancelProcessInstance(processInstanceId,reason);
     }
 
     @PostMapping({"/processes/start-data-validation"})

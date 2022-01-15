@@ -12,7 +12,7 @@ public interface IBpmsService {
 
     ProcessInstance startProcessWithData(StartProcessWithDataDTO startProcessDto);
 
-    ProcessInstance cancelProcessInstance(String processInstanceId);
+    ProcessInstance cancelProcessInstance(String processInstanceId, String reason);
 
     StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params,String tenantId);
 

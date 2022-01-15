@@ -32,7 +32,7 @@ import java.util.Optional;
 public class CompetenceService extends BaseService<Competence, Long, CompetenceDTO.Info, CompetenceDTO.Create, CompetenceDTO.Update, CompetenceDTO.Delete, CompetenceDAO> {
 
     @Autowired
-    private  MessageSource messageSource;
+    private MessageSource messageSource;
 
     @Autowired
     private ParameterValueService parameterValueService;
@@ -59,9 +59,9 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
             } else if (dao.existsByTitle(rq.getTitle())) {
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(401, messageSource.getMessage("publication.title.duplicate", null, locale));
-            }else
+            } else
                 throw new TrainingException(TrainingException.ErrorType.CompetenceTypeNotFound);
-        }catch (ConstraintViolationException | DataIntegrityViolationException | IOException e) {
+        } catch (ConstraintViolationException | DataIntegrityViolationException | IOException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
         return null;
@@ -83,7 +83,7 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     }
 
     @Transactional
-    public CompetenceDTO.Info checkAndUpdate(Long id, CompetenceDTO.Update rq, HttpServletResponse response){
+    public CompetenceDTO.Info checkAndUpdate(Long id, CompetenceDTO.Update rq, HttpServletResponse response) {
         try {
             if (!dao.existsByTitleAndIdIsNot(rq.getTitle(), id)) {
                 return updateCompetence(id, rq);
@@ -91,7 +91,7 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
                 Locale locale = LocaleContextHolder.getLocale();
                 response.sendError(401, messageSource.getMessage("publication.title.duplicate", null, locale));
             }
-        }catch (ConstraintViolationException | DataIntegrityViolationException | IOException e){
+        } catch (ConstraintViolationException | DataIntegrityViolationException | IOException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
         return null;
@@ -108,23 +108,23 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     }
 
     @Transactional
-    public String codeCompute(String code){
-        long maxCode = competenceDAO.getMaxCode(code+"%");
-        if(maxCode == 0){
+    public String codeCompute(String code) {
+        long maxCode = competenceDAO.getMaxCode(code + "%");
+        if (maxCode == 0) {
             return code + "1";
         }
         return code + maxCode;
     }
 
     @Transactional
-    public List<NeedsAssessmentDTO.Info> checkUsed(Long competenceId){
+    public List<NeedsAssessmentDTO.Info> checkUsed(Long competenceId) {
         final ArrayList<NeedsAssessmentDTO.Info> needsAssessmentList = new ArrayList<>();
         Optional<NeedsAssessment> needsAssessment = needsAssessmentDAO.findFirstByCompetenceId(competenceId);
-        if(needsAssessment.isPresent()){
+        if (needsAssessment.isPresent()) {
             needsAssessmentList.add(modelMapper.map(needsAssessment.get(), NeedsAssessmentDTO.Info.class));
         }
         Optional<NeedsAssessmentTemp> needsAssessmentTemp = needsAssessmentTempDAO.findFirstByCompetenceId(competenceId);
-        if(needsAssessmentTemp.isPresent()){
+        if (needsAssessmentTemp.isPresent()) {
             needsAssessmentList.add(modelMapper.map(needsAssessmentTemp.get(), NeedsAssessmentDTO.Info.class));
         }
         return needsAssessmentList;
@@ -132,26 +132,25 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
 
     public CompetenceDTO.Info getProcessDetailByProcessInstanceId(String processInstanceId) {
         Optional<Competence> competenceOptional = competenceDAO.findByProcessInstanceId(processInstanceId);
-        if (competenceOptional.isPresent())
-            return modelMapper.map(competenceOptional.get(), CompetenceDTO.Info.class);
-        else
-            return null;
+        return competenceOptional.map(competence -> modelMapper.map(competence, CompetenceDTO.Info.class)).orElse(null);
     }
 
 
     @Transactional
-    public BaseResponse updateStatus(String processInstanceId, Long i) {
-        BaseResponse response=new BaseResponse();
-       Optional<Competence> optionalCompetence = competenceDAO.findFirstByProcessInstanceId(processInstanceId);
-       if (optionalCompetence.isPresent()){
-           Competence competence =  optionalCompetence.get();
-           competence.setWorkFlowStatusCode(i);
-           dao.saveAndFlush(competence);
-           response.setStatus(200);
-       }else {
-           response.setStatus(404);
-       }
-           return response;
+    public BaseResponse updateStatus(String processInstanceId, Long i, String reason) {
+        BaseResponse response = new BaseResponse();
+        Optional<Competence> optionalCompetence = competenceDAO.findFirstByProcessInstanceId(processInstanceId);
+        if (optionalCompetence.isPresent()) {
+            Competence competence = optionalCompetence.get();
+            competence.setWorkFlowStatusCode(i);
+            if (i.equals(1L))
+                competence.setReturnDetail(reason);
+            dao.saveAndFlush(competence);
+            response.setStatus(200);
+        } else {
+            response.setStatus(404);
+        }
+        return response;
 
     }
 }

@@ -33,17 +33,18 @@ public class BpmsService implements IBpmsService {
 
 
     @Override
-    public BaseResponse getDefinitionKey(String definitionKey, String TenantId,int page,int size) {
+    public BaseResponse getDefinitionKey(String definitionKey, String TenantId, int page, int size) {
         ProcessDefinitionRequestDTO processDefinitionRequestDTO = new ProcessDefinitionRequestDTO();
         processDefinitionRequestDTO.setTenantId(TenantId);
         Object object = client.searchProcess(processDefinitionRequestDTO, page, size);
-        BpmsDefinitionDto bpmsDefinitionDto = mapper.convertValue(object, new TypeReference<>() {});
-        Optional<BpmsContent> bpmsContent= bpmsDefinitionDto.getContent().stream().filter(x -> x.getName().trim().equals(definitionKey.trim())).findFirst();
-        BaseResponse response=new BaseResponse();
-        if (bpmsContent.isPresent()){
+        BpmsDefinitionDto bpmsDefinitionDto = mapper.convertValue(object, new TypeReference<>() {
+        });
+        Optional<BpmsContent> bpmsContent = bpmsDefinitionDto.getContent().stream().filter(x -> x.getName().trim().equals(definitionKey.trim())).findFirst();
+        BaseResponse response = new BaseResponse();
+        if (bpmsContent.isPresent()) {
             response.setStatus(200);
             response.setMessage(bpmsContent.get().getProcessDefinitionKey());
-        }else {
+        } else {
             response.setStatus(409);
             response.setMessage("فرایند یافت نشد");
         }
@@ -57,8 +58,12 @@ public class BpmsService implements IBpmsService {
     }
 
     @Override
-    public ProcessInstance cancelProcessInstance(String processInstanceId) {
+    @Transactional
+    public ProcessInstance cancelProcessInstance(String processInstanceId, String reason) {
+        competenceService.updateStatus(processInstanceId, 1L,reason);
         return client.cancelProcessInstance(processInstanceId);
+
+
     }
 
     @Override
@@ -75,7 +80,7 @@ public class BpmsService implements IBpmsService {
 
         map.put("assignTo", mainConfirmBoss);
         map.put("userId", SecurityUtil.getUserId());
-        map.put("tenantId",tenantId);
+        map.put("tenantId", tenantId);
         map.put("title", params.getData().get("title").toString());
         map.put("createBy", SecurityUtil.getFullName());
         StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
@@ -87,18 +92,18 @@ public class BpmsService implements IBpmsService {
     @Override
     @Transactional
     public BaseResponse reviewCompetenceTask(ReviewTaskRequest reviewTaskRequestDto) {
-        BaseResponse res=new BaseResponse();
-        BaseResponse competenceRes = competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(),2L);
-        if (competenceRes.getStatus() == 200){
+        BaseResponse res = new BaseResponse();
+        BaseResponse competenceRes = competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(), 2L, null);
+        if (competenceRes.getStatus() == 200) {
             try {
                 client.reviewTask(reviewTaskRequestDto);
                 res.setStatus(200);
                 res.setMessage("عملیات موفقیت آمیز به پایان رسید");
-            }catch (Exception e){
+            } catch (Exception e) {
                 res.setStatus(404);
                 res.setMessage("عملیات bpms انجام نشد");
             }
-        }else {
+        } else {
             res.setStatus(406);
             res.setMessage("تغییر وضعیت شایستگی انجام نشد");
         }
