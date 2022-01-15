@@ -19,7 +19,7 @@
 //-------------------------------------------------- Rest DataSources --------------------------------------------------
     let RestDataSource_Processes_UserPortfolio = isc.TrDS.create({
         fields: [
-            {name: "name", title: "عنوان تسک"},
+            {name: "name", title: "فرایند"},
             {name: "deploymentId"},
             {name: "tenantId", title: "زیرسیستم"},
             {name: "createBy", title: "ایجاد کننده"},
@@ -44,7 +44,6 @@
 
             dsRequest.params = {
                 "userId": "<%= userNationalCode %>",
-                // "userId": "3720228851",
                 "tenantId": "<%= tenantId %>",
                 "page": 0,
                 "size": 100
@@ -88,51 +87,32 @@
         }
     });
     let ToolStripButton_Show_Processes_UserPortfolio = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/column_preferences.png",
-            title: "نمایش جزییات و تکمیل فرایند",
-            click: function () {
-                let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
-                showProcessAndCompletion(record);
-            }
-        });
+        icon: "[SKIN]/actions/column_preferences.png",
+        title: "نمایش جزییات و تکمیل فرایند",
+        click: function () {
+            let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
+            showProcessAndCompletion(record);
+        }
+    });
     let ToolStripButton_Show_Processes_History_UserPortfolio = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/column_preferences.png",
-            title: "<spring:message code="workflow.history"/>",
-            click: function () {
-            }
-        });
+        icon: "[SKIN]/actions/column_preferences.png",
+        title: "<spring:message code="workflow.history"/>",
+        click: function () {
+        }
+    });
     let ToolStrip_Actions_Processes_UserPortfolio = isc.ToolStrip.create({
-            width: "100%",
-            members: [
-                ToolStripButton_Show_Processes_UserPortfolio,
-                // ToolStripButton_Show_Processes_History_UserPortfolio,
-                isc.ToolStrip.create(
-                    {
-                        width: "100%",
-                        align: "left",
-                        border: "0px",
-                        members: [
-                            ToolStripButton_Refresh_Processes_UserPortfolio
-                        ]
-                    }
-                )
-            ]
-        });
-    let Menu_Processes_UserPortfolio = isc.Menu.create({
-        width: 150,
-        data: [
-            {
-                title: "<spring:message code="show.workflow.relation.job"/>",
-                icon: "pieces/512/showProcForm.png",
-                click: function () {
-                }
-            },
-            {
-                title: "<spring:message code="workflow.history"/>",
-                icon: "pieces/512/showProcForm.png",
-                click: function () {
-                }
-            }
+        width: "100%",
+        members: [
+            ToolStripButton_Show_Processes_UserPortfolio,
+            // ToolStripButton_Show_Processes_History_UserPortfolio,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: "0px",
+                members: [
+                    ToolStripButton_Refresh_Processes_UserPortfolio
+                ]
+            })
         ]
     });
     let ListGrid_Processes_UserPortfolio = isc.ListGrid.create({
@@ -141,7 +121,6 @@
         autoFetchData: true,
         dataSource: RestDataSource_Processes_UserPortfolio,
         sortDirection: "descending",
-        contextMenu: Menu_Processes_UserPortfolio,
         fields: [
             {name: "name"},
             {name: "deploymentId", hidden: true},
@@ -164,7 +143,7 @@
         rowDoubleClick: function (record) {
             showProcessAndCompletion(record);
         },
-        selectionUpdated: function(record) {
+        recordClick: function(viewer, record) {
             showProcessHistory(record.processInstanceId);
         }
     });
@@ -172,7 +151,6 @@
         width: "100%",
         height: "100%",
         members: [ToolStrip_Actions_Processes_UserPortfolio, ListGrid_Processes_UserPortfolio]
-
     });
 
 //------------------------------------------------ Process History Layout ----------------------------------------------
@@ -186,16 +164,14 @@
     let ToolStrip_Actions_Processes_History_UserPortfolio = isc.ToolStrip.create({
         width: "100%",
         members: [
-            isc.ToolStrip.create(
-                {
-                    width: "100%",
-                    align: "left",
-                    border: "0px",
-                    members: [
-                        // ToolStripButton_Refresh_Processes_History_UserPortfolio
-                    ]
-                }
-            )
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: "0px",
+                members: [
+                    // ToolStripButton_Refresh_Processes_History_UserPortfolio
+                ]
+            })
         ]
     });
     let ListGrid_Processes_History_UserPortfolio = isc.ListGrid.create({
@@ -212,7 +188,7 @@
             {name: "taskDefinitionKey", hidden: true},
             {name: "assignee", title: "منتسب شده به"},
             {name: "taskId", hidden: true},
-            {name: "name", title: "عنوان تسک"},
+            {name: "name", title: "فرایند"},
             {name: "post", title: "", hidden: true},
             {name: "approved", title: "تایید شده"},
             {name: "owner", title: "مالک"}

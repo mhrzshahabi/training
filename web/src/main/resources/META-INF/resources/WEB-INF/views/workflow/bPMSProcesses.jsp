@@ -140,7 +140,6 @@
 //------------------------------------------------------ Functions -----------------------------------------------------
     function showBPMSProcessImage(taskId, deploymentId) {
 
-        // TODO add origin to URL
         let origin = window.location.origin;
         let imageFlow = isc.HTMLFlow.create({
             width: "70%",
@@ -157,7 +156,7 @@
         });
         imageFlow.setContents('');
         imageFlow.setContents('<div style="width: 100%;height: 59vh"><iframe width="100%" height="100%" ' +
-            'src="http://devapp01.icico.net.ir/workflow/iframe/task/detail?type=ext&taskId='+ taskId +'&deploymentId='+ deploymentId +'&token' +
+            'src="'+ origin +'/workflow/iframe/task/detail?type=ext&taskId='+ taskId +'&deploymentId='+ deploymentId +'&token' +
             '=Bearer <%= accessToken %>" frameborder="0" id="iframe_bpms"></iframe></div>');
         Window_ShowImage_BPMSProcesses.addItem(imageFlow);
         Window_ShowImage_BPMSProcesses.show();
