@@ -470,7 +470,7 @@
     }
     function removeCompetenceToWorkflowV2(record,entityType){
         wait.show()
-        isc.RPCManager.sendRequest(TrDSRequest(bpmsWorkflowUrl + "/processes/cancel-process/"+record.processInstanceId, "POST",null, (resp)=>{
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsWorkflowUrl + "/processes/cancel-process/"+record.processInstanceId, "POST","test", (resp)=>{
             wait.close()
             if (resp.httpResponseCode === 200) {
                 removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competenceV2');
