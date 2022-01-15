@@ -14,6 +14,7 @@ import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.ISC;
 import com.nicico.training.controller.util.AppUtils;
+import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.mapper.bpms.BPMSBeanMapper;
 import dto.bpms.*;
 import com.nicico.training.dto.CompetenceDTO;
@@ -67,7 +68,7 @@ public class BpmsRestController {
 
     //cancel task
     @PostMapping({"/processes/cancel-process/{processInstanceId}"})
-    public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId){
+    public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId, @RequestBody String reason){
        BaseResponse response= competenceService.updateStatus(processInstanceId,1L);
         if (response.getStatus()==200)
            return service.cancelProcessInstance(processInstanceId);
@@ -124,6 +125,35 @@ public class BpmsRestController {
         taskSearchDto.setUserId(userId);
         taskSearchDto.setTenantId(tenantId);
         Object object = client.searchTask(taskSearchDto, page, size);
+        BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
+        List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
+
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<BPMSUserTasksContentDto> searchRs = new SearchDTO.SearchRs<>();
+        searchRs.setTotalCount((long) bpmsUserTasksContentDtoList.size());
+        searchRs.setList(bpmsUserTasksContentDtoList);
+
+        ISC<BPMSUserTasksContentDto> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
+
+    /**
+     * to show all the tasks from bpms
+     * @param iscRq
+     * @param tenantId
+     * @param page
+     * @param size
+     * @return
+     * @throws IOException
+     */
+    @PostMapping({"/tasks/searchAll"})
+    public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchAllTask(HttpServletRequest iscRq, @RequestParam String tenantId, @RequestParam int page, @RequestParam int size) throws IOException {
+
+        TaskSearchDto taskSearchDto = new TaskSearchDto();
+        taskSearchDto.setTenantId(tenantId);
+
+        Object object = client.searchTask(taskSearchDto, page, size);
+
         BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
         List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
 

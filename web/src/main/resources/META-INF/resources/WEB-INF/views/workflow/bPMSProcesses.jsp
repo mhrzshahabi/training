@@ -1,26 +1,51 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
+<%@ page import="com.nicico.training.controller.util.AppUtils" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-
+<%
+    final String tenantId = AppUtils.getTenantId();
+%>
 // <script>
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
     <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
 
-    let taskId = "e4188b49-72ba-11ec-a9d9-0242ac1f0007";
-    let deploymentId = "0a8ab1c8-71df-11ec-a985-0242ac1f0007";
-
     //-------------------------------------------------- Rest DataSources --------------------------------------------------
-    let RestDataSource_BPMSProcesses = isc.TrDS.create({
+
+    let RestDataSource_Processes_UserPortfolio = isc.TrDS.create({
         fields: [
-            {name: "startDateEn", title: "<spring:message code="start.date"/>"},
-            {name: "endDate", title: "<spring:message code="end.date"/>"},
-            {name: "variableInstances.cId.textValue", title: "<spring:message code="competency.number"/>"},
-            {name: "processDefinitionKey", title: "<spring:message code="key"/>"},
-            {name: "processDefinitionVersion", title: "<spring:message code="version"/>"},
-            {name: "id", title: "id", type: "text"}
+            {name: "name", title: "عنوان تسک"},
+            {name: "deploymentId"},
+            {name: "tenantId", title: "زیرسیستم"},
+            {name: "createBy", title: "ایجاد کننده"},
+            {name: "title", title: "عنوان"},
+            {name: "processInstanceId", title: "شناسه فرایند"},
+            {name: "processDefinitionId"},
+            {name: "taskId"},
+            {name: "tenantTitle"},
+            {name: "date", title: "تاریخ"},
+            {name: "processStartTime", title: "تاریخ شروع فرایند"},
+            {name: "taskDefinitionKey"},
+            {name: "processDefinitionKey"}
+            // {name: "owner", title: "درخواست دهنده"},
+            // {name: "description"},
+            // {name: "processDocumentation"},
+            // {name: "postTitle"},
+            // {name: "senderUserName"},
+            // {name: "instanceDetails"},
+            // {name: "formListDTOS"}
         ],
-        fetchDataURL: workflowUrl + "/allProcessInstance/list"
+        transformRequest: function (dsRequest) {
+
+            dsRequest.params = {
+                "tenantId": "<%= tenantId %>",
+                "page": 0,
+                "size": 100
+            };
+            dsRequest.httpMethod = "POST";
+            return this.Super("transformRequest", arguments);
+        },
+        fetchDataURL: bpmsUrl + "/tasks/searchAll"
     });
 
 //----------------------------------------------------- Main Layout ----------------------------------------------------
@@ -31,7 +56,7 @@
                 icon: "contact.png",
                 title: "<spring:message code="process.image"/>",
                 click: function () {
-                    showBPMSProcessImage(taskId, deploymentId);
+                    showBPMSProcessImage(ListGrid_BPMSProcesses.getSelectedRecord().taskId, ListGrid_BPMSProcesses.getSelectedRecord().deploymentId);
                 }
             }
         ]
@@ -49,14 +74,14 @@
         icon: "contact.png",
         title: "<spring:message code="process.image"/>",
         click: function () {
-            showBPMSProcessImage(taskId, deploymentId);
+            showBPMSProcessImage(ListGrid_BPMSProcesses.getSelectedRecord().taskId, ListGrid_BPMSProcesses.getSelectedRecord().deploymentId);
         }
     });
 
     let ToolStrip_Actions_BPMSProcesses = isc.ToolStrip.create({
         width: "100%",
         members: [
-            ToolStripButton_showForm_BPMSProcesses,
+            // ToolStripButton_showForm_BPMSProcesses,
             ToolStripButton_showImage_BPMSProcesses
         ]
     });
@@ -71,38 +96,23 @@
     let ListGrid_BPMSProcesses = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_BPMSProcesses,
+        dataSource: RestDataSource_Processes_UserPortfolio,
         sortDirection: "descending",
         contextMenu: Menu_BPMSProcesses,
         fields: [
-            {name: "variableInstances.userFullName.textValue", title: "<spring:message code="created.by.user"/>", width: "30%"},
-            {name: "startDateFa", title: "<spring:message code="start.date"/>", width: "30%",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
-                }
-            },
-            {name: "endDateFa", title: "<spring:message code="end.date"/>", width: "30%",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9/]"
-                }
-            },
-            {name: "variableInstances.cId.textValue", title: "<spring:message code="competency.number"/>", width: "30%",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
-            {name: "processDefinitionKey", title: "<spring:message code="process.key.uploaded"/>", width: "30%"},
-            {name: "variableInstances.cTitle.textValue", title: "<spring:message code="description"/>", width: "30%"},
-            {name: "processDefinitionVersion", title: "<spring:message code="version"/>", width: "30%",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9|.]"
-                }
-            },
-            {name: "id", title: "id", type: "text", width: "30%",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                }
-            },
+            {name: "name"},
+            {name: "deploymentId", hidden: true},
+            {name: "tenantId", hidden: true},
+            {name: "createBy"},
+            {name: "title"},
+            {name: "processInstanceId", hidden: true},
+            {name: "processDefinitionId", hidden: true},
+            {name: "taskId", hidden: true},
+            {name: "tenantTitle", hidden: true},
+            {name: "date"},
+            {name: "processStartTime"},
+            {name: "taskDefinitionKey", hidden: true},
+            {name: "processDefinitionKey", hidden: true}
         ],
         sortField: 0,
         dataPageSize: 50,
