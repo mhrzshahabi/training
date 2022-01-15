@@ -11,6 +11,7 @@ import com.nicico.bpmsclient.model.request.TaskSearchDto;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
+import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.ISC;
 import com.nicico.training.controller.util.AppUtils;
@@ -33,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -45,6 +47,7 @@ public class BpmsRestController {
     private final ObjectMapper mapper;
     private final IBpmsService service;
     private final BpmsClientService client;
+    private final BpmsTestApi bpmsTestApi;
     private final BPMSBeanMapper bpmsBeanMapper;
     private final CompetenceBeanMapper beanMapper;
     private final CompetenceService competenceService;
@@ -110,6 +113,7 @@ public class BpmsRestController {
     }
 
     @PostMapping({"/tasks/searchByUserId"})
+    @Loggable
     public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchTaskByUserId(HttpServletRequest iscRq,
                                                                    @RequestParam String userId,
                                                                    @RequestParam String tenantId,
@@ -119,13 +123,20 @@ public class BpmsRestController {
         TaskSearchDto taskSearchDto = new TaskSearchDto();
         taskSearchDto.setUserId(userId);
         taskSearchDto.setTenantId(tenantId);
+        log.error("zaza1", "");
         Object object = client.searchTask(taskSearchDto, page, size);
+        log.error("zaza2", object.toString());
         BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
+        log.error("zaza3", bpmsUserTasksDto.toString());
+
         List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
+        log.error("zaza4", bpmsUserTasksContentDtoList.toString());
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<BPMSUserTasksContentDto> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setTotalCount((long) bpmsUserTasksContentDtoList.size());
+        log.error("zaza5", bpmsUserTasksContentDtoList.size()+"");
+
         searchRs.setList(bpmsUserTasksContentDtoList);
 
         ISC<BPMSUserTasksContentDto> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
