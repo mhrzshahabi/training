@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
+import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.iservice.IBpmsService;
@@ -28,6 +29,7 @@ public class BpmsService implements IBpmsService {
     private final BpmsClientService client;
     private final ObjectMapper mapper;
     private final PersonnelDAO personnelDAO;
+    private final CompetenceService competenceService;
 
 
     @Override
@@ -80,5 +82,26 @@ public class BpmsService implements IBpmsService {
         startProcessDto.setProcessDefinitionKey(getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());
         startProcessDto.setVariables(map);
         return startProcessDto;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewCompetenceTask(ReviewTaskRequest reviewTaskRequestDto) {
+        BaseResponse res=new BaseResponse();
+        BaseResponse competenceRes = competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(),2L);
+        if (competenceRes.getStatus() == 200){
+            try {
+                client.reviewTask(reviewTaskRequestDto);
+                res.setStatus(200);
+                res.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            }catch (Exception e){
+                res.setStatus(404);
+                res.setMessage("عملیات bpms انجام نشد");
+            }
+        }else {
+            res.setStatus(406);
+            res.setMessage("تغییر وضعیت شایستگی انجام نشد");
+        }
+        return res;
     }
 }
