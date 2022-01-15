@@ -148,6 +148,11 @@ public class CategoryService implements ICategoryService {
         return subCategoryInfoSet;
     }
 
+    @Override
+    public List<Long> findCategoryByTeacher(Long teacherId) {
+        return categoryDAO.findAllWithTeacher(teacherId);
+    }
+
     @Transactional(readOnly = true)
     public List<ElsCategoryDto> getCategoriesForEls() {
 

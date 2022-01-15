@@ -7,7 +7,9 @@ package com.nicico.training.service;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IQuestionBankService;
+import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
@@ -21,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -32,7 +35,9 @@ public class QuestionBankService implements IQuestionBankService {
     private final CategoryDAO categoryDAO;
     private final SubcategoryDAO subcategoryDAO;
     private final EnumsConverter.EQuestionLevelConverter eQuestionLevelConverter = new EnumsConverter.EQuestionLevelConverter();
-
+    private final ICategoryService categoryService;
+    private final ISubcategoryService subcategoryService;
+    private  final TeacherDAO teacherDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -145,5 +150,28 @@ public class QuestionBankService implements IQuestionBankService {
         ));
         return questionBankDAO.findAll(pageable);
     }
+
+
+
+    @Override
+    public Page<QuestionBank> getQuestionsByCategoryAndSubCategory(Teacher teacher,Integer page,Integer size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                Sort.Order.asc("id")
+        ));
+        List<Long> categories=categoryService.findCategoryByTeacher(teacher.getId());
+        List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacher.getId());
+
+
+        Page<QuestionBank> questionBankList=  questionBankDAO.findAllWithCategoryAndSubCategory(categories,subCategories,pageable);
+
+
+
+
+
+
+
+        return questionBankList;
+    }
+
 
 }

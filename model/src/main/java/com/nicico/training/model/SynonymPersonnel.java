@@ -165,4 +165,7 @@ public class SynonymPersonnel implements Serializable {
     @Column(name = "employment_status_title")
     private String employmentStatus;
 
+    @Column(name = "complex_title")
+    private String complexTitle;
+
 }

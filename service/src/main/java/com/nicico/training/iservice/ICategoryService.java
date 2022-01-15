@@ -37,4 +37,6 @@ public interface ICategoryService {
 
     List<SubcategoryDTO.Info> getSubCategories(Long categoryId);
 
+    List<Long> findCategoryByTeacher(Long teacherId);
+
 }

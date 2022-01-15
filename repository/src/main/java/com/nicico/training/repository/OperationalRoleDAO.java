@@ -63,4 +63,15 @@ public interface OperationalRoleDAO extends JpaRepository<OperationalRole, Long>
             " LEFT JOIN TBL_OPERATIONAL_ROLE_POST_IDS postIds ON role.ID = postIds.F_OPERATIONAL_ROLE " +
             " WHERE userIds.USER_IDS = :userId ", nativeQuery = true)
     Set<Long> getUserAccessTrainingPostsInRole(@Param("userId") Long userId);
+
+    /**
+     * WE NEEDED TO RETURN THE OAUTH USER ID BY OPERATIONAL ROLE CODE
+     * @param roleCode
+     * @return
+     */
+    @Query(value = "select ouser.USER_IDS " +
+            "from TBL_OPERATIONAL_ROLE_USER_IDS ouser " +
+            "         inner join TBL_OPERATIONAL_ROLE role on role.ID = ouser.F_OPERATIONAL_ROLE " +
+            "where role.C_CODE = :roleCode " , nativeQuery = true)
+    Long findRoleByCode(@Param("roleCode") String roleCode);
 }
