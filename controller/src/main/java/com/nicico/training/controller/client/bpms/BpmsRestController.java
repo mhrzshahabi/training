@@ -82,15 +82,11 @@ public class BpmsRestController {
     public ResponseEntity<BaseResponse> startProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
         BaseResponse res = new BaseResponse();
         try {
-
-                ProcessInstance processInstance=  service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId()));
-
-                CompetenceDTO.Create create = beanMapper.toCompetence(params.getRq());
-                create.setProcessInstanceId(processInstance.getId());
-                competenceService.checkAndCreate(create, response);
-
+            ProcessInstance processInstance=  service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId()));
+            CompetenceDTO.Create create = beanMapper.toCompetence(params.getRq());
+            create.setProcessInstanceId(processInstance.getId());
+            competenceService.checkAndCreate(create, response);
             res.setStatus(200);
-
         } catch (Exception e) {
             res.setStatus(406);
         }
@@ -103,13 +99,11 @@ public class BpmsRestController {
         BaseResponse res = new BaseResponse();
         try {
             ProcessInstance processInstance=  service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId()));
-
             CompetenceDTO.Update update = beanMapper.toUpdateCompetence(params.getRq());
-                update.setProcessInstanceId(processInstance.getId());
-                update.setId(params.getRq().getId());
-                competenceService.checkAndUpdate(params.getRq().getId(), update,response);
+            update.setProcessInstanceId(processInstance.getId());
+            update.setId(params.getRq().getId());
+            competenceService.checkAndUpdate(params.getRq().getId(), update,response);
             res.setStatus(200);
-
         } catch (Exception e) {
             res.setStatus(406);
         }
@@ -122,7 +116,11 @@ public class BpmsRestController {
     }
 
     @PostMapping({"/tasks/searchByUserId"})
-    public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchTask(HttpServletRequest iscRq, @RequestParam String userId, @RequestParam String tenantId, @RequestParam int page, @RequestParam int size) throws IOException {
+    public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchTaskByUserId(HttpServletRequest iscRq,
+                                                                   @RequestParam String userId,
+                                                                   @RequestParam String tenantId,
+                                                                   @RequestParam int page,
+                                                                   @RequestParam int size) throws IOException {
 
         TaskSearchDto taskSearchDto = new TaskSearchDto();
         taskSearchDto.setUserId(userId);
