@@ -236,15 +236,25 @@
                 isModal: false,
                 items: [
                     isc.DynamicForm.create({
+                        ID: "reasonForm",
                         width: "100%",
                         height: "100%",
                         autoFocus: "true",
                         cellPadding: 5,
                         fields: [
                             {
-                                name: "return",
+                                name: "returnReason",
                                 title: "دلیل عودت",
-                                type: "text"
+                                type: "text",
+                                required: true,
+                                validators: [{
+                                    validateOnExit: true,
+                                    type: "lengthRange",
+                                    min: 1,
+                                    max: 250,
+                                    stopOnError: true,
+                                    errorMessage: "حداکثر تعداد کاراکتر مجاز 250 می باشد. "
+                                }]
                             }
                         ]
                     }),
@@ -256,7 +266,22 @@
                             isc.Button.create({
                                 title: "<spring:message code='global.ok'/>",
                                 click: function () {
+                                    if (!reasonForm.validate()) {
+                                        return;
+                                    }
                                     // TODO call return process API
+                                    let reason = reasonForm.getField("returnReason").getValue();
+                                    isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/cancel-process/" + record.processInstanceId , "POST", reason, function (resp) {
+                                        wait.close();
+                                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                            window.close();
+                                            createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                            ListGrid_Processes_UserPortfolio.invalidateCache();
+                                        } else {
+                                            window.close();
+                                            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                                        }
+                                    }));
                                     Window_Completion_UserPortfolio.close();
                                     Window_Completion_Return.close();
                                 }
