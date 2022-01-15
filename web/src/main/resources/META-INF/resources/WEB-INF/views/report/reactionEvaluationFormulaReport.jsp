@@ -625,7 +625,7 @@
 
             let downloadForm = isc.DynamicForm.create({
                 method: "POST",
-                action: "/training/export/excel/formula",
+                action: "/training/export/excel/formula2",
                 target: "_Blank",
                 canSubmit: true,
                 fields:
