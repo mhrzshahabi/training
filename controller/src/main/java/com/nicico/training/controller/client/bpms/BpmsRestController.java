@@ -56,10 +56,24 @@ public class BpmsRestController {
 
     //confirm task
     @PostMapping({"/tasks/review"})
-    void reviewTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto){
-        BaseResponse response = competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(),2L);
-        if (response.getStatus() == 200)
-            client.reviewTask(reviewTaskRequestDto);
+    public BaseResponse reviewTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto){
+        BaseResponse res=new BaseResponse();
+        BaseResponse competenceRes = competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(),2L);
+        if (competenceRes.getStatus() == 200){
+            try {
+                client.reviewTask(reviewTaskRequestDto);
+                res.setStatus(200);
+                res.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            }catch (Exception e){
+               competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(),0L);
+                res.setStatus(404);
+                res.setMessage("عملیات bpms انجام نشد");
+            }
+        }else {
+            res.setStatus(406);
+            res.setMessage("تغییر وضعیت شایستگی انجام نشد");
+        }
+        return res;
     }
 
     @PostMapping({"/processes/definition-search/{page}/{size}"})
