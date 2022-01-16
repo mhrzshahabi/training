@@ -42,6 +42,7 @@ public class CompetenceDTO implements Serializable {
     public static class Info extends CompetenceDTO {
         private Long id;
         private Integer version;
+        private String returnDetail;
         private ParameterValueDTO.MinInfo competenceType;
         private CategoryDTO.CategoryInfoTuple category;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;

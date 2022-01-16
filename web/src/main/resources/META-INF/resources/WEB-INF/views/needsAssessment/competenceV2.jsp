@@ -132,6 +132,7 @@
                 filterOnKeypress: true,
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+            {name: "returnDetail", title: "دلیل عودت", filterOperator: "iContains"},
         ],
         fetchDataURL: competenceUrl + "/spec-list",
     });
@@ -161,7 +162,8 @@
             {name: "categoryId"},
             {name:"subCategoryId"},
             {name: "workFlowStatusCode", valueMap: valueMap},
-            {name: "description"}
+            {name: "description"},
+            {name: "returnDetail"}
         ],
         gridComponents: [
             CompetenceTS_competenceV2, "filterEditor", "header", "body"
@@ -260,6 +262,7 @@
                 }
             },
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem"},
+            {name: "returnDetail", title: "دلیل عودت", type: "TextAreaItem"},
         ]
     });
 
