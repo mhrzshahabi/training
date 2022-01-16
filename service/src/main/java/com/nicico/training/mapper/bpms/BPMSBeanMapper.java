@@ -21,11 +21,17 @@ public interface BPMSBeanMapper {
 
     @Named("processVariablesToCreateBy")
     default String processVariablesToCreateBy(LinkedHashMap<String, Object> variables) {
+        if(variables!=null)
         return String.valueOf(variables.get("createBy"));
+        else
+            return null;
     }
 
     @Named("processVariablesToTitle")
     default String processVariablesToTitle(LinkedHashMap<String, Object> variables) {
-        return String.valueOf(variables.get("title"));
+        if(variables!=null)
+            return String.valueOf(variables.get("title"));
+        else
+            return null;
     }
 }

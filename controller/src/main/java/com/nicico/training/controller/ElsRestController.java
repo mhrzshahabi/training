@@ -1009,7 +1009,7 @@ public class ElsRestController {
      */
     @GetMapping("questionBankByCategory/{nationalCode}/{page}/{size}")
     public ElsQuestionBankDto getQuestionBankViaCategoryAndSubCategory(HttpServletRequest header,@PathVariable String nationalCode, @PathVariable Integer page, @PathVariable Integer size ){
-       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
 
@@ -1043,9 +1043,9 @@ public class ElsRestController {
                 dto.setQuestions(Collections.singletonList(elsQuestionDto));
                 return dto;
             }
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     @GetMapping("/questionBank/{page}/{size}")

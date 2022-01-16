@@ -53,28 +53,33 @@ public class BpmsRestController {
     private final CompetenceService competenceService;
 
 
+    @Loggable
     @PostMapping({"/processes/definition-search"})
     public Object searchProcess(@RequestBody ProcessDefinitionRequestDTO processDefinitionRequestDTO, @RequestParam int page, @RequestParam int size) {
         return client.searchProcess(processDefinitionRequestDTO, page, size);
     }
 
     //confirm task
+    @Loggable
     @PostMapping({"/tasks/review"})
     public BaseResponse reviewTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto){
         return service.reviewCompetenceTask(reviewTaskRequestDto);
     }
 
+    @Loggable
     @PostMapping({"/processes/definition-search/{page}/{size}"})
     public BaseResponse getProcessDefinitionKey(@RequestBody String definitionName, @PathVariable int page, @PathVariable int size) {
         return service.getDefinitionKey(definitionName, AppUtils.getTenantId(), page, size);
     }
 
     //cancel task
+    @Loggable
     @PostMapping({"/processes/cancel-process/{processInstanceId}"})
     public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId, @RequestBody String reason){
            return service.cancelProcessInstance(processInstanceId,reason);
     }
 
+    @Loggable
     @PostMapping({"/processes/start-data-validation"})
     public ResponseEntity<BaseResponse> startProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
         BaseResponse res = new BaseResponse();
@@ -91,6 +96,7 @@ public class BpmsRestController {
     }
 
 
+    @Loggable
     @PutMapping({"/processes/start-data-validation"})
     public ResponseEntity<BaseResponse> editProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
         BaseResponse res = new BaseResponse();
@@ -107,6 +113,7 @@ public class BpmsRestController {
         return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
     }
 
+    @Loggable
     @GetMapping({"/tasks/user-assigned"})
     List<TaskInfo> getUserTasks(@RequestParam("userId") String userId, @RequestParam("tenantId") String tenantId) {
         return client.getUserTasks(userId, tenantId);
@@ -123,20 +130,12 @@ public class BpmsRestController {
         TaskSearchDto taskSearchDto = new TaskSearchDto();
         taskSearchDto.setUserId(userId);
         taskSearchDto.setTenantId(tenantId);
-        log.error("zaza1", "");
         Object object = client.searchTask(taskSearchDto, page, size);
-        log.error("zaza2", object.toString());
         BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
-        log.error("zaza3", bpmsUserTasksDto.toString());
-
         List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
-        log.error("zaza4", bpmsUserTasksContentDtoList.toString());
-
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<BPMSUserTasksContentDto> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setTotalCount((long) bpmsUserTasksContentDtoList.size());
-        log.error("zaza5", bpmsUserTasksContentDtoList.size()+"");
-
         searchRs.setList(bpmsUserTasksContentDtoList);
 
         ISC<BPMSUserTasksContentDto> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
@@ -152,6 +151,7 @@ public class BpmsRestController {
      * @return
      * @throws IOException
      */
+    @Loggable
     @PostMapping({"/tasks/searchAll"})
     public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchAllTask(HttpServletRequest iscRq, @RequestParam String tenantId, @RequestParam int page, @RequestParam int size) throws IOException {
 
@@ -171,13 +171,14 @@ public class BpmsRestController {
         ISC<BPMSUserTasksContentDto> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
-
+    @Loggable
     @GetMapping({"/processes/process-instance-history/details/{processInstanceId}"})
     List<TaskHistory> getProcessInstanceHistoryById(@PathVariable String processInstanceId) {
         ProcessInstanceHistory processInstanceHistory = client.getProcessInstanceHistoryById(processInstanceId);
         return processInstanceHistory.getTaskHistoryDetailList();
     }
 
+    @Loggable
     @GetMapping({"/processes/details/{processInstanceId}"})
     ResponseEntity<CompetenceDTO.Info> getProcessDetailByProcessInstanceId(@PathVariable String processInstanceId) {
         return new ResponseEntity<>(competenceService.getProcessDetailByProcessInstanceId(processInstanceId), HttpStatus.OK);
