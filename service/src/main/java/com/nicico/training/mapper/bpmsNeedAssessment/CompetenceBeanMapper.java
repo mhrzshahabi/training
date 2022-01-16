@@ -19,4 +19,20 @@ public interface CompetenceBeanMapper {
              @Mapping(target = "workFlowStatusCode",source = "workFlowStatusCode"),
      })
      CompetenceDTO.Create toCompetence(BpmsCompetenceDTO competenceDTO);
+
+
+
+     @Mappings({
+             @Mapping(target = "title",source = "title"),
+             @Mapping(target = "competenceTypeId",source = "competenceTypeId"),
+             @Mapping(target = "categoryId",source = "categoryId"),
+             @Mapping(target = "subCategoryId",source = "subCategoryId"),
+             @Mapping(target = "code",source = "code"),
+             @Mapping(target = "description",source = "description"),
+             @Mapping(target = "workFlowStatusCode",source = "workFlowStatusCode"),
+     })
+     CompetenceDTO.Update toUpdateCompetence(BpmsCompetenceDTO competenceDTO);
+
+
+
 }

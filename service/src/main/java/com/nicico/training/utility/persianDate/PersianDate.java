@@ -1,5 +1,8 @@
 package com.nicico.training.utility.persianDate;
 
+import com.ibm.icu.text.SimpleDateFormat;
+import com.ibm.icu.util.TimeZone;
+import com.ibm.icu.util.ULocale;
 import net.jcip.annotations.Immutable;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -730,5 +733,16 @@ public final class PersianDate implements ChronoLocalDate {
         }
 
     }
+    public static String convertToTrainingPersianDate(Date _date) {
+        Long date = _date.getTime();
+        ULocale PERSIAN_LOCALE = new ULocale("fa_IR");
+        ZoneId IRAN_ZONE_ID = ZoneId.of("Asia/Tehran");
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd", PERSIAN_LOCALE );
+        df.setTimeZone(TimeZone.getTimeZone("GMT+3:30"));
+        return df.format(date);
+    }
+
+
 
 }

@@ -23,58 +23,65 @@
             <sec:authorize access="hasAuthority('Competence_C')">
             {title: "<spring:message code="create"/>", click: function () { createCompetence_competenceV2(); }},
             </sec:authorize>
-<%--            <sec:authorize access="hasAuthority('Competence_U')">--%>
-<%--            {title: "<spring:message code="edit"/>", click: function () { editCompetence_competence(); }},--%>
-<%--            </sec:authorize>--%>
-<%--            <sec:authorize access="hasAuthority('Competence_D')">--%>
-<%--            {title: "<spring:message code="remove"/>", click: function () { removeCompetence_competence(); }},--%>
-<%--            </sec:authorize>--%>
+            <sec:authorize access="hasAuthority('Competence_U')">
+            {title: "<spring:message code="edit"/>", click: function () { editCompetence_competenceV2(); }},
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_D')">
+            {title: "<spring:message code="remove"/>", click: function () { removeCompetence_competenceV2(); }},
+            </sec:authorize>
         ]
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    // let ToolStrip_Competence_Export2EXcel = isc.ToolStrip.create({
-    //     width: "100%",
-    //     membersMargin: 5,
-    //     members: [
-    //         isc.ToolStripButtonExcel.create({
-    //             click: function () {
-    //                 let criteria = CompetenceLG_competence.getCriteria();
-    //                 ExportToFile.downloadExcel(null, CompetenceLG_competence , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
-    //             }
-    //         })
-    //     ]
-    // });
+    let ToolStrip_Competence_Export2EXcel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonExcel.create({
+                click: function () {
+                    let criteria = CompetenceLG_competenceV2.getCriteria();
+                    ExportToFile.downloadExcel(null, CompetenceLG_competenceV2 , "Competence", 0, null, '',"لیست شایستگی ها - آموزش"  , criteria, null);
+                }
+            })
+        ]
+    });
 
     isc.ToolStrip.create({
         ID: "CompetenceTS_competenceV2",
         members: [
-<%--            <sec:authorize access="hasAuthority('Competence_R')">--%>
-<%--            isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competence); }}),--%>
-<%--            </sec:authorize>--%>
             <sec:authorize access="hasAuthority('Competence_C')">
             isc.ToolStripButtonCreate.create({click: function () { createCompetence_competenceV2(); }}),
             </sec:authorize>
-<%--            <sec:authorize access="hasAuthority('Competence_U')">--%>
-<%--            isc.ToolStripButtonEdit.create({click: function () { editCompetence_competence(); }}),--%>
-<%--            </sec:authorize>--%>
-<%--            <sec:authorize access="hasAuthority('Competence_D')">--%>
-<%--            isc.ToolStripButtonRemove.create({click: function () { removeCompetence_competence(); }}),--%>
-<%--            </sec:authorize>--%>
-<%--            <sec:authorize access="hasAuthority('Competence_P')">--%>
-<%--            ToolStrip_Competence_Export2EXcel,--%>
-<%--            </sec:authorize>--%>
-<%--            isc.LayoutSpacer.create({width: "*"}),--%>
-<%--            isc.Label.create({ID: "CompetenceLGCountLabel_competence"}),--%>
+            <sec:authorize access="hasAuthority('Competence_U')">
+            isc.ToolStripButtonEdit.create({click: function () { editCompetence_competenceV2(); }}),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_D')">
+            isc.ToolStripButtonRemove.create({click: function () { removeCompetence_competenceV2(); }}),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Competence_P')">
+            ToolStrip_Competence_Export2EXcel,
+            </sec:authorize>
+            isc.LayoutSpacer.create({width: "*"}),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: "0px",
+                members: [
+                    isc.Label.create({ID: "CompetenceLGCountLabel_competence"}),
+                    <sec:authorize access="hasAuthority('Competence_R')">
+                    isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competenceV2); }}),
+                    </sec:authorize>
+                ]
+            })
         ]
     });
 
-    // isc.ToolStrip.create({
-    //     ID: "CompetenceTS_competence_webservice",
-    //     members: [
-    //         isc.Label.create({ID: "CompetenceLGCountLabel_competence_webservice"}),
-    //     ]
-    // });
+    isc.ToolStrip.create({
+        ID: "CompetenceTS_competence_webservice",
+        members: [
+            isc.Label.create({ID: "CompetenceLGCountLabel_competence_webservice"}),
+        ]
+    });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
 
@@ -91,11 +98,11 @@
         fetchDataURL: subCategoryUrl + "spec-list",
     });
 
-
     CompetenceDS_competenceV2 = isc.TrDS.create({
         ID: "CompetenceDS_competenceV2",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "processInstanceId", hidden: true},
             {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceTypeId", hidden: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
@@ -125,6 +132,7 @@
                 filterOnKeypress: true,
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+            {name: "returnDetail", title: "دلیل عودت", filterOperator: "iContains"},
         ],
         fetchDataURL: competenceUrl + "/spec-list",
     });
@@ -154,14 +162,15 @@
             {name: "categoryId"},
             {name:"subCategoryId"},
             {name: "workFlowStatusCode", valueMap: valueMap},
-            {name: "description"}
+            {name: "description"},
+            {name: "returnDetail"}
         ],
         gridComponents: [
             CompetenceTS_competenceV2, "filterEditor", "header", "body"
         ],
         contextMenu: CompetenceMenu_competenceV2,
-        // dataChanged: function () { updateCountLabel(this, CompetenceLGCountLabel_competence)},
-        // recordDoubleClick: function () { editCompetence_competence(); }
+        dataChanged: function () { updateCountLabel(this, CompetenceLGCountLabel_competence)},
+        recordDoubleClick: function () { editCompetence_competenceV2(); }
     });
 
     <%--CompetenceLG_competence_Webservice = isc.TrLG.create({--%>
@@ -310,31 +319,31 @@
         CompetenceWin_competenceV2.show();
     }
 
-    <%--function editCompetence_competence() {--%>
-    <%--    let record = CompetenceLG_competence.getSelectedRecord();--%>
-    <%--    if (record) {--%>
-    <%--        if (record.workFlowStatusCode === 0 || record.workFlowStatusCode === 4) {--%>
-    <%--            createDialog("warning", "بدلیل در گردش کار بودن شایستگی امکان ویرایش وجود ندارد")--%>
-    <%--            return;--%>
-    <%--        }--%>
-    <%--        if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {--%>
-    <%--            competenceMethod_competence = "PUT";--%>
-    <%--            CompetenceDF_competence.clearValues();--%>
-    <%--            CompetenceDF_competence.editRecord(record);--%>
-    <%--            CompetenceWin_competence.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="competence"/>");--%>
-    <%--            let inter = setInterval(function () {--%>
-    <%--                if (CompetenceDF_competence.getItem("competenceTypeId").getSelectedRecord() !== undefined) {--%>
-    <%--                    clearInterval(inter)--%>
-    <%--                    CompetenceWin_competence.show();--%>
-    <%--                    actionCompetenceType();--%>
-    <%--                }--%>
-    <%--            }, 100)--%>
-    <%--        }--%>
-    <%--    }--%>
-    <%--    else {--%>
-    <%--        createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--    }--%>
-    <%--}--%>
+    function editCompetence_competenceV2() {
+        let record = CompetenceLG_competenceV2.getSelectedRecord();
+        if (record) {
+            if (record.workFlowStatusCode === 0 || record.workFlowStatusCode === 4) {
+                createDialog("warning", "بدلیل در گردش کار بودن شایستگی امکان ویرایش وجود ندارد")
+                return;
+            }
+            if (checkRecordAsSelected(record, true, "<spring:message code="competence"/>")) {
+                competenceMethod_competence = "PUT";
+                CompetenceDF_competenceV2.clearValues();
+                CompetenceDF_competenceV2.editRecord(record);
+                CompetenceWin_competenceV2.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="competence"/>");
+                let inter = setInterval(function () {
+                    if (CompetenceDF_competenceV2.getItem("competenceTypeId").getSelectedRecord() !== undefined) {
+                        clearInterval(inter)
+                        CompetenceWin_competenceV2.show();
+                        actionCompetenceTypeV2();
+                    }
+                }, 100)
+            }
+        }
+        else {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        }
+    }
 
     function saveCompetence_competenceV2() {
         if (!CompetenceDF_competenceV2.validate()) {
@@ -349,9 +358,7 @@
         }
         let data = CompetenceDF_competenceV2.getValues();
         let entityTitle = data.title
-        if(competenceMethod_competence === "POST"){
-            sendCompetenceToWorkflowV2(data);
-        }
+            sendCompetenceToWorkflowV2(data,competenceMethod_competence);
         <%--isc.RPCManager.sendRequest(--%>
         <%--    TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), (resp)=>{--%>
         <%--        wait.close();--%>
@@ -384,22 +391,22 @@
         <%--);--%>
     }
 
-    <%--function removeCompetence_competence() {--%>
-    <%--    let record = CompetenceLG_competence.getSelectedRecord();--%>
-    <%--    let entityType = '<spring:message code="competence"/>';--%>
-    <%--    if (checkRecordAsSelected(record, true, entityType)) {--%>
-    <%--        wait.show()--%>
-    <%--        isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/" + record.id, "GET", null, (resp)=>{--%>
-    <%--            wait.close();--%>
-    <%--            if(resp.httpResponseCode !== 226){--%>
-    <%--                removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competence');--%>
-    <%--            }--%>
-    <%--            else{--%>
-    <%--                createDialog("warning", "بدلیل اینکه شایستگی در نیازسنجی استفاده شده است، این شایستگی قابل حذف نمیباشد.", "اخطار");--%>
-    <%--            }--%>
-    <%--        }))--%>
-    <%--    }--%>
-    <%--}--%>
+    function removeCompetence_competenceV2() {
+        let record = CompetenceLG_competenceV2.getSelectedRecord();
+        let entityType = '<spring:message code="competence"/>';
+        if (checkRecordAsSelected(record, true, entityType)) {
+            wait.show()
+            isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/" + record.id, "GET", null, (resp)=>{
+                wait.close();
+                if(resp.httpResponseCode !== 226){
+                    removeCompetenceToWorkflowV2(record,entityType)
+                }
+                else{
+                    createDialog("warning", "بدلیل اینکه شایستگی در نیازسنجی استفاده شده است، این شایستگی قابل حذف نمیباشد.", "اخطار");
+                }
+            }))
+        }
+    }
 
     function actionCompetenceTypeV2() {
         let item = CompetenceDF_competenceV2.getItem("competenceTypeId");
@@ -439,24 +446,24 @@
         }
     }
 
-    function sendCompetenceToWorkflowV2(record){
-        debugger
+    function sendCompetenceToWorkflowV2(record,method){
         let param={}
         param.data={
             "processDefinitionKey": "تعریف شایستگی",
             "title": record.title + " شایستگی "
         }
         param.rq= {
+            "id": method !== "POST" ? record.id : 0,
             "title": record.title,
             "competenceTypeId": record.competenceTypeId,
             "code": record.code,
             "categoryId": record.categoryId,
             "subCategoryId": record.subCategoryId,
             "description": record.description,
-            "workFlowStatusCode": 0,
+            "workFlowStatusCode": method !== "POST" ? 4 : 0,
         };
         wait.show()
-        isc.RPCManager.sendRequest(TrDSRequest(bpmsWorkflowUrl + "/processes/start-data-validation", "POST", JSON.stringify(param), (resp)=>{
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsWorkflowUrl + "/processes/start-data-validation", method, JSON.stringify(param), (resp)=>{
             wait.close()
             if (resp.httpResponseCode === 200) {
                 CompetenceWin_competenceV2.close();
@@ -466,6 +473,17 @@
                 simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
             } else {
                 simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
+            }
+        }));
+    }
+    function removeCompetenceToWorkflowV2(record,entityType){
+        wait.show()
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsWorkflowUrl + "/processes/cancel-process/"+record.processInstanceId, "POST","remove in training app", (resp)=>{
+            wait.close()
+            if (resp.httpResponseCode === 200) {
+                removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competenceV2');
+            } else {
+                simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.remove.to.workflow.problem'/>", 3000, "stop");
             }
         }));
     }

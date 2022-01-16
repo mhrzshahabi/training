@@ -45,5 +45,27 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     private Integer answerTime;
     @ApiModelProperty
     private List<Integer> questionTargetIds;
+    @ApiModelProperty
+    private String questionCode;
+    @ApiModelProperty
+    private String displayType;
+    @ApiModelProperty
+    private String  teacherFullName;
+    @ApiModelProperty
+    private String  courseName;
+    @ApiModelProperty
+    private String  className;
+    @ApiModelProperty
+    private String classCode;
+    @ApiModelProperty
+    private String startDate;
+    @ApiModelProperty
+    private String finishDate;
+    @ApiModelProperty
+    private String createdBy;
+    @ApiModelProperty
+    private String createdDate;
+
+
 
 }

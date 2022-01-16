@@ -10777,4 +10777,288 @@ ORDER BY
 ]]>
         </createView>
     </changeSet>
+
+    <changeSet author="namdari" id="1637643011000-7">
+        <createView viewName="view_synonym_personnel" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    mdms_tbl_md_employee.c_id                       AS id,
+    mdms_tbl_md_employee.c_em_number                AS emp_no,
+    mdms_tbl_md_employee.c_em_number_10             AS personnel_no,
+    mdms_tbl_md_employee.c_address                  AS address,
+    mdms_tbl_md_employee.c_national_code            AS national_code,
+    mdms_tbl_md_employee.deleted                    AS deleted,
+    mdms_tbl_md_people.c_birth_city                 AS birth_place,
+    mdms_tbl_md_people.c_birthdate                  AS birth_date,
+    mdms_tbl_md_people.c_father_name                AS father_name,
+    mdms_tbl_md_people.c_first_name                 AS first_name,
+    mdms_tbl_md_people.c_last_name                  AS last_name,
+    mdms_tbl_md_people.c_ssn                        AS birth_certificate_no,
+    mdms_tbl_md_people.c_mobile                     AS phone,
+    mdms_tbl_md_post.c_title                        AS post_title,
+    mdms_tbl_md_post.c_code                         AS post_code,
+    CASE
+        WHEN mdms_tbl_md_people.c_gender = 'MALE'   THEN
+            'مرد'
+        WHEN mdms_tbl_md_people.c_gender = 'FEMALE' THEN
+            'زن'
+    END                                             AS gender_title,
+    tbl_post.id                                     AS f_post_id,
+    mdms_tbl_md_employee.c_inc_dep_code             AS department_code,
+    mdms_tbl_md_employee.c_inc_dep_title            AS department_title,
+    mdms_tbl_md_employee.c_area_of_study            AS education_field_title,
+    mdms_tbl_md_department.c_omor_title             AS ccp_affairs,
+    mdms_tbl_md_department.c_moavenat_title         AS ccp_assistant,
+    mdms_tbl_md_department.c_hoze_title             AS ccp_area,
+    mdms_tbl_md_department.c_code                   AS ccp_code,
+    mdms_tbl_md_department.c_ghesmat_title          AS ccp_section,
+    mdms_tbl_md_department.c_vahed_title            AS ccp_unit,
+    mdms_tbl_md_department.c_title                  AS ccp_title,
+    mdms_tbl_md_employee.p_type                     AS p_type,
+    mdms_tbl_md_employee.c_dep_id                   AS f_department_id,
+    mdms_tbl_md_employee.c_geo_id                   AS f_geo_id,
+    mdms_tbl_md_people.c_username                   AS c_username,
+    mdms_tbl_md_post_grade.c_code                   AS post_grade_code,
+    mdms_tbl_md_post_grade.c_title                  AS post_grade_title,
+    mdms_tbl_md_employee.c_emp_date                 AS employment_date,
+    mdms_tbl_md_employee.c_work_place_title         AS work_place_title,
+    mdms_tbl_md_employee.c_edu_lvl_title            AS education_level_title,
+    mdms_tbl_md_job.c_title                         AS job_title,
+    CASE
+        WHEN mdms_tbl_md_employee.p_type = 'ContractorPersonal' THEN
+            mdms_tbl_md_geo_work.c_title
+        ELSE
+            'شرکت ملي صنايع مس ايران'
+    END                                             AS company_name,
+    mdms_tbl_md_people.c_email                      AS email,
+    mdms_tbl_md_employee_status.c_title AS employment_status_title,
+    mdms_tbl_md_employee.c_emp_status_id as employment_status_id,
+    mdms_tbl_md_department.c_mojtame_title as complex_title
+FROM
+    mdms_tbl_md_employee
+    LEFT JOIN mdms_tbl_md_people ON mdms_tbl_md_employee.c_people_id = mdms_tbl_md_people.c_id
+    LEFT JOIN mdms_tbl_md_post ON mdms_tbl_md_employee.c_post_id = mdms_tbl_md_post.c_id
+    LEFT JOIN mdms_tbl_md_department ON mdms_tbl_md_employee.c_dep_id = mdms_tbl_md_department.c_id
+    LEFT JOIN mdms_tbl_md_post_grade ON mdms_tbl_md_post.c_grade_id = mdms_tbl_md_post_grade.c_id
+    LEFT JOIN mdms_tbl_md_job ON mdms_tbl_md_employee.c_job_code = mdms_tbl_md_job.c_code
+    LEFT JOIN mdms_tbl_md_geo_work ON mdms_tbl_md_employee.c_geo_id = mdms_tbl_md_geo_work.c_id
+    LEFT JOIN tbl_post ON mdms_tbl_md_post.c_code = tbl_post.c_code
+                          AND tbl_post.e_deleted IS NULL
+    INNER JOIN mdms_tbl_md_employee_status ON mdms_tbl_md_employee.c_emp_status_id = mdms_tbl_md_employee_status.
+    c_id
+WHERE
+    mdms_tbl_md_employee.deleted = 0
+ORDER BY
+    id DESC
+]]>
+        </createView>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1642227727-01">
+        <createView viewName="view_reaction_evaluation_formula_report_for_course" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+ROWNUM as id,n.*
+FROM
+    (
+        SELECT DISTINCT
+            f.class_code,
+            f.class_status,
+            f.class_end_date,
+            f.class_start_date,
+            f.course_code,
+            f.course_titlefa,
+            f.sub_category_titlefa,
+            f.category_titlefa,
+            f.class_id,
+            f.course_id,
+            f.complex,
+            f.is_personnel,
+            f.teacher_national_code,
+            f.teacher,
+            f.final_teacher,
+            f.reactione_evaluation_grade,
+            f.teacher_grade_to_class,
+            f.training_grade_to_teacher,
+            f.javab_dade,
+            f.total_std,
+            f.miangin_javab_dade
+        FROM
+            (
+                SELECT
+                    ROWNUM                                                             AS id,
+                    z.class_code                                                       AS class_code,
+                    CASE
+                        WHEN z.status = 1 THEN
+                            ' برنامه ریزی'
+                        WHEN z.status = 2 THEN
+                            ' در حال اجرا'
+                        WHEN z.status = 3 THEN
+                            ' پایان یافته'
+                        WHEN z.status = 4 THEN
+                            ' لغو شده'
+                        WHEN z.status = 5 THEN
+                            'اختتام'
+                    END                                                                AS class_status,
+                    z.class_start_date                                                 AS class_start_date,
+                    z.class_end_date                                                   AS class_end_date,
+                    z.course_code                                                      AS course_code,
+                    z.course_titlefa                                                   AS course_titlefa,
+                    z.category_titlefa                                                 AS category_titlefa,
+                    z.sub_category_titlefa                                             AS sub_category_titlefa,
+                    z.class_id                                                         AS class_id,
+                    z.course_id                                                        AS course_id,
+                    z.class_complex                                                    AS complex,
+                    z.is_personnel                                                     AS is_personnel,
+                    z.teacher_national_code                                            AS teacher_national_code,
+                    z.teacher                                                          AS teacher,
+                    concat(concat(tbl_student.first_name, ' '), tbl_student.last_name) AS student,
+                    tbl_student.emp_no                                                 AS student_emp_number,
+                    tbl_student.personnel_no                                           AS student_per_number,
+                    tbl_department.c_hoze_title                                        AS student_hoze,
+                    tbl_department.c_omor_title                                        AS student_omor,
+                    tbl_post.c_code                                                    AS student_post_code,
+                    tbl_post.c_title_fa                                                AS student_post_title,
+                    CAST(tbl_evaluation_analysis.c_teacher_grade AS DECIMAL(10, 2))    AS final_teacher,
+                    CAST(tbl_evaluation_analysis.c_reaction_grade AS DECIMAL(10, 2))   AS reactione_evaluation_grade,
+                    modares.miangin                                                    AS teacher_grade_to_class,
+                    mianginmasol.miangin                                               AS training_grade_to_teacher,
+                    clsstu.total_std                                                   AS total_std,
+                    CASE
+                        WHEN darsadjavab.javabdade IS NULL THEN
+                            0
+                        ELSE
+                            darsadjavab.javabdade
+                    END                                                                AS javab_dade,
+                    CAST((
+                        CASE
+                            WHEN darsadjavab.javabdade IS NULL THEN
+                                0
+                            ELSE
+                                darsadjavab.javabdade
+                        END
+                        / clsstu.total_std) * 100 AS DECIMAL(8, 2))                        AS miangin_javab_dade
+                FROM
+                         (
+                        SELECT
+                            class_id,
+                            student_id,
+                            total_std
+                        FROM
+                            (
+                                SELECT
+                                    tbl_class_student.class_id,
+                                    tbl_class_student.student_id,
+                                    COUNT(*)
+                                    OVER(PARTITION BY tbl_class_student.class_id) total_std
+                                FROM
+                                    tbl_class_student
+                            )
+                        WHERE
+                            total_std > 0
+                    ) clsstu
+                    INNER JOIN (
+                        SELECT
+                            ROWNUM                                                                                   AS id,
+                            tclass.id                                                                                AS class_id,
+                            tclass.c_code                                                                            AS class_code,
+                            tclass.c_status                                                                          AS status,
+                            tclass.c_start_date                                                                      AS class_start_date,
+                            tclass.c_end_date                                                                        AS class_end_date,
+                            course.id                                                                                AS course_id,
+                            course.c_code                                                                            AS course_code,
+                            course.c_title_fa                                                                        AS course_titlefa,
+                            cat.c_title_fa                                                                           AS category_titlefa,
+                            sucat.c_title_fa                                                                         AS sub_category_titlefa,
+                            concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher,
+                            tbl_personal_info.c_first_name_fa                                                        AS teacher_name,
+                            tbl_personal_info.c_last_name_fa                                                         AS teacher_family,
+                            tbl_personal_info.c_national_code                                                        AS teacher_national_code,
+                            view_complex.c_title                                                                     AS class_complex,
+                            CASE
+                                WHEN tbl_teacher.b_personnel = 0 THEN
+                                    'برون سازمانی'
+                                WHEN tbl_teacher.b_personnel = 1 THEN
+                                    'درون سازمانی'
+                            END                                                                                      AS is_personnel
+                        FROM
+                                 tbl_class tclass
+                            INNER JOIN tbl_course       course ON tclass.f_course = course.id
+                            INNER JOIN tbl_category     cat ON cat.id = course.category_id
+                            INNER JOIN tbl_sub_category sucat ON sucat.id = course.subcategory_id
+                            INNER JOIN tbl_teacher ON tclass.f_teacher = tbl_teacher.id
+                            INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+                            LEFT JOIN view_complex ON tclass.complex_id = view_complex.id
+                        WHERE
+                                tclass.c_status != '1'
+
+                    )              z ON clsstu.class_id = z.class_id
+                    LEFT JOIN tbl_student ON clsstu.student_id = tbl_student.id
+                    LEFT JOIN tbl_department ON tbl_student.f_department_id = tbl_department.id
+                    LEFT JOIN tbl_post ON tbl_student.f_post_id = tbl_post.id
+                    LEFT JOIN tbl_evaluation_analysis ON clsstu.class_id = tbl_evaluation_analysis.f_tclass
+                    LEFT JOIN tbl_evaluation f ON z.class_id = f.f_class_id
+                                                  AND f.f_evaluator_type_id = '187'
+                    LEFT JOIN (
+                        SELECT
+                            CAST(SUM(rate * w) / SUM(w) AS DECIMAL(8, 2)) AS miangin,
+                            idmodares
+                        FROM
+                            (
+                                SELECT
+                                    tbl_questionnaire_question.f_weight   AS w,
+                                    tbl_parameter_value.c_value           AS rate,
+                                    tbl_evaluation_answer.f_evaluation_id AS idmodares
+                                FROM
+                                         tbl_evaluation_answer
+                                    INNER JOIN tbl_questionnaire_question ON tbl_evaluation_answer.f_evaluation_question_id = tbl_questionnaire_question.
+                                    id
+                                    INNER JOIN tbl_parameter_value ON tbl_evaluation_answer.f_answer_id = tbl_parameter_value.id
+                            )
+                        GROUP BY
+                            idmodares
+                    )              modares ON f.id = modares.idmodares
+                    LEFT JOIN tbl_evaluation masol ON z.class_id = masol.f_class_id
+                                                      AND masol.f_evaluator_type_id = '454'
+                    LEFT JOIN (
+                        SELECT
+                            CAST(SUM(rate * w) / SUM(w) AS DECIMAL(8, 2)) AS miangin,
+                            idmodares
+                        FROM
+                            (
+                                SELECT
+                                    tbl_questionnaire_question.f_weight   AS w,
+                                    tbl_parameter_value.c_value           AS rate,
+                                    tbl_evaluation_answer.f_evaluation_id AS idmodares
+                                FROM
+                                         tbl_evaluation_answer
+                                    INNER JOIN tbl_questionnaire_question ON tbl_evaluation_answer.f_evaluation_question_id = tbl_questionnaire_question.
+                                    id
+                                    INNER JOIN tbl_parameter_value ON tbl_evaluation_answer.f_answer_id = tbl_parameter_value.id
+                            )
+                        GROUP BY
+                            idmodares
+                    )              mianginmasol ON masol.id = mianginmasol.idmodares
+                    LEFT JOIN (
+                        SELECT
+                            COUNT(*)                  AS javabdade,
+                            tbl_evaluation.f_class_id AS classid
+                        FROM
+                            tbl_evaluation
+                        WHERE
+                                tbl_evaluation.b_status = 1
+                            AND tbl_evaluation.f_evaluator_type_id = 188
+                        GROUP BY
+                            tbl_evaluation.f_class_id,
+                            tbl_evaluation.b_status,
+                            tbl_evaluation.f_evaluator_type_id
+                    )              darsadjavab ON z.class_id = darsadjavab.classid
+                ORDER BY
+                    class_code
+            ) f
+    )n
+             ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>

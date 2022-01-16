@@ -32,6 +32,7 @@ public class CompetenceDTO implements Serializable {
     private Long subCategoryId;
     private String code;
     private Long workFlowStatusCode;
+    private String processInstanceId;
 
 
 @Getter
@@ -41,6 +42,7 @@ public class CompetenceDTO implements Serializable {
     public static class Info extends CompetenceDTO {
         private Long id;
         private Integer version;
+        private String returnDetail;
         private ParameterValueDTO.MinInfo competenceType;
         private CategoryDTO.CategoryInfoTuple category;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
@@ -72,6 +74,7 @@ public class CompetenceDTO implements Serializable {
     @ApiModel("CompetenceDTO - Update")
     public static class Update extends Create {
         private Integer version;
+        private Long id;
     }
 
     @Getter

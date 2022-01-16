@@ -1,8 +1,3 @@
-/*
-ghazanfari_f,
-1/14/2020,
-1:55 PM
-*/
 package com.nicico.training.repository;
 
 import com.nicico.training.model.Competence;
@@ -15,7 +10,10 @@ public interface CompetenceDAO extends BaseDAO<Competence, Long> {
 
     boolean existsByTitleAndIdIsNot(String title, Long id);
 
+    Optional<Competence> findByProcessInstanceId(String processInstanceId);
+
     Optional<Competence> findTopByCodeStartsWithOrderByCodeDesc(String code);
+    Optional<Competence> findFirstByProcessInstanceId(String code);
 
     @Modifying
     @Query(value = " update TBL_COMPETENCE set N_WORK_FLOW_CODE = :code where ID = :competenceId ", nativeQuery = true)

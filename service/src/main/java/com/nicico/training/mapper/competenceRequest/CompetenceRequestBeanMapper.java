@@ -8,7 +8,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
-import org.springframework.beans.factory.annotation.Qualifier;
 
 import java.util.Arrays;
 import java.util.List;

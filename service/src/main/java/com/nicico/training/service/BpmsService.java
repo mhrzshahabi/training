@@ -5,15 +5,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
+import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.iservice.IBpmsService;
+import com.nicico.training.repository.PersonnelDAO;
 import dto.bpms.BpmsContent;
 import dto.bpms.BpmsDefinitionDto;
+import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -22,20 +28,23 @@ public class BpmsService implements IBpmsService {
 
     private final BpmsClientService client;
     private final ObjectMapper mapper;
+    private final PersonnelDAO personnelDAO;
+    private final CompetenceService competenceService;
 
 
     @Override
-    public BaseResponse getDefinitionKey(String definitionKey, String TenantId,int page,int size) {
+    public BaseResponse getDefinitionKey(String definitionKey, String TenantId, int page, int size) {
         ProcessDefinitionRequestDTO processDefinitionRequestDTO = new ProcessDefinitionRequestDTO();
         processDefinitionRequestDTO.setTenantId(TenantId);
         Object object = client.searchProcess(processDefinitionRequestDTO, page, size);
-        BpmsDefinitionDto bpmsDefinitionDto = mapper.convertValue(object, new TypeReference<>() {});
-        Optional<BpmsContent> bpmsContent= bpmsDefinitionDto.getContent().stream().filter(x -> x.getName().trim().equals(definitionKey.trim())).findFirst();
-        BaseResponse response=new BaseResponse();
-        if (bpmsContent.isPresent()){
+        BpmsDefinitionDto bpmsDefinitionDto = mapper.convertValue(object, new TypeReference<>() {
+        });
+        Optional<BpmsContent> bpmsContent = bpmsDefinitionDto.getContent().stream().filter(x -> x.getName().trim().equals(definitionKey.trim())).findFirst();
+        BaseResponse response = new BaseResponse();
+        if (bpmsContent.isPresent()) {
             response.setStatus(200);
             response.setMessage(bpmsContent.get().getProcessDefinitionKey());
-        }else {
+        } else {
             response.setStatus(409);
             response.setMessage("فرایند یافت نشد");
         }
@@ -46,5 +55,58 @@ public class BpmsService implements IBpmsService {
     @Transactional
     public ProcessInstance startProcessWithData(StartProcessWithDataDTO startProcessDto) {
         return client.startProcessWithData(startProcessDto);
+    }
+
+    @Override
+    @Transactional
+    public ProcessInstance cancelProcessInstance(String processInstanceId, String reason) {
+        competenceService.updateStatus(processInstanceId, 1L,reason);
+        return client.cancelProcessInstance(processInstanceId);
+
+
+    }
+
+    @Override
+    public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId) {
+        Map<String, Object> map = new HashMap<>();
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+//        String mainConfirmBoss = "ahmadi_z";
+        String mainConfirmBoss = "3621296476";
+        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
+//            mainConfirmBoss = "pourfathian_a";
+            mainConfirmBoss = "3149622123";
+//            mainConfirmBoss = "hajizadeh_mh";
+        }
+
+        map.put("assignTo", mainConfirmBoss);
+        map.put("userId", SecurityUtil.getUserId());
+        map.put("tenantId", tenantId);
+        map.put("title", params.getData().get("title").toString());
+        map.put("createBy", SecurityUtil.getFullName());
+        StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
+        startProcessDto.setProcessDefinitionKey(getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());
+        startProcessDto.setVariables(map);
+        return startProcessDto;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewCompetenceTask(ReviewTaskRequest reviewTaskRequestDto) {
+        BaseResponse res = new BaseResponse();
+        BaseResponse competenceRes = competenceService.updateStatus(reviewTaskRequestDto.getProcessInstanceId(), 2L, null);
+        if (competenceRes.getStatus() == 200) {
+            try {
+                client.reviewTask(reviewTaskRequestDto);
+                res.setStatus(200);
+                res.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                res.setStatus(404);
+                res.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            res.setStatus(406);
+            res.setMessage("تغییر وضعیت شایستگی انجام نشد");
+        }
+        return res;
     }
 }
