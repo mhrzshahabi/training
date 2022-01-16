@@ -78,11 +78,27 @@
         }
     });
 
+    let ToolStripButton_Refresh_BPMSProcesses = isc.ToolStripButtonRefresh.create({
+        title: "<spring:message code="refresh"/>",
+        click: function () {
+            ListGrid_BPMSProcesses.clearFilterValues();
+            ListGrid_BPMSProcesses.invalidateCache();
+        }
+    });
+
     let ToolStrip_Actions_BPMSProcesses = isc.ToolStrip.create({
         width: "100%",
         members: [
             // ToolStripButton_showForm_BPMSProcesses,
-            ToolStripButton_showImage_BPMSProcesses
+            ToolStripButton_showImage_BPMSProcesses,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: "0px",
+                members: [
+                    ToolStripButton_Refresh_BPMSProcesses
+                ]
+            })
         ]
     });
 

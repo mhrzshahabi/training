@@ -15,7 +15,6 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.ISC;
 import com.nicico.training.controller.util.AppUtils;
-import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.mapper.bpms.BPMSBeanMapper;
 import dto.bpms.*;
 import com.nicico.training.dto.CompetenceDTO;
@@ -34,7 +33,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import javax.servlet.http.HttpServletResponse;
 
-import java.net.URI;
 import java.util.List;
 
 
@@ -153,7 +151,10 @@ public class BpmsRestController {
      */
     @Loggable
     @PostMapping({"/tasks/searchAll"})
-    public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchAllTask(HttpServletRequest iscRq, @RequestParam String tenantId, @RequestParam int page, @RequestParam int size) throws IOException {
+    public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchAllTask(HttpServletRequest iscRq,
+                                                                      @RequestParam String tenantId,
+                                                                      @RequestParam int page,
+                                                                      @RequestParam int size) throws IOException {
 
         TaskSearchDto taskSearchDto = new TaskSearchDto();
         taskSearchDto.setTenantId(tenantId);

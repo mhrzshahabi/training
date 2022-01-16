@@ -49,9 +49,6 @@
     isc.ToolStrip.create({
         ID: "CompetenceTS_competenceV2",
         members: [
-            <sec:authorize access="hasAuthority('Competence_R')">
-            isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competenceV2); }}),
-            </sec:authorize>
             <sec:authorize access="hasAuthority('Competence_C')">
             isc.ToolStripButtonCreate.create({click: function () { createCompetence_competenceV2(); }}),
             </sec:authorize>
@@ -65,7 +62,17 @@
             ToolStrip_Competence_Export2EXcel,
             </sec:authorize>
             isc.LayoutSpacer.create({width: "*"}),
-            isc.Label.create({ID: "CompetenceLGCountLabel_competence"}),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: "0px",
+                members: [
+                    isc.Label.create({ID: "CompetenceLGCountLabel_competence"}),
+                    <sec:authorize access="hasAuthority('Competence_R')">
+                    isc.ToolStripButtonRefresh.create({click: function () { refreshLG(CompetenceLG_competenceV2); }}),
+                    </sec:authorize>
+                ]
+            })
         ]
     });
 
@@ -90,7 +97,6 @@
         ],
         fetchDataURL: subCategoryUrl + "spec-list",
     });
-
 
     CompetenceDS_competenceV2 = isc.TrDS.create({
         ID: "CompetenceDS_competenceV2",
