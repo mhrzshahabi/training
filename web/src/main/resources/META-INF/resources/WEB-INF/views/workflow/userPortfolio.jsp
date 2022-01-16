@@ -17,6 +17,7 @@
 // <script>
 
 //-------------------------------------------------- Rest DataSources --------------------------------------------------
+
     let RestDataSource_Processes_UserPortfolio = isc.TrDS.create({
         fields: [
             {name: "name", title: "فرایند"},
@@ -68,17 +69,26 @@
     });
     let RestDataSource_Processes_Detail_Competence_UserPortfolio = isc.TrDS.create({
         fields: [
-            {name: "code"},
-            {name: "competenceType"},
-            {name: "category"},
-            {name: "subCategory"},
-            {name: "workFlowStatusCode"},
-            {name: "description"},
-            {name: "processInstanceId"}
+            {name: "code", title: "کد", type: "staticText"},
+            {name: "competenceType.title", title: "نوع", type: "staticText"},
+            {name: "category.titleFa", title: "گروه", type: "staticText"},
+            {name: "subCategory.titleFa", title: "زیرگروه", type: "staticText"},
+            {name: "workFlowStatusCode", title: "وضعیت گردش کار", type: "staticText",
+                valueMap: {
+                    0: "ارسال به گردش کار",
+                    1: "عدم تایید",
+                    2: "تایید نهایی",
+                    3: "حذف گردش کار",
+                    4: "اصلاح شایستگی و ارسال به گردش کار"
+                }
+            },
+            {name: "description", title: "توضیحات", type: "staticText"},
+            {name: "processInstanceId", hidden: true}
         ]
     });
 
 //--------------------------------------------------- Process Layout ---------------------------------------------------
+
     let ToolStripButton_Refresh_Processes_UserPortfolio = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
@@ -154,6 +164,7 @@
     });
 
 //------------------------------------------------ Process History Layout ----------------------------------------------
+
     let ToolStripButton_Refresh_Processes_History_UserPortfolio = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
@@ -208,6 +219,7 @@
     });
 
 //----------------------------------------------------- Main Layout ----------------------------------------------------
+
     let HLayout_Main_UserPortfolio = isc.HLayout.create({
         width: "100%",
         height: "100%",
@@ -321,7 +333,7 @@
                 align: "center",
                 width: "120",
                 click: function () {
-                    showProcessDetail(record.processInstanceId);
+                    showProcessDetail(record.name, record.processInstanceId);
                 }
             });
             let Button_Completion_Confirm = isc.IButton.create({
@@ -391,10 +403,11 @@
             }
         }));
     }
-    function showProcessDetail(processInstanceId) {
+    function showProcessDetail(bPMSProcessName, processInstanceId) {
 
-        let DynamicForm_Processes_Detail_Competence = isc.DynamicForm.create({
-            dataSource: RestDataSource_Processes_Detail_Competence_UserPortfolio,
+        let processName = "";
+        let DynamicForm_Processes_Detail = isc.DynamicForm.create({
+            // dataSource: RestDataSource_Processes_Detail_Competence_UserPortfolio,
             colWidths: ["40%", "60%"],
             width: "100%",
             height: "100%",
@@ -404,44 +417,44 @@
             fields: [
                 {
                     name: "code",
-                    title: "کد",
-                    type: "staticText"
+                    // title: "کد",
+                    // type: "staticText"
                 },
                 {
                     name: "competenceType.title",
-                    title: "نوع",
-                    type: "staticText"
+                    // title: "نوع",
+                    // type: "staticText"
                 },
                 {
                     name: "category.titleFa",
-                    title: "گروه",
-                    type: "staticText"
+                    // title: "گروه",
+                    // type: "staticText"
                 },
                 {
                     name: "subCategory.titleFa",
-                    title: "زیرگروه",
-                    type: "staticText"
+                    // title: "زیرگروه",
+                    // type: "staticText"
                 },
                 {
                     name: "workFlowStatusCode",
-                    title: "وضعیت گردش کار",
-                    type: "staticText",
-                    valueMap: {
-                        0: "ارسال به گردش کار",
-                        1: "عدم تایید",
-                        2: "تایید نهایی",
-                        3: "حذف گردش کار",
-                        4: "اصلاح شایستگی و ارسال به گردش کار"
-                    }
+                    // title: "وضعیت گردش کار",
+                    // type: "staticText",
+                    // valueMap: {
+                    //     0: "ارسال به گردش کار",
+                    //     1: "عدم تایید",
+                    //     2: "تایید نهایی",
+                    //     3: "حذف گردش کار",
+                    //     4: "اصلاح شایستگی و ارسال به گردش کار"
+                    // }
                 },
                 {
                     name: "description",
-                    title: "توضیحات",
-                    type: "staticText"
+                    // title: "توضیحات",
+                    // type: "staticText"
                 }
             ]
         });
-        let Window_Processes_Detail_Competence = isc.Window.create({
+        let Window_Processes_Detail = isc.Window.create({
             title: "نمایش جزییات",
             autoSize: false,
             width: "25%",
@@ -452,16 +465,21 @@
             autoCenter: true,
             isModal: false,
             items: [
-                DynamicForm_Processes_Detail_Competence
+                DynamicForm_Processes_Detail
             ]
         });
 
-        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/details/" + processInstanceId , "GET", null, function (resp) {
+        if (bPMSProcessName.contains('شایستگی')) {
+            processName = "competence";
+        }
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/details/" + processInstanceId + "/" + processName, "GET", null, function (resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                let competence = JSON.parse(resp.httpResponseText);
-                DynamicForm_Processes_Detail_Competence.setValues(competence);
-                Window_Processes_Detail_Competence.show();
+                let detail = JSON.parse(resp.httpResponseText);
+                if (processName === "competence")
+                    DynamicForm_Processes_Detail.setDataSource(RestDataSource_Processes_Detail_Competence_UserPortfolio);
+                DynamicForm_Processes_Detail.setValues(detail);
+                Window_Processes_Detail.show();
             } else {
                 createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             }
