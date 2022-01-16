@@ -94,6 +94,7 @@
         click: function () {
             ListGrid_Processes_UserPortfolio.clearFilterValues();
             ListGrid_Processes_UserPortfolio.invalidateCache();
+            ListGrid_Processes_History_UserPortfolio.setData([]);
         }
     });
     let ToolStripButton_Show_Processes_UserPortfolio = isc.ToolStripButton.create({
@@ -168,6 +169,7 @@
     let ToolStripButton_Refresh_Processes_History_UserPortfolio = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
+            ListGrid_Processes_History_UserPortfolio.setData([]);
             ListGrid_Processes_History_UserPortfolio.clearFilterValues();
             ListGrid_Processes_History_UserPortfolio.invalidateCache();
         }
@@ -294,6 +296,7 @@
                                             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                         }
                                     }));
+                                    ToolStripButton_Refresh_Processes_UserPortfolio.click();
                                     Window_Completion_UserPortfolio.close();
                                     Window_Completion_Return.close();
                                 }
@@ -499,6 +502,7 @@
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 window.close();
                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                ToolStripButton_Refresh_Processes_UserPortfolio.click();
                 ListGrid_Processes_UserPortfolio.invalidateCache();
             } else {
                 window.close();
