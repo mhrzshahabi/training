@@ -1,6 +1,5 @@
 package com.nicico.training.controller.client.bpms;
 
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
@@ -35,7 +34,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 
-
 @Slf4j
 @RestController
 @RequestMapping("/api/bpms")
@@ -45,7 +43,6 @@ public class BpmsRestController {
     private final ObjectMapper mapper;
     private final IBpmsService service;
     private final BpmsClientService client;
-    private final BpmsTestApi bpmsTestApi;
     private final BPMSBeanMapper bpmsBeanMapper;
     private final CompetenceBeanMapper beanMapper;
     private final CompetenceService competenceService;
@@ -60,7 +57,7 @@ public class BpmsRestController {
     //confirm task
     @Loggable
     @PostMapping({"/tasks/review"})
-    public BaseResponse reviewTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto){
+    public BaseResponse reviewTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
         return service.reviewCompetenceTask(reviewTaskRequestDto);
     }
 
@@ -73,8 +70,8 @@ public class BpmsRestController {
     //cancel task
     @Loggable
     @PostMapping({"/processes/cancel-process/{processInstanceId}"})
-    public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId, @RequestBody String reason){
-           return service.cancelProcessInstance(processInstanceId,reason);
+    public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId, @RequestBody String reason) {
+           return service.cancelProcessInstance(processInstanceId, reason);
     }
 
     @Loggable
@@ -92,7 +89,6 @@ public class BpmsRestController {
         }
         return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
     }
-
 
     @Loggable
     @PutMapping({"/processes/start-data-validation"})
@@ -128,9 +124,11 @@ public class BpmsRestController {
         TaskSearchDto taskSearchDto = new TaskSearchDto();
         taskSearchDto.setUserId(userId);
         taskSearchDto.setTenantId(tenantId);
+
         Object object = client.searchTask(taskSearchDto, page, size);
         BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
         List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
+
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<BPMSUserTasksContentDto> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setTotalCount((long) bpmsUserTasksContentDtoList.size());
@@ -160,7 +158,6 @@ public class BpmsRestController {
         taskSearchDto.setTenantId(tenantId);
 
         Object object = client.searchTask(taskSearchDto, page, size);
-
         BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
         List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
 
@@ -172,6 +169,7 @@ public class BpmsRestController {
         ISC<BPMSUserTasksContentDto> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
+
     @Loggable
     @GetMapping({"/processes/process-instance-history/details/{processInstanceId}"})
     List<TaskHistory> getProcessInstanceHistoryById(@PathVariable String processInstanceId) {
@@ -180,9 +178,12 @@ public class BpmsRestController {
     }
 
     @Loggable
-    @GetMapping({"/processes/details/{processInstanceId}"})
-    ResponseEntity<CompetenceDTO.Info> getProcessDetailByProcessInstanceId(@PathVariable String processInstanceId) {
-        return new ResponseEntity<>(competenceService.getProcessDetailByProcessInstanceId(processInstanceId), HttpStatus.OK);
+    @GetMapping({"/processes/details/{processInstanceId}/{processName}"})
+    ResponseEntity<Object> getProcessDetailByProcessInstanceId(@PathVariable String processInstanceId, @PathVariable String processName) {
+        if (processName.equals("competence"))
+            return new ResponseEntity<>(competenceService.getProcessDetailByProcessInstanceId(processInstanceId), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 }

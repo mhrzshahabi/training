@@ -2148,13 +2148,15 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
+                <sec:authorize access="hasAuthority('Menu_Cartable_Personal')">
                 {
-                    title: "کارتابل شخصی",
+                    title: "<spring:message code="bpms.personal"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/workflow/userBPMSPortfolio/showForm"/>");
                     }
                 },
                 {isSeparator: true},
+                </sec:authorize>
 
                 <sec:authorize access="hasAuthority('Menu_Cartable_Personal')">
                 {
@@ -2200,7 +2202,7 @@
                         </sec:authorize>
                         {isSeparator: true},
                         {
-                            title: "تمام فرایندها جدید",
+                            title: "<spring:message code="bpms.all.processes"/>",
                             click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/bPMSProcesses/showForm"/>")
                             }
