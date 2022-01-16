@@ -262,7 +262,6 @@
                 }
             },
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem"},
-            {name: "returnDetail", title: "دلیل عودت", type: "TextAreaItem"},
         ]
     });
 
