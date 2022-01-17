@@ -138,7 +138,7 @@ public abstract class GenericService<T, ID extends Serializable, R, C, U, D> imp
     @Transactional(readOnly = true)
     public SearchDTO.SearchRs<R> search(SearchDTO.SearchRq request) {
 
-        authorizationUtil.checkStandardPermission(tType.getSimpleName(), ActionType.Search.name());
+//        authorizationUtil.checkStandardPermission(tType.getSimpleName(), ActionType.Search.name());
 
         actionType = ActionType.Search;
         List<T> entities = new ArrayList<>();

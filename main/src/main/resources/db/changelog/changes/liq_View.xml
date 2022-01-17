@@ -11061,4 +11061,70 @@ FROM
              ]]>
         </createView>
     </changeSet>
+
+    <changeSet author="namdari" id="1642424354000-01">
+        <createView viewName="VIEW_NEED_ASSESSMENT_IN_RANGE_TIME" replaceIfExists="true">
+            <![CDATA[
+                SELECT "ID","POST","C_CODE","C_TITLE_FA","C_MOJTAME_TITLE","C_ASSISTANCE","C_AFFAIRS","C_SECTION","C_UNIT","NAME","UPDATETIME","N_VERSION" FROM(
+                SELECT
+    tp.id,
+    'پست'                                                               AS post,
+    tp.c_code,
+    tp.c_title_fa,
+     tbl_department.c_mojtame_title   ,
+    tp.c_assistance,
+    tp.c_affairs,
+    tp.c_section,
+    tp.c_unit,
+    tp.d_last_modified_date_na                                          AS updatetime,
+    nvl2(p.last_name, p.first_name || p.last_name, tp.c_modified_by_na) AS name,
+    tp.n_version
+
+FROM
+    tbl_training_post tp
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_personnel
+        WHERE
+            tbl_personnel.deleted = 0
+    )                 p ON tp.c_modified_by_na = p.c_username
+    LEFT JOIN tbl_department ON tp.f_department_id = tbl_department.id
+WHERE
+    tp.c_modified_by_na IS NOT NULL
+
+                    UNION ALL
+                    SELECT
+    tp.id,
+    'پست انفرادی'                                                       AS post,
+    tp.c_code,
+    tp.c_title_fa,
+    tbl_department.c_mojtame_title ,
+    tp.c_assistance,
+    tp.c_affairs,
+    tp.c_section,
+    tp.c_unit,
+    tp.d_last_modified_date_na                                          AS updatetime,
+    nvl2(p.last_name, p.first_name || p.last_name, tp.c_modified_by_na) AS name,
+    tp.n_version
+FROM
+    tbl_post tp
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_personnel
+        WHERE
+            tbl_personnel.deleted = 0
+    )        p ON tp.c_modified_by_na = p.c_username
+    LEFT JOIN tbl_department ON tp.f_department_id = tbl_department.id
+WHERE
+    tp.c_modified_by_na IS NOT NULL
+                )
+                ORDER BY
+                    name
+            ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>
