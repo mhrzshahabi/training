@@ -888,7 +888,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 fields: []
                 });
         for(var i=0 ; i<answers.length; i++) {
-                let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+                // let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+                let text_FormItem = { title:"Pasted value",disabled:false,canEdit: false, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
                 let radio_FormItem =  { name: "startMode", cellStyle: 'radio-exam-form-item', disabled:true,titleOrientation: "top", title: "Initially show ColorPicker as",
                         width: "100%",
                         type: "radioGroup",
