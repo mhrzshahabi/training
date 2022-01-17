@@ -6,17 +6,15 @@ import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ISubcategoryService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EQuestionLevel;
 import com.nicico.training.service.*;
-import com.nicico.training.utility.persianDate.MyUtils;
 import com.nicico.training.utility.persianDate.PersianDate;
 import dto.exam.EQuestionType;
-import org.apache.poi.ss.usermodel.DateUtil;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import response.question.dto.ElsAttachmentDto;
 import response.question.dto.ElsQuestionBankDto;
 import response.question.dto.ElsQuestionDto;
@@ -53,7 +51,7 @@ public abstract class QuestionBankBeanMapper {
     protected CourseService courseService;
 
     @Autowired
-    protected TclassService tclassService;
+    protected ITclassService tClassService;
 
     @Autowired
     protected PersonalInfoService personalInfoService;
@@ -161,7 +159,7 @@ public abstract class QuestionBankBeanMapper {
 
 
             if(questionBank.getTclassId()!=null) {
-                Tclass tclass=tclassService.getTClass(questionBank.getTclassId());
+                Tclass tclass=tClassService.getTClass(questionBank.getTclassId());
                 elsQuestionDto.setClassName(tclass.getTitleClass());
                 elsQuestionDto.setClassCode(tclass.getCode());
                 elsQuestionDto.setStartDate(tclass.getStartDate());
@@ -190,6 +188,7 @@ public abstract class QuestionBankBeanMapper {
         elsQuestionDtos.forEach(elsQuestionDto -> {
 
             QuestionBankDTO.Create create = new QuestionBankDTO.Create();
+            Tclass tClass = tClassService.getClassByCode(elsQuestionDto.getClassCode());
 
             List<ElsAttachmentDto> files = elsQuestionDto.getFiles();
             List<ElsAttachmentDto> option1Files = new ArrayList<>();
@@ -209,6 +208,10 @@ public abstract class QuestionBankBeanMapper {
             create.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
             create.setHasAttachment(elsQuestionDto.getHasAttachment());
             create.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
+            create.setTclassId(tClass.getId());
+            create.setCourseId(tClass.getCourseId());
+            create.setCategoryId(tClass.getCourse().getCategoryId());
+            create.setSubCategoryId(tClass.getCourse().getSubCategoryId());
 
             List<ElsQuestionOptionDto> optionList = elsQuestionDto.getOptionList();
             if (optionList.size() != 0) {
