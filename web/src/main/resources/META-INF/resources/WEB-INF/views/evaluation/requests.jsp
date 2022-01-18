@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-
+    let oLoadAttachments_request;
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_Request = isc.TrDS.create({
         fields: [
@@ -126,6 +126,21 @@
             HLayout_IButtons_Request
         ]
     });
+    //------------------------------------tabSet------------------------------------------------------------------------
+    var TabSet_request = isc.TabSet.create({
+        enabled: false,
+        tabBarPosition: "top",
+        tabs: [
+
+            {
+                ID: "requestAttachmentsTab",
+                name: "requestAttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+            }
+        ],
+        tabSelected: function (tabNum, tabPane, ID, tab, name) {
+        }
+    });
 
     //----------------------------------- layOut -----------------------------------------------------------------------
     ToolStripButton_Add_Request = isc.ToolStripButton.create({
@@ -165,6 +180,7 @@
     });
 
     ListGrid_Request = isc.TrLG.create({
+
         height: "90%",
         filterOnKeypress: false,
         showFilterEditor: true,
@@ -175,7 +191,7 @@
             {property: "type", direction: "ascending"}
         ],
         fields: [
-            {name: "id", hidden: true},
+            {name: "id",primaryKey: true,hidden: true},
             {name: "name"},
             {name: "nationalCode"},
             {name: "type"},
@@ -185,15 +201,36 @@
             {name: "fmsReference", hidden: true},
             {name: "groupId", hidden: true},
             {name: "reference", hidden: true}
-        ]
+        ],
+        selectionUpdated: function (record) {
+            loadAttachment();
+        },
+
+    });
+    let HLayout_Tab_request = isc.HLayout.create({
+        minWidth: "100%",
+        width: "100%",
+        height: "39%",
+        members: [TabSet_request]
     });
 
     VLayout_Body_ULR = isc.TrVLayout.create({
         members: [
             ToolStrip_Actions_Request,
-            ListGrid_Request
+            ListGrid_Request,
+            HLayout_Tab_request
         ]
     });
+    if (!loadjs.isDefined('load_Attachments')) {
+        loadjs('<spring:url value='tclass/attachments-tab' />', 'load_Attachments');
+    }
+
+    setTimeout(function () {
+        loadjs.ready('load_Attachments', function () {
+            oLoadAttachments_request = new loadAttachments();
+            TabSet_request.updateTab("requestAttachmentsTab", oLoadAttachments_request.VLayout_Body_JspAttachment)
+        });
+    }, 0);
 
     //------------------------------------------------- Functions ------------------------------------------------------
 
@@ -240,6 +277,34 @@
             createDialog("info", "داده ای برای خروجی اکسل وجود ندارد");
         else
             ExportToFile.downloadExcelRestUrl(null, ListGrid_Request, requestUrl + "/all", 0, null, '',"گزارش درخواست ها"  , null, null);
+    }
+    function loadAttachment() {
+
+        let record =  ListGrid_Request.getSelectedRecord();
+        let valueMap_AttachmentType;
+        if (record === null) {
+            TabSet_request.disable();
+            oLoadAttachments_request.loadPage_attachment_Job("Request", 0, "<spring:message code="document"/>", {
+                1: "درخواست",
+            });
+
+            return;
+        } else {
+
+            valueMap_AttachmentType = {
+                1: "درخواست",
+            };
+
+            oLoadAttachments_request.ToolStripButton_Edit_JspAttachment.enable();
+            oLoadAttachments_request.ToolStripButton_Add_JspAttachment.enable();
+            oLoadAttachments_request.ToolStripButton_Remove_JspAttachment.enable();
+
+        }
+
+        oLoadAttachments_request.ListGrid_JspAttachment.getField("fileTypeId").valueMap = valueMap_AttachmentType;
+        oLoadAttachments_request.DynamicForm_JspAttachments.getField("fileTypeId").setValueMap(valueMap_AttachmentType);
+        oLoadAttachments_request.loadPage_attachment_Job("Request",ListGrid_Request.getSelectedRecord().id, "<spring:message code="document"/>", valueMap_AttachmentType, false);
+        TabSet_request.enable();
     }
 
     // </script>
