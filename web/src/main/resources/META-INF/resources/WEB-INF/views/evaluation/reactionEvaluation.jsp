@@ -3606,7 +3606,13 @@
                     title: "ویرایش کننده",
                     align: "center",
                     width: "10%",
-                    canFilter: false
+                    canFilter: false,
+                    formatCellValue: function (value) {
+                        if (value === "anonymousUser")
+                            return "آموزش آنلاین";
+                        else
+                            return value;
+                    }
                     // filterOperator: "iContains"
                 },
                 {
