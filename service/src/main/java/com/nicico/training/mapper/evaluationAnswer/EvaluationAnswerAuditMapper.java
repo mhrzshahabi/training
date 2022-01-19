@@ -45,8 +45,12 @@ public abstract class EvaluationAnswerAuditMapper {
 
     @Named("getAnswerByAnswerId")
     protected String getAnswerByAnswerId(Long answerId) {
-        ParameterValue parameterValue = parameterValueService.get(answerId);
-        return parameterValue.getTitle();
+        if (answerId != null) {
+            ParameterValue parameterValue = parameterValueService.get(answerId);
+            return parameterValue.getTitle();
+        } else {
+            return null;
+        }
     }
 
 }
