@@ -781,7 +781,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 postScores.add(Double.valueOf(map.get(classStudent.getValence())));
                 studentCount++;
             }
-            else if(scoringMethod.equalsIgnoreCase("3") && classStudent.getScore()!=null) {
+            else if(scoringMethod.equalsIgnoreCase("2") && classStudent.getScore()!=null) {
                 postScores.add(Double.valueOf(classStudent.getScore()) * 5);
                 if(classStudent.getPreTestScore() != null)
                     preScores.add(Double.valueOf(classStudent.getPreTestScore()));
