@@ -20,7 +20,8 @@ public abstract class TclassAuditMapper {
     abstract TclassDTO.InfoForAudit toDTO(TClassAudit tclass);
     public abstract List<TclassDTO.InfoForAudit> toTclassesResponse(List<TClassAudit> tclasss);
 
-
+    abstract TclassDTO.InfoForEvalAudit toEvalAudit(TClassAudit tClass);
+    public abstract List<TclassDTO.InfoForEvalAudit> toEvalAuditList(List<TClassAudit> tClass);
 
     @Named("getFullTeacher")
     String getFullTeacher(Long teacherId) {

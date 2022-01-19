@@ -2356,6 +2356,19 @@
                                 Window_Questions_JspEvaluation.close();
                             }
                         })]
+                }),
+                isc.HLayout.create({
+                    width: "100%",
+                    align: "center",
+                    members: [
+                        isc.ToolStripButton.create({
+                            title: "مشاهده تاریخچه نتایج ارزیابی",
+                            width: "150",
+                            click: function () {
+                                showEvalAnswerHistory(evaluationId);
+                            }
+                        })
+                    ]
                 })
             ],
             minWidth: 1024
@@ -3137,6 +3150,19 @@
                                 Window_Questions_JspEvaluation.close();
                             }
                         })]
+                }),
+                isc.HLayout.create({
+                    width: "100%",
+                    align: "center",
+                    members: [
+                        isc.ToolStripButton.create({
+                            title: "مشاهده تاریخچه نتایج ارزیابی",
+                            width: "150",
+                            click: function () {
+                                showEvalAnswerHistory(evaluationId);
+                            }
+                        })
+                    ]
                 })
             ],
             minWidth: 1024
@@ -3527,3 +3553,86 @@
         );
     }
 
+    function showEvalAnswerHistory(evaluationId) {
+
+        let RestDataSource_Eval_Answer_History = isc.TrDS.create({
+            fields: [
+                {name: "evaluationId"},
+                {name: "evaluationQuestionId"},
+                {name: "questionSourceId"},
+                {name: "answerId"},
+                {name: "question"},
+                {name: "answerTitle"},
+                {name: "createdBy"},
+                {name: "modifiedBy"},
+                {name: "modifiedDate"}
+            ],
+            fetchDataURL: evalAnswerAuditUrl + evaluationId
+        });
+        let ListGrid_Eval_Answer_History = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_Eval_Answer_History,
+            selectionType: "single",
+            autoFetchData: true,
+            initialSort: [
+                {property: "modifiedDate", direction: "descending"}
+            ],
+            fields: [
+                {
+                    name: "question",
+                    title: "سوال",
+                    align: "center",
+                    width: "10%",
+                    canFilter: false
+                },
+                {
+                    name: "answerTitle",
+                    title: "پاسخ",
+                    align: "center",
+                    width: "10%",
+                    canFilter: false
+                },
+                // {
+                //     name: "createdBy",
+                //     title: "ایجاد کننده",
+                //     align: "center",
+                //     width: "10%",
+                //     canFilter: false
+                //     // filterOperator: "iContains"
+                // },
+                {
+                    name: "modifiedBy",
+                    title: "ویرایش کننده",
+                    align: "center",
+                    width: "10%",
+                    canFilter: false
+                    // filterOperator: "iContains"
+                },
+                {
+                    name: "modifiedDate",
+                    title: "تاریخ ویرایش",
+                    align: "center",
+                    width: "10%",
+                    canFilter: false
+                }
+            ]
+        });
+        let Window_Eval_Answer_History = isc.Window.create({
+            title: "تاریخچه ثبت ارزیابی",
+            autoSize: false,
+            width: "60%",
+            height: "60%",
+            canDragReposition: true,
+            canDragResize: true,
+            autoDraw: false,
+            autoCenter: true,
+            isModal: false,
+            items: [
+                ListGrid_Eval_Answer_History
+            ]
+        });
+        Window_Eval_Answer_History.show();
+    }
+
+// </script>

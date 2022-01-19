@@ -3498,6 +3498,8 @@
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
     const classAuditUrl = rootUrl + "/tclass/audit/";
+    const classEvalAuditUrl = rootUrl + "/tclass/evalAudit/";
+    const evalAnswerAuditUrl = rootUrl + "/evaluationAnswer/evalAnswerAudit/";
     const classStudentHistoryUrl = rootUrl + "/class-student/history/";
     const classStudentAddHistoryUrl = rootUrl + "/class-student/add/history/";
     const classFinishUrl = rootUrl + "/tclass/finish/";

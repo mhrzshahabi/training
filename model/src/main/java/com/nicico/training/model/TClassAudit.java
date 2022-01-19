@@ -1,18 +1,13 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.AnnualStatisticalReportKey;
 import com.nicico.training.model.compositeKey.AuditClassId;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
-import org.hibernate.envers.NotAudited;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -204,10 +199,12 @@ public class TClassAudit implements Serializable {
     @Column(name = "affairs_id")
     private Long affairsId;
 
-
     @Column(name = "C_CREATED_BY")
     private String createdBy;
 
     @Column(name = "C_LAST_MODIFIED_BY")
     private String modifiedBy;
+
+    @Column(name = "d_last_modified_date")
+    private String modifiedDate;
 }
