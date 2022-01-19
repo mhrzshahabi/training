@@ -826,6 +826,22 @@ public class TclassRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/evalAudit/{classId}")
+    public ResponseEntity<TclassDTO.TClassAuditEvalSpecRs> getClassEvalAudit(@PathVariable Long classId) {
+        List<TClassAudit> list = tClassService.getAuditData(classId);
+        List<TclassDTO.InfoForEvalAudit> data = tclassAuditMapper.toEvalAuditList(list);
+        final TclassDTO.SpecAuditEvalRs specResponse = new TclassDTO.SpecAuditEvalRs();
+        final TclassDTO.TClassAuditEvalSpecRs specRs = new TclassDTO.TClassAuditEvalSpecRs();
+        specResponse.setData(data)
+                .setStartRow(0)
+                .setEndRow(data.size())
+                .setTotalRows(data.size());
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/scoreDependsOnEvaluation")
     public boolean getScoreDependency() {
         return tClassService.getScoreDependency();

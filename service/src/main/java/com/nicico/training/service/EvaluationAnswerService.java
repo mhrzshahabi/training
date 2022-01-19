@@ -6,8 +6,8 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationAnswerDTO;
 import com.nicico.training.iservice.IEvaluationAnswerService;
 import com.nicico.training.model.EvaluationAnswer;
-import com.nicico.training.model.enums.EnumsConverter;
-import com.nicico.training.repository.CourseDAO;
+import com.nicico.training.model.EvaluationAnswerAudit;
+import com.nicico.training.repository.EvaluationAnswerAuditDAO;
 import com.nicico.training.repository.EvaluationAnswerDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -24,8 +24,7 @@ public class EvaluationAnswerService implements IEvaluationAnswerService {
 
     private final ModelMapper modelMapper;
     private final EvaluationAnswerDAO evaluationAnswerDAO;
-    private final EnumsConverter.EDomainTypeConverter eDomainTypeConverter = new EnumsConverter.EDomainTypeConverter();
-    private final CourseDAO courseDAO;
+    private final EvaluationAnswerAuditDAO evaluationAnswerAuditDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -72,7 +71,6 @@ public class EvaluationAnswerService implements IEvaluationAnswerService {
     @Override
     public void delete(EvaluationAnswerDTO.Delete request) {
         final List<EvaluationAnswer> sAllById = evaluationAnswerDAO.findAllById(request.getIds());
-
         evaluationAnswerDAO.deleteAll(sAllById);
     }
 
@@ -87,11 +85,14 @@ public class EvaluationAnswerService implements IEvaluationAnswerService {
         return evaluationAnswerDAO.findByEvaluationId(id);
     }
 
+    @Override
+    public List<EvaluationAnswerAudit> getAuditData(Long evaluationId) {
+        return evaluationAnswerAuditDAO.getAuditData(evaluationId);
+    }
 
     // ------------------------------
 
     private EvaluationAnswerDTO.Info save(EvaluationAnswer evaluationAnswer) {
-
         final EvaluationAnswer saved = evaluationAnswerDAO.saveAndFlush(evaluationAnswer);
         return modelMapper.map(saved, EvaluationAnswerDTO.Info.class);
     }

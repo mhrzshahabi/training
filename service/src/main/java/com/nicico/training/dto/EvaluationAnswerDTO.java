@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
@@ -108,4 +107,42 @@ public class EvaluationAnswerDTO implements Serializable {
         private Long domainId;
         private String description;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EvaluationAnswerForAudit")
+    public static class EvaluationAnswerForAudit {
+        private Long evaluationId;
+        private Long evaluationQuestionId;
+        private Long questionSourceId;
+        private Long answerId;
+        private String question;
+        private String answerTitle;
+        private String createdBy;
+        private String modifiedBy;
+        private String modifiedDate;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecEvaluationAnswerForAuditRs {
+        private List<EvaluationAnswerDTO.EvaluationAnswerForAudit> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TClassAuditEvalSpecRs")
+    public static class EvaluationAnswerAuditSpecRs {
+        private EvaluationAnswerDTO.SpecEvaluationAnswerForAuditRs response;
+    }
+
 }

@@ -3413,6 +3413,35 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-041">
+        <createTable tableName="TBL_EVALUATION_ANSWER_AUD">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_EVALUATION_ANSWER_AUDPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_EVALUATION_ANSWER_AUDPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="e_enabled" type="number(19, 0)"/>
+            <column name="e_deleted" type="number(19, 0)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
 
+            <column name="f_evaluation_id" type="NUMBER(19, 0)"/>
+            <column name="f_evaluation_question_id" type="NUMBER(19, 0)"/>
+            <column name="f_question_source_id" type="NUMBER(19, 0)"/>
+            <column name="f_answer_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-042">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_EVALUATION_ANSWER_AUD"
+                                 constraintName="FK_TBL_EVALUATION_ANSWER_AUD_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
+                                 validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

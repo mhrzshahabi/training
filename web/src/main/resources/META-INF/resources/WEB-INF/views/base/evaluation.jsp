@@ -359,10 +359,30 @@
     });
 
     //----------------------------------------- ListGrids --------------------------------------------------------------
+
+    let Menu_class_Evaluation = isc.Menu.create({
+        data:
+            [
+                {
+                    title: "تاریخچه ارسال ارزیابی فراگیران به سیستم آنلاین",
+                    click: function () {
+                        showStudentEvalToOnlineStatus();
+                    }
+                },
+                {
+                    title: "تاریخچه ارسال ارزیابی مدرس به سیستم آنلاین",
+                    click: function () {
+                        showTeacherEvalToOnlineStatus();
+                    }
+                }
+            ]
+    });
+
     var ListGrid_class_Evaluation = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_class_Evaluation,
+        contextMenu: Menu_class_Evaluation,
         canAddFormulaFields: false,
         autoFetchData: false,
         showFilterEditor: true,
@@ -997,6 +1017,194 @@
         mainCriteria.criteria.add(evalTypeCriteria);
         mainCriteria.criteria.add(departmentCriteria);
         return mainCriteria;
+    }
+
+    function showStudentEvalToOnlineStatus() {
+
+        let record = ListGrid_class_Evaluation.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code="msg.not.selected.record"/>");
+        } else {
+            let RestDataSource_Student_Eval_History = isc.TrDS.create({
+                fields: [
+                    {name: "code"},
+                    {name: "titleClass"},
+                    {name: "teacherOnlineEvalStatus"},
+                    {name: "studentOnlineEvalStatus"},
+                    {name: "createdBy"},
+                    {name: "modifiedBy"},
+                    {name: "modifiedDate"}
+                ],
+                fetchDataURL: classEvalAuditUrl + record.id
+            });
+            let ListGrid_Student_Eval_History = isc.TrLG.create({
+                width: "100%",
+                height: "100%",
+                dataSource: RestDataSource_Student_Eval_History,
+                selectionType: "single",
+                autoFetchData: true,
+                initialSort: [
+                    {property: "modifiedDate", direction: "descending"}
+                ],
+                fields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    },
+                    {
+                        name: "titleClass",
+                        title: "<spring:message code='class.title'/>",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    },
+                    {
+                        name: "studentOnlineEvalStatus",
+                        title: "وضعیت ارسال ارزیابی فراگیران",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false,
+                        valueMap: {
+                            true: "ارسال شده",
+                            false: "ارسال نشده"
+                        }
+                    },
+                    // {
+                    //     name: "createdBy",
+                    //     title: "ایجاد کننده",
+                    //     align: "center",
+                    //     width: "10%",
+                    //     filterOperator: "equals"
+                    // },
+                    {
+                        name: "modifiedBy",
+                        title: "ویرایش کننده",
+                        align: "center",
+                        width: "10%",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "modifiedDate",
+                        title: "تاریخ ویرایش",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    }
+                ]
+            });
+            let Window_Student_Eval_History = isc.Window.create({
+                title: "تاریخچه ارسال ارزیابی فراگیران به سیستم آنلاین",
+                autoSize: false,
+                width: "60%",
+                height: "60%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    ListGrid_Student_Eval_History
+                ]
+            });
+            Window_Student_Eval_History.show();
+        }
+    }
+
+    function showTeacherEvalToOnlineStatus() {
+
+        let record = ListGrid_class_Evaluation.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code="msg.not.selected.record"/>");
+        } else {
+            let RestDataSource_Teacher_Eval_History = isc.TrDS.create({
+                fields: [
+                    {name: "code"},
+                    {name: "titleClass"},
+                    {name: "teacherOnlineEvalStatus"},
+                    {name: "studentOnlineEvalStatus"},
+                    {name: "createdBy"},
+                    {name: "modifiedBy"},
+                    {name: "modifiedDate"}
+                ],
+                fetchDataURL: classEvalAuditUrl + record.id
+            });
+            let ListGrid_Teacher_Eval_History = isc.TrLG.create({
+                width: "100%",
+                height: "100%",
+                dataSource: RestDataSource_Teacher_Eval_History,
+                selectionType: "single",
+                autoFetchData: true,
+                initialSort: [
+                    {property: "modifiedDate", direction: "descending"}
+                ],
+                fields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    },
+                    {
+                        name: "titleClass",
+                        title: "<spring:message code='class.title'/>",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    },
+                    {
+                        name: "teacherOnlineEvalStatus",
+                        title: "وضعیت ارسال ارزیابی مدرس",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false,
+                        valueMap: {
+                            true: "ارسال شده",
+                            false: "ارسال نشده"
+                        }
+                    },
+                    // {
+                    //     name: "createdBy",
+                    //     title: "ایجاد کننده",
+                    //     align: "center",
+                    //     width: "10%",
+                    //     filterOperator: "iContains"
+                    // },
+                    {
+                        name: "modifiedBy",
+                        title: "ویرایش کننده",
+                        align: "center",
+                        width: "10%",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "modifiedDate",
+                        title: "تاریخ ویرایش",
+                        align: "center",
+                        width: "10%",
+                        canFilter: false
+                    }
+                ]
+            });
+            let Window_Teacher_Eval_History = isc.Window.create({
+                title: "نمایش تاریخچه ارزیابی مدرس به سیستم آنلاین",
+                autoSize: false,
+                width: "60%",
+                height: "60%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    ListGrid_Teacher_Eval_History
+                ]
+            });
+            Window_Teacher_Eval_History.show();
+        }
     }
 
     // </script>

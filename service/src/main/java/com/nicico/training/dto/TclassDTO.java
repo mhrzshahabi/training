@@ -1,7 +1,4 @@
 package com.nicico.training.dto;
-/* com.nicico.training.dto
-@Author:roya
-*/
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -912,6 +909,43 @@ public class TclassDTO {
         private String organizerName;
         private TeacherDTO.TeacherInfo teacherInfo;
         private Set<ClassSessionDTO.AttendanceClearForm> sessions;
+    }
+
+    //------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("InfoForEvalAudit")
+    public static class InfoForEvalAudit {
+        private String code;
+        private String titleClass;
+        private Boolean teacherOnlineEvalStatus;
+        private Boolean studentOnlineEvalStatus;
+        private String createdBy;
+        private String modifiedBy;
+        private String modifiedDate;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecAuditEvalRs {
+        private List<TclassDTO.InfoForEvalAudit> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TClassAuditEvalSpecRs")
+    public static class TClassAuditEvalSpecRs {
+        private SpecAuditEvalRs response;
     }
 
 }
