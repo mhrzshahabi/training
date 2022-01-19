@@ -35,11 +35,15 @@
         "4": "غیبت با مجوز",
     };
     var readOnlySession;
+
+    //----------------------------------------------------Rest DataSource-----------------------------------------------
+
     var DataSource_SessionInOneDate = isc.DataSource.create({
         ID: "attendanceDS",
         clientOnly: true,
         testData: sessionInOneDate,
         fields: [
+            {name: "attendanceId", hidden: true, primaryKey: true},
             {name: "studentId", hidden: true, primaryKey: true},
             {name: "studentName", type: "text", title: "نام",
                 pickListProperties: {
@@ -61,6 +65,7 @@
             {name: "studentState", type: "text", title: "وضعیت"},
         ],
     });
+
     var DataSource_SessionsForStudent = isc.DataSource.create({
         ID: "attendanceStudentDS",
         clientOnly: true,
@@ -131,6 +136,27 @@
         autoFetchData: false,
         fetchDataURL: attendanceUrl + "/students?classId=0"
     });
+
+    let RestDataSource_Attendance_Show_Audit = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "state", type: "text", title: "وضعیت",
+                valueMap:attendanceState,
+                pickListProperties: {
+                    showFilterEditor: false
+                }
+            },
+            {name: "lastModifiedDate", title: "تغییر داده شده درتاریخ"},
+            {name: "lastModifiedBy", title: "تغییر داده شده توسط"},
+            {name: "revType", title: "نوع تغییر"},
+            {name: "description", title: "توضیحات"},
+            {name: "deleted", hidden: true}
+        ]
+    });
+
+    //---------------------------------------------------------------------------------------------------
+
+
     var VLayout_Attachment_JspAttendance = isc.TrVLayout.create({
         members:[],
     });
@@ -378,6 +404,22 @@
                     printFullClearForm()
                 }
             }),
+            isc.ToolStripButton.create({
+                title: "تاریخچه ی حضورو غیاب",
+                click: function () {
+                    let selectedAttendance = ListGrid_Attendance_AttendanceJSP.getSelectedRecord();
+                    if (selectedAttendance == null){
+                        simpleDialog("پیام", "هیچ موردی انتخاب نشده است.", 0, "confirm");
+                    } else if (selectedAttendance.attendanceId == null){
+                        simpleDialog("پیام", "حضور غیاب برای فراگیر مورد نظر ثبت نشده است", 0, "confirm");
+                    } else {
+                        let sessionDate =  DynamicForm_Attendance.getValue("sessionDate");
+                        showAttendanceAuditWindow(selectedAttendance, sessionDate);
+                    }
+                    //
+                }
+            }),
+
             isc.ToolStripButtonRefresh.create({
                     ID: "teacherAttendancePermission",
                     layoutAlign: "center",
@@ -439,6 +481,97 @@
             })
         ]
     });
+
+    function showAttendanceAuditWindow(selectedAttendance, sessionDate){
+
+        let ListGrid_Attendance_Show_Audit = isc.TrLG.create({
+            canAutoFitFields: true,
+            width: "100%",
+            height: 600,
+            dataSource: RestDataSource_Attendance_Show_Audit,
+            setAutoFitExtraRecords: true,
+            autoFetchData: false,
+            showFilterEditor: false,
+            fields: [
+                {
+                    name: "id",
+                    hidden: true,
+                    primaryKey: true
+                },
+                {
+                    name: "state",
+                    width: "10%",
+                    align: "center"
+                },                {
+                    name: "lastModifiedDate",
+                    width: "10%",
+                    align: "center",
+                    formatCellValue: function (value) {
+                        if (value) {
+                            let date = new Date (value);
+                            return date.toLocaleString('fa-IR');
+                        }
+                    }
+                },
+                {
+                    name: "lastModifiedBy",
+                    width: "10%",
+                    align: "center"
+                },
+                {
+                    name: "revType",
+                    width: "10%",
+                    align: "center",
+                    formatCellValue: function (value, record) {
+                        if (value === 0)
+                            return "اضافه شده";
+                        else if (value === 1) {
+                            if (record.deleted === 75)
+                                return "حذف شده";
+                            else
+                                return "ویرایش شده";
+                        } else
+                            return "";
+                    }
+                },
+                {
+                    name: "description",
+                    width: "10%",
+                    align: "center"
+                },
+            ]
+        });
+
+        let windowTitle =  "تاریخچه تغییرات حضور غیاب فراگیر";
+        if (selectedAttendance.studentName !== null && selectedAttendance.studentName !== undefined)
+             windowTitle += (" " + selectedAttendance.studentName) ;
+        if (selectedAttendance.studentFamily !== null && selectedAttendance.studentFamily !== undefined)
+            windowTitle += (" " + selectedAttendance.studentFamily);
+        if (sessionDate !== null && sessionDate !== undefined)
+            windowTitle += (" " + " در تاریخ " + sessionDate);
+
+        let Window_Attendance_Show_Audit = isc.Window.create({
+            width: "90%",
+            height: 625,
+            numCols: 2,
+            title:   windowTitle,
+            items: [
+                ListGrid_Attendance_Show_Audit,
+                isc.MyHLayoutButtons.create({
+                    members: [
+                        isc.IButtonCancel.create({
+                            title: "<spring:message code="close"/>",
+                            click: function () {
+                                Window_Attendance_Show_Audit.close();
+                            }
+                        })]
+                })]
+        });
+
+        RestDataSource_Attendance_Show_Audit.fetchDataURL = attendanceAuditUrl + "/change-list/" + selectedAttendance.attendanceId;
+        ListGrid_Attendance_Show_Audit.fetchData();
+        Window_Attendance_Show_Audit.show();
+    }
 
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",

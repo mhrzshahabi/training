@@ -1199,6 +1199,7 @@
     const viewActivePersonnelInRegisteringUrl = rootUrl + "/view-active-personnel-in-registering";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
+    const attendanceAuditUrl = rootUrl + "/attendance-audit";
     const downloadFiles = baseUrl + "/anonymous/els/download/";
     const parameterUrl = rootUrl + "/parameter";
     const parameterValueUrl = rootUrl + "/parameter-value";
