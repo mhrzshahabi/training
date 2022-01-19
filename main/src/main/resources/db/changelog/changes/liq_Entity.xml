@@ -3420,5 +3420,32 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="nick (generated)" id="641876107000-3">
+        <createTable tableName="TBL_ATTENDANCE_AUD">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_ATTENDANCE_AUDPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_ATTENDANCE_AUDPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="e_enabled" type="number(19, 0)"/>
+            <column name="e_deleted" type="number(19, 0)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
+
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_session" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_state" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_student" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>
