@@ -15,6 +15,6 @@ public class AttendanceAuditService implements IAttendanceAuditService {
 
     @Override
     public List<AttendanceAudit> getChangeList(Long attendanceId) {
-        return attendanceAuditDao.findAllByIdOrderByCreatedDate(attendanceId);
+        return attendanceAuditDao.findByAttendanceId(attendanceId);
     }
 }
