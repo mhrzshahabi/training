@@ -9,7 +9,7 @@ import java.util.Date;
 
 @Data
 public class RequestResVM {
-
+    private String id;
 
     private String text;
 
