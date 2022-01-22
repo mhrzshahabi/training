@@ -135,7 +135,7 @@
             {
                 ID: "requestAttachmentsTab",
                 name: "requestAttachmentsTab",
-                title: "<spring:message code="attachments"/>",
+                title: "<spring:message code="attachmentAnswer"/>",
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
