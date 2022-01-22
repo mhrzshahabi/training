@@ -203,7 +203,7 @@
             {name: "reference", hidden: true}
         ],
         selectionUpdated: function (record) {
-            loadAttachment();
+            loadRequestAttachment();
         },
 
     });
@@ -278,7 +278,7 @@
         else
             ExportToFile.downloadExcelRestUrl(null, ListGrid_Request, requestUrl + "/all", 0, null, '',"گزارش درخواست ها"  , null, null);
     }
-    function loadAttachment() {
+    function loadRequestAttachment() {
 
         let record =  ListGrid_Request.getSelectedRecord();
         let valueMap_AttachmentType;
