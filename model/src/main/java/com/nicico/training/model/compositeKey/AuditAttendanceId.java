@@ -12,9 +12,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id","rev"}, callSuper = false)
+@EqualsAndHashCode(of = {"id", "rev"}, callSuper = false)
 @Embeddable
-public class AuditClassId implements Serializable {
+public class AuditAttendanceId implements Serializable {
 
     @Column(name = "id")
     private Long id;
@@ -22,4 +22,3 @@ public class AuditClassId implements Serializable {
     @Column(name = "rev")
     private Long rev;
 }
-

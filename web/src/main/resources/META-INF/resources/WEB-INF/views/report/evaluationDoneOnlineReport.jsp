@@ -168,7 +168,7 @@
             {name: "instructor", title: '<spring:message code="teacher"/>'},
             {name: "evalCreateDate", title: '<spring:message code="reports.online.evaluation.evalCreateDate"/>'},
             {name: "answeredCount", title: '<spring:message code="reports.online.evaluation.answereds"/>'},
-            {name: "unAnsweredCount", title: '<spring:message code="reports.online.evaluation.withoutAnswereds"/>'},
+            <%--{name: "unAnsweredCount", title: '<spring:message code="reports.online.evaluation.withoutAnswereds"/>'},--%>
             {name: "excelBtn", title: " ", width: "110"},
         ],
         getExpansionComponent: function (record, rowNum, colNum) {
@@ -225,7 +225,7 @@
         let masterData = {
             '<spring:message code="reports.online.evaluation.evalTitle"/>': record.evalTitle,
             '<spring:message code="reports.online.evaluation.answereds"/>': record.answeredCount + " ",
-            '<spring:message code="reports.online.evaluation.withoutAnswereds"/>': record.unAnsweredCount + " ",
+            <%--'<spring:message code="reports.online.evaluation.withoutAnswereds"/>': record.unAnsweredCount + " ",--%>
             '<spring:message code="teacher"/>': record.instructor,
             '<spring:message code="reports.online.evaluation.evalCreateDate"/>': record.evalCreateDate,
             '<spring:message code="class"/>': record.course,

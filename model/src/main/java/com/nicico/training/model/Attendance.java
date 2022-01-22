@@ -2,6 +2,9 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.envers.AuditOverride;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 
@@ -14,6 +17,8 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_attendance",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"f_student", "f_session"})})
+@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
+@AuditOverride(forClass =Auditable.class )
 public class Attendance extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attendance_seq")

@@ -3,20 +3,15 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.Goal;
-import com.nicico.training.model.QuestionnaireQuestion;
-import com.nicico.training.model.Skill;
+import com.nicico.training.iservice.IEvaluationAnswerService;
+import com.nicico.training.mapper.evaluationAnswer.EvaluationAnswerAuditMapper;
+import com.nicico.training.model.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.data.JsonDataSource;
-import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -24,11 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
@@ -39,6 +30,8 @@ public class EvaluationAnswerRestController {
 
     private final ObjectMapper objectMapper;
     private final EvaluationAnswerService evaluationAnswerService;
+    private final IEvaluationAnswerService iEvaluationAnswerService;
+    private final EvaluationAnswerAuditMapper evaluationAnswerAuditMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -131,6 +124,22 @@ public class EvaluationAnswerRestController {
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<EvaluationAnswerDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(evaluationAnswerService.search(request), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/evalAnswerAudit/{evaluationId}")
+    public ResponseEntity<EvaluationAnswerDTO.EvaluationAnswerAuditSpecRs> getEvalAnswerAudit(@PathVariable Long evaluationId) {
+        List<EvaluationAnswerAudit> evaluationAnswerAuditList = iEvaluationAnswerService.getAuditData(evaluationId);
+        List<EvaluationAnswerDTO.EvaluationAnswerForAudit> data = evaluationAnswerAuditMapper.toEvaluationAnswerForAuditList(evaluationAnswerAuditList);
+        EvaluationAnswerDTO.SpecEvaluationAnswerForAuditRs specResponse = new EvaluationAnswerDTO.SpecEvaluationAnswerForAuditRs();
+        EvaluationAnswerDTO.EvaluationAnswerAuditSpecRs specRs = new EvaluationAnswerDTO.EvaluationAnswerAuditSpecRs();
+        specResponse.setData(data)
+                .setStartRow(0)
+                .setEndRow(data.size())
+                .setTotalRows(data.size());
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

@@ -19,7 +19,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import response.BaseResponse;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -137,6 +136,9 @@ public class AttendanceService implements IAttendanceService {
             map.put("studentState", classStudent.getPresenceType().getCode());
             map.put("classStudentId", classStudent.getId().toString());
             List<Attendance> filterAttendance = attendances.stream().filter(a -> a.getStudentId().equals(classStudent.getStudent().getId())).collect(Collectors.toList());
+            if (filterAttendance.size() > 0 && filterAttendance.get(0).getId() != null) {
+                map.put("attendanceId", String.valueOf(filterAttendance.get(0).getId()));
+            }
             List<Long> sessionIdsSaved = filterAttendance.stream().map(c -> c.getSessionId()).collect(Collectors.toList());
             for (Long sessionId : sessionIds) {
                 map.put("se" + String.valueOf(sessionId), "0");

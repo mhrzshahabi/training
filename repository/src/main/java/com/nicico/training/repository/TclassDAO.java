@@ -173,13 +173,13 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "m.f_message_user_type=679 and mc.c_object_mobile=st.mobile)) tmp_table group by tmp_table.class_id", nativeQuery = true)
     List<Object> checkClassesForSendMessage(List<Long> classIds);
 
-    @Modifying
-    @Query(value = "update TBL_CLASS set TEACHER_ONLINE_EVAL_STATUS = :state where ID = :classId", nativeQuery = true)
-    public void changeOnlineEvalTeacherStatus(Long classId, boolean state);
-
-    @Modifying
-    @Query(value = "update TBL_CLASS set STUDENT_ONLINE_EVAL_STATUS = :state where ID = :classId", nativeQuery = true)
-    public void changeOnlineEvalStudentStatus(Long classId, boolean state);
+//    @Modifying
+//    @Query(value = "update TBL_CLASS set TEACHER_ONLINE_EVAL_STATUS = :state where ID = :classId", nativeQuery = true)
+//    public void changeOnlineEvalTeacherStatus(Long classId, boolean state);
+//
+//    @Modifying
+//    @Query(value = "update TBL_CLASS set STUDENT_ONLINE_EVAL_STATUS = :state where ID = :classId", nativeQuery = true)
+//    public void changeOnlineEvalStudentStatus(Long classId, boolean state);
 
     @Modifying
     @Query(value = "update TBL_CLASS set C_STATUS = :state where ID = :classId", nativeQuery = true)

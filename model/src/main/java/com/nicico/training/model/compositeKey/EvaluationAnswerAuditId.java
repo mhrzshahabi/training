@@ -14,7 +14,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id","rev"}, callSuper = false)
 @Embeddable
-public class AuditClassId implements Serializable {
+public class EvaluationAnswerAuditId implements Serializable {
 
     @Column(name = "id")
     private Long id;

@@ -1318,4 +1318,10 @@
     <changeSet author="MShahabi" id="1799887766557-040">
         <addForeignKeyConstraint baseColumnNames="F_FILE_LABEL" baseTableName="TBL_HELP_FILES_LABEL" constraintName="FKFileLabelInHelpFilesLabel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_FILE_LABEL" validate="true"/>
     </changeSet>
+    <changeSet author="nick (generated)" id="641876107000-4">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_ATTENDANCE_AUD"
+                                 constraintName="FK_BL_ATTENDANCE_AUD_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
+                                 validate="true"/>
+    </changeSet>
 </databaseChangeLog>

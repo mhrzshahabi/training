@@ -496,13 +496,18 @@ public class TclassService implements ITclassService {
 
     @Override
     public void changeOnlineEvalTeacherStatus(Long classId, boolean state) {
-        tclassDAO.changeOnlineEvalTeacherStatus(classId, state);
+        final Tclass tclass = tclassDAO.findById(classId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+        tclass.setId(classId);
+        tclass.setTeacherOnlineEvalStatus(state);
+        tclassDAO.save(tclass);
     }
 
     @Override
     public void changeOnlineEvalStudentStatus(Long classId, boolean state) {
-        tclassDAO.changeOnlineEvalStudentStatus(classId, state);
-    }
+        final Tclass tclass = tclassDAO.findById(classId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+        tclass.setId(classId);
+        tclass.setStudentOnlineEvalStatus(state);
+        tclassDAO.save(tclass);    }
 
     //state 3 = payan yafte
     //state 5 = ekhtemam
