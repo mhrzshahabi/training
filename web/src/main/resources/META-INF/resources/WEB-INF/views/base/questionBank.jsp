@@ -1089,6 +1089,13 @@
                 }
             },
             {
+                name: "proposedPointValue",
+                title: "<spring:message code="question.bank.proposed.point.value"/>",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "10"
+            },
+            {
                 name: "lines",
                 title: "<spring:message code="question.bank.lines"/>",
                 width: "*",
