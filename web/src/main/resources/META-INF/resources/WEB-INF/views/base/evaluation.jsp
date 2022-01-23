@@ -1069,7 +1069,7 @@
                         canFilter: false,
                         valueMap: {
                             true: "ارسال شده",
-                            false: "ارسال نشده"
+                            false: "حذف شده"
                         }
                     },
                     // {
@@ -1084,6 +1084,12 @@
                         title: "ویرایش کننده",
                         align: "center",
                         width: "10%",
+                        formatCellValue: function (value) {
+                            if (value === "anonymousUser")
+                                return "آموزش آنلاین";
+                            else
+                                return value;
+                        },
                         filterOperator: "iContains"
                     },
                     {
@@ -1163,7 +1169,7 @@
                         canFilter: false,
                         valueMap: {
                             true: "ارسال شده",
-                            false: "ارسال نشده"
+                            false: "حذف شده"
                         }
                     },
                     // {
@@ -1178,6 +1184,12 @@
                         title: "ویرایش کننده",
                         align: "center",
                         width: "10%",
+                        formatCellValue: function (value) {
+                            if (value === "anonymousUser")
+                                return "آموزش آنلاین";
+                            else
+                                return value;
+                        },
                         filterOperator: "iContains"
                     },
                     {
