@@ -2,6 +2,8 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.iservice.IStudentService;
+import com.nicico.training.model.Student;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +15,14 @@ import response.BaseResponse;
 import response.evaluation.EvaluationDoneOnlineResponse;
 import response.evaluation.dto.EvaluationDoneOnlineDto;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/evaluationDoneOnline")
 public class EvaluationDoneOnlineRestController {
     private final ElsClient client;
+    private final IStudentService iStudentService;
 
     @Loggable
     @GetMapping(value = "/{fromDate}/{toDate}")
@@ -27,12 +31,29 @@ public class EvaluationDoneOnlineRestController {
             List<EvaluationDoneOnlineDto> evaluations = client.getDoneEvaluations(fromDate, toDate);
             if (evaluations != null && !evaluations.isEmpty()) {
                 evaluations.forEach(dto -> {
-                    if (dto.getUsers() != null && dto.getUsers().size() > 0) {
-                        long answeredCount = dto.getUsers().values().stream().filter(EvaluationDoneOnlineDto.UserDetailDto::getAnswered).count();
-                        long unAnsweredCount = dto.getUsers().values().stream().filter(user -> (user.getAnswered() != null && !user.getAnswered())).count();
+                    Map<String, EvaluationDoneOnlineDto.UserDetailDto> users=dto.getUsers();
+
+                    if(dto.getCourse()!=null){
+                        List<Student> students=iStudentService.getAllStudentsOfClassByClassCode(dto.getCourse());
+                   for (Student student : students){
+                       if (!dto.getUsers().containsKey(student.getNationalCode().trim())){
+                           EvaluationDoneOnlineDto.UserDetailDto detailDto=new EvaluationDoneOnlineDto.UserDetailDto();
+                           detailDto.setAnswered(false);
+                           detailDto.setPhoneNumber(null);
+                           detailDto.setFullName(student.getFirstName() + " " +student.getLastName());
+                           detailDto.setNationalCode(student.getNationalCode());
+                           users.put(student.getNationalCode().trim(),detailDto);
+                       }
+                   }
+
+                    }
+
+                    if (users != null && users.size() > 0) {
+                        long answeredCount = users.values().stream().filter(EvaluationDoneOnlineDto.UserDetailDto::getAnswered).count();
+                        long unAnsweredCount = users.values().stream().filter(user -> (user.getAnswered() != null && !user.getAnswered())).count();
                         dto.setAnsweredCount((int) answeredCount);
                         dto.setUnAnsweredCount((int) unAnsweredCount);
-                        dto.getUsers().entrySet().stream().forEach(stringUserDetailDtoEntry -> {stringUserDetailDtoEntry.getValue().setPhoneNumber(stringUserDetailDtoEntry.getKey());});
+                        users.forEach((key, value) -> value.setPhoneNumber(key));
                     }
                 });
             }
