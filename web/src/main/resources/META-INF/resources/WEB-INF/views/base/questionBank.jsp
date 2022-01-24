@@ -465,7 +465,19 @@
             },
             {name: "tclass.startDate",sortNormalizer: function (record) { return record.tclass?.startDate; }},
             {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
-            {name: "createdBy"},
+            {
+                name: "createdBy",
+                formatCellValue: function (value, record) {
+                    if (value === "anonymousUser") {
+                        if (record.teacher !== undefined)
+                            return record.teacher.fullNameFa;
+                        else
+                            return value;
+                    }
+                    else
+                        return value;
+                }
+            },
             {
                 name: "createdDate",
                 width: "10%",
@@ -477,7 +489,7 @@
                         return date.toLocaleDateString('fa-IR');
                     }
                 }
-            },
+            }
         ],
         autoFetchData: true,
         gridComponents: [QuestionBankTS_questionBank, "filterEditor", "header", "body",],
@@ -1650,10 +1662,11 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         data.questionLevelId = QuestionBankDF_questionBank.getField("eQuestionLevel.id").getValue();
         data.questionTargets = QuestionBankDF_questionBank.getField("questionTargets").getValue();
 
+        wait.show();
         isc.RPCManager.sendRequest(
             TrDSRequest(questionBankSaveUrl, questionBankMethod_questionBank, JSON.stringify(data), function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
+                    wait.close();
                     let question = JSON.parse(resp.httpResponseText).question;
                     if (question!==null && question!==undefined &&  question.length > 50)
                         question = question.slice(0, 50) + " ...";
@@ -1662,9 +1675,11 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                     createDialog("info", "سوال ( " + question + " ) " + questionBankAction);
                     QuestionBankLG_questionBank.invalidateCache();
                 } else if (resp.httpResponseCode == 403) {
+                    wait.close();
                     createDialog("warning", "<spring:message code="msg.question.bank.question.not.editable"/>", "<spring:message code="error"/>");
                 }
                 else {
+                    wait.close();
                     QuestionBankWin_questionBank.close();
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }
