@@ -304,4 +304,9 @@ public class AttachmentService implements IAttachmentService {
         return modelMapper.map(attachmentList, new TypeToken<List<AttachmentDTO.Info>>() {
         }.getType());
     }
+
+    @Override
+    public List<Attachment> findAllByObjectTypeAndObjectId(String objectType, Long objectId) {
+       return attachmentDAO.findAttachmentByObjectTypeAndObjectId(objectType,objectId);
+    }
 }

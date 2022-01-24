@@ -37,4 +37,5 @@ public interface IAttachmentService {
     List<MessagesAttDTO> findAllSessionsMessage(Long sessionId);
 
     List<AttachmentDTO.Info> findQuestionFilesByQuestionId(String questionBank, Long questionBankId);
+    List<Attachment> findAllByObjectTypeAndObjectId(String objectType,Long objectId);
 }
