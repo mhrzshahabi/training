@@ -18,7 +18,7 @@
     var filterValuesUnique1 = [];
     var filterValues = [];
     var filterValues1 = [];
-    var sessionDateData;
+    let sessionDateData = [];
     let classRecord = null;
     var attendanceState = {
         "0": "نامشخص",
@@ -146,6 +146,7 @@
                     showFilterEditor: false
                 }
             },
+            {name: "session.sessionStartHour", title: "زمان جلسه"},
             {name: "lastModifiedDate", title: "تغییر داده شده درتاریخ"},
             {name: "lastModifiedBy", title: "تغییر داده شده توسط"},
             {name: "revType", title: "نوع تغییر"},
@@ -535,6 +536,11 @@
                     }
                 },
                 {
+                    name: "session.sessionStartHour",
+                    width: "10%",
+                    align: "center"
+                },
+                {
                     name: "description",
                     width: "10%",
                     align: "center"
@@ -568,9 +574,20 @@
                 })]
         });
 
-        RestDataSource_Attendance_Show_Audit.fetchDataURL = attendanceAuditUrl + "/change-list/" + selectedAttendance.attendanceId;
-        ListGrid_Attendance_Show_Audit.fetchData();
-        Window_Attendance_Show_Audit.show();
+        isc.RPCManager.sendRequest(
+            TrDSRequest(attendanceAuditUrl + "/change-list", "POST", JSON.stringify(JSON.parse(selectedAttendance.attendanceId)), function (resp) {
+                wait.show();
+                if (resp.httpResponseCode === 200) {
+                    wait.close();
+                    let data = JSON.parse(resp.data).response.data;
+                    ListGrid_Attendance_Show_Audit.setData(data);
+                    Window_Attendance_Show_Audit.show();
+                } else {
+                    wait.close();
+                    createDialog("info", "عملیات دریافت اطلاعات تاریخچه با خطا مواجه شد", "<spring:message code="message"/>")
+                }
+            })
+        );
     }
 
     var DynamicForm_Attendance = isc.DynamicForm.create({
