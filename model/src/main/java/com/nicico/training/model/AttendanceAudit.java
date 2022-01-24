@@ -5,10 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -37,6 +34,10 @@ public class AttendanceAudit implements Serializable {
 
     @Column(name = "f_session", nullable = false)
     private Long sessionId;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "f_session", insertable = false, updatable = false)
+    private ClassSession session;
 
     @Column(name = "d_created_date", nullable = false, updatable = false)
     protected Date createdDate;
