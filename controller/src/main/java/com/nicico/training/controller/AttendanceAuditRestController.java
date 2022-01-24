@@ -2,16 +2,15 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.AttendanceAuditDTO;
 import com.nicico.training.iservice.IAttendanceAuditService;
+import com.nicico.training.mapper.attendance.AttendanceAuditBeanMapper;
 import com.nicico.training.model.AttendanceAudit;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -22,18 +21,19 @@ import java.util.List;
 @RequestMapping("/api/attendance-audit")
 public class AttendanceAuditRestController {
     private final IAttendanceAuditService iAttendanceAuditService;
+    private final AttendanceAuditBeanMapper attendanceAuditBeanMapper;
 
     @Loggable
-    @GetMapping(value = "/change-list/{attendanceId}")
-    public ResponseEntity<ISC<AttendanceAudit>> changeList(@PathVariable String attendanceId) throws IOException {
+    @PostMapping(value = "/change-list")
+    public ResponseEntity<ISC<AttendanceAuditDTO.Info>> changeList(@RequestBody List<Long> attendanceIds) throws IOException {
         try {
-            Long attendanceLongId = Long.parseLong(attendanceId);
-            List<AttendanceAudit> attendanceAuditList = iAttendanceAuditService.getChangeList(attendanceLongId);
-            SearchDTO.SearchRs<AttendanceAudit> searchRs = new SearchDTO.SearchRs<>();
-            searchRs.setList(attendanceAuditList);
+            List<AttendanceAudit> attendanceAuditList = iAttendanceAuditService.getChangeList(attendanceIds);
+            List<AttendanceAuditDTO.Info> dtoList = attendanceAuditBeanMapper.toAttendanceAuditInfoDTOList(attendanceAuditList);
+            SearchDTO.SearchRs<AttendanceAuditDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(dtoList);
             searchRs.setTotalCount((long) attendanceAuditList.size());
 
-            ISC<AttendanceAudit> auditISC = ISC.convertToIscRs(searchRs, 0);
+            ISC<AttendanceAuditDTO.Info> auditISC = ISC.convertToIscRs(searchRs, 0);
             return new ResponseEntity<>(auditISC, HttpStatus.OK);
         } catch (Exception ex) {
             ex.printStackTrace();
