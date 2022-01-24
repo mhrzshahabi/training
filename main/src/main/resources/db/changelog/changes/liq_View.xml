@@ -11211,4 +11211,434 @@ FROM
              ]]>
         </createView>
     </changeSet>
+
+
+    <changeSet author="namdari" id="1643011436000-01">
+        <createView viewName="view_learning_evaluation_course_report" replaceIfExists="true">
+            <![CDATA[
+ SELECT
+ROWNUM as id ,
+        tbl_class.c_code                                                                                                                                          AS
+    class_code,
+        view_complex.c_title                                                                                                                                      AS
+    complex,
+        tbl_class.c_start_date as class_start_date,
+        tbl_class.c_end_date as class_end_date,
+    CASE
+        WHEN     tbl_class.c_status = 1 THEN
+            'برنامه ریزی'
+        WHEN     tbl_class.c_status = 2 THEN
+            'در حال اجرا'
+        WHEN     tbl_class.c_status = 3 THEN
+            'پایان یافته'
+        WHEN     tbl_class.c_status = 4 THEN
+            'لغو شده'
+        WHEN     tbl_class.c_status = 5 THEN
+            'اختتام'
+    END                                                                                                                                                                   AS
+    class_status,
+        tbl_teacher.b_personnel,
+    CASE
+        WHEN     tbl_teacher.b_personnel = 1 THEN
+            'پرسنل'
+        ELSE
+            'بیرونی'
+    END                                                                                                                                                                   AS
+    is_personnel,
+    concat(concat(    tbl_personal_info.c_first_name_fa, ' '),     tbl_personal_info.c_last_name_fa)                                                      AS
+    teacher,
+        tbl_teacher.c_teacher_code                                                                                                                                AS
+    teacher_national_code,
+        tbl_course.c_code                                                                                                                                         AS
+    course_code,
+        tbl_course.c_title_fa                                                                                                                                     AS
+    course_titlefa,
+        tbl_category.c_title_fa                                                                                                                                   AS
+    category_titlefa,
+        tbl_sub_category.c_title_fa                                                                                                                               AS
+    sub_category_titlefa,
+    clsstu.total_std as total_std,
+    CASE
+        WHEN     tbl_class.c_scoring_method = 2 THEN
+            round(pre.mianginpre / clsstu.total_std, 2) * 5
+        ELSE
+            round(pre.mianginpre / clsstu.total_std, 2)
+    END                                                                                                                                                                   AS
+    miangin_pretest,
+    CASE
+        WHEN     tbl_class.c_scoring_method = 2 THEN
+            round(nahaii.mianginasli / clsstu.total_std, 2) * 5
+        ELSE
+            round(nahaii.mianginasli / clsstu.total_std, 2)
+    END                                                                                                                                                                   AS
+    miangin_asli,
+
+    round((((nahaii.mianginasli / clsstu.total_std )    - (pre.mianginpre / clsstu.total_std    ))/ (maxnahaii.maxasli - minpre.minpre)) * 100,2)  as nerkh ,
+    tbl_evaluation_analysis.c_learning_grade as learning,
+    round(maxnahaii.maxasli, 2)                                                                                                                                           AS
+    max_nahaii,
+    round(minpre.minpre, 2)                                                                                                                                               AS
+    min_pre,
+    CASE
+        WHEN round(pre.mianginpre / clsstu.total_std, 2) != 0
+             AND round(pre.mianginpre / clsstu.total_std, 2) IS NOT NULL THEN
+            round(((round(nahaii.mianginasli / clsstu.total_std, 2) / round(pre.mianginpre / clsstu.total_std, 2)) - 1) * 100, 2)
+        WHEN round(pre.mianginpre / clsstu.total_std, 2) = 0 THEN
+            round((round(nahaii.mianginasli / clsstu.total_std, 2)), 2)
+    END                                                                                                                                                                   AS
+    pishraft,
+
+     round(javabdadeAsli.javabdade/clsstu.total_std, 2)*100  AS darsad_javab_dade_asli ,
+          round(javabdadePre.javabdade/clsstu.total_std, 2)*100  AS darsad_javab_dade_pre ,
+                    round(ghaboolAsli.javabdade/clsstu.total_std, 2)*100  AS darsad_ghabol ,
+
+          round(noghaboolAsli.javabdade/clsstu.total_std, 2)*100  AS darsad_noghabol
+
+
+
+FROM
+         tbl_evaluation_analysis
+    INNER JOIN     tbl_class ON tbl_evaluation_analysis.f_tclass =     tbl_class.id
+    LEFT JOIN     view_complex ON     tbl_class.complex_id =     view_complex.id
+    LEFT JOIN     tbl_teacher ON     tbl_class.f_teacher =     tbl_teacher.id
+    LEFT JOIN     tbl_personal_info ON     tbl_teacher.f_personality =     tbl_personal_info.id
+    LEFT JOIN     tbl_course ON     tbl_class.f_course =     tbl_course.id
+    LEFT JOIN     tbl_sub_category ON     tbl_course.subcategory_id =     tbl_sub_category.id
+    LEFT JOIN     tbl_category ON     tbl_course.category_id =     tbl_category.id
+    LEFT JOIN (
+        SELECT DISTINCT
+            class_id AS classid,
+            total_std
+        FROM
+            (
+                SELECT
+                    tbl_class_student.class_id,
+                    tbl_class_student.student_id,
+                    COUNT(*)
+                    OVER(PARTITION BY tbl_class_student.class_id) total_std
+                FROM
+                    tbl_class_student
+            )
+        WHERE
+            total_std > 0
+    ) clsstu ON     tbl_class.id = clsstu.classid
+    LEFT JOIN (
+        SELECT
+            SUM(pre) AS mianginpre,
+            classid
+        FROM
+            (
+                SELECT
+                    tbl_class_student.pre_test_score AS pre,
+                    tbl_class_student.class_id       AS classid
+                FROM
+                    tbl_class_student
+            )
+        GROUP BY
+            classid
+    ) pre ON     tbl_class.id = pre.classid
+    LEFT JOIN (
+        SELECT
+            SUM(asli) AS mianginasli,
+            classid
+        FROM
+            (
+                SELECT
+                    tbl_class_student.score    AS asli,
+                    tbl_class_student.class_id AS classid
+                FROM
+                    tbl_class_student
+            )
+        GROUP BY
+            classid
+    ) nahaii ON     tbl_class.id = nahaii.classid
+    LEFT JOIN (
+        SELECT
+            MAX(asli) AS maxasli,
+            classid
+        FROM
+            (
+                SELECT
+                    tbl_class_student.score    AS asli,
+                    tbl_class_student.class_id AS classid
+                FROM
+                    tbl_class_student
+            )
+        GROUP BY
+            classid
+    ) maxnahaii ON     tbl_class.id = maxnahaii.classid
+    LEFT JOIN (
+        SELECT
+            MIN(asli) AS minpre,
+            classid
+        FROM
+            (
+                SELECT
+                    tbl_class_student.pre_test_score AS asli,
+                    tbl_class_student.class_id       AS classid
+                FROM
+                    tbl_class_student
+            )
+        GROUP BY
+            classid
+    ) minpre ON     tbl_class.id = minpre.classid
+
+     LEFT JOIN (
+       SELECT
+    COUNT(*)                   AS javabdade,
+    tbl_class_student.class_id AS classid
+
+FROM
+    tbl_class_student
+WHERE
+     tbl_class_student.score is not null
+GROUP BY
+    tbl_class_student.class_id
+
+    ) javabdadeAsli ON     tbl_class.id = javabdadeAsli.classid
+
+         LEFT JOIN (
+       SELECT
+    COUNT(*)                   AS javabdade,
+    tbl_class_student.class_id AS classid
+
+FROM
+    tbl_class_student
+WHERE
+     tbl_class_student.pre_test_score is not null
+GROUP BY
+    tbl_class_student.class_id
+
+    ) javabdadePre ON     tbl_class.id = javabdadePre.classid
+
+     LEFT JOIN (
+    SELECT
+    COUNT(*)                   AS javabdade,
+    tbl_class_student.class_id AS classid
+
+FROM
+    tbl_class_student
+WHERE
+
+      (tbl_class_student.scores_state_id = 400 or tbl_class_student.scores_state_id = 401)
+GROUP BY
+    tbl_class_student.class_id
+
+
+    ) ghaboolAsli ON     tbl_class.id = ghaboolAsli.classid
+
+     LEFT JOIN (
+    SELECT
+    COUNT(*)                   AS javabdade,
+    tbl_class_student.class_id AS classid
+
+FROM
+    tbl_class_student
+WHERE
+
+      (tbl_class_student.scores_state_id = 403
+     )
+GROUP BY
+    tbl_class_student.class_id
+
+
+    ) noghaboolAsli ON     tbl_class.id = noghaboolAsli.classid
+
+
+             ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="1643011436000-02">
+        <createView viewName="view_learning_evaluation_student_report" replaceIfExists="true">
+            <![CDATA[
+SELECT
+RowNum as id ,
+    doreha.*,
+    concat(concat(tbl_student.first_name, ' '), tbl_student.last_name) AS student,
+    tbl_student.national_code                                          AS student_national_code,
+    tbl_student.emp_no ,
+    tbl_student.personnel_no,
+    tbl_post.c_code as student_post_code,
+    tbl_post.c_title_fa as student_post_title,
+    tbl_department.c_hoze_title as student_hoze,
+    tbl_department.c_omor_title as student_omor,
+    tbl_class_student.score * 5 as nore_nahaii ,
+    tbl_class_student.pre_test_score * 5 as nore_pish
+FROM
+         tbl_class_student
+    INNER JOIN (
+        SELECT
+            tbl_class.c_code                                                                         AS class_code,
+            view_complex.c_title                                                                     AS complex,
+            tbl_class.c_start_date as class_start_date,
+            tbl_class.c_end_date as class_end_date,
+            CASE
+                WHEN tbl_class.c_status = 1 THEN
+                    'برنامه ریزی'
+                WHEN tbl_class.c_status = 2 THEN
+                    'در حال اجرا'
+                WHEN tbl_class.c_status = 3 THEN
+                    'پایان یافته'
+                WHEN tbl_class.c_status = 4 THEN
+                    'لغو شده'
+                WHEN tbl_class.c_status = 5 THEN
+                    'اختتام'
+            END                                                                                      AS class_status,
+
+            CASE
+                WHEN tbl_teacher.b_personnel = 1 THEN
+                    'پرسنل'
+                ELSE
+                    'بیرونی'
+            END                                                                                      AS is_personnel,
+            concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher,
+            tbl_teacher.c_teacher_code                                                               AS teacher_national_code,
+            tbl_course.c_code                                                                        AS course_code,
+            tbl_course.c_title_fa                                                                    AS course_titlefa,
+            tbl_category.c_title_fa                                                                  AS category_titlefa,
+            tbl_sub_category.c_title_fa                                                              AS sub_category_titlefa,
+            clsstu.total_std as total_std,
+            tbl_evaluation_analysis.c_learning_grade as learning,
+            tbl_class.id                                                                             AS idd
+        FROM
+                 tbl_evaluation_analysis
+            INNER JOIN tbl_class ON tbl_evaluation_analysis.f_tclass = tbl_class.id
+            LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id
+            LEFT JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
+            LEFT JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+            LEFT JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+            LEFT JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id
+            LEFT JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+            LEFT JOIN (
+                SELECT DISTINCT
+                    class_id AS classid,
+                    total_std
+                FROM
+                    (
+                        SELECT
+                            tbl_class_student.class_id,
+                            tbl_class_student.student_id,
+                            COUNT(*)
+                            OVER(PARTITION BY tbl_class_student.class_id) total_std
+                        FROM
+                            tbl_class_student
+                    )
+                WHERE
+                    total_std > 0
+            ) clsstu ON tbl_class.id = clsstu.classid
+            LEFT JOIN (
+                SELECT
+                    SUM(pre) AS mianginpre,
+                    classid
+                FROM
+                    (
+                        SELECT
+                            tbl_class_student.pre_test_score AS pre,
+                            tbl_class_student.class_id       AS classid
+                        FROM
+                            tbl_class_student
+                    )
+                GROUP BY
+                    classid
+            ) pre ON tbl_class.id = pre.classid
+            LEFT JOIN (
+                SELECT
+                    SUM(asli) AS mianginasli,
+                    classid
+                FROM
+                    (
+                        SELECT
+                            tbl_class_student.score    AS asli,
+                            tbl_class_student.class_id AS classid
+                        FROM
+                            tbl_class_student
+                    )
+                GROUP BY
+                    classid
+            ) nahaii ON tbl_class.id = nahaii.classid
+            LEFT JOIN (
+                SELECT
+                    MAX(asli) AS maxasli,
+                    classid
+                FROM
+                    (
+                        SELECT
+                            tbl_class_student.score    AS asli,
+                            tbl_class_student.class_id AS classid
+                        FROM
+                            tbl_class_student
+                    )
+                GROUP BY
+                    classid
+            ) maxnahaii ON tbl_class.id = maxnahaii.classid
+            LEFT JOIN (
+                SELECT
+                    MIN(asli) AS minpre,
+                    classid
+                FROM
+                    (
+                        SELECT
+                            tbl_class_student.pre_test_score AS asli,
+                            tbl_class_student.class_id       AS classid
+                        FROM
+                            tbl_class_student
+                    )
+                GROUP BY
+                    classid
+            ) minpre ON tbl_class.id = minpre.classid
+            LEFT JOIN (
+                SELECT
+                    COUNT(*)                   AS javabdade,
+                    tbl_class_student.class_id AS classid
+                FROM
+                    tbl_class_student
+                WHERE
+                    tbl_class_student.score IS NOT NULL
+                GROUP BY
+                    tbl_class_student.class_id
+            ) javabdadeasli ON tbl_class.id = javabdadeasli.classid
+            LEFT JOIN (
+                SELECT
+                    COUNT(*)                   AS javabdade,
+                    tbl_class_student.class_id AS classid
+                FROM
+                    tbl_class_student
+                WHERE
+                    tbl_class_student.pre_test_score IS NOT NULL
+                GROUP BY
+                    tbl_class_student.class_id
+            ) javabdadepre ON tbl_class.id = javabdadepre.classid
+            LEFT JOIN (
+                SELECT
+                    COUNT(*)                   AS javabdade,
+                    tbl_class_student.class_id AS classid
+                FROM
+                    tbl_class_student
+                WHERE
+                    ( tbl_class_student.scores_state_id = 400 )
+                    OR ( tbl_class_student.scores_state_id = 401 )
+                GROUP BY
+                    tbl_class_student.class_id
+            ) ghaboolasli ON tbl_class.id = ghaboolasli.classid
+            LEFT JOIN (
+                SELECT
+                    COUNT(*)                   AS javabdade,
+                    tbl_class_student.class_id AS classid
+                FROM
+                    tbl_class_student
+                WHERE
+                    tbl_class_student.scores_state_id = 403
+                GROUP BY
+                    tbl_class_student.class_id
+            ) noghaboolasli ON tbl_class.id = noghaboolasli.classid
+
+    ) doreha ON tbl_class_student.class_id = doreha.idd
+    LEFT JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+    LEFT JOIN tbl_post ON tbl_student.f_post_id = tbl_post.id
+    LEFT JOIN tbl_department ON tbl_student.f_department_id = tbl_department.id
+ORDER BY
+    doreha.class_code
+             ]]>
+        </createView>
+    </changeSet>
 </databaseChangeLog>
