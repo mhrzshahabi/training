@@ -436,6 +436,7 @@
              {name: "question", title: 'سوال'},
                 {name: "type", title: 'نوع پاسخ' },
                 { name: "options", title: "گزینه ها"},
+                { name: "proposedPointValue", title: "<spring:message code="question.bank.proposed.point.value"/>"},
                 { name: "score", title: "بارم",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 }
         ]
@@ -624,6 +625,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 {name: "question", title: 'سوال',  width: "20%"},
                 {name: "type", title: 'نوع پاسخ' , width: "10%"},
                 { name: "options", title: "گزینه ها", width: "20%",align:"center"},
+                { name: "proposedPointValue",type: "float", title: "<spring:message code="question.bank.proposed.point.value"/>", width: "10%",align:"center"},
                 { name: "score",type: "float", title: "بارم", width: "10%", align:"center", change: function(form, item, value, oldValue) {
                    setScoreValue(value, form)
                     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",

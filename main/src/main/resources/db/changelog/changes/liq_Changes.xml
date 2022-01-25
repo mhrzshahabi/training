@@ -3444,4 +3444,10 @@ WHERE
                                  validate="true"/>
     </changeSet>
 
+    <changeSet author="nick (generated)" id="1632205807374-547">
+        <addColumn tableName="tbl_question_bank">
+            <column name="c_proposed_point_value"  type="FLOAT"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

@@ -1092,7 +1092,7 @@
                 name: "proposedPointValue",
                 title: "<spring:message code="question.bank.proposed.point.value"/>",
                 type: 'text',
-                keyPressFilter: "[0-9]",
+                keyPressFilter: /^([1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|\\.[0-9]{1,2})$/,
                 length: "10"
             },
             {

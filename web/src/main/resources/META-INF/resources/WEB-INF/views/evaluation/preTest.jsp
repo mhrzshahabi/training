@@ -64,6 +64,7 @@
             {name: "question", title: 'سوال'},
             {name: "type", title: 'نوع پاسخ' },
             { name: "options", title: "گزینه ها"},
+            { name: "proposedPointValue", title: "<spring:message code="question.bank.proposed.point.value"/>"},
             { name: "score", title: "بارم",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click"}
         ]
     });
@@ -887,6 +888,7 @@
                 {name: "question", title: 'سوال', width: "40%"},
                 {name: "type", title: 'نوع پاسخ', width: "10%"},
                 {name: "options", title: "گزینه ها", width: "40%", align: "center"},
+                { name: "proposedPointValue",type: "float", title: "<spring:message code="question.bank.proposed.point.value"/>", width: "10%",align:"center"},
                 {
                     name: "score", type: "float", title: "بارم", width: "10%", align: "center",
                     change: function (form, item, value, oldValue) {
