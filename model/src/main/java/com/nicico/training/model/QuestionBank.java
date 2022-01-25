@@ -1,7 +1,6 @@
 package com.nicico.training.model;
 
 import com.nicico.training.model.enums.EQuestionLevel;
-import io.swagger.models.auth.In;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedBy;
