@@ -138,14 +138,14 @@
             },
             {
                 name: "tclass.startDate",
-                title: "<spring:message code='start.date'/>",
+                title: "<spring:message code='class.start.date'/>",
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
                 name: "tclass.endDate",
-                title: "<spring:message code='end.date'/>",
+                title: "<spring:message code='class.end.date'/>",
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true
@@ -1092,7 +1092,7 @@
                 name: "proposedPointValue",
                 title: "<spring:message code="question.bank.proposed.point.value"/>",
                 type: 'text',
-                keyPressFilter: "[0-9]",
+                keyPressFilter: /^([1-9]{1}[0-9]{0,}(\\.[0-9]{0,2})?|0(\\.[0-9]{0,2})?|\\.[0-9]{1,2})$/,
                 length: "10"
             },
             {

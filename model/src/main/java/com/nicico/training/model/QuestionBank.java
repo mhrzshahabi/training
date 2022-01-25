@@ -1,7 +1,6 @@
 package com.nicico.training.model;
 
 import com.nicico.training.model.enums.EQuestionLevel;
-import io.swagger.models.auth.In;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.springframework.data.annotation.CreatedBy;
@@ -120,6 +119,8 @@ public class QuestionBank extends Auditable {
     @Column(name = "e_question_level")
     private Integer eQuestionLevelId;
 
+    @Column(name = "c_proposed_point_value")
+    private Double proposedPointValue;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "tbl_question_bank_target", joinColumns = @JoinColumn(name = "f_question"))

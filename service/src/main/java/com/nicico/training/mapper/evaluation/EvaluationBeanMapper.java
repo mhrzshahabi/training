@@ -2,7 +2,6 @@ package com.nicico.training.mapper.evaluation;
 
 
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.EvaluationAnswerDTO;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
@@ -12,14 +11,12 @@ import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.*;
 import com.nicico.training.repository.QuestionBankTestQuestionDAO;
-import com.nicico.training.service.EvaluationService;
 import com.nicico.training.service.QuestionnaireService;
 import com.nicico.training.service.TeacherService;
 import org.mapstruct.Named;
 import org.modelmapper.ModelMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.service.QuestionBankService;
-import com.nicico.training.utility.persianDate.PersianDate;
 import dto.Question.QuestionData;
 import dto.Question.QuestionScores;
 import dto.evaluuation.EvalCourse;
@@ -43,11 +40,9 @@ import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
 import response.question.QuestionsDto;
 import response.question.dto.ElsQuestionTargetDto;
-import response.question.dto.ElsQuestionTargetsDto;
 
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -537,6 +532,8 @@ public abstract class EvaluationBeanMapper {
                 QuestionAttachments attachments = getFilesForQuestion(questionBank.getId());
                 question.setId(questionData.getQuestionBank().getId());
                 question.setTitle(questionData.getQuestionBank().getQuestion());
+                question.setProposedPointValue(questionData.getQuestionBank().getProposedPointValue());
+                questionProtocol.setProposedPointValue(questionData.getQuestionBank().getProposedPointValue());
                 if (attachments != null && attachments.getFiles() != null)
                     question.setFiles(attachments.getFiles());
                 question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
@@ -1754,6 +1751,7 @@ public abstract class EvaluationBeanMapper {
                 questionsDto.setQuestion(question.getQuestion().getTitle());
                 questionsDto.setType(question.getQuestion().getType().getValue());
                 questionsDto.setId(question.getQuestion().getId());
+                questionsDto.setProposedPointValue(question.getProposedPointValue());
                 StringBuilder listString = new StringBuilder();
 
                 if (questionsDto.getType().equals(MULTI_CHOICES.getValue())) {
