@@ -479,16 +479,7 @@
             {
                 name: "questionDesigner",
                 width: "10%",
-                align: "center",
-                formatCellValue: function (value, record) {
-                    if (value === null || value === undefined) {
-                        if (record.createdBy === "anonymousUser")
-                            return "آموزش آنلاین";
-                        else
-                            return record.createdBy;
-                    } else
-                        return value;
-                }
+                align: "center"
             },
             {
                 name: "createdDate",

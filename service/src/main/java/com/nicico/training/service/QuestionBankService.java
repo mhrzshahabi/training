@@ -1,8 +1,4 @@
 package com.nicico.training.service;
-/* com.nicico.training.service
-@Author:Mehran Golrokhi
-*/
-
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
@@ -24,8 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
