@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -51,6 +52,11 @@ public class Request extends Auditable {
     private RequestStatus status;
 
     private String reference;
+
+    @Transient
+    private List<Attachment> requestAttachments;
+    @Transient
+    private List<Attachment> responseAttachments;
 
     @PrePersist
     public void setReference(){

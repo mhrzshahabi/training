@@ -231,6 +231,7 @@
         title: "گزارش اکسل حضور و غیاب",
         width: 300,
         click: function () {
+            debugger;
             let criteriaForm = isc.DynamicForm.create({
                 fields:[
                     {name: "classId", type: "hidden"},
@@ -1067,6 +1068,7 @@
                     {name: "fields", type: "hidden"}
                 ]
         });
+        debugger;
         criteriaForm.setValue("classId", id);
         criteriaForm.setValue("list", JSON.stringify(list));
         criteriaForm.setValue("page", page);
