@@ -584,7 +584,7 @@
                     Window_Attendance_Show_Audit.show();
                 } else {
                     wait.close();
-                    createDialog("info", "عملیات دریافت اطلاعات تاریخچه با خطا مواجه شد", "<spring:message code="message"/>")
+                    createDialog("info", "تاریخچه ای برای این تاریخ وحود ندارد", "<spring:message code="message"/>")
                 }
             })
         );
