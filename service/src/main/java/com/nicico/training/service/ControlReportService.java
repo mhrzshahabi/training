@@ -481,10 +481,13 @@ public class ControlReportService {
                     rCellStyle8.setBorderRight(BorderStyle.MEDIUM);
                     cellOfRow.setCellStyle(rCellStyle8);
 
-                    Set<Integer> statesPerStudentKeys = students.get(m).get(i).getStates().keySet();
+                    Map map = students.get(m).get(i).getStates();
+                    TreeMap treeMap = new TreeMap<>(map);
+
+                    Set<Integer> statesPerStudentKeys = treeMap.keySet();
                     List<Integer> statesPerStudentKeysList = new ArrayList<>(statesPerStudentKeys);
 
-                    Collection<String> statesPerStudentValues = students.get(m).get(i).getStates().values();
+                    Collection<String> statesPerStudentValues = treeMap.values();
                     List<String> statesPerStudentValuesList = new ArrayList<>(statesPerStudentValues);
 
                     z = 0;
@@ -492,9 +495,12 @@ public class ControlReportService {
                     for (int j = 0; j < reaminCols; j++) {
                         cellOfRow = row.createCell(6 + j);
 
-                        if (k < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(k).equals(j)) {
-                            cellOfRow.setCellValue(statesPerStudentValuesList.get(k));
-                            k++;
+                        for (Integer key : statesPerStudentKeysList) {
+                            if (key == j) {
+                                cellOfRow.setCellValue(statesPerStudentValuesList.get(k));
+                                k++;
+                                break;
+                            }
                         }
 
                         rCellStyle7.setAlignment(HorizontalAlignment.CENTER);

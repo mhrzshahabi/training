@@ -29,6 +29,7 @@ import response.BaseResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -245,6 +246,16 @@ public class AttachmentRestController {
     public ResponseEntity<List<MessagesAttDTO>> findAllBySessionId(@PathVariable Long sessionId) {
         return new ResponseEntity<>(elsClient.findAllMessagesBySessionId(sessionId).getBody(), HttpStatus.OK);
     }
+    @Loggable
+    @GetMapping(value = "/findAllRequest/{requestId}")
+    public ResponseEntity<List<AttachmentDto>> findAllByRequestId(@PathVariable Long requestId) {
+       List<Attachment> attachments=  attachmentService.findAllByObjectTypeAndObjectId("Request",requestId);
+       List<AttachmentDto> attachmentDtos=new ArrayList<>();
+       if(attachments!=null && attachments.size()>0)
+      attachmentDtos= attachmentMapper.toAttachmentDtos(attachments);
+       return  ResponseEntity.ok(attachmentDtos);
+    }
+
 
     @Loggable
     @GetMapping(value = "/findQuestionFiles/{questionBankId}")

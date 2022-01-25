@@ -1,6 +1,10 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    final String accessToken2 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
 // <script>
     let oLoadAttachments_request;
@@ -17,6 +21,8 @@
             {name: "type", title: "نوع درخواست", valueMap: {PROTEST: "PROTEST"}},
             {name: "status", title: "وضعیت", valueMap: {ACTIVE: "ACTIVE", PENDING: "PENDING", CLOSED: "CLOSED", PROCESSING: "PROCESSING"}},
             {name: "reference", title: "reference", filterOperator: "iContains"}
+
+
         ],
         fetchDataURL: requestUrl + "/list"
     });
@@ -91,6 +97,16 @@
                     PROCESSING: "PROCESSING"
                 }
             },
+
+            {
+                name: "response",
+                title: "پاسخ",
+                required: true,
+                editorType: "textArea",
+                width: "100%",
+                height: 200,
+                colSpan: 4
+            },
             {
                 name: "text",
                 title: "متن درخواست",
@@ -100,15 +116,6 @@
                 height: 200,
                 colSpan: 4
             },
-            {
-                name: "response",
-                title: "پاسخ",
-                required: true,
-                editorType: "textArea",
-                width: "100%",
-                height: 200,
-                colSpan: 4
-            }
         ]
     });
     Window_Request = isc.Window.create({
@@ -180,11 +187,12 @@
     });
 
     ListGrid_Request = isc.TrLG.create({
-
         height: "90%",
         filterOnKeypress: false,
         showFilterEditor: true,
         autoFetchData: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         gridComponents: ["filterEditor", "header", "body"],
         dataSource: RestDataSource_Request,
         initialSort: [
@@ -200,11 +208,35 @@
             {name: "response"},
             {name: "fmsReference", hidden: true},
             {name: "groupId", hidden: true},
-            {name: "reference", hidden: true}
+            {name: "reference", hidden: true},
+            {
+                name: "requestContent",
+                title: "محتوای درخواست",
+                align: "center",
+                canFilter: false
+            }
         ],
         selectionUpdated: function (record) {
             loadRequestAttachment();
         },
+
+        createRecordComponent: function (record, colNum) {
+
+            var fieldName = this.getFieldName(colNum);
+            if (record == null || fieldName != "requestContent")
+                return null;
+
+            return isc.IButton.create({
+                layoutAlign: "center",
+                title: "محتوای درخواست",
+                width: "120",
+                margin: 3,
+                click: function () {
+                     getRequestContent(record.id);
+                }
+            });
+        }
+
 
     });
     let HLayout_Tab_request = isc.HLayout.create({
@@ -306,5 +338,98 @@
         oLoadAttachments_request.loadPage_attachment_Job("Request",ListGrid_Request.getSelectedRecord().id, "<spring:message code="document"/>", valueMap_AttachmentType, false);
         TabSet_request.enable();
     }
+    function getRequestContent(requestId) {
+
+        isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "/findAllRequest/" + requestId , "GET", null, function (resp) {
+            if(resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let content = JSON.parse(resp.httpResponseText);
+                showRequestResponseContent(content);
+
+            } else {
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+    function downloadRequestContentFile(groupId, key, fileName) {
+
+        let downloadForm = isc.DynamicForm.create({
+            method: "GET",
+            action: "minIo/downloadFile/" + groupId + "/" + key + "/" + fileName,
+            target: "_Blank",
+            canSubmit: true,
+            fields: [
+                {name: "token", type: "hidden"}
+            ]
+        });
+        downloadForm.setValue("token", "<%=accessToken2%>");
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
+    // --------------------------------------------- create- request content-------------------------------------------------
+
+    function showRequestResponseContent(content) {
+        let RestDataSource_Request_Content = isc.TrDS.create({
+            fields: [
+                {name: "fileKey", title: "fileKey"},
+                {name: "name", title: "name"},
+                {name: "type", title: "type"},
+                {name: "objectType", title: "objectType"},
+                {name: "objectId",title: "objectId"},
+                {name: "FmsGroup",title: "FmsGroup"}
+
+            ]
+        });
+
+        let ListGrid_Request_Content = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_Request_Content,
+            showFilterEditor: false,
+            showRecordComponents: true,
+            showRecordComponentsByCell: true,
+            fields: [
+                {
+                    name: "name",
+                    title: "نام فایل",
+                    align: "center"
+                },
+                {
+                    name: "download",
+                    title: "دریافت فایل",
+                    align: "center",
+                    canFilter: false
+                }
+            ],
+            createRecordComponent: function (record, colNum) {
+
+                var fieldName = this.getFieldName(colNum);
+                if (record == null || fieldName != "download")
+                    return null;
+
+                return isc.ToolStripButton.create({
+                    icon: "[SKIN]actions/download.png",
+                    width: "25",
+                    click: function () {
+
+                        if (record == null) {return;}
+                        downloadRequestContentFile(record.fileKey, record.FmsGroup, record.name);
+                    }
+                });
+            }
+        });
+
+        let Window_Request_Content = isc.Window.create({
+            title: "نمایش محتوای درخواست",
+            width: "20%",
+            height: "40%",
+            autoSize: false,
+            items: [ListGrid_Request_Content]
+        });
+
+        ListGrid_Request_Content.setData(content);
+        Window_Request_Content.show();
+    }
+
+
 
     // </script>
