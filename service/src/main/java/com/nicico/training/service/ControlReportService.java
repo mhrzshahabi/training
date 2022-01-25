@@ -311,18 +311,12 @@ public class ControlReportService {
 
                 int factorShift = 0;
                 for (int i = 0; i < dates.length; i++) {
-
-                    String currentDate = dates[i];
-                    int sessionNo = sessionList.get(m).stream().filter(item -> item.getSessionDate().equals(currentDate)).collect(Collectors.toList()).size();
-
                     CellReference startCellReference = new CellReference(7 + cnt, 6 + factorShift);
-                    CellReference endCellReference = new CellReference(7 + cnt, 6 + factorShift + sessionNo-1);
+                    CellReference endCellReference = new CellReference(7 + cnt, 6 + factorShift + 4);
 
-                    if (sessionNo >= 2) {
-                        sheet.addMergedRegion(CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()));
-                    }
+                    sheet.addMergedRegion(CellRangeAddress.valueOf(startCellReference.formatAsString() + ":" + endCellReference.formatAsString()));
+                    cellOfRow = row.createCell(6 + i * 5);
 
-                    cellOfRow = row.createCell(6 + i * sessionNo);
                     cellOfRow.setCellValue(dates[i]);
                     rCellStyle6.setAlignment(HorizontalAlignment.CENTER);
                     rCellStyle6.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -338,8 +332,7 @@ public class ControlReportService {
 
 
                     cellOfRow.setCellStyle(rCellStyle6);
-//                    factorShift += 5;
-                    factorShift += sessionNo;
+                    factorShift += 5;
                 }
 
                 //section 2 in seventh row
@@ -377,9 +370,7 @@ public class ControlReportService {
                 int z = 0;
 
                 for (int i = 0; i < dates.length; i++) {
-                    String currentDate = dates[i];
-                    int sessionNo = sessionList.get(m).stream().filter(item -> item.getSessionDate().equals(currentDate)).collect(Collectors.toList()).size();
-                    for (int j = 0; j <= sessionNo-1 ; j++) {
+                    for (int j = 0; j <= 4; j++) {
                         cellOfRow = row.createCell(factor + j);
                         cellOfRow.setCellValue("فاقد جلسه");
                         rCellStyle7.setBorderBottom(BorderStyle.MEDIUM);
@@ -400,7 +391,7 @@ public class ControlReportService {
                             z++;
                         }
                     }
-                    factor += sessionNo;
+                    factor += 5;
                 }
 
                 for (int i = 0; i < headersTable.length; i++) {
@@ -425,16 +416,7 @@ public class ControlReportService {
                 XSSFCellStyle rCellStyle8 =  workbook.createCellStyle();
                 rCellStyle8.setFont(rFont5);
 
-
-                int reaminCols = 0;
-                for (int i = 0; i < dates.length; i++) {
-                    String currentDate = dates[i];
-                    int sessionNo = sessionList.get(m).stream().filter(item -> item.getSessionDate().equals(currentDate)).collect(Collectors.toList()).size();
-                    reaminCols += sessionNo;
-                }
-//                int reaminCols = dates.length * 5;
-
-
+                int reaminCols = dates.length * 5;
                 for (int i = 0; i < students.get(m).size(); i++) {
                     row = sheet.createRow(9 + i + cnt);
                     row.setHeight((short) 475);
@@ -510,8 +492,7 @@ public class ControlReportService {
                     for (int j = 0; j < reaminCols; j++) {
                         cellOfRow = row.createCell(6 + j);
 
-//                        if (k < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(k).equals(j)) {
-                        if (k < statesPerStudentKeysList.size()) {
+                        if (k < statesPerStudentKeysList.size() && statesPerStudentKeysList.get(k).equals(j)) {
                             cellOfRow.setCellValue(statesPerStudentValuesList.get(k));
                             k++;
                         }
