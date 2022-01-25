@@ -1079,7 +1079,7 @@ public class ElsRestController {
     public ElsAddQuestionResponse addQuestions(HttpServletRequest header, @RequestBody ElsQuestionBankDto elsQuestionBankDto) {
 
         ElsAddQuestionResponse response = new ElsAddQuestionResponse();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 List<QuestionBankDTO.Info> questionBankList = questionBankBeanMapper.toQuestionBankCreate(elsQuestionBankDto);
                 response.setQuestionId(questionBankList.get(0).getId());
@@ -1090,9 +1090,9 @@ public class ElsRestController {
                 response.setMessage("مشکلی در ذخیره سوالات رخ داده است");
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             }
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
         return response;
     }
 

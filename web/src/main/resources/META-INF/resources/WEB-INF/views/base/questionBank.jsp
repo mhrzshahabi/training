@@ -161,6 +161,13 @@
                 filterOperator: "iContains"
             },
             {
+                name: "questionDesigner",
+                title: "طراح سوال",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
                 name: "createdDate",
                 title: "<spring:message code="create.date"/>",
                 filterOperator: "iContains", autoFitWidth: true
@@ -467,14 +474,19 @@
             {name: "tclass.endDate",sortNormalizer: function (record) { return record.tclass?.endDate; }},
             {
                 name: "createdBy",
+                hidden: true
+            },
+            {
+                name: "questionDesigner",
+                width: "10%",
+                align: "center",
                 formatCellValue: function (value, record) {
-                    if (value === "anonymousUser") {
-                        if (record.teacher !== undefined)
-                            return record.teacher.fullNameFa;
+                    if (value === null || value === undefined) {
+                        if (record.createdBy === "anonymousUser")
+                            return "آموزش آنلاین";
                         else
-                            return value;
-                    }
-                    else
+                            return record.createdBy;
+                    } else
                         return value;
                 }
             },

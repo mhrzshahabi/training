@@ -133,5 +133,8 @@ public class QuestionBank extends Auditable {
     @CreatedBy
     @Column(name = "C_CREATED_BY", nullable = false, updatable = false)
     protected String createdBy;
+
+    @Column(name = "C_QUESTION_DESIGNER")
+    private String questionDesigner;
 }
 

@@ -212,6 +212,7 @@ public abstract class QuestionBankBeanMapper {
             create.setCourseId(tClass.getCourseId());
             create.setCategoryId(tClass.getCourse().getCategoryId());
             create.setSubCategoryId(tClass.getCourse().getSubCategoryId());
+            create.setQuestionDesigner(elsQuestionDto.getTeacherFullName());
 
             List<ElsQuestionOptionDto> optionList = elsQuestionDto.getOptionList();
             if (optionList.size() != 0) {

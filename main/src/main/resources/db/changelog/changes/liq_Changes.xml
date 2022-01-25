@@ -3444,4 +3444,10 @@ WHERE
                                  validate="true"/>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-043">
+        <addColumn tableName="tbl_question_bank">
+            <column name="c_question_designer" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
