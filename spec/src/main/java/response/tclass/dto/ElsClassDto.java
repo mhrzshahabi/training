@@ -20,6 +20,11 @@ public class ElsClassDto  implements Serializable {
 
     private String code;
 
+    private Long categoryId;
+    private Long subCategoryId;
+    private String categoryName;
+    private String subCategoryName;
+
     private String description;
 
     private Integer capacity;

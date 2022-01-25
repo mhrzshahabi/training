@@ -2570,6 +2570,12 @@
                                 }
                             },
                             {
+                                title:  "<spring:message code="learning.evaluation.formula.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/learningEvaluationFormulaReport"/>");
+                                }
+                            },
+                            {
                                 title:  "<spring:message code="reaction.evaluation.comment.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/reactionEvaluationCommentsReport"/>");

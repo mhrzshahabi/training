@@ -18,7 +18,7 @@
     var filterValuesUnique1 = [];
     var filterValues = [];
     var filterValues1 = [];
-    var sessionDateData;
+    let sessionDateData = [];
     let classRecord = null;
     var attendanceState = {
         "0": "نامشخص",
@@ -146,10 +146,13 @@
                     showFilterEditor: false
                 }
             },
+            {name: "session.sessionStartHour", title: "زمان جلسه"},
             {name: "lastModifiedDate", title: "تغییر داده شده درتاریخ"},
             {name: "lastModifiedBy", title: "تغییر داده شده توسط"},
             {name: "revType", title: "نوع تغییر"},
             {name: "description", title: "توضیحات"},
+            {name: "createdDate", title: "ایجاد  شده درتاریخ"},
+            {name: "createdBy", title: "ایجاد  شده توسط"},
             {name: "deleted", hidden: true}
         ]
     });
@@ -491,7 +494,7 @@
             dataSource: RestDataSource_Attendance_Show_Audit,
             setAutoFitExtraRecords: true,
             autoFetchData: false,
-            showFilterEditor: false,
+            showFilterEditor: true,
             fields: [
                 {
                     name: "id",
@@ -501,11 +504,13 @@
                 {
                     name: "state",
                     width: "10%",
+                    canFilter:false,
                     align: "center"
                 },                {
                     name: "lastModifiedDate",
                     width: "10%",
                     align: "center",
+                    canFilter:false,
                     formatCellValue: function (value) {
                         if (value) {
                             let date = new Date (value);
@@ -516,11 +521,13 @@
                 {
                     name: "lastModifiedBy",
                     width: "10%",
+                    canFilter:false,
                     align: "center"
                 },
                 {
                     name: "revType",
                     width: "10%",
+                    canFilter:false,
                     align: "center",
                     formatCellValue: function (value, record) {
                         if (value === 0)
@@ -535,8 +542,34 @@
                     }
                 },
                 {
+                    name: "session.sessionStartHour",
+                    width: "10%",
+                    canFilter:false,
+                    // valueMap: {
+                    //     sessionInOneDate
+                    // },
+                    align: "center"
+                },
+                {
                     name: "description",
                     width: "10%",
+                    canFilter:false,
+                    align: "center"
+                }, {
+                    name: "createdDate",
+                    width: "10%",
+                    canFilter:false,
+                    align: "center",
+                    formatCellValue: function (value) {
+                        if (value) {
+                            let date = new Date (value);
+                            return date.toLocaleString('fa-IR');
+                        }
+                    }
+                }, {
+                    name: "createdBy",
+                    width: "10%",
+                    canFilter:false,
                     align: "center"
                 },
             ]
@@ -568,9 +601,20 @@
                 })]
         });
 
-        RestDataSource_Attendance_Show_Audit.fetchDataURL = attendanceAuditUrl + "/change-list/" + selectedAttendance.attendanceId;
-        ListGrid_Attendance_Show_Audit.fetchData();
-        Window_Attendance_Show_Audit.show();
+        isc.RPCManager.sendRequest(
+            TrDSRequest(attendanceAuditUrl + "/change-list", "POST", JSON.stringify(JSON.parse(selectedAttendance.attendanceId)), function (resp) {
+                wait.show();
+                if (resp.httpResponseCode === 200) {
+                    wait.close();
+                    let data = JSON.parse(resp.data).response.data;
+                    ListGrid_Attendance_Show_Audit.setData(data);
+                    Window_Attendance_Show_Audit.show();
+                } else {
+                    wait.close();
+                    createDialog("info", "تاریخچه ای برای این تاریخ وحود ندارد", "<spring:message code="message"/>")
+                }
+            })
+        );
     }
 
     var DynamicForm_Attendance = isc.DynamicForm.create({

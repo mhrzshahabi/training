@@ -36,13 +36,13 @@ public class EvaluationDoneOnlineRestController {
                     if(dto.getCourse()!=null){
                         List<Student> students=iStudentService.getAllStudentsOfClassByClassCode(dto.getCourse());
                    for (Student student : students){
-                       if (!dto.getUsers().containsKey(student.getNationalCode().trim())){
+                       if (!dto.getUsers().containsKey(student.getNationalCode())){
                            EvaluationDoneOnlineDto.UserDetailDto detailDto=new EvaluationDoneOnlineDto.UserDetailDto();
                            detailDto.setAnswered(false);
                            detailDto.setPhoneNumber(null);
                            detailDto.setFullName(student.getFirstName() + " " +student.getLastName());
                            detailDto.setNationalCode(student.getNationalCode());
-                           users.put(student.getNationalCode().trim(),detailDto);
+                           users.put(student.getNationalCode(),detailDto);
                        }
                    }
 
