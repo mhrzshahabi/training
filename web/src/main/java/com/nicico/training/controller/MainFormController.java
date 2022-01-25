@@ -186,6 +186,11 @@ public class MainFormController {
         return "security/helpFile";
     }
 
+    @RequestMapping("/systemStatus")
+    public String showSystemStatusForm() {
+        return "base/systemStatus";
+    }
+
     @RequestMapping("/mobileVerify")
     public String showMobileVerifyForm() { return "security/mobileVerify"; }
 

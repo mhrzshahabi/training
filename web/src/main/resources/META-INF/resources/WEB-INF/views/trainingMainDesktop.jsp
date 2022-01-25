@@ -1291,6 +1291,7 @@
     const synonymPersonnel = rootUrl + "/personnel/Synonym";
     const minIoUrl = rootUrl + "/minIo";
     const bpmsUrl = rootUrl + "/bpms" ;
+    const systemStatusUrl = rootUrl + "/system-status";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -1767,8 +1768,15 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="web/helpFiles/"/>");
                     }
-                }
+                },
                 </sec:authorize>
+
+                {
+                    title: "وضعیت سایر سیستم ها",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/systemStatus/"/>");
+                    }
+                }
 
             ]
         }),

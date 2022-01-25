@@ -237,6 +237,9 @@ nicico:
   sms: 'http://devops01.icico.net.ir'
   masterDataUrl: 'http://devapp01.icico.net.ir/master-data/api/v3'
   elsSmsUrl: 'http://devapp01.icico.net.ir'
+  elsActuatorUrl: 'http://devapp01.icico.net.ir/els/actuator'
+  fmsActuatorUrl: 'http://devapp01.icico.net.ir/fms/actuator'
+  masterDataActuatorUrl: 'http://devapp01.icico.net.ir/master-data/actuator'
 #  elsUrl: 'http://172.16.6.192:8080/els/api/training'
 
 
@@ -319,6 +322,20 @@ nicico:
   sms: 'http://devops01.icico.net.ir'
   masterDataUrl: 'http://devapp01.icico.net.ir/master-data/api/v3'
   elsSmsUrl: 'http://devapp01.icico.net.ir'
+  elsActuatorUrl: 'http://devapp01.icico.net.ir/els/actuator'
+  fmsActuatorUrl: 'http://devapp01.icico.net.ir/fms/actuator'
+  masterDataActuatorUrl: 'http://devapp01.icico.net.ir/master-data/actuator'
+
+#staging
+#  elsActuatorUrl: 'http://staging.icico.net.ir/els/actuator'
+#  fmsActuatorUrl: 'http://staging.icico.net.ir/fms/actuator'
+#  masterDataActuatorUrl: 'http://staging.icico.net.ir/master-data/actuator'
+
+#production
+#  elsActuatorUrl: 'https://mobiles.nicico.com/actuator'
+#  fmsActuatorUrl: 'https://apps.nicico.com/fms/actuator'
+#  masterDataActuatorUrl: 'https://apps.nicico.com/master-data/actuator'
+
   upload:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:

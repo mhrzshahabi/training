@@ -329,7 +329,7 @@
         })]
     });
 
-    VLayout_Body_ULR = isc.TrVLayout.create({
+    VLayout_Body_Help_Files = isc.TrVLayout.create({
         members: [
             ToolStrip_Actions_Help_Files,
             ListGrid_Help_Files
