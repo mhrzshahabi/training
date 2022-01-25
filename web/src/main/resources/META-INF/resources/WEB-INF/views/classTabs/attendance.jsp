@@ -151,6 +151,8 @@
             {name: "lastModifiedBy", title: "تغییر داده شده توسط"},
             {name: "revType", title: "نوع تغییر"},
             {name: "description", title: "توضیحات"},
+            {name: "createdDate", title: "ایجاد  شده درتاریخ"},
+            {name: "createdBy", title: "ایجاد  شده توسط"},
             {name: "deleted", hidden: true}
         ]
     });
@@ -492,7 +494,7 @@
             dataSource: RestDataSource_Attendance_Show_Audit,
             setAutoFitExtraRecords: true,
             autoFetchData: false,
-            showFilterEditor: false,
+            showFilterEditor: true,
             fields: [
                 {
                     name: "id",
@@ -502,11 +504,13 @@
                 {
                     name: "state",
                     width: "10%",
+                    canFilter:false,
                     align: "center"
                 },                {
                     name: "lastModifiedDate",
                     width: "10%",
                     align: "center",
+                    canFilter:false,
                     formatCellValue: function (value) {
                         if (value) {
                             let date = new Date (value);
@@ -517,11 +521,13 @@
                 {
                     name: "lastModifiedBy",
                     width: "10%",
+                    canFilter:false,
                     align: "center"
                 },
                 {
                     name: "revType",
                     width: "10%",
+                    canFilter:false,
                     align: "center",
                     formatCellValue: function (value, record) {
                         if (value === 0)
@@ -538,11 +544,32 @@
                 {
                     name: "session.sessionStartHour",
                     width: "10%",
+                    canFilter:false,
+                    // valueMap: {
+                    //     sessionInOneDate
+                    // },
                     align: "center"
                 },
                 {
                     name: "description",
                     width: "10%",
+                    canFilter:false,
+                    align: "center"
+                }, {
+                    name: "createdDate",
+                    width: "10%",
+                    canFilter:false,
+                    align: "center",
+                    formatCellValue: function (value) {
+                        if (value) {
+                            let date = new Date (value);
+                            return date.toLocaleString('fa-IR');
+                        }
+                    }
+                }, {
+                    name: "createdBy",
+                    width: "10%",
+                    canFilter:false,
                     align: "center"
                 },
             ]
