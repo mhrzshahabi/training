@@ -10,9 +10,9 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelCoursePassedOrNotPaseedNAReportViewService;
-import com.nicico.training.model.PersonnelCoursePassedOrNotPaseedNAReportView;
-import com.nicico.training.model.ViewReactionEvaluationFormulaReport;
-import com.nicico.training.model.ViewReactionEvaluationFormulaReportForCourse;
+import com.nicico.training.model.*;
+import com.nicico.training.repository.ViewLearningEvaluationCourseReportDAO;
+import com.nicico.training.repository.ViewLearningEvaluationStudentReportDAO;
 import com.nicico.training.repository.ViewReactionEvaluationFormulaReportDAO;
 import com.nicico.training.repository.ViewReactionEvaluationFormulaReportForCourseDAO;
 import com.nicico.training.service.*;
@@ -51,7 +51,9 @@ public class ExportController {
     private final SkillService skillService;
     private final CourseService courseService;
     private final WorkGroupService workGroupService;
-    private final ViewReactionEvaluationFormulaReportDAO dao;
+    private final ViewReactionEvaluationFormulaReportDAO viewReactionEvaluationFormulaReportDAO;
+    private final ViewLearningEvaluationCourseReportDAO courseReportDAO;
+    private final ViewLearningEvaluationStudentReportDAO studentReportDAO;
     private final IPersonnelCoursePassedOrNotPaseedNAReportViewService personnelCoursePassedOrNotPaseedNAReportViewService;
     private final ViewReactionEvaluationFormulaReportForCourseDAO daoForCourse;
 
@@ -202,7 +204,7 @@ public class ExportController {
 
         }
 
-        List<ViewReactionEvaluationFormulaReport>    firstData=  dao.getAll(start,end);
+        List<ViewReactionEvaluationFormulaReport>    firstData=  viewReactionEvaluationFormulaReportDAO.getAll(start,end);
         List<Object> finalCategoryList = categoryList;
         List<Object> finalSubCategoryList = subCategoryList;
         List<ViewReactionEvaluationFormulaReport> secondData;
@@ -1254,4 +1256,789 @@ public class ExportController {
             }
         }
     }
+
+    @PostMapping(value = {"/excel/formula2/learning"})
+    public void getExcelDataForFormulaReportLearning(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
+
+
+
+        SearchDTO.CriteriaRq criteriaRq;
+
+        criteria = "[" + criteria + "]";
+        criteriaRq = new SearchDTO.CriteriaRq();
+        try {
+            criteriaRq.setOperator(EOperator.valueOf("and"))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String start="";
+        String end="";
+        List<Object> categoryList=new ArrayList<>();
+        List<Object> subCategoryList=new ArrayList<>();
+        for (int f=0 ; f<criteriaRq.getCriteria().get(0).getCriteria().size();f++){
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classStartDate"))
+                start=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classEndDate"))
+                end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
+                categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryTitleFa")){
+                subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
+            }
+
+        }
+
+        List<ViewLearningEvaluationCourseReport>    firstData=  courseReportDAO.findAllByEndDateLessThanEqualAndStartDateGreaterThanEqual(end,start);
+        List<Object> finalCategoryList = categoryList;
+        List<Object> finalSubCategoryList = subCategoryList;
+        List<ViewLearningEvaluationCourseReport> secondData;
+        List<ViewLearningEvaluationCourseReport> data;
+        if (categoryList.size()>0){
+            secondData  =firstData.stream()
+                    .filter(first -> finalCategoryList.stream()
+                            .anyMatch(category -> first.getCategory_titlefa().equals(category)))
+                    .collect(Collectors.toList());
+        }else{
+            secondData=firstData;
+        }
+        if (subCategoryList.size()>0){
+            data =secondData.stream()
+                    .filter(sec -> finalSubCategoryList.stream()
+                            .anyMatch(sub -> sec.getSub_category_titlefa().equals(sub)))
+                    .collect(Collectors.toList());
+        }else {
+            data=secondData;
+        }
+
+
+        String fileFullPath = "export.xlsx";
+        Workbook workbook = null;
+        FileInputStream in = null;
+        try {
+
+            String[] headers = new String[24];
+            String[] columns = new String[24];
+
+
+            for (int z = 0; z < 24; z++) {
+
+                switch (z) {
+                    case 0: {
+                        headers[z] = "کد درس";
+                        columns[z] = "class_code";
+                        break;
+                    }
+                    case 1: {
+                        headers[z] = "وضعیت کلاس";
+                        columns[z] = "class_status";
+                        break;
+                    }
+                    case 2: {
+                        headers[z] = "شروع کلاس";
+                        columns[z] = "class_start_date";
+                        break;
+                    }
+                    case 3: {
+                        headers[z] = "انتهای کلاس";
+                        columns[z] = "class_end_date";
+                        break;
+                    }
+                    case 4: {
+                        headers[z] = " کد دوره";
+                        columns[z] = "course_code";
+                        break;
+                    }
+                    case 5: {
+                        headers[z] = " عنوان دوره";
+                        columns[z] = "course_titlefa";
+                        break;
+                    }
+                    case 6: {
+                        headers[z] = " گروه";
+                        columns[z] = "category_titlefa";
+
+                        break;
+                    }
+                    case 7: {
+                        headers[z] = " زیر گروه";
+                        columns[z] = "sub_category_titlefa";
+                        break;
+                    }
+                    case 8: {
+                        headers[z] = "مجتمع کلاس";
+                        columns[z] = "complex";
+                        break;
+                    }
+                    case 9: {
+                        headers[z] = "نوع استاد";
+                        columns[z] = "is_personnel";
+                        break;
+                    }
+                    case 10: {
+                        headers[z] = "کد ملی استاد";
+                        columns[z] = "teacher_national_code";
+                        break;
+                    }
+                    case 11: {
+                        headers[z] = "استاد";
+                        columns[z] = "teacher";
+                        break;
+                    }
+                    case 12: {
+                        headers[z] = "تعداد دانشجویان کلاس";
+                        columns[z] = "total_std";
+                        break;
+                    }
+                    case 13: {
+                        headers[z] = "میانگین پیش تست";
+                        columns[z] = "miangin_pretest";
+                        break;
+                    }
+                    case 14: {
+                        headers[z] = "میانگین  تست اصلی";
+                        columns[z] = "miangin_asli";
+                        break;
+                    }
+                    case 15: {
+                        headers[z] = "نرخ یادگیری";
+                        columns[z] = "nerkh";
+                        break;
+                    }
+                    case 16: {
+                        headers[z] = "درصد جواب داده به آزمون اصلی";
+                        columns[z] = "darsad_javab_dade_asli";
+                        break;
+                    }
+                    case 17: {
+                        headers[z] = "درصد جواب داده به پیش تست";
+                        columns[z] = "darsad_javab_dade_pre";
+                        break;
+                    }
+                    case 18: {
+                        headers[z] = "درصد قبول شده";
+                        columns[z] = "darsad_ghabol";
+                        break;
+                    }
+                    case 19: {
+                        headers[z] = "درصد قبول نشده";
+                        columns[z] = "darsad_noghabol";
+                        break;
+                    }
+                    case 20: {
+                        headers[z] = "نمره یادگیری کلاس";
+                        columns[z] = "learning";
+                        break;
+                    }
+                    case 21: {
+                        headers[z] = "بیشترین نمره آزمون نهایی";
+                        columns[z] = "max_nahaii";
+                        break;
+                    }
+                    case 22: {
+                        headers[z] = "کمترین نمره آزمون پیش تست";
+                        columns[z] = "min_pre";
+                        break;
+                    }
+                    case 23: {
+                        headers[z] = "درصد پیشرفت";
+                        columns[z] = "pishraft";
+                        break;
+                    }
+
+                }
+            }
+
+            workbook = new XSSFWorkbook();
+            CreationHelper createHelper = workbook.getCreationHelper();
+            Sheet sheet = workbook.createSheet("گزارش excel");
+            sheet.setRightToLeft(true);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setFontHeightInPoints((short) 12);
+            headerFont.setColor(IndexedColors.BLUE_GREY.getIndex());
+
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+
+            Row headerRow2 = sheet.createRow(0);
+            Cell cell2 = headerRow2.createCell(0);
+            cell2.setCellValue("گزارش ارزیابی یادگیری");
+
+            sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
+
+            Row headerRow = sheet.createRow(1);
+
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerCellStyle);
+            }
+
+            CellStyle dateCellStyle = workbook.createCellStyle();
+            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+
+            int rowNum = 1;
+            for (ViewLearningEvaluationCourseReport map : data) {
+                Row row = sheet.createRow(++rowNum);
+
+                for (int i = 0; i < columns.length; i++) {
+
+                    switch (columns[i]) {
+                        case "class_code": {
+                            row.createCell(i).setCellValue(map.getClass_code());
+                            break;
+                        }
+                        case "complex": {
+                            row.createCell(i).setCellValue(map.getComplex());
+                            break;
+                        }
+                        case "teacher_national_code": {
+                            row.createCell(i).setCellValue(map.getTeacher_national_code());
+                            break;
+                        }
+                        case "teacher": {
+                            row.createCell(i).setCellValue(map.getTeacher());
+                            break;
+                        }
+                        case "is_personnel": {
+                            row.createCell(i).setCellValue(map.getIs_personnel());
+                            break;
+                        }
+                        case "class_start_date": {
+                            row.createCell(i).setCellValue(map.getStartDate());
+                            break;
+                        }
+                        case "class_end_date": {
+                            row.createCell(i).setCellValue(map.getEndDate());
+                            break;
+                        }
+                        case "course_code": {
+                            row.createCell(i).setCellValue(map.getCourse_code());
+                            break;
+                        }
+                        case "course_titlefa": {
+                            row.createCell(i).setCellValue(map.getCourse_titlefa());
+                            break;
+                        }
+                        case "category_titlefa": {
+                            row.createCell(i).setCellValue(map.getCategory_titlefa());
+                            break;
+                        }
+                        case "sub_category_titlefa": {
+                            row.createCell(i).setCellValue(map.getSub_category_titlefa());
+                            break;
+                        }
+
+                        case "class_status": {
+                            row.createCell(i).setCellValue(map.getClass_status());
+                            break;
+                        }
+
+                       case "total_std": {
+                            row.createCell(i).setCellValue(map.getTotal_std());
+                            break;
+                        }
+                       case "miangin_pretest": {
+                           String pish="0";
+                           if (map.getMiangin_pretest()!=null)
+                               pish=map.getMiangin_pretest();
+                            row.createCell(i).setCellValue(pish);
+                            break;
+                        }
+                       case "miangin_asli": {
+                            row.createCell(i).setCellValue(map.getMiangin_asli());
+                            break;
+                        }
+                       case "nerkh": {
+                            row.createCell(i).setCellValue(map.getNerkh());
+                            break;
+                        }
+                       case "darsad_javab_dade_asli": {
+                            row.createCell(i).setCellValue(map.getDarsad_javab_dade_asli());
+                            break;
+                        }
+                       case "darsad_javab_dade_pre": {
+                            row.createCell(i).setCellValue(map.getDarsad_javab_dade_pre());
+                            break;
+                        }
+                       case "darsad_ghabol": {
+                            row.createCell(i).setCellValue(map.getDarsad_ghabol());
+                            break;
+                        }
+                       case "darsad_noghabol": {
+                            row.createCell(i).setCellValue(map.getDarsad_noghabol());
+                            break;
+                        }
+                       case "learning": {
+                            row.createCell(i).setCellValue(map.getLearning());
+                            break;
+                        }
+                       case "max_nahaii": {
+                            row.createCell(i).setCellValue(map.getMax_nahaii());
+                            break;
+                        }
+                       case "min_pre": {
+                            row.createCell(i).setCellValue(map.getMin_pre());
+                            break;
+                        }
+                       case "pishraft": {
+                            row.createCell(i).setCellValue(map.getPishraft());
+                            break;
+                        }
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            CellStyle mine = workbook.createCellStyle();
+            mine.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            mine.setFillBackgroundColor(IndexedColors.BLUE_GREY.getIndex());
+            sheet.getRow(0).setRowStyle(mine);
+
+
+            FileOutputStream fileOut = new FileOutputStream(fileFullPath);
+            workbook.write(fileOut);
+            fileOut.close();
+
+            File file = new File(fileFullPath);
+            in = new FileInputStream(file);
+            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
+            String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+            String headerKey = "Content-Disposition";
+            String headerValue;
+            response.setContentType(mimeType);
+            headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(headerKey, headerValue);
+            response.setContentLength((int) file.length());
+            OutputStream outStream = response.getOutputStream();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+            outStream.flush();
+            in.close();
+
+        } catch (Exception ex) {
+        } finally {
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+
+    @PostMapping(value = {"/excel/formula/learning"})
+    public void getExcelDataForFormula2ReportLearning(final HttpServletResponse response, @RequestParam(value = "criteria") String criteria) {
+
+
+
+        SearchDTO.CriteriaRq criteriaRq;
+
+        criteria = "[" + criteria + "]";
+        criteriaRq = new SearchDTO.CriteriaRq();
+        try {
+            criteriaRq.setOperator(EOperator.valueOf("and"))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        String start="";
+        String end="";
+        List<Object> categoryList=new ArrayList<>();
+        List<Object> subCategoryList=new ArrayList<>();
+        for (int f=0 ; f<criteriaRq.getCriteria().get(0).getCriteria().size();f++){
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classStartDate"))
+                start=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classEndDate"))
+                end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
+                categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryTitleFa")){
+                subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
+            }
+
+        }
+
+        List<ViewLearningEvaluationStudentReport>    firstData=  studentReportDAO.findAllByEndDateLessThanEqualAndStartDateGreaterThanEqual(end,start);
+        List<Object> finalCategoryList = categoryList;
+        List<Object> finalSubCategoryList = subCategoryList;
+        List<ViewLearningEvaluationStudentReport> secondData;
+        List<ViewLearningEvaluationStudentReport> data;
+        if (categoryList.size()>0){
+            secondData  =firstData.stream()
+                    .filter(first -> finalCategoryList.stream()
+                            .anyMatch(category -> first.getCategory_titlefa().equals(category)))
+                    .collect(Collectors.toList());
+        }else{
+            secondData=firstData;
+        }
+        if (subCategoryList.size()>0){
+            data =secondData.stream()
+                    .filter(sec -> finalSubCategoryList.stream()
+                            .anyMatch(sub -> sec.getSub_category_titlefa().equals(sub)))
+                    .collect(Collectors.toList());
+        }else {
+            data=secondData;
+        }
+
+
+        String fileFullPath = "export.xlsx";
+        Workbook workbook = null;
+        FileInputStream in = null;
+        try {
+
+            String[] headers = new String[24];
+            String[] columns = new String[24];
+
+
+            for (int z = 0; z < 24; z++) {
+
+                switch (z) {
+                    case 0: {
+                        headers[z] = "کد درس";
+                        columns[z] = "class_code";
+                        break;
+                    }
+                    case 1: {
+                        headers[z] = "وضعیت کلاس";
+                        columns[z] = "class_status";
+                        break;
+                    }
+                    case 2: {
+                        headers[z] = "شروع کلاس";
+                        columns[z] = "class_start_date";
+                        break;
+                    }
+                    case 3: {
+                        headers[z] = "انتهای کلاس";
+                        columns[z] = "class_end_date";
+                        break;
+                    }
+                    case 4: {
+                        headers[z] = " کد دوره";
+                        columns[z] = "course_code";
+                        break;
+                    }
+                    case 5: {
+                        headers[z] = " عنوان دوره";
+                        columns[z] = "course_titlefa";
+                        break;
+                    }
+                    case 6: {
+                        headers[z] = " گروه";
+                        columns[z] = "category_titlefa";
+
+                        break;
+                    }
+                    case 7: {
+                        headers[z] = " زیر گروه";
+                        columns[z] = "sub_category_titlefa";
+                        break;
+                    }
+                    case 8: {
+                        headers[z] = "مجتمع کلاس";
+                        columns[z] = "complex";
+                        break;
+                    }
+                    case 9: {
+                        headers[z] = "نوع استاد";
+                        columns[z] = "is_personnel";
+                        break;
+                    }
+                    case 10: {
+                        headers[z] = "کد ملی استاد";
+                        columns[z] = "teacher_national_code";
+                        break;
+                    }
+                    case 11: {
+                        headers[z] = "استاد";
+                        columns[z] = "teacher";
+                        break;
+                    }
+                    case 12: {
+                        headers[z] = "تعداد دانشجویان کلاس";
+                        columns[z] = "total_std";
+                        break;
+                    }
+
+
+
+                    case 13: {
+                        headers[z] = "فراگیر";
+                        columns[z] = "student";
+                        break;
+                    }
+                    case 14: {
+                        headers[z] = "کد ملی فراگیر";
+                        columns[z] = "student_national_code";
+                        break;
+                    }
+                    case 15: {
+                        headers[z] = "۶ رقمی فراگیر";
+                        columns[z] = "emp_no";
+                        break;
+                    }
+                    case 16: {
+                        headers[z] = "پرسنلی فراگیر";
+                        columns[z] = "personnel_no";
+                        break;
+                    }
+                    case 17: {
+                        headers[z] = "حوزه فراگیر";
+                        columns[z] = "student_hoze";
+                        break;
+                    }
+                    case 18: {
+                        headers[z] = "امور فراگیر";
+                        columns[z] = "student_omor";
+                        break;
+                    }
+                    case 19: {
+                        headers[z] = "کد پست فراگیر";
+                        columns[z] = "student_post_code";
+                        break;
+                    }
+                    case 20: {
+                        headers[z] = "پست فراگیر";
+                        columns[z] = "student_post_title";
+                        break;
+                    }
+                    case 21: {
+                        headers[z] = "نمره پیش تست";
+                        columns[z] = "nore_pish";
+                        break;
+                    }
+                    case 22: {
+                        headers[z] = "نمره نهایی";
+                        columns[z] = "nore_nahaii";
+                        break;
+                    }
+                    case 23: {
+                        headers[z] = "نمره یادگیری ";
+                        columns[z] = "learning";
+                        break;
+                    }
+
+                }
+            }
+
+            workbook = new XSSFWorkbook();
+            CreationHelper createHelper = workbook.getCreationHelper();
+            Sheet sheet = workbook.createSheet("گزارش excel");
+            sheet.setRightToLeft(true);
+
+            Font headerFont = workbook.createFont();
+            headerFont.setFontHeightInPoints((short) 12);
+            headerFont.setColor(IndexedColors.BLUE_GREY.getIndex());
+
+            CellStyle headerCellStyle = workbook.createCellStyle();
+            headerCellStyle.setFont(headerFont);
+
+            Row headerRow2 = sheet.createRow(0);
+            Cell cell2 = headerRow2.createCell(0);
+            cell2.setCellValue("گزارش ارزیابی یادگیری");
+
+            sheet.addMergedRegion(CellRangeAddress.valueOf("A1:Z1"));
+
+            Row headerRow = sheet.createRow(1);
+
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerCellStyle);
+            }
+
+            CellStyle dateCellStyle = workbook.createCellStyle();
+            dateCellStyle.setDataFormat(createHelper.createDataFormat().getFormat("dd-MM-yyyy"));
+
+            int rowNum = 1;
+            for (ViewLearningEvaluationStudentReport map : data) {
+                Row row = sheet.createRow(++rowNum);
+
+                for (int i = 0; i < columns.length; i++) {
+
+                    switch (columns[i]) {
+                        case "class_code": {
+                            row.createCell(i).setCellValue(map.getClass_code());
+                            break;
+                        }
+                        case "complex": {
+                            row.createCell(i).setCellValue(map.getComplex());
+                            break;
+                        }
+                        case "teacher_national_code": {
+                            row.createCell(i).setCellValue(map.getTeacher_national_code());
+                            break;
+                        }
+                        case "teacher": {
+                            row.createCell(i).setCellValue(map.getTeacher());
+                            break;
+                        }
+                        case "is_personnel": {
+                            row.createCell(i).setCellValue(map.getIs_personnel());
+                            break;
+                        }
+                        case "class_start_date": {
+                            row.createCell(i).setCellValue(map.getStartDate());
+                            break;
+                        }
+                        case "class_end_date": {
+                            row.createCell(i).setCellValue(map.getEndDate());
+                            break;
+                        }
+                        case "course_code": {
+                            row.createCell(i).setCellValue(map.getCourse_code());
+                            break;
+                        }
+                        case "course_titlefa": {
+                            row.createCell(i).setCellValue(map.getCourse_titlefa());
+                            break;
+                        }
+                        case "category_titlefa": {
+                            row.createCell(i).setCellValue(map.getCategory_titlefa());
+                            break;
+                        }
+                        case "sub_category_titlefa": {
+                            row.createCell(i).setCellValue(map.getSub_category_titlefa());
+                            break;
+                        }
+
+                        case "class_status": {
+                            row.createCell(i).setCellValue(map.getClass_status());
+                            break;
+                        }
+
+                        case "total_std": {
+                            row.createCell(i).setCellValue(map.getTotal_std());
+                            break;
+                        }
+                        case "student": {
+                            row.createCell(i).setCellValue(map.getStudent());
+                            break;
+                        }
+                        case "student_national_code": {
+                            row.createCell(i).setCellValue(map.getStudent_per_number());
+                            break;
+                        }
+                        case "emp_no": {
+                            row.createCell(i).setCellValue(map.getEmp_no());
+                            break;
+                        }
+                        case "personnel_no": {
+                            row.createCell(i).setCellValue(map.getPersonnel_no());
+                            break;
+                        }
+                        case "student_hoze": {
+                            row.createCell(i).setCellValue(map.getStudent_hoze());
+                            break;
+                        }
+                        case "student_omor": {
+                            row.createCell(i).setCellValue(map.getStudent_omor());
+                            break;
+                        }
+                        case "student_post_code": {
+                            row.createCell(i).setCellValue(map.getStudent_post_code());
+                            break;
+                        }
+                        case "student_post_title": {
+                            row.createCell(i).setCellValue(map.getStudent_post_title());
+                            break;
+                        }
+                        case "nore_pish": {
+                            String pish="0";
+                            if (map.getNore_pish()!= null)
+                                pish=map.getNore_pish();
+                            row.createCell(i).setCellValue(pish);
+                            break;
+                        }
+                        case "nore_nahaii": {
+                            row.createCell(i).setCellValue(map.getNore_nahaii());
+                            break;
+                        }
+                        case "learning": {
+                            row.createCell(i).setCellValue(map.getLearning());
+                            break;
+                        }
+                    }
+
+                }
+            }
+
+            for (int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            CellStyle mine = workbook.createCellStyle();
+            mine.setFillForegroundColor(IndexedColors.BLUE_GREY.getIndex());
+            mine.setFillBackgroundColor(IndexedColors.BLUE_GREY.getIndex());
+            sheet.getRow(0).setRowStyle(mine);
+
+
+            FileOutputStream fileOut = new FileOutputStream(fileFullPath);
+            workbook.write(fileOut);
+            fileOut.close();
+
+            File file = new File(fileFullPath);
+            in = new FileInputStream(file);
+            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
+            String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
+            if (mimeType == null) {
+                mimeType = "application/octet-stream";
+            }
+            String headerKey = "Content-Disposition";
+            String headerValue;
+            response.setContentType(mimeType);
+            headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            response.setHeader(headerKey, headerValue);
+            response.setContentLength((int) file.length());
+            OutputStream outStream = response.getOutputStream();
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = in.read(buffer)) != -1) {
+                outStream.write(buffer, 0, bytesRead);
+            }
+            outStream.flush();
+            in.close();
+
+        } catch (Exception ex) {
+        } finally {
+            if (workbook != null) {
+                try {
+                    workbook.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (in != null) {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
 }
