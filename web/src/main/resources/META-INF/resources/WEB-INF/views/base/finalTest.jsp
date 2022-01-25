@@ -560,27 +560,29 @@
                       sendFinalScoreToOnlineExam(Window_result_Finaltest);
                     }
                 })
-                <%--                            ,--%>
-                <%--                            isc.IButtonSave.create({--%>
-                <%--    title: "<spring:message code="sendScoreToTrainingExam"/>", width: 300,--%>
-                <%--    click: function () {--%>
+                                            ,
+                                            isc.IButtonSave.create({
+                    title: "<spring:message code="sendScoreToTrainingExam"/>", width: 300,
+                    click: function () {
 
-                <%--        if (ListGrid_Result_finalTest.getData().length > 0){--%>
-                <%--            for (let i = 0; i < ListGrid_Result_finalTest.getData().length; i++) {--%>
-                <%--              let listData=ListGrid_Result_finalTest.getData().get(i);--%>
-                <%--            let testResult=    ((listData.testResult === undefined || listData.testResult === null || listData.testResult === "-") ? "0" : listData.testResult);--%>
-                <%--            let descriptiveResult=    ((listData.descriptiveResult === undefined || listData.descriptiveResult === null || listData.descriptiveResult === "-") ? "0" : listData.descriptiveResult);--%>
-                <%--           let finalScore=testResult+descriptiveResult;--%>
-                <%--            debugger--%>
-                <%--            }--%>
-                <%--        }--%>
+                        if (ListGrid_Result_finalTest.getData().length > 0){
+                            for (let i = 0; i < ListGrid_Result_finalTest.getData().length; i++) {
+                              let listData=ListGrid_Result_finalTest.getData().get(i);
+                            let testResult=    ((listData.testResult === undefined || listData.testResult === null || listData.testResult === "-") ? "0" : listData.testResult);
+                            let descriptiveResult=    ((listData.descriptiveResult === undefined || listData.descriptiveResult === null || listData.descriptiveResult === "-") ? "0" : listData.descriptiveResult);
+                           let finalScore=parseFloat(testResult)+parseFloat(descriptiveResult);
+
+                                ListGrid_Result_finalTest.setEditValue(i, ListGrid_Result_finalTest.getField("finalResult").masterIndex, finalScore);
+
+                            }
+                        }
 
 
 
 
 
-                <%--    }--%>
-                <%--})--%>
+                    }
+                })
                                         ]
                                     })]
                             })
