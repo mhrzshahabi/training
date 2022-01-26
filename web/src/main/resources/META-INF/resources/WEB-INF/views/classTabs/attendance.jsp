@@ -36,7 +36,7 @@
     };
     var readOnlySession;
     let sessionTimes = [];
-    let selectedTimeForAudit =null;
+
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
@@ -430,9 +430,9 @@
                     textAlign: "center",
                     width:"*",
                     valueMap: sessionTimes,
-                    changed: function (form, item, value) {
-                        selectedTimeForAudit=value;
-                    },
+                    // changed: function (form, item, value) {
+                    //     selectedTimeForAudit=value;
+                    // },
                     pickListProperties: {showFilterEditor: false},
                 },
 
@@ -441,7 +441,7 @@
             isc.ToolStripButton.create({
                 title: "تاریخچه ی حضورو غیاب",
                 click: function () {
-                    if (selectedTimeForAudit!==undefined && selectedTimeForAudit!==null){
+                    if (auditSession.getField("auditFilterType").getValue()!==undefined && auditSession.getField("auditFilterType").getValue()!==null){
                         let selectedAttendance = ListGrid_Attendance_AttendanceJSP.getSelectedRecord();
                         if (selectedAttendance == null){
                             simpleDialog("پیام", "هیچ موردی انتخاب نشده است.", 0, "confirm");
@@ -449,7 +449,7 @@
                             simpleDialog("پیام", "حضور غیاب برای فراگیر مورد نظر ثبت نشده است", 0, "confirm");
                         } else {
                             let sessionDate =  DynamicForm_Attendance.getValue("sessionDate");
-                            showAttendanceAuditWindow(selectedAttendance, sessionDate);
+                            showAttendanceAuditWindow(selectedAttendance, sessionDate,auditSession.getField("auditFilterType").getValue());
                         }
                     }else {
                         simpleDialog("پیام", "یک جلسه برای حضور و غیاب انتخاب کنید", 0, "confirm");
@@ -522,7 +522,7 @@
         ]
     });
 
-    function showAttendanceAuditWindow(selectedAttendance, sessionDate){
+    function showAttendanceAuditWindow(selectedAttendance, sessionDate,sessionTime){
 
         let ListGrid_Attendance_Show_Audit = isc.TrLG.create({
             canAutoFitFields: true,
@@ -637,9 +637,12 @@
                         })]
                 })]
         });
+        let sendData = {};
+        sendData.attendanceIdes=JSON.parse(selectedAttendance.attendanceId);
+        sendData.sessionTime=sessionTime;
 
         isc.RPCManager.sendRequest(
-            TrDSRequest(attendanceAuditUrl + "/change-list", "POST", JSON.stringify(JSON.parse(selectedAttendance.attendanceId)), function (resp) {
+            TrDSRequest(attendanceAuditUrl + "/change-list", "POST", JSON.stringify(sendData), function (resp) {
                 wait.show();
                 if (resp.httpResponseCode === 200) {
                     wait.close();
@@ -819,17 +822,20 @@
                                     {name: "nationalCode", title: "کد ملی",width:"10%"},
                                     {name: "personalNum", title: "شماره پرسنلي",width:"10%"},
                                 ];
+                                auditSession.getField("auditFilterType").setValueMap(null)
+                                sessionTimes=[];
                                 for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                                     let field1 = {};
                                     field1.name = "se" + JSON.parse(resp.data)[i].id;
                                     field1.title = JSON.parse(resp.data)[i].sessionEndHour + " - " + JSON.parse(resp.data)[i].sessionStartHour;
-                                    sessionTimes.add(field1.title);
+                                    sessionTimes.add(JSON.parse(resp.data)[i].sessionStartHour);
                                     field1.valueMap = attendanceState;
                                     field1.canFilter = false;
                                     field1.showHover = true;
                                     fields1.add(field1);
                                 }
 
+                                auditSession.getField("auditFilterType").setValueMap(sessionTimes);
                                 wait.show();
                                 isc.RPCManager.sendRequest({
                                     actionURL: attendanceUrl + "/auto-create?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,

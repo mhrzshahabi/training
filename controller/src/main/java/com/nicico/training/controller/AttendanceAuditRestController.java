@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import request.attendance.AuditAttendanceDto;
 
 import java.io.IOException;
 import java.util.List;
@@ -25,9 +26,9 @@ public class AttendanceAuditRestController {
 
     @Loggable
     @PostMapping(value = "/change-list")
-    public ResponseEntity<ISC<AttendanceAuditDTO.Info>> changeList(@RequestBody List<Long> attendanceIds) throws IOException {
+    public ResponseEntity<ISC<AttendanceAuditDTO.Info>> changeList(@RequestBody AuditAttendanceDto auditAttendanceDto) throws IOException {
         try {
-            List<AttendanceAudit> attendanceAuditList = iAttendanceAuditService.getChangeList(attendanceIds);
+            List<AttendanceAudit> attendanceAuditList = iAttendanceAuditService.getChangeList(auditAttendanceDto.getAttendanceIdes(),auditAttendanceDto.getSessionTime());
             List<AttendanceAuditDTO.Info> dtoList = attendanceAuditBeanMapper.toAttendanceAuditInfoDTOList(attendanceAuditList);
             SearchDTO.SearchRs<AttendanceAuditDTO.Info> searchRs = new SearchDTO.SearchRs<>();
             searchRs.setList(dtoList);

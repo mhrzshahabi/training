@@ -8,9 +8,19 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.List;
 
 public interface AttendanceAuditDao extends JpaRepository<AttendanceAudit, Long>, JpaSpecificationExecutor<AttendanceAudit> {
+//
+//    @Query(value = " SELECT * FROM TBL_ATTENDANCE_AUD WHERE ID IN (:attendanceIds) " +
+//            " ORDER BY ID, REV DESC  ", nativeQuery = true)
+//    List<AttendanceAudit> findByAttendanceId(List<Long> attendanceIds);
 
-    @Query(value = " SELECT * FROM TBL_ATTENDANCE_AUD WHERE ID IN (:attendanceIds) " +
-            " ORDER BY ID, REV DESC  ", nativeQuery = true)
-    List<AttendanceAudit> findByAttendanceId(List<Long> attendanceIds);
+    @Query(value = "SELECT\n" +
+            "*\n" +
+            "FROM\n" +
+            "         tbl_attendance_aud\n" +
+            "    INNER JOIN tbl_session ON tbl_attendance_aud.f_session = tbl_session.id\n" +
+            "WHERE\n" +
+            "    tbl_attendance_aud.id IN (:attendanceIds)\n" +
+            "    and tbl_session.c_session_start_hour = :time ORDER BY tbl_attendance_aud.id,tbl_attendance_aud.rev DESC", nativeQuery = true)
+    List<AttendanceAudit> findByAttendanceId(List<Long> attendanceIds,String time);
 
 }
