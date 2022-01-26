@@ -49,6 +49,7 @@ public class QuestionBankDTO {
         private EQuestionLevel eQuestionLevel;
         private Date createdDate;
         private String createdBy;
+        private String questionDesigner;
     }
 
     @Getter
@@ -69,6 +70,7 @@ public class QuestionBankDTO {
         private Long teacherId;
         private Boolean hasAttachment;
         private Integer questionLevelId;
+        private String questionDesigner;
     }
 
     @Getter

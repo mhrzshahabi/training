@@ -1,10 +1,7 @@
 package com.nicico.training.service;
-/* com.nicico.training.service
-@Author:Mehran Golrokhi
-*/
-
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
@@ -85,6 +82,11 @@ public class QuestionBankService implements IQuestionBankService {
         model.setCode(model.getCodeId().toString());
         model.setEQuestionLevel(eQuestionLevelConverter.convertToEntityAttribute(request.getQuestionLevelId()));
         model.setEQuestionLevelId(request.getQuestionLevelId());
+        if (request.getQuestionDesigner() != null) {
+            model.setQuestionDesigner(request.getQuestionDesigner());
+        } else {
+            model.setQuestionDesigner(SecurityUtil.getUsername());
+        }
         return save(model);
     }
 
