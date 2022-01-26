@@ -1,7 +1,6 @@
 package dto.exam;
 
 import io.swagger.annotations.ApiModelProperty;
-import io.swagger.models.auth.In;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -16,6 +15,9 @@ public class ImportedQuestionProtocol {
 
     @ApiModelProperty
     private Double mark;
+
+    @ApiModelProperty
+    private Double proposedPointValue;
 
     @ApiModelProperty
     private Integer time;

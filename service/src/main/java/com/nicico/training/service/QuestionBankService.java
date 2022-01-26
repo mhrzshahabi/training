@@ -23,8 +23,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
@@ -102,6 +100,7 @@ public class QuestionBankService implements IQuestionBankService {
         model.setSubCategoryId(request.getSubCategoryId());
         model.setEQuestionLevel(eQuestionLevelConverter.convertToEntityAttribute(request.getQuestionLevelId()));
         model.setEQuestionLevelId(request.getQuestionLevelId());
+        model.setProposedPointValue(request.getProposedPointValue());
 
         QuestionBank updating = new QuestionBank();
         modelMapper.map(model, updating);

@@ -27,6 +27,7 @@ public class QuestionBankDTO {
     private Long teacherId;
     private Long courseId;
     private Long tclassId;
+    private Double proposedPointValue;
     private Integer lines;
     private List<Integer> questionTargets;
 
