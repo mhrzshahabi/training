@@ -623,6 +623,7 @@ public class ElsRestController {
             } else {
                 UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id);
                 try {
+                    baseResponse= classStudentService.updateTestScore(testQuestionService.get(id).getTclass().getId(),examResult);
                     baseResponse = client.sendScoresToEls(requestDto);
                     if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
                         return baseResponse;
@@ -657,6 +658,7 @@ public class ElsRestController {
 
                 UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, idPreTEst);
                 try {
+                    baseResponse= classStudentService.updatePreTestScore(id,examResult);
                     baseResponse = client.sendScoresToEls(requestDto);
                     if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
                         return baseResponse;

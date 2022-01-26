@@ -5,6 +5,8 @@ import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.model.ClassStudent;
 import org.springframework.transaction.annotation.Transactional;
 import request.exam.ElsExamScore;
+import request.exam.ExamResult;
+import request.exam.UpdateRequest;
 import response.BaseResponse;
 import response.tclass.dto.ElsClassListDto;
 import java.util.List;
@@ -47,4 +49,8 @@ public interface IClassStudentService {
     ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size);
 
     void testAddStudent(String classCode);
+
+    BaseResponse updatePreTestScore(long id, List<ExamResult> examResult);
+
+    BaseResponse updateTestScore(long id, List<ExamResult> examResult);
 }

@@ -1367,7 +1367,7 @@
                                                                     let finalScore=parseFloat(testResult)+parseFloat(descriptiveResult);
 
                                                                     ListGrid_Result_preTest.setEditValue(i, ListGrid_Result_preTest.getField("finalResult").masterIndex, finalScore);
-
+                                                                    allResultScores[i].finalResult = finalScore;
                                                                 }
                                                             }
                                                         }

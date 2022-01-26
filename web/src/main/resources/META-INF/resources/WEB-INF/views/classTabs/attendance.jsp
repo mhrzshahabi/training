@@ -35,6 +35,8 @@
         "4": "غیبت با مجوز",
     };
     var readOnlySession;
+    let sessionTimes = [];
+    let selectedTimeForAudit =null;
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
@@ -407,18 +409,53 @@
                     printFullClearForm()
                 }
             }),
+      isc.DynamicForm.create({
+            ID: "auditSession",
+            numCols: 8,
+            padding: 10,
+            // cellBorder:2,
+            colWidths:[250,200,200,100,100,20,20],
+            fields: [
+                {
+                    name: "auditSessionTitle",
+                    title: "جلسه : ",
+                    canEdit: false,
+                    textBoxStyle: "font-weight:bold; font-color:red;",
+                    textAlign: "center",
+                    width: "10%"
+                },
+                {
+                    name: "auditFilterType",
+                    showTitle: false,
+                    textAlign: "center",
+                    width:"*",
+                    valueMap: sessionTimes,
+                    changed: function (form, item, value) {
+                        selectedTimeForAudit=value;
+                    },
+                    pickListProperties: {showFilterEditor: false},
+                },
+
+            ],
+        }),
             isc.ToolStripButton.create({
                 title: "تاریخچه ی حضورو غیاب",
                 click: function () {
-                    let selectedAttendance = ListGrid_Attendance_AttendanceJSP.getSelectedRecord();
-                    if (selectedAttendance == null){
-                        simpleDialog("پیام", "هیچ موردی انتخاب نشده است.", 0, "confirm");
-                    } else if (selectedAttendance.attendanceId == null){
-                        simpleDialog("پیام", "حضور غیاب برای فراگیر مورد نظر ثبت نشده است", 0, "confirm");
-                    } else {
-                        let sessionDate =  DynamicForm_Attendance.getValue("sessionDate");
-                        showAttendanceAuditWindow(selectedAttendance, sessionDate);
+                    if (selectedTimeForAudit!==undefined && selectedTimeForAudit!==null){
+                        let selectedAttendance = ListGrid_Attendance_AttendanceJSP.getSelectedRecord();
+                        if (selectedAttendance == null){
+                            simpleDialog("پیام", "هیچ موردی انتخاب نشده است.", 0, "confirm");
+                        } else if (selectedAttendance.attendanceId == null){
+                            simpleDialog("پیام", "حضور غیاب برای فراگیر مورد نظر ثبت نشده است", 0, "confirm");
+                        } else {
+                            let sessionDate =  DynamicForm_Attendance.getValue("sessionDate");
+                            showAttendanceAuditWindow(selectedAttendance, sessionDate);
+                        }
+                    }else {
+                        simpleDialog("پیام", "یک جلسه برای حضور و غیاب انتخاب کنید", 0, "confirm");
+
                     }
+
                     //
                 }
             }),
@@ -786,11 +823,13 @@
                                     let field1 = {};
                                     field1.name = "se" + JSON.parse(resp.data)[i].id;
                                     field1.title = JSON.parse(resp.data)[i].sessionEndHour + " - " + JSON.parse(resp.data)[i].sessionStartHour;
+                                    sessionTimes.add(field1.title);
                                     field1.valueMap = attendanceState;
                                     field1.canFilter = false;
                                     field1.showHover = true;
                                     fields1.add(field1);
                                 }
+
                                 wait.show();
                                 isc.RPCManager.sendRequest({
                                     actionURL: attendanceUrl + "/auto-create?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,
