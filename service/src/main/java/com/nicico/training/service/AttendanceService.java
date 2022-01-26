@@ -136,8 +136,12 @@ public class AttendanceService implements IAttendanceService {
             map.put("studentState", classStudent.getPresenceType().getCode());
             map.put("classStudentId", classStudent.getId().toString());
             List<Attendance> filterAttendance = attendances.stream().filter(a -> a.getStudentId().equals(classStudent.getStudent().getId())).collect(Collectors.toList());
+            List<Long> attendanceIds = new ArrayList<>();
             if (filterAttendance.size() > 0 && filterAttendance.get(0).getId() != null) {
-                map.put("attendanceId", String.valueOf(filterAttendance.get(0).getId()));
+                for (Attendance attendance : filterAttendance) {
+                    attendanceIds.add(attendance.getId());
+                }
+                map.put("attendanceId", String.valueOf(attendanceIds));
             }
             List<Long> sessionIdsSaved = filterAttendance.stream().map(c -> c.getSessionId()).collect(Collectors.toList());
             for (Long sessionId : sessionIds) {

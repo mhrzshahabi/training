@@ -334,6 +334,10 @@ public class ClassStudentService implements IClassStudentService {
             Tclass tclass = tclassService.getTClass(classId);
 
             elsClassDto.setClassId(classId);
+            elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
+            elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
+            elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
+            elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
             elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
             elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
             elsClassDto.setName(arr[5] == null ? null : arr[5].toString());
@@ -392,7 +396,10 @@ public class ClassStudentService implements IClassStudentService {
             Object[] arr = (Object[]) o;
             Long classId = Long.parseLong(arr[1].toString());
             Tclass tclass = tclassService.getTClass(classId);
-
+            elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
+            elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
+            elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
+            elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
             elsClassDto.setClassId(classId);
             elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
             elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());

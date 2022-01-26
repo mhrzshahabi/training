@@ -277,6 +277,7 @@ public abstract class QuestionBankBeanMapper {
     }
 
     public ElsQuestionDto toQuestionBankEdit(ElsQuestionDto elsQuestionDto, long id, Long teacherId) {
+        Tclass tClass = tClassService.getClassByCode(elsQuestionDto.getClassCode());
 
         QuestionBankDTO.Update update = new QuestionBankDTO.Update();
 
@@ -288,10 +289,11 @@ public abstract class QuestionBankBeanMapper {
 
         update.setQuestion(elsQuestionDto.getTitle());
         update.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
-        update.setCategoryId(elsQuestionDto.getCategoryId());
-        update.setSubCategoryId(elsQuestionDto.getSubCategory());
+        update.setCategoryId(tClass.getCourse().getCategoryId());
+        update.setSubCategoryId(tClass.getCourse().getSubCategoryId());
         update.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
         update.setLines(1);
+        update.setTclassId(tClass.getId());
         update.setDisplayTypeId(521L);
         update.setTeacherId(teacherId);
         update.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());

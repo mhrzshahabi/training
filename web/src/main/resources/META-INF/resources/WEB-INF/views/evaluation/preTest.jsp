@@ -1357,6 +1357,24 @@
                                                             sendFinalScoreToOnlineExam2(Window_result_preTest);
                                                         }
                                                     })
+                                                    ,
+                                                    isc.IButtonSave.create({
+                                                        title: "<spring:message code="sendScoreToTrainingExam"/>", width: 300,
+                                                        click: function () {
+                                                            if (ListGrid_Result_preTest.getData().length > 0){
+                                                                for (let i = 0; i < ListGrid_Result_preTest.getData().length; i++) {
+                                                                    let listData=ListGrid_Result_preTest.getData().get(i);
+                                                                    let testResult=    ((listData.testResult === undefined || listData.testResult === null || listData.testResult === "-") ? "0" : listData.testResult);
+                                                                    let descriptiveResult=    ((listData.descriptiveResult === undefined || listData.descriptiveResult === null || listData.descriptiveResult === "-") ? "0" : listData.descriptiveResult);
+                                                                    let finalScore=parseFloat(testResult)+parseFloat(descriptiveResult);
+
+                                                                    ListGrid_Result_preTest.setEditValue(i, ListGrid_Result_preTest.getField("finalResult").masterIndex, finalScore);
+
+                                                                }
+                                                            }
+                                                        }
+                                                    })
+
                                                 ]
                                             })]
                                     })
@@ -1445,8 +1463,8 @@
             fields: []
         });
         for(var i=0 ; i<answers.length; i++) {
-            // let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:true, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
-            let text_FormItem = { title:"Pasted value",disabled:false,canEdit: false, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+            let text_FormItem = { title:"Pasted value",cellStyle: 'text-exam-form-item',disabled:false, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
+            // let text_FormItem = { title:"Pasted value",disabled:false,canEdit: false, titleOrientation: "top", name:"textArea", width:"100%",height:100, editorType: "TextAreaItem", value: ''};
             let radio_FormItem =  { name: "startMode", cellStyle: 'radio-exam-form-item', disabled:true,titleOrientation: "top", title: "Initially show ColorPicker as",
                 width: "100%",
                 type: "radioGroup",
