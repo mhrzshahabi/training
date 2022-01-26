@@ -12,8 +12,6 @@ import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.repository.TeachersRoleDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.CachePut;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,11 +30,14 @@ public class TeacherRoleService implements ITeacherRoleService {
     private final PersonalInfoDAO personalInfoDAO;
     private final RoleDAO roleDAO;
     private final String INSTRUCTOR = "INSTRUCTOR";
+    private final String PERSONNEL = "PERSONNEL";
+    private final String NONEPERSONNEL = "NONEPERSONNEL";
 
     @Override
     public List<String> findAllTeacherRoleByNationalCode(String nationalCode) {
         List<String> roles = new ArrayList<>();
         List<Map<String, Object>> allTeacherRoleByNationalCode = teacherDAO.findAllTeacherRoleByNationalCode(nationalCode);
+        List<Teacher> teacherList = teacherDAO.findActiveTeacherByNationalCode(nationalCode);
         if (!allTeacherRoleByNationalCode.isEmpty()) {
             for (Map<String, Object> objectMap : allTeacherRoleByNationalCode) {
                 roles.add(objectMap.get("name").toString());
@@ -46,6 +47,14 @@ public class TeacherRoleService implements ITeacherRoleService {
             Long teacherId = teacherDAO.getTeacherIdIfTeacherIsActive(nationalCode);
             if (teacherId!=null)
                 roles.add(INSTRUCTOR);
+        }
+        if (teacherList != null && teacherList.size() != 0 && teacherList.size() == 1) {
+            Teacher teacher = teacherList.get(0);
+            if (teacher.getPersonnelStatus()) {
+                roles.add(PERSONNEL);
+            } else {
+                roles.add(NONEPERSONNEL);
+            }
         }
         return roles;
     }

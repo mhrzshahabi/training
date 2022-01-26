@@ -84,4 +84,10 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @Query(value = "SELECT\n" + " * FROM tbl_teacher WHERE e_deleted is NULL AND b_enabled= 1",nativeQuery = true)
     Page<Teacher> findAllActiveTeacher(Pageable pageable);
 
+    @Query(value = "SELECT TEACHER.* " +
+            "FROM TBL_TEACHER TEACHER " +
+            "         INNER JOIN TBL_PERSONAL_INFO TPI ON TPI.ID = TEACHER.F_PERSONALITY " +
+            "WHERE TEACHER.B_ENABLED = 1 " +
+            "  and TPI.C_NATIONAL_CODE = :nationalCode ", nativeQuery = true)
+    List<Teacher> findActiveTeacherByNationalCode(@Param("nationalCode") String nationalCode);
 }
