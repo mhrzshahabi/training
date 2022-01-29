@@ -2,7 +2,6 @@ package response.question.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import response.BaseResponse;
 import response.PageDto;
 
 import java.util.List;

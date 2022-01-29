@@ -50,34 +50,48 @@ public class SystemStatusRestController {
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
+
         SystemStatusDTO elsSystemStatusDTO = new SystemStatusDTO();
-        ResponseEntity<String> elsResponse = restTemplate.exchange(elsActuatorUrl + "/health", HttpMethod.GET, entity, String.class);
-        if (elsResponse.getStatusCode() == HttpStatus.OK) {
-            elsSystemStatusDTO = objectMapper.readValue(elsResponse.getBody(), SystemStatusDTO.class);
-        } else {
-            elsSystemStatusDTO.setStatus("Down");
+        try {
+            ResponseEntity<String> elsResponse = restTemplate.exchange(elsActuatorUrl + "/health", HttpMethod.GET, entity, String.class);
+            if (elsResponse.getStatusCode() == HttpStatus.OK) {
+                elsSystemStatusDTO = objectMapper.readValue(elsResponse.getBody(), SystemStatusDTO.class);
+            } else {
+                elsSystemStatusDTO.setStatus("DOWN");
+            }
+
+        } catch (Exception e) {
+            elsSystemStatusDTO.setStatus("DOWN");
         }
-        elsSystemStatusDTO.setSystemName("Els");
+        elsSystemStatusDTO.setSystemName("ELS");
         systemStatusDTOList.add(elsSystemStatusDTO);
 
 
         SystemStatusDTO fmsSystemStatusDTO = new SystemStatusDTO();
-        ResponseEntity<String> fmsResponse = restTemplate.exchange(fmsActuatorUrl + "/health", HttpMethod.GET, entity, String.class);
-        if (fmsResponse.getStatusCode() == HttpStatus.OK) {
-            fmsSystemStatusDTO = objectMapper.readValue(fmsResponse.getBody(), SystemStatusDTO.class);
-        } else {
-            fmsSystemStatusDTO.setStatus("Down");
+        try {
+            ResponseEntity<String> fmsResponse = restTemplate.exchange(fmsActuatorUrl + "/health", HttpMethod.GET, entity, String.class);
+            if (fmsResponse.getStatusCode() == HttpStatus.OK) {
+                fmsSystemStatusDTO = objectMapper.readValue(fmsResponse.getBody(), SystemStatusDTO.class);
+            } else {
+                fmsSystemStatusDTO.setStatus("DOWN");
+            }
+        } catch (Exception e) {
+            fmsSystemStatusDTO.setStatus("DOWN");
         }
         fmsSystemStatusDTO.setSystemName("FMS");
         systemStatusDTOList.add(fmsSystemStatusDTO);
 
 
         SystemStatusDTO masterDataSystemStatusDTO = new SystemStatusDTO();
-        ResponseEntity<String> masterDataResponse = restTemplate.exchange(masterDataActuatorUrl + "/health", HttpMethod.GET, entity, String.class);
-        if (masterDataResponse.getStatusCode() == HttpStatus.OK) {
-            masterDataSystemStatusDTO = objectMapper.readValue(masterDataResponse.getBody(), SystemStatusDTO.class);
-        } else {
-            masterDataSystemStatusDTO.setStatus("Down");
+        try {
+            ResponseEntity<String> masterDataResponse = restTemplate.exchange(masterDataActuatorUrl + "/health", HttpMethod.GET, entity, String.class);
+            if (masterDataResponse.getStatusCode() == HttpStatus.OK) {
+                masterDataSystemStatusDTO = objectMapper.readValue(masterDataResponse.getBody(), SystemStatusDTO.class);
+            } else {
+                masterDataSystemStatusDTO.setStatus("DOWN");
+            }
+        } catch (Exception e) {
+            masterDataSystemStatusDTO.setStatus("DOWN");
         }
         masterDataSystemStatusDTO.setSystemName("Master Data");
         systemStatusDTOList.add(masterDataSystemStatusDTO);
