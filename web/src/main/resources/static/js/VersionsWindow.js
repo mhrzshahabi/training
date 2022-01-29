@@ -1,6 +1,6 @@
 isc.defineClass("VersionsWindow", isc.Window);
 isc.VersionsWindow.addProperties({
-    width: "500", height: "400", isModal: true,
+    width: "50%", isModal: true,
     autoCenter: true,
     autoDraw: true,
     title:"امکانات نسخه جدید",

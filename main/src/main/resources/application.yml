@@ -326,15 +326,6 @@ nicico:
   fmsActuatorUrl: 'http://devapp01.icico.net.ir/fms/actuator'
   masterDataActuatorUrl: 'http://devapp01.icico.net.ir/master-data/actuator'
 
-#staging
-#  elsActuatorUrl: 'http://staging.icico.net.ir/els/actuator'
-#  fmsActuatorUrl: 'http://staging.icico.net.ir/fms/actuator'
-#  masterDataActuatorUrl: 'http://staging.icico.net.ir/master-data/actuator'
-
-#production
-#  elsActuatorUrl: 'https://mobiles.nicico.com/actuator'
-#  fmsActuatorUrl: 'https://apps.nicico.com/fms/actuator'
-#  masterDataActuatorUrl: 'https://apps.nicico.com/master-data/actuator'
 
   upload:
     dir: c:/nicico/${spring.application.name}/upload

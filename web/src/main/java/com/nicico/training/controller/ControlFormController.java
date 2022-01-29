@@ -89,8 +89,13 @@ public class ControlFormController {
 
         for (int i = 0; i < sessionList.size(); i++) {
             ClassSession classSession = sessionList.get(i);
+            ClassSessionDTO.AttendanceClearForm zaza = modelMapper.map(classSession,  ClassSessionDTO.AttendanceClearForm.class);
 
-            if (classSession != null) {
+            if (classSession != null && allData.stream().anyMatch
+                    (q -> q.getSessionDate().equals(zaza.getSessionDate()) &&
+                            q.getSessionStartHour().equals(zaza.getSessionStartHour() )  &&
+                            q.getDayName().equals(zaza.getDayName() ) &&
+                            q.getSessionEndHour().equals(zaza.getSessionEndHour() ) ))  {
                 if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
                     dayDate = sessionList.get(i).getSessionDate();
                     sessionCounter = 0;
@@ -103,7 +108,7 @@ public class ControlFormController {
             }//end if
         }//end inner for
 
-        maxSessions = maxSessions >= 5 ? 5 : (maxSessions >= 0 && maxSessions <= 3 ? 3 : maxSessions);
+        maxSessions = maxSessions >= 5 ? 5 : Math.max(maxSessions, 3);
 
         for (Student student : students) {
             StudentDTO.clearAttendanceWithState st = modelMapper.map(student, StudentDTO.clearAttendanceWithState.class);
@@ -122,11 +127,18 @@ public class ControlFormController {
             for (int i = 0; i < sessionList.size(); i++) {
                 ClassSession classSession = sessionList.get(i);
 
-                if (classSession != null) {
+
+                ClassSessionDTO.AttendanceClearForm zaza = modelMapper.map(classSession,  ClassSessionDTO.AttendanceClearForm.class);
+
+                if (classSession != null && allData.stream().anyMatch
+                        (q -> q.getSessionDate().equals(zaza.getSessionDate()) &&
+                                q.getSessionStartHour().equals(zaza.getSessionStartHour() )  &&
+                                q.getDayName().equals(zaza.getDayName() ) &&
+                                q.getSessionEndHour().equals(zaza.getSessionEndHour() ) )) {
                     if (!sessionList.get(i).getSessionDate().equals(dayDate)) {
                         dayDate = sessionList.get(i).getSessionDate();
                         ztemp += maxSessions;
-                        z = ztemp;
+//                        z = ztemp;
                     }
 
                     Optional<Attendance> attendance = attendanceDOA.findBySessionIdAndStudentId(classSession.getId(), student.getId());
@@ -146,11 +158,12 @@ public class ControlFormController {
                             statePerStudent.put("z" + tempZ, attendanceDTO.statusName(Integer.parseInt(attendanceDTO.getState())));
                         else
                             statePerStudent.put("z" + tempZ, "");
-
+                    z++;
+                    } else {
+                        z = ztemp;
                     }
-
                 }//end if
-                z++;
+
             }//end inner for
 
             st.setStates(statePerStudent);

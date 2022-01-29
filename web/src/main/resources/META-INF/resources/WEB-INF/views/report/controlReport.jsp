@@ -187,7 +187,8 @@
                                 i=1;
                                 showPrintType(printClearForm,[sessionList,page,record.idClass]);
                                 date = s.sessionDate;
-                                sessionList.length = 0;
+                                // sessionList.length = 0;
+                                sessionList = [];
                                 sessionList.push(s);
                             }
                             page++;
