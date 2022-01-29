@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IAttendanceAuditService {
 
-    List<AttendanceAudit> getChangeList(List<Long> attendanceIds);
+    List<AttendanceAudit> getChangeList(List<Long> attendanceIds, String sessionTime);
 }

@@ -64,6 +64,7 @@
             {name: "question", title: 'سوال'},
             {name: "type", title: 'نوع پاسخ' },
             { name: "options", title: "گزینه ها"},
+            { name: "proposedPointValue", title: "<spring:message code="question.bank.proposed.point.value"/>"},
             { name: "score", title: "بارم",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click"}
         ]
     });
@@ -84,12 +85,12 @@
             },
             {
                 name: "tclass.startDate",
-                title: "<spring:message code="start.date"/>",
+                title: "<spring:message code="class.start.date"/>",
                 filterOperator: "iContains", autoFitWidth: true
             },
             {
                 name: "tclass.endDate",
-                title: "<spring:message code="end.date"/>",
+                title: "<spring:message code="class.end.date"/>",
                 filterOperator: "iContains", autoFitWidth: true
             },
             {
@@ -663,14 +664,14 @@
                     },
                     {
                         name: "tclass.startDate",
-                        title: "<spring:message code='start.date'/>",
+                        title: "<spring:message code='class.start.date'/>",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true
                     },
                     {
                         name: "tclass.endDate",
-                        title: "<spring:message code='end.date'/>",
+                        title: "<spring:message code='class.end.date'/>",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true},
@@ -804,14 +805,14 @@
                     },
                     {
                         name: "testQuestion.tclass.startDate",
-                        title: "<spring:message code='start.date'/>",
+                        title: "<spring:message code='class.start.date'/>",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true
                     },
                     {
                         name: "testQuestion.tclass.endDate",
-                        title: "<spring:message code='end.date'/>",
+                        title: "<spring:message code='class.end.date'/>",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true
@@ -887,6 +888,7 @@
                 {name: "question", title: 'سوال', width: "40%"},
                 {name: "type", title: 'نوع پاسخ', width: "10%"},
                 {name: "options", title: "گزینه ها", width: "40%", align: "center"},
+                { name: "proposedPointValue",type: "float", title: "<spring:message code="question.bank.proposed.point.value"/>", width: "10%",align:"center"},
                 {
                     name: "score", type: "float", title: "بارم", width: "10%", align: "center",
                     change: function (form, item, value, oldValue) {
@@ -1367,7 +1369,7 @@
                                                                     let finalScore=parseFloat(testResult)+parseFloat(descriptiveResult);
 
                                                                     ListGrid_Result_preTest.setEditValue(i, ListGrid_Result_preTest.getField("finalResult").masterIndex, finalScore);
-
+                                                                    allResultScores[i].finalResult = finalScore;
                                                                 }
                                                             }
                                                         }

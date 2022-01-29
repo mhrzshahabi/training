@@ -134,6 +134,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setHasAttachment(questionBank.getHasAttachment());
             elsQuestionDto.setFiles(elsAttachmentDtoFiles);
             elsQuestionDto.setQuestionCode(questionBank.getCode());
+            elsQuestionDto.setProposedPointValue(questionBank.getProposedPointValue());
             if(questionBank.getDisplayTypeId()!=null){
              Long id= questionBank.getDisplayTypeId();
            ParameterValue displayType=  parameterValueService.get(id);
@@ -212,6 +213,8 @@ public abstract class QuestionBankBeanMapper {
             create.setCourseId(tClass.getCourseId());
             create.setCategoryId(tClass.getCourse().getCategoryId());
             create.setSubCategoryId(tClass.getCourse().getSubCategoryId());
+            create.setQuestionDesigner(elsQuestionDto.getTeacherFullName());
+            create.setProposedPointValue(elsQuestionDto.getProposedPointValue());
 
             List<ElsQuestionOptionDto> optionList = elsQuestionDto.getOptionList();
             if (optionList.size() != 0) {
@@ -299,6 +302,7 @@ public abstract class QuestionBankBeanMapper {
         update.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
         update.setHasAttachment(elsQuestionDto.getHasAttachment());
         update.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
+        update.setProposedPointValue(elsQuestionDto.getProposedPointValue());
 
         List<ElsQuestionOptionDto> optionList = elsQuestionDto.getOptionList();
         if (optionList.size() != 0) {

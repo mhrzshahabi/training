@@ -601,7 +601,7 @@
                     },
                     {
                         name: "tclass.startDate",
-                        title: "<spring:message code='start.date'/>",
+                        title: "<spring:message code='class.start.date'/>",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true,
@@ -609,7 +609,7 @@
                     },
                     {
                         name: "tclass.endDate",
-                        title: "<spring:message code='end.date'/>",
+                        title: "<spring:message code='class.end.date'/>",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true,
@@ -745,14 +745,14 @@
                     },
                     {
                         name: "testQuestion.tclass.startDate",
-                        title: "<spring:message code='start.date'/>",
+                        title: "<spring:message code='class.start.date'/>",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true
                     },
                     {
                         name: "testQuestion.tclass.endDate",
-                        title: "<spring:message code='end.date'/>",
+                        title: "<spring:message code='class.end.date'/>",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: true},

@@ -57,5 +57,7 @@ public class ImportedQuestion {
         @ApiModelProperty
         private Boolean hasAttachment;
 
+        @ApiModelProperty(required = true)
+        private Double proposedPointValue;
 
 }

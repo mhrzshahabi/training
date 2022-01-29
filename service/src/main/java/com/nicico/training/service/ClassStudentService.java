@@ -10,29 +10,22 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
-import com.nicico.training.model.enums.EQuestionLevel;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassStudentDAO;
-import dto.exam.ClassType;
-import dto.exam.CourseStatus;
-import dto.exam.ImportedCourseProgram;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestBody;
 import request.exam.ElsExamScore;
 import request.exam.ElsStudentScore;
+import request.exam.ExamResult;
+import request.exam.UpdateRequest;
 import response.BaseResponse;
 import response.PaginationDto;
 import response.evaluation.dto.EvalAverageResult;
-import response.tclass.dto.CourseProgramDTO;
 import response.tclass.dto.ElsClassDto;
 import response.tclass.dto.ElsClassListDto;
-import response.tclass.dto.WeekDays;
 
 import java.util.*;
 import java.util.function.Function;
@@ -315,6 +308,43 @@ public class ClassStudentService implements IClassStudentService {
 
     }
 
+
+    @Override
+    @Transactional
+    public BaseResponse updatePreTestScore(long id, @RequestBody List<ExamResult> examResult) {
+        BaseResponse response = new BaseResponse();
+
+        for (ExamResult examResult1 : examResult) {
+            Long classStudentId = getStudentId(id, examResult1.getNationalCode());
+            ClassStudent classStudent = getClassStudent(classStudentId);
+            if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
+                classStudent.setPreTestScore(Float.valueOf(examResult1.getFinalResult()));
+                saveOrUpdate(classStudent);
+            }
+        }
+        response.setStatus(200);
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse updateTestScore(long id, List<ExamResult> examResult) {
+        BaseResponse response = new BaseResponse();
+
+        for (ExamResult examResult1 : examResult) {
+            Long classStudentId = getStudentId(id, examResult1.getNationalCode());
+            ClassStudent classStudent = getClassStudent(classStudentId);
+            if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
+                classStudent.setScore(Float.valueOf(examResult1.getFinalResult()));
+                classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(classStudent.getTclass().getAcceptancelimit(), Float.valueOf(examResult1.getFinalResult()))).getId());
+
+                saveOrUpdate(classStudent);
+            }
+        }
+        response.setStatus(200);
+        return response;    }
+
+
     @Override
     public ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size) {
         ElsClassListDto dto = new ElsClassListDto();
@@ -448,7 +478,7 @@ public class ClassStudentService implements IClassStudentService {
     public void testAddStudent(String classCode) {
         Tclass clsss = tclassService.getClassByCode(classCode);
 
-        List<ClassStudent>classStudentList=getClassStudents(clsss.getId());
+        List<ClassStudent> classStudentList = getClassStudents(clsss.getId());
         List<Student> studentList = studentService.getTestStudentList();
         for (Student student : studentList) {
             ClassStudent classStudent = new ClassStudent();
@@ -457,11 +487,11 @@ public class ClassStudentService implements IClassStudentService {
             classStudent.setStudent(student);
             classStudent.setStudentId(student.getId());
             classStudent.setApplicantCompanyName(student.getCompanyName());
-                if (classStudentList.stream().noneMatch(q -> q.getStudentId().equals(student.getId())) && validateMelliCode(student.getNationalCode()) ){
-                    classStudentDAO.save(classStudent);
-                } else {
-                    System.out.println(student.getNationalCode()+"/unSave");
-                }
+            if (classStudentList.stream().noneMatch(q -> q.getStudentId().equals(student.getId())) && validateMelliCode(student.getNationalCode())) {
+                classStudentDAO.save(classStudent);
+            } else {
+                System.out.println(student.getNationalCode() + "/unSave");
+            }
 
         }
 
