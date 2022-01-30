@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import request.exam.ElsExamScore;
 import request.exam.ElsStudentScore;
 import request.exam.ExamResult;
-import request.exam.UpdateRequest;
 import response.BaseResponse;
 import response.PaginationDto;
 import response.evaluation.dto.EvalAverageResult;
@@ -386,6 +385,8 @@ public class ClassStudentService implements IClassStudentService {
             elsClassDto.setFinishDate(endDate.getTime());
             elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
             elsClassDto.setEvaluationId(arr[14] == null ? null : Long.valueOf(arr[14].toString()));
+            elsClassDto.setSupervisorName(arr[17] == null ? null : arr[17].toString());
+            elsClassDto.setPlannerName(arr[18] == null ? null : arr[18].toString());
             EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
             elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
             result.add(elsClassDto);
@@ -449,6 +450,8 @@ public class ClassStudentService implements IClassStudentService {
             elsClassDto.setFinishDate(endDate.getTime());
             elsClassDto.setInstructor(arr[13] == null ? null : arr[13].toString());
             elsClassDto.setEvaluationId(arr[14] == null ? null : Long.valueOf(arr[14].toString()));
+            elsClassDto.setSupervisorName(arr[17] == null ? null : arr[17].toString());
+            elsClassDto.setPlannerName(arr[18] == null ? null : arr[18].toString());
             EvalAverageResult evaluationAverageResultToInstructor = tclassService.getEvaluationAverageResultToTeacher(classId);
             elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage());
 
