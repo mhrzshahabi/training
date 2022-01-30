@@ -51,4 +51,7 @@ public class ElsClassDto  implements Serializable {
     private Long evaluationId;
 
     private Double evaluationRate;
+
+    private String supervisorName;
+    private String plannerName;
 }

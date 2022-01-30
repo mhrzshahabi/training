@@ -6,7 +6,6 @@ import com.nicico.training.model.ClassStudent;
 import org.springframework.transaction.annotation.Transactional;
 import request.exam.ElsExamScore;
 import request.exam.ExamResult;
-import request.exam.UpdateRequest;
 import response.BaseResponse;
 import response.tclass.dto.ElsClassListDto;
 import java.util.List;
