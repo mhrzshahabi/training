@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.ClassPerformanceReportDTO;
+import com.nicico.training.iservice.IClassPerformanceReportService;
 import com.nicico.training.service.ClassPerformanceReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,7 @@ import java.util.List;
 @RequestMapping("/api/classPerformance")
 public class ClassPerformanceReportRestController {
 
-    private final ClassPerformanceReportService classPerformanceReportService;
-    private final ModelMapper modelMapper;
+    private final IClassPerformanceReportService iClassPerformanceReportService;
 
     //*********************************
 
@@ -34,7 +34,7 @@ public class ClassPerformanceReportRestController {
     public ResponseEntity<ClassPerformanceReportDTO.ClassPerformanceReportSpecRs> list(HttpServletResponse response, @PathVariable() String reportParameter) throws IOException {
 
         List<ClassPerformanceReportDTO> list = new ArrayList<>();
-        list = classPerformanceReportService.classPerformanceList(reportParameter);
+        list = iClassPerformanceReportService.classPerformanceList(reportParameter);
 
         final ClassPerformanceReportDTO.SpecRs specResponse = new ClassPerformanceReportDTO.SpecRs();
         final ClassPerformanceReportDTO.ClassPerformanceReportSpecRs specRs = new ClassPerformanceReportDTO.ClassPerformanceReportSpecRs();

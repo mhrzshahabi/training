@@ -34,7 +34,7 @@ import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Service
 @RequiredArgsConstructor
-public class ClassStudentHistoryService {
+public class ClassStudentHistoryService implements IClassStudentHistoryService {
 
     private final ClassStudentHistoryDAO classStudentHistoryDAO;
 

@@ -8,7 +8,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.IClassSessionService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Service
 @RequiredArgsConstructor
-public class ClassSessionService implements IClassSession {
+public class ClassSessionService implements IClassSessionService {
 
     private final ClassSessionDAO classSessionDAO;
     private final AttendanceDAO attendanceDAO;

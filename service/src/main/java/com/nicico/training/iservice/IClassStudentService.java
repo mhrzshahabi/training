@@ -52,4 +52,9 @@ public interface IClassStudentService {
     BaseResponse updatePreTestScore(long id, List<ExamResult> examResult);
 
     BaseResponse updateTestScore(long id, List<ExamResult> examResult);
+
+    @Transactional
+    void setPeresenceTypeId(Long presenceTypeId, Long id);
+
+    List<Long> findEvaluationStudentInClass(Long studentId, Long classId);
 }

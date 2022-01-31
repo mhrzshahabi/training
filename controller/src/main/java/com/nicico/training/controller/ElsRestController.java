@@ -102,7 +102,7 @@ public class ElsRestController {
     private final AttendanceBeanMapper attendanceMapper;
     private final IAttendanceService attendanceService;
     private final ClassSessionService classSessionService;
-    private final IClassSession iClassSessionService;
+    private final IClassSessionService iClassSessionService;
     private final IAttachmentService iAttachmentService;
     private final QuestionBankService questionBankService;
     private final QuestionBankBeanMapper questionBankBeanMapper;

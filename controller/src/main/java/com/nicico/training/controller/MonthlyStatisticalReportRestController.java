@@ -1,9 +1,7 @@
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
-import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.dto.MonthlyStatisticalReportDTO;
-import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.MonthlyStatisticalReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +22,6 @@ import java.util.List;
 public class MonthlyStatisticalReportRestController {
 
     private final MonthlyStatisticalReportService  monthlyStatisticalReportService;
-    private final ModelMapper modelMapper;
 
     //*********************************
 

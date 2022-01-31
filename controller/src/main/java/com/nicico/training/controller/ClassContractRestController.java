@@ -21,7 +21,7 @@ import java.io.IOException;
 public class ClassContractRestController {
 
     private final ModelMapper modelMapper;
-    private final IClassContractService classContractService;
+    private final IClassContractService iClassContractService;
 
 
     @Loggable
@@ -31,7 +31,7 @@ public class ClassContractRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ClassContractDTO.Info> searchRs = classContractService.search(searchRq, c -> modelMapper.map(c, ClassContractDTO.Info.class));
+        SearchDTO.SearchRs<ClassContractDTO.Info> searchRs = iClassContractService.search(searchRq, c -> modelMapper.map(c, ClassContractDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 }

@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassCheckListDTO;
+import com.nicico.training.iservice.IClassCheckListService;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.ClassCheckListService;
 import lombok.RequiredArgsConstructor;
@@ -27,49 +28,45 @@ import java.util.List;
 @RequestMapping("/api/class-checklist")
 public class ClassCheckListRestController {
 
-    private final ClassCheckListService classCheckListService;
-    private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
-    private final ReportUtil reportUtil;
-    private final ClassAlarmService classAlarmService;
+    private final IClassCheckListService iClassCheckListService;
 
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<ClassCheckListDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(classCheckListService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iClassCheckListService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<ClassCheckListDTO.Info>> list() {
-        return new ResponseEntity<>(classCheckListService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iClassCheckListService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
     public ResponseEntity<ClassCheckListDTO.Info> create(@RequestBody ClassCheckListDTO.Create req) {
         ClassCheckListDTO.Create create = (new ModelMapper()).map(req, ClassCheckListDTO.Create.class);
-        return new ResponseEntity<>(classCheckListService.create(create), HttpStatus.CREATED);
+        return new ResponseEntity<>(iClassCheckListService.create(create), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClassCheckListDTO.Info> update(@PathVariable Long id, @RequestBody ClassCheckListDTO.Update request) {
         ClassCheckListDTO.Update update = (new ModelMapper()).map(request, ClassCheckListDTO.Update.class);
-        return new ResponseEntity<>(classCheckListService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(iClassCheckListService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        classCheckListService.delete(id);
+        iClassCheckListService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody ClassCheckListDTO.Delete request) {
-        classCheckListService.delete(request);
+        iClassCheckListService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -97,7 +94,7 @@ public class ClassCheckListRestController {
 //        }
 //        request.setStartIndex(startRow)
 //                .setCount(endRow - startRow);
-//        SearchDTO.SearchRs<ClassCheckListDTO.Info> response = classCheckListService.search(request);
+//        SearchDTO.SearchRs<ClassCheckListDTO.Info> response = iClassCheckListService.search(request);
 //        final ClassCheckListDTO.SpecRs specResponse = new ClassCheckListDTO.SpecRs();
 //        specResponse.setData(response.getList())
 //                .setStartRow(startRow)
@@ -112,27 +109,27 @@ public class ClassCheckListRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<ClassCheckListDTO.Info> list(@RequestParam MultiValueMap<String, String> criteria) {
-        return new ResponseEntity(classCheckListService.newSearch(criteria), HttpStatus.OK);
+        return new ResponseEntity(iClassCheckListService.newSearch(criteria), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<ClassCheckListDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(classCheckListService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(iClassCheckListService.search(request), HttpStatus.OK);
     }
 
 
     @Loggable
     @GetMapping(value = "/fill-Table/{classId}/{checkListId}")
     public ResponseEntity<ClassCheckListDTO.Info> fill(@PathVariable Long classId, @PathVariable Long checkListId) {
-        return new ResponseEntity(classCheckListService.fillTable(classId, checkListId), HttpStatus.OK);
+        return new ResponseEntity(iClassCheckListService.fillTable(classId, checkListId), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping(value = "/edit/{id}")
     public ResponseEntity<ClassCheckListDTO.Info> updateDescription(@PathVariable Long id, @RequestBody ClassCheckListDTO.Update request) throws IOException {
         ClassCheckListDTO.Update update = (new ModelMapper()).map(request, ClassCheckListDTO.Update.class);
-        return new ResponseEntity(classCheckListService.updateDescription(id, update), HttpStatus.OK);
+        return new ResponseEntity(iClassCheckListService.updateDescription(id, update), HttpStatus.OK);
     }
 
 
@@ -140,7 +137,7 @@ public class ClassCheckListRestController {
   //  @PostMapping(value = "/edit")
     public ResponseEntity<ClassCheckListDTO.Info> updateDescription(@RequestParam MultiValueMap<String, String> body) throws IOException {
 
-        ResponseEntity<ClassCheckListDTO.Info> infoResponseEntity = new ResponseEntity(classCheckListService.updateDescriptionCheck(body), HttpStatus.OK);
+        ResponseEntity<ClassCheckListDTO.Info> infoResponseEntity = new ResponseEntity(iClassCheckListService.updateDescriptionCheck(body), HttpStatus.OK);
 
         //*****check alarms*****
 //        if (infoResponseEntity.getStatusCodeValue() == 200) {
@@ -156,7 +153,7 @@ public class ClassCheckListRestController {
     public ResponseEntity<ClassCheckListDTO.Info> updateDescription1(@RequestBody ClassCheckListDTO.Info[] request) throws IOException {
        for(int i=0;i<request.length;i++)
        {
-           classCheckListService.updateDescription2(request[i]);
+           iClassCheckListService.updateDescription2(request[i]);
        }
         return null;
     }
@@ -164,7 +161,7 @@ public class ClassCheckListRestController {
     @Loggable
     @DeleteMapping(value = "/delete-checkList/{classId}/{checkListId}")
     public ResponseEntity<Void> deleteClassCheckList(@PathVariable Long classId, @PathVariable Long checkListId) {
-        classCheckListService.deleteByClassIdAndCheckListId(classId, checkListId);
+        iClassCheckListService.deleteByClassIdAndCheckListId(classId, checkListId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

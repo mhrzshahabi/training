@@ -2,45 +2,23 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.domain.ConstantVARs;
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.StudentClassReportViewDTO;
-import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.model.ICourseSCRV;
-import com.nicico.training.repository.StudentClassReportViewDAO;
-import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.StudentClassReportViewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.lang.reflect.Type;
-import java.nio.charset.Charset;
 import java.util.*;
 import java.util.function.Function;
-
-import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RestController

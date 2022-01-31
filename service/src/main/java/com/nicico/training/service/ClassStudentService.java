@@ -506,6 +506,10 @@ public class ClassStudentService implements IClassStudentService {
         classStudentDAO.setPeresenceTypeId(peresenceTypeId, id);
     }
 
+    public List<Long> findEvaluationStudentInClass(Long studentId, Long classId) {
+        return classStudentDAO.findEvaluationStudentInClass(studentId, classId);
+    }
+
 
     public Long getStudentId(Long classId, String nationalCode) {
         List<Long> studentIds = classStudentDAO.getClassStudentIdByClassCodeAndNationalCode(classId, nationalCode);
