@@ -1596,7 +1596,8 @@ public class TclassService implements ITclassService {
 
             if (dto.getEvaluationAnswerList() != null) {
                 TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
-                        .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
+                        .filter(x -> question.getQuestion().trim().contains(x.getQuestion().trim()))
+//                        .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
                         .findFirst()
                         .orElse(null);
                 if (answer != null) {
@@ -1672,7 +1673,8 @@ public class TclassService implements ITclassService {
 
 
                 TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
-                        .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
+                        .filter(x -> question.getQuestion().trim().contains(x.getQuestion().trim()))
+//                        .filter(x -> x.getQuestion().trim().equals(question.getQuestion().trim()))
                         .findFirst()
                         .orElse(null);
                 if (answer != null) {
@@ -1699,7 +1701,8 @@ public class TclassService implements ITclassService {
             } else {
                 Optional<DynamicQuestion> dynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId());
                 TeacherEvaluationAnswerList answer = dto.getEvaluationAnswerList().stream()
-                        .filter(x -> x.getQuestion().trim().equals(dynamicQuestion.get().getQuestion().trim()))
+                        .filter(x -> dynamicQuestion.get().getQuestion().trim().contains(x.getQuestion().trim()))
+//                        .filter(x -> x.getQuestion().trim().equals(dynamicQuestion.get().getQuestion().trim()))
                         .findFirst()
                         .orElse(null);
                 if (answer != null) {
