@@ -10,10 +10,7 @@ import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.*;
-import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.repository.QuestionBankTestQuestionDAO;
-import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.repository.ViewActivePersonnelDAO;
+import com.nicico.training.repository.*;
 import com.nicico.training.service.QuestionnaireService;
 import com.nicico.training.service.TeacherService;
 import org.mapstruct.Named;
@@ -88,6 +85,9 @@ public abstract class EvaluationBeanMapper {
 
     @Autowired
     protected TeacherDAO teacherDAO;
+
+    @Autowired
+    protected PersonalInfoDAO personalInfoDAO;
 
     @Autowired
     protected ClassStudentDAO classStudentDAO;
@@ -216,9 +216,11 @@ public abstract class EvaluationBeanMapper {
             dto.setQuestionnaireId(evaluation.getQuestionnaireId());
             if (evaluation.getEvaluatorTypeId() == 187L) {
                 Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
-                if (teacher.isPresent() && teacher.get().getPersonality()!=null && teacher.get().getPersonality().getFirstNameFa()!=null &&
-                        teacher.get().getPersonality().getLastNameFa()!=null)
-                    dto.setEvaluated(teacher.get().getPersonality().getFirstNameFa() + " "+ teacher.get().getPersonality().getLastNameFa());
+                if (teacher.isPresent() ){
+                 Optional<PersonalInfo> personalInfo=  personalInfoDAO.findById(teacher.get().getPersonalityId());
+                    personalInfo.ifPresent(info -> dto.setEvaluated(info.getFirstNameFa() + " " + info.getLastNameFa()));
+
+                }
             } else if (evaluation.getEvaluatorTypeId() == 188L) {
                 Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
                 if (classStudent.isPresent() && classStudent.get().getStudent() !=null)
