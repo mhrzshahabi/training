@@ -6,7 +6,6 @@ import lombok.Setter;
 @Setter
 @Getter
 public class BPMSUserTasksContentDto {
-
     private String name;
     private String deploymentId;
     private String tenantId;
@@ -20,5 +19,4 @@ public class BPMSUserTasksContentDto {
     private String processStartTime;
     private String taskDefinitionKey;
     private String processDefinitionKey;
-//    private List<Object> formListDTOS;
 }

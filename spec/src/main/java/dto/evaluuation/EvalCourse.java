@@ -8,8 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class EvalCourse {
-
     private String title;
     private String code;
-
 }

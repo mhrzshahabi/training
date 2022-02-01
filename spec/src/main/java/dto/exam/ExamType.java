@@ -4,9 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum ExamType {
-    DESCRIPTIVE(1,"تشریحی"),
-    MULTI_CHOICES(2,"چند گزینه ای"),
-    MIX(3,"تستی-تشریحی");
+
+    DESCRIPTIVE(1, "تشریحی"),
+    MULTI_CHOICES(2, "چند گزینه ای"),
+    MIX(3, "تستی-تشریحی");
 
     private int key;
     private String value;

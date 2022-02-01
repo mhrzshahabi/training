@@ -13,11 +13,9 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ElsQuestionOptionDto {
-
     @ApiModelProperty(required = true, hidden = false)
     private String title;
     private Integer optionNumber;
     private Boolean hasAttachment;
     private List<ElsAttachmentDto> optionFiles;
-
 }

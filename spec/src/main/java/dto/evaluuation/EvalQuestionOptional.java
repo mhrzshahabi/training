@@ -10,6 +10,5 @@ import java.util.List;
 @Setter
 @ToString
 public class EvalQuestionOptional {
-
     private List<String> options;
 }

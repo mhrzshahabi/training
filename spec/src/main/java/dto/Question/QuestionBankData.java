@@ -14,5 +14,4 @@ public class QuestionBankData {
     private Long id;
     private QuestionTypeData questionType;
     private QuestionCategoryData category;
-
 }

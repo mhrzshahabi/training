@@ -14,6 +14,5 @@ public class BpmsDefinitionDto {
     private Boolean last;
     private Boolean first;
     private Boolean empty;
-    private LinkedHashMap<String,Object> pageable;
-
+    private LinkedHashMap<String, Object> pageable;
 }

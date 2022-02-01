@@ -8,7 +8,6 @@ import java.util.LinkedHashMap;
 @Setter
 @Getter
 public class BPMSUserTasksResponseDto {
-
     private String name;
     private String deploymentId;
     private String tenantId;
@@ -22,5 +21,4 @@ public class BPMSUserTasksResponseDto {
     private String processStartTime;
     private String taskDefinitionKey;
     private String processDefinitionKey;
-//    private List<Object> formListDTOS;
 }

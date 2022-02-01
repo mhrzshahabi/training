@@ -3,8 +3,6 @@ package dto.bpms;
 import lombok.Getter;
 import lombok.Setter;
 
-
-
 @Setter
 @Getter
 public class BpmsContent {
@@ -15,5 +13,4 @@ public class BpmsContent {
     private String tenantId;
     private String tenantTitle;
     private Integer version;
-
 }

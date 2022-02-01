@@ -14,5 +14,4 @@ public class ElsSessionAttendanceResponse extends BaseResponse implements Serial
     private static final long serialVersionUID = -3970933610365993352L;
     private Long sessionId;
     private List<ElsSessionAttendanceUserInfoDto> studentAttendanceInfos;
-
 }

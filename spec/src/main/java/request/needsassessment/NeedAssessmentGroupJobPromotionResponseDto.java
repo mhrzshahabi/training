@@ -7,14 +7,11 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.sql.Timestamp;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 public class NeedAssessmentGroupJobPromotionResponseDto implements Serializable {
-
     private static final long serialVersionUID = 7799088209220298802L;
 
     @Getter
@@ -48,5 +45,4 @@ public class NeedAssessmentGroupJobPromotionResponseDto implements Serializable 
     public static class GroupJobPromotionSpecRs {
         private SpecRs response;
     }
-
 }

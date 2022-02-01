@@ -8,11 +8,9 @@ import lombok.ToString;
 @Setter
 @ToString
 public class EvalCourseProtocol {
-
     private String title;
     private String code;
     private String duration;
     private String finishDate;
     private String startDate;
-
 }

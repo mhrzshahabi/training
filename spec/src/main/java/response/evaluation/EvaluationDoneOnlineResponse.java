@@ -13,7 +13,6 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class EvaluationDoneOnlineResponse {
-
     private SpecRs response;
 
     @Getter

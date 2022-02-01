@@ -9,14 +9,14 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ImportedCourseProgram {
-//    @ApiModelProperty(required = true)
-//    private Long courseProtocolId;
     @ApiModelProperty(required = true)
     private String day;
     @ApiModelProperty(required = true)
     private String endTime;
     @ApiModelProperty(required = true)
     private String startTime;
+//    @ApiModelProperty(required = true)
+//    private Long courseProtocolId;
 //    private String location;
 //    private String classNo;
 }

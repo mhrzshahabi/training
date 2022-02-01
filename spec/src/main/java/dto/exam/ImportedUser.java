@@ -8,7 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ImportedUser {
-
     private String surname;
     private String lastName;
     private String cellNumber;

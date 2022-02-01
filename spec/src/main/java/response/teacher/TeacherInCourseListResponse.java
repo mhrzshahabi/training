@@ -18,6 +18,7 @@ public class TeacherInCourseListResponse extends BaseResponse implements Seriali
     private int startRow;
     private int endRow;
     private long totalRows;
+
     @Getter
     @Setter
     public static class Response {

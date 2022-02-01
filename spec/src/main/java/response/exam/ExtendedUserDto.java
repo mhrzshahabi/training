@@ -9,7 +9,6 @@ import lombok.ToString;
 @Getter
 @ToString
 public class ExtendedUserDto {
-
     private EvalTargetUser user;
     private Long startDate;
     private Long endDate;

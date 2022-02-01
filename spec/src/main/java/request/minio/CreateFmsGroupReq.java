@@ -1,6 +1,5 @@
 package request.minio;
 
-
 import lombok.Getter;
 import lombok.Setter;
 

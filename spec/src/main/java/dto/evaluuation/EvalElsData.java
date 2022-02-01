@@ -8,8 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class EvalElsData {
-
     private String mobile;
     private Long sourceId;
-
 }
