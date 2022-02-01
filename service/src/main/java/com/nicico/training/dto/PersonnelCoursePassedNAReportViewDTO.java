@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -64,7 +63,7 @@ public class PersonnelCoursePassedNAReportViewDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("MinInfo")
-    public static class MinInfo{
+    public static class MinInfo {
         private Long courseId;
         private String courseCode;
         private String courseTitleFa;

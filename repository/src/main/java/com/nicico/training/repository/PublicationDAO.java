@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PublicationDAO extends JpaRepository<Publication, Long>, JpaSpecificationExecutor<Publication> {
+
     boolean existsBySubjectTitleAndTeacherId(String SubjectTitle,Long teacherId);
+
     boolean existsBySubjectTitleAndTeacherIdAndIdIsNot(String SubjectTitle,Long teacherId,Long id);
 }

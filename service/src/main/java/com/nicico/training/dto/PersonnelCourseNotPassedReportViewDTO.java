@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -10,7 +9,6 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class PersonnelCourseNotPassedReportViewDTO {
-
 
     @Getter
     @Setter
@@ -34,11 +32,9 @@ public class PersonnelCourseNotPassedReportViewDTO {
         private String personnelCcpUnit;
         private String personnelCcpTitle;
         private Long pgId;
-
         private Long courseId;
         private String courseCode;
         private String courseTitleFa;
         private Long categoryId;
     }
-
 }

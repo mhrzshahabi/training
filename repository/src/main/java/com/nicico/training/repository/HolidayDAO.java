@@ -16,5 +16,4 @@ public interface HolidayDAO extends JpaRepository<ClassSession, Long>, JpaSpecif
     @Query(value = "SELECT C_HOLIDAY FROM TBL_HOLIDAY WHERE C_HOLIDAY >= :startDate AND C_HOLIDAY <= :endDate", nativeQuery = true)
     @Transactional
     List<String> Holidays(@Param("startDate") String startDate, @Param("endDate") String endDate);
-
 }

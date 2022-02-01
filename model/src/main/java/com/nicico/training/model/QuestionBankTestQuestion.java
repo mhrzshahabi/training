@@ -1,11 +1,9 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -29,7 +27,6 @@ public class QuestionBankTestQuestion extends Auditable {
 
     @Column(name = "f_test_question")
     private Long testQuestionId;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_question_bank", insertable = false, updatable = false)

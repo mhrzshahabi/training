@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_address")
 public class Address extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "address_seq")
     @SequenceGenerator(name = "address_seq", sequenceName = "seq_address_id", allocationSize = 1)

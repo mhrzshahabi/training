@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Setter
@@ -16,6 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tbl_employment_history")
 public class EmploymentHistory extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employment_history_seq")
     @SequenceGenerator(name = "employment_history_seq", sequenceName = "seq_employment_history_id", allocationSize = 1)
@@ -52,5 +52,4 @@ public class EmploymentHistory extends Auditable {
 
     @Column(name = "f_teacher_id")
     private Long teacherId;
-
 }

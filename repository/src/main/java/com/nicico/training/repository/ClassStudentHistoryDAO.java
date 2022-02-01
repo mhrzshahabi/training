@@ -8,9 +8,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
 @Repository
 public interface ClassStudentHistoryDAO extends JpaRepository<ClassStudentHistory, Long>, JpaSpecificationExecutor<ClassStudentHistory> {
-    List<ClassStudentHistory> findAllByTclassId(Long id);
 
+    List<ClassStudentHistory> findAllByTclassId(Long id);
 }

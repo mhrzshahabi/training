@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -44,5 +43,4 @@ public class BankBranch extends Auditable {
 
     @Column(name = "f_address")
     private Long addressId;
-
 }

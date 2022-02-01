@@ -14,24 +14,15 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ClassStudentDTO implements Serializable {
-
     private String scoresState;
-
     private String failureReason;
-
     private Float score;
-
     private String valence;
-
     private String applicantCompanyName;
-
     private Long presenceTypeId;
-
     @ApiModelProperty(required = true)
     private Long studentId;
-
     @ApiModelProperty(required = true)
     private Long tclassId;
 
@@ -58,13 +49,12 @@ public class ClassStudentDTO implements Serializable {
         private TclassDTO.CoursesOfStudent tclass;
         private Integer numberOfSendedBehavioralForms;
         private Integer numberOfRegisteredBehavioralForms;
-        private String extendTime="ندارد";
+        private String extendTime = "ندارد";
         private String isSentMessage;
 
-        public String getFullName(){
-            return student.getFirstName()+" "+student.getLastName();
+        public String getFullName() {
+            return student.getFirstName() + " " + student.getLastName();
         }
-
 
         public Integer getEvaluationStatusReaction() {
             return evaluationStatusReaction == null ? 0 : evaluationStatusReaction;
@@ -114,6 +104,7 @@ public class ClassStudentDTO implements Serializable {
         private String applicantCompanyName;
         private Long presenceTypeId;
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -154,7 +145,6 @@ public class ClassStudentDTO implements Serializable {
         private String valence;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -170,10 +160,8 @@ public class ClassStudentDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ClassStudent - AttendanceInfo")
     public static class AttendanceInfo {
-
         @Getter(AccessLevel.NONE)
         private StudentDTO.AttendanceInfo student;
-
         @Getter(AccessLevel.NONE)
         private Long studentId;
 
@@ -241,8 +229,6 @@ public class ClassStudentDTO implements Serializable {
         private Long id;
         private StudentDTO.ScoresInfo student;
         private TclassDTO.ScoreInfo tclass;
-       // private ParameterValueDTO.TupleInfo scoresState;
-       // private ParameterValueDTO.TupleInfo failureReason;
         Long scoresStateId;
         Long failureReasonId;
         private Float score;
@@ -250,7 +236,6 @@ public class ClassStudentDTO implements Serializable {
         private String scoreStateTitle;
         private String failureReasonTitle;
         private Integer evaluationStatusReaction;
-
     }
 
     @Getter
@@ -322,11 +307,9 @@ public class ClassStudentDTO implements Serializable {
     public static class WeeklySchedule {
         private StudentDTO.AttendanceInfo student;
         private String nationalCodeStudent;
+
         public String getNationalCodeStudent() {
             return student.getNationalCode();
         }
-//        private Long presenceTypeId;
     }
-
-
 }

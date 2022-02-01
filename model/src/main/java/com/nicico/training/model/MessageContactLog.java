@@ -1,21 +1,9 @@
-/*
- * Author: Mehran Golrokhi
- * Created Date: 2020/10/03
- * Last Modified: 2020/09/30
- */
-
 package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Any;
-import org.hibernate.annotations.AnyMetaDef;
-import org.hibernate.annotations.MetaValue;
 
 import javax.persistence.*;
-import java.util.Date;
-import java.util.List;
-
 
 @Getter
 @Setter

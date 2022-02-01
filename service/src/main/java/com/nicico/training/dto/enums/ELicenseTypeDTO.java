@@ -1,5 +1,4 @@
 package com.nicico.training.dto.enums;
-/* com.nicico.training.dto*/
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ELicenseType;
@@ -11,7 +10,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ELicenseTypeDTO {
 
     @Getter
@@ -22,7 +20,6 @@ public class ELicenseTypeDTO {
     public static class ELicenseTypeSpecRs {
         private ELicenseTypeDTO.SpecRs response = new ELicenseTypeDTO.SpecRs();
     }
-
 
     @Getter
     @Setter
@@ -41,6 +38,4 @@ public class ELicenseTypeDTO {
     public static class ELicenseTypeInfoTuple {
         private String titleFa;
     }
-
-
 }

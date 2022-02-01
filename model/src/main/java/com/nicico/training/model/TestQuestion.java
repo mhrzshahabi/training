@@ -1,11 +1,9 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -51,7 +49,6 @@ public class TestQuestion extends Auditable {
 
     @Column(name = "B_ONLINE_FINAL_EXAM_STATUS")
     private Boolean onlineFinalExamStatus;
-
 
     @OneToMany(mappedBy = "testQuestion", fetch = FetchType.LAZY ,cascade = CascadeType.REMOVE)
     private Set<QuestionBankTestQuestion> questionBankTestQuestionList;

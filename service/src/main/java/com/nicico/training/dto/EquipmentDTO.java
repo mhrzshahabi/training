@@ -1,8 +1,4 @@
-package com.nicico.training.dto;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:5/28/2019
-@Time:11:27 AM
-*/
+package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -16,13 +12,10 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class EquipmentDTO {
-
     @ApiModelProperty
     private String code;
     @NotEmpty
@@ -33,7 +26,6 @@ public class EquipmentDTO {
     @ApiModelProperty
     private String description;
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -47,15 +39,12 @@ public class EquipmentDTO {
         private Integer version;
     }
 
-    //-------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("EquipmentCreateRq")
     public static class Create extends EquipmentDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -65,8 +54,6 @@ public class EquipmentDTO {
         @ApiModelProperty(required = true)
         private Integer version;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -78,10 +65,6 @@ public class EquipmentDTO {
         private List<Long> ids;
     }
 
-
-    // ------------------------------
-
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -92,9 +75,6 @@ public class EquipmentDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -103,8 +83,6 @@ public class EquipmentDTO {
     public static class EquipmentSpecRs {
         private EquipmentDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -117,8 +95,4 @@ public class EquipmentDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    //----------------------
-
-
 }

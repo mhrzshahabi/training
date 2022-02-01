@@ -1,8 +1,4 @@
-package com.nicico.training.repository;/* com.nicico.training.repository
-@Author:jafari-h
-@Date:5/28/2019
-@Time:2:37 PM
-*/
+package com.nicico.training.repository;
 
 import com.nicico.training.model.Goal;
 import org.springframework.data.jpa.repository.JpaRepository;

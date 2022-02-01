@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
@@ -93,9 +92,6 @@ public class Course extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
     private List<Course> preCourseList;
 
-//    @ManyToMany(mappedBy = "preCourseList", fetch = FetchType.LAZY)
-//    private List<Course> preCourseListOf;
-
     @Column(name = "e_run_type")
     private ERunType eRunType;
 
@@ -116,15 +112,6 @@ public class Course extends Auditable {
 
     @Column(name = "start_evaluation")
     private Integer startEvaluation;
-
-    //    @Transient
-//    private Long knowledge = Long.valueOf(0);
-//
-//    @Transient
-//    private Long skill = Long.valueOf(0);
-//
-//    @Transient
-//    private Long attitude = Long.valueOf(0);
 
     @Column(name = "c_need_text")
     private String needText;

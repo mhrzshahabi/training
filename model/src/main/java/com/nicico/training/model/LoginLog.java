@@ -1,12 +1,10 @@
 package com.nicico.training.model;
 
-
 import com.nicico.training.model.enums.LoginState;
 import lombok.*;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
-
 
 @Setter
 @Getter
@@ -44,10 +42,8 @@ public class LoginLog {
     @Column(name = "HASH_TOKEN")
     private String hashToken;
 
-
     @PrePersist
     public void setDate() {
         this.createDate = new Timestamp(System.currentTimeMillis());
     }
-
 }

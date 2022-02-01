@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.ViewAttendanceReportKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -76,5 +75,4 @@ public class ViewTrainingOverTimeReport implements Serializable {
 
     @Column(name = "cpp_complex_title")
     private String complexTitle;
-
 }

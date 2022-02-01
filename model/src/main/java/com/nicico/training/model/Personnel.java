@@ -2,7 +2,6 @@ package com.nicico.training.model;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,7 +9,6 @@ import java.util.Date;
 @Getter
 @Setter
 @Entity
-
 @Table(name = "tbl_personnel")
 public class Personnel {
 
@@ -204,5 +202,4 @@ public class Personnel {
 
     @Column(name = "f_contact_info", insertable = false, updatable = false)
     private Long contactInfoId;
-
 }

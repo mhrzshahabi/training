@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import lombok.*;
@@ -20,14 +19,9 @@ import java.io.Serializable;
 @Subselect("select * from view_personnel_duration_na_report")
 public class PersonnelDurationNAReport implements Serializable {
 
-
-    ///////////////////////////////////////////////////personnel///////////////////////////////////////
-
     @Id
     @Column(name = "personnel_id")
     private long personnelId;
-
-    //////////////////////////////////////////////////duration////////////////////////////////////////
 
     @Column(name = "duration")
     private Float duration;

@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import com.nicico.training.model.enums.EBankType;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -38,5 +37,4 @@ public class Bank extends Auditable {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "bank")
     private Set<BankBranch> bankBranchSet;
-
 }

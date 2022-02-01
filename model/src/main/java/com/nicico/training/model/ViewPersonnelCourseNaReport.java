@@ -20,10 +20,9 @@ import java.io.Serializable;
 @Subselect("SELECT * from VIEW_PERSONNEL_COURSE_NA_REPORT")
 
 public class ViewPersonnelCourseNaReport implements Serializable {
+
     @EmbeddedId
     private PersonnelCourseNaKey id;
-
-    //personnel_personnel_no
 
     @Column(name = "na_priority_id")
     private String priorityId;

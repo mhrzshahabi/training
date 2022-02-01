@@ -25,7 +25,6 @@ public class ClassStudentAudit implements Serializable {
     @EmbeddedId
     private AuditClassStudentId id;
 
-
     @Column(name = "student_id")
     private Long studentId;
 

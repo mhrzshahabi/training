@@ -15,42 +15,30 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class InstituteAccountDTO {
-
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long instituteId;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long bankBranchId;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long bankId;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String accountNumber;
-
     @ApiModelProperty
     private String cartNumber;
-
     @ApiModelProperty
     private String shabaNumber;
-
     @ApiModelProperty
     private String accountOwnerName;
-
     @NotEmpty
     @ApiModelProperty
     private Integer isEnable;
-
     @ApiModelProperty
     private String description;
-    // ------------------------------
 
     @Getter
     @Setter
@@ -120,5 +108,4 @@ public class InstituteAccountDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

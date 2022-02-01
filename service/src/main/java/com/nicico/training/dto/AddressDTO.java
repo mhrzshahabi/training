@@ -13,9 +13,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class AddressDTO {
-
     private String restAddr;
     private String postalCode;
     private String phone;
@@ -114,6 +112,5 @@ public class AddressDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }
 

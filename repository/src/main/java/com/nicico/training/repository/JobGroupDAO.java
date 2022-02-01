@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 8/29/2019, 10:43 AM
-*/
 package com.nicico.training.repository;
 
 import com.nicico.training.model.JobGroup;

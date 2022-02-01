@@ -10,6 +10,7 @@ import lombok.ToString;
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ETeacherAttachmentType {
+
     Resume(1, "رزومه"),
     EducationLicence(2, "مدرک تحصیلی"),
     Certificate(3, "گواهینامه");
@@ -20,5 +21,4 @@ public enum ETeacherAttachmentType {
     public String getLiteral() {
         return name();
     }
-
 }

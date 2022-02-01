@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class EDomainTypeDTO {
 
     @Getter
@@ -21,7 +20,6 @@ public class EDomainTypeDTO {
     public static class EDomainTypeSpecRs {
         private EDomainTypeDTO.SpecRs response = new EDomainTypeDTO.SpecRs();
     }
-
 
     @Getter
     @Setter

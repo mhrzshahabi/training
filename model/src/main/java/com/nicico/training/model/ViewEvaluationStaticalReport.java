@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
@@ -21,6 +20,7 @@ import javax.persistence.*;
 @Subselect("select * from view_evaluation_statical_report")
 @DiscriminatorValue("ViewEvaluationStaticalReport")
 public class ViewEvaluationStaticalReport extends Auditable {
+
     @Id
     @Column(name = "id")
     private Long id;
@@ -222,8 +222,4 @@ public class ViewEvaluationStaticalReport extends Auditable {
 
     @Column(name = "teaching_method_title")
     private String teachingMethodTitle;
-
-
-//   @Column(name = "COURSE_IN_NEEDASSESSMENT")
-//   private Long isCourseInNeedAssessment;
 }

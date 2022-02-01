@@ -26,14 +26,9 @@ public interface AlarmDAO extends JpaRepository<Alarm, Long>, JpaSpecificationEx
 
     void deleteAlarmsByClassId(Long classId);
 
-    void deleteAlarmsByAlarmTypeTitleEn(String alarmTypeTitleEn);
-
     List<Alarm> getAlarmsByClassIdOrClassIdConflictOrderBySortField(Long classId, Long classIdConflict);
-
-    boolean existsAlarmsByClassIdOrClassIdConflict(Long classId, Long classIdConflict);
 
     @Modifying
     @Query(value = "DELETE FROM TBL_ALARM WHERE F_SESSION_ID IN (:sessionIds)", nativeQuery = true)
     Integer deleteAllBySessionIds(List<Long> sessionIds);
-
 }

@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class PermissionDTO {
-
     private String entityName;
     private String attributeName;
     private String attributeType;
@@ -45,5 +44,4 @@ public class PermissionDTO {
         String entityName;
         List<Info> columnDataList;
     }
-
 }

@@ -12,7 +12,6 @@ import java.util.Set;
 @Setter
 @Accessors(chain = true)
 public class HelpFilesDTO implements Serializable {
-
     private String fileName;
     private String description;
     private String group_id;
@@ -44,5 +43,4 @@ public class HelpFilesDTO implements Serializable {
         private String description;
         private Set<Long> fileLabels;
     }
-
 }

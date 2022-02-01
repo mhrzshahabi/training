@@ -1,7 +1,4 @@
 package com.nicico.training.dto;
-/* com.nicico.training.dto
-@Author:Lotfy
-*/
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -18,28 +15,19 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class PersonnelRegisteredDTO {
-
-
     @ApiModelProperty(required = true)
     private String personnelNo;
-
     @ApiModelProperty(required = true)
     private String firstName;
-
     @ApiModelProperty(required = true)
     private String lastName;
-
     @ApiModelProperty(required = true)
     private String nationalCode;
-
     @ApiModelProperty(required = true)
     private String birthCertificateNo;
-
     @ApiModelProperty(required = true)
     private String companyName;
-
     private String birthDate;
     private String birthPlace;
     private String postTitle;
@@ -55,7 +43,6 @@ public class PersonnelRegisteredDTO {
     private String workPlace;
     private String fatherName;
     private String age;
-    //private String active;
     private Long enabled;
     private Long deleted;
     private String employmentDate;
@@ -87,7 +74,6 @@ public class PersonnelRegisteredDTO {
     private String departmentCode;
     private ContactInfoDTO.Info contactInfo;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -99,12 +85,12 @@ public class PersonnelRegisteredDTO {
         private Date lastModifiedDate;
         private String lastModifiedBy;
 
-        public Long getDeleted(){
-            return super.deleted==null?76:super.deleted;
+        public Long getDeleted() {
+            return super.deleted == null ? 76 : super.deleted;
         }
 
-        public Long getEnabled(){
-            return super.enabled==null?494:super.enabled;
+        public Long getEnabled() {
+            return super.enabled == null ? 494 : super.enabled;
         }
     }
 
@@ -149,8 +135,6 @@ public class PersonnelRegisteredDTO {
         private Boolean isInNA;
         private Long scoreState;
         private ContactInfoDTO.Info contactInfo;
-
-
         @Getter(AccessLevel.NONE)
         private String fullName;
 
@@ -159,8 +143,6 @@ public class PersonnelRegisteredDTO {
         }
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -168,16 +150,12 @@ public class PersonnelRegisteredDTO {
     public static class Create extends PersonnelRegisteredDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("PersonnelRegisteredUpdateRq")
     public static class Update extends PersonnelRegisteredDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -189,8 +167,6 @@ public class PersonnelRegisteredDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -199,8 +175,6 @@ public class PersonnelRegisteredDTO {
     public static class PersonnelRegisteredSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -223,5 +197,4 @@ public class PersonnelRegisteredDTO {
         @ApiModelProperty(required = true)
         private List<String> ids;
     }
-
 }

@@ -7,6 +7,8 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface TeacherCertificationDAO extends JpaRepository<TeacherCertification, Long>, JpaSpecificationExecutor<TeacherCertification> {
+
     boolean existsByCourseTitleAndTeacherId(String SubjectTitle,Long teacherId);
+
     boolean existsByCourseTitleAndTeacherIdAndIdIsNot(String SubjectTitle,Long teacherId,Long id);
 }

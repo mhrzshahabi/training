@@ -11,6 +11,7 @@ import java.util.Optional;
 import java.util.Set;
 
 public interface OperationalRoleDAO extends JpaRepository<OperationalRole, Long>, JpaSpecificationExecutor<OperationalRole> {
+
     Boolean findByCode(@Param("code") String roleCode);
 
     boolean existsOperationalRoleByCode(String roleCode);

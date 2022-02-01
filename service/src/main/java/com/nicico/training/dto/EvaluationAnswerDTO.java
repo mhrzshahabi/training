@@ -15,16 +15,12 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class EvaluationAnswerDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private Long evaluationId;
-
     @ApiModelProperty(required = true)
     private Long evaluationQuestionId;
-
     @ApiModelProperty(required = true)
     private Long questionSourceId;
-
     @ApiModelProperty(required = true)
     private Long answerId;
 
@@ -41,7 +37,6 @@ public class EvaluationAnswerDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("EvaluationAnswer - Create")
     public static class Create extends EvaluationAnswerDTO {
-
     }
 
     @Getter
@@ -63,8 +58,6 @@ public class EvaluationAnswerDTO implements Serializable {
         List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -73,8 +66,6 @@ public class EvaluationAnswerDTO implements Serializable {
     public static class EvaluationAnswerSpecRs {
         private EvaluationAnswerDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -88,8 +79,6 @@ public class EvaluationAnswerDTO implements Serializable {
         private Integer totalRows;
     }
 
-    //-----------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -100,7 +89,6 @@ public class EvaluationAnswerDTO implements Serializable {
         private Long evaluationQuestionId;
         private Long questionSourceId;
         private Long answerId;
-
         private Integer order;
         private Integer weight;
         private String question;
@@ -144,5 +132,4 @@ public class EvaluationAnswerDTO implements Serializable {
     public static class EvaluationAnswerAuditSpecRs {
         private EvaluationAnswerDTO.SpecEvaluationAnswerForAuditRs response;
     }
-
 }

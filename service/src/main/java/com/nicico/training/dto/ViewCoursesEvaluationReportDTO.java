@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ViewCoursesEvaluationReportDTO implements Serializable {
 
     @Getter
@@ -18,7 +17,6 @@ public class ViewCoursesEvaluationReportDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ViewCoursesEvaluationReportInfo")
     public static class Info {
-
         private String classCode;
         private String classStatus;
         private String classStartDate;
@@ -32,7 +30,5 @@ public class ViewCoursesEvaluationReportDTO implements Serializable {
         private String evaluationAnalysisReactionPass;
         private String evaluationAnalysisTeacherGrade;
         private String evaluationAnalysisTeacherPass;
-
     }
-
 }

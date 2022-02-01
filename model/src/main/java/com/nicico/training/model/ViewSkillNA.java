@@ -83,5 +83,4 @@ public class ViewSkillNA {
 
     @Column(name = "post_department_id")
     private Long departmentId;
-
 }

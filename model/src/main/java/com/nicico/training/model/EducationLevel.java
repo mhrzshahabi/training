@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "tbl_education_level")
 public class EducationLevel extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "education_level_seq")
     @SequenceGenerator(name = "education_level_seq", sequenceName = "seq_education_level_id", allocationSize = 1)

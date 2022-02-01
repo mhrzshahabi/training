@@ -1,8 +1,4 @@
-package com.nicico.training.dto.enums;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:6/10/2019
-@Time:11:27 AM
-*/
+package com.nicico.training.dto.enums;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ETheoType;
@@ -14,7 +10,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ETheoTypeDTO {
 
     @Getter
@@ -26,7 +21,6 @@ public class ETheoTypeDTO {
         private ETheoTypeDTO.SpecRs response = new ETheoTypeDTO.SpecRs();
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -37,6 +31,4 @@ public class ETheoTypeDTO {
         private Integer endRow = ETheoType.values().length;
         private Integer totalRows = ETheoType.values().length;
     }
-
-
 }

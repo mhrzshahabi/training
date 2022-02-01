@@ -1,46 +1,31 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.copper.common.util.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public class ViewTrainingNeedAssessmentDTO implements Serializable {
-
-
-
     @ApiModelProperty
     private Long id;
-
     @ApiModelProperty
     private Long categoryId;
-
     @ApiModelProperty
     private String code;
-
     @ApiModelProperty
     private String courseTitle;
-
     @ApiModelProperty
     private String categoryTitle;
-
     @ApiModelProperty
     private String subCategoryTitle;
-
 
     @Getter
     @Setter
@@ -48,8 +33,6 @@ public class ViewTrainingNeedAssessmentDTO implements Serializable {
     @ApiModel("TrainingNeedAssessmentDTOInfo")
     public static class Info extends ViewTrainingNeedAssessmentDTO {
     }
-
-
 
     @Getter
     @Setter
@@ -71,5 +54,4 @@ public class ViewTrainingNeedAssessmentDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

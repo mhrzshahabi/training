@@ -8,8 +8,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
-
 public class PersonnelDurationNAReportDTO {
 
     @Getter
@@ -17,7 +15,6 @@ public class PersonnelDurationNAReportDTO {
     @Accessors(chain = true)
     @ApiModel("Info")
     public static class Info extends PersonnelDurationNAReportDTO {
-
         private long personnelId;
         private Float duration;
         private Float passed;

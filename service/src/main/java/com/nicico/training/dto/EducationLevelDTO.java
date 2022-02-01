@@ -15,16 +15,12 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class EducationLevelDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
     private Integer code;
     private String titleEn;
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -39,7 +35,6 @@ public class EducationLevelDTO {
         private Integer version;
     }
 
-    //-------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -50,16 +45,12 @@ public class EducationLevelDTO {
         private String titleEn;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("EducationLevelCreateRq")
     public static class Create extends EducationLevelDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -71,8 +62,6 @@ public class EducationLevelDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -83,8 +72,6 @@ public class EducationLevelDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -93,8 +80,6 @@ public class EducationLevelDTO {
     public static class EducationLevelSpecRs {
         private EducationLevelDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

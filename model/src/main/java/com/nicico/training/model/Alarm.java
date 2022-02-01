@@ -119,26 +119,4 @@ public class Alarm extends Auditable {
 
     @Column(name = "n_reservation_id_conflict")
     private Long reservationIdConflict;
-
 }
-
-//    private String alarmTypeTitleFa;
-//    private String alarmTypeTitleEn;
-//    private Long classId;
-//    private Long sessionId;
-//    private Long teacherId;
-//    private Long studentId;
-//    private Long instituteId;
-//    private Long trainingPlaceId;
-//    private Long reservationId;
-//    private Long targetRecordId;
-//    private String tabName;
-//    private String pageAddress;
-//    private String alarm;
-//    private Long detailRecordId;
-//    private String sortField;
-//    private Long classIdConflict;
-//    private Long sessionIdConflict;
-//    private Long instituteIdConflict;
-//    private Long trainingPlaceIdConflict;
-//    private Long reservationIdConflict;

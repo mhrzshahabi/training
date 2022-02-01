@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_evaluation_index")
 public class EvaluationIndex extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "evaluation_index_seq")
     @SequenceGenerator(name = "evaluation_index_seq", sequenceName = "seq_evaluation_index_id", allocationSize = 1)

@@ -20,6 +20,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tbl_question_bank")
 public class QuestionBank extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "question_bank_seq")
     @SequenceGenerator(name = "question_bank_seq", sequenceName = "seq_question_bank_id", allocationSize = 1)
@@ -91,14 +92,12 @@ public class QuestionBank extends Auditable {
     @Column(name = "f_course_id")
     private Long courseId;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_tclass_id", insertable = false, updatable = false)
     private Tclass tclass;
 
     @Column(name = "f_tclass_id")
     private Long tclassId;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)

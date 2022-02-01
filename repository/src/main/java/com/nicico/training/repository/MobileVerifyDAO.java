@@ -9,5 +9,6 @@ import java.util.Optional;
 
 @Repository
 public interface MobileVerifyDAO extends JpaRepository<MobileVerify, Long> {
+
     Optional<MobileVerify> findByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber);
 }

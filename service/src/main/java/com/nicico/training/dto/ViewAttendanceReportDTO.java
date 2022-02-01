@@ -34,7 +34,6 @@ public class ViewAttendanceReportDTO {
     @Accessors(chain = true)
     @ApiModel("AttendanceReportDTOInfo")
     public static class Info extends ViewAttendanceReportDTO {
-
     }
 
     @Getter

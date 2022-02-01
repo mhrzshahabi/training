@@ -1,7 +1,5 @@
 package com.nicico.training.model;
 
-
-import io.swagger.annotations.ApiModelProperty;
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -32,16 +30,13 @@ public class QuestionProtocol {
     @Column(name = "f_test_question")
     private Long examId;
 
-
     @Column(name = "question_time")
     private Integer time;
 
     @Column(name = "correct_answer")
     private String correctAnswerTitle;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_test_question", insertable = false, updatable = false)
     private TestQuestion exam;
-
 }

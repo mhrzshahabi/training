@@ -1,8 +1,4 @@
-package com.nicico.training.dto;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:5/28/2019
-@Time:2:39 PM
-*/
+package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -22,8 +18,6 @@ public class StudentClassReportViewDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long classStudentId;
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -81,10 +75,6 @@ public class StudentClassReportViewDTO {
     @ApiModel("ComplexTitle")
     public static class StatisticalReport {
         private String scoreState;
-//        private String ccpAssistant;
-//        private String ccpAffairs;
-//        private String ccpSection;
-//        private String ccpUnit;
     }
 
     @Getter
@@ -107,8 +97,6 @@ public class StudentClassReportViewDTO {
         private StudentClassReportViewDTO.SpecRs response;
     }
 
-    // ---------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -130,7 +118,6 @@ public class StudentClassReportViewDTO {
         private String value;
     }
 
-
     @Getter
     @Setter
     @ApiModel("CourseInfoSCRV")
@@ -139,5 +126,4 @@ public class StudentClassReportViewDTO {
         private String courseCode;
         private String courseTitleFa;
     }
-
 }

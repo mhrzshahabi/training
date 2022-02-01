@@ -7,11 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class EQuestionLevelDTO {
 
     @Getter
@@ -23,7 +21,6 @@ public class EQuestionLevelDTO {
         private EQuestionLevelDTO.SpecRs response = new EQuestionLevelDTO.SpecRs();
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -34,5 +31,4 @@ public class EQuestionLevelDTO {
         private Integer endRow = EQuestionLevel.values().length;
         private Integer totalRows = EQuestionLevel.values().length;
     }
-
 }

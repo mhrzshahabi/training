@@ -1,10 +1,8 @@
 package com.nicico.training.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -139,7 +137,6 @@ public class ViewActivePersonnelInRegisteringDTO implements Serializable {
         private List<Long> ids;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -147,8 +144,6 @@ public class ViewActivePersonnelInRegisteringDTO implements Serializable {
     public static class PersonnelSpecRs {
         private ViewActivePersonnelInRegisteringDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter

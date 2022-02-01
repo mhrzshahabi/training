@@ -9,8 +9,6 @@ import java.util.List;
 @Repository
 public interface ViewActivePersonnelInRegisteringDAO extends BaseDAO<ViewActivePersonnelInRegistering, Long>{
 
-
     List<Student> findByPersonnelNo(String personnelNo);
-
 }
 

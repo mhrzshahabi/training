@@ -1,7 +1,4 @@
 package com.nicico.training.repository;
-/* com.nicico.training.repository
-@Author:roya
-*/
 
 import com.nicico.training.model.Student;
 import org.springframework.data.domain.Page;
@@ -38,7 +35,6 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id\n" +
             "    where tbl_student.national_code =:nationalCode and tbl_class_student.class_id =:classId", nativeQuery = true)
     Long findOneByNationalCode(@Param("nationalCode") String nationalCode, @Param("classId") Long classId);
-
 
     /**
      * @param sessionId
@@ -96,7 +92,6 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "order by tempSession.C_SESSION_DATE, tempSession.C_SESSION_START_HOUR ", nativeQuery = true)
     List<Map<String, Object>> getStudentAttendanceList(@Param("classCode") String classCode, @Param("nationalCode") String nationalCode);
 
-
     @Query(value = "SELECT\n" +
             "    tc.c_code                     AS " +"\"examCode\""+
             " ,   tc.c_title_class              AS "+ "\"examName\""+
@@ -116,7 +111,6 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "WHERE\n" +
             "    ts.national_code = :nationalCode AND (ttq.c_end_date < :endDate OR (ttq.c_end_date = :endDate AND ttq.c_end_time < :endTime)) AND ttq.b_is_pre_test_question = 0 ", nativeQuery = true)
     List<Map<String, Object>> findAllExpiredExamsByNationalCode(@Param("nationalCode") String nationalCode, @Param("endDate") String endDate, @Param("endTime") String endTime);
-
 
     @Query(value = "SELECT\n" +
             "    tc.c_code                     AS " +"\"examCode\""+
@@ -138,7 +132,6 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "    ts.national_code = :nationalCode AND (ttq.c_end_date > :endDate OR ttq.b_is_pre_test_question = 1)", nativeQuery = true)
     List<Map<String, Object>> findAllNextExamsByNationalCode(@Param("nationalCode") String nationalCode, @Param("endDate") String endDate);
 
-
     @Query(value = "SELECT\n" +
             "    tc.c_code                     AS " +"\"examCode\""+
             " ,   tc.c_title_class              AS "+ "\"examName\""+
@@ -158,7 +151,6 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "WHERE\n" +
             "    ts.national_code = :nationalCode AND (ttq.c_date = :startDate OR ttq.b_is_pre_test_question = 1)", nativeQuery = true)
     List<Map<String, Object>> findAllThisDateExamsByNationalCode(@Param("nationalCode") String nationalCode, @Param("startDate") String startDate);
-
 
     @Query(value = "SELECT\n" +
             "    *\n" +
@@ -189,5 +181,4 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "         INNER JOIN TBL_CLASS TC ON TCS.CLASS_ID = TC.ID " +
             "WHERE TC.C_CODE = :classCode ", nativeQuery = true)
     List<Student> getAllStudentsOfClassByClassCode(@Param("classCode") String classCode);
-
 }

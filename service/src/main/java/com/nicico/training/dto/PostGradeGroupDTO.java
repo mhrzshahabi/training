@@ -17,7 +17,6 @@ import java.util.Set;
 @Setter
 @Accessors(chain = true)
 public class PostGradeGroupDTO implements Serializable {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;

@@ -11,6 +11,7 @@ import java.util.List;
 
 @Repository
 public interface TermDAO extends JpaRepository<Term, Long>, JpaSpecificationExecutor<Term> {
+
     @Query(value = "select  C_TITLE_FA from TBL_TERM   where  (:eData >= c_startdate) and (:sData <= c_enddate)", nativeQuery = true)
     List<String> findConflict(@Param("sData") String sData, @Param("eData") String eData);
 

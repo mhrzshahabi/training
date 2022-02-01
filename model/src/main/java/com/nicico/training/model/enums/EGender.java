@@ -1,8 +1,4 @@
 package com.nicico.training.model.enums;
-/*@Author:jafari-h
-@Date:6/3/2019
-@Time:12:10 PM
-*/
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
@@ -14,6 +10,7 @@ import lombok.ToString;
 @ToString(of = {"titleFa"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EGender {
+
     Male(1, "مرد"),
     Female(2, "زن");
 
@@ -23,5 +20,4 @@ public enum EGender {
     public String getLiteral() {
         return name();
     }
-
 }

@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class TargetSocietyDTO implements Serializable {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String title;
@@ -62,17 +61,15 @@ public class TargetSocietyDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("TargetSocietySpecRs")
-    public static class TargetSocietySpecRs{
+    public static class TargetSocietySpecRs {
         private TargetSocietyDTO.SpecRs response;
     }
-
-    // ------------------------------
 
     @Setter
     @Getter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs{
+    public static class SpecRs {
         private List<TargetSocietyDTO.Info> data;
         private Integer status;
         private Integer startRow;

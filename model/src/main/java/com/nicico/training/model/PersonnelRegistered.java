@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicUpdate;
@@ -18,13 +17,11 @@ import javax.persistence.*;
 @Table(name = "tbl_personnel_registered")
 public class PersonnelRegistered extends Auditable {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_personnel_registered_id")
     @SequenceGenerator(name = "seq_personnel_registered_id", sequenceName = "seq_personnel_registered_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private long id;
-
 
     @Column(name = "personnel_no")
     private String personnelNo;
@@ -55,9 +52,6 @@ public class PersonnelRegistered extends Auditable {
 
     @Column(name = "active")
     private Integer active = 1;
-
-//    @Column(name = "deleted")
-//    private Integer deleted;
 
     @Column(name = "employment_date")
     private String employmentDate;
@@ -224,5 +218,4 @@ public class PersonnelRegistered extends Auditable {
 
     @Column(name = "f_contact_info", insertable = false, updatable = false)
     private Long contactInfoId;
-
 }

@@ -1,9 +1,4 @@
-package com.nicico.training.model;/*
-com.nicico.training.model
-@author : banifatemi
-@Date : 5/28/2019
-@Time :3:33 PM
-    */
+package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -20,6 +15,7 @@ import javax.persistence.*;
 @Table(name = "tbl_sub_category", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_category_id", "c_title_fa"})}
 )
 public class Subcategory extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_sub_category")
     @SequenceGenerator(name = "seq_sub_category", sequenceName = "seq_sub_category_id", allocationSize = 1)
@@ -41,5 +37,4 @@ public class Subcategory extends Auditable {
 
     @Column(name = "f_category_id")
     private Long categoryId;
-
 }

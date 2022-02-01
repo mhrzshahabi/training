@@ -1,15 +1,9 @@
-/*
-ghazanfari_f,
-1/14/2020,
-1:32 PM
-*/
 package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import javax.validation.Constraint;
 
 @Getter
 @Setter
@@ -62,7 +56,6 @@ public class Competence extends Auditable {
 
     @Column(name = "process_instance_id")
     private String processInstanceId;
-
 
     @Column(name = "return_detail")
     private String returnDetail;

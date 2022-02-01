@@ -14,17 +14,13 @@ import java.util.Optional;
 public interface PermissionDAO extends JpaRepository<Permission, Long>, JpaSpecificationExecutor<Permission> {
 
     @Transactional
-    Optional<Permission> findByEntityNameAndAndAttributeNameAndWorkGroupId(
-            @Param("entityName") String entityName,
-            @Param("attributeName") String attributeName,
-            @Param("workGroupId") Long workGroupId);
+    Optional<Permission> findByEntityNameAndAndAttributeNameAndWorkGroupId(@Param("entityName") String entityName,
+                                                                           @Param("attributeName") String attributeName,
+                                                                           @Param("workGroupId") Long workGroupId);
 
     @Transactional
-    List<Permission> findByEntityNameAndWorkGroupId(
-            @Param("entityName") String entityName,
-            @Param("workGroupId") Long workGroupId);
+    List<Permission> findByEntityNameAndWorkGroupId(@Param("entityName") String entityName, @Param("workGroupId") Long workGroupId);
 
     @Transactional
-    List<Permission> findByEntityName(
-            @Param("entityName") String entityName);
+    List<Permission> findByEntityName(@Param("entityName") String entityName);
 }

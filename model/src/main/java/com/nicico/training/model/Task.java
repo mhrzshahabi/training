@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -30,7 +29,6 @@ public class Task extends Auditable {
 
     @Column(name = "c_task_description")
     private String taskDescription;
-
 
     @Column(name = "c_attach_photo")
     private String attachPhoto;

@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 
 import javax.persistence.*;

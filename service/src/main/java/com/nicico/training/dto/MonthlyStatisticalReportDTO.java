@@ -17,26 +17,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class MonthlyStatisticalReportDTO implements Serializable {
-
     private String ccp_unit;
-
     private String ccp_assistant;
-
     private String ccp_affairs;
-
     private String ccp_section;
-
     private String complex_title;
-
     private String Present;
-
     private String Overtime;
-
     private String UnjustifiedAbsence;
-
     private String AcceptableAbsence;
-
-    //*********************************
 
     @Getter
     @Setter
@@ -45,8 +34,6 @@ public class MonthlyStatisticalReportDTO implements Serializable {
     public static class Info extends MonthlyStatisticalReportDTO {
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -54,8 +41,6 @@ public class MonthlyStatisticalReportDTO implements Serializable {
     public static class MonthlyStatisticalSpecRs {
         private MonthlyStatisticalReportDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -68,6 +53,4 @@ public class MonthlyStatisticalReportDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    //*********************************
 }

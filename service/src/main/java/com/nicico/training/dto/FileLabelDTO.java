@@ -13,7 +13,6 @@ import java.io.Serializable;
 @Setter
 @Accessors(chain = true)
 public class FileLabelDTO implements Serializable {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String labelName;
@@ -33,5 +32,4 @@ public class FileLabelDTO implements Serializable {
     public static class Create extends FileLabelDTO {
         private Long id;
     }
-
 }

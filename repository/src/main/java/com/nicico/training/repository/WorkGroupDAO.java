@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface WorkGroupDAO extends JpaRepository<WorkGroup, Long>, JpaSpecificationExecutor<WorkGroup> {
+
     @Query("SELECT p FROM WorkGroup p JOIN FETCH p.userIds WHERE p.id = (:id)")
     public WorkGroup findByIdAndFetchUserIdsEagerly(@Param("id") Long id);
 }

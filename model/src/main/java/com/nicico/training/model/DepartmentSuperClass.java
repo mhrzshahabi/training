@@ -108,5 +108,4 @@ public class DepartmentSuperClass extends Auditable {
 
     @Column(name = "c_mojtame_title")
     private String mojtameTitle;
-
 }

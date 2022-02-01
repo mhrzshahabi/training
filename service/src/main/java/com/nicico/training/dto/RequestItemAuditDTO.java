@@ -21,7 +21,6 @@ public class RequestItemAuditDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Info")
     public static class Info {
-
         private Long id;
         private String personnelNumber;
         private String personnelNo2;

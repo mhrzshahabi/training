@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import com.nicico.training.model.compositeKey.ClassConflictKey;
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -61,5 +60,4 @@ public class ViewClassConflict {
 
     @Column(name = "student_national_code")
     private String studentNationalCode;
-
 }

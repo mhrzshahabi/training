@@ -1,9 +1,4 @@
-package com.nicico.training.dto;/*
-com.nicico.training.dto
-@author : banifatemi
-@Date : 6/2/2019
-@Time :2:49 PM
-    */
+package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -20,22 +15,16 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class JobGroupDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty
     private String code;
-
     @ApiModelProperty()
     private String titleEn;
-
     @ApiModelProperty()
     private String description;
-    // ------------------------------
 
     @Getter
     @Setter
@@ -53,18 +42,13 @@ public class JobGroupDTO {
     public static class Tuple extends JobGroupDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("JobGroupCreateRq")
     public static class Create extends JobGroupDTO {
         private Set<Long> jobIds;
-//        private Set<Long> competenceIds;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -72,13 +56,7 @@ public class JobGroupDTO {
     @ApiModel("JobGroupUpdateRq")
     public static class Update extends JobGroupDTO {
         private Long id;
-//        private Set<Long> competenceIds;
-//        @NotNull
-//        @ApiModelProperty(required = true)
-//        private Integer version;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -88,11 +66,7 @@ public class JobGroupDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
-
     }
-
-    // ------------------------------
-
 
     @Getter
     @Setter
@@ -102,10 +76,8 @@ public class JobGroupDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private Set<Long> ids;
-
     }
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -114,8 +86,6 @@ public class JobGroupDTO {
     public static class JobGroupSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

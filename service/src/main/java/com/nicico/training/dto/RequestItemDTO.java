@@ -10,39 +10,24 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
 public class RequestItemDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String personnelNumber;
-
     private String personnelNo2;
-
     private String name;
-
     private String lastName;
-
     private String affairs;
-
     private String post;
-
     private String currentPostTitle;
-
     private String currentPostCode;
-
     private String workGroupCode;
-
     private String state;
-
     private long competenceReqId;
 
-
-    // ------------------------------
-//
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -50,13 +35,7 @@ public class RequestItemDTO {
     public static class Info extends RequestItemDTO {
         private Long id;
         private String nationalCode;
-
     }
-
-
-    //    // ------------------------------
-
-
 
     @Getter
     @Setter
@@ -66,9 +45,6 @@ public class RequestItemDTO {
         private String nationalCode;
     }
 
-
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -77,8 +53,6 @@ public class RequestItemDTO {
     public static class RequestItemSpecRs {
         private SpecRs response;
     }
-
-//    // ---------------
 
     @Getter
     @Setter
@@ -91,6 +65,4 @@ public class RequestItemDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }

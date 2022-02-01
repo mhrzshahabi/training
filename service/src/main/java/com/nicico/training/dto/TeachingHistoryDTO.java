@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Setter
 @Accessors(chain = true)
 public class TeachingHistoryDTO {
-
     private String courseTitle;
     private Long educationLevelId;
     private Integer duration;
@@ -33,6 +32,7 @@ public class TeachingHistoryDTO {
         private List<CategoryDTO.CategoryInfoTuple> categories;
         private List<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
         private EducationLevelDTO.Info educationLevel;
+
         public List<Long> getCategoriesIds() {
             if (categories == null)
                 return null;

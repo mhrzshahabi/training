@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.envers.AuditOverride;
@@ -13,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-
 
 @Getter
 @Setter
@@ -124,34 +122,49 @@ public class Tclass extends Auditable {
 
     @Column(name = "c_teaching_brand")
     private String teachingBrand;//نحوه آموزش
+
     @Column(name = "c_start_date", nullable = false)
     private String startDate;
+
     @Column(name = "c_end_date", nullable = false)
     private String endDate;
+
     @Column(name = "b_saturday")
     private Boolean saturday;
+
     @Column(name = "b_sunday")
     private Boolean sunday;
+
     @Column(name = "b_monday")
     private Boolean monday;
+
     @Column(name = "b_tuesday")
     private Boolean tuesday;
+
     @Column(name = "b_wednesday")
     private Boolean wednesday;
+
     @Column(name = "b_thursday")
     private Boolean thursday;
+
     @Column(name = "b_friday")
     private Boolean friday;
+
     @Column(name = "b_first")
     private Boolean first;
+
     @Column(name = "b_second")
     private Boolean second;
+
     @Column(name = "b_third")
     private Boolean third;
+
     @Column(name = "b_fourth")
     private Boolean fourth;
+
     @Column(name = "b_fifth")
     private Boolean fifth;
+
     @Column(name = "c_topology")
     private String topology;
 
@@ -303,5 +316,4 @@ public class Tclass extends Auditable {
 
     @Column(name = "affairs_id")
     private Long affairsId;
-
 }

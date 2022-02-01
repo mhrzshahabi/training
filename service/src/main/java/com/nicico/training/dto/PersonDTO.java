@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class PersonDTO {
-
     @ApiModelProperty(required = true)
     private String firstName;
     @ApiModelProperty(required = true)
@@ -30,10 +29,8 @@ public class PersonDTO {
     private String phone;
     private String address;
     private String email;
-
     private String postTitle;
     private String postCode;
-
     private Integer employmentStatusId;
     private String employmentStatus;
     private String militaryStatus;
@@ -49,7 +46,7 @@ public class PersonDTO {
         private Long id;
 
         public String getFullName() {
-            return (getFirstName() + " " + getLastName()).compareTo("null null")==0?null:getFirstName() + " " + getLastName();
+            return (getFirstName() + " " + getLastName()).compareTo("null null") == 0 ? null : getFirstName() + " " + getLastName();
         }
     }
 
@@ -57,23 +54,15 @@ public class PersonDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Person - Create")
-    public static class Create extends PersonDTO{
+    public static class Create extends PersonDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("Person - Update")
-    public static class Update extends PersonDTO{
+    public static class Update extends PersonDTO {
     }
-
-    // ------------------------------
-
-
-
-
 
     @Getter
     @Setter
@@ -110,9 +99,6 @@ public class PersonDTO {
         private String ccpUnit;
         private String fatherName;
         private String birthCertificateNo;
-
         private String gender;
     }
-
-
 }

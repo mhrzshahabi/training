@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.EArrangementType;
 import com.nicico.training.model.enums.EPlaceType;
@@ -18,33 +17,24 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-
-
 public class TrainingPlaceDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty
     private String titleEn;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String capacity;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Integer eplaceTypeId;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Integer earrangementTypeId;
-
     @ApiModelProperty(required = true)
     private String description;
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -54,10 +44,8 @@ public class TrainingPlaceDTO {
         private InstituteDTO.InstituteTitle institute;
         private EPlaceType ePlaceType;
         private EArrangementType eArrangementType;
-
     }
 
-    //-------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -69,16 +57,12 @@ public class TrainingPlaceDTO {
         private Long instituteId;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TrainingPlaceUpdateRq")
     public static class Update extends TrainingPlaceDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -90,7 +74,6 @@ public class TrainingPlaceDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -99,8 +82,6 @@ public class TrainingPlaceDTO {
     public static class TrainingPlaceSpecRs {
         private TrainingPlaceDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -114,8 +95,6 @@ public class TrainingPlaceDTO {
         private Integer totalRows;
     }
 
-    //----------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -123,7 +102,6 @@ public class TrainingPlaceDTO {
     public static class TrainingPlaceTitle {
         private Long id;
         private String titleFa;
-
     }
 
     @Getter
@@ -137,8 +115,4 @@ public class TrainingPlaceDTO {
         private String titleFa;
         private String instituteTitleFa;
     }
-
-    //----------------------
-
-
 }

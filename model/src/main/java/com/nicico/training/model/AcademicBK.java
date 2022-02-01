@@ -59,5 +59,4 @@ public class AcademicBK extends Auditable {
 
     @Column(name = "f_teacher")
     private Long teacherId;
-
 }

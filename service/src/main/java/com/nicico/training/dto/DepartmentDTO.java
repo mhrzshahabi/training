@@ -14,7 +14,6 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class DepartmentDTO implements Serializable {
-
     @ApiModelProperty
     private Long id;
     @ApiModelProperty
@@ -22,13 +21,11 @@ public class DepartmentDTO implements Serializable {
     @ApiModelProperty
     private String code;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("DepartmentInfo")
     public static class Info extends DepartmentDTO {
-
         private String parentCode;
         private String hozeTitle;
         private String moavenatTitle;
@@ -41,7 +38,6 @@ public class DepartmentDTO implements Serializable {
         public Long parentId;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -50,7 +46,6 @@ public class DepartmentDTO implements Serializable {
     public static class DepartmentSpecRs {
         private SpecRs response;
     }
-
 
     @Getter
     @Setter
@@ -63,7 +58,6 @@ public class DepartmentDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 
     @Getter
     @Setter
@@ -90,7 +84,6 @@ public class DepartmentDTO implements Serializable {
     @EqualsAndHashCode(of = {"id"}, callSuper = false)
     @ApiModel("TSociety")
     public static class TSociety {
-
         private Long id;
         public String title;
         public String code;
@@ -102,7 +95,6 @@ public class DepartmentDTO implements Serializable {
     @EqualsAndHashCode(of = {"id"}, callSuper = false)
     @ApiModel("DepChart")
     public static class DepChart {
-
         private Long id;
         public String title;
         public String code;
@@ -110,5 +102,4 @@ public class DepartmentDTO implements Serializable {
         public Long parentId;
         public String parentTitle;
     }
-
 }

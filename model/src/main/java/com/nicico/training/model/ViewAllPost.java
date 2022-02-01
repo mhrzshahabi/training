@@ -1,14 +1,6 @@
-
-/*
- * Author: Mehran Golrokhi
- * Created Date: 2020/08/24
- * Last Modified: 2020/07/26
- */
-
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.ViewAllPostReportKey;
-import com.nicico.training.model.compositeKey.ViewStatisticsUnitReportKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -84,5 +76,4 @@ public class ViewAllPost implements Serializable {
 
     @Column(name = "type", insertable = false, updatable = false)
     private Integer type;
-
 }

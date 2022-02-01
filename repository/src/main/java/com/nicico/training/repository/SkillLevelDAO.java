@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SkillLevelDAO extends JpaRepository<SkillLevel, Long>, JpaSpecificationExecutor<SkillLevel> {
+
     boolean existsByTitleFa(String nameFa);
 
     boolean existsByTitleFaAndIdIsNot(String nameFa, Long id);

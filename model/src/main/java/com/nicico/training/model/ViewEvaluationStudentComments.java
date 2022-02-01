@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import lombok.*;
@@ -10,7 +9,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.Date;
 
 @Getter
 @Setter
@@ -21,9 +19,7 @@ import java.util.Date;
 @Entity
 @Subselect("select * from view_evaluation_student_comments")
 @DiscriminatorValue("ViewEvaluationStudentComments")
-public class ViewEvaluationStudentComments implements Serializable{
-
-
+public class ViewEvaluationStudentComments implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -56,13 +52,9 @@ public class ViewEvaluationStudentComments implements Serializable{
     @Column(name = "title_sub_category")
     private String titleSubCategory;
 
-
     @Column(name = "start_date")
     private String startDate;
 
-
     @Column(name = "end_date")
     private String endDate;
-
-
 }

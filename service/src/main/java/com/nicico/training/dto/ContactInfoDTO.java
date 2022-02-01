@@ -15,9 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ContactInfoDTO {
-
     private String email;
     private String mobile;
     private String personalWebSite;

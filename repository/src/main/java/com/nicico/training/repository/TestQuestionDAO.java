@@ -27,5 +27,4 @@ public interface TestQuestionDAO extends JpaRepository<TestQuestion, Long>, JpaS
     void deleteClassPreCourseTestQuestion(Long id);
 
     List<TestQuestion> findByTclassId(Long id);
-
 }

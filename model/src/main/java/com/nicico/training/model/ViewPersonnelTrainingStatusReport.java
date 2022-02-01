@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.PersonnelClassKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -120,5 +119,4 @@ public class ViewPersonnelTrainingStatusReport {
 
     @Column(name = "personnel_f_post_id")
     private Long personnelPostId;
-
 }

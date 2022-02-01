@@ -1,7 +1,3 @@
-/*
- * Author: Mehran Golrokhi
- */
-
 package com.nicico.training.repository;
 
 import com.nicico.training.model.ViewAttendanceReport;
@@ -12,5 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ViewAttendanceReportDAO extends JpaRepository<ViewAttendanceReport, ViewAttendanceReportKey>, JpaSpecificationExecutor<ViewAttendanceReport> {
-
 }

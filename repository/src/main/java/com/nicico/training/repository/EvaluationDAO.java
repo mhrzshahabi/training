@@ -1,8 +1,4 @@
-package com.nicico.training.repository;/* com.nicico.training.repository
-@Author:jafari-h
-@Date:5/28/2019
-@Time:2:37 PM
-*/
+package com.nicico.training.repository;
 
 import com.nicico.training.model.Evaluation;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,10 +9,10 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpecificationExecutor<Evaluation> {
+
     List<Evaluation> findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(Long classId, Long evaluatorId, Long evaluatorTypeId);
 
     List<Evaluation> findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeId(Long classId, Long evaluatorId,
@@ -35,8 +31,6 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
     List<Evaluation>  findEvaluationByClassIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeId(Long classId,Long evaluatorTypeId, Long EvaluatedId, Long EvaluatedTypeId);
 
     List<Evaluation> findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long classId,Long evaluatedId, Long evaluationLevelId, Long questionnaireTypeId);
-
-    List<Evaluation> findByQuestionnaireId(Long questionnarieId);
 
     Evaluation  findFirstByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
             Long ClassId,Long EvaluatedId, Long EvaluatedTypeId,Long EvaluatorTypeId,Long EvaluationLevelId, Long QuestionnaireTypeId);
@@ -58,11 +52,9 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
 
     List<Evaluation> findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long ClassId, Long EvaluationLevelId, Long QuestionnaireTypeId);
 
-
-
     Optional<Evaluation> findTopByClassIdAndQuestionnaireTypeId(Long ClassId, Long typeId);
+
     List<Evaluation> findAllByClassIdAndQuestionnaireTypeId(Long ClassId, Long typeId);
-    Set<Evaluation> findByClassId(Long ClassId);
 
     @Query(value = "SELECT eval.* " +
             "FROM tbl_EVALUATION eval " +
@@ -85,7 +77,6 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "And cs.evaluation_status_reaction = 1" +
             "", nativeQuery = true)
     List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode,@Param("evaluatorTypeId") Long evaluatorTypeId);
-
 
     Evaluation findFirstByQuestionnaireId(Long QuestionnaireId);
 }

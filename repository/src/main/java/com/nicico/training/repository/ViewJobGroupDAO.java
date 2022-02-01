@@ -4,5 +4,5 @@ import com.nicico.training.model.ViewJobGroup;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ViewJobGroupDAO extends BaseDAO<ViewJobGroup, Long>{
+public interface ViewJobGroupDAO extends BaseDAO<ViewJobGroup, Long> {
 }

@@ -16,7 +16,6 @@ public class NeedAssessmentReportUserDTO {
     private Integer needAssessmentCount;
     private Long needAssessmentPassCount;
 
-
     @Getter
     @Setter
     public static class CompetenceInfo {

@@ -11,11 +11,9 @@ import java.util.Set;
 @Setter
 @Accessors(chain = true)
 public class WorkGroupDTO {
-
     private String title;
     private String description;
     private Set<Long> userIds;
-
 
     @Getter
     @Setter
@@ -41,5 +39,4 @@ public class WorkGroupDTO {
     public static class Update extends WorkGroupDTO {
         private Integer version;
     }
-
 }

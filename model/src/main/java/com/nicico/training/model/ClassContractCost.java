@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_class_contract_cost")
 public class ClassContractCost extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_contract_cost_seq")
     @SequenceGenerator(name = "class_contract_cost_seq", sequenceName = "seq_class_contract_cost_id", allocationSize = 1)
@@ -36,5 +37,4 @@ public class ClassContractCost extends Auditable {
 
     @Column(name = "f_class_contract_id", nullable = false)
     private Long classContractId;
-
 }

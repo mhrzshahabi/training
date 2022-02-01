@@ -12,7 +12,6 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GeoWorkDTO {
-
     private Long id;
     private Long code;
     private String titleFa;
