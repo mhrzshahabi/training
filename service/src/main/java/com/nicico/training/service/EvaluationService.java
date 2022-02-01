@@ -899,11 +899,13 @@ public class EvaluationService implements IEvaluationService {
             if (evaluationAnswer.getQuestionSourceId() == 200 ||
                     evaluationAnswer.getQuestionSourceId() == 201) {
                 DynamicQuestion dynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId()).get();
-                questionDto.setTitle(dynamicQuestion.getQuestion());
+                ParameterValue domain = parameterValueDAO.findFirstById(dynamicQuestion.getTypeId());
+                questionDto.setTitle(domain.getTitle() + ": " + dynamicQuestion.getQuestion());
             } else {
                 EvaluationQuestion evaluationQuestion = evaluationQuestionDAO.findById(questionnaireQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId()).get()
                         .getEvaluationQuestionId()).get();
-                questionDto.setTitle(evaluationQuestion.getQuestion());
+                ParameterValue domain = parameterValueDAO.findFirstById(evaluationQuestion.getDomainId());
+                questionDto.setTitle(domain.getTitle() + ": " + evaluationQuestion.getQuestion());
             }
             Comparator<ParameterValue> comparator = Comparator.comparing(ParameterValue::getId);
 
