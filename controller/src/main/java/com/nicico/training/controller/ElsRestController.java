@@ -895,7 +895,7 @@ public class ElsRestController {
                                                                       @PathVariable String nationalCode,
                                                                       @PathVariable String evaluatorType) {
         ElsEvaluationsListResponse elsEvaluationsListResponse = new ElsEvaluationsListResponse();
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
             try {
                 Long evaluatorTypeId = null;
@@ -921,11 +921,11 @@ public class ElsRestController {
                 elsEvaluationsListResponse.setMessage("اطلاعات موردنظر یافت نشد");
                 return elsEvaluationsListResponse;
             }
-//        } else {
-//            elsEvaluationsListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
-//            elsEvaluationsListResponse.setMessage("دسترسی موردنظر یافت نشد");
-//            return elsEvaluationsListResponse;
-//        }
+        } else {
+            elsEvaluationsListResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsEvaluationsListResponse.setMessage("دسترسی موردنظر یافت نشد");
+            return elsEvaluationsListResponse;
+        }
     }
 
     @GetMapping("/classToEls/{classId}")
