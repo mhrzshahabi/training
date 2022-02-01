@@ -1637,11 +1637,11 @@ public class TclassService implements ITclassService {
     public EvaluationAnswerObject classStudentEvaluations(StudentEvaluationAnswerDto dto) {
         final Optional<Tclass> optionalTclass = tclassDAO.findById(dto.getClassId());
         final Tclass tclass = optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        List<Evaluation> optionalEvaluation = evaluationDAO.findAllByClassIdAndQuestionnaireTypeId(tclass.getId(), 139L);
-        Long userId = studentDAO.findOneByNationalCode(dto.getNationalCode(), dto.getClassId());
+        List<Evaluation> optionalEvaluation = evaluationDAO.findAllByClassId(tclass.getId());
+        Long userId = studentDAO.findOneByNationalCode(dto.getNationalCode(), dto.getClassId(),dto.getSourceId());
 
         Evaluation evaluation = optionalEvaluation.stream()
-                .filter(x -> x.getEvaluatorId().equals(userId))
+                .filter(x -> x.getEvaluatorId().equals(userId) && x.getId().equals(dto.getSourceId()))
                 .findFirst()
                 .orElse(null);
 
