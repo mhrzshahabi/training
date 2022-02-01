@@ -7,7 +7,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
-import com.nicico.training.model.Personnel;
+import com.nicico.training.iservice.ISynonymPersonnelService;
 import com.nicico.training.model.SynonymPersonnel;
 import com.nicico.training.repository.SynonymPersonnelDAO;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +17,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 
 @Service
 @RequiredArgsConstructor
-public class SynonymPersonnelService  {
+public class SynonymPersonnelService implements ISynonymPersonnelService {
     private final SynonymPersonnelDAO dao;
     private final ModelMapper modelMapper;
     @Autowired

@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.model.Parameter;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.repository.ParameterValueDAO;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class ParameterValueService extends BaseService<ParameterValue, Long, ParameterValueDTO.Info, ParameterValueDTO.Create, ParameterValueDTO.Update, ParameterValueDTO.Delete, ParameterValueDAO> {
+public class ParameterValueService extends BaseService<ParameterValue, Long, ParameterValueDTO.Info, ParameterValueDTO.Create, ParameterValueDTO.Update, ParameterValueDTO.Delete, ParameterValueDAO> implements IParameterValueService {
 
     @Autowired
     private ParameterService parameterService;

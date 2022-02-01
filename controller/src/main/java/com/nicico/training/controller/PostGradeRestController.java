@@ -13,6 +13,7 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IPostGradeService;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostGradeService;
 import lombok.RequiredArgsConstructor;
@@ -35,20 +36,20 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping("/api/postGrade")
 public class PostGradeRestController {
 
-    private final PostGradeService postGradeService;
+    private final IPostGradeService iPostGradeService;
     private final ObjectMapper objectMapper;
     private final IPersonnelService personnelService;
 
     @GetMapping("/list")
     public ResponseEntity<List<PostGradeDTO.Info>> list() {
-        return new ResponseEntity<>(postGradeService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iPostGradeService.list(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<PostGradeDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
-        SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = postGradeService.searchWithoutPermission(searchRq);
+        SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = iPostGradeService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
@@ -56,13 +57,13 @@ public class PostGradeRestController {
     public ResponseEntity<ISC<PostGradeDTO.Info>> withPermissionList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
-        SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = postGradeService.search(searchRq);
+        SearchDTO.SearchRs<PostGradeDTO.Info> searchRs = iPostGradeService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @GetMapping(value = "/personnelIscList/{id}")
     public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
-        List<PostDTO.TupleInfo> postList = postGradeService.getPosts(id);
+        List<PostDTO.TupleInfo> postList = iPostGradeService.getPosts(id);
         if (postList.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
@@ -108,7 +109,7 @@ public class PostGradeRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
         BaseService.setCriteriaToNotSearchDeleted(request);
-        SearchDTO.SearchRs<PostGradeDTO.Info> response = postGradeService.searchWithoutPermission(request);
+        SearchDTO.SearchRs<PostGradeDTO.Info> response = iPostGradeService.searchWithoutPermission(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)

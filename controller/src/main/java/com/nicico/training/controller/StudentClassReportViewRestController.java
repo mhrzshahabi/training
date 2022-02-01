@@ -6,6 +6,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.StudentClassReportViewDTO;
+import com.nicico.training.iservice.IStudentClassReportViewService;
 import com.nicico.training.service.StudentClassReportViewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ import java.util.function.Function;
 @RequestMapping("/api/student-class-report-view")
 public class StudentClassReportViewRestController {
 
-    private final StudentClassReportViewService studentClassReportViewService;
+    private final IStudentClassReportViewService iStudentClassReportViewService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
 
@@ -35,7 +36,7 @@ public class StudentClassReportViewRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<T> searchRs = studentClassReportViewService.search(searchRq, converter);
+        SearchDTO.SearchRs<T> searchRs = iStudentClassReportViewService.search(searchRq, converter);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -47,12 +48,12 @@ public class StudentClassReportViewRestController {
 
     @GetMapping("/all-field-values")
     public ResponseEntity<ISC<StudentClassReportViewDTO.FieldValue>> findAllValuesOfOneFieldFromPersonnel(@RequestParam String fieldName) throws IOException {
-        return new ResponseEntity<>(ISC.convertToIscRs(studentClassReportViewService.findAllValuesOfOneFieldFromPersonnel(fieldName), 0), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(iStudentClassReportViewService.findAllValuesOfOneFieldFromPersonnel(fieldName), 0), HttpStatus.OK);
     }
 
     @GetMapping("/all-courses")
     public ResponseEntity<StudentClassReportViewDTO.StudentClassReportSpecRs> findAllCourses() throws IOException {
-        List<StudentClassReportViewDTO.CourseInfoSCRV> list = studentClassReportViewService.findCourses();
+        List<StudentClassReportViewDTO.CourseInfoSCRV> list = iStudentClassReportViewService.findCourses();
         final StudentClassReportViewDTO.SpecRs specResponse = new StudentClassReportViewDTO.SpecRs();
         final StudentClassReportViewDTO.StudentClassReportSpecRs specRs = new StudentClassReportViewDTO.StudentClassReportSpecRs();
 
@@ -68,7 +69,7 @@ public class StudentClassReportViewRestController {
 
     @GetMapping("/{reportType}")
     public ResponseEntity<StudentClassReportViewDTO.StudentClassReportSpecRs> findAllStatisticalReport(@PathVariable String reportType) {
-        List<StudentClassReportViewDTO.Info> list = studentClassReportViewService.findAllStatisticalReportFilter(reportType);
+        List<StudentClassReportViewDTO.Info> list = iStudentClassReportViewService.findAllStatisticalReportFilter(reportType);
 
         final StudentClassReportViewDTO.SpecRs specResponse = new StudentClassReportViewDTO.SpecRs();
         final StudentClassReportViewDTO.StudentClassReportSpecRs specRs = new StudentClassReportViewDTO.StudentClassReportSpecRs();
@@ -108,7 +109,7 @@ public class StudentClassReportViewRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        SearchDTO.SearchRs<StudentClassReportViewDTO.Info> response = studentClassReportViewService.search(request);
+        SearchDTO.SearchRs<StudentClassReportViewDTO.Info> response = iStudentClassReportViewService.search(request);
         final StudentClassReportViewDTO.SpecRs specResponse = new StudentClassReportViewDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)

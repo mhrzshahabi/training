@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.iservice.IPersonnelInformationService;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.service.PersonnelInformationService;
 import lombok.RequiredArgsConstructor;
@@ -24,27 +25,27 @@ import java.util.List;
 @RequestMapping("/api/personnelInformation/")
 public class PersonnelInformationRestController {
 
-    private final PersonnelInformationService personnelInformationService;
+    private final IPersonnelInformationService iPersonnelInformationService;
     private final ModelMapper modelMapper;
 
     @Loggable
     @Transactional
     @GetMapping(value = "/findCourseByCourseId/{courseId}")
     public ResponseEntity<CourseDTO.CourseDetailInfo> findCourseByCourseId(@PathVariable Long courseId) {
-        return new ResponseEntity<>(personnelInformationService.findCourseById(courseId), HttpStatus.OK);
+        return new ResponseEntity<>(iPersonnelInformationService.findCourseById(courseId), HttpStatus.OK);
     }
 
     @Loggable
     @Transactional
     @GetMapping(value = "/findClassByClassId/{classId}")
     public ResponseEntity<TclassDTO.ClassDetailInfo> findClassByClassId(@PathVariable Long classId) {
-        return new ResponseEntity<>(personnelInformationService.findClassById(classId), HttpStatus.OK);
+        return new ResponseEntity<>(iPersonnelInformationService.findClassById(classId), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/findClassByCourseId/{courseId}")
     public ResponseEntity<TclassDTO.TclassSpecRsHistory> findClassByCourseId(@PathVariable Long courseId) {
-        List<TclassDTO.TclassHistory> list = personnelInformationService.findClassesByCourseId(courseId);
+        List<TclassDTO.TclassHistory> list = iPersonnelInformationService.findClassesByCourseId(courseId);
 
 
         final TclassDTO.SpecRsHistory specResponse = new TclassDTO.SpecRsHistory();
