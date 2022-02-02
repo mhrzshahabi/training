@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 
 public interface ISkillService {
@@ -68,4 +69,7 @@ public interface ISkillService {
 
     SearchDTO.SearchRs<ViewTrainingPostDTO.Report> getPostsContainsTheSkill(Long skillId);
 
+    <T> SearchDTO.SearchRs<T> searchGeneric(SearchDTO.SearchRq request, Class<T> infoType);
+
+    void addCourse(Long courseId, Long skillId, HttpServletResponse resp) throws IOException;
 }

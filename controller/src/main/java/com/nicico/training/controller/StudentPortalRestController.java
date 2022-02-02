@@ -10,6 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.iservice.IClassStudentService;
 import com.nicico.training.service.ClassStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class StudentPortalRestController {
 
     private final ObjectMapper objectMapper;
     private final ReportUtil reportUtil;
-    private final ClassStudentService classStudentService;
+    private final IClassStudentService iClassStudentService;
     private final ModelMapper modelMapper;
 
     /////////////////////////////////////class-student//////////////////////////////////////////////////////////
@@ -79,7 +80,7 @@ public class StudentPortalRestController {
             criteriaRq.getCriteria().add(objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class));
         }
 
-        final SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs = classStudentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq), c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));
+        final SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs = iClassStudentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq), c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

@@ -2,6 +2,8 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.TargetSocietyDTO;
+import com.nicico.training.iservice.ITargetSocietyService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.service.TargetSocietyService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +22,8 @@ import java.util.List;
 @RequestMapping("/api/target-society")
 public class TargetSocietyRestController {
 
-    private final TclassService tclassService;
-    private final TargetSocietyService societyService;
+    private final ITclassService tclassService;
+    private final ITargetSocietyService societyService;
 
     @Loggable
     @GetMapping("/getListById/{id}")

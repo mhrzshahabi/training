@@ -33,4 +33,5 @@ public interface IQuestionBankService {
 
     Page<QuestionBank> getQuestionsByCategoryAndSubCategory(Teacher teacher,Integer page ,Integer size);
 
+    Integer getMaxId();
 }

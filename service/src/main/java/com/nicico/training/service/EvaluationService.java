@@ -359,6 +359,10 @@ public class EvaluationService implements IEvaluationService {
                 .map(Evaluation::getId).collect(Collectors.toList());
     }
 
+    public List<Evaluation> findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long ClassId, Long EvaluationLevelId, Long QuestionnaireTypeId){
+        return evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId( ClassId, EvaluationLevelId, QuestionnaireTypeId);
+    }
+
     //----------------------------------------------- evaluation updating ----------------------------------------------
     public void updateTclassInfo(Long classID, Integer reactionTrainingStatus, Integer reactionTeacherStatus) {
         Optional<Tclass> byId = tclassDAO.findById(classID);

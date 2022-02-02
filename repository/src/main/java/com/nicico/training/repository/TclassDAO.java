@@ -30,16 +30,16 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Modifying
     @Query(value = "update TBL_CLASS set C_WORKFLOW_ENDING_STATUS = :workflowEndingStatus, C_WORKFLOW_ENDING_STATUS_CODE = :workflowEndingStatusCode, C_STATUS_DATE = :statusDate where ID = :classId", nativeQuery = true)
-    public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode, Date statusDate);
+    int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode, Date statusDate);
 
     @Query(value = "select MAX(C_WORKFLOW_ENDING_STATUS_CODE) from TBL_CLASS where ID = :classId", nativeQuery = true)
-    public Integer getWorkflowEndingStatusCode(Long classId);
+    Integer getWorkflowEndingStatusCode(Long classId);
 
     @Query(value = "select * from TBL_CLASS where F_TEACHER = :tID", nativeQuery = true)
-    public List<Tclass> getTeacherClasses(Long tID);
+    List<Tclass> getTeacherClasses(Long tID);
 
     @Query(value = "SELECT SUM(C.n_h_duration) as TrainingTime FROM tbl_class_student CS INNER JOIN tbl_class C ON C.id = CS.class_id INNER JOIN tbl_student S ON S.id = CS.student_id WHERE (S.national_code =:national_code OR S.personnel_no = :personnel_no) AND INSTR(C.c_start_date, :year) > 0", nativeQuery = true)
-    public Long getStudentTrainingTime(String national_code, String personnel_no, String year);
+    Long getStudentTrainingTime(String national_code, String personnel_no, String year);
 
     @Query(value = " SELECT  " +
             "    c.id,c.c_code, c.c_title_class, c.n_h_duration , c.c_start_date, c.c_end_date, c.c_status as classStatus_id,  " +
@@ -60,7 +60,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "    LEFT JOIN tbl_parameter_value pa2 ON cs.failure_reason_id = pa2.id " +
             " WHERE  " +
             "    s.national_code =:national_code OR s.personnel_no = :personnel_no ", nativeQuery = true)
-    public List<?> findAllPersonnelClass(String national_code, String personnel_no);
+    List<?> findAllPersonnelClass(String national_code, String personnel_no);
 
     @Query(value = " select " +
             "       id, " +
@@ -102,11 +102,11 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "         WHERE c.f_course =:courseId " +
             "           and (s.national_code =:national_code " +
             "             OR s.personnel_no =:personnel_no)) WHERE rnk = 1", nativeQuery = true)
-    public List<?> findPersonnelClassByCourseId(String national_code, String personnel_no, Long courseId);
+    List<?> findPersonnelClassByCourseId(String national_code, String personnel_no, Long courseId);
 
-    public List<?> findAllTclassByCourseId(Long id);
+    List<?> findAllTclassByCourseId(Long id);
 
-    public List<Tclass> findTclassesByCourseId(Long id);
+    List<Tclass> findTclassesByCourseId(Long id);
 
     List<Tclass> findByCourseAndTeacher(Course course, Teacher teacher);
 
@@ -151,20 +151,20 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Modifying
     @Query(value = "update TBL_CLASS set evaluation_reaction_teacher = :teacherReactionStatus where ID = :classId", nativeQuery = true)
-    public void updateTeacherReactionStatus(Integer teacherReactionStatus, Long classId);
+    void updateTeacherReactionStatus(Integer teacherReactionStatus, Long classId);
 
     @Modifying
     @Transactional
     @Query(value = "update TBL_CLASS set evaluation_reaction_training = :trainingReactionStatus where ID = :classId", nativeQuery = true)
-    public void updateTrainingReactionStatus(Integer trainingReactionStatus, Long classId);
+    void updateTrainingReactionStatus(Integer trainingReactionStatus, Long classId);
 
     @Transactional
     @Query(value = "select evaluation_reaction_teacher from TBL_CLASS where ID = :classId", nativeQuery = true)
-    public Integer getTeacherReactionStatus(Long classId);
+    Integer getTeacherReactionStatus(Long classId);
 
     @Transactional
     @Query(value = "select evaluation_reaction_training from TBL_CLASS where ID = :classId", nativeQuery = true)
-    public Integer getTrainingReactionStatus(Long classId);
+    Integer getTrainingReactionStatus(Long classId);
 
     @Transactional
     @Query(value = "select tmp_table.class_id,count(*) from (select cs.class_id from tbl_class_student cs inner join (select st.id,INF.MOBILE_FOR_SMS MOBILE from tbl_student st left join " +

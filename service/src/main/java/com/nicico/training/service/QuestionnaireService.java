@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionnaireDTO;
+import com.nicico.training.iservice.IQuestionnaireService;
 import com.nicico.training.model.Questionnaire;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.repository.QuestionnaireDAO;
@@ -18,7 +19,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class QuestionnaireService extends BaseService<Questionnaire, Long, QuestionnaireDTO.Info, QuestionnaireDTO.Create, QuestionnaireDTO.Update, QuestionnaireDTO.Delete, QuestionnaireDAO> {
+public class QuestionnaireService extends BaseService<Questionnaire, Long, QuestionnaireDTO.Info, QuestionnaireDTO.Create, QuestionnaireDTO.Update, QuestionnaireDTO.Delete, QuestionnaireDAO> implements IQuestionnaireService {
 
     @Autowired
     QuestionnaireService(QuestionnaireDAO QuestionnaireDAO) {

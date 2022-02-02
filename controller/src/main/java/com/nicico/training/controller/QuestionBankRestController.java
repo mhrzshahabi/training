@@ -3,33 +3,24 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IViewStatisticsUnitReportService;
+import com.nicico.training.iservice.IQuestionBankService;
+import com.nicico.training.iservice.IQuestionBankTestQuestionService;
 import com.nicico.training.model.QuestionBank;
-import com.nicico.training.repository.QuestionBankDAO;
-import com.nicico.training.service.QuestionBankService;
-import com.nicico.training.service.QuestionBankTestQuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -37,21 +28,20 @@ import java.util.Optional;
 @RequestMapping("/api/question-bank")
 public class QuestionBankRestController {
 
-    private final QuestionBankService questionBankService;
-    private final ModelMapper modelMapper;
+    private final IQuestionBankService iQuestionBankService;
     private final ObjectMapper objectMapper;
-    private final QuestionBankTestQuestionService questionBankTestQuestionService;
+    private final IQuestionBankTestQuestionService iQuestionBankTestQuestionService;
 
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<QuestionBankDTO.FullInfo> get(@PathVariable Long id) {
-        return new ResponseEntity<>(questionBankService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iQuestionBankService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/max")
     public Integer getMaxId() {
-        return questionBankService.getMaxId();
+        return iQuestionBankService.getMaxId();
     }
 
     @Loggable
@@ -102,7 +92,7 @@ public class QuestionBankRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<QuestionBankDTO.Info> response = questionBankService.search(request);
+        SearchDTO.SearchRs<QuestionBankDTO.Info> response = iQuestionBankService.search(request);
 
         final QuestionBankDTO.SpecRs specResponse = new QuestionBankDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -123,7 +113,7 @@ public class QuestionBankRestController {
         HttpStatus httpStatus = HttpStatus.CREATED;
         QuestionBankDTO.Info info = null;
         try {
-            info = questionBankService.create(request);
+            info = iQuestionBankService.create(request);
 
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
@@ -137,8 +127,8 @@ public class QuestionBankRestController {
     public ResponseEntity<QuestionBankDTO.Info> update(@PathVariable Long id, @RequestBody QuestionBankDTO.Update request) {
         HttpStatus httpStatus = HttpStatus.OK;
         QuestionBankDTO.Info info = null;
-        if (!questionBankTestQuestionService.usedQuestion(id)) {
-            info = questionBankService.update(id, request);
+        if (!iQuestionBankTestQuestionService.usedQuestion(id)) {
+            info = iQuestionBankService.update(id, request);
             return new ResponseEntity<>(info, httpStatus);
         } else {
             return new ResponseEntity<>(
@@ -153,19 +143,19 @@ public class QuestionBankRestController {
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            if (!questionBankTestQuestionService.usedQuestion(id)) {
-                QuestionBank qb = questionBankService.getById(id);
+            if (!iQuestionBankTestQuestionService.usedQuestion(id)) {
+                QuestionBank qb = iQuestionBankService.getById(id);
 
                 if (qb == null) {
                     return new ResponseEntity<>(
                             new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
                             HttpStatus.NOT_FOUND);
-                } else if (questionBankService.isExist(id)) {
+                } else if (iQuestionBankService.isExist(id)) {
                     return new ResponseEntity<>(
                             new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
                             HttpStatus.NOT_ACCEPTABLE);
                 } else {
-                    questionBankService.delete(id);
+                    iQuestionBankService.delete(id);
                     return new ResponseEntity(HttpStatus.OK);
                 }
             } else {
@@ -184,7 +174,7 @@ public class QuestionBankRestController {
 
     @GetMapping(value = "/usedQuestion/{id}")
     public ResponseEntity<Boolean> usedQuestion(@PathVariable Long id) {
-        return new ResponseEntity<>(questionBankTestQuestionService.usedQuestion(id), HttpStatus.OK);
+        return new ResponseEntity<>(iQuestionBankTestQuestionService.usedQuestion(id), HttpStatus.OK);
     }
 
 

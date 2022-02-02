@@ -29,7 +29,6 @@ import java.util.List;
 @RequestMapping(value = "/api/state")
 public class StateRestController {
     private final IStateService stateService;
-    private final ICityService cityService;
     private final ObjectMapper objectMapper;
 
     @Loggable

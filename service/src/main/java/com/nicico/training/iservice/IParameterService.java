@@ -8,6 +8,7 @@ import com.nicico.training.dto.ParameterValueDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 
 public interface IParameterService {
@@ -26,4 +27,6 @@ public interface IParameterService {
     ParameterDTO.Info delete(Long id);
 
     SearchDTO.SearchRs<ParameterDTO.Config> allConfig(SearchDTO.SearchRq searchRq);
+
+    Map<Long, String> getMapByCode(String studentScoreState);
 }

@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.ViewActivePersonnelInRegisteringDTO;
+import com.nicico.training.iservice.IViewActivePersonnelInRegisteringService;
 import com.nicico.training.service.ViewActivePersonnelInRegisteringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("api/view-active-personnel-in-registering")
 public class ViewActivePersonnelInRegisteringController {
-    private final ViewActivePersonnelInRegisteringService viewActivePersonnelInRegisteringService;
+    private final IViewActivePersonnelInRegisteringService viewActivePersonnelInRegisteringService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
 
