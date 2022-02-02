@@ -10,7 +10,7 @@ import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.*;
-import com.nicico.training.repository.QuestionBankTestQuestionDAO;
+import com.nicico.training.repository.*;
 import com.nicico.training.service.QuestionnaireService;
 import com.nicico.training.service.TeacherService;
 import org.mapstruct.Named;
@@ -82,6 +82,17 @@ public abstract class EvaluationBeanMapper {
 
     @Autowired
     protected IEvaluationService evaluationService;
+
+    @Autowired
+    protected TeacherDAO teacherDAO;
+
+    @Autowired
+    protected PersonalInfoDAO personalInfoDAO;
+
+    @Autowired
+    protected ClassStudentDAO classStudentDAO;
+    @Autowired
+    protected ViewActivePersonnelDAO viewActivePersonnelDAO;
 
     private final Boolean hasDuplicateQuestion = true;
 
@@ -203,6 +214,21 @@ public abstract class EvaluationBeanMapper {
             Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
             dto.setTitle(questionnaire.getTitle());
             dto.setQuestionnaireId(evaluation.getQuestionnaireId());
+            if (evaluation.getEvaluatorTypeId() == 187L) {
+                Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
+                if (teacher.isPresent() ){
+                 Optional<PersonalInfo> personalInfo=  personalInfoDAO.findById(teacher.get().getPersonalityId());
+                    personalInfo.ifPresent(info -> dto.setEvaluated(info.getFirstNameFa() + " " + info.getLastNameFa()));
+
+                }
+            } else if (evaluation.getEvaluatorTypeId() == 188L) {
+                Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
+                if (classStudent.isPresent() && classStudent.get().getStudent() !=null)
+                    dto.setEvaluated(classStudent.get().getStudent().getFirstName() + " "+ classStudent.get().getStudent().getLastName());
+            } else {
+                Optional<ViewActivePersonnel> activePersonnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId());
+                activePersonnel.ifPresent(viewActivePersonnel -> dto.setEvaluated(viewActivePersonnel.getFirstName() + " " + viewActivePersonnel.getLastName()));
+            }
             dto.setClassId(evaluation.getClassId());
             dto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
             dto.setPlanner((evaluation.getTclass().getPlanner().getFirstName() + " " +

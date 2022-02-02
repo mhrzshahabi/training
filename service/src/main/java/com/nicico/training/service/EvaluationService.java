@@ -29,6 +29,7 @@ public class EvaluationService implements IEvaluationService {
     private final ModelMapper modelMapper;
     private final EvaluationDAO evaluationDAO;
     private final ClassStudentDAO classStudentDAO;
+    private final ViewActivePersonnelDAO viewActivePersonnelDAO;
     private final ParameterService parameterService;
     private final QuestionnaireDAO questionnaireDAO;
     private final TclassDAO tclassDAO;
@@ -40,7 +41,6 @@ public class EvaluationService implements IEvaluationService {
     private final ClassEvaluationGoalsDAO classEvaluationGoalsDAO;
     private final EvaluationAnswerDAO evaluationAnswerDAO;
     private final EvaluationQuestionDAO evaluationQuestionDAO;
-
 
     @Transactional(readOnly = true)
     @Override
@@ -63,7 +63,6 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info create(EvaluationDTO.Create request) {
         return save(modelMapper.map(request, Evaluation.class));
     }
-
 
 
     @Transactional
@@ -303,19 +302,41 @@ public class EvaluationService implements IEvaluationService {
     @Override
     public List<Evaluation> getEvaluationsByEvaluatorNationalCode(String evaluatorNationalCode, Long EvaluatorTypeId, String evaluatorType) {
         if (evaluatorType.equals("teacher")) {
-            List<Evaluation> list= evaluationDAO.getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
-            List<Evaluation> notAnsweredEvaluations=new ArrayList<>();
-            for (Evaluation evaluation:list){
-                List<EvaluationAnswer> answers=evaluationAnswerDAO.findByEvaluationIdAndAnswerId(evaluation.getId());
+            List<Evaluation> list = evaluationDAO.getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
+            List<Evaluation> notAnsweredEvaluations = new ArrayList<>();
+            for (Evaluation evaluation : list) {
+                List<EvaluationAnswer> answers = evaluationAnswerDAO.findByEvaluationIdAndAnswerId(evaluation.getId());
                 if (answers.isEmpty())
                     notAnsweredEvaluations.add(evaluation);
             }
-            return notAnsweredEvaluations;
+            return getBehavioralEvaluations(notAnsweredEvaluations, evaluatorNationalCode);
         } else if (evaluatorType.equals("student")) {
-            return evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
+            List<Evaluation> list = evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
+            return getBehavioralEvaluations(list,evaluatorNationalCode);
         } else {
             return null;
         }
+    }
+
+    private List<Evaluation> getBehavioralEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
+        List<Evaluation> finalList = new ArrayList<>(list);
+        List<Evaluation> evaluationList = evaluationDAO.getBehavioralEvaluations();
+        for (Evaluation evaluation : evaluationList){
+            if (evaluation.getEvaluatorTypeId() == 187L) {
+                Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
+                if (teacher.isPresent() && teacher.get().getTeacherCode() != null && teacher.get().getTeacherCode().equals(evaluatorNationalCode))
+                    finalList.add(evaluation);
+            } else if (evaluation.getEvaluatorTypeId() == 188L) {
+                Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
+                if (classStudent.isPresent() && classStudent.get().getStudent() != null && classStudent.get().getStudent().getNationalCode().equals(evaluatorNationalCode))
+                    finalList.add(evaluation);
+            } else {
+                Optional<ViewActivePersonnel> activePersonnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId());
+                if (activePersonnel.isPresent() && activePersonnel.get().getNationalCode() != null && activePersonnel.get().getNationalCode().equals(evaluatorNationalCode))
+                    finalList.add(evaluation);
+            }
+        }
+            return finalList;
     }
 
     @Transactional
@@ -401,8 +422,8 @@ public class EvaluationService implements IEvaluationService {
     public void updateQuestionnarieInfo(Long questionnarieId) {
         Evaluation evaluation = evaluationDAO.findFirstByQuestionnaireId(questionnarieId);
         Questionnaire questionnaire = questionnaireDAO.findFirstById(questionnarieId);
-        if (questionnaire==null)
-      throw  new TrainingException(TrainingException.ErrorType.NotFound);
+        if (questionnaire == null)
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
         questionnaire.setLockStatus(evaluation != null);
     }
 
@@ -660,11 +681,11 @@ public class EvaluationService implements IEvaluationService {
                 Optional<QuestionnaireQuestion> optionalQuestionnaireQuestion = questionnaireQuestionDAO.findById(evaluationAnswerFullData.getEvaluationQuestionId());
                 evaluationAnswerFullData.setOrder(optionalQuestionnaireQuestion.map(QuestionnaireQuestion::getOrder).orElse(null));
                 evaluationAnswerFullData.setWeight(optionalQuestionnaireQuestion.map(QuestionnaireQuestion::getWeight).orElse(null));
-                if (optionalQuestionnaireQuestion.isPresent() && optionalQuestionnaireQuestion.get().getEvaluationQuestionId()!=null){
-                    Optional<EvaluationQuestion> optionalEvaluationQuestion=evaluationQuestionDAO.findById(optionalQuestionnaireQuestion.get().getEvaluationQuestionId());
+                if (optionalQuestionnaireQuestion.isPresent() && optionalQuestionnaireQuestion.get().getEvaluationQuestionId() != null) {
+                    Optional<EvaluationQuestion> optionalEvaluationQuestion = evaluationQuestionDAO.findById(optionalQuestionnaireQuestion.get().getEvaluationQuestionId());
                     evaluationAnswerFullData.setQuestion(optionalEvaluationQuestion.map(EvaluationQuestion::getQuestion).orElse(null));
                     evaluationAnswerFullData.setDomainId(optionalEvaluationQuestion.map(EvaluationQuestion::getDomainId).orElse(null));
-                }else {
+                } else {
                     evaluationAnswerFullData.setQuestion(null);
                     evaluationAnswerFullData.setDomainId(null);
 
@@ -899,11 +920,13 @@ public class EvaluationService implements IEvaluationService {
             if (evaluationAnswer.getQuestionSourceId() == 200 ||
                     evaluationAnswer.getQuestionSourceId() == 201) {
                 DynamicQuestion dynamicQuestion = dynamicQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId()).get();
-                questionDto.setTitle(dynamicQuestion.getQuestion());
+                ParameterValue domain = parameterValueDAO.findFirstById(dynamicQuestion.getTypeId());
+                questionDto.setTitle(domain.getTitle() + ": " + dynamicQuestion.getQuestion());
             } else {
                 EvaluationQuestion evaluationQuestion = evaluationQuestionDAO.findById(questionnaireQuestionDAO.findById(evaluationAnswer.getEvaluationQuestionId()).get()
                         .getEvaluationQuestionId()).get();
-                questionDto.setTitle(evaluationQuestion.getQuestion());
+                ParameterValue domain = parameterValueDAO.findFirstById(evaluationQuestion.getDomainId());
+                questionDto.setTitle(domain.getTitle() + ": " + evaluationQuestion.getQuestion());
             }
             Comparator<ParameterValue> comparator = Comparator.comparing(ParameterValue::getId);
 

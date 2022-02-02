@@ -56,6 +56,10 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
 
     List<Evaluation> findAllByClassIdAndQuestionnaireTypeId(Long ClassId, Long typeId);
 
+    List<Evaluation> findAllByClassId(Long ClassId);
+
+    Set<Evaluation> findByClassId(Long ClassId);
+
     @Query(value = "SELECT eval.* " +
             "FROM tbl_EVALUATION eval " +
             "         INNER JOIN TBL_TEACHER teacher ON eval.F_EVALUATOR_ID = teacher.ID " +
@@ -63,7 +67,7 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "         INNER JOIN TBL_CLASS class ON eval.F_CLASS_ID = class.ID " +
             "WHERE personal.C_NATIONAL_CODE =:evaluatorNationalCode " +
             "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId " +
-            "  AND class.TEACHER_ONLINE_EVAL_STATUS = 1 ", nativeQuery = true)
+            "  AND class.TEACHER_ONLINE_EVAL_STATUS = 1  AND eval.f_evaluation_level_id != 156 ", nativeQuery = true)
     List<Evaluation> getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
 
     @Query(value = "SELECT eval.*  " +
@@ -74,9 +78,21 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "WHERE student.NATIONAL_CODE =:evaluatorNationalCode  " +
             "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId  " +
             "  AND class.STUDENT_ONLINE_EVAL_STATUS = 1 " +
-            "And cs.evaluation_status_reaction = 1" +
+            "And cs.evaluation_status_reaction = 1 AND eval.f_evaluation_level_id != 156" +
             "", nativeQuery = true)
     List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode,@Param("evaluatorTypeId") Long evaluatorTypeId);
 
     Evaluation findFirstByQuestionnaireId(Long QuestionnaireId);
+
+
+    @Query(value = "SELECT\n" +
+            "    *\n" +
+            "\n" +
+            "FROM\n" +
+            "         tbl_evaluation\n" +
+            "WHERE\n" +
+            "       tbl_evaluation.b_status = 0\n" +
+            "       and\n" +
+            "       tbl_evaluation.f_evaluation_level_id=156",nativeQuery = true)
+    List<Evaluation> getBehavioralEvaluations();
 }
