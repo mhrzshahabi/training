@@ -175,7 +175,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/evaluations/userEval/{evalId}")
-    public ElsUserEvaluationListResponseDto sendUserEvalToElsById(@NotNull HttpServletRequest header, @PathVariable long evalId) {
+    public ElsUserEvaluationListResponseDto sendUserEvalToElsById(HttpServletRequest header, @PathVariable long evalId) {
         ElsUserEvaluationListResponseDto response = new ElsUserEvaluationListResponseDto();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
