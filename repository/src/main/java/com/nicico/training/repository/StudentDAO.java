@@ -28,16 +28,16 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
 
     List<Student> findByNationalCode(String nationalCode);
 
-    @Query(value = "SELECT\n" +
-            "    tbl_evaluation.f_evaluator_id,\n" +
-            "    tbl_student.national_code,\n" +
-            "    tbl_class_student.class_id\n" +
-            "FROM\n" +
-            "         tbl_evaluation\n" +
-            "    INNER JOIN tbl_class_student ON tbl_evaluation.f_evaluator_id = tbl_class_student.id\n" +
-            "    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id\n" +
-            "    where tbl_student.national_code =:nationalCode and tbl_class_student.class_id =:classId and tbl_evaluation.id =:sourceId", nativeQuery = true)
-    Long findOneByNationalCode(@Param("nationalCode") String nationalCode, @Param("classId") Long classId,@Param("sourceId") Long sourceId);
+//    @Query(value = "SELECT\n" +
+//            "    tbl_evaluation.f_evaluator_id,\n" +
+//            "    tbl_student.national_code,\n" +
+//            "    tbl_class_student.class_id\n" +
+//            "FROM\n" +
+//            "         tbl_evaluation\n" +
+//            "    INNER JOIN tbl_class_student ON tbl_evaluation.f_evaluator_id = tbl_class_student.id\n" +
+//            "    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id\n" +
+//            "    where tbl_student.national_code =:nationalCode and tbl_class_student.class_id =:classId and tbl_evaluation.id =:sourceId", nativeQuery = true)
+//    Long findOneByNationalCode(@Param("nationalCode") String nationalCode, @Param("classId") Long classId,@Param("sourceId") Long sourceId);
 
 
     /**

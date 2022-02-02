@@ -107,6 +107,7 @@ public class TclassService implements ITclassService {
     private DecimalFormat numberFormat = new DecimalFormat("#.00");
     private final ComplexDAO complexDAO;
     private final ClassStudentDAO classStudentDAO;
+    private final ViewActivePersonnelDAO viewActivePersonnelDAO;
 
 
     @Transactional(readOnly = true)
@@ -1635,15 +1636,10 @@ public class TclassService implements ITclassService {
     @Transactional
     @Override
     public EvaluationAnswerObject classStudentEvaluations(StudentEvaluationAnswerDto dto) {
-        final Optional<Tclass> optionalTclass = tclassDAO.findById(dto.getClassId());
-        final Tclass tclass = optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        List<Evaluation> optionalEvaluation = evaluationDAO.findAllByClassId(tclass.getId());
-        Long userId = studentDAO.findOneByNationalCode(dto.getNationalCode(), dto.getClassId(),dto.getSourceId());
-
-        Evaluation evaluation = optionalEvaluation.stream()
-                .filter(x -> x.getEvaluatorId().equals(userId) && x.getId().equals(dto.getSourceId()))
-                .findFirst()
-                .orElse(null);
+//        final Optional<Tclass> optionalTclass = tclassDAO.findById(dto.getClassId());
+//        final Tclass tclass = optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Optional<Evaluation> optionalEvaluation = evaluationDAO.findById(dto.getSourceId());
+        final Evaluation evaluation = optionalEvaluation.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
         EvaluationAnswerObject evaluationAnswerObject = new EvaluationAnswerObject();
         evaluationAnswerObject.setClassId(dto.getClassId());
@@ -1653,8 +1649,19 @@ public class TclassService implements ITclassService {
         evaluationAnswerObject.setEvaluationLevelId(evaluation.getEvaluationLevelId());
         evaluationAnswerObject.setQuestionnaireTypeId(evaluation.getQuestionnaireTypeId());
         evaluationAnswerObject.setQuestionnaireId(evaluation.getQuestionnaireId());
-        evaluationAnswerObject.setEvaluatorId(userId);
-        evaluationAnswerObject.setEvaluatorTypeId(188L);
+        if (evaluation.getEvaluatorTypeId() == 187L) {
+            Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
+            teacher.ifPresent(value -> evaluationAnswerObject.setEvaluatorId(value.getId()));
+        } else if (evaluation.getEvaluatorTypeId() == 188L) {
+            Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
+            classStudent.ifPresent(value -> evaluationAnswerObject.setEvaluatorId(value.getId()));
+
+        } else {
+            Optional<ViewActivePersonnel> activePersonnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId());
+            activePersonnel.ifPresent(value -> evaluationAnswerObject.setEvaluatorId(value.getId()));
+        }
+
+        evaluationAnswerObject.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
 
         List<EvaluationAnswer> evaluationAnswers;
         List<TeacherEvaluationAnswer> EvaluationAnswerList = new ArrayList<>();
