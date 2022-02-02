@@ -9,10 +9,6 @@ import java.util.List;
 @Repository
 public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReactionEvaluationFormulaReport, Long> {
 
-
-
-
-
     @Query(value = "SELECT\n" +
             "    ROWNUM                                                             AS id,\n" +
             "    z.class_code                                                       AS class_code,\n" +
@@ -175,6 +171,4 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
             "ORDER BY\n" +
             "    class_code", nativeQuery = true)
     List<ViewReactionEvaluationFormulaReport> getAll(String start, String end);
-
-
 }

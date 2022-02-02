@@ -10,9 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 public class CourseUpdateRequest implements Serializable {
-
     private static final long serialVersionUID = -9206070659075221058L;
-
     private String code;
     private String titleFa;
     private CategoryDto category;

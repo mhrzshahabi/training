@@ -11,7 +11,6 @@ import java.util.List;
 @Repository
 public interface PersonnelCoursePassedOrNotPaseedNAReportViewDAO extends JpaRepository<PersonnelCoursePassedOrNotPaseedNAReportView, Long>, JpaSpecificationExecutor<PersonnelCoursePassedOrNotPaseedNAReportView> {
 
-
     @Query(value = "SELECT\n" +
             "    * FROM(\n" +
             "SELECT\n" +

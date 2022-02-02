@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -15,7 +14,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class EvaluationAnalysisDTO implements Serializable {
-
     private Long tClassId;
     private String reactionGrade;
     private String learningGrade;
@@ -30,7 +28,6 @@ public class EvaluationAnalysisDTO implements Serializable {
     private Boolean effectivenessPass;
     private Boolean teacherPass;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -44,14 +41,14 @@ public class EvaluationAnalysisDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Evaluation - Analysis - Create")
-    public static class Create extends EvaluationAnalysisDTO{
+    public static class Create extends EvaluationAnalysisDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("Evaluation - Analysis - Update")
-    public static class Update extends EvaluationAnalysisDTO{
+    public static class Update extends EvaluationAnalysisDTO {
         private Long id;
     }
 
@@ -64,6 +61,4 @@ public class EvaluationAnalysisDTO implements Serializable {
         @ApiModelProperty(required = true)
         List<Long> ids;
     }
-
-
 }

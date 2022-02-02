@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ViewStatisticsUnitReportDAO extends JpaRepository<ViewStatisticsUnitReport, ViewStatisticsUnitReportKey>, JpaSpecificationExecutor<ViewStatisticsUnitReport> {
-
 }

@@ -51,7 +51,6 @@ public class OperationalRoleDTO {
         private List<Long> subCategories;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -71,6 +70,4 @@ public class OperationalRoleDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }

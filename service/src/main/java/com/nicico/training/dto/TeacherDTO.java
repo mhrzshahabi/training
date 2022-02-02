@@ -16,9 +16,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class TeacherDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String teacherCode;
@@ -58,20 +56,16 @@ public class TeacherDTO {
     @Accessors(chain = true)
     @ApiModel("FinalTestTeacherInfo")
     public static class FinalTestInfo extends TeacherDTO {
-
         private Long id;
         private Integer version;
         private PersonalInfoDTO.CompanyManager personality;
-
     }
-
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TeacherInformation")
     public static class TeacherInformation {
-
         private PersonalInfoDTO.contractInfo personality;
         private String personnelCode;
 
@@ -127,7 +121,6 @@ public class TeacherDTO {
             if (subCategories == null) return null;
             return subCategories.stream().map(SubcategoryDTO.Info::getId).collect(Collectors.toList());
         }
-
     }
 
     @Getter
@@ -182,7 +175,6 @@ public class TeacherDTO {
         private Integer totalRows;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -234,7 +226,6 @@ public class TeacherDTO {
         private SpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -246,7 +237,6 @@ public class TeacherDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 
     @Getter
     @Setter
@@ -316,7 +306,6 @@ public class TeacherDTO {
         private InfoTupleSpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -340,13 +329,12 @@ public class TeacherDTO {
             return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
         }
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    public static class  TeacherInfo{
+    public static class TeacherInfo {
         private String teacherCode;
         private String teacherName;
-
-
     }
 }

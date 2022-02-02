@@ -11,6 +11,7 @@ import javax.persistence.*;
 @Table(name = "tbl_geo_work",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"c_code", "c_people_type"})})
 public class GeoWork {
+
     @Id
     @Column(name = "id", precision = 10)
     private Long id;

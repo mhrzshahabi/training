@@ -37,5 +37,4 @@ public class EvaluationQuestion extends Auditable {
             joinColumns = {@JoinColumn(name = "f_evaluation_question", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_evaluation_index", referencedColumnName = "id")})
     private List<EvaluationIndex> evaluationIndices;
-
 }

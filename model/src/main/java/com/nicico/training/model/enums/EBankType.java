@@ -10,6 +10,7 @@ import lombok.ToString;
 @ToString(of = {"titleFa"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EBankType {
+
     Governmental(1, "دولتی"),
     Informal(2, "خصوصی");
 

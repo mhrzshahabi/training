@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import lombok.*;
@@ -20,13 +19,9 @@ import java.io.Serializable;
 @Entity
 @Subselect("select * from view_training_file_report")
 @DiscriminatorValue("ViewTrainingFile")
-public class ViewTrainingFile implements Serializable{
-
-
-//    private Long id;
+public class ViewTrainingFile implements Serializable {
 
     /////////////////////////////////////////////student////////////////////////////////////////////
-
 
     @Column(name = "emp_no")
     private String empNo;

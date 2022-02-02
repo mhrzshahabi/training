@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 8/29/2019, 10:48 AM
-*/
 package com.nicico.training.dto;
 
 import com.nicico.copper.common.util.date.DateUtil;
@@ -39,7 +36,6 @@ public class PostDTO implements Serializable {
         private String peopleType;
         private Long enabled;
         private Long parentID;
-//      private DepartmentDTO.Info department;
     }
 
     @Getter
@@ -79,10 +75,9 @@ public class PostDTO implements Serializable {
 
         public String getLastModifiedDateNA() {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-            if(lastModifiedDateNA != null)
+            if (lastModifiedDateNA != null)
                 return DateUtil.convertMiToKh(formatter.format(lastModifiedDateNA));
             return "آپ دیت نشده";
         }
-
     }
 }

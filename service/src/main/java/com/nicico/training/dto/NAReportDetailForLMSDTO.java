@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class NAReportDetailForLMSDTO {
-
     private String courseCode;
     private String courseName;
     private String courseState;

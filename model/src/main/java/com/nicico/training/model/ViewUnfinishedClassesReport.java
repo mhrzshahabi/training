@@ -19,6 +19,7 @@ import java.io.Serializable;
 @Entity
 @Subselect("select * from view_unfinished_classes_report")
 public class ViewUnfinishedClassesReport implements Serializable {
+
     @EmbeddedId
     private ViewUnfinishedClassesReportKey id;
 

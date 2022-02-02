@@ -1,13 +1,5 @@
 package com.nicico.training.model.enums;
 
-/*
-AUTHOR: ghazanfari_f
-DATE: 6/2/2019
-TIME: 11:01 AM
-*/
-
-import org.springframework.beans.factory.annotation.Qualifier;
-
 import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 import java.util.Arrays;

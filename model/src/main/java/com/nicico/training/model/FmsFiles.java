@@ -35,5 +35,4 @@ public class FmsFiles extends Auditable {
 
     @Column(name = "type")
     private String type;
-
 }

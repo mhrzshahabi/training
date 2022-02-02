@@ -1,6 +1,5 @@
 package com.nicico.training.model.enums;
 
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +29,4 @@ public enum EPlaceType {
     public String getLiteral() {
         return name();
     }
-
-
 }

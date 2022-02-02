@@ -14,9 +14,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class CompanyDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private String titleFa;
     private String email;
@@ -59,7 +57,6 @@ public class CompanyDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CompanyUpdateRq")
     public static class Update extends CompanyDTO.Create {
-
     }
 
     @Getter
@@ -91,7 +88,6 @@ public class CompanyDTO implements Serializable {
         private CompanyDTO.SpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -103,5 +99,4 @@ public class CompanyDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

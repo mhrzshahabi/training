@@ -10,7 +10,6 @@ import java.util.List;
 @Getter
 @Setter
 public class EvalAverageResult extends BaseResponse implements Serializable {
-
     private Double totalAverage;
     private Long limitScore;
     private Integer allStudentsNo;

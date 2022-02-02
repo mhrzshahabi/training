@@ -11,14 +11,13 @@ import java.util.Date;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ViewClassDetailDTO implements Serializable {
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ViewClassDetailInfo")
-    public static class Info{
+    public static class Info {
         private Long id;
         private Long tclassId;
         private Long termId;

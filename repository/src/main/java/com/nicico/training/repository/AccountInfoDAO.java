@@ -10,7 +10,7 @@ import java.util.List;
 
 @Repository
 public interface AccountInfoDAO extends JpaRepository<AccountInfo, Long>, JpaSpecificationExecutor<AccountInfo> {
-    List<AccountInfo> findAllByInstituteId(Long id, Pageable pageable);
 
+    List<AccountInfo> findAllByInstituteId(Long id, Pageable pageable);
     List<AccountInfo> getAllByInstituteId(long instituteId);
 }

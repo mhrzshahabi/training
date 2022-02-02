@@ -10,8 +10,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
-
 public class EArrangementTypeDTO {
 
     @Getter
@@ -23,7 +21,6 @@ public class EArrangementTypeDTO {
         private EArrangementTypeDTO.SpecRs response = new EArrangementTypeDTO.SpecRs();
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -34,5 +31,4 @@ public class EArrangementTypeDTO {
         private Integer endRow = EArrangementType.values().length;
         private Integer totalRows = EArrangementType.values().length;
     }
-
 }

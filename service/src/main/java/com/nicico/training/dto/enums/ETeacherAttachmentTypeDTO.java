@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ETeacherAttachmentTypeDTO {
 
     @Getter
@@ -22,7 +21,6 @@ public class ETeacherAttachmentTypeDTO {
         private ETeacherAttachmentTypeDTO.SpecRs response = new ETeacherAttachmentTypeDTO.SpecRs();
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -33,5 +31,4 @@ public class ETeacherAttachmentTypeDTO {
         private Integer endRow = ETeacherAttachmentType.values().length;
         private Integer totalRows = ETeacherAttachmentType.values().length;
     }
-
 }

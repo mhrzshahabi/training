@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-
 @Setter
 @Getter
 @Entity
@@ -18,7 +17,6 @@ public class TeacherRole {
     @Column(name = "id", precision = 10)
     private Long id;
 
-
     @ManyToOne
     @JoinColumn(name = "TEACHER_ID")
     private Teacher teacher;
@@ -26,5 +24,4 @@ public class TeacherRole {
     @ManyToOne
     @JoinColumn(name = "ROLE_ID")
     private Role role;
-
 }

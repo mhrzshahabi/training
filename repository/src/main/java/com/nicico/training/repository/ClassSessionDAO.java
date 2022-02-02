@@ -2,8 +2,6 @@ package com.nicico.training.repository;
 
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
-import com.nicico.training.model.ICourseSCRV;
-import io.swagger.models.auth.In;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -11,8 +9,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-
-////*****rastegari 9809*****
 
 @Repository
 public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaSpecificationExecutor<ClassSession> {
@@ -22,9 +18,6 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
     List<IClassSessionDTO> findSessionDateDistinctByClassId(Long classId);
 
     List<ClassSession> findByClassIdAndSessionDate(Long classId, String sessionDate);
-
-    @Query(value = "SELECT DISTINCT p.C_SESSION_DATE,p.C_DAY_NAME FROM TBL_SESSION p WHERE p.F_CLASS_ID = ?1", nativeQuery = true)
-    List<IClassSessionDTO> findSessionDate(Long classId);
 
     boolean existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(Long classId, String sessionDate, String sessionStartHour, String sessionEndHour);
 
@@ -47,6 +40,7 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
 
     @Query(value = "SELECT * FROM ( SELECT tbl_student.national_code AS student, tbl_class_student.class_id FROM tbl_class_student INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id ) tb1 INNER JOIN (SELECT tbl_session.f_class_id        AS id, tbl_session.c_session_date    AS startt,tbl_session.c_session_end_hour,tbl_session.c_session_start_hour,tbl_training_place.c_title_fa,tbl_class.c_title_class FROM tbl_session INNER JOIN tbl_training_place ON tbl_session.f_training_place_id = tbl_training_place.id INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id ) tb2 ON tb1.class_id = tb2.id WHERE tb1.student=:nationalCode AND startt >=:startDate AND  startt <=:endDate", nativeQuery = true)
     List<Object> getStudentEvent(String nationalCode, String startDate, String endDate);
+
     @Query(value = "SELECT tbl_session.c_session_date  ,  tbl_session.c_session_start_hour, tbl_session.c_session_end_hour, tbl_training_place.c_title_fa,  tbl_class.c_title_class,  tbl_personal_info.c_national_code   FROM   tbl_session INNER JOIN tbl_training_place ON tbl_session.f_training_place_id = tbl_training_place.id  INNER JOIN tbl_class ON tbl_session.f_class_id = tbl_class.id  INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id WHERE tbl_personal_info.c_national_code=:nationalCode AND tbl_session.c_session_date >=:startDate AND  tbl_session.c_session_date <=:endDate", nativeQuery = true)
     List<Object> getTeacherEvent(String nationalCode, String startDate, String endDate);
 }

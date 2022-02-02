@@ -14,7 +14,6 @@ import java.util.stream.Collectors;
 @Setter
 @Accessors(chain = true)
 public class TeacherCertificationDTO {
-
     private String courseTitle;
     private String companyName;
     private String companyLocation;
@@ -22,7 +21,6 @@ public class TeacherCertificationDTO {
     private String startDate;
     private String endDate;
     private Long teacherId;
-
 
     @Getter
     @Setter
@@ -33,6 +31,7 @@ public class TeacherCertificationDTO {
         private Integer version;
         private List<CategoryDTO.CategoryInfoTuple> categories;
         private List<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
+
         public List<Long> getCategoriesIds() {
             if (categories == null)
                 return null;

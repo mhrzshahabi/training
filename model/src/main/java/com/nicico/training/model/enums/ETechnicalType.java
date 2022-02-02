@@ -1,11 +1,5 @@
 package com.nicico.training.model.enums;
 
-/*
-AUTHOR: ghazanfari_f
-DATE: 6/2/2019
-TIME: 12:41 PM
-*/
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -27,5 +21,4 @@ public enum ETechnicalType {
     public String getLiteral() {
         return name();
     }
-
 }

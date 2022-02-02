@@ -11,12 +11,12 @@ import java.io.Serializable;
 @Setter
 @Accessors(chain = true)
 public class ViewUnfinishedClassesReportDTO implements Serializable {
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("Grid")
     public static class Grid {
-
         private Long classId;
         private String classCode;
         private Long courseId;

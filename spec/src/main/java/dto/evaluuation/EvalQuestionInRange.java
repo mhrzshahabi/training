@@ -8,7 +8,6 @@ import lombok.ToString;
 @Setter
 @ToString
 public class EvalQuestionInRange {
-
     private int min;
     private int max;
 }

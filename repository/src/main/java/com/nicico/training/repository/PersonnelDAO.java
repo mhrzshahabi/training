@@ -1,7 +1,6 @@
 package com.nicico.training.repository;
 
 import com.nicico.training.model.Personnel;
-import com.nicico.training.model.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -22,9 +21,6 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
     Optional<Personnel> findByNationalCodeAndDeleted(String nationalCode,Integer deleted);
 
     Optional<Personnel>  findFirstByNationalCode(String nationalCode);
-
-    @Query(value = "SELECT * FROM tbl_personnel where national_code = :national_code AND Personnel_No = :Personnel_No AND ROWNUM < 2", nativeQuery = true)
-    Personnel findByNationalCodeAndPersonnelNo(String national_code,String Personnel_No);
 
     List<Personnel> findOneByPostCode(String postCode);
 
@@ -53,10 +49,6 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     List<Personnel> findByPersonnelNoInOrPersonnelNo2In(List<String> personnelNos, List<String> personnelNos2);
 
-    Personnel findPersonnelByPersonnelNo(String personnelNo);
-
-    Personnel findPersonnelById(Long personnelId);
-
     Optional<Personnel> findById(Long Id);
 
     @Query(value = "SELECT complex_title FROM tbl_personnel where national_code = :national_code AND deleted=0 AND ROWNUM < 2", nativeQuery = true)
@@ -65,9 +57,6 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
     @Transactional
     @Query(value = "select CONCAT(CONCAT(first_name, ' '), last_name) from tbl_personnel p where p.ID = ?", nativeQuery = true)
     String getPersonnelFullName(Long personnelID);
-
-    @Query(value = "SELECT MAX(ID) FROM tbl_personnel where PERSONNEL_NO = :PERSONNEL_NO AND deleted=0", nativeQuery = true)
-    Long getPersonnelIdByPersonnelNo(String PERSONNEL_NO);
 
     @Query(value = "SELECT DISTINCT POST_GRADE_TITLE FROM TBL_PERSONNEL WHERE POST_GRADE_TITLE IS NOT NULL", nativeQuery = true)
     List<String> findAllPostGrade();
@@ -87,6 +76,4 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     @Query(value = "select * from TBL_PERSONNEL where personnel_no = :PersonnelNumber AND  active = 1 AND  deleted = 0" , nativeQuery = true)
     Personnel findPersonnelDataByPersonnelNumber(String PersonnelNumber);
-
-
 }

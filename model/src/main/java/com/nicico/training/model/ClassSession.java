@@ -90,5 +90,4 @@ public class ClassSession extends Auditable {
 
     @OneToMany(mappedBy = "sessionConflict", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<Alarm> alarmsConflict;
-
 }

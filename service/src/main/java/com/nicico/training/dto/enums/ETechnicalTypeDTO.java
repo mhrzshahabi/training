@@ -1,8 +1,4 @@
-package com.nicico.training.dto.enums;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:6/10/2019
-@Time:10:06 AM
-*/
+package com.nicico.training.dto.enums;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ETechnicalType;
@@ -14,7 +10,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ETechnicalTypeDTO {
 
     @Getter
@@ -36,5 +31,4 @@ public class ETechnicalTypeDTO {
         private Integer endRow = ETechnicalType.values().length;
         private Integer totalRows = ETechnicalType.values().length;
     }
-
 }

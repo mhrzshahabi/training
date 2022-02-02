@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_check_list_item")
 public class CheckListItem extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "check_list_item_seq")
     @SequenceGenerator(name = "check_list_item_seq", sequenceName = "seq_check_list_item_id", allocationSize = 1)
@@ -35,5 +36,4 @@ public class CheckListItem extends Auditable {
 
     @Column(name = "f_check_list_id")
     private Long checkListId;
-
 }

@@ -16,7 +16,6 @@ import java.util.Map;
 @Setter
 @Accessors(chain = true)
 public class StudentDTO {
-
     @ApiModelProperty(required = true)
     private String firstName;
     @ApiModelProperty(required = true)
@@ -81,7 +80,7 @@ public class StudentDTO {
         private Long id;
 
         public String getFullName() {
-            return (getFirstName() + " " + getLastName()).compareTo("null null")==0?null:getFirstName() + " " + getLastName();
+            return (getFirstName() + " " + getLastName()).compareTo("null null") == 0 ? null : getFirstName() + " " + getLastName();
         }
     }
 
@@ -103,7 +102,6 @@ public class StudentDTO {
         private String personnelNo2;
         private ContactInfoDTO.Info contactInfo;
         private String peopleType;
-
     }
 
     @Getter
@@ -113,16 +111,12 @@ public class StudentDTO {
     public static class Create extends StudentDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("Student - Update")
     public static class Update extends StudentDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -144,8 +138,6 @@ public class StudentDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -154,8 +146,6 @@ public class StudentDTO {
     public static class StudentSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -242,6 +232,7 @@ public class StudentDTO {
         private String ccpAffairs;
         private String postCode;
     }
+
     @Getter
     @Setter
     @Accessors
@@ -254,25 +245,22 @@ public class StudentDTO {
         private String educationMajorTitle;
         private String ccpAffairs;
         private String nationalCode;
-
         @Getter(AccessLevel.NONE)
         private String fullName;
 
         public String getFullName() {
-            return (firstName + " " + lastName).compareTo("null null")==0?null:firstName + " " + lastName;
+            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
         }
     }
 
-    //Amin HK
     @Getter
     @Setter
     @Accessors
     @ApiModel("Clear With Attendance")
     public static class clearAttendanceWithState<T> extends clearAttendance {
-        private Map<T,String> states;
+        private Map<T, String> states;
     }
 
-    //Amin HK
     @Getter
     @Setter
     @Accessors
@@ -285,33 +273,30 @@ public class StudentDTO {
         private String scoreB;
         private String fullName;
 
-        public String calScoreB(String score){
-            if (score==null || score.length()==0)
+        public String calScoreB(String score) {
+            if (score == null || score.length() == 0)
                 return "";
 
-            String[] sections=score.split("\\.");
-            String scoreStr="";
+            String[] sections = score.split("\\.");
+            String scoreStr = "";
 
-            String[] singleMap={"صفر","يک","دو","سه","چهار","پنج","شش","هفت","هشت","نه","ده","يازده","دوازده","سيزده","چهارده","پانزده","شانزده","هفده","هجده","نوزده","بيست"};
+            String[] singleMap = {"صفر", "يک", "دو", "سه", "چهار", "پنج", "شش", "هفت", "هشت", "نه", "ده", "يازده", "دوازده", "سيزده", "چهارده", "پانزده", "شانزده", "هفده", "هجده", "نوزده", "بيست"};
 
-            if (sections[0]!=null){
-                scoreStr=singleMap[Integer.parseInt(sections[0])];
+            if (sections[0] != null) {
+                scoreStr = singleMap[Integer.parseInt(sections[0])];
             }
+            if (sections[1] != null && !sections[1].equals("0")) {
+                scoreStr += " و ";
 
-            if (sections[1]!=null && !sections[1].equals("0")){
-                scoreStr+=" و ";
+                scoreStr += singleMap[sections[1].charAt(0) - '0'] + " ";
 
-                scoreStr+=singleMap[sections[1].charAt(0)-'0']+" ";
-
-                if (sections[1].length()>1)
-                    scoreStr+=singleMap[sections[1].charAt(1)-'0'];
+                if (sections[1].length() > 1)
+                    scoreStr += singleMap[sections[1].charAt(1) - '0'];
             }
+            return scoreStr;
+        }
+    }
 
-            return  scoreStr;
-        }//end method calScoreB
-    }//end class scoreAttendance
-
-    //Amin HK
     @Getter
     @Setter
     @Accessors
@@ -326,7 +311,6 @@ public class StudentDTO {
         private String nationalCode;
     }
 
-    //Amin HK
     @Getter
     @Setter
     @Accessors
@@ -336,7 +320,6 @@ public class StudentDTO {
         private String ccpAffairs;
         private String educationMajorTitle;
         private String jobTitle;
-
-        private Map<Integer,String> states;
+        private Map<Integer, String> states;
     }
 }

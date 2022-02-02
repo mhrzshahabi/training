@@ -14,13 +14,11 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class StateDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String name;
 
-    //---------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -32,14 +30,6 @@ public class StateDTO {
         private Integer version;
     }
 
-//    @Getter
-//	@Setter
-//	@ApiModel("StatenfoTuple")
-//	public static class StateInfoTuple {
-//	    private String name;
-//	}
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -47,16 +37,12 @@ public class StateDTO {
     public static class Create extends StateDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("StateUpdateRq")
     public static class Update extends StateDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -68,8 +54,6 @@ public class StateDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -78,8 +62,6 @@ public class StateDTO {
     public static class StateSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -92,6 +74,5 @@ public class StateDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }
 

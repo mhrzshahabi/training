@@ -14,7 +14,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class DynamicQuestionDTO implements Serializable {
-
     private Integer weight;
     private Integer order;
     private String question;
@@ -28,7 +27,7 @@ public class DynamicQuestionDTO implements Serializable {
     @ApiModel("DyanamicQuestion - Info")
     public static class Info extends DynamicQuestionDTO {
         private Long id;
-        private ParameterValueDTO.Info  type;
+        private ParameterValueDTO.Info type;
     }
 
     @Getter

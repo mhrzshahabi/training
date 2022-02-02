@@ -38,5 +38,4 @@ public class CompetenceRequest extends Auditable {
 
     @OneToMany(mappedBy = "competenceReq", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RequestItem> requestItems;
-
 }

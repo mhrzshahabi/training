@@ -1,11 +1,9 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -16,6 +14,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tbl_class_document")
 public class ClassDocument extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_document_seq")
     @SequenceGenerator(name = "class_document_seq", sequenceName = "seq_class_document_id", allocationSize = 1)

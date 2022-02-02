@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 @Setter
 @Accessors(chain = true)
 public class EvaluationQuestionDTO implements Serializable {
-
     private String question;
     private Long domainId;
 

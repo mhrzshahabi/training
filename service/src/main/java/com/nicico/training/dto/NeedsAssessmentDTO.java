@@ -1,8 +1,3 @@
-/*
-ghazanfari_f,
-1/14/2020,
-1:48 PM
-*/
 package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
@@ -21,31 +16,24 @@ import java.util.Date;
 @Setter
 @Accessors(chain = true)
 public class NeedsAssessmentDTO implements Serializable {
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long objectId;
-
     @NotNull
     @ApiModelProperty(required = true)
     private String objectType;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long competenceId;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long skillId;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long needsAssessmentDomainId;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long needsAssessmentPriorityId;
-
 
     @Getter
     @Setter
@@ -159,11 +147,9 @@ public class NeedsAssessmentDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private Long objectId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String objectType;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Long needsAssessmentPriorityId;
@@ -177,11 +163,9 @@ public class NeedsAssessmentDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private Long id;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Long objectId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String objectType;

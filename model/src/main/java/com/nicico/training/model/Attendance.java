@@ -20,6 +20,7 @@ import javax.persistence.*;
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @AuditOverride(forClass =Auditable.class )
 public class Attendance extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attendance_seq")
     @SequenceGenerator(name = "attendance_seq", sequenceName = "seq_attendance_id", allocationSize = 1)

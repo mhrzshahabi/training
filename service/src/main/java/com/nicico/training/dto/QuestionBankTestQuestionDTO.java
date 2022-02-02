@@ -13,13 +13,9 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class QuestionBankTestQuestionDTO {
-
     private Long testQuestionId;
     private Long questionBankId;
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -28,12 +24,8 @@ public class QuestionBankTestQuestionDTO {
     public static class Info extends QuestionBankTestQuestionDTO {
         private Long id;
         private Integer version;
-
-        //private TestQuestionDTO.Info testQuestion;
         private QuestionBankDTO.Info questionBank;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -42,12 +34,9 @@ public class QuestionBankTestQuestionDTO {
     public static class InfoUsed extends QuestionBankTestQuestionDTO {
         private Long id;
         private Integer version;
-
         private TestQuestionDTO.Info testQuestion;
         private QuestionBankDTO.Info questionBank;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -55,14 +44,11 @@ public class QuestionBankTestQuestionDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("QuestionBankTestQuestionSpecRs")
     public static class QuestionBankTestQuestionFinalTest extends QuestionBankTestQuestionDTO {
-
         private Long id;
         private Integer version;
         private QuestionBankDTO.FinalTestInfo questionBank;
         private TestQuestionDTO.FinalTestInfo testQuestion;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -70,8 +56,6 @@ public class QuestionBankTestQuestionDTO {
     @ApiModel("QuestionBankTestQuestionCreateRq")
     public static class Create extends QuestionBankTestQuestionDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -83,8 +67,6 @@ public class QuestionBankTestQuestionDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -95,8 +77,6 @@ public class QuestionBankTestQuestionDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -106,7 +86,6 @@ public class QuestionBankTestQuestionDTO {
         private SpecRs response;
     }
 
-    // ---------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -115,8 +94,6 @@ public class QuestionBankTestQuestionDTO {
     public static class QuestionBankTestQuestionSpecRsUsed {
         private SpecRsUsed response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -129,8 +106,6 @@ public class QuestionBankTestQuestionDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    // ---------------
 
     @Getter
     @Setter

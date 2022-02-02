@@ -1,7 +1,3 @@
-/*
- * Author: Mehran Golrokhi
- */
-
 package com.nicico.training.model.compositeKey;
 
 import lombok.*;

@@ -1,8 +1,3 @@
-/*
-ghazanfari_f,
-1/14/2020,
-1:48 PM
-*/
 package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
@@ -20,7 +15,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class CompetenceDTO implements Serializable {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String title;
@@ -34,8 +28,7 @@ public class CompetenceDTO implements Serializable {
     private Long workFlowStatusCode;
     private String processInstanceId;
 
-
-@Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("CompetenceDTO - Info")

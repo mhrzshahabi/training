@@ -1,8 +1,4 @@
-package com.nicico.training.dto;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:6/2/2019
-@Time:11:18 AM
-*/
+package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -20,25 +16,17 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-
-
 public class CategoryDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String code;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty
     private String titleEn;
-
     @ApiModelProperty
     private String description;
-
-
-    //---------------------
 
     @Getter
     @Setter
@@ -53,8 +41,6 @@ public class CategoryDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @ApiModel("CategoryInfoTuple")
@@ -62,18 +48,13 @@ public class CategoryDTO {
         private Long id;
     }
 
-
-    //----------------------
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("CategoryCreateRq")
     public static class Create extends CategoryDTO {
         private Set<Long> subCategoryIds;
-
     }
-
-    //----------------------
 
     @Getter
     @Setter
@@ -81,12 +62,8 @@ public class CategoryDTO {
     @ApiModel("CategoryUpdateRq")
     public static class Update extends CategoryDTO {
         private Set<Long> subCategoryIds;
-//        @NotNull
-//        @ApiModelProperty(required = true)
-//        private Integer version;
     }
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -97,7 +74,6 @@ public class CategoryDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -106,8 +82,6 @@ public class CategoryDTO {
     public static class CategorySpecRs {
         private CategoryDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -120,8 +94,6 @@ public class CategoryDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter

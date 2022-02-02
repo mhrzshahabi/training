@@ -10,7 +10,6 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ViewReactionEvaluationFormulaReportDTO implements Serializable {
 
     @Getter
@@ -18,7 +17,6 @@ public class ViewReactionEvaluationFormulaReportDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ViewReactionEvaluationFormulaReportInfo")
     public static class Info {
-
         private Long classId;
         private String classCode;
         private String classStatus;

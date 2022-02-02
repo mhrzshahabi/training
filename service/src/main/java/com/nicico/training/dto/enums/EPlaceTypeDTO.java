@@ -10,8 +10,8 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class EPlaceTypeDTO {
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -20,7 +20,6 @@ public class EPlaceTypeDTO {
     public static class EPlaceTypeSpecRs {
         private EPlaceTypeDTO.SpecRs response = new EPlaceTypeDTO.SpecRs();
     }
-
 
     @Getter
     @Setter
@@ -32,6 +31,4 @@ public class EPlaceTypeDTO {
         private Integer endRow = EPlaceType.values().length;
         private Integer totalRows = EPlaceType.values().length;
     }
-
-
 }

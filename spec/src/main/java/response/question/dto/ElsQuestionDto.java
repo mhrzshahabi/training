@@ -12,7 +12,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ElsQuestionDto extends BaseResponse implements Serializable {
-
     @ApiModelProperty
     private Long questionId;
     @ApiModelProperty(required = true)
@@ -67,7 +66,4 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     private String createdDate;
     @ApiModelProperty
     private Double proposedPointValue;
-
-
-
 }

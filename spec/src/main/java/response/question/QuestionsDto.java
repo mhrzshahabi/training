@@ -6,11 +6,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class QuestionsDto {
-
     private Long id;
     private String question;
     private String type;
     private String score;
-     private String options;
-     private Double proposedPointValue;
+    private String options;
+    private Double proposedPointValue;
 }

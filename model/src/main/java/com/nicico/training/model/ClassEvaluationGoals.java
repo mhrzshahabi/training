@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 
@@ -35,5 +34,4 @@ public class ClassEvaluationGoals extends Auditable {
 
     @Column(name = "c_origin_question")
     private String originQuestion;
-
 }

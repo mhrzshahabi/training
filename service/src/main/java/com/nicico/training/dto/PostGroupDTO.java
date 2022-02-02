@@ -9,29 +9,22 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class PostGroupDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty
     private String code;
-
     @ApiModelProperty()
     private String titleEn;
-
     @ApiModelProperty()
     private String description;
-    // ------------------------------
 
     @Getter
     @Setter
@@ -42,18 +35,14 @@ public class PostGroupDTO {
         private Set<PostDTO.Info> postSet;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostGroupCreateRq")
     public static class Create extends PostGroupDTO {
         private Set<Long> postIds;
-//        private Set<Long> competenceIds;
+        ;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -61,13 +50,7 @@ public class PostGroupDTO {
     @ApiModel("PostGroupUpdateRq")
     public static class Update extends PostGroupDTO {
         private Long id;
-//        private Set<Long> competenceIds;
-//        @NotNull
-//        @ApiModelProperty(required = true)
-//        private Integer version;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -77,11 +60,7 @@ public class PostGroupDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
-
     }
-
-    // ------------------------------
-
 
     @Getter
     @Setter
@@ -91,10 +70,8 @@ public class PostGroupDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private Set<Long> ids;
-
     }
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -103,8 +80,6 @@ public class PostGroupDTO {
     public static class PostGroupSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

@@ -12,27 +12,16 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ClassContractDTO {
-
     private String contractNumber;
-
     private String date;
-
     private Boolean isSigned = false;
-
     private Long categoryId;
-
     private Long subCategoryId;
-
     private String accountableId;
-
     private Long firstPartyCompanyId;
-
     private Long secondPartyCompanyId;
-
     private Long secondPartyPersonId;
-
     private Long contractFileId;
 
     @Getter
@@ -43,18 +32,11 @@ public class ClassContractDTO {
         @NotEmpty
         @ApiModelProperty(required = true)
         private Long id;
-
         private Set<ClassContractCostDTO.Info> classSet;
-
         private PersonnelDTO.Info accountable;
-
         private CompanyDTO.Info firstPartyCompany;
-
         private InstituteDTO.ContractInfo secondPartyInstitute;
-
         private PersonalInfoDTO.contractInfo secondPartyPerson;
-
     }
-
 }
 

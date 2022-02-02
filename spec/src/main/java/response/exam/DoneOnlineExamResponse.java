@@ -25,5 +25,4 @@ public class DoneOnlineExamResponse {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

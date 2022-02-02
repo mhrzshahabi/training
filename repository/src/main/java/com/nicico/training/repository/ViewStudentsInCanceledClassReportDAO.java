@@ -1,10 +1,3 @@
-/*
- * Author: Mehran Golrokhi
- * Created Date: 2020/09/13
- * Last Modified: 2020/09/13
- */
-
-
 package com.nicico.training.repository;
 
 import com.nicico.training.model.ViewStudentsInCanceledClassReport;
@@ -15,5 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ViewStudentsInCanceledClassReportDAO extends JpaRepository<ViewStudentsInCanceledClassReport,ViewStudentsInCanceledClassReportKey>, JpaSpecificationExecutor<ViewStudentsInCanceledClassReport> {
-
 }

@@ -11,5 +11,4 @@ public class PaginationDto {
     private int size;
     private int last;
     private Long totalItems;
-
 }

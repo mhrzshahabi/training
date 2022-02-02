@@ -15,6 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tbl_check_list")
 public class CheckList extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "check_list_seq")
     @SequenceGenerator(name = "check_list_seq", sequenceName = "seq_check_list_id", allocationSize = 1)

@@ -6,17 +6,15 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @NoArgsConstructor
 public class CalenderCurrentTermDTO implements Serializable {
-  @Getter
+
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("Tclass")
@@ -31,18 +29,17 @@ public class CalenderCurrentTermDTO implements Serializable {
         private Long hDuration;
         private String classStatus;
         private String statusRegister;
-
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("CalenderCurrentTermSpecRs")
-    public static class  CalenderCurrentTermSpecRs {
-        private  CalenderCurrentTermDTO.SpecRs response;
+    public static class CalenderCurrentTermSpecRs {
+        private CalenderCurrentTermDTO.SpecRs response;
     }
 
-     @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -58,20 +55,19 @@ public class CalenderCurrentTermDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("CalenderCurrentTermCourseInfo")
-    public static class CourseInfo{
+    public static class CourseInfo {
         private Long courseId;
         private Long id;
         private CourseDTO.CourseInfoTuple course;
         private TermDTO term;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
-            public String getTeacher() {
+
+        public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
             else
                 return " ";
         }
-
     }
-
 }

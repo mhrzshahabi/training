@@ -10,14 +10,13 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ViewTeacherReportDTO implements Serializable {
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ViewTeacherReportInfo")
-    public static class Info{
+    public static class Info {
         private Long id;
         private Long teacherId;
         private String firstName;
@@ -43,6 +42,4 @@ public class ViewTeacherReportDTO implements Serializable {
         private String teacherTermTitles;
         private String educationMajorTitle;
     }
-
-
 }

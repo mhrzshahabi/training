@@ -7,9 +7,9 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Long> {
+
     Optional<NeedsAssessmentTemp> findFirstByObjectIdAndObjectTypeAndCompetenceIdAndSkillIdAndNeedsAssessmentDomainIdAndNeedsAssessmentPriorityId(
-            Long objectId, String objectType, Long competenceId, Long skillId, Long needsAssessmentDomainId, Long needsAssessmentPriorityId
-    );
+            Long objectId, String objectType, Long competenceId, Long skillId, Long needsAssessmentDomainId, Long needsAssessmentPriorityId);
 
     @Modifying
     @Query(value = "delete from TBL_NEEDS_ASSESSMENT_TEMP where F_OBJECT = :objectId and C_OBJECT_TYPE = :objectType", nativeQuery = true)

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
 @Repository
 public interface RequestItemDAO extends JpaRepository<RequestItem, Long>, JpaSpecificationExecutor<RequestItem> {
 
@@ -16,5 +15,4 @@ public interface RequestItemDAO extends JpaRepository<RequestItem, Long>, JpaSpe
 
     @Query(value = "select ri.id from tbl_request_item ri where ri.f_competence_id=:competenceId", nativeQuery = true)
     List<Long> findAllRequestItemIdsWithCompetenceId(Long competenceId);
-
 }

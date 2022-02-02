@@ -15,12 +15,7 @@ public interface ViewActivePersonnelDAO extends JpaRepository<ViewActivePersonne
 
     Optional<ViewActivePersonnel> findFirstByPersonnelNo(String personnelNo);
 
-    Optional<ViewActivePersonnel[]> findOneByNationalCode(String nationalCode);
-
     ViewActivePersonnel[] findByNationalCode(String nationalCode);
-
-    @Query(value = "SELECT * FROM view_active_personnel where national_code = :national_code AND Personnel_No = :Personnel_No AND ROWNUM < 2", nativeQuery = true)
-    ViewActivePersonnel findByNationalCodeAndPersonnelNo(String national_code, String Personnel_No);
 
     List<ViewActivePersonnel> findOneByPostCode(String postCode);
 
@@ -55,9 +50,6 @@ public interface ViewActivePersonnelDAO extends JpaRepository<ViewActivePersonne
 
     Optional<ViewActivePersonnel> findById(Long Id);
 
-    @Query(value = "SELECT complex_title FROM view_active_personnel where national_code = :national_code AND ROWNUM < 2", nativeQuery = true)
-    String getComplexTitleByNationalCode(String national_code);
-
     @Transactional
     @Query(value = "select CONCAT(CONCAT(first_name, ' '), last_name) from view_active_personnel p where p.ID = ?", nativeQuery = true)
     String getPersonnelFullName(Long personnelID);
@@ -69,7 +61,5 @@ public interface ViewActivePersonnelDAO extends JpaRepository<ViewActivePersonne
     List<String> findAllPostGrade();
 
     ViewActivePersonnel findFirstByPostId(Long postId);
-
-
 }
 

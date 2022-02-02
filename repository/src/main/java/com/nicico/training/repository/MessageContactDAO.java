@@ -3,14 +3,12 @@ package com.nicico.training.repository;
 import com.nicico.training.model.MessageContact;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
 
 public interface MessageContactDAO extends BaseDAO<MessageContact, Long> {
-
 
     @Query(value = "select m.N_COUNT_SEND,mc.N_COUNT_SENT,mc.C_OBJECT_MOBILE,mc.id,m.f_message_class,mc.c_object_type,mc.F_OBJECT,m.C_PID from tbl_message m inner join tbl_message_contact mc on m.id=mc.F_MESSAGE_ID where mc.E_DELETED is null and TO_CHAR((mc.C_LAST_SENT_DATE)+m.N_INTERVAL, 'yyyy-mm-dd') = :date_now and m.N_COUNT_SEND > mc.N_COUNT_SENT", nativeQuery = true)
     @Transactional

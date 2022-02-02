@@ -1,13 +1,10 @@
-
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.PersonnelCourseKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
 
 import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
@@ -22,7 +19,6 @@ import java.io.Serializable;
 @Subselect("select * from view_course_passed_or_not_passed_na_report")
 public class PersonnelCoursePassedOrNotPaseedNAReportView implements Serializable {
 
-
     @Id
     @Column(name = "id")
     private Long id;
@@ -31,8 +27,6 @@ public class PersonnelCoursePassedOrNotPaseedNAReportView implements Serializabl
     private Long isPassed;
 
     ///////////////////////////////////////////////////personnel///////////////////////////////////////
-
-
 
     @Column(name = "personnel_personnel_no")
     private String personnelPersonnelNo;
@@ -58,7 +52,6 @@ public class PersonnelCoursePassedOrNotPaseedNAReportView implements Serializabl
     @Column(name = "personnel_education_level_title")
     private String personnelEducationLevelTitle;
 
-
     @Column(name = "personnel_company_name")
     private String personnelCompanyName;
 
@@ -83,15 +76,11 @@ public class PersonnelCoursePassedOrNotPaseedNAReportView implements Serializabl
     @Column(name = "personnel_cpp_title")
     private String personnelCcpTitle;
 
-
-
     ///////////////////////////////////////////////////course///////////////////////////////////////
-
 
     @Column(name = "course_code")
     private String courseCode;
 
     @Column(name = "course_title_fa")
     private String courseTitleFa;
-
 }

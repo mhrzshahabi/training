@@ -34,7 +34,6 @@ public class NAReportView implements Serializable {
     @Column(name = "na_domain_id")
     private Long NADomainId;
 
-
     ////////////////////////////////////////////////////competence/////////////////////////////////////////////
 
     @Column(name = "competence_id")
@@ -216,5 +215,4 @@ public class NAReportView implements Serializable {
 
     @Column(name = "post_grade_group_title_fa")
     private String postGradeGroupTitleFa;
-
 }

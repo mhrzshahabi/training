@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,21 +19,18 @@ public class PresenceReportViewDTO {
         private Float presenceMinute;
         private Float absenceHour;
         private Float absenceMinute;
-
         ///////////////////////////////////////////////////class///////////////////////////////////////
         private long classId;
         private String classCode;
         private String classStartDate;
         private String classEndDate;
-//        private String classTeachingType;
+        //        private String classTeachingType;
         private String holdingClassTypeId;
         private String holdingClassTypeTitle;
         private String teachingMethodId;
         private String teachingMethodTitle;
-
         ///////////////////////////////////////////////////session///////////////////////////////////////
         private String sessionDate;
-
         ///////////////////////////////////////////////////student///////////////////////////////////////
         private Long studentId;
         private String studentPersonnelNo;
@@ -46,13 +42,10 @@ public class PresenceReportViewDTO {
         private String studentCcpAffairs;
         private String studentCcpSection;
         private String studentCcpUnit;
-
         ///////////////////////////////////////////////////classStudent///////////////////////////////////////
         private String classStudentApplicantCompanyName;
-
         ///////////////////////////////////////////////////personnel/////////////////////////////////////////
         private String personnelComplexTitle;
-
         ///////////////////////////////////////////////////course/////////////////////////////////////////////
         private Long courseId;
         private String courseCode;
@@ -62,7 +55,6 @@ public class PresenceReportViewDTO {
         private String courseTheoType;
         private String courseLevelType;
         private String courseTechnicalType;
-
         ///////////////////////////////////////////////////institute///////////////////////////////////////
         private Long instituteId;
         private String instituteTitleFa;

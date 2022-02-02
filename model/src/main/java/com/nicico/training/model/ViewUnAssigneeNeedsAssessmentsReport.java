@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import lombok.*;
@@ -21,8 +20,7 @@ import java.util.Date;
 @Entity
 @Subselect("select * from view_un_assignee_needs_assessments_report")
 @DiscriminatorValue("ViewUnAssigneeNeedsAssessmentsReport")
-public class ViewUnAssigneeNeedsAssessmentsReport implements Serializable{
-
+public class ViewUnAssigneeNeedsAssessmentsReport implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -43,9 +41,6 @@ public class ViewUnAssigneeNeedsAssessmentsReport implements Serializable{
     @Column(name = "time")
     private Date time;
 
-
     @Column(name = "f_object")
     private String object;
-
-
 }

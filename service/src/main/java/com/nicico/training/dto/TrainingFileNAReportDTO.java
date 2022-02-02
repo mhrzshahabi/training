@@ -1,9 +1,3 @@
-/*
- * Author: Mehran Golrokhi
- * Created Date: 2020/09/08
- * Last Modified: 2020/09/08
- */
-
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -28,26 +22,21 @@ public class TrainingFileNAReportDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Info")
     public static class Info {
-
         private TrainingFileNAReportKey reportId;
         private Long id;
-
         private long personnelId;
-
         private Long courseId;
         private String courseCode;
         private String courseTitleFa;
         private Float theoryDuration;
         private Integer technicalType;
         private Long referenceCourse;
-
         private Long skillId;
         private String skillCode;
         private String skillTitleFa;
         private Long priorityId;
         private String priority;
         private Boolean isInNA;
-
         private Long classId;
         private String classCode;
         private String classStartDate;
@@ -56,7 +45,6 @@ public class TrainingFileNAReportDTO implements Serializable {
         private Float score;
         private Long scoreStateId;
         private String scoreState;
-
     }
 
     @Getter
@@ -64,15 +52,11 @@ public class TrainingFileNAReportDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("GenerateReport")
     public static class GenerateReport {
-
         private List<List<Cell>> headers;
-
         private List<String> titlesOfGrid;
         private List<List<String>> dataOfGrid;
-
         private List<String> titlesOfSummaryGrid;
         private List<List<String>> dataOfSummaryGrid;
-
     }
 
     @Getter
@@ -82,7 +66,6 @@ public class TrainingFileNAReportDTO implements Serializable {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Cell {
-
         private String title;
         private boolean bold;
 

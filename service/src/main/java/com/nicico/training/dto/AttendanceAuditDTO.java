@@ -24,16 +24,12 @@ public class AttendanceAuditDTO {
     protected Date createdDate;
     @Column(name = "C_CREATED_BY")
     private String createdBy;
-
     @ApiModelProperty
     private Date lastModifiedDate;
-
     @ApiModelProperty
     private String lastModifiedBy;
-
     @ApiModelProperty
     private Long revType;
-
     @ApiModelProperty
     private Long deleted;
 
@@ -43,7 +39,6 @@ public class AttendanceAuditDTO {
     @ApiModel("AttendanceAudit - Info")
     public static class Info extends AttendanceAuditDTO {
         private Long id;
-        private  ClassSessionDTO session;
+        private ClassSessionDTO session;
     }
-
 }

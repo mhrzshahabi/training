@@ -18,7 +18,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassAlarmDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private String alarmTypeTitleFa;
     @ApiModelProperty(required = true)
@@ -43,16 +42,12 @@ public class ClassAlarmDTO implements Serializable {
     private Long trainingPlaceIdConflict;
     private Long reservationIdConflict;
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassAlarmInfo")
     public static class Info extends ClassAlarmDTO {
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -62,8 +57,6 @@ public class ClassAlarmDTO implements Serializable {
     public static class Create extends ClassAlarmDTO {
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -71,8 +64,6 @@ public class ClassAlarmDTO implements Serializable {
     public static class ClassAlarmSpecRs {
         private ClassAlarmDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -85,7 +76,5 @@ public class ClassAlarmDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    //*********************************
 
 }

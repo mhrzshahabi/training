@@ -21,7 +21,5 @@ public interface RequestDAO extends JpaRepository<Request, Long> {
 
     List<Request> findAllByType(RequestType type);
 
-    List<Request> findAllByNationalCodeAndStatus(String nationalCode, RequestStatus status);
-
     List<Request> findAllByNationalCodeAndType(String nationalCode, RequestType requestType);
 }

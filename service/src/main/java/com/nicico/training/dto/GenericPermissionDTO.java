@@ -1,28 +1,20 @@
 package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public class GenericPermissionDTO {
-
-
     private Long objectId;
-
-
     private String objectType;
-
-
     private Long workGroupId;
 
     @Getter
@@ -52,5 +44,4 @@ public class GenericPermissionDTO {
         String entityName;
         List<Info> columnDataList;
     }
-
 }

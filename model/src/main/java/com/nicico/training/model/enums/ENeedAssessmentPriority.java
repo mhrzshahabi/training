@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 9/12/2019, 2:01 PM
-*/
 package com.nicico.training.model.enums;
 
 import com.fasterxml.jackson.annotation.JsonFormat;

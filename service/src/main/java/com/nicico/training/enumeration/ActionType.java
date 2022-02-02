@@ -17,8 +17,6 @@ public enum ActionType {
     Delete(8),
     DeleteAll(9);
 
-    // ------------------------------
-
     private final Integer id;
 
     public Integer getValue(ActionType actionType) {

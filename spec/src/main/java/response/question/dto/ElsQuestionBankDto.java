@@ -9,8 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ElsQuestionBankDto extends PageDto {
-
     private String nationalCode;
     private List<ElsQuestionDto> questions;
-
 }

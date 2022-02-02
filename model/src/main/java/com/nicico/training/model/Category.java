@@ -1,9 +1,4 @@
-package com.nicico.training.model;/*
-com.nicico.training.model
-@author : banifatemi
-@Date : 5/28/2019
-@Time :3:32 PM
-    */
+package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -42,6 +37,4 @@ public class Category extends Auditable {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Subcategory> subCategorySet;
-
-
 }

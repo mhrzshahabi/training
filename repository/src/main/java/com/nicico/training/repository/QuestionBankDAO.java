@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 8/29/2019, 10:43 AM
-*/
 package com.nicico.training.repository;
 
 import com.nicico.training.model.QuestionBank;
@@ -19,15 +16,6 @@ import java.util.List;
 @Repository
 public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaSpecificationExecutor<QuestionBank> {
 
-  /*  @Query(value = "select max(n_code_id) from tbl_question_bank where f_category_id=:categoryID and f_subcategory_id is null",nativeQuery = true)
-    Integer getMaxCodeIDWithCategory(Long categoryID);
-
-    @Query(value = "select max(n_code_id) from tbl_question_bank where f_subcategory_id =:subCategoryID",nativeQuery = true)
-    Integer getMaxCodeIDWithSubCategory(Long subCategoryID);
-
-    @Query(value = "select max(n_code_id) from tbl_question_bank where f_category_id is null and f_subcategory_id is null",nativeQuery = true)
-    Integer getMaxCodeIDWithoutCategoryAndSubCategory();*/
-
     @Query(value = "select max(n_code_id) from tbl_question_bank", nativeQuery = true)
     Integer getLastCodeId();
 
@@ -40,13 +28,10 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
 
     List<QuestionBank> findByTclassId(Long id);
 
-    List<QuestionBank> findByTeacherId(Long teacherId);
-
     Page<QuestionBank> findAllByTeacherId(Long teacherId, Pageable pageable);
 
     Page<QuestionBank> findAll(Pageable pageable);
 
    @Query(value = "SELECT * FROM tbl_question_bank WHERE (f_category_id IS NULL AND f_subcategory_id IS NULL ) OR (f_category_id IN (:categories) OR f_subcategory_id IN (:subCategories))",nativeQuery = true)
    Page<QuestionBank> findAllWithCategoryAndSubCategory(List<Long> categories,List<Long> subCategories,Pageable pageable);
-
 }

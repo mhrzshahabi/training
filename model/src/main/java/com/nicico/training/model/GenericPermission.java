@@ -24,7 +24,6 @@ public class GenericPermission<E> extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-
     @Any(metaColumn = @Column(name = "c_object_type", nullable = false), fetch = FetchType.LAZY)
     @AnyMetaDef(idType = "long", metaType = "string",
             metaValues = {
@@ -48,5 +47,4 @@ public class GenericPermission<E> extends Auditable {
 
     @Column(name = "f_work_group", nullable = false)
     private Long workGroupId;
-
 }

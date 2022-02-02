@@ -16,7 +16,6 @@ import java.util.*;
 @Setter
 @Accessors(chain = true)
 public class TclassDTO {
-
     private Long minCapacity;
     private Long maxCapacity;
     @ApiModelProperty(required = true)
@@ -108,13 +107,10 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("InfoForAudit")
     public static class InfoForAudit extends TclassDTO {
-
         private String teacher;
         private String createdBy;
         private String modifiedBy;
-
     }
-
 
     @Getter
     @Setter
@@ -142,9 +138,6 @@ public class TclassDTO {
         private ParameterValueDTO holdingClassType;
         private ParameterValueDTO teachingMethod;
         private Long hDuration;
-        //*********************************
-        //******old code for alarms********
-        // private String hasWarning;
         private Set<ClassStudentDTO.AttendanceInfo> classStudents;
 
         public String getTeacher() {
@@ -198,7 +191,6 @@ public class TclassDTO {
         private Long courseId;
         private Long id;
         private CourseDTO.CourseInfoTuple course;
-        ////////////////
         private String code;
         private Long teacherId;
         private String titleClass;
@@ -230,10 +222,7 @@ public class TclassDTO {
 //                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
 //            else return " ";
 //        }
-
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -245,7 +234,6 @@ public class TclassDTO {
         private String lastName;
         private String nationalCode;
         private String phone;
-
     }
 
     @Getter
@@ -280,7 +268,6 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("FinalTestTclassInfo")
     public static class FinalTestInfo {
-
         private Long id;
         private Long teacherId;
         private TeacherDTO.FinalTestInfo teacher;
@@ -309,7 +296,6 @@ public class TclassDTO {
         }
     }
 
-    //----------------------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -344,8 +330,6 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -369,8 +353,6 @@ public class TclassDTO {
         }
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -381,8 +363,6 @@ public class TclassDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -392,7 +372,6 @@ public class TclassDTO {
         private SpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -401,8 +380,6 @@ public class TclassDTO {
     public static class TclassAuditSpecRs {
         private SpecAuditRs response;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -416,7 +393,6 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -428,8 +404,6 @@ public class TclassDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -467,9 +441,6 @@ public class TclassDTO {
         private Long courseId;
     }
 
-    //-------------------------------
-    //--------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -488,7 +459,6 @@ public class TclassDTO {
         private InstituteDTO.InstituteInfoTuple institute;
         private Long instituteId;
         private String classStatus;
-        //        private String evaluationStatus;
         private String titleClass;
         private String scoringMethod;
         private Integer startEvaluation;
@@ -575,8 +545,6 @@ public class TclassDTO {
         private EvaluatedSpecRs response;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -589,8 +557,6 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -599,8 +565,6 @@ public class TclassDTO {
     public static class PersonnelClassInfo_TclassSpecRs {
         private PersonnelClassInfo_SpecRs response;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -613,8 +577,6 @@ public class TclassDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -655,8 +617,6 @@ public class TclassDTO {
         private String grade;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -680,7 +640,6 @@ public class TclassDTO {
         private String behavioralLevel;
     }
 
-    //------------------------ training class report -------------------------------------------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -724,7 +683,6 @@ public class TclassDTO {
         private ReportSpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -758,7 +716,6 @@ public class TclassDTO {
         private TermDTO.TermDTOTuple term;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -788,8 +745,6 @@ public class TclassDTO {
         }
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -802,8 +757,6 @@ public class TclassDTO {
         private Integer totalRows;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -812,7 +765,6 @@ public class TclassDTO {
     public static class TclassSpecRsHistory {
         private SpecRsHistory response;
     }
-
 
     @Getter
     @Setter
@@ -875,7 +827,6 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TClassTimeDetails")
     public static class TClassTimeDetails {
-
         private String classCode;
         private String courseCode;
         private String courseTitleFa;
@@ -903,15 +854,13 @@ public class TclassDTO {
         private String classCode;
         private String courseCode;
         private String courseTitle;
-        private  Long group;
+        private Long group;
         private Long studentsCount;
         private String supervisorName;
         private String organizerName;
         private TeacherDTO.TeacherInfo teacherInfo;
         private Set<ClassSessionDTO.AttendanceClearForm> sessions;
     }
-
-    //------------------------------
 
     @Getter
     @Setter
@@ -947,5 +896,4 @@ public class TclassDTO {
     public static class TClassAuditEvalSpecRs {
         private SpecAuditEvalRs response;
     }
-
 }

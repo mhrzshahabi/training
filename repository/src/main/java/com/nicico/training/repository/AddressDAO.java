@@ -3,8 +3,6 @@ package com.nicico.training.repository;
 import com.nicico.training.model.Address;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
@@ -16,8 +14,4 @@ public interface AddressDAO extends JpaRepository<Address, Long>, JpaSpecificati
 
     @Transactional
     Optional<Address> findByPostalCode(@Param("postalCode") String postalCode);
-
-    boolean existsByPostalCode(String postalCode);
-
-    boolean existsByPostalCodeAndIdNot(String postalCode,Long id);
 }

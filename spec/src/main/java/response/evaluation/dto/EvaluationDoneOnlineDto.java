@@ -13,7 +13,6 @@ import java.util.Map;
 @ToString
 @Accessors(chain = true)
 public class EvaluationDoneOnlineDto {
-
     private String evalTitle;
     private Map<String, UserDetailDto> users;
     private String instructor;
@@ -27,12 +26,10 @@ public class EvaluationDoneOnlineDto {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-   public static class UserDetailDto {
-       private String fullName;
-       private String nationalCode;
-       private Boolean answered;
-       private String phoneNumber;
-   }
-
-
+    public static class UserDetailDto {
+        private String fullName;
+        private String nationalCode;
+        private Boolean answered;
+        private String phoneNumber;
+    }
 }

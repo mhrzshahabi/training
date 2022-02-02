@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public interface EducationOrientationDAO extends JpaRepository<EducationOrientation, Long>, JpaSpecificationExecutor<EducationOrientation> {
+
     @Modifying
     @Query(value = "select * from TBL_EDUCATION_ORIENTATION where C_TITLE_FA = :titleFa" +
             " and F_EDUCATION_LEVEL = :educationLevelId" +

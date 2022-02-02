@@ -1,7 +1,4 @@
 package com.nicico.training.repository;
-/* com.nicico.training.repository
-@Author:roya
-*/
 
 import com.nicico.training.model.Course;
 import com.nicico.training.model.Tclass;
@@ -19,10 +16,6 @@ import java.util.List;
 
 @Repository
 public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecificationExecutor<Tclass> {
-
-    /*@EntityGraph(attributePaths = {"institute","course","term","course.category","course.subCategory"})
-    @Override
-    Page<Tclass> findAll(@Nullable Specification<Tclass> var1, Pageable var2);*/
 
     List<Tclass> findByCourseIdAndTermId(Long courseId, Long termId);
 
@@ -104,13 +97,9 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "             OR s.personnel_no =:personnel_no)) WHERE rnk = 1", nativeQuery = true)
     public List<?> findPersonnelClassByCourseId(String national_code, String personnel_no, Long courseId);
 
-    public List<?> findAllTclassByCourseId(Long id);
-
     public List<Tclass> findTclassesByCourseId(Long id);
 
     List<Tclass> findByCourseAndTeacher(Course course, Teacher teacher);
-
-    List<Tclass> findByCourseIdAndTeacherId(Long courseId, Long teacherId);
 
     List<Tclass> findByTeacherId(Long teacherId);
 
@@ -194,7 +183,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Query(value = "SELECT * FROM TBL_CLASS WHERE c_status = :status And f_teaching_method_id IN (:longs)", nativeQuery = true)
     List<Tclass> findAllClassWithThisFilter(List<Long> longs, String status);
+
     @Query(value = "SELECT  * FROM TBL_CLASS WHERE c_status= :status And f_teaching_method_id IN (:longs) And  f_term= :termId ",nativeQuery = true)
     Page<Tclass> findAllClassWithTermFilter(List<Long> longs, String status, Long termId, Pageable pageable);
-
 }

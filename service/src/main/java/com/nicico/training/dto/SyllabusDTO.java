@@ -16,9 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class SyllabusDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
@@ -29,15 +27,11 @@ public class SyllabusDTO {
     @NotNull
     @ApiModelProperty(required = true)
     private Float theoreticalDuration;
-
-
     private String description;
-
     @NotNull
     @ApiModelProperty
     private Integer eDomainTypeId;
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -54,8 +48,6 @@ public class SyllabusDTO {
         private GoalDTO.GoalTitleFa goal;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -66,17 +58,12 @@ public class SyllabusDTO {
         private Long goalId;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("SyllabusUpdateRq")
     public static class Update extends SyllabusDTO {
-
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -88,8 +75,6 @@ public class SyllabusDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -98,8 +83,6 @@ public class SyllabusDTO {
     public static class SyllabusSpecRs {
         private SyllabusDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -112,8 +95,6 @@ public class SyllabusDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    //-----------------------
 
     @Getter
     @Setter

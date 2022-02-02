@@ -12,16 +12,10 @@ import java.util.Map;
 @Setter
 @Accessors(chain = true)
 public class ImportedQuestionOption {
-
-
-        @ApiModelProperty(required = false, hidden = true)
-        private Long id;
-
-        @ApiModelProperty(required = true, hidden = false)
-        private String title;
-
-        private String label;
-
-        private List<Map<String,String>> mapFiles;
-
+    @ApiModelProperty(hidden = true)
+    private Long id;
+    @ApiModelProperty(required = true)
+    private String title;
+    private String label;
+    private List<Map<String, String>> mapFiles;
 }

@@ -4,5 +4,5 @@ import com.nicico.training.model.ViewCoursesPassedPersonnelReport;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ViewCoursesPassedPersonnelReportDAO extends BaseDAO<ViewCoursesPassedPersonnelReport, Long>{
+public interface ViewCoursesPassedPersonnelReportDAO extends BaseDAO<ViewCoursesPassedPersonnelReport, Long> {
 }

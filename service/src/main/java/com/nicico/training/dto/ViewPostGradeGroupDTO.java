@@ -16,37 +16,29 @@ import java.util.Date;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ViewPostGradeGroupDTO implements Serializable {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty
     private String code;
-
     @ApiModelProperty()
     private String titleEn;
-
     @ApiModelProperty()
     private String description;
-
     @ApiModelProperty()
     private Integer competenceCount;
-
     @ApiModelProperty()
     private Integer personnelCount;
-
     @ApiModelProperty
     @Getter(AccessLevel.NONE)
     private Date lastModifiedDateNA;
-
     @ApiModelProperty
     private String modifiedByNA;
 
-    public String getLastModifiedDateNA(){
+    public String getLastModifiedDateNA() {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        if(lastModifiedDateNA != null)
+        if (lastModifiedDateNA != null)
             return DateUtil.convertMiToKh(formatter.format(lastModifiedDateNA));
         return "آپ دیت نشده";
     }
@@ -55,7 +47,7 @@ public class ViewPostGradeGroupDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostGradeGroupInfo")
-    public static class Info extends ViewPostGradeGroupDTO{
+    public static class Info extends ViewPostGradeGroupDTO {
         private Long id;
     }
 }

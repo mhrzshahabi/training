@@ -11,7 +11,6 @@ import java.sql.Timestamp;
 
 @Data
 public class LoginLogDTO {
-
     private String username;
     private String firstName;
     private String lastName;

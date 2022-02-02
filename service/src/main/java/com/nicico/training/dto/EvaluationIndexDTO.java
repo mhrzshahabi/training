@@ -15,17 +15,14 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class EvaluationIndexDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String nameFa;
-
     private String nameEn;
     private String description;
     private String evalStatus;
 
-    //---------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -38,7 +35,6 @@ public class EvaluationIndexDTO {
         private String lastModifiedBy;
         private Integer version;
     }
-    // ------------------------------
 
     @Getter
     @Setter
@@ -46,8 +42,6 @@ public class EvaluationIndexDTO {
     @ApiModel("EvaluationIndexCreateRq")
     public static class Create extends EvaluationIndexDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -59,8 +53,6 @@ public class EvaluationIndexDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -71,8 +63,6 @@ public class EvaluationIndexDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -81,8 +71,6 @@ public class EvaluationIndexDTO {
     public static class EvaluationIndexSpecRs {
         private EvaluationIndexDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -95,6 +83,5 @@ public class EvaluationIndexDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }
 

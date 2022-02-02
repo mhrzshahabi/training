@@ -15,12 +15,9 @@ import java.util.List;
 @Setter
 @ToString
 public class ExamImportedRequest implements Serializable {
-
     private ExamData examItem;
     private boolean deleteAbsentUsers;
     private List<QuestionData> questions;
     private List<QuestionScores> questionData;
     private List<EvalTargetUser> absentUsers;
-
-
 }

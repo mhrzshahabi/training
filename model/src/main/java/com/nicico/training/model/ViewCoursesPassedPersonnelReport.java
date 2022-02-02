@@ -20,6 +20,7 @@ import java.io.Serializable;
 @Subselect("SELECT * from VIEW_COURSES_PASSED_PERSONNEL_REPORT")
 
 public class ViewCoursesPassedPersonnelReport implements Serializable {
+
     @EmbeddedId
     private PersonnelCourseTermKey id;
 

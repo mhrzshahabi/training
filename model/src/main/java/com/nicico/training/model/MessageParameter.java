@@ -1,17 +1,8 @@
-/*
- * Author: Mehran Golrokhi
- * Created Date: 2020/09/19
- * Last Modified: 2020/09/19
- */
-
-
-
 package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
 import javax.persistence.*;
-
 
 @Getter
 @Setter
@@ -41,6 +32,5 @@ public class MessageParameter extends Auditable {
 
     @Column(name = "f_message_contact_id")
     private Long messageContactId;
-
 }
 

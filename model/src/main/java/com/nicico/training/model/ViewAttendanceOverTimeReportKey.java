@@ -1,7 +1,3 @@
-/*
- * Author: Mehran Golrokhi
- */
-
 package com.nicico.training.model;
 
 import lombok.*;
@@ -28,6 +24,5 @@ public class ViewAttendanceOverTimeReportKey implements Serializable {
 
     @Column(name = "c_session_date")
     private String date;
-
 }
 

@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class ParameterValueDTO implements Serializable {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String title;
@@ -79,8 +78,6 @@ public class ParameterValueDTO implements Serializable {
         List<Long> ids;
     }
 
-    //////////////////////////////////////////config//////////////////////////////////////////
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -94,9 +91,8 @@ public class ParameterValueDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("UpdateParameterValue")
-    public static class UpdateParameterValue
-    {
-     private String code;
-     private String value;
+    public static class UpdateParameterValue {
+        private String code;
+        private String value;
     }
 }

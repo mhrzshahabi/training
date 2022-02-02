@@ -18,6 +18,7 @@ import java.util.Set;
 @Subselect("select * from view_post")
 @DiscriminatorValue("ViewPost")
 public class ViewPost extends Auditable {
+
     @Id
     @Column(name = "id")
     private Long id;

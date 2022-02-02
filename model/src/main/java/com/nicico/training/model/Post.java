@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 8/29/2019, 9:11 AM
-*/
 package com.nicico.training.model;
 
 import lombok.EqualsAndHashCode;
@@ -82,9 +79,4 @@ public class Post extends Auditable {
 
     @Column(name = "n_parent_id")
     private Long parentID;
-
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "f_department_id", insertable = false, updatable = false)
-//    private Department department;
-
 }

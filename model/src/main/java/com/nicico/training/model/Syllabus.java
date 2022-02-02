@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_syllabus")
 public class Syllabus extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "syllabus_seq")
     @SequenceGenerator(name = "syllabus_seq", sequenceName = "seq_syllabus_id", allocationSize = 1)

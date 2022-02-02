@@ -7,56 +7,37 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public class ViewEvaluationCommentsDTO implements Serializable {
-
     @ApiModelProperty
     private Long id;
-
     @ApiModelProperty
     private Long categoryId;
-
     @ApiModelProperty
     private Long subCategoryId;
-
     @ApiModelProperty
     private String description;
-
     @ApiModelProperty
     private String classCode;
-
     @ApiModelProperty
     private String classTitle;
-
     @ApiModelProperty
     private String firstName;
-
     @ApiModelProperty
     private String lastName;
-
     @ApiModelProperty
     private String titleCategory;
-
     @ApiModelProperty
     private String titleSubCategory;
-
-
     @ApiModelProperty
     private String startDate;
-
-
     @ApiModelProperty
     private String endDate;
-
-
 
     @Getter
     @Setter
@@ -64,8 +45,6 @@ public class ViewEvaluationCommentsDTO implements Serializable {
     @ApiModel("EvaluationCommentsDTOInfo")
     public static class Info extends ViewEvaluationCommentsDTO {
     }
-
-
 
     @Getter
     @Setter
@@ -87,5 +66,4 @@ public class ViewEvaluationCommentsDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

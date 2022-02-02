@@ -6,9 +6,10 @@ import response.BaseResponse;
 import response.PaginationDto;
 
 import java.util.List;
+
 @Getter
 @Setter
 public class TeacherInfoBaseDTO extends BaseResponse {
-  private List<TeacherInfoDTO> data;
-  private PaginationDto paginationDto;
+    private List<TeacherInfoDTO> data;
+    private PaginationDto paginationDto;
 }

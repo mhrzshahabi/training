@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import com.nicico.training.model.enums.EArrangementType;
 import com.nicico.training.model.enums.EPlaceType;
 import lombok.*;
@@ -51,7 +50,6 @@ public class TrainingPlace extends Auditable {
             joinColumns = {@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_equipment_id", referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_institute", insertable = false, updatable = false)

@@ -11,8 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 public class EvalListResponse extends BaseResponse implements Serializable {
-
-    private List<EvalResultDto> data ;
+    private List<EvalResultDto> data;
     private String title;
-
 }

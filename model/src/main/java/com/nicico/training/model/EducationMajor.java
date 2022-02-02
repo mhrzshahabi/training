@@ -15,6 +15,7 @@ import java.util.List;
 @Entity
 @Table(name = "tbl_education_major")
 public class EducationMajor extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "education_major_seq")
     @SequenceGenerator(name = "education_major_seq", sequenceName = "seq_education_major_id", allocationSize = 1)
@@ -32,5 +33,4 @@ public class EducationMajor extends Auditable {
 
     @OneToMany(mappedBy = "educationMajor", fetch = FetchType.LAZY)
     private List<PersonalInfo> personalInfoList;
-
 }

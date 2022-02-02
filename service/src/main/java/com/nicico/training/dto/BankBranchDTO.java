@@ -15,34 +15,24 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
-
 public class BankBranchDTO {
-
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String code;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty(required = true)
     private String titleEn;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Integer eBankTypeId;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long bankId;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long addressId;
-    // ------------------------------
 
     @Getter
     @Setter
@@ -59,8 +49,6 @@ public class BankBranchDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @ApiModel("BankBranchInfoTuple")
@@ -70,8 +58,6 @@ public class BankBranchDTO {
         private String titleEn;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -79,16 +65,12 @@ public class BankBranchDTO {
     public static class Create extends BankBranchDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("BankBranchUpdateRq")
     public static class Update extends BankBranchDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -100,8 +82,6 @@ public class BankBranchDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -110,8 +90,6 @@ public class BankBranchDTO {
     public static class BankBranchSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -124,5 +102,4 @@ public class BankBranchDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

@@ -15,19 +15,15 @@ import javax.validation.constraints.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ViewSkillNADTO {
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long id;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long objectId;
-
     @NotNull
     @ApiModelProperty(required = true)
     private String objectType;
-
     private String objectCode;
     private String objectName;
     private String peopleType;
@@ -46,5 +42,4 @@ public class ViewSkillNADTO {
     private String unit;
     private String complexTitle;
     private Long departmentId;
-
 }

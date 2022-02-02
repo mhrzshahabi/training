@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -21,6 +20,7 @@ import java.util.Date;
 @Subselect("select * from view_class_detail")
 @DiscriminatorValue("ViewClassDetail")
 public class ViewClassDetail extends Auditable {
+
     @Id
     @Column(name = "id")
     private Long id;

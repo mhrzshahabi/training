@@ -1,16 +1,13 @@
 package dto.exam;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 
 @Getter
 @Setter
 @ToString
 public class ExamClassData {
-
     private Long maxCapacity;
     private String code;
     private String titleClass;
@@ -33,5 +30,4 @@ public class ExamClassData {
     private Boolean fifth;
     private String acceptancelimit;
     private ExamCourseData course;
-
 }

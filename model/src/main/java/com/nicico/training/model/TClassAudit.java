@@ -23,7 +23,6 @@ public class TClassAudit implements Serializable {
     @EmbeddedId
     private AuditClassId id;
 
-
     @Column(name = "f_course")
     private Long courseId;
 
@@ -48,10 +47,8 @@ public class TClassAudit implements Serializable {
     @Column(name = "n_d_duration")
     private Long dDuration;
 
-
     @Column(name = "f_teacher")
     private Long teacherId;
-
 
     @Column(name = "f_supervisor")
     private Long supervisorId;
@@ -68,14 +65,11 @@ public class TClassAudit implements Serializable {
     @Column(name = "c_status_date")
     private Date classStatusDate;
 
-
     @Column(name = "f_institute")
     private Long instituteId;
 
-
     @Column(name = "f_institute_organizer")
     private Long organizerId;
-
 
     @Column(name = "n_group", nullable = false)
     private Long group;
@@ -85,34 +79,49 @@ public class TClassAudit implements Serializable {
 
     @Column(name = "c_teaching_brand")
     private String teachingBrand;//نحوه آموزش
+
     @Column(name = "c_start_date", nullable = false)
     private String startDate;
+
     @Column(name = "c_end_date", nullable = false)
     private String endDate;
+
     @Column(name = "b_saturday")
     private Boolean saturday;
+
     @Column(name = "b_sunday")
     private Boolean sunday;
+
     @Column(name = "b_monday")
     private Boolean monday;
+
     @Column(name = "b_tuesday")
     private Boolean tuesday;
+
     @Column(name = "b_wednesday")
     private Boolean wednesday;
+
     @Column(name = "b_thursday")
     private Boolean thursday;
+
     @Column(name = "b_friday")
     private Boolean friday;
+
     @Column(name = "b_first")
     private Boolean first;
+
     @Column(name = "b_second")
     private Boolean second;
+
     @Column(name = "b_third")
     private Boolean third;
+
     @Column(name = "b_fourth")
     private Boolean fourth;
+
     @Column(name = "b_fifth")
     private Boolean fifth;
+
     @Column(name = "c_topology")
     private String topology;
 
@@ -134,7 +143,6 @@ public class TClassAudit implements Serializable {
     @Column(name = "c_has_warning")
     private String hasWarning;
 
-
     @Column(name = "evaluation_reaction_teacher")
     private Integer evaluationStatusReactionTeacher;
 
@@ -152,7 +160,6 @@ public class TClassAudit implements Serializable {
 
     @Column(name = "f_cancel_class_reason")
     private Long classCancelReasonId;
-
 
     @Column(name = "f_alternative_class")
     private Long alternativeClassId;

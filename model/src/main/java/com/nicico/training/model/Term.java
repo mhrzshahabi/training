@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_term")
 public class Term extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "term_seq")
     @SequenceGenerator(name = "term_seq", sequenceName = "seq_term_id", allocationSize = 1)
@@ -32,8 +33,6 @@ public class Term extends Auditable {
     @Column(name = "c_enddate",nullable = false)
     private String endDate;
 
-
     @Column(name = "c_description")
     private String description;
-
 }

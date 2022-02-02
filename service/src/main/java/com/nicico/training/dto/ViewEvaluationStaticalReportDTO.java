@@ -8,19 +8,19 @@ import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
 import java.io.Serializable;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ViewEvaluationStaticalReportDTO implements Serializable {
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ViewEvaluationStaticalReportInfo")
-    public static class Info{
+    public static class Info {
         private Long id;
         private Long unitId;
         private Long tclassId;
@@ -94,7 +94,7 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Statical")
-    public static class Statical{
+    public static class Statical {
         private Integer classCount_reaction;
         private Integer classCount_learning;
         private Integer classCount_behavioral;
@@ -106,7 +106,7 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private Integer passed_learning;
         private Integer passed_behavioral;
         private Integer passed_results;
-        private Integer passed_teacher ;
+        private Integer passed_teacher;
         private Integer passed_effectiveness;
 
         private Integer failed_reaction;
@@ -116,5 +116,4 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private Integer failed_teacher;
         private Integer failed_effectiveness;
     }
-
 }

@@ -1,8 +1,4 @@
-package com.nicico.training.model;/* com.nicico.training.model
-@Author:jafari-h
-@Date:5/26/2019
-@Time:10:14 AM
-*/
+package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -20,6 +16,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tbl_goal")
 public class Goal extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "goal_seq")
     @SequenceGenerator(name = "goal_seq", sequenceName = "seq_goal_id", allocationSize = 1)

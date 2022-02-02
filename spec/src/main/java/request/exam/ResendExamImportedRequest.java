@@ -12,12 +12,9 @@ import java.util.List;
 @Setter
 @ToString
 public class ResendExamImportedRequest implements Serializable {
-
     private String startDate;
     private Long duration;
     private String time;
     private Long sourceExamId;
     private List<EvalTargetUser> users;
-
-
 }

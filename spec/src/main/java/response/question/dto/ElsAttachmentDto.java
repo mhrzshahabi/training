@@ -11,12 +11,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ElsAttachmentDto {
-
     @ApiModelProperty
     private String attachment;
     @ApiModelProperty
     private String groupId;
     @ApiModelProperty
     private String fileName;
-
 }

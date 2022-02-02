@@ -17,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnnualStatisticalReportDTO implements Serializable {
+
     private Long institute_id;
     private String institute_title_fa;
     private Long category_id;
@@ -33,8 +34,6 @@ public class AnnualStatisticalReportDTO implements Serializable {
     public static class Info extends AnnualStatisticalReportDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -43,8 +42,6 @@ public class AnnualStatisticalReportDTO implements Serializable {
     public static class AnnualStatisticalReportDTOSpecRs {
         private AnnualStatisticalReportDTO.SpecRs response;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter

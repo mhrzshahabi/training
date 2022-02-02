@@ -1,13 +1,9 @@
 package com.nicico.training.dto;
-/* com.nicico.training.dto
-@Author:roya
-*/
 
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-
 
 @Getter
 @Setter
@@ -18,7 +14,7 @@ public class ClassEvaluationGoalsDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Info")
-    public static class Info{
+    public static class Info {
         private Long id;
         private Long classId;
         private Long skillId;
@@ -26,5 +22,4 @@ public class ClassEvaluationGoalsDTO {
         private String question;
         private String originQuestion;
     }
-
 }

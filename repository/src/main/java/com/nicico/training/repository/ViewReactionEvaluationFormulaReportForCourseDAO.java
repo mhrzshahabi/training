@@ -9,7 +9,6 @@ import java.util.List;
 @Repository
 public interface ViewReactionEvaluationFormulaReportForCourseDAO extends BaseDAO<ViewReactionEvaluationFormulaReportForCourse, Long> {
 
-
     @Query(value = "SELECT\n" +
             "ROWNUM as id,n.*\n" +
             "FROM\n" +
@@ -212,8 +211,4 @@ public interface ViewReactionEvaluationFormulaReportForCourseDAO extends BaseDAO
             "            ) f\n" +
             "    )n",nativeQuery = true)
     List<ViewReactionEvaluationFormulaReportForCourse> getAllForCourse(String start, String end);
-
-
-
-
 }

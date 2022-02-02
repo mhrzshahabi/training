@@ -1,8 +1,4 @@
-package com.nicico.training.dto;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:5/28/2019
-@Time:2:39 PM
-*/
+package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -23,13 +19,9 @@ public class GoalDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     private String titleEn;
-
     private Long categoryId;
     private Long subCategoryId;
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -44,8 +36,6 @@ public class GoalDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -53,17 +43,12 @@ public class GoalDTO {
     public static class Create extends GoalDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("GoalUpdateRq")
     public static class Update extends GoalDTO {
-
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -75,8 +60,6 @@ public class GoalDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -85,8 +68,6 @@ public class GoalDTO {
     public static class GoalSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -99,7 +80,6 @@ public class GoalDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-    //-------------------
 
     @Getter
     @Setter
@@ -116,5 +96,4 @@ public class GoalDTO {
     public static class GoalTitleFa {
         private String titleFa;
     }
-
 }

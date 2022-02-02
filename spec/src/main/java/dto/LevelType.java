@@ -15,6 +15,7 @@ public enum LevelType {
     Technician(2, "تكنسيني", "2"),
     Worker(3, "كارگري", "3"),
     Global(4, "عمومی", "4");
+
     private final Integer id;
     private final String titleFa;
     private final String code;

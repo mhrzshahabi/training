@@ -13,6 +13,7 @@ import java.util.List;
 
 @Repository
 public interface EducationMajorDAO extends JpaRepository<EducationMajor, Long>, JpaSpecificationExecutor<EducationMajor> {
+
     @Modifying
     @Query(value = "select * from TBL_EDUCATION_MAJOR where C_TITLE_FA = :titleFa", nativeQuery = true)
     @Transactional

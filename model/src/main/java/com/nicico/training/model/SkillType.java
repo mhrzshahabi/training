@@ -1,9 +1,4 @@
-package com.nicico.training.model;/*
-com.nicico.training.model
-@author : banifatemi
-@Date : 5/28/2019
-@Time :3:39 PM
-    */
+package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -20,6 +15,7 @@ import javax.persistence.*;
 @Table(name = "tbl_skill_type")
 
 public class SkillType extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "skill_type_seq")
     @SequenceGenerator(name = "skill_type_seq", sequenceName = "seq_skill_type_id", allocationSize = 1)

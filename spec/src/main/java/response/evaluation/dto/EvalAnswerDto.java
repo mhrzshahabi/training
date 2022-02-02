@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class EvalAnswerDto {
-
     private String question;
     private String answer;
 }

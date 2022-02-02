@@ -64,5 +64,4 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "f_competence_id")
     @NotAudited
     private Long competenceReqId;
-
 }

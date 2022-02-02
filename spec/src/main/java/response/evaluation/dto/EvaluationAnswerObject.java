@@ -1,16 +1,12 @@
 package response.evaluation.dto;
 
-
 import lombok.*;
 
- import java.util.List;
+import java.util.List;
 
 @Setter
 @Getter
-
 public class EvaluationAnswerObject {
-
-
     private Long classId;
     private Long id;
     private Long evaluatedId;
@@ -25,6 +21,4 @@ public class EvaluationAnswerObject {
     private String sendDate;
     private String description;
     private List<TeacherEvaluationAnswer> evaluationAnswerList;
-
-
 }

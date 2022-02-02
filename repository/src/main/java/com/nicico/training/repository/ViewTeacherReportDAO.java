@@ -4,6 +4,7 @@ import com.nicico.training.model.ViewTeacherReport;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ViewTeacherReportDAO extends BaseDAO<ViewTeacherReport, Long>{
+public interface ViewTeacherReportDAO extends BaseDAO<ViewTeacherReport, Long> {
+
     ViewTeacherReport findFirstByNationalCode(String nationalCode);
 }

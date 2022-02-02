@@ -19,6 +19,7 @@ import java.io.Serializable;
 @Entity
 @Subselect("select * from view_unjustified_absence_report")
 public class ViewUnjustifiedAbsenceReport implements Serializable {
+
     @EmbeddedId
     private ViewUnjustifiedAbsenceReportKey id;
 

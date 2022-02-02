@@ -1,11 +1,5 @@
 package com.nicico.training.model.enums;
 
-/*
-AUTHOR: ghazanfari_f
-DATE: 6/2/2019
-TIME: 2:57 PM
-*/
-
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -26,5 +20,4 @@ public enum EJobCompetenceType {
     public String getLiteral() {
         return name();
     }
-
 }

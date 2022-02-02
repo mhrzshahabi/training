@@ -8,7 +8,6 @@ import java.util.List;
 
 @Data
 public class RequestReqVM {
-
     private String name;
     private String text;
     private String nationalCode;
