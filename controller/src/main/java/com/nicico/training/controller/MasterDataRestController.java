@@ -14,8 +14,8 @@ import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewPostDTO;
-import com.nicico.training.service.MasterDataService;
-import com.nicico.training.service.PersonnelService;
+import com.nicico.training.iservice.IMasterDataService;
+import com.nicico.training.iservice.IPersonnelService;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,9 +38,9 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/masterData/")
 public class MasterDataRestController {
 
-    private final MasterDataService masterDataService;
+    private final IMasterDataService masterDataService;
     private final MasterDataClient masterDataClient;
-    private final PersonnelService personnelService;
+    private final IPersonnelService personnelService;
     private final ModelMapper modelMapper;
 
 

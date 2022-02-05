@@ -3,6 +3,7 @@ package com.nicico.training.service;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassEvaluationGoalsDTO;
+import com.nicico.training.iservice.IClassEvaluationGoalsService;
 import com.nicico.training.model.ClassEvaluationGoals;
 import com.nicico.training.model.Goal;
 import com.nicico.training.model.Skill;
@@ -21,7 +22,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class ClassEvaluationGoalsService extends BaseService<ClassEvaluationGoals, Long, ClassEvaluationGoalsDTO.Info, ClassEvaluationGoalsDTO.Info, ClassEvaluationGoalsDTO.Info, ClassEvaluationGoalsDTO.Info, ClassEvaluationGoalsDAO>{
+public class ClassEvaluationGoalsService extends BaseService<ClassEvaluationGoals, Long, ClassEvaluationGoalsDTO.Info, ClassEvaluationGoalsDTO.Info, ClassEvaluationGoalsDTO.Info, ClassEvaluationGoalsDTO.Info, ClassEvaluationGoalsDAO> implements IClassEvaluationGoalsService {
 
     @Autowired
     private final TclassDAO tclassDAO = null;

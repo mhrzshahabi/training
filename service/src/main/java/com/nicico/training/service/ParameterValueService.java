@@ -113,6 +113,11 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
         dao.save(parameterValue);
     }
 
+    @Override
+    public Optional<ParameterValue> findById(Long ParameterValueId) {
+        return dao.findById(ParameterValueId);
+    }
+
     public void editParameterValue(String des,String code, Long id) {
         ParameterValue parameterValue=dao.findFirstById(id);
         parameterValue.setCode(code);

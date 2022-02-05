@@ -2,7 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewClassDetailDTO;
-import com.nicico.training.service.ViewClassDetailService;
+import com.nicico.training.iservice.IViewClassDetailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RequestMapping(value = "/api/view-class-detail")
 public class ViewClassDetailRestController {
 
-    private final ViewClassDetailService viewClassDetailService;
+    private final IViewClassDetailService viewClassDetailService;
     @Autowired
     protected EntityManager entityManager;
 

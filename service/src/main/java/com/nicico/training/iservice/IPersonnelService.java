@@ -59,4 +59,8 @@ public interface IPersonnelService {
     Personnel getByPersonnelNumber(String personnelCode);
 
     Set<ImportedPersonnelAndPostModel> getImportPostAndPersonnel(List<ImportedPersonnelAndPostRequest> personnelNos);
+
+    Optional<Personnel> findById(Long PersonnelId);
+
+    String getPersonnelFullName(Long id);
 }

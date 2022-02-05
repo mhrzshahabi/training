@@ -3,10 +3,8 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.AttendancePerformanceReportDTO;
 import com.nicico.training.iservice.IAttendancePerformanceReportService;
-import com.nicico.training.service.AttendancePerformanceReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +24,6 @@ import java.util.List;
 public class AttendancePerformanceReportRestController {
 
     private final IAttendancePerformanceReportService iAttendancePerformanceReportService;
-    private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping(value = "/list/{reportParameter}")

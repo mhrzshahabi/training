@@ -1,6 +1,7 @@
 package com.nicico.training.service;
 
 import com.nicico.training.dto.ViewUnfinishedClassesReportDTO;
+import com.nicico.training.iservice.IViewUnfinishedClassesReportService;
 import com.nicico.training.model.ViewUnfinishedClassesReport;
 import com.nicico.training.repository.ViewUnfinishedClassesReportDAO;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class ViewUnfinishedClassesReportService extends BaseService<
         ViewUnfinishedClassesReportDTO.Grid,
         ViewUnfinishedClassesReportDTO.Grid,
         ViewUnfinishedClassesReportDTO.Grid,
-        ViewUnfinishedClassesReportDAO> {
+        ViewUnfinishedClassesReportDAO> implements IViewUnfinishedClassesReportService {
 
         @Autowired
         ViewUnfinishedClassesReportService(ViewUnfinishedClassesReportDAO viewUnfinishedClassesReportDAO) {

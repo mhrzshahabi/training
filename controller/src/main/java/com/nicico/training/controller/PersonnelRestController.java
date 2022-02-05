@@ -17,12 +17,6 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
 
-import com.nicico.training.repository.PersonnelDAO;
-import com.nicico.training.repository.PostDAO;
-import com.nicico.training.repository.ViewActivePersonnelDAO;
-import com.nicico.training.service.CourseService;
-import com.nicico.training.service.PersonnelService;
-import com.nicico.training.service.SynonymPersonnelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -51,7 +45,6 @@ public class PersonnelRestController {
     private final MessageSource messageSource;
     private final IPersonnelService iPersonnelService;
     private final ISynonymPersonnelService iSynonymPersonnelService;
-    private final PersonnelDAO personnelDAO;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final IContactInfoService contactInfoService;
 
@@ -158,7 +151,7 @@ public class PersonnelRestController {
     @Loggable
     @GetMapping(value = "/byId/{id}")
     public ResponseEntity<Personnel> findPersonnelById(@PathVariable Long id) {
-        Personnel personalInfo = personnelDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Personnel personalInfo = iPersonnelService.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return new ResponseEntity<>(personalInfo, HttpStatus.OK);
     }
 
@@ -237,7 +230,7 @@ public class PersonnelRestController {
     @Loggable
     @GetMapping(value = "/personnelFullName/{id}")
     public ResponseEntity<String> personnelFullName(@PathVariable Long id) {
-        String result = personnelDAO.getPersonnelFullName(id);
+        String result = iPersonnelService.getPersonnelFullName(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 

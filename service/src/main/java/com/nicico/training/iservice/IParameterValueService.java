@@ -3,8 +3,10 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.model.ParameterValue;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IParameterValueService {
     List<ParameterValueDTO.Info> list();
@@ -30,4 +32,6 @@ public interface IParameterValueService {
     void editDesDescription(Long id, String des);
 
     void editCodeDescription(Long id, String code);
+
+    Optional<ParameterValue> findById(Long ParameterValueId);
 }

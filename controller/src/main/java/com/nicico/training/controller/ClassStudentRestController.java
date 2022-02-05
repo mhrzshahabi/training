@@ -66,9 +66,9 @@ public class ClassStudentRestController {
     private final IClassStudentService iClassStudentService;
     private final ModelMapper modelMapper;
     private final IParameterService parameterService;
-    private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
-    private final ViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
-    private final ContinuousStatusReportViewService continuousStatusReportViewService;
+    private final IViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
+    private final IViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
+    private final IContinuousStatusReportViewService continuousStatusReportViewService;
     private final IClassSessionService iClassSessionService;
     private final ClassStudentBeanMapper mapper;
     private final ElsClient client;

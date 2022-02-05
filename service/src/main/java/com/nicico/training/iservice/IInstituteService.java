@@ -9,7 +9,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.Institute;
 import org.springframework.data.domain.Pageable;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -62,6 +61,8 @@ public interface IInstituteService {
     void addTeachers(List<Long> teacherIds, Long instituteId);
 
     SearchDTO.SearchRs<TeacherDTO.Info> getUnAttachedTeachers(SearchDTO.SearchRq request, Long instituteID);
+
+    List<TeacherDTO.Info> getUnAttachedTeachers(Long instituteID, Pageable pageable);
 
     Integer getUnAttachedTeachersCount(Long instituteId);
 

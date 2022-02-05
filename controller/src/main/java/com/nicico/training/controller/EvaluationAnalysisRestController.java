@@ -9,7 +9,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
+import com.nicico.training.iservice.IParameterService;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.PersianCharachtersUnicode;
 import lombok.RequiredArgsConstructor;
@@ -37,8 +39,8 @@ public class EvaluationAnalysisRestController {
     private final ObjectMapper objectMapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
-    private final CategoryService categoryService;
-    private final ParameterService parameterService;
+    private final ICategoryService categoryService;
+    private final IParameterService parameterService;
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})

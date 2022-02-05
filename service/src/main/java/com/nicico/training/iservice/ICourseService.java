@@ -106,4 +106,7 @@ public interface ICourseService {
     //----------------------------------------------------------------------
 
     SearchDTO.SearchRs<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(SearchDTO.SearchRq request);
+
+    <T> SearchDTO.SearchRs<T> searchGeneric(SearchDTO.SearchRq request, Class<T> infoType);
+
 }

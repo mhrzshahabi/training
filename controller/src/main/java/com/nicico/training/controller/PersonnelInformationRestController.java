@@ -4,11 +4,8 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IPersonnelInformationService;
-import com.nicico.training.model.Tclass;
-import com.nicico.training.service.PersonnelInformationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +23,6 @@ import java.util.List;
 public class PersonnelInformationRestController {
 
     private final IPersonnelInformationService iPersonnelInformationService;
-    private final ModelMapper modelMapper;
 
     @Loggable
     @Transactional

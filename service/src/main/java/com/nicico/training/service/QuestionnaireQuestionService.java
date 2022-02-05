@@ -52,4 +52,9 @@ public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuest
     public List<QuestionnaireQuestion> getEvaluationQuestion(Long domainId) {
         return questionnaireQuestionDAO.findActiveQuestionnaries(domainId);
     }
+
+    @Override
+    public QuestionnaireQuestion getById(Long QuestionnaireQuestionId) {
+        return questionnaireQuestionDAO.getById(QuestionnaireQuestionId);
+    }
 }

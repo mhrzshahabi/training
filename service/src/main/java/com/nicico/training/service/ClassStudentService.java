@@ -41,7 +41,6 @@ public class ClassStudentService implements IClassStudentService {
     private final ClassStudentHistoryService classStudentHistoryService;
     private final ITclassService tclassService;
     private final StudentService studentService;
-    //    private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
@@ -508,6 +507,11 @@ public class ClassStudentService implements IClassStudentService {
 
     public List<Long> findEvaluationStudentInClass(Long studentId, Long classId) {
         return classStudentDAO.findEvaluationStudentInClass(studentId, classId);
+    }
+
+    @Override
+    public Optional<ClassStudent> findById(Long classStudentId) {
+        return classStudentDAO.findById(classStudentId);
     }
 
 

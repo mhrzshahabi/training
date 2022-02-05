@@ -110,7 +110,7 @@ public class ElsRestController {
     private final ParameterValueService parameterValueService;
     private final IStudentService iStudentService;
     private final QuestionBankTestQuestionService questionBankTestQuestionService;
-    private final ViewTrainingFileService viewTrainingFileService;
+    private final IViewTrainingFileService viewTrainingFileService;
     private final ParameterService parameterService;
     private final ITeacherRoleService iTeacherRoleService;
     private final IMobileVerifyService iMobileVerifyService;
