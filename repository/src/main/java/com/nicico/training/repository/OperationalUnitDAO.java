@@ -9,8 +9,8 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface OperationalUnitDAO extends JpaRepository<OperationalUnit, Long>, JpaSpecificationExecutor<OperationalUnit> {
 
-    boolean existsByUnitCodeOrOperationalUnit(String unitCode, String operationalUnit);
     boolean existsByOperationalUnit(String operationalUnit);
+
     boolean existsByUnitCode(String unitCode);
 
     @Query(value = "select count(*) from tbl_operational_unit ", nativeQuery = true)

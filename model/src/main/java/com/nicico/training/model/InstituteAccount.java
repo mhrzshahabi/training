@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_institute_account")
 public class InstituteAccount extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "institute_account_seq")
     @SequenceGenerator(name = "institute_account_seq", sequenceName = "seq_institute_account_id", allocationSize = 1)
@@ -58,6 +59,4 @@ public class InstituteAccount extends Auditable {
 
     @Column(name = "c_description")
     private Long description;
-
-
 }

@@ -16,11 +16,9 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class ForeignLangKnowledgeDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String langName;
-
     private String description;
     private Long teacherId;
     private Integer langLevelId;
@@ -28,7 +26,6 @@ public class ForeignLangKnowledgeDTO {
     private String duration;
     private String startDate;
     private String endDate;
-
 
     @Getter
     @Setter

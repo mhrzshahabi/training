@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PersonnelCourseNotPassedReportViewDAO extends JpaRepository<PersonnelCourseNotPassedReportView, PersonnelCourseKey>, JpaSpecificationExecutor<PersonnelCourseNotPassedReportView> {
-
 }

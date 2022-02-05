@@ -15,6 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tbl_state")
 public class State extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "state_seq")
     @SequenceGenerator(name = "state_seq", sequenceName = "seq_state_id", allocationSize = 1)

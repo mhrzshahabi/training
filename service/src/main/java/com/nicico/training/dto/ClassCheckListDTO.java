@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,24 +9,18 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ClassCheckListDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private Boolean enableStatus;
-
     @ApiModelProperty(required = true)
     private String description;
-
     @ApiModelProperty(required = true)
     private Long checkListItemId;
-
     @ApiModelProperty(required = true)
     private Long tclassId;
 
@@ -38,7 +31,6 @@ public class ClassCheckListDTO implements Serializable {
     public static class Info extends ClassCheckListDTO {
         private Long id;
         private CheckListItemDTO.Info checkListItem;
-       // private TclassDTO.Info tclass;
     }
 
     @Getter
@@ -46,7 +38,6 @@ public class ClassCheckListDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ClassCheckListCreateRq")
     public static class Create extends ClassCheckListDTO {
-
     }
 
     @Getter
@@ -54,7 +45,6 @@ public class ClassCheckListDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ClassCheckListUpdateRq")
     public static class Update extends ClassCheckListDTO {
-
     }
 
     @Getter
@@ -86,7 +76,6 @@ public class ClassCheckListDTO implements Serializable {
         private ClassCheckListDTO.SpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -98,7 +87,5 @@ public class ClassCheckListDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }
 

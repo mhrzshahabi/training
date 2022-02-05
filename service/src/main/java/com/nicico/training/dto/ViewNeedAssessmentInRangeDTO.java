@@ -15,40 +15,28 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class ViewNeedAssessmentInRangeDTO implements Serializable {
-
     @ApiModelProperty
     private Long id;
-
     @ApiModelProperty
     private String postType;
-
     @ApiModelProperty
     private String postCode;
-
     @ApiModelProperty
     private String postTitle;
-
     @ApiModelProperty
     private String mojtameTitle;
-
     @ApiModelProperty
     private String assistance;
-
     @ApiModelProperty
     private String affairs;
-
     @ApiModelProperty
     private String section;
-
     @ApiModelProperty
     private String unit;
-
     @ApiModelProperty
     private String updateBy;
-
     @ApiModelProperty
     private Date updateAt;
-
     @ApiModelProperty
     private Integer version;
 
@@ -58,8 +46,6 @@ public class ViewNeedAssessmentInRangeDTO implements Serializable {
     @ApiModel("TrainingNeedAssessmentDTOInfo")
     public static class Info extends ViewNeedAssessmentInRangeDTO {
     }
-
-
 
     @Getter
     @Setter
@@ -81,5 +67,4 @@ public class ViewNeedAssessmentInRangeDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

@@ -1,9 +1,4 @@
-package com.nicico.training.model;/*
-com.nicico.training.model
-@author : banifatemi
-@Date : 5/28/2019
-@Time :11:14 AM
-    */
+package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -21,6 +16,7 @@ import java.util.List;
 @Table(name = "tbl_skill")
 
 public class Skill extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "skill_seq")
     @SequenceGenerator(name = "skill_seq", sequenceName = "seq_skill_id", allocationSize = 1)
@@ -60,7 +56,6 @@ public class Skill extends Auditable {
     @Column(name = "f_sub_category")
     private Long subCategoryId;
 
-    //-------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_main_objective_course", insertable = false, updatable = false)
     private Course courseMainObjective;

@@ -8,10 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 public class RequestItemDto {
-
     private List<RequestItemWithDiff> list;
     private int wrongCount;
-
-
-
 }

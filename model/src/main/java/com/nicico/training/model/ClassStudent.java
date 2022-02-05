@@ -23,6 +23,7 @@ import java.util.Set;
 @Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
 @AuditOverride(forClass =Auditable.class )
 public class ClassStudent extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_student_seq")
     @SequenceGenerator(name = "class_student_seq", sequenceName = "seq_class_student_id", allocationSize = 1)
@@ -64,7 +65,6 @@ public class ClassStudent extends Auditable {
     @NotAudited
     private Long presenceTypeId;
 
-    //DO NOT TOUCH
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "student_id", nullable = false)
     private Student student;

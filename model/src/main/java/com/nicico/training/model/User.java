@@ -14,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_user")
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
     @SequenceGenerator(name = "user_seq", sequenceName = "seq_user_id", allocationSize = 1)
@@ -25,6 +26,4 @@ public class User {
 
     @Column(name = "c_lname")
     private String Lname;
-
-
 }

@@ -1,10 +1,3 @@
-/*
- * Author: Mehran Golrokhi
- * Created Date: 2020/09/13
- * Last Modified: 2020/08/24
- */
-
-
 package com.nicico.training.model.compositeKey;
 
 import lombok.*;

@@ -12,9 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class AttachmentDTO {
-
     private String fileName;
     private Long fileTypeId;
     private String description;
@@ -54,6 +52,5 @@ public class AttachmentDTO {
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
-
 }
 

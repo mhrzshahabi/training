@@ -10,14 +10,8 @@ import java.util.List;
 
 public interface CheckListItemDAO extends JpaRepository<CheckListItem, Long>, JpaSpecificationExecutor<CheckListItem> {
 
-    @Query(value = "select * from tbl_check_list_item where checkListId=:checklistid ", nativeQuery = true)
-    List<CheckListItem> getCheckListItem(@Param("checklistid") Long id);
-
-    //List<CheckListItem> getCheckListItemsByCheckListOrCheckListId();
     List<CheckListItem> getCheckListItemsByCheckListId(Long id);
 
     @Query(value = "select  f_check_list_id from tbl_check_list_item where ID=:checkListItemId ", nativeQuery = true)
     Long getCheckListId(@Param("checkListItemId") Long id);
-
-
 }

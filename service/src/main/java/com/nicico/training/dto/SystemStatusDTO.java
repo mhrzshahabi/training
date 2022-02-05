@@ -8,7 +8,6 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class SystemStatusDTO {
-
     private String systemName;
     private String status;
 }

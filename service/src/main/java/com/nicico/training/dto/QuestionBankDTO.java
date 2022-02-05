@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class QuestionBankDTO {
-
     private String code;
     @ApiModelProperty(required = true)
     private String question;
@@ -31,13 +30,11 @@ public class QuestionBankDTO {
     private Integer lines;
     private List<Integer> questionTargets;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("QuestionBank-Info")
     public static class Info extends QuestionBankDTO {
-
         private Long id;
         private ParameterValueDTO.TupleInfo questionType;
         private ParameterValueDTO.TupleInfo displayType;
@@ -57,7 +54,6 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("QuestionBank-CreateRq")
     public static class FullInfo extends QuestionBankDTO {
-
         private Long id;
         private String option1;
         private String option2;
@@ -78,7 +74,6 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("Exam")
     public static class Exam {
-
         private String option1;
         private String option2;
         private String option3;
@@ -94,7 +89,6 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("Exam")
     public static class ElsExam {
-
         private String option1;
         private String option2;
         private String option3;
@@ -112,7 +106,6 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("FinalTestQuestionBankInfo")
     public static class FinalTestInfo extends QuestionBankDTO {
-
         private Long id;
         private ParameterValueDTO.TupleInfo questionType;
     }
@@ -129,7 +122,6 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("QuestionBank-UpdateRq")
     public static class Update extends FullInfo {
-
     }
 
     @Getter
@@ -137,9 +129,6 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("QuestionBank-DeleteRq")
     public static class Delete {
-        /*@NotNull
-        @ApiModelProperty(required = true)
-        private List<Long> ids;*/
     }
 
     @Getter
@@ -167,7 +156,5 @@ public class QuestionBankDTO {
     @Setter
     @Accessors(chain = true)
     public static class getLastId extends QuestionBankDTO {
-
     }
-
 }

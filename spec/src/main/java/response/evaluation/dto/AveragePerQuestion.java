@@ -8,8 +8,6 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class AveragePerQuestion {
-
     private String title;
     private Double score;
-
 }

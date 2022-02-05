@@ -15,7 +15,6 @@ public enum EMobileForSMS {
     mdmsMobile(4);
 
     private final Integer id;
-
     public static EMobileForSMS getEnum(Integer id) {
         for (EMobileForSMS value : values()) {
             if (value.getId().equals(id))

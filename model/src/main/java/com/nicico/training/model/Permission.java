@@ -43,6 +43,4 @@ public class Permission extends Auditable {
 
     @Column(name = "f_work_group", nullable = false)
     private Long workGroupId;
-
-
 }

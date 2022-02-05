@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AttendanceDto {
-
     @ApiModelProperty
     private long sessionId;
     @ApiModelProperty

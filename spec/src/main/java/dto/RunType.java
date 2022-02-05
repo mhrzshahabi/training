@@ -10,6 +10,7 @@ import lombok.ToString;
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum RunType {
+
     Internal(1, "داخلي", "C"),
     Dispatch(2, "اعزام", "D"),
     InternalSeminar(3, "سمينار داخلي", "S"),

@@ -27,5 +27,4 @@ public class FileLabel extends Auditable {
 
     @ManyToMany(mappedBy = "fileLabels")
     private Set<HelpFiles> helpFiles;
-
 }

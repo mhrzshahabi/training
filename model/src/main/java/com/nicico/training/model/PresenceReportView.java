@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.PresenceReportKey;
@@ -138,5 +137,4 @@ public class PresenceReportView implements Serializable {
 
     @Column(name = "institute_c_title_fa")
     private String instituteTitleFa;
-
 }

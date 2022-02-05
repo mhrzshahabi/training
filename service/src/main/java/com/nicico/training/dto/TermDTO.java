@@ -16,25 +16,17 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class TermDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private String code;
-
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty(required = true)
     private String startDate;
-
     @ApiModelProperty(required = true)
     private String endDate;
-
-
     @ApiModelProperty()
     private String description;
-
 
     @Getter
     @Setter
@@ -53,7 +45,6 @@ public class TermDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("TermCreateRq")
     public static class Create extends TermDTO {
-
     }
 
     @Getter
@@ -105,12 +96,11 @@ public class TermDTO implements Serializable {
         private Integer totalRows;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("Year")
-    public static class Year{
+    public static class Year {
         private String startDate;
         private String year;
     }
@@ -149,7 +139,7 @@ public class TermDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Years")
     @AllArgsConstructor
-    public static class Years{
+    public static class Years {
         private String year;
     }
 
@@ -173,7 +163,5 @@ public class TermDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }
 

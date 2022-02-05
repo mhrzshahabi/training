@@ -1,17 +1,8 @@
-/*
- * Author: Mehran Golrokhi
- * Created Date: 2020/09/13
- * Last Modified: 2020/09/13
- */
-
-
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -41,7 +32,6 @@ public class ViewStudentsInCanceledClassReportDTO {
         private String startDate;
         private String endDate;
         private String personelType;
-
     }
 
     @Getter

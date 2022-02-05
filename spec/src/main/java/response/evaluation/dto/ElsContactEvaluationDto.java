@@ -11,6 +11,7 @@ public class ElsContactEvaluationDto {
     private long classId;
     private long questionnaireId;
     private String title;
+    private String evaluated;
     private String planner;
     private String organizer;
     private String teacherFullName;

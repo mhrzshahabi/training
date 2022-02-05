@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.TrainingFileNAReportKey;

@@ -32,7 +32,5 @@ public class DoneOnlineExamDto {
         private String nationalCode;
         private Boolean answered;
         private String phoneNumber;
-
     }
-
 }

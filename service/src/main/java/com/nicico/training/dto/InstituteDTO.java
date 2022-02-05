@@ -16,9 +16,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class InstituteDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
@@ -68,8 +66,6 @@ public class InstituteDTO {
         private ContactInfoDTO.InstituteContactInfo contactInfo;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @ApiModel("InstituteSessionTuple")
@@ -78,10 +74,6 @@ public class InstituteDTO {
         private String titleFa;
         private PersonalInfoDTO.PersonalInfoCustom manager;
     }
-
-    // ------------------------------
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -92,8 +84,6 @@ public class InstituteDTO {
         private String titleEn;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -102,8 +92,6 @@ public class InstituteDTO {
         private ContactInfoDTO.CreateOrUpdate contactInfo;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -111,8 +99,6 @@ public class InstituteDTO {
     public static class Update extends InstituteDTO {
         private ContactInfoDTO.CreateOrUpdate contactInfo;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -124,8 +110,6 @@ public class InstituteDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -134,8 +118,6 @@ public class InstituteDTO {
     public static class InstituteSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

@@ -1,12 +1,9 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.compositeKey.AuditClassStudentId;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
-import java.io.Serializable;
 
 @Getter
 @Setter
@@ -23,7 +20,6 @@ public class ClassStudentHistory extends Auditable {
     @SequenceGenerator(name = "class_student_history_seq", sequenceName = "seq_class_student_history_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
-
 
     @Column(name = "student_id")
     private Long studentId;

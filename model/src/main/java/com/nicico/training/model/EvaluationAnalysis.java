@@ -63,5 +63,4 @@ public class EvaluationAnalysis extends Auditable {
 
     @Column(name = "b_teacher_pass")
     private Boolean teacherPass;
-
 }

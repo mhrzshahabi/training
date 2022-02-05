@@ -18,7 +18,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class PersonalInfoDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String firstNameFa;
@@ -83,19 +82,18 @@ public class PersonalInfoDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PersonalInfoCustom")
-    public static class PersonalInfoCustom{
+    public static class PersonalInfoCustom {
         private Long id;
         private String firstNameFa;
         private String lastNameFa;
         private String nationalCode;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("PersonalInfoGrid")
-    public static class Grid{
+    public static class Grid {
         private Long id;
         private String firstNameFa;
         private String lastNameFa;
@@ -109,7 +107,7 @@ public class PersonalInfoDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PersonalInfoReport")
-    public static class Report{
+    public static class Report {
         private Long id;
         private String firstNameFa;
         private String lastNameFa;
@@ -117,12 +115,11 @@ public class PersonalInfoDTO {
         private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
         private ContactInfoDTO.Grid contactInfo;
         private Integer version;
-        public String getName(){
+
+        public String getName() {
             return firstNameFa + " " + lastNameFa;
         }
     }
-
-
 
     @Getter
     @Setter
@@ -225,9 +222,8 @@ public class PersonalInfoDTO {
 
     @Getter
     @Setter
-    public static class FullName{
+    public static class FullName {
         private String firstNameFa;
         private String lastNameFa;
     }
-
 }

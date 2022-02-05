@@ -14,16 +14,12 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class CityDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String name;
-
     private Long stateId;
 
-    //---------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -36,16 +32,6 @@ public class CityDTO {
         private StateDTO.Info state;
     }
 
-//    @Getter
-//	@Setter
-//	@ApiModel("CityInfoTuple")
-//	public static class CityInfoTuple {
-//	    private String name;
-//	    private StateDTO.StateInfoTuple state;
-//	    private Long stateId;
-//	}
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -53,16 +39,12 @@ public class CityDTO {
     public static class Create extends CityDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("CityUpdateRq")
     public static class Update extends CityDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -74,8 +56,6 @@ public class CityDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -84,8 +64,6 @@ public class CityDTO {
     public static class CitySpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -98,6 +76,5 @@ public class CityDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }
 

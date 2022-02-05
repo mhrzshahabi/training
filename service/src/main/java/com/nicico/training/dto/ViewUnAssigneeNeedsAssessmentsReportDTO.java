@@ -1,7 +1,6 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.copper.common.util.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -10,7 +9,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -18,26 +16,19 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class ViewUnAssigneeNeedsAssessmentsReportDTO implements Serializable {
-
     @ApiModelProperty
     private Long id;
-
     @ApiModelProperty
     private String code;
-
     @ApiModelProperty
     private String createdBy;
-
     @Getter(AccessLevel.NONE)
     @ApiModelProperty
     private String type;
-
     @ApiModelProperty
     private String title;
-
     @ApiModelProperty
     private String object;
-
     @ApiModelProperty
     private Date time;
 
@@ -63,7 +54,6 @@ public class ViewUnAssigneeNeedsAssessmentsReportDTO implements Serializable {
     public static class Info extends ViewUnAssigneeNeedsAssessmentsReportDTO {
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -84,5 +74,4 @@ public class ViewUnAssigneeNeedsAssessmentsReportDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

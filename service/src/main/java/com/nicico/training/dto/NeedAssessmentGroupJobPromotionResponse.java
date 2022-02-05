@@ -19,5 +19,4 @@ public class NeedAssessmentGroupJobPromotionResponse {
     private String personnelNo;
     private String personnelCcpAffairs;
     private String trainingPostCode;
-
 }

@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import lombok.*;
@@ -20,9 +19,7 @@ import java.io.Serializable;
 @Entity
 @Subselect("select * from view_training_need_assessment")
 @DiscriminatorValue("viewTrainingNeedAssessment")
-public class ViewTrainingNeedAssessment implements Serializable{
-
-
+public class ViewTrainingNeedAssessment implements Serializable {
 
     @Id
     @Column(name = "id")
@@ -42,7 +39,4 @@ public class ViewTrainingNeedAssessment implements Serializable{
 
     @Column(name = "c_title_fa2")
     private String subCategoryTitle;
-
-
-
 }

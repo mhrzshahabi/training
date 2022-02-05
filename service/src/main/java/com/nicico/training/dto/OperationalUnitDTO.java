@@ -13,21 +13,16 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class OperationalUnitDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private String unitCode;
-
     @ApiModelProperty(required = true)
     private String operationalUnit;
-
-    //*********************************
 
     @Getter
     @Setter
@@ -41,27 +36,19 @@ public class OperationalUnitDTO implements Serializable {
         private String lastModifiedBy;
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("OperationalUnitCreateRq")
     public static class Create extends OperationalUnitDTO {
-
     }
-
-    //*********************************
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("OperationalUnitUpdateRq")
     public static class Update extends OperationalUnitDTO {
-
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -73,8 +60,6 @@ public class OperationalUnitDTO implements Serializable {
         private List<Long> ids;
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -85,8 +70,6 @@ public class OperationalUnitDTO implements Serializable {
         private List<Long> ids;
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -94,8 +77,6 @@ public class OperationalUnitDTO implements Serializable {
     public static class OperationalUnitSpecRs {
         private OperationalUnitDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -109,8 +90,6 @@ public class OperationalUnitDTO implements Serializable {
         private Integer totalRows;
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -119,5 +98,4 @@ public class OperationalUnitDTO implements Serializable {
         private String unitCode;
         private String operationalUnit;
     }
-
 }

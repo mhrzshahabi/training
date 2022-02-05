@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -29,7 +28,6 @@ public class PersonnelDTO implements Serializable {
         private String firstName;
         private String lastName;
     }
-
 
     @Getter
     @Setter
@@ -132,7 +130,6 @@ public class PersonnelDTO implements Serializable {
         private String email;
         private ContactInfoDTO.Info contactInfo;
         private Long postId;
-
         @Getter(AccessLevel.NONE)
         private String fullName;
 
@@ -145,7 +142,7 @@ public class PersonnelDTO implements Serializable {
     @Setter
     @Accessors
     @ApiModel("Personnel - DetailInfo")
-    public static class DetailInfo{
+    public static class DetailInfo {
         private Long id;
         private String personnelNo;
         private String firstName;
@@ -169,8 +166,6 @@ public class PersonnelDTO implements Serializable {
         private String workPlaceTitle;
         private String workTurnTitle;
         private String educationLevelTitle;
-        //        private String jobNo;
-//        private String jobTitle;
         private Integer employmentStatusId;
         private String employmentStatus;
         private String companyName;
@@ -187,8 +182,6 @@ public class PersonnelDTO implements Serializable {
         private String workDays;
         private String personnelNo2;
         private String insuranceCode;
-        //        private String postGradeTitle;
-//        private String postGradeCode;
         private String ccpCode;
         private String ccpArea;
         private String ccpAssistant;
@@ -207,7 +200,6 @@ public class PersonnelDTO implements Serializable {
         private DepartmentDTO.Info department;
         private ContactInfoDTO.Info contactInfo;
         private String email;
-
     }
 
     @Getter
@@ -250,9 +242,7 @@ public class PersonnelDTO implements Serializable {
         private Long postId;
         private Boolean isInNA;
         private Long scoreState;
-
         private ContactInfoDTO.Info contactInfo;
-
         @Getter(AccessLevel.NONE)
         private String fullName;
 
@@ -260,6 +250,7 @@ public class PersonnelDTO implements Serializable {
             return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
         }
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -270,7 +261,6 @@ public class PersonnelDTO implements Serializable {
         private List<Long> ids;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -278,8 +268,6 @@ public class PersonnelDTO implements Serializable {
     public static class PersonnelSpecRs {
         private PersonnelDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -331,7 +319,7 @@ public class PersonnelDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    public static class PersonnelName{
+    public static class PersonnelName {
         private String firstName;
         private String lastName;
     }

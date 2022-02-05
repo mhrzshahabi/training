@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -11,7 +10,6 @@ import java.io.Serializable;
 @Setter
 @Accessors(chain = true)
 public class ViewLmsTrainingFileDTO implements Serializable {
-
     private String firstName;
     private String lastName;
     private String nationalCode;
@@ -38,5 +36,4 @@ public class ViewLmsTrainingFileDTO implements Serializable {
     private String runType;
     private String companyName;
     private String personnelCode;
-
 }

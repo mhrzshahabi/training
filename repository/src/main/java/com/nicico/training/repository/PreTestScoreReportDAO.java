@@ -7,8 +7,10 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 import java.util.List;
+
 @Repository
 public interface PreTestScoreReportDAO extends JpaRepository<Attendance, Long>, JpaSpecificationExecutor<Attendance> {
+
     @Query(value = "SELECT DISTINCT\n" +
             "    tbl_session.c_session_date,\n" +
             "    tbl_student.last_name,\n" +
@@ -32,7 +34,6 @@ public interface PreTestScoreReportDAO extends JpaRepository<Attendance, Long>, 
             "    AND   tbl_class.c_start_date >= :startDate \n" +
             "    AND   tbl_class.c_end_date <= :endDate \n" +"order by  tbl_class.c_title_class, tbl_student.last_name, tbl_student.first_name \n ", nativeQuery = true)
        List<Object> unjustified(@Param("startDate") String startDate, @Param("endDate") String endDate);
-
 
     @Query(value = "SELECT\n" +
             "    tbl_class.c_code,\n" +
@@ -66,5 +67,4 @@ public interface PreTestScoreReportDAO extends JpaRepository<Attendance, Long>, 
             "    AND   tbl_class.pre_course_test = 1  AND   tbl_class.c_start_date >= :startDate   AND   tbl_class.c_end_date <=  :endDate order by  tbl_class.c_title_class, tbl_student.last_name, tbl_student.first_name \n" +
             " ", nativeQuery = true)
     List<Object> printPreScore(@Param("startDate") String startDate, @Param("endDate") String endDate);
-
 }

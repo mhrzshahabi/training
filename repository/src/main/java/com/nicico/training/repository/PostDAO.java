@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 8/29/2019, 10:43 AM
-*/
 package com.nicico.training.repository;
 
 import com.nicico.training.model.Post;
@@ -19,18 +16,14 @@ import java.util.Optional;
 @Repository
 public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
 
-//    @Query(value = "select p.* from tbl_post p where p.f_job_id = ?1", countQuery = "SELECT count(*) from tbl_post p where p.f_job_id = ?1", nativeQuery = true)
-//    Page<Post> findAllByJobId(Long jobId, Pageable pageable);
-
     @Query(value = "select p.* from tbl_post p where p.f_job_id = ?1", nativeQuery = true)
     Page<Post> findAllByJobId(Long jobId, Pageable pageable);
-
-//    Optional<Post> findOneById(Long postId);
 
     @Query(value = "select C_CODE from tbl_post   where (ID=:postId )", nativeQuery = true)
     String findOneById(@Param("postId") Long postId);
 
     Optional<Post> findByCode(@Param("code") String code);
+
     Optional<Post> findByCodeAndDeleted(@Param("code") String code,Long deleted);
 
     @Modifying
@@ -38,9 +31,7 @@ public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExec
     public int updateModifications(Long objectId, Date modificationDate, String userName);
 
     Optional<Post> findFirstById(Long id);
+
     @Query(value = "SELECT    * FROM tbl_post where e_deleted is NULL AND c_code= :code ",nativeQuery = true)
     Post findByDeletedAndPostFilter(String code);
-
-
-
 }

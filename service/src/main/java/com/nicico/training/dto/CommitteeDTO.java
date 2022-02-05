@@ -16,27 +16,19 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class CommitteeDTO implements Serializable {
-
     @ApiModelProperty
     private String titleFa;
-
     @ApiModelProperty
     private String titleEn;
-
     @ApiModelProperty
     private Long subCategoryId;
-
     @ApiModelProperty
     private Long categoryId;
-
     @ApiModelProperty
     private List<User> members;
-
     @ApiModelProperty
     private String tasks;
-
     @ApiModelProperty
     private String description;
 
@@ -59,7 +51,6 @@ public class CommitteeDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CommitteeCreateRq")
     public static class Create extends CommitteeDTO {
-
     }
 
     @Getter
@@ -67,7 +58,6 @@ public class CommitteeDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CommitteeUpdateRq")
     public static class Update extends CommitteeDTO {
-
     }
 
     @Getter
@@ -110,7 +100,5 @@ public class CommitteeDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }
 

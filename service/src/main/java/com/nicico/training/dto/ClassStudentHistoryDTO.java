@@ -1,16 +1,11 @@
 package com.nicico.training.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
-import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Getter
@@ -18,26 +13,18 @@ import java.util.*;
 @Accessors(chain = true)
 public class ClassStudentHistoryDTO {
 
-
-
-
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("InfoForAudit")
     public static class InfoForAudit extends ClassStudentHistoryDTO {
-
         private Long id;
         private String student;
         private String code;
         private String createdBy;
         private Date createdDate;
         private String modifiedBy;
-
     }
-
-
 
     @Getter
     @Setter
@@ -47,9 +34,6 @@ public class ClassStudentHistoryDTO {
     public static class TclassAuditSpecRs {
         private SpecAuditRs response;
     }
-
-    // ------------------------------
-
 
     @Getter
     @Setter
@@ -62,5 +46,4 @@ public class ClassStudentHistoryDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

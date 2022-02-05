@@ -1,7 +1,5 @@
 package com.nicico.training.repository;
-/* com.nicico.training.repository
-@Author:roya
-*/
+
 import com.nicico.training.model.ClassDocument;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -17,5 +15,4 @@ public interface ClassDocumentDAO extends JpaRepository<ClassDocument, Long>, Jp
 
     @Query(value = "select cd.C_LETTER_NUM from TBL_CLASS_DOCUMENT cd where cd.F_CLASS_ID =:classId", nativeQuery = true)
     List<String> findAllLetterNumByClassId(Long classId);
-
 }

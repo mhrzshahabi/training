@@ -16,6 +16,7 @@ import javax.persistence.*;
 @Table(name = "tbl_contact_info")
 
 public class ContactInfo extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "contact_info_seq")
     @SequenceGenerator(name = "contact_info_seq", sequenceName = "seq_contact_info_id", allocationSize = 1)
@@ -59,6 +60,4 @@ public class ContactInfo extends Auditable {
 
     @Column(name = "n_mobile_for_cn")
     private EMobileForSMS eMobileForCN;
-
-
 }

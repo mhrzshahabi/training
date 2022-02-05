@@ -1,8 +1,4 @@
-package com.nicico.training.repository;/* com.nicico.training.repository
-@Author:jafari-h
-@Date:5/28/2019
-@Time:2:37 PM
-*/
+package com.nicico.training.repository;
 
 import com.nicico.training.model.Evaluation;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -13,43 +9,41 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Repository
 public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpecificationExecutor<Evaluation> {
+
     List<Evaluation> findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeId(Long classId, Long evaluatorId, Long evaluatorTypeId);
 
     List<Evaluation> findEvaluationByClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeId(Long classId, Long evaluatorId,
-                                                                                                              Long evaluatorTypeId, Long EvaluatedId, Long EvaluatedTypeId);
+                                                                                                             Long evaluatorTypeId, Long EvaluatedId, Long EvaluatedTypeId);
 
     Evaluation findFirstByQuestionnaireTypeIdAndClassIdAndEvaluatorIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelId(
             Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId,
             Long evaluatedTypeId, Long evaluationLevelId);
 
     List<Evaluation> findByClassIdAndEvaluatorTypeIdAndEvaluatorIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long classId,
-                                                                                                       Long evaluatorTypeId,
-                                                                                                       Long evaluatorId,
-                                                                                                       Long evaluationLevelId,
-                                                                                                       Long questionnaireTypeId);
+                                                                                                             Long evaluatorTypeId,
+                                                                                                             Long evaluatorId,
+                                                                                                             Long evaluationLevelId,
+                                                                                                             Long questionnaireTypeId);
 
-    List<Evaluation>  findEvaluationByClassIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeId(Long classId,Long evaluatorTypeId, Long EvaluatedId, Long EvaluatedTypeId);
+    List<Evaluation> findEvaluationByClassIdAndEvaluatorTypeIdAndEvaluatedIdAndEvaluatedTypeId(Long classId, Long evaluatorTypeId, Long EvaluatedId, Long EvaluatedTypeId);
 
-    List<Evaluation> findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long classId,Long evaluatedId, Long evaluationLevelId, Long questionnaireTypeId);
+    List<Evaluation> findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long classId, Long evaluatedId, Long evaluationLevelId, Long questionnaireTypeId);
 
-    List<Evaluation> findByQuestionnaireId(Long questionnarieId);
+    Evaluation findFirstByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+            Long ClassId, Long EvaluatedId, Long EvaluatedTypeId, Long EvaluatorTypeId, Long EvaluationLevelId, Long QuestionnaireTypeId);
 
-    Evaluation  findFirstByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
-            Long ClassId,Long EvaluatedId, Long EvaluatedTypeId,Long EvaluatorTypeId,Long EvaluationLevelId, Long QuestionnaireTypeId);
-
-    List<Evaluation>  findByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
-            Long ClassId,Long EvaluatedId, Long EvaluatedTypeId,Long EvaluationLevelId, Long QuestionnaireTypeId);
+    List<Evaluation> findByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+            Long ClassId, Long EvaluatedId, Long EvaluatedTypeId, Long EvaluationLevelId, Long QuestionnaireTypeId);
 
     List<Evaluation> findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(Long ClassId,
-                                                                                                             Long EvaluationLevelId,
-                                                                                                             Long QuestionnaireTypeId,
-                                                                                                             Long EvaluatedId,
-                                                                                                             Long EvaluatedTypeId,
-                                                                                                             Boolean Status);
+                                                                                                                      Long EvaluationLevelId,
+                                                                                                                      Long QuestionnaireTypeId,
+                                                                                                                      Long EvaluatedId,
+                                                                                                                      Long EvaluatedTypeId,
+                                                                                                                      Boolean Status);
 
     List<Evaluation> findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long EvaluatorId,
                                                                                                    Long EvaluatorTypeId,
@@ -58,11 +52,7 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
 
     List<Evaluation> findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long ClassId, Long EvaluationLevelId, Long QuestionnaireTypeId);
 
-
-
     Optional<Evaluation> findTopByClassIdAndQuestionnaireTypeId(Long ClassId, Long typeId);
-    List<Evaluation> findAllByClassIdAndQuestionnaireTypeId(Long ClassId, Long typeId);
-    Set<Evaluation> findByClassId(Long ClassId);
 
     @Query(value = "SELECT eval.* " +
             "FROM tbl_EVALUATION eval " +
@@ -71,7 +61,7 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "         INNER JOIN TBL_CLASS class ON eval.F_CLASS_ID = class.ID " +
             "WHERE personal.C_NATIONAL_CODE =:evaluatorNationalCode " +
             "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId " +
-            "  AND class.TEACHER_ONLINE_EVAL_STATUS = 1 ", nativeQuery = true)
+            "  AND class.TEACHER_ONLINE_EVAL_STATUS = 1  AND eval.f_evaluation_level_id != 156 ", nativeQuery = true)
     List<Evaluation> getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
 
     @Query(value = "SELECT eval.*  " +
@@ -82,10 +72,21 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "WHERE student.NATIONAL_CODE =:evaluatorNationalCode  " +
             "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId  " +
             "  AND class.STUDENT_ONLINE_EVAL_STATUS = 1 " +
-            "And cs.evaluation_status_reaction = 1" +
+            "And cs.evaluation_status_reaction = 1 AND eval.f_evaluation_level_id != 156" +
             "", nativeQuery = true)
-    List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode,@Param("evaluatorTypeId") Long evaluatorTypeId);
-
+    List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
 
     Evaluation findFirstByQuestionnaireId(Long QuestionnaireId);
+
+
+    @Query(value = "SELECT\n" +
+            "    *\n" +
+            "\n" +
+            "FROM\n" +
+            "         tbl_evaluation\n" +
+            "WHERE\n" +
+            "       tbl_evaluation.b_status = 0\n" +
+            "       and\n" +
+            "       tbl_evaluation.f_evaluation_level_id=156", nativeQuery = true)
+    List<Evaluation> getBehavioralEvaluations();
 }

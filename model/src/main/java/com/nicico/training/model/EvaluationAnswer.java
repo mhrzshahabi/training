@@ -55,5 +55,4 @@ public class EvaluationAnswer extends Auditable {
 
     @Column(name = "f_answer_id")
     private Long answerId;
-
 }

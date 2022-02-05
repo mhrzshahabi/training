@@ -11,9 +11,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ElsQuestionTargetsDto extends BaseResponse implements Serializable {
-
     @ApiModelProperty
     private List<ElsQuestionTargetDto> questionTargetDtoList;
-
-
 }

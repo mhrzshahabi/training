@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class EqualCourseDTO implements Serializable {
 
     @Getter

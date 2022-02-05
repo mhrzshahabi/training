@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.List;
 
@@ -77,8 +76,6 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
                                                     @Param("startDate2") String startDate2,
                                                     @Param("endDate2") String endDate2);
 
-
-
     @Query(value ="WITH r AS(" +
             "                SELECT" +
             "                    institute.id           AS institute_id," +
@@ -137,7 +134,5 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
             @Param("endDate") String endDate,
             @Param("startDate2") String startDate2,
             @Param("endDate2") String endDate2);
-
-
 }
 

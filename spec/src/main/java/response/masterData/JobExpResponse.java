@@ -6,7 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class JobExpResponse {
-
     private String personnelNo;
     private String ssn;
     private Boolean active;
@@ -25,10 +24,8 @@ public class JobExpResponse {
     @Getter
     @Setter
     public static class postInfo extends JobExpResponse {
-
         private String firstName;
         private String lastName;
         private String nationalCode;
     }
-
 }

@@ -8,7 +8,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
@@ -42,50 +41,42 @@ public class SynonymPersonnel implements Serializable {
     @Column(name = "birth_date")
     private Date birthDate;
 
-
     @Column(name = "birth_place")
     private String birthPlace;
-    //
+
     @Column(name = "national_code")
     private String nationalCode;
 
-    //
     @Column(name = "deleted")
     private Integer deleted;
-    ////
+
     @Column(name = "employment_date")
     private Date employmentDate;
-    ////
+
     @Column(name = "post_title")
     private String postTitle;
 
     @Column(name = "post_code")
     private String postCode;
 
-    //
     @Column(name = "work_place_title")
     private String workPlaceTitle;
-    //
-//
+
     @Column(name = "education_level_title")
     private String educationLevelTitle;
-
 
     @Column(name = "job_title")
     private String jobTitle;
 
-    //
     @Column(name = "company_name")
     private String companyName;
 
-    //
     @Column(name = "education_field_title")
     private String educationMajorTitle;
-    //
+
     @Column(name = "gender_title")
     private String gender;
 
-    //
     @Column(name = "department_title")
     private String departmentTitle;
 
@@ -103,10 +94,10 @@ public class SynonymPersonnel implements Serializable {
 
     @Column(name = "ccp_code")
     private String ccpCode;
-    //
+
     @Column(name = "ccp_area")
     private String ccpArea;
-    //
+
     @Column(name = "ccp_assistant")
     private String ccpAssistant;
 
@@ -121,34 +112,31 @@ public class SynonymPersonnel implements Serializable {
 
     @Column(name = "ccp_title")
     private String ccpTitle;
-    //
+
     @Column(name = "address")
     private String address;
-    //
+
     @Column(name = "phone")
     private String phone;
-    //
+
     @Column(name = "p_type", length = 50)
     private String peopleType;
 
     @Column(name = "f_department_id")
     private Long departmentId;
 
-    //
     @Column(name = "f_geo_id")
     private Long geoWorkId;
 
-    //
     @Column(name = "f_post_id")
     private Long postId;
 
-    //
     @Column(name = "c_username")
     private String userName;
-    //
+
     @Column(name = "email")
     private String email;
-    //
+
     @Transient
     private String workYears;
 
@@ -158,7 +146,6 @@ public class SynonymPersonnel implements Serializable {
     @Transient
     private Department department;
 
-
     @Column(name = "employment_status_id")
     private Integer employmentStatusId;
 
@@ -167,5 +154,4 @@ public class SynonymPersonnel implements Serializable {
 
     @Column(name = "complex_title")
     private String complexTitle;
-
 }

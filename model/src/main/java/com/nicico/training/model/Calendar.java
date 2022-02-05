@@ -168,6 +168,4 @@ public class Calendar  {
 
     @Column(name = "C_OCCASION")
     private String occasion;
-
-
 }

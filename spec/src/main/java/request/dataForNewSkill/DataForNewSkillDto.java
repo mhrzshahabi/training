@@ -2,6 +2,7 @@ package request.dataForNewSkill;
 
 import lombok.Getter;
 import lombok.Setter;
+
 import java.util.List;
 
 @Getter

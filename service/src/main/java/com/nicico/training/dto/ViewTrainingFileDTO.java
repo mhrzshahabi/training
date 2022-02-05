@@ -13,7 +13,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class ViewTrainingFileDTO implements Serializable {
-
     private String empNo;
     private String postTitle;
     private String postCode;
@@ -74,5 +73,4 @@ public class ViewTrainingFileDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

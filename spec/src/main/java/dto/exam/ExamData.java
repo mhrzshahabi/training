@@ -1,10 +1,8 @@
 package dto.exam;
 
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-
 
 @Getter
 @Setter
@@ -18,4 +16,4 @@ public class ExamData {
     private String endDate;
     private Long id;
     private ExamClassData tclass;
- }
+}

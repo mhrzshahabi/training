@@ -7,7 +7,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
@@ -16,19 +15,14 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class ViewAssigneeNeedsAssessmentsReportDTO implements Serializable {
-
     @ApiModelProperty
     private Long id;
-
     @ApiModelProperty
     private String code;
-
     @ApiModelProperty
     private String des;
-
     @ApiModelProperty
     private String assignee;
-
     @ApiModelProperty
     private Date time;
 
@@ -38,8 +32,6 @@ public class ViewAssigneeNeedsAssessmentsReportDTO implements Serializable {
     @ApiModel("AssigneeNeedsAssessmentsReportDTOInfo")
     public static class Info extends ViewAssigneeNeedsAssessmentsReportDTO {
     }
-
-
 
     @Getter
     @Setter
@@ -61,5 +53,4 @@ public class ViewAssigneeNeedsAssessmentsReportDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

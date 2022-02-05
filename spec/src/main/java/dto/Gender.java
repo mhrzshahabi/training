@@ -10,7 +10,8 @@ import lombok.ToString;
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum Gender {
-    MALE(1,"مرد", "M"),
+
+    MALE(1, "مرد", "M"),
     FEMALE(2, "زن", "F");
 
     private final int id;

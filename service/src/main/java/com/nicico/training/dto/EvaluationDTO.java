@@ -16,7 +16,6 @@ import java.util.Map;
 @Setter
 @Accessors(chain = true)
 public class EvaluationDTO implements Serializable {
-
     private Long questionnaireTypeId;
     private Long classId;
     private Long evaluatorId;
@@ -70,8 +69,6 @@ public class EvaluationDTO implements Serializable {
         List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -80,8 +77,6 @@ public class EvaluationDTO implements Serializable {
     public static class EvaluationSpecRs {
         private EvaluationDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -95,13 +90,11 @@ public class EvaluationDTO implements Serializable {
         private Integer totalRows;
     }
 
-    //-----------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("EvaluationLearningResult")
-    public static class EvaluationLearningResult{
+    public static class EvaluationLearningResult {
         private String preTestMeanScore;
         private String postTestMeanScore;
         private String havePreTest;
@@ -164,20 +157,18 @@ public class EvaluationDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("BehavioralResult")
     public static class BehavioralResult {
-       private Double[] studentGrade;
-       private Double[] supervisorGrade;
-       private Double[] trainingGrade;
-       private Double[] coWorkersGrade;
-       private String[] classStudentsName;
-       private Double[] behavioralGrades;
-       private Double studentGradeMean;
-       private Double supervisorGradeMean;
-       private Double trainingGradeMean;
-       private Double coWorkersGradeMean;
-       private Double behavioralGrade;
-       private Boolean behavioralPass;
-       private Map<String,Double> indicesGrade;
+        private Double[] studentGrade;
+        private Double[] supervisorGrade;
+        private Double[] trainingGrade;
+        private Double[] coWorkersGrade;
+        private String[] classStudentsName;
+        private Double[] behavioralGrades;
+        private Double studentGradeMean;
+        private Double supervisorGradeMean;
+        private Double trainingGradeMean;
+        private Double coWorkersGradeMean;
+        private Double behavioralGrade;
+        private Boolean behavioralPass;
+        private Map<String, Double> indicesGrade;
     }
-
-
 }

@@ -15,13 +15,11 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class CountryDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String name;
 
-    //---------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -34,7 +32,6 @@ public class CountryDTO {
         private String lastModifiedBy;
         private Integer version;
     }
-    // ------------------------------
 
     @Getter
     @Setter
@@ -42,8 +39,6 @@ public class CountryDTO {
     @ApiModel("CountryCreateRq")
     public static class Create extends CountryDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -55,8 +50,6 @@ public class CountryDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -67,8 +60,6 @@ public class CountryDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -77,8 +68,6 @@ public class CountryDTO {
     public static class CountrySpecRs {
         private CountryDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -91,6 +80,5 @@ public class CountryDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }
 

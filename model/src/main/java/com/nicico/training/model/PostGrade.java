@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 8/29/2019, 9:11 AM
-*/
 package com.nicico.training.model;
 
 import lombok.EqualsAndHashCode;

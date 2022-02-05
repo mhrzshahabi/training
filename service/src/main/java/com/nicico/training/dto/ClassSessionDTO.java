@@ -13,60 +13,41 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ClassSessionDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private Long classId;
-
     @ApiModelProperty(required = true)
     private String dayCode;
-
     @ApiModelProperty(required = true)
     private String dayName;
-
     @ApiModelProperty(required = true)
     private String sessionDate;
-
     @ApiModelProperty(required = true)
     private String sessionStartHour;
-
     @ApiModelProperty(required = true)
     private String sessionEndHour;
-
     @ApiModelProperty(required = true)
     private Integer SessionTypeId;
-
     @ApiModelProperty(required = true)
     private String sessionType;
-
     @ApiModelProperty(required = true)
     private Integer instituteId;
-
     @ApiModelProperty(required = true)
     private Integer trainingPlaceId;
-
     @ApiModelProperty(required = true)
     private Long teacherId;
-
     @ApiModelProperty(required = true)
     private Integer sessionState;
-
     @ApiModelProperty(required = true)
     private String sessionStateFa;
-
     @ApiModelProperty(required = true)
     private Boolean teacherAttendancePermission;
-
     @ApiModelProperty(required = true)
     private String description;
-
-    //*********************************
 
     @Getter
     @Setter
@@ -92,7 +73,7 @@ public class ClassSessionDTO implements Serializable {
                 return " ";
         }
 
-        public boolean getReadOnly(){
+        public boolean getReadOnly() {
             DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = new Date();
             String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
@@ -101,7 +82,6 @@ public class ClassSessionDTO implements Serializable {
             return todayDate.compareTo(startingDate) >= 0 ? false : true;
         }
     }
-
 
     @Getter
     @Setter
@@ -121,9 +101,6 @@ public class ClassSessionDTO implements Serializable {
         private String plannerName;
     }
 
-    //*********************************
-
-    //-------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -140,16 +117,17 @@ public class ClassSessionDTO implements Serializable {
         private String sessionEndHour;
         private String studentStatus;
         private String studentPresentStatus;
+
         public String getSessionHour() {
             String result = "";
-            if(sessionStartHour != null) {
+            if (sessionStartHour != null) {
                 result += sessionStartHour;
             }
             if (sessionEndHour != null) {
                 result += " تا ";
                 result += sessionEndHour;
             }
-                return result;
+            return result;
         }
     }
 
@@ -187,24 +165,14 @@ public class ClassSessionDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ClassSessionsCreateRq")
     public static class Create extends ClassSessionDTO {
-
     }
-
-    //*********************************
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassSessionsUpdateRq")
     public static class Update extends ClassSessionDTO {
-
-        /*@NotNull
-        @ApiModelProperty(required = true)
-        private String sessionTime;*/
-
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -216,8 +184,6 @@ public class ClassSessionDTO implements Serializable {
         private List<Long> ids;
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -227,7 +193,6 @@ public class ClassSessionDTO implements Serializable {
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
-    //*********************************
 
     @Getter
     @Setter
@@ -236,7 +201,7 @@ public class ClassSessionDTO implements Serializable {
     public static class ClassSessionsDateForOneClass {
         private String dayName;
         private String sessionDate;
-        private String hasWarning="";
+        private String hasWarning = "";
     }
 
     @Getter
@@ -250,8 +215,6 @@ public class ClassSessionDTO implements Serializable {
         private String sessionEndHour;
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -259,8 +222,6 @@ public class ClassSessionDTO implements Serializable {
     public static class ClassSessionsSpecRs {
         private ClassSessionDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -274,64 +235,46 @@ public class ClassSessionDTO implements Serializable {
         private Integer totalRows;
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AutoSessionsRequirement")
     @AllArgsConstructor
     public static class AutoSessionsRequirement {
-
         @NotNull
         @ApiModelProperty(required = true)
         private Long classId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private List<String> daysCode;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer trainingType;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String classStartDate;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String classEndDate;
-
         @NotNull
         @ApiModelProperty
         private List<Integer> classHoursRange;
-
         @ApiModelProperty(required = true)
         private Integer SessionTypeId;
-
         @ApiModelProperty(required = true)
         private Integer instituteId;
-
         @ApiModelProperty(required = true)
         private Integer trainingPlaceId;
-
         @ApiModelProperty(required = true)
         private Long teacherId;
-
         @ApiModelProperty(required = true)
         private Integer sessionState;
-
         @ApiModelProperty(required = true)
         private String description;
-
         @NotNull
         @ApiModelProperty(required = true)
-        private Boolean teacherAttendancePermission=true;
-
+        private Boolean teacherAttendancePermission = true;
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -340,135 +283,99 @@ public class ClassSessionDTO implements Serializable {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class GeneratedSessions {
-
         @NotNull
         @ApiModelProperty(required = true)
         private Long classId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String dayCode;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String dayName;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionDate;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionStartHour;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionEndHour;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer SessionTypeId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionType;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer instituteId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer trainingPlaceId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Long teacherId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer sessionState;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionStateFa;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String description;
-
         @NotNull
         @ApiModelProperty(required = true)
-        private Boolean teacherAttendancePermission=true;
-
+        private Boolean teacherAttendancePermission = true;
     }
 
-    //*********************************
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ManualSession")
     public static class ManualSession implements Serializable {
-
         @NotNull
         @ApiModelProperty(required = true)
         private Long classId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionDate;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionTime;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionStartHour;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionEndHour;
-
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer sessionTypeId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionType;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer instituteId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer trainingPlaceId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Long teacherId;
-
         @NotNull
         @ApiModelProperty(required = true)
         private Integer sessionState;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String sessionStateFa;
-
         @NotNull
         @ApiModelProperty(required = true)
         private String description;
-
         @NotNull
         @ApiModelProperty(required = true)
-        private Boolean teacherAttendancePermission=true;
-
+        private Boolean teacherAttendancePermission = true;
     }
-
-    //*********************************
-
 }

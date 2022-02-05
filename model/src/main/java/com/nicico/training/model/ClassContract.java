@@ -15,6 +15,7 @@ import java.util.Set;
 @Entity
 @Table(name = "tbl_class_contract")
 public class ClassContract extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_contract_seq")
     @SequenceGenerator(name = "class_contract_seq", sequenceName = "seq_class_contract_id", allocationSize = 1)
@@ -81,5 +82,4 @@ public class ClassContract extends Auditable {
 
     @Column(name = "f_contract_file_id", nullable = false)
     private Long contractFileId;
-
 }

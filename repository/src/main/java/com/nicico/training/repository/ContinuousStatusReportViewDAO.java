@@ -4,5 +4,5 @@ import com.nicico.training.model.ContinuousStatusReportView;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface ContinuousStatusReportViewDAO extends BaseDAO<ContinuousStatusReportView, Long>{
+public interface ContinuousStatusReportViewDAO extends BaseDAO<ContinuousStatusReportView, Long> {
 }

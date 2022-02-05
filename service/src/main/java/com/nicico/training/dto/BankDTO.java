@@ -16,21 +16,15 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
-
 public class BankDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty(required = true)
     private String titleEn;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Integer eBankTypeId;
-    // ------------------------------
 
     @Getter
     @Setter
@@ -46,8 +40,6 @@ public class BankDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @ApiModel("BankInfoTuple")
@@ -57,8 +49,6 @@ public class BankDTO {
         private String titleEn;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -66,16 +56,12 @@ public class BankDTO {
     public static class Create extends BankDTO {
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("BankUpdateRq")
     public static class Update extends BankDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -87,8 +73,6 @@ public class BankDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -97,8 +81,6 @@ public class BankDTO {
     public static class BankSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -111,6 +93,4 @@ public class BankDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }

@@ -8,10 +8,8 @@ import lombok.experimental.Accessors;
 @Setter
 @Accessors(chain = true)
 public class HrmPersonDTO {
-
     private String firstName;
     private String lastName;
     private String nationalCode;
     private String mobile;
-
 }

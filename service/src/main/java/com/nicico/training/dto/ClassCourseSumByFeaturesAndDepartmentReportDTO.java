@@ -34,47 +34,26 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     }
 
     private Double presenceManHour;
-
     private String presenceManHourStr;
-
     private Double absenceManHour;
-
     private String absenceManHourStr;
-
     private Double unknownManHour;
-
     private String unknownManHourStr;
-
     private Integer personnelCount;
-
     private Integer studentCount;
-
     private String studentCountStr;
-
     private Double participationPercent;
-
     private String participationPercentStr;
-
     private Double presencePerPerson;
-
     private String presencePerPersonStr;
-
     private String mojtameCode;
-
     private String mojtameTitle;
-
     private String moavenatCode;
-
     private String moavenatTitle;
-
     private String omorCode;
-
     private String omorTitle;
-
     private String ghesmatCode;
-
     private String ghesmatTitle;
-
     private Long depId;
 
     @Getter
@@ -83,14 +62,12 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("ClassFeatures")
     public static class ClassFeatures extends ClassCourseSumByFeaturesAndDepartmentReportDTO {
-
         private String classTeachingType;
         private String classStatus;
         private String courseTechnicalType;
         private String courseRunType;
         private String courseTheoType;
         private String courseLevelType;
-
     }
 
     @Getter
@@ -99,7 +76,6 @@ public class ClassCourseSumByFeaturesAndDepartmentReportDTO implements Serializa
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("ClassFeatures")
     public static class ClassSumByStatus extends ClassCourseSumByFeaturesAndDepartmentReportDTO {
-
         private Integer planningCount;
         private Integer inProgressCount;
         private Integer finishedCount;

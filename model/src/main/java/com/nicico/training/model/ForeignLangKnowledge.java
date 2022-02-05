@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_foreign_lang_knowledge")
 public class ForeignLangKnowledge extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "foreign_lang_knowledge_seq")
     @SequenceGenerator(name = "foreign_lang_knowledge_seq", sequenceName = "seq_foreign_lang_knowledge_id", allocationSize = 1)
@@ -51,5 +52,4 @@ public class ForeignLangKnowledge extends Auditable {
 
     @Column(name = "f_teacher_id")
     private Long teacherId;
-
 }

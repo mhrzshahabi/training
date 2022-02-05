@@ -15,13 +15,11 @@ import java.util.stream.Collectors;
 @Setter
 @Accessors(chain = true)
 public class EmploymentHistoryDTO {
-
     private String companyName;
     private String jobTitle;
     private String startDate;
     private String endDate;
     private Long teacherId;
-
 
     @Getter
     @Setter
@@ -96,6 +94,4 @@ public class EmploymentHistoryDTO {
     public static class EmploymentHistorySpecRs {
         private SpecRs response;
     }
-
-
 }

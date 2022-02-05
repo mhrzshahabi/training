@@ -11,9 +11,7 @@ import javax.validation.constraints.NotEmpty;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ClassContractCostDTO {
-
     private Long teacherCostPerHour;
     private Long classId;
     private Long classContractId;
@@ -26,9 +24,7 @@ public class ClassContractCostDTO {
         @NotEmpty
         @ApiModelProperty(required = true)
         private Long id;
-
         private TclassDTO.Info tclass;
     }
-
 }
 

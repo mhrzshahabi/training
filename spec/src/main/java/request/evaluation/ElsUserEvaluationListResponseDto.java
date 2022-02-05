@@ -16,7 +16,6 @@ import java.util.List;
 @Setter
 @ToString
 public class ElsUserEvaluationListResponseDto extends BaseResponse implements Serializable {
-
     private long id;
     private long classId;
     private long questionnaireId;
@@ -24,9 +23,7 @@ public class ElsUserEvaluationListResponseDto extends BaseResponse implements Se
     private String planner;
     private String organizer;
     private List<EvalQuestionDto> questions;
-
     private EvalTargetUser teacher;
     private EvalCourse course;
     private EvalCourseProtocol courseProtocol;
-
 }

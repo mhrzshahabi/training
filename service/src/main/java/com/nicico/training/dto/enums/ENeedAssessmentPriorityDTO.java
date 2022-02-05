@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 9/14/2019, 9:56 AM
-*/
 package com.nicico.training.dto.enums;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -13,7 +10,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ENeedAssessmentPriorityDTO {
 
     @Getter

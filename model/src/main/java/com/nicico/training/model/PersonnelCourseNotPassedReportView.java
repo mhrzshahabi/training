@@ -1,10 +1,8 @@
-
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.PersonnelCourseKey;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Immutable;
 import org.hibernate.annotations.Subselect;
 
 import javax.persistence.*;
@@ -107,5 +105,4 @@ public class PersonnelCourseNotPassedReportView implements Serializable {
 
     @Column(name = "category_id")
     private Long categoryId;
-
 }

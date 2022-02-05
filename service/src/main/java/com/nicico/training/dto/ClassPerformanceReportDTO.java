@@ -17,23 +17,14 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ClassPerformanceReportDTO implements Serializable {
-
     private String institute;
-
     private String category;
-
     private Integer planingClasses;
-
     private Integer processingClasses;
-
     private Integer finishedClasses;
-
     private Integer endedClasses;
-
     private Long instituteId;
-
     private Long categoryId;
-
 
     @Getter
     @Setter
@@ -42,8 +33,6 @@ public class ClassPerformanceReportDTO implements Serializable {
     public static class Info extends ClassPerformanceReportDTO {
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -51,8 +40,6 @@ public class ClassPerformanceReportDTO implements Serializable {
     public static class ClassPerformanceReportSpecRs {
         private ClassPerformanceReportDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -65,6 +52,4 @@ public class ClassPerformanceReportDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    //*********************************
 }

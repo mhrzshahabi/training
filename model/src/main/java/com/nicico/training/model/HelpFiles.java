@@ -39,5 +39,4 @@ public class HelpFiles extends Auditable {
             joinColumns = {@JoinColumn(name = "F_HELP_FILES", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "F_FILE_LABEL", referencedColumnName = "id")})
     private Set<FileLabel> fileLabels;
-
 }

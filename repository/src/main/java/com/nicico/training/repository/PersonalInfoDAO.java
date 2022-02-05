@@ -18,7 +18,6 @@ public interface PersonalInfoDAO extends JpaRepository<PersonalInfo, Long>, JpaS
     @Transactional
     Optional<PersonalInfo> findByNationalCode(@Param("nationalCode") String nationalCode);
 
-
     @Query(value = "select personnel.NATIONAL_CODE AS " + "\"code\"" +
             ",contact.C_MOBILE AS"+ "\"mobile\""+
             " from TBL_PERSONNEL personnel \n" +

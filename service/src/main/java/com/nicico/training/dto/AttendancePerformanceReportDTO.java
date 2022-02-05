@@ -17,25 +17,15 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AttendancePerformanceReportDTO implements Serializable {
-
     private String institute;
-
     private String category;
-
     private Long instituteId;
-
     private Long categoryId;
-
     private Long unknownStudents;
-
     private Long presentStudents;
-
     private Long overdueStudents;
-
     private Long absentStudents;
-
     private Long unjustifiedStudents;
-
 
     @Getter
     @Setter
@@ -44,8 +34,6 @@ public class AttendancePerformanceReportDTO implements Serializable {
     public static class Info extends AttendancePerformanceReportDTO {
     }
 
-    //*********************************
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -53,8 +41,6 @@ public class AttendancePerformanceReportDTO implements Serializable {
     public static class AttendancePerformanceReportSpecRs {
         private AttendancePerformanceReportDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter
@@ -67,6 +53,4 @@ public class AttendancePerformanceReportDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    //*********************************
 }

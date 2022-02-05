@@ -13,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class AccountInfoDTO {
 
     private String accountNumber;
@@ -87,6 +86,5 @@ public class AccountInfoDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }
 

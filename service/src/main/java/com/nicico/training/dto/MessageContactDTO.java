@@ -1,10 +1,5 @@
-/*
- * Author: Mehran Golrokhi
- */
-
 package com.nicico.training.dto;
 
-import com.nicico.training.model.MessageParameter;
 import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -14,7 +9,6 @@ import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -27,15 +21,10 @@ public class MessageContactDTO {
     @ApiModel("MessageContact-Create")
     public static class Create extends MessageContactDTO {
         private Long messageId;
-
         private Long objectId;
-
         private String objectType;
-
         private String objectMobile;
-
         private List<MessageParameterDTO.Create> messageParameterList;
-
         private Date lastSentDate;
     }
 
@@ -45,13 +34,9 @@ public class MessageContactDTO {
     @ApiModel("MessageContact-Info")
     public static class Info extends MessageContactDTO {
         private Long id;
-
         private Long messageId;
-
         private Long objectId;
-
         private String objectType;
-
         private String objectMobile;
     }
 
@@ -62,22 +47,13 @@ public class MessageContactDTO {
     @NoArgsConstructor
     @ApiModel("AllMessagesForSend")
     public static class AllMessagesForSend {
-
         private Integer countSend;
-
         private Integer countSent;
-
         private String objectMobile;
-
         private Long messageContactId;
-
         private Long classId;
-
         private String objectType;
-
         private Long objectId;
-
         private String pid;
     }
-
 }

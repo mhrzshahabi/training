@@ -7,7 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ElsCategoryDto {
-
     @ApiModelProperty
     private Long categoryId;
     @ApiModelProperty

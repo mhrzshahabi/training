@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class QuestionnaireDTO implements Serializable {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String title;
@@ -33,7 +32,6 @@ public class QuestionnaireDTO implements Serializable {
         private Long enabled;
         private List<QuestionnaireQuestionDTO.Info> questionnaireQuestionList;
     }
-
 
     @Getter
     @Setter
@@ -56,7 +54,6 @@ public class QuestionnaireDTO implements Serializable {
     @ApiModel("Questionnaire - Update")
     public static class Update extends QuestionnaireDTO {
         private Integer version;
-        //private  Long enabled;
     }
 
     @Getter

@@ -8,7 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 public class EvalResultDto {
-
     private String description;
     private String surname;
     private String lastName;

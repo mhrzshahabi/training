@@ -1,12 +1,6 @@
-
-/*
- * Author: Mehran Golrokhi
- */
-
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.ViewAttendanceReportKey;
-import com.nicico.training.model.compositeKey.ViewStatisticsUnitReportKey;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
@@ -73,5 +67,4 @@ public class ViewAttendanceReport implements Serializable {
 
     @Column(name = "institute_name")
     private String instituteName;
-
 }

@@ -1,6 +1,5 @@
 package com.nicico.training.model;
 
-
 import com.nicico.training.model.enums.RequestStatus;
 import com.nicico.training.model.enums.UserRequestType;
 import lombok.*;

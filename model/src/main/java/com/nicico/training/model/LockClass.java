@@ -5,7 +5,6 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -33,5 +32,4 @@ public class LockClass extends Auditable {
 
     @Column(name = "reason")
     private String reason;
-
 }

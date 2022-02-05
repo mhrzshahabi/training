@@ -15,16 +15,11 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class EducationMajorDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     private String titleEn;
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -39,7 +34,6 @@ public class EducationMajorDTO {
         private Integer version;
     }
 
-    //-------------------------------
     @Getter
     @Setter
     @ApiModel("EducationMajorInfoTuple")
@@ -48,16 +42,12 @@ public class EducationMajorDTO {
         private String titleEn;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("EducationMajorCreateRq")
     public static class Create extends EducationMajorDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -69,8 +59,6 @@ public class EducationMajorDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -81,8 +69,6 @@ public class EducationMajorDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -91,8 +77,6 @@ public class EducationMajorDTO {
     public static class EducationMajorSpecRs {
         private EducationMajorDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

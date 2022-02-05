@@ -8,7 +8,6 @@ import java.util.List;
 @Getter
 @Setter
 public class AuditAttendanceDto {
-
     private List<Long> attendanceIdes;
     private String sessionTime;
 }

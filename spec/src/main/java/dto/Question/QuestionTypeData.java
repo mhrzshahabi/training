@@ -8,6 +8,5 @@ import lombok.ToString;
 @Setter
 @ToString
 public class QuestionTypeData {
-
     private String title;
 }

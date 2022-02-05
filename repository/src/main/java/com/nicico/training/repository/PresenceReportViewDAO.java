@@ -8,5 +8,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PresenceReportViewDAO extends JpaRepository<PresenceReportView, PresenceReportKey>, JpaSpecificationExecutor<PresenceReportView> {
-
 }

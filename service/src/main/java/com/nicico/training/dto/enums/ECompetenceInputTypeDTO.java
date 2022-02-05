@@ -1,8 +1,4 @@
-package com.nicico.training.dto.enums;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:6/10/2019
-@Time:7:53 AM
-*/
+package com.nicico.training.dto.enums;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ECompetenceInputType;
@@ -11,11 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ECompetenceInputTypeDTO {
 
     @Getter
@@ -27,7 +21,6 @@ public class ECompetenceInputTypeDTO {
         private ECompetenceInputTypeDTO.SpecRs response = new ECompetenceInputTypeDTO.SpecRs();
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -38,5 +31,4 @@ public class ECompetenceInputTypeDTO {
         private Integer endRow = ECompetenceInputType.values().length;
         private Integer totalRows = ECompetenceInputType.values().length;
     }
-
 }

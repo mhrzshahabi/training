@@ -11,8 +11,5 @@ import java.util.List;
 @Getter
 @Setter
 public class ExamQuestionsDto extends BaseResponse implements Serializable {
-
     private List<QuestionsDto> data;
-
-
 }

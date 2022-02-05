@@ -48,6 +48,4 @@ public class ParameterValue extends Auditable {
 //
 //    @Column(name = "f_question_bank")
 //    private Long questionBankId;
-
-
 }

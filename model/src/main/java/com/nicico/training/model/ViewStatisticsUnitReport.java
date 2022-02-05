@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.ViewStatisticsUnitReportKey;
@@ -39,7 +38,6 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "absence_minute")
     private Float absenceMinute;
-    //////////////////////////////////////////
 
     ///////////////////////Class
     @Column(name = "class_id", insertable = false, updatable = false)
@@ -77,7 +75,6 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "tclass_supervisor")
     private Long classSupervisor;
-    //////////////////////////////////////////
 
     //////////////////////////Course
     @Column(name = "course_code")
@@ -100,7 +97,6 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "coursesubcategory")
     private Long courseSubCategory;
-    /////////////////////////////////////////
 
     ///////////////////////////Student
     @Column(name = "student_id", insertable = false, updatable = false)
@@ -147,7 +143,6 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "student_job_title")
     private String studentJobTitle;
-    /////////////////////////////////////////
 
     ///////////////////////////Teacher
     @Column(name = "teacher_firstname")
@@ -161,7 +156,6 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "course_teacher_id")
     private Long courseTeacherId;
-    ////////////////////////////////////////
 
     ///////////////////////////Institute
     @Column(name = "institute_id")
@@ -169,12 +163,10 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "institute_c_title_fa")
     private String instituteTitleFa;
-    ///////////////////////////////////////
 
     ///////////////////////////Term
     @Column(name = "term_id")
     private Long termId;
-    //////////////////////////////////////
 
     ///////////////////////////Evalution
     @Column(name = "evaluationanalysis_c_behavioral_grade")
@@ -230,9 +222,7 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "evaluationanalysis_b_teacher_status")
     private Boolean evaluationTeacherStatus;
-    //////////////////////////////////////////
 
     @Column(name = "teaching_method_title")
     private String teachingMethodTitle;
-
 }

@@ -1,9 +1,4 @@
-package com.nicico.training.dto;/*
-com.nicico.training.dto
-@author : banifatemi
-@Date : 6/3/2019
-@Time :1:51 PM
-    */
+package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -20,24 +15,18 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class SubcategoryDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String code;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty
     private String titleEn;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long categoryId;
-    //---------------------
 
     @Getter
     @Setter
@@ -53,8 +42,6 @@ public class SubcategoryDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @ApiModel("SubCategoryInfoTuple")
@@ -64,17 +51,12 @@ public class SubcategoryDTO {
         private String titleEn;
     }
 
-
-    //----------------------
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("SubCategoryCreateRq")
     public static class Create extends SubcategoryDTO {
-
     }
-
-    //----------------------
 
     @Getter
     @Setter
@@ -86,7 +68,6 @@ public class SubcategoryDTO {
         private Integer version;
     }
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -97,7 +78,6 @@ public class SubcategoryDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -106,8 +86,6 @@ public class SubcategoryDTO {
     public static class SubCategorySpecRs {
         private SubcategoryDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -120,5 +98,4 @@ public class SubcategoryDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }

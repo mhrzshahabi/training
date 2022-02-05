@@ -1,9 +1,3 @@
-/*Mehran Golrokhi
-1399/05/14
-*/
-
-
-
 package com.nicico.training.model;
 
 import lombok.*;
@@ -15,7 +9,6 @@ import org.hibernate.annotations.MetaValue;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-
 
 @Getter
 @Setter
@@ -76,6 +69,5 @@ public class MessageContact<E> extends Auditable {
 
     @OneToMany(mappedBy = "messageContact", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MessageContactLog> messageContactLogList;
-
 }
 

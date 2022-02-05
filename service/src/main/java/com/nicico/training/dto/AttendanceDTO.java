@@ -16,7 +16,6 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class AttendanceDTO {
     private String description;
     private String state;
@@ -25,23 +24,18 @@ public class AttendanceDTO {
         switch (status) {
             case 0:
                 return "نامشخص";
-
             case 1:
                 return "حاضر";
-
             case 2:
                 return "حاضر و اضافه کار";
-
             case 3:
                 return "غیبت غیرموجه";
-
             case 4:
                 return "غیبت موجه";
         }
         return new String();
     }
 
-    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -73,8 +67,6 @@ public class AttendanceDTO {
         }
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -85,16 +77,12 @@ public class AttendanceDTO {
         private Long sessionId;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AttendanceUpdateRq")
     public static class Update extends AttendanceDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -106,19 +94,14 @@ public class AttendanceDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AttendanceDeleteRq")
     public static class permissionDto {
-
         private String date;
         private boolean hasPermission;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -128,8 +111,6 @@ public class AttendanceDTO {
     public static class AttendanceSpecRs {
         private AttendanceDTO.SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter
@@ -142,7 +123,5 @@ public class AttendanceDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
-    //-----------------------
 }
 

@@ -40,5 +40,4 @@ public class RequestItemWithDiff {
     private String currentPostCode;
     private String workGroupCode;
     private String state;
-
 }

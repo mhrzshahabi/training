@@ -1,9 +1,4 @@
-package com.nicico.training.dto;/*
-com.nicico.training.dto
-@author : banifatemi
-@Date : 6/2/2019
-@Time :1:12 PM
-    */
+package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -18,37 +13,27 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class SkillDTO {
-
     @NotNull
     @ApiModelProperty(required = true)
     private String code;
-
     @NotNull
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty()
     private String titleEn;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long skillLevelId;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long categoryId;
-
     @NotNull
     @ApiModelProperty(required = true)
     private Long subCategoryId;
-
     @ApiModelProperty()
     private String description;
-
     private Long courseId;
-
     private Long courseMainObjectiveId;
 
     @Getter
@@ -73,6 +58,7 @@ public class SkillDTO {
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
         private CourseDTO.CourseInfoTupleLite course;
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -81,6 +67,7 @@ public class SkillDTO {
         private Long id;
         private CourseDTO.CourseInfoTupleLite course;
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -101,27 +88,19 @@ public class SkillDTO {
         private CourseDTO.NeedsAssessmentReportInfo course;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("SkillCreateRq")
     public static class Create extends SkillDTO {
-
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("SkillUpdateRq")
     public static class Update extends SkillDTO {
-
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -133,8 +112,6 @@ public class SkillDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -144,19 +121,15 @@ public class SkillDTO {
         private SpecRs response;
     }
 
-    // ---------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs <T> {
+    public static class SpecRs<T> {
         private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }

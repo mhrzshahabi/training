@@ -15,9 +15,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class CheckListDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private String titleFa;
 
@@ -38,7 +36,6 @@ public class CheckListDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CheckListCreateRq")
     public static class Create extends CheckListDTO {
-
     }
 
     @Getter
@@ -46,7 +43,6 @@ public class CheckListDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CheckListUpdateRq")
     public static class Update extends CheckListDTO {
-
     }
 
     @Getter
@@ -78,7 +74,6 @@ public class CheckListDTO implements Serializable {
         private CheckListDTO.SpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -90,6 +85,4 @@ public class CheckListDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }

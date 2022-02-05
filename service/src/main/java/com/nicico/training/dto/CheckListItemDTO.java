@@ -15,14 +15,12 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class CheckListItemDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     protected String group;
     @ApiModelProperty(required = true)
     private String titleFa;
     @ApiModelProperty(required = true)
     private Long checkListId;
-
     @ApiModelProperty(required = true)
     private Boolean isDeleted;
 
@@ -39,7 +37,6 @@ public class CheckListItemDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CheckListItemCreateRq")
     public static class Create extends CheckListItemDTO {
-
     }
 
     @Getter
@@ -79,7 +76,6 @@ public class CheckListItemDTO implements Serializable {
         private CheckListItemDTO.SpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -91,6 +87,4 @@ public class CheckListItemDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }

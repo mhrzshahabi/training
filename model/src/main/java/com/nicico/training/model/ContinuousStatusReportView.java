@@ -17,8 +17,8 @@ import javax.persistence.Entity;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Subselect("SELECT * from VIEW_CONTINUOUS_STATUS_REPORT")
-
 public class ContinuousStatusReportView {
+
     @EmbeddedId
     private PersonnelCourseTermKey id;
 

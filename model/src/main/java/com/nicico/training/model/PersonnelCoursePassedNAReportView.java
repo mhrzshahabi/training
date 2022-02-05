@@ -1,4 +1,3 @@
-
 package com.nicico.training.model;
 
 import com.nicico.training.model.compositeKey.PersonnelCourseKey;
@@ -111,5 +110,4 @@ public class PersonnelCoursePassedNAReportView implements Serializable {
 
     @Column(name = "course_title_fa")
     private String courseTitleFa;
-
 }

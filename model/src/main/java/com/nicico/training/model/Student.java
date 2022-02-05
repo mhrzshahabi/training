@@ -54,9 +54,6 @@ public class Student extends Auditable {
     @Column(name = "active")
     private Integer active;
 
-//    @Column(name = "deleted")
-//    private Integer deleted;
-
     @Column(name = "employment_date")
     private String employmentDate;
 
@@ -225,5 +222,4 @@ public class Student extends Auditable {
 
     @Column(name = "f_contact_info", insertable = false, updatable = false)
     private Long contactInfoId;
-
 }

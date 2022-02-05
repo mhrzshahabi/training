@@ -1,7 +1,3 @@
-/*Mehran Golrokhi
-1399/05/14
-*/
-
 package com.nicico.training.model;
 
 import lombok.*;

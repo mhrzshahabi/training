@@ -8,7 +8,6 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
 @Repository
 public interface TestQuestionProtocolDAO extends JpaRepository<QuestionProtocol, Long>, JpaSpecificationExecutor<QuestionProtocol> {
 

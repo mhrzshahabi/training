@@ -1,11 +1,9 @@
 package com.nicico.training.dto;
 
-import com.nicico.training.model.Category;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -20,5 +18,4 @@ public class TeacherInfoDTO {
     private String BirthCertificateNumber;
     private String teacherStatus;
     private List<String> educationFields;
-
 }

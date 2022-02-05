@@ -1,10 +1,8 @@
 package com.nicico.training.dto;
 
-
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -122,13 +120,6 @@ public class ViewActivePersonnelDTO implements Serializable {
         private String mobile;
         private String email;
         private Long postId;
-
-//        @Getter(AccessLevel.NONE)
-//        private String fullName;
-//
-//        public String getFullName() {
-//            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
-//        }
     }
 
     @Getter
@@ -141,7 +132,6 @@ public class ViewActivePersonnelDTO implements Serializable {
         private List<Long> ids;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -149,8 +139,6 @@ public class ViewActivePersonnelDTO implements Serializable {
     public static class PersonnelSpecRs {
         private ViewActivePersonnelDTO.SpecRs response;
     }
-
-    //*********************************
 
     @Getter
     @Setter

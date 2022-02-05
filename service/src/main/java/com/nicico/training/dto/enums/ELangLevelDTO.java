@@ -1,4 +1,4 @@
-package com.nicico.training.dto.enums;/* com.nicico.training.dto*/
+package com.nicico.training.dto.enums;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ELangLevel;
@@ -10,7 +10,6 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ELangLevelDTO {
 
     @Getter
@@ -39,5 +38,4 @@ public class ELangLevelDTO {
     public static class ELangLevelInfoTuple {
         private String titleFa;
     }
-
 }

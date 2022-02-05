@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +15,6 @@ import java.util.Set;
 @Repository
 public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpecificationExecutor<Attendance> {
 
-    //    List<Attendance> findAllBySessionId(ArrayList<Long> sessionIds);
     List<Attendance> findBySessionId(Long sessionId);
 
     Optional<Attendance> findBySessionIdAndStudentId(Long sessionId, Long studentId);
@@ -54,8 +52,6 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
 
     List<Attendance> findBySessionIn(Set<ClassSession> sessions);
 
-    Integer deleteAllBySessionId(Long sessionId);
-
     @Modifying
     @Query(value = "DELETE FROM TBL_ATTENDANCE where f_student=:studentId and f_session in (select id from tbl_session where f_class_id=:classId)",nativeQuery = true)
     void deleteAllByClassIdAndStudentId(Long classId,Long studentId);
@@ -64,13 +60,9 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
     @Query(value = "DELETE FROM TBL_ATTENDANCE WHERE F_SESSION IN (:sessionIds)",nativeQuery = true)
     Integer deleteAllBySessionId(List<Long> sessionIds);
 
-    Integer deleteAllBySessionIdAndState(Long sessionId, String state);
-
-
     @Query(value = "select count(*) from tbl_attendance where c_state<>0 and f_student=:studentId and f_session in (select id from tbl_session where f_class_id=:classId)",
             nativeQuery = true)
     Integer checkAttendanceByStudentIdAndClassId(Long studentId,Long classId);
-
 
     @Query(value = "select c_state FROM TBL_ATTENDANCE where f_student=:studentId and f_session in (select id from tbl_session where f_class_id=:classId)",nativeQuery = true)
     List<Long> getAttendanceByClassIdAndStudentId(Long classId,Long studentId);
@@ -82,5 +74,4 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
             "INNER JOIN tbl_session ON tbl_session.id = tbl_attendance.f_session AND tbl_session.f_class_id = tbl_class_student.class_id " +
             "WHERE tbl_attendance.f_session =:sessionId And tbl_class_student.PRESENCE_TYPE_ID = 103", nativeQuery = true)
     List<Attendance> findPresenceAttendance(Long sessionId);
-
 }

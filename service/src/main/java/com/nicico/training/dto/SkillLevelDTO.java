@@ -15,17 +15,12 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class SkillLevelDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
     @ApiModelProperty(required = true)
     private String titleEn;
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -40,8 +35,6 @@ public class SkillLevelDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @ApiModel("SkillLevelInfoTuple")
@@ -51,16 +44,12 @@ public class SkillLevelDTO {
         private String titleEn;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("SkillLevelCreateRq")
     public static class Create extends SkillLevelDTO {
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -72,8 +61,6 @@ public class SkillLevelDTO {
         private Integer version;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -84,8 +71,6 @@ public class SkillLevelDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -94,8 +79,6 @@ public class SkillLevelDTO {
     public static class SkillLevelSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

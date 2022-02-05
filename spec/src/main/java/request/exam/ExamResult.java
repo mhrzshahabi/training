@@ -8,11 +8,9 @@ import java.io.Serializable;
 @Setter
 @Getter
 public class ExamResult implements Serializable {
-
-    private String  cellNumber;
-    private String  nationalCode;
-    private String  descriptiveResult;
-    private String  finalResult;
-    private String  testResult;
-
+    private String cellNumber;
+    private String nationalCode;
+    private String descriptiveResult;
+    private String finalResult;
+    private String testResult;
 }

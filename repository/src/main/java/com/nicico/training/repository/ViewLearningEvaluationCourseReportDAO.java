@@ -10,7 +10,5 @@ import java.util.List;
 @Repository
 public interface ViewLearningEvaluationCourseReportDAO extends JpaRepository<ViewLearningEvaluationCourseReport, Long>, JpaSpecificationExecutor<ViewLearningEvaluationCourseReport> {
 
-
     List<ViewLearningEvaluationCourseReport>   findAllByEndDateLessThanEqualAndStartDateGreaterThanEqual(String endDate, String startDate);
-
 }

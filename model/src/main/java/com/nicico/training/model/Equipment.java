@@ -1,9 +1,4 @@
 package com.nicico.training.model;
-/* com.nicico.training.model
-@Author:jafari-h
-@Date:5/28/2019
-@Time:11:13 AM
-*/
 
 import lombok.*;
 import lombok.experimental.Accessors;
@@ -19,6 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_equipment")
 public class Equipment extends Auditable {
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "equipment_seq")
     @SequenceGenerator(name = "equipment_seq", sequenceName = "seq_equipment_id", allocationSize = 1)
@@ -36,5 +32,4 @@ public class Equipment extends Auditable {
 
     @Column(name = "c_description", length = 500)
     private String description;
-
 }

@@ -1,8 +1,4 @@
-package com.nicico.training.dto.enums;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:6/10/2019
-@Time:7:53 AM
-*/
+package com.nicico.training.dto.enums;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ERunType;
@@ -11,11 +7,9 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class ERunTypeDTO {
 
     @Getter
@@ -27,7 +21,6 @@ public class ERunTypeDTO {
         private ERunTypeDTO.SpecRs response = new ERunTypeDTO.SpecRs();
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -38,6 +31,4 @@ public class ERunTypeDTO {
         private Integer endRow = ERunType.values().length;
         private Integer totalRows = ERunType.values().length;
     }
-
-
 }

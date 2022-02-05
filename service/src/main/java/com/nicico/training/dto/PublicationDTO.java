@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @Setter
 @Accessors(chain = true)
 public class PublicationDTO {
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String subjectTitle;
@@ -36,6 +35,7 @@ public class PublicationDTO {
         private List<CategoryDTO.CategoryInfoTuple> categories;
         private List<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
         private EPublicationSubjectTypeDTO.EPublicationSubjectTypeInfoTuple publicationSubjectType;
+
         public List<Long> getCategoriesIds() {
             if (categories == null)
                 return null;

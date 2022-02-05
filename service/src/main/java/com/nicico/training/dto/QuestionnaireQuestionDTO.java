@@ -15,7 +15,6 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 public class QuestionnaireQuestionDTO implements Serializable {
-
     @ApiModelProperty(required = true)
     private Long questionnaireId;
     @ApiModelProperty(required = true)
@@ -40,8 +39,6 @@ public class QuestionnaireQuestionDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("QuestionnaireQuestion - Create")
     public static class Create extends QuestionnaireQuestionDTO {
-
-
     }
 
     @Getter
@@ -62,9 +59,7 @@ public class QuestionnaireQuestionDTO implements Serializable {
         List<Long> ids;
     }
 
-
-
-     @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -72,8 +67,6 @@ public class QuestionnaireQuestionDTO implements Serializable {
     public static class QuestionnaireQuestionSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

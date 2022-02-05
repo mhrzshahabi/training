@@ -1,8 +1,3 @@
-/*
-ghazanfari_f,
-1/26/2020,
-5:24 PM
-*/
 package com.nicico.training.model;
 
 import lombok.*;
