@@ -315,10 +315,12 @@ public class ClassStudentService implements IClassStudentService {
 
         for (ExamResult examResult1 : examResult) {
             Long classStudentId = getStudentId(id, examResult1.getNationalCode());
-            ClassStudent classStudent = getClassStudent(classStudentId);
-            if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
-                classStudent.setPreTestScore(Float.valueOf(examResult1.getFinalResult()));
-                saveOrUpdate(classStudent);
+            if (classStudentId!=null){
+                ClassStudent classStudent = getClassStudent(classStudentId);
+                if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
+                    classStudent.setPreTestScore(Float.valueOf(examResult1.getFinalResult()));
+                    saveOrUpdate(classStudent);
+                }
             }
         }
         response.setStatus(200);
