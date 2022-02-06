@@ -332,12 +332,13 @@ public class ClassStudentService implements IClassStudentService {
 
         for (ExamResult examResult1 : examResult) {
             Long classStudentId = getStudentId(id, examResult1.getNationalCode());
+            if (classStudentId!=null){
             ClassStudent classStudent = getClassStudent(classStudentId);
             if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
                 classStudent.setScore(Float.valueOf(examResult1.getFinalResult()));
                 classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(classStudent.getTclass().getAcceptancelimit(), Float.valueOf(examResult1.getFinalResult()))).getId());
 
-                saveOrUpdate(classStudent);
+                saveOrUpdate(classStudent); }
             }
         }
         response.setStatus(200);
