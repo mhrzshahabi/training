@@ -149,6 +149,7 @@
         }
     });
 
+
     //----------------------------------- layOut -----------------------------------------------------------------------
     ToolStripButton_Add_Request = isc.ToolStripButton.create({
         title: "پاسخ دهی به درخواست",
@@ -156,6 +157,13 @@
             responseToRequest();
         }
     });
+    ToolStripButton_History_Request = isc.ToolStripButton.create({
+        title: "تاریخچه درخواست",
+        click: function () {
+             historyOfRequest();
+        }
+    });
+
     ToolStripButton_Excel_Request = isc.ToolStripButtonExcel.create({
 
         click: function () {
@@ -174,6 +182,7 @@
         members:
             [
                 ToolStripButton_Add_Request,
+                ToolStripButton_History_Request,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -275,6 +284,21 @@
             DynamicForm_Request.editRecord(record);
             Window_Request.show();
         }
+    }
+    function historyOfRequest(){
+        let record = ListGrid_Request.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            title: "<spring:message code='request.history'/>",
+                // if (mainTabSet.getTab("تاریخچه درخواست") != null)
+                //     mainTabSet.removeTab("تاریخچه درخواست")
+                // // createTab(this.title, null);}
+
+            // DynamicForm_Request.editRecord(record);
+            // Window_Request.show();
+        }
+
     }
 
     function saveRequestResponse() {

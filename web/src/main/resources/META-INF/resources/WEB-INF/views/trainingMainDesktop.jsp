@@ -3011,6 +3011,7 @@
 
 
 
+
     function openShortcutTab(titleUrl){
        createTab( titleUrl.split(',')[0], titleUrl.split(',')[1]);
     }
