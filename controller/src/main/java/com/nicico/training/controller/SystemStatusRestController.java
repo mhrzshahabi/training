@@ -109,7 +109,7 @@ public class SystemStatusRestController {
 
         SystemStatusDTO bpmsSystemStatusDTO = new SystemStatusDTO();
         bpmsSystemStatusDTO.setStatus("DOWN");
-        bpmsSystemStatusDTO.setSystemName("BPMS");
+        bpmsSystemStatusDTO.setSystemName("POP");
         systemStatusDTOList.add(bpmsSystemStatusDTO);
 
         searchRs.setTotalCount((long) systemStatusDTOList.size());
