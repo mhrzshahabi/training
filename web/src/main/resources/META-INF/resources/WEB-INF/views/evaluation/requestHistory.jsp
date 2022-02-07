@@ -59,25 +59,21 @@
             },
             {
                 name: "status",
-                title: "وضعیت درخواست",
+                title: "وضعیت",
+                canEdit: true,
+                autoFitWidth: true,
                 valueMap: {
-                    "1": "ACTIVE",
-                    "2": "PROGRESSING",
-                    "3": "PENDING",
-                    "4": "CLOSED"
-                },
-                filterEditorProperties: {
-                    pickListProperties: {
-                        showFilterEditor: false
-                    },
-                },
-                filterOnKeypress: true,
+                    ACTIVE: "ACTIVE",
+                    PENDING: "PENDING",
+                    CLOSED: "CLOSED",
+                    PROCESSING: "PROCESSING"
+                }
             },
             {
                 name: "response",
                 title: "پاسخ درخواست",
                 align: "center",
-                filterOperator: "iContains",
+                filterOperator: "equals",
              },
 
 
@@ -93,7 +89,7 @@
                 title: "تاریخ ویرایش",
                 align: "center",
                 autoFitWidth: true,
-                filterOperator: "iContains",
+                filterOperator: "equals",
             },
 
         ]
