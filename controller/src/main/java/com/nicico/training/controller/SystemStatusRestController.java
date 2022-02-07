@@ -97,6 +97,21 @@ public class SystemStatusRestController {
         systemStatusDTOList.add(masterDataSystemStatusDTO);
 
 
+        SystemStatusDTO hrmSystemStatusDTO = new SystemStatusDTO();
+        hrmSystemStatusDTO.setStatus("UP");
+        hrmSystemStatusDTO.setSystemName("HRM");
+        systemStatusDTOList.add(hrmSystemStatusDTO);
+
+        SystemStatusDTO accountingSystemStatusDTO = new SystemStatusDTO();
+        accountingSystemStatusDTO.setStatus("DOWN");
+        accountingSystemStatusDTO.setSystemName("Accounting");
+        systemStatusDTOList.add(accountingSystemStatusDTO);
+
+        SystemStatusDTO bpmsSystemStatusDTO = new SystemStatusDTO();
+        bpmsSystemStatusDTO.setStatus("DOWN");
+        bpmsSystemStatusDTO.setSystemName("BPMS");
+        systemStatusDTOList.add(bpmsSystemStatusDTO);
+
         searchRs.setTotalCount((long) systemStatusDTOList.size());
         searchRs.setList(systemStatusDTOList);
         ISC<SystemStatusDTO> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());

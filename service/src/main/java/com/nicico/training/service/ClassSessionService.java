@@ -883,8 +883,10 @@ public class ClassSessionService implements IClassSession {
                 Date end = getEpochDate(arr[0].toString(), convertToTimeZone(arr[2].toString()));
                 event.setStartTime(start.getTime()*1000);
                 event.setEndTime(end.getTime()*1000);
-                event.setTitle(arr[3] == null ? null : arr[3].toString());
-                event.setLocation(arr[4] == null ? null : arr[4].toString());
+                event.setTitle(arr[4] == null ? null : arr[4].toString());
+                event.setLocation(arr[3] == null ? null : arr[3].toString());
+                event.setSessionId(arr[6] == null ? null : arr[6].toString());
+                event.setClassCode(arr[7] == null ? null : arr[7].toString());
                 eventDtoList.add(event);
             }
         }

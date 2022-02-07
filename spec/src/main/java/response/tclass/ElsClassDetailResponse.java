@@ -36,4 +36,5 @@ public class ElsClassDetailResponse extends BaseResponse implements Serializable
     private Long evaluationId;
     private List<CourseProgramDTO> coursePrograms;
     private String instructorNationalCode;
+    private String supervisor;
 }

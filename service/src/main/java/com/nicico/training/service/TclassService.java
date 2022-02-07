@@ -2085,6 +2085,9 @@ public class TclassService implements ITclassService {
 
             ElsClassDetailResponse elsClassDto=new ElsClassDetailResponse();
             elsClassDto.setId(tclass.getId());
+            if (tclass.getSupervisor()!=null){
+                elsClassDto.setSupervisor(tclass.getSupervisor().getFirstName() + " "+tclass.getSupervisor().getLastName());
+            }
             elsClassDto.setCode(tclass.getCode());
             elsClassDto.setTitle(tclass.getTitleClass());
             elsClassDto.setName(courseTitle.toString());
