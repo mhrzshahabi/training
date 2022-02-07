@@ -287,19 +287,19 @@
     }
     function historyOfRequest(){
         let record = ListGrid_Request.getSelectedRecord();
+        <%--title: "<spring:message code='request.history'/>"--%>
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            title: "<spring:message code='request.history'/>",
-                // if (mainTabSet.getTab("تاریخچه درخواست") != null)
-                //     mainTabSet.removeTab("تاریخچه درخواست")
-                // // createTab(this.title, null);}
-
-            // DynamicForm_Request.editRecord(record);
-            // Window_Request.show();
+            if (mainTabSet.getTab("<spring:message code='request.history'/>") != null)
+                mainTabSet.removeTab("<spring:message code='request.history'/>")
+           createTab("<spring:message code='request.history'/>","<spring:url value="web/requestHistoryReport"/>");
         }
 
+
+
     }
+
 
     function saveRequestResponse() {
 

@@ -4,7 +4,11 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AnswerReqVM;
 import com.nicico.training.dto.RequestResVM;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IRequestService;
+import com.nicico.training.mapper.request.RequestAuditMapper;
+import com.nicico.training.model.RequestAudit;
+import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.enums.RequestStatus;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +26,7 @@ import java.util.List;
 @RequestMapping(value = "/api/request")
 public class RequestController {
     private final IRequestService iRequestService;
+    private final RequestAuditMapper requestAuditMapper;
 
     @GetMapping("/all")
     public ResponseEntity<List<RequestResVM>> findAll() {
@@ -61,6 +66,18 @@ public class RequestController {
         ISC<RequestResVM> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
 
+    }
+
+    @Loggable
+    @GetMapping(value="/audit/{requestId}")
+    public ResponseEntity<RequestResVM.InfoForAudit.RequestAuditSpecRs> getRequestAuditData(@PathVariable Long requestId){
+        List<RequestAudit> list=iRequestService.getAuditData(requestId);
+        List<RequestResVM.InfoForAudit> dto=requestAuditMapper.toRequestResponse(list);
+        final RequestResVM.SpecAuditRs specResponse=new RequestResVM.SpecAuditRs();
+        final RequestResVM.RequestAuditSpecRs specRs=new RequestResVM.RequestAuditSpecRs();
+        specResponse.setData(dto).setStartRow(0).setEndRow(dto.size()).setTotalRows(dto.size());
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs,HttpStatus.OK);
     }
     
 }
