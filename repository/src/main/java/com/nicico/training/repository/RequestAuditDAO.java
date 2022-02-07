@@ -11,6 +11,6 @@ import java.util.List;
 
 @Repository
 public interface RequestAuditDAO extends JpaRepository<RequestAudit, Long>,JpaSpecificationExecutor<RequestAudit> {
-    @Query(value = "select * from tbl_request_aud  where ID = :requestId ", nativeQuery = true)
+    @Query(value = "select * from tbl_request_aud  where ID = :requestId ORDER BY rev DESC ", nativeQuery = true)
      List<RequestAudit> getAuditData(long requestId);
 }
