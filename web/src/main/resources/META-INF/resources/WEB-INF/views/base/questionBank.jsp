@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -10,34 +11,38 @@
     // ------------------------------------------- Menu -------------------------------------------
     QuestionBankMenu_questionBank = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('QuestionBank_R')">
             {
                 title: "<spring:message code="refresh"/>",
-                icon: "<spring:url value="refresh.png"/>",
                 click: function () {
                     refresh_questionBank();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('QuestionBank_C')">
             {
                 title: "<spring:message code="create"/>",
-                icon: "<spring:url value="create.png"/>",
                 click: function () {
                     showNewForm_questionBank();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('QuestionBank_U')">
             {
                 title: "<spring:message code="edit"/>",
-                icon: "<spring:url value="edit.png"/>",
                 click: function () {
                     showEditForm_questionBank();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('QuestionBank_D')">
             {
                 title: "<spring:message code="remove"/>",
-                icon: "<spring:url value="remove.png"/>",
                 click: function () {
                     showRemoveForm_questionBank();
                 }
             },
+            </sec:authorize>
         ]
     });
 
@@ -45,37 +50,46 @@
 
     QuestionBankTS_questionBank = isc.ToolStrip.create({
         members: [
+            <sec:authorize access="hasAuthority('QuestionBank_C')">
             isc.ToolStripButtonAdd.create({
                 click: function () {
                     showNewForm_questionBank();
                 }
             }),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('QuestionBank_U')">
             isc.ToolStripButtonEdit.create({
                 click: function () {
                     showEditForm_questionBank();
                 }
             }),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('QuestionBank_D')">
             isc.ToolStripButtonRemove.create({
                 click: function () {
                     showRemoveForm_questionBank();
                 }
             }),
-
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('QuestionBank_P')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let criteria = QuestionBankLG_questionBank.getCriteria();
                     ExportToFile.downloadExcel(null, QuestionBankLG_questionBank, "questionBank", 0, null, '', "بانک سوالات", criteria, null);
                 }
             }),
+            </sec:authorize>
 
             isc.LayoutSpacer.create({
                 width: "*"
             }),
+            <sec:authorize access="hasAuthority('QuestionBank_R')">
             isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refresh_questionBank();
                 }
             }),
+            </sec:authorize>
         ]
     });
 
@@ -319,7 +333,9 @@
 
 
     QuestionBankLG_questionBank = isc.TrLG.create({
+        <sec:authorize access="hasAuthority('QuestionBank_R')">
         dataSource: QuestionBankDS_questionBank,
+        </sec:authorize>
         fields: [
             {name: "code",
                 sortNormalizer: function (record) {
@@ -509,9 +525,11 @@
             loadAttachment();
 
         },
+        <sec:authorize access="hasAuthority('QuestionBank_U')">
         doubleClick: function () {
             showEditForm_questionBank();
         },
+        </sec:authorize>
         filterEditorSubmit: function () {
             QuestionBankLG_questionBank.invalidateCache();
         },

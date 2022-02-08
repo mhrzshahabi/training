@@ -2,12 +2,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-
-<%--    <%--%>
-<%--        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);--%>
-<%--    %>--%>
 
     var evaluationIndexMethod = "POST";
     var evaluationIndexActionUrl = evaluationIndexUrl;
@@ -15,23 +12,40 @@
 
     var Menu_ListGrid_Evaluation_Index = isc.Menu.create({
         width: 150,
-        data: [{
-            title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_Evaluation_Index_refresh();
+        data: [
+            <sec:authorize access="hasAuthority('EvaluationIndex_R')">
+            {
+                title: "<spring:message code='refresh'/>",
+                click: function () {
+                    ListGrid_Evaluation_Index_refresh();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EvaluationIndex_C')">
+            {
+                title: "<spring:message code='add'/>",
+                click: function () {
+                    ListGrid_Evaluation_Index_Add();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EvaluationIndex_U')">
+            {
+                title: "<spring:message code='edit'/>",
+                click: function () {
+                    ListGrid_Evaluation_Index_edit();
+                }
+            },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EvaluationIndex_D')">
+            {
+                title: "<spring:message code='remove'/>",
+                click: function () {
+                    ListGrid_Evaluation_Index_remove();
+                }
             }
-        }, {
-            title: "<spring:message code='add'/>", icon: "<spring:url value="create.png"/>", click: function () {
-                ListGrid_Evaluation_Index_Add();
-            }
-        }, {
-            title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
-                ListGrid_Evaluation_Index_edit();
-            }
-        }, {
-            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
-                ListGrid_Evaluation_Index_remove();
-            }
-        },]
+            </sec:authorize>
+        ]
     });
 
     var RestDataSource_Evaluation_Index = isc.TrDS.create({
@@ -67,7 +81,9 @@
     var ListGrid_Evaluation_Index = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('EvaluationIndex_R')">
         dataSource: RestDataSource_Evaluation_Index,
+        </sec:authorize>
         contextMenu: Menu_ListGrid_Evaluation_Index,
         selectionType: "single",
         doubleClick: function () {
@@ -247,7 +263,7 @@
         //     ListGrid_Evaluation_Index.selectRecord(record);
         // }
         ListGrid_Evaluation_Index.invalidateCache();
-    };
+    }
 
     function ListGrid_Evaluation_Index_remove() {
 
@@ -285,8 +301,7 @@
                 }
             });
         }
-    };
-
+    }
 
     function ListGrid_Evaluation_Index_Add() {
         evaluationIndexMethod = "POST";
@@ -294,8 +309,7 @@
         DynamicForm_Evaluation_Index.clearValues();
         Window_Evaluation_Index.setTitle("<spring:message code='evaluation.index.title'/>");
         Window_Evaluation_Index.show();
-    };
-
+    }
 
     function ListGrid_Evaluation_Index_edit() {
         var record = ListGrid_Evaluation_Index.getSelectedRecord();
@@ -318,7 +332,7 @@
             Window_Evaluation_Index.setTitle("<spring:message code='evaluation.index.title'/>");
             Window_Evaluation_Index.show();
         }
-    };
+    }
 
 
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
@@ -350,9 +364,16 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('EvaluationIndex_C')">
             ToolStripButton_Add,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EvaluationIndex_U')">
             ToolStripButton_Edit,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EvaluationIndex_D')">
             ToolStripButton_Remove,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('EvaluationIndex_P')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     if (ListGrid_Evaluation_Index.data.size()<1)
@@ -361,12 +382,15 @@
                     ExportToFile.downloadExcelRestUrl(null, ListGrid_Evaluation_Index,  evaluationIndexUrl + "/spec-list", 0, null, '',"ارزيابی - شاخص ارزیابی", ListGrid_Evaluation_Index.getCriteria(), null);
                 }
             }),
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('EvaluationIndex_R')">
                     ToolStripButton_Refresh
+                    </sec:authorize>
                 ]
             })
         ]
@@ -398,8 +422,7 @@
             }, 3000);
         }
 
-    };
-
+    }
 
     function evaluationIndex_delete_result(resp) {
         evaluationIndexWait.close();
@@ -427,4 +450,6 @@
                 ERROR.close();
             }, 3000);
         }
-    };
+    }
+
+// </script>

@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
     <%
@@ -68,62 +69,74 @@
 // ------------------------------------------- Menu -------------------------------------------
     FinalTestMenu_finalTest = isc.Menu.create({
         data: [
+            <sec:authorize access="hasAuthority('FinalTest_R')">
             {
                 title: "<spring:message code="refresh"/>",
-                icon: "<spring:url value="refresh.png"/>",
                 click: function () {
                     refresh_finalTest();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('FinalTest_C')">
             {
                 title: "<spring:message code="create"/>",
-                icon: "<spring:url value="create.png"/>",
                 click: function () {
                     showNewForm_finalTest();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('FinalTest_U')">
             {
                 title: "<spring:message code="edit"/>",
-                icon: "<spring:url value="edit.png"/>",
                 click: function () {
                     showEditForm_finalTest();
                 }
             },
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('FinalTest_D')">
             {
                 title: "<spring:message code="remove"/>",
-                icon: "<spring:url value="remove.png"/>",
                 click: function () {
                     showRemoveForm_finalTest();
                 }
             },
+            </sec:authorize>
         ]
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
     FinalTestTS_finalTest = isc.ToolStrip.create({
         members: [
+            <sec:authorize access="hasAuthority('FinalTest_C')">
             isc.ToolStripButtonAdd.create({
                 click: function () {
                     showNewForm_finalTest();
                 }
             }),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('FinalTest_U')">
             isc.ToolStripButtonEdit.create({
                 click: function () {
                     showEditForm_finalTest();
                 }
             }),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('FinalTest_D')">
             isc.ToolStripButtonRemove.create({
                 click: function () {
                     showRemoveForm_finalTest();
                 }
             }),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('FinalTest_C')">
             isc.ToolStripButton.create({
                 title: "<spring:message code='copy.of.test'/>",
                 click: function () {
                     showCopyForm_finalTest();
                 }
             }),
-
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('FinalTest_P')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     let implicitCriteria = JSON.parse(JSON.stringify(FinalTestDS_finalTest.implicitCriteria)) ;
@@ -137,16 +150,19 @@
                      ExportToFile.downloadExcelRestUrl(null, FinalTestLG_finalTest,  testQuestionUrl + "/spec-list" , 0, null, '',"لیست آزمون های پایانی", implicitCriteria, null);
                 }
              }),
+            </sec:authorize>
 
             isc.LayoutSpacer.create({
                 width: "*"
             }),
                   DynamicForm_Filter_exam,
+            <sec:authorize access="hasAuthority('FinalTest_R')">
             isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refresh_finalTest();
                 }
             }),
+            </sec:authorize>
         ]
     });
 
@@ -318,7 +334,9 @@
 
 
     FinalTestLG_finalTest = isc.TrLG.create({
+        <sec:authorize access="hasAuthority('FinalTest_R')">
         dataSource: FinalTestDS_finalTest,
+        </sec:authorize>
         fields: [
             {name: "tclass.code", sortNormalizer: function (record) {return record.tclass.code; } },
             {name: "tclass.course.titleFa", sortNormalizer: function (record) {return record.tclass.course.titleFa; } },

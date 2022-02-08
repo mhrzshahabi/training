@@ -161,44 +161,43 @@
         data: [
             <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
             {
-            title: "<spring:message code='refresh'/>", click: function () {
-                refreshLG(ListGrid_JspConfigQuestionnaire);
-            }
-        },
+                title: "<spring:message code='refresh'/>",
+                    click: function () {
+                        refreshLG(ListGrid_JspConfigQuestionnaire);
+                    }
+            },
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('EvaluationQuestion_C')">
             {
-            title: "<spring:message code='create'/>", click: function () {
-                ListGrid_ConfigQuestionnaire_Add();
-            }
-        },
+                title: "<spring:message code='create'/>",
+                    click: function () {
+                        ListGrid_ConfigQuestionnaire_Add();
+                    }
+            },
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('EvaluationQuestion_U')">
             {
-            title: "<spring:message code='edit'/>", click: function () {
-                ListGrid_ConfigQuestionnaire_Edit();
-            }
-        },
+                title: "<spring:message code='edit'/>",
+                    click: function () {
+                        ListGrid_ConfigQuestionnaire_Edit();
+                    }
+            },
             </sec:authorize>
-
             <sec:authorize access="hasAuthority('EvaluationQuestion_D')">
             {
-            title: "<spring:message code='remove'/>", click: function () {
-                ListGrid_ConfigQuestionnaire_Remove();
+                title: "<spring:message code='remove'/>",
+                    click: function () {
+                    ListGrid_ConfigQuestionnaire_Remove();
+                }
             }
-        }
             </sec:authorize>
         ]
     });
 
     ListGrid_JspConfigQuestionnaire = isc.TrLG.create({
-
         <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
         dataSource: RestDataSource_JspConfigQuestionnaire,
         </sec:authorize>
-
         contextMenu: Menu_JspConfigQuestionnaire,
         autoFetchData: true,
         sortField: 1,
@@ -285,11 +284,10 @@
                 <sec:authorize access="hasAuthority('EvaluationQuestion_U')">
                 ToolStripButton_Edit_JspConfigQuestionnaire,
                 </sec:authorize>
-
                 <sec:authorize access="hasAuthority('EvaluationQuestion_D')">
                 ToolStripButton_Remove_JspConfigQuestionnaire,
                 </sec:authorize>
-
+                <sec:authorize access="hasAuthority('EvaluationQuestion_P')">
                 isc.ToolStripButtonExcel.create({
                     click: function () {
                         if (ListGrid_JspConfigQuestionnaire.data.size() < 1)
@@ -298,7 +296,7 @@
                         ExportToFile.downloadExcelRestUrl(null, ListGrid_JspConfigQuestionnaire, configQuestionnaireUrl + "/iscList", 0, null, '', "ارزیابی - پرسشنامه - بانک سوال", ListGrid_JspConfigQuestionnaire.getCriteria(), null);
                     }
                 }),
-
+                </sec:authorize>
                 <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
                 isc.ToolStrip.create({
                     width: "100%",
@@ -453,4 +451,4 @@
         }
     }
 
-    //</script>
+// </script>
