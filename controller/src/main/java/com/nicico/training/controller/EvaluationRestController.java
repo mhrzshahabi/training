@@ -18,6 +18,7 @@ import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
 import dto.evaluuation.EvalElsData;
 import dto.evaluuation.EvalQuestionDto;
+import dto.evaluuation.EvaluationAnsweredQuestionsDetailsDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -979,5 +980,21 @@ public class EvaluationRestController {
         List<EvalQuestionDto> questionDtos = evaluationService.getEvaluationQuestions(answerService.getAllByEvaluationId(evaluationId));
         return new ResponseEntity<>(questionDtos, HttpStatus.OK);
 
+    }
+
+    /**
+     * it returns list of answered evaluation questions with the details like
+     * information of the student who answered to that and other infos with giving the question Ids
+     * @param questionIds
+     * @return
+     */
+    @PostMapping(value = "/getAnsweredEvalQuestionsDetails")
+    public ResponseEntity<List<EvaluationAnsweredQuestionsDetailsDTO>> getAnsweredQuestionsDetails(@RequestBody List<Long> questionIds) {
+        List<EvaluationAnsweredQuestionsDetailsDTO> dtos = evaluationService.getAnsweredQuestionsDetails(questionIds);
+        if (dtos.size() > 0) {
+            return new ResponseEntity<>(dtos, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
     }
 }

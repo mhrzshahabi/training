@@ -89,4 +89,36 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "       and\n" +
             "       tbl_evaluation.f_evaluation_level_id=156", nativeQuery = true)
     List<Evaluation> getBehavioralEvaluations();
+
+    @Query(value = """
+            SELECT TCLASS.C_CODE            AS class_code,
+                               TCLASS.C_TITLE_CLASS     AS class_title,
+                               ANSWER_TITLE.C_TITLE     AS answer_title,
+                               STUDENT.FIRST_NAME       AS first_name,
+                               STUDENT.LAST_NAME        AS last_name,
+                               STUDENT.NATIONAL_CODE    AS nationalCode,
+                               COMPLEX.C_TITLE          AS complexTitle,
+                               EVAL_QUESTION.C_QUESTION AS questionTitle,
+                               EVAL.F_QUESTIONNAIRE_ID,
+                               QUESTIONNAIRE.C_TITLE
+                        FROM TBL_EVALUATION EVAL
+                                 LEFT JOIN TBL_EVALUATION_ANSWER ANSWER ON EVAL.ID = ANSWER.F_EVALUATION_ID
+                                 INNER JOIN TBL_CLASS TCLASS ON TCLASS.ID = EVAL.F_CLASS_ID
+                                 INNER JOIN TBL_PARAMETER_VALUE ANSWER_TITLE ON ANSWER.F_ANSWER_ID = ANSWER_TITLE.ID
+                                 INNER JOIN TBL_CLASS_STUDENT CLASS_STUDENT ON EVAL.F_EVALUATOR_ID = CLASS_STUDENT.ID
+                                 LEFT JOIN TBL_PARAMETER_VALUE EVALUATORPARAMVALUE
+                                           ON EVALUATORPARAMVALUE.ID = EVAL.F_EVALUATOR_TYPE_ID --EVAL.F_EVALUATOR_TYPE_ID = 188
+                                 INNER JOIN TBL_STUDENT STUDENT ON CLASS_STUDENT.STUDENT_ID = STUDENT.ID
+                                 INNER JOIN TBL_QUESTIONNAIRE QUESTIONNAIRE ON EVAL.F_QUESTIONNAIRE_ID = QUESTIONNAIRE.ID
+                                 INNER JOIN TBL_QUESTIONNAIRE_QUESTION QUESTIONNAIRE_Q ON ANSWER.F_EVALUATION_QUESTION_ID = QUESTIONNAIRE_Q.ID
+                                 INNER JOIN TBL_EVALUATION_QUESTION EVAL_QUESTION ON QUESTIONNAIRE_Q.F_EVALUATION_QUESTION = EVAL_QUESTION.ID
+                                 LEFT JOIN VIEW_COMPLEX COMPLEX ON COMPLEX.ID = TCLASS.COMPLEX_ID
+                        WHERE EVALUATORPARAMVALUE.C_CODE = '32'
+                          AND EVAL_QUESTION.ID IN (:questionIds)
+                        ORDER BY EVAL_QUESTION.ID, nationalCode
+            """, nativeQuery = true)
+    List<Object> getAnsweredQuestionsDetails(@Param("questionIds") List<Long> questionIds);
+
+
+
 }

@@ -293,6 +293,10 @@
       "title": "منوی گزارش - گزارشات ارزيابي و اثربخشي - افراد با نمره پیش تست بيشتر از حد قبولي"
     },
     {
+      "code": "Menu_Report_ReportsFECR_AnsweredEvalQuestionsDetailsReport",
+      "title": "منوی گزارش - گزارشات ارزيابي و اثربخشي - گزارش سوالات ارزیابی"
+    },
+    {
       "code": "Menu_Report_ReportsManagment",
       "title": "منوی گزارش - گزارشات مديريتي"
     },
