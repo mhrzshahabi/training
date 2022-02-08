@@ -108,7 +108,7 @@ public class ViewTrainingFileService {
         queryString.append("               LEFT JOIN TBL_PARAMETER_VALUE PA2 ON CS.FAILURE_REASON_ID = PA2.ID");
         queryString.append("               LEFT JOIN TBL_DEPARTMENT DEP ON (DEP.ID = S.F_DEPARTMENT_ID OR");
         queryString.append("                                                (S.F_DEPARTMENT_ID IS NULL AND DEP.C_CODE = S.DEPARTMENT_CODE))");
-        queryString.append("      WHERE S.NATIONAL_CODE = '").append(nationalCode).append("') CLASS_STUDENT");
+        queryString.append("      WHERE S.NATIONAL_CODE = ").append(nationalCode).append(") CLASS_STUDENT");
         queryString.append("         LEFT JOIN TBL_DEPARTMENT DEP ON DEP.ID = CLASS_STUDENT.DEP_ID");
         queryString.append("         LEFT JOIN (SELECT PERSONNEL_NO,ID,ROW_NUMBER() OVER (PARTITION BY PERSONNEL_NO ORDER BY DELETED DESC) AS RW FROM TBL_PERSONNEL) PRS ");
         queryString.append(" ON (PRS.PERSONNEL_NO = CLASS_STUDENT.PERSONNEL_NO AND PRS.RW = 1)");

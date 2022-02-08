@@ -75,7 +75,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "WHERE\n" +
             "    tbl_class_student.class_id = :classId \n" +
             "    AND national_code = :nationalCode ", nativeQuery = true)
-    List<Long> getClassStudentIdByClassCodeAndNationalCode(@Param("classId") Long classId, @Param("nationalCode") String nationalCode);
+    List<Long> getClassStudentIdByClassCodeAndNationalCode(@Param("classId") Long classId, @Param("nationalCode") Long nationalCode);
 
     @Query(value = "\n" +
             "SELECT *\n" +
@@ -144,7 +144,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "         WHERE rownum < ((:page * :sizee) + 1)\n" +
             "     )\n" +
             "WHERE r__ >= (((:page - 1) * :sizee) + 1)",nativeQuery = true)
-    List<Object> findAllClassByTeacher(String nationalCode, int page,int sizee);
+    List<Object> findAllClassByTeacher(Long nationalCode, int page,int sizee);
 
     @Query(value = "\n" +
             "SELECT DISTINCT tbl_teacher.c_teacher_code,\n" +
@@ -206,7 +206,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "WHERE tbl_teacher.c_teacher_code = :nationalCode \n" +
             "ORDER BY classid Desc "
             ,nativeQuery = true)
-    List<Object> findAllCountClassByTeacher(String nationalCode);
+    List<Object> findAllCountClassByTeacher(Long nationalCode);
 
     @Query(value = "SELECT *\n" +
             "FROM (\n" +
@@ -276,7 +276,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "         WHERE rownum < ((:page * :sizee) + 1)\n" +
             "     )\n" +
             "WHERE r__ >= (((:page - 1) * :sizee) + 1)",nativeQuery = true)
-    List<Object> findAllClassByStudent(String nationalCode, int page, Integer sizee);
+    List<Object> findAllClassByStudent(Long nationalCode, int page, Integer sizee);
 
     @Query(value = "SELECT DISTINCT tbl_student.national_code,\n" +
             "                tbl_class.id                                                                             AS classid,\n" +
@@ -337,5 +337,5 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_student.id)\n" +
             "WHERE tbl_student.national_code = :nationalCode \n" +
             "ORDER BY classid desc",nativeQuery = true)
-    List<Object> findAllCountClassByStudent(String nationalCode);
+    List<Object> findAllCountClassByStudent(Long nationalCode);
 }
