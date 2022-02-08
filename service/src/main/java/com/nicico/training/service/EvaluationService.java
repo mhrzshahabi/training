@@ -301,21 +301,24 @@ public class EvaluationService implements IEvaluationService {
 
     @Override
     public List<Evaluation> getEvaluationsByEvaluatorNationalCode(String evaluatorNationalCode, Long EvaluatorTypeId, String evaluatorType) {
-        if (evaluatorType.equals("teacher")) {
-            List<Evaluation> list = evaluationDAO.getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
-            List<Evaluation> notAnsweredEvaluations = new ArrayList<>();
-            for (Evaluation evaluation : list) {
-                List<EvaluationAnswer> answers = evaluationAnswerDAO.findByEvaluationIdAndAnswerId(evaluation.getId());
-                if (answers.isEmpty())
-                    notAnsweredEvaluations.add(evaluation);
+        if(evaluatorNationalCode!=null && !evaluatorNationalCode.isEmpty()) {
+            if (evaluatorType.equals("teacher")) {
+                List<Evaluation> list = evaluationDAO.getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(Long.valueOf(evaluatorNationalCode), EvaluatorTypeId);
+                List<Evaluation> notAnsweredEvaluations = new ArrayList<>();
+                for (Evaluation evaluation : list) {
+                    List<EvaluationAnswer> answers = evaluationAnswerDAO.findByEvaluationIdAndAnswerId(evaluation.getId());
+                    if (answers.isEmpty())
+                        notAnsweredEvaluations.add(evaluation);
+                }
+                return getBehavioralEvaluations(notAnsweredEvaluations, evaluatorNationalCode);
+            } else if (evaluatorType.equals("student")) {
+                List<Evaluation> list = evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(Long.valueOf(evaluatorNationalCode), EvaluatorTypeId);
+                return getBehavioralEvaluations(list, evaluatorNationalCode);
+            } else {
+                return null;
             }
-            return getBehavioralEvaluations(notAnsweredEvaluations, evaluatorNationalCode);
-        } else if (evaluatorType.equals("student")) {
-            List<Evaluation> list = evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
-            return getBehavioralEvaluations(list,evaluatorNationalCode);
-        } else {
-            return null;
         }
+        return null;
     }
 
     private List<Evaluation> getBehavioralEvaluations(List<Evaluation> list, String evaluatorNationalCode) {

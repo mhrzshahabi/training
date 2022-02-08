@@ -62,7 +62,7 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "WHERE personal.C_NATIONAL_CODE =:evaluatorNationalCode " +
             "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId " +
             "  AND class.TEACHER_ONLINE_EVAL_STATUS = 1  AND eval.f_evaluation_level_id != 156 ", nativeQuery = true)
-    List<Evaluation> getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
+    List<Evaluation> getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") Long evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
 
     @Query(value = "SELECT eval.*  " +
             "FROM tbl_EVALUATION eval  " +
@@ -74,7 +74,7 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "  AND class.STUDENT_ONLINE_EVAL_STATUS = 1 " +
             "And cs.evaluation_status_reaction = 1 AND eval.f_evaluation_level_id != 156" +
             "", nativeQuery = true)
-    List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
+    List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") Long evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
 
     Evaluation findFirstByQuestionnaireId(Long QuestionnaireId);
 
