@@ -3014,6 +3014,7 @@
 
 
 
+
     function openShortcutTab(titleUrl){
        createTab( titleUrl.split(',')[0], titleUrl.split(',')[1]);
     }
@@ -3516,6 +3517,7 @@
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";
     const classAuditUrl = rootUrl + "/tclass/audit/";
+    const requestAuditUrl = rootUrl +"/request/audit/"
     const classEvalAuditUrl = rootUrl + "/tclass/evalAudit/";
     const evalAnswerAuditUrl = rootUrl + "/evaluationAnswer/evalAnswerAudit/";
     const classStudentHistoryUrl = rootUrl + "/class-student/history/";

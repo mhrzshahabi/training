@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.training.dto.RequestReqVM;
 import com.nicico.training.dto.RequestResVM;
+import com.nicico.training.model.RequestAudit;
 import com.nicico.training.model.enums.RequestStatus;
 
 import java.util.List;
@@ -24,4 +25,5 @@ public interface IRequestService {
 
     RequestResVM answerRequest(String reference, String response,RequestStatus status);
 
+    List<RequestAudit> getAuditData(Long requestId);
 }

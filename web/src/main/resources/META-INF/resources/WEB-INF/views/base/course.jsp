@@ -1707,11 +1707,14 @@
     var IButton_course_Save = isc.IButtonSave.create({
         ID: "courseSaveBtn",
         title: "<spring:message code="save"/>",
+
         click: function () {
-            if (mainObjectiveGrid.data.isEmpty()) {
+
+            if (mainObjectiveGrid.data.isEmpty() && DynamicForm_course_GroupTab.getValue("runType.id") !== 4 && DynamicForm_course_GroupTab.getValue("runType.id") !== 3 && DynamicForm_course_GroupTab.getValue("runType.id") !== 7){
                 createDialog("info", "دوره، بدون هدف اصلي نمي توان ايجاد کرد.");
                 return;
             }
+
             vm_JspCourse.validate();
             if (vm_JspCourse.hasErrors()) {
                 createDialog("info", "<spring:message code="msg.validate.values.form"/>");
