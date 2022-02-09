@@ -3,11 +3,11 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.iservice.IClassStudentReportService;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.EqualCourse;
 import com.nicico.training.repository.ClassStudentDAO;
-import com.nicico.training.repository.CourseDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,10 +19,9 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Service
 @RequiredArgsConstructor
-public class ClassStudentReportService {
+public class ClassStudentReportService implements IClassStudentReportService {
 
     private final ClassStudentDAO classStudentDAO;
-    private final CourseDAO courseDAO;
 
     @Transactional(readOnly = true)
 //    @Override

@@ -12,7 +12,7 @@ import response.tclass.ElsSessionAttendanceResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
-public interface IClassSession {
+public interface IClassSessionService {
 
     ClassSessionDTO.Info get(Long id);
 
@@ -57,4 +57,9 @@ public interface IClassSession {
     EventListDto getStudentEvent(String nationalCode, String startDate, String endDate);
 
     EventListDto getTeacherEvent(String nationalCode, String startDate, String endDate);
+
+    @Transactional
+    Long getClassIdBySessionId(Long id);
+    @Transactional
+    List<ClassSessionDTO.AttendanceClearForm> loadSessionsForClearAttendance(Long classId);
 }

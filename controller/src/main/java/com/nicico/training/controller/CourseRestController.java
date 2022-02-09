@@ -11,16 +11,13 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.jpa.resource.SearchableResource;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
+import com.nicico.training.iservice.ISkillService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
-import com.nicico.training.repository.SkillDAO;
-import com.nicico.training.service.CourseService;
-import com.nicico.training.service.GoalService;
-import com.nicico.training.service.SkillService;
-import com.nicico.training.service.WorkGroupService;
 import dto.SkillDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,34 +54,33 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class CourseRestController extends SearchableResource<Course, CourseListResponse.Response>{
     //------------------------------------------
     private final ReportUtil reportUtil;
-    private final CourseService courseService;
     private final ICourseService iCourseService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
     private final CourseBeanMapper beanMapper;
-    private final SkillService skillService;
+    private final ISkillService skillService;
 
     // ---------------------------------
     @Loggable
     @GetMapping(value = "/{id}")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<CourseDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(courseService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iCourseService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<CourseDTO.Info>> list() {
-        return new ResponseEntity<>(courseService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iCourseService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/preCourse/{courseId}")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<CourseDTO.Info>> preCourseList(@PathVariable Long courseId) {
-        List<CourseDTO.Info> list = courseService.preCourseList(courseId);
+        List<CourseDTO.Info> list = iCourseService.preCourseList(courseId);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
@@ -92,28 +88,28 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @GetMapping(value = "/equalCourse/{courseId}")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<EqualCourseDTO.Info>> equalCourseList(@PathVariable Long courseId) {
-        return new ResponseEntity<>(courseService.equalCourseList(courseId), HttpStatus.OK);
+        return new ResponseEntity<>(iCourseService.equalCourseList(courseId), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/equalCourseIds/{courseId}")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<List<Long>> equalCourseIdsList(@PathVariable Long courseId) {
-        return new ResponseEntity<>(courseService.equalCourseIdsList(courseId), HttpStatus.OK);
+        return new ResponseEntity<>(iCourseService.equalCourseIdsList(courseId), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/checkDependence/{courseId}")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<CourseDTO.CourseDependence> checkDependence(@PathVariable Long courseId) {
-        return new ResponseEntity<>(courseService.checkDependence(courseId), HttpStatus.OK);
+        return new ResponseEntity<>(iCourseService.checkDependence(courseId), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
     //@PreAuthorize("hasAuthority('Course_C')")
     public ResponseEntity<CourseDto> create(@RequestBody CourseDTO.Create  req, HttpServletResponse response) {
-        CourseDto courseInfo = courseService.create(req, response);
+        CourseDto courseInfo = iCourseService.create(req, response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
         else
@@ -131,10 +127,10 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         preCourse.setCourseId(id);
         preCourse.setPreCoursesId(req);
         if(type.equals("create")) {
-            courseService.addPreCourse(preCourse);
+            iCourseService.addPreCourse(preCourse);
         }
         else if(type.equals("remove")){
-            courseService.removePreCourse(preCourse);
+            iCourseService.removePreCourse(preCourse);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -144,7 +140,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
     public ResponseEntity setEqualCourse(@PathVariable Long id, @RequestBody List<String> req) {
-        courseService.setEqualCourse(id, req);
+        iCourseService.setEqualCourse(id, req);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -157,8 +153,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             response.setStatus(409);
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
-        return new ResponseEntity<>(courseService.update(beanMapper.updateCourse(request,
-                courseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
+        return new ResponseEntity<>(iCourseService.update(beanMapper.updateCourse(request,
+                iCourseService.getCourse(id)), request.getMainSkills().stream().map(SkillDto::getId)
                 .collect(Collectors.toList())), HttpStatus.OK);
     }
 
@@ -166,11 +162,11 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @DeleteMapping(value = "deleteCourse/{id}")
     //@PreAuthorize("hasAuthority('Course_D')")
     public ResponseEntity<CourseDeleteResponse> delete(@PathVariable Long id) {
-        boolean check = courseService.checkForDelete(id);
+        boolean check = iCourseService.checkForDelete(id);
         CourseDeleteResponse response = new CourseDeleteResponse();
         if (check) {
             try {
-                courseService.delete(id);
+                iCourseService.delete(id);
                 response.setMessage("عمليات حذف با موفقيت انجام شد");
                 response.setStatus(200);
             }
@@ -192,7 +188,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @DeleteMapping(value = "/list")
     //@PreAuthorize("hasAuthority('Course_D')")
     public ResponseEntity<Void> delete(@Validated @RequestBody CourseDTO.Delete request) {
-        courseService.delete(request);
+        iCourseService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -258,7 +254,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
         request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
 
-        SearchDTO.SearchRs<CourseDTO.Info> response = courseService.search(request);
+        SearchDTO.SearchRs<CourseDTO.Info> response = iCourseService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
@@ -277,7 +273,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @PostMapping(value = "/search")
     //@PreAuthorize("hasAuthority('Course_R')")
     public ResponseEntity<SearchDTO.SearchRs<CourseDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(courseService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(iCourseService.search(request), HttpStatus.OK);
     }*/
 
     @Loggable
@@ -286,7 +282,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //TODO:Unknown
     public ResponseEntity<GoalDTO.GoalSpecRs> getGoal(@PathVariable Long courseId) {
 
-        List<GoalDTO.Info> goal = courseService.getGoal(courseId);
+        List<GoalDTO.Info> goal = iCourseService.getGoal(courseId);
 
         final GoalDTO.SpecRs specResponse = new GoalDTO.SpecRs();
         specResponse.setData(goal)
@@ -302,7 +298,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @GetMapping(value = "/skill/{courseId}")
     //@PreAuthorize("hasAuthority('Course_Skill')")
     public ResponseEntity<SkillDTO.SkillSpecRs> getSkill(@PathVariable Long courseId) {
-        List<SkillDTO.Info> skill = courseService.getSkill(courseId);
+        List<SkillDTO.Info> skill = iCourseService.getSkill(courseId);
         final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
         specResponse.setData(skill)
                 .setStartRow(0)
@@ -318,8 +314,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
     public ResponseEntity<List<Map<String, String>>> getGoalsAndMainObjectives(@PathVariable Long courseId) {
-        List<GoalDTO.Info> goals = courseService.getGoal(courseId);
-        List<SkillDTO.Info> mainObjectives = courseService.getMainObjective(courseId);
+        List<GoalDTO.Info> goals = iCourseService.getGoal(courseId);
+        List<SkillDTO.Info> mainObjectives = iCourseService.getMainObjective(courseId);
         List<Map<String, String>> list = new ArrayList<>();
         for (GoalDTO.Info goal : goals) {
             Map<String, String> map = new HashMap<>();
@@ -342,7 +338,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @GetMapping(value = "/job/{courseId}")
     //@PreAuthorize("hasAuthority('Course_Job')")
     public ResponseEntity<ISC> getJob(@PathVariable Long courseId) {
-        List<JobDTO.Info> job = courseService.getJob(courseId);
+        List<JobDTO.Info> job = iCourseService.getJob(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(job)
                 .setStartRow(0)
@@ -356,7 +352,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @GetMapping(value = "/post/{courseId}")
     //@PreAuthorize("hasAuthority('Course_Post')")
     public ResponseEntity<ISC> getPost(@PathVariable Long courseId) {
-        List<PostDTO.Info> post = courseService.getPost(courseId);
+        List<PostDTO.Info> post = iCourseService.getPost(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(post)
                 .setStartRow(0)
@@ -371,7 +367,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     // @PreAuthorize("hasAuthority('d_course')")
     //TODO:Unknown
     public ResponseEntity<Void> getCourseIdvGoalsId(@PathVariable Long courseId, @PathVariable List<Long> goalIdList) {
-        courseService.getCourseIdvGoalsId(courseId, goalIdList);
+        iCourseService.getCourseIdvGoalsId(courseId, goalIdList);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -380,7 +376,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //@PreAuthorize("hasAuthority('d_course')")
     //TODO:Unknown
     public ResponseEntity<Void> removeCourseSGoal(@PathVariable Long courseId, @PathVariable List<Long> goalIdList) {
-        courseService.removeCourseSGoal(courseId, goalIdList);
+        iCourseService.removeCourseSGoal(courseId, goalIdList);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -389,7 +385,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
     public ResponseEntity<GoalDTO.GoalSpecRs> getGoalWithOut(@PathVariable Long courseId) {
-        List<GoalDTO.Info> goal = courseService.getGoalWithOut(courseId);
+        List<GoalDTO.Info> goal = iCourseService.getGoalWithOut(courseId);
         final GoalDTO.SpecRs specResponse = new GoalDTO.SpecRs();
         specResponse.setData(goal)
                 .setStartRow(0)
@@ -406,7 +402,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @GetMapping(value = "/getmaxcourse/{str}")
     //@PreAuthorize("hasAuthority('Course_C')")
     public ResponseEntity<String> getMaxCourseCode(@PathVariable String str) {
-        return new ResponseEntity<>(courseService.getMaxCourseCode(str), HttpStatus.OK);
+        return new ResponseEntity<>(iCourseService.getMaxCourseCode(str), HttpStatus.OK);
     }
 
     @Loggable
@@ -434,7 +430,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<CourseDTO.InfoPrint> searchRs = courseService.searchGeneric(searchRq, CourseDTO.InfoPrint.class);
+        final SearchDTO.SearchRs<CourseDTO.InfoPrint> searchRs = iCourseService.searchGeneric(searchRq, CourseDTO.InfoPrint.class);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
@@ -471,8 +467,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             return;
         }
         final Map<String, Object> params = new HashMap<>();
-        String domain = courseService.getDomain(courseId);
-        List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
+        String domain = iCourseService.getDomain(courseId);
+        List<CourseDTO.Info> preCourseList = iCourseService.preCourseList(courseId);
         StringBuilder preCourse = new StringBuilder();
         StringBuilder equalCourse = new StringBuilder();
         for (CourseDTO.Info courseDTO : preCourseList) {
@@ -480,12 +476,12 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         }
 
         preCourse = new StringBuilder(!preCourse.toString().equals("") ? preCourse.substring(2) : "");
-        List<EqualCourseDTO.Info> equalCourseList = courseService.equalCourseList(courseId);
+        List<EqualCourseDTO.Info> equalCourseList = iCourseService.equalCourseList(courseId);
         for (EqualCourseDTO.Info map : equalCourseList) {
             equalCourse.append("   یا   ").append(map.getNameEC());
         }
         equalCourse = new StringBuilder(!equalCourse.toString().equals("") ? equalCourse.substring(6) : "");
-        CourseDTO.Info info = courseService.get(courseId);
+        CourseDTO.Info info = iCourseService.get(courseId);
         ERunType eRun = new ModelMapper().map(info.getERunType(), ERunType.class);
         ETheoType eTheo = new ModelMapper().map(info.getETheoType(), ETheoType.class);
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
@@ -505,7 +501,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long courseId, @PathVariable Long teacherId) {
         List<TeacherDTO.TeacherFullNameTupleWithFinalGrade> infoList = new ArrayList<>();
         if (courseId != 0) {
-            infoList = courseService.getTeachers(courseId, teacherId);
+            infoList = iCourseService.getTeachers(courseId, teacherId);
         }
         final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
         final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
@@ -525,7 +521,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //TODO:Unknown
     public ResponseEntity<CourseDTO.Info> updateEvaluation(@PathVariable Long id, @RequestBody Object request) {
         CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
-        return new ResponseEntity<>(courseService.updateEvaluation(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(iCourseService.updateEvaluation(id, update), HttpStatus.OK);
     }
 
     @Loggable
@@ -569,7 +565,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
     public ResponseEntity<CourseDTO.SpecRs> getEvaluation(@PathVariable Long id) {
-        List<CourseDTO.Info> list = courseService.getEvaluation(id);
+        List<CourseDTO.Info> list = iCourseService.getEvaluation(id);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(list)
                 .setStartRow(0)
@@ -638,7 +634,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        SearchDTO.SearchRs<CourseDTO.TupleInfo> response = courseService.safeSearch(request);
+        SearchDTO.SearchRs<CourseDTO.TupleInfo> response = iCourseService.safeSearch(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
@@ -686,7 +682,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        SearchDTO.SearchRs<CourseDTO.InfoTuple> response = courseService.searchInfoTuple(request);
+        SearchDTO.SearchRs<CourseDTO.InfoTuple> response = iCourseService.searchInfoTuple(request);
         final CourseDTO.InfoTupleSpecRs specResponse = new CourseDTO.InfoTupleSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
@@ -709,7 +705,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         if (id != null) {
             searchRq.setCriteria(makeNewCriteria("id", id, EOperator.equals, null));
         }
-        SearchDTO.SearchRs<CourseDTO.CourseInfoTupleLite> searchRs = courseService.search(searchRq, i -> modelMapper.map(i, CourseDTO.CourseInfoTupleLite.class));
+        SearchDTO.SearchRs<CourseDTO.CourseInfoTupleLite> searchRs = iCourseService.search(searchRq, i -> modelMapper.map(i, CourseDTO.CourseInfoTupleLite.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 

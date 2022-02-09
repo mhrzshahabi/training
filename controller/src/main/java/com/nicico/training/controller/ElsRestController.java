@@ -103,14 +103,14 @@ public class ElsRestController {
     private final AttendanceBeanMapper attendanceMapper;
     private final IAttendanceService attendanceService;
     private final ClassSessionService classSessionService;
-    private final IClassSession iClassSessionService;
+    private final IClassSessionService iClassSessionService;
     private final IAttachmentService iAttachmentService;
     private final QuestionBankService questionBankService;
     private final QuestionBankBeanMapper questionBankBeanMapper;
     private final ParameterValueService parameterValueService;
     private final IStudentService iStudentService;
     private final QuestionBankTestQuestionService questionBankTestQuestionService;
-    private final ViewTrainingFileService viewTrainingFileService;
+    private final IViewTrainingFileService viewTrainingFileService;
     private final ParameterService parameterService;
     private final ITeacherRoleService iTeacherRoleService;
     private final IMobileVerifyService iMobileVerifyService;

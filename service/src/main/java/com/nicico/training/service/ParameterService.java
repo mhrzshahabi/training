@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ParameterDTO;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.iservice.IParameterService;
 import com.nicico.training.model.Parameter;
 import com.nicico.training.repository.ParameterDAO;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +21,7 @@ import java.util.*;
 
 @RequiredArgsConstructor
 @Service
-public class ParameterService extends BaseService<Parameter, Long, ParameterDTO.Info, ParameterDTO.Create, ParameterDTO.Update, ParameterDTO.Delete, ParameterDAO> {
+public class ParameterService extends BaseService<Parameter, Long, ParameterDTO.Info, ParameterDTO.Create, ParameterDTO.Update, ParameterDTO.Delete, ParameterDAO> implements IParameterService {
 
     @Autowired
     ParameterService(ParameterDAO parameterDAO) {

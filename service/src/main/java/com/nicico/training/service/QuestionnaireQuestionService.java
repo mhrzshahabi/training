@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionnaireQuestionDTO;
+import com.nicico.training.iservice.IQuestionnaireQuestionService;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.repository.QuestionnaireQuestionDAO;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuestion, Long, QuestionnaireQuestionDTO.Info, QuestionnaireQuestionDTO.Create, QuestionnaireQuestionDTO.Update, QuestionnaireQuestionDTO.Delete, QuestionnaireQuestionDAO> {
+public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuestion, Long, QuestionnaireQuestionDTO.Info, QuestionnaireQuestionDTO.Create, QuestionnaireQuestionDTO.Update, QuestionnaireQuestionDTO.Delete, QuestionnaireQuestionDAO> implements IQuestionnaireQuestionService {
 
     @Autowired
     private QuestionnaireQuestionDAO questionnaireQuestionDAO;
@@ -50,5 +51,10 @@ public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuest
 
     public List<QuestionnaireQuestion> getEvaluationQuestion(Long domainId) {
         return questionnaireQuestionDAO.findActiveQuestionnaries(domainId);
+    }
+
+    @Override
+    public QuestionnaireQuestion getById(Long QuestionnaireQuestionId) {
+        return questionnaireQuestionDAO.getById(QuestionnaireQuestionId);
     }
 }

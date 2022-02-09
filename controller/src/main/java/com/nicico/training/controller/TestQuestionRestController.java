@@ -8,11 +8,13 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TestQuestionDTO;
+import com.nicico.training.iservice.IQuestionBankTestQuestionService;
 import com.nicico.training.iservice.ITestQuestionService;
 import com.nicico.training.model.QuestionBank;
 import com.nicico.training.model.QuestionBankTestQuestion;
 import com.nicico.training.model.TestQuestion;
 import com.nicico.training.repository.QuestionBankTestQuestionDAO;
+import com.nicico.training.service.QuestionBankTestQuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +41,7 @@ public class TestQuestionRestController {
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final ITestQuestionService testQuestionService;
-    private final QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
+    private final IQuestionBankTestQuestionService iQuestionBankTestQuestionService;
     // ------------------------------
 
     @Loggable
@@ -162,7 +164,7 @@ public class TestQuestionRestController {
         try {
             testQuestionInfo = testQuestionService.create(request);
             TestQuestion testQuestion = modelMapper.map(testQuestionInfo, TestQuestion.class);
-            List<QuestionBankTestQuestion> questionTests = questionBankTestQuestionDAO.findByTestQuestionId(testId);
+            List<QuestionBankTestQuestion> questionTests = iQuestionBankTestQuestionService.findByTestQuestionId(testId);
             List<QuestionBank> questionBanks = questionTests.stream().map(QuestionBankTestQuestion::getQuestionBank).collect(Collectors.toList());
 
             questionBanks.stream().forEach(qb -> {
@@ -171,7 +173,7 @@ public class TestQuestionRestController {
                 questionBankTestQuestion.setQuestionBankId(qb.getId());
                 questionBankTestQuestion.setTestQuestion(testQuestion);
                 questionBankTestQuestion.setTestQuestionId(testQuestion.getId());
-                questionBankTestQuestionDAO.save(questionBankTestQuestion);
+                iQuestionBankTestQuestionService.save(questionBankTestQuestion);
             });
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;

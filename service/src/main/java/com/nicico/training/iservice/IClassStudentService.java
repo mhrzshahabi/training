@@ -10,6 +10,7 @@ import response.BaseResponse;
 import response.tclass.dto.ElsClassListDto;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 
 public interface IClassStudentService {
@@ -52,4 +53,11 @@ public interface IClassStudentService {
     BaseResponse updatePreTestScore(long id, List<ExamResult> examResult);
 
     BaseResponse updateTestScore(long id, List<ExamResult> examResult);
+
+    @Transactional
+    void setPeresenceTypeId(Long presenceTypeId, Long id);
+
+    List<Long> findEvaluationStudentInClass(Long studentId, Long classId);
+
+    Optional<ClassStudent> findById(Long classStudentId);
 }

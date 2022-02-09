@@ -11,6 +11,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CommitteeDTO;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.iservice.ICommitteeService;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.service.CommitteeService;
 import lombok.RequiredArgsConstructor;
@@ -36,11 +37,10 @@ import java.util.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/committee")
 public class CommitteeRestController {
-    private final CommitteeService committeeService;
+    private final ICommitteeService committeeService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
-    private final CategoryDAO categoryDAO;
     private final ModelMapper modelMapper;
 
     @Loggable

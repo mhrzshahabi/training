@@ -44,18 +44,10 @@ import java.util.*;
 @RequestMapping("/api/needsAssessment-reports")
 public class NeedsAssessmentReportsRestController {
 
-    private final NeedsAssessmentReportsService needsAssessmentReportsService;
     private final ReportUtil reportUtil;
     private final MessageSource messageSource;
     private final IExportToFileService iExportToFileService;
-    private final MinIoClient minIoClient;
-    @Value("${nicico.minioUrl}")
-    private String minioUrl;
-    @Value("${nicico.minioQuestionsGroup}")
-    private String groupId;
-    private final ObjectFactory<HttpMessageConverters> messageConverters;
-    private final MinIoClient client;
-    private final INeedsAssessmentReportsService assessmentReportsService;
+    private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     @GetMapping
     public ResponseEntity fullList(HttpServletRequest iscRq,
                                    @RequestParam Long objectId,
@@ -64,7 +56,7 @@ public class NeedsAssessmentReportsRestController {
                                    HttpServletResponse response) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         try {
-            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchRs = needsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId);
+            SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> searchRs = iNeedsAssessmentReportsService.search(searchRq, objectId, objectType, personnelId);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
         } catch (TrainingException e) {
             Locale locale = LocaleContextHolder.getLocale();
@@ -77,7 +69,7 @@ public class NeedsAssessmentReportsRestController {
     @PostMapping(value = "/getGroupJobPromotions")
     @Async("treadPoolAsync")
     public void groupJobPromotionReport(@RequestBody NeedAssessmentGroupJobPromotionRequestDto requestDto, @RequestHeader("Authorization") String token) throws IOException {
-        List<NeedAssessmentGroupJobPromotionResponse> needAssessmentResultGroup = needsAssessmentReportsService.createNeedAssessmentResultGroup(requestDto);
+        List<NeedAssessmentGroupJobPromotionResponse> needAssessmentResultGroup = iNeedsAssessmentReportsService.createNeedAssessmentResultGroup(requestDto);
         String userName = requestDto.getUserName();
 
         Map < Integer, Object[] > finalInfosToExcelMap = new TreeMap < Integer, Object[] >();
@@ -113,7 +105,7 @@ public class NeedsAssessmentReportsRestController {
         byte[] bytes = Files.readAllBytes(Paths.get(fileName));
         file.delete();
 
-        NeedAssessmentGroupResult needAssessmentGroupResult = assessmentReportsService.createNeedAssessmentGroupResult(bytes,userName);
+        NeedAssessmentGroupResult needAssessmentGroupResult = iNeedsAssessmentReportsService.createNeedAssessmentGroupResult(bytes,userName);
 
 
         /*MultipartFile multipartFile = new MockMultipartFile(fileName,
@@ -130,7 +122,7 @@ public class NeedsAssessmentReportsRestController {
 //        searchRq.setSortBy("createdBy");
 //        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
 //
-//        SearchDTO.SearchRs<NeedAssessmentGroupJobPromotionResponseDto> searchRs = assessmentReportsService.getGroupJobPromotionListByUser(searchRq, userName);
+//        SearchDTO.SearchRs<NeedAssessmentGroupJobPromotionResponseDto> searchRs = iNeedsAssessmentReportsService.getGroupJobPromotionListByUser(searchRq, userName);
 //
 //        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
 //    }
@@ -138,7 +130,7 @@ public class NeedsAssessmentReportsRestController {
     @GetMapping(value = "/getGroupJobPromotionsList")
     public ResponseEntity<NeedAssessmentGroupJobPromotionResponseDto.GroupJobPromotionSpecRs> groupJobPromotionsListList(final HttpServletRequest iscRq) throws IOException {
 
-        List<NeedAssessmentGroupJobPromotionResponseDto.Info> infos = assessmentReportsService.getGroupJobPromotionListByUser(SecurityUtil.getUsername());
+        List<NeedAssessmentGroupJobPromotionResponseDto.Info> infos = iNeedsAssessmentReportsService.getGroupJobPromotionListByUser(SecurityUtil.getUsername());
         NeedAssessmentGroupJobPromotionResponseDto.SpecRs specResponse = new NeedAssessmentGroupJobPromotionResponseDto.SpecRs();
         NeedAssessmentGroupJobPromotionResponseDto.GroupJobPromotionSpecRs specRs = new NeedAssessmentGroupJobPromotionResponseDto.GroupJobPromotionSpecRs();
 
@@ -155,7 +147,7 @@ public class NeedsAssessmentReportsRestController {
 
     @GetMapping(value = "/getGroupJobPromotionsResult/{ref}")
     public void getGroupJobPromotionReportExcel(final HttpServletResponse response, @PathVariable String ref) throws IOException {
-        byte[] blobFile = assessmentReportsService.getNeedAssessmentGroupResult(ref).getBlobFile();
+        byte[] blobFile = iNeedsAssessmentReportsService.getNeedAssessmentGroupResult(ref).getBlobFile();
 
         String headerValue;
         String fileName = URLEncoder.encode("excel.xlsx", "UTF-8").replace("+", "%20");
@@ -171,7 +163,7 @@ public class NeedsAssessmentReportsRestController {
     @GetMapping(value = "/courseNA")
     public ResponseEntity courseNA(HttpServletRequest iscRq, @RequestParam Long courseId, @RequestParam Boolean passedReport) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        return new ResponseEntity(ISC.convertToIscRs(needsAssessmentReportsService.getCourseNA(searchRq, courseId, passedReport), searchRq.getStartIndex()), HttpStatus.OK);
+        return new ResponseEntity(ISC.convertToIscRs(iNeedsAssessmentReportsService.getCourseNA(searchRq, courseId, passedReport), searchRq.getStartIndex()), HttpStatus.OK);
     }
 
     @Loggable
@@ -216,7 +208,7 @@ public class NeedsAssessmentReportsRestController {
     @Loggable
     @DeleteMapping(value = "/deleteGroupResult/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        needsAssessmentReportsService.delete(id);
+        iNeedsAssessmentReportsService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

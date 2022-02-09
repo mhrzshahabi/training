@@ -2,8 +2,8 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewPostGroupDTO;
+import com.nicico.training.iservice.IViewPostGroupService;
 import com.nicico.training.service.BaseService;
-import com.nicico.training.service.ViewPostGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.io.IOException;
 @RequestMapping(value = "/api/view-post-group")
 public class ViewPostGroupRestController {
 
-    private final ViewPostGroupService viewPostGroupService;
+    private final IViewPostGroupService viewPostGroupService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPostGroupDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {

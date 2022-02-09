@@ -8,6 +8,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionBankTestQuestionDTO;
 import com.nicico.training.iservice.IQuestionBankTestQuestionService;
+import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +29,7 @@ import java.util.List;
 public class QuestionBankTestQuestionRestController {
 
     private final IQuestionBankTestQuestionService questionBankTestQuestionService;
-    private final TclassDAO tclassDAO;
+    private final ITclassService iTclassService;
     private final ObjectMapper objectMapper;
 
     // ------------------------------
@@ -202,7 +204,10 @@ public class QuestionBankTestQuestionRestController {
         criteriaRq1 = new SearchDTO.CriteriaRq();
         criteriaRq1.setOperator(EOperator.equals);
         criteriaRq1.setFieldName("testQuestion.tclass.courseId");
-        criteriaRq1.setValue(tclassDAO.findById(classId).orElse(null).getCourseId());
+        Tclass tclass = iTclassService.getTClass(classId);
+        if (tclass != null) {
+            criteriaRq1.setValue(tclass.getCourseId());
+        } else criteriaRq1.setValue(null);
 
         criteriaRqs.add(criteriaRq1);
 

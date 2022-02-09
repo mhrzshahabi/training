@@ -4,6 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PreTestScoreReportDTO;
+import com.nicico.training.iservice.IPreTestScoreReportService;
 import com.nicico.training.service.PreTestScoreReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,7 +27,7 @@ public class PreTestScoreReportRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final ReportUtil reportUtil;
-    private final PreTestScoreReportService preTestScoreReportService;
+    private final IPreTestScoreReportService iPreTestScoreReportService;
 
 
 
@@ -38,7 +39,7 @@ public class PreTestScoreReportRestController {
         startDate = startDate.substring(0, 4) + "/" + startDate.substring(4, 6) + "/" + startDate.substring(6, 8);
         endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
 
-        list = preTestScoreReportService.print(startDate,endDate);
+        list = iPreTestScoreReportService.print(startDate,endDate);
 
         final PreTestScoreReportDTO.SpecRs specResponse = new PreTestScoreReportDTO.SpecRs();
         final PreTestScoreReportDTO.preTestScoreReportSpecRs specRs = new PreTestScoreReportDTO.preTestScoreReportSpecRs();
@@ -62,7 +63,7 @@ public class PreTestScoreReportRestController {
 
         startDate = startDate.substring(0, 4) + "/" + startDate.substring(4, 6) + "/" + startDate.substring(6, 8);
         endDate = endDate.substring(0, 4) + "/" + endDate.substring(4, 6) + "/" + endDate.substring(6, 8);
-        Object object= preTestScoreReportService.print(startDate,endDate);
+        Object object= iPreTestScoreReportService.print(startDate,endDate);
         String data = null;
         data = "{" + "\"PreTestScore\": " + objectMapper.writeValueAsString(object) + "}";
         final Map<String, Object> params = new HashMap<>();

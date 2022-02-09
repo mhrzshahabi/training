@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.training.dto.ViewLmsTrainingFileDTO;
 import com.nicico.training.dto.ViewTrainingFileDTO;
 import com.nicico.training.dto.ViewTrainingFileDTO.Info;
+import com.nicico.training.iservice.IViewTrainingFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class ViewTrainingFileService {
+public class ViewTrainingFileService implements IViewTrainingFileService {
 
     @Autowired
     private final EntityManager entityManager;

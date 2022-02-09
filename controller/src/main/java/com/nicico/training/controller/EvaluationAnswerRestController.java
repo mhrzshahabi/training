@@ -9,7 +9,6 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationAnswerService;
 import com.nicico.training.mapper.evaluationAnswer.EvaluationAnswerAuditMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -29,47 +28,47 @@ import java.util.*;
 public class EvaluationAnswerRestController {
 
     private final ObjectMapper objectMapper;
-    private final EvaluationAnswerService evaluationAnswerService;
+
     private final IEvaluationAnswerService iEvaluationAnswerService;
     private final EvaluationAnswerAuditMapper evaluationAnswerAuditMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<EvaluationAnswerDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(evaluationAnswerService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iEvaluationAnswerService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<EvaluationAnswerDTO.Info>> list() {
-        return new ResponseEntity<>(evaluationAnswerService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iEvaluationAnswerService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
     public ResponseEntity<EvaluationAnswerDTO.Info> create(@RequestBody Object req) {
         EvaluationAnswerDTO.Create create = (new ModelMapper()).map(req, EvaluationAnswerDTO.Create.class);
-        return new ResponseEntity<>(evaluationAnswerService.create(create), HttpStatus.CREATED);
+        return new ResponseEntity<>(iEvaluationAnswerService.create(create), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<EvaluationAnswerDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
         EvaluationAnswerDTO.Update update = (new ModelMapper()).map(request, EvaluationAnswerDTO.Update.class);
-        return new ResponseEntity<>(evaluationAnswerService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(iEvaluationAnswerService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-        evaluationAnswerService.delete(id);
+        iEvaluationAnswerService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity delete(@Validated @RequestBody EvaluationAnswerDTO.Delete request) {
-        evaluationAnswerService.delete(request);
+        iEvaluationAnswerService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -106,7 +105,7 @@ public class EvaluationAnswerRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        SearchDTO.SearchRs<EvaluationAnswerDTO.Info> response = evaluationAnswerService.search(request);
+        SearchDTO.SearchRs<EvaluationAnswerDTO.Info> response = iEvaluationAnswerService.search(request);
         final EvaluationAnswerDTO.SpecRs specResponse = new EvaluationAnswerDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
@@ -123,7 +122,7 @@ public class EvaluationAnswerRestController {
     @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<EvaluationAnswerDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(evaluationAnswerService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(iEvaluationAnswerService.search(request), HttpStatus.OK);
     }
 
     @Loggable

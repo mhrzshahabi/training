@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,13 +23,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/teacherInformation")
 public class TeacherInformationRestController {
-    private final TeacherService teacherService;
+    private final ITeacherService iTeacherService;
 
 
     @Loggable
     @GetMapping(value = "/teacher-information-iscList/{courseId}")
     public ResponseEntity getTeachers(@PathVariable("courseId") Long courseId) {
-        List<TeacherInCourseDto> teachers = teacherService.getTeachersInCourse(courseId);
+        List<TeacherInCourseDto> teachers = iTeacherService.getTeachersInCourse(courseId);
         final TeacherInCourseListResponse teacherInCourseListResponse = new TeacherInCourseListResponse();
         teacherInCourseListResponse
                 .setData(teachers)

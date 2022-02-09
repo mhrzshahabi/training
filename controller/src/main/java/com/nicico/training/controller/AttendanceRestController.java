@@ -6,12 +6,13 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.iservice.IAttendanceService;
+import com.nicico.training.iservice.IClassSessionService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.model.Attendance;
 import com.nicico.training.model.Student;
@@ -43,13 +44,10 @@ import java.util.*;
 public class AttendanceRestController {
 
     private final IAttendanceService attendanceService;
-    private final ClassSessionService classSessionService;
-    private final TclassService tclassService;
-    //    private final ClassStudent classStudent;
+    private final IClassSessionService iClassSessionService;
+    private final ITclassService iTclassService ;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
-    private final ClassAlarmService classAlarmService;
     private final AttendanceBeanMapper mapper;
 
     @Loggable
@@ -104,8 +102,6 @@ public class AttendanceRestController {
     @PostMapping(value = "/save-attendance")
     public ResponseEntity<AttendanceListSaveResponse> createAndSave(@RequestBody AttendanceListSaveRequest request) {
       //  attendanceService.convertToModelAndSave(req, classId, date);
- /*       classAlarmService.alarmAttendanceUnjustifiedAbsence(classId);
-        classAlarmService.saveAlarms();*/
         List<Attendance> attendances =mapper.ToAttendanceList(request);
      boolean status=  attendanceService.saveOrUpdateList(attendances);
      if (status)
@@ -139,7 +135,7 @@ public class AttendanceRestController {
         if (classId == null || classId == 0) {
             return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
         }
-        List<ClassSessionDTO.ClassSessionsDateForOneClass> list = classSessionService.getDateForOneClass(classId);
+        List<ClassSessionDTO.ClassSessionsDateForOneClass> list = iClassSessionService.getDateForOneClass(classId);
         final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
         specResponse.setData(list)
                 .setStartRow(0)
@@ -155,7 +151,7 @@ public class AttendanceRestController {
     @GetMapping(value = "/attendance-completion")
     public Boolean getAttendanceCompletion(@RequestParam(value = "classId", required = false) Long classId) {
 
-        List<ClassSessionDTO.ClassSessionsDateForOneClass> list = classSessionService.getDateForOneClass(classId);
+        List<ClassSessionDTO.ClassSessionsDateForOneClass> list = iClassSessionService.getDateForOneClass(classId);
         return list.stream().anyMatch(q -> q.getHasWarning().equals("alarm"));
     }
 
@@ -166,7 +162,7 @@ public class AttendanceRestController {
         if (classId == null || classId == 0) {
             return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
         }
-        List<ClassStudentDTO.AttendanceInfo> students = tclassService.getStudents(classId);
+        List<ClassStudentDTO.AttendanceInfo> students = iTclassService .getStudents(classId);
         final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
         specResponse.setData(students)
                 .setStartRow(0)
@@ -183,7 +179,7 @@ public class AttendanceRestController {
     @GetMapping(value = "/session-in-date")
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<List<ClassSessionDTO.Info>> getSessionsForDate(@RequestParam("classId") Long classId, @RequestParam("date") String date) {
-        List<ClassSessionDTO.Info> list = classSessionService.getSessionsForDate(classId, date);
+        List<ClassSessionDTO.Info> list = iClassSessionService.getSessionsForDate(classId, date);
 //        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
 //        specResponse.setData(list)
 //                .setStartRow(0)

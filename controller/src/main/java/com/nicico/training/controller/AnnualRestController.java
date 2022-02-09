@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.AnnualStatisticalReportDTO;
+import com.nicico.training.iservice.IAnnualStatisticalReport;
 import com.nicico.training.model.AnnualStatisticalReport;
 import com.nicico.training.repository.AnnualStatisticalReportDAO;
 import com.nicico.training.service.AnnualStatisticalService;
@@ -32,7 +33,7 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/api/annualStatisticsReport")
 public class AnnualRestController {
     private final ModelMapper modelMapper;
-    private final AnnualStatisticalService annualStatisticalService;
+    private final IAnnualStatisticalReport iAnnualStatisticalService;
     @Autowired
     EntityManager entityManager;
 
@@ -127,7 +128,7 @@ public class AnnualRestController {
         if (!jsonObject.isNull("complex_MSReport"))
             complex_MSReport = modelMapper.map(jsonObject.get("complex_MSReport"), String.class);
 
-        list= Collections.singletonList(annualStatisticalService.list(listTerm != null ? listTerm : null, listYear != null ? listYear : null, complex_MSReport,listInstituteid != null ? listInstituteid: null, Assistant, Affairs,Unit, null, listCategory != null ? listCategory : null, startDate1, endDate1, startDate2, endDate2));
+        list= Collections.singletonList(iAnnualStatisticalService.list(listTerm != null ? listTerm : null, listYear != null ? listYear : null, complex_MSReport,listInstituteid != null ? listInstituteid: null, Assistant, Affairs,Unit, null, listCategory != null ? listCategory : null, startDate1, endDate1, startDate2, endDate2));
 
         if (list != null) {
             DTOList = new ArrayList<>(list.size());
