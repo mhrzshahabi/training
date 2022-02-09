@@ -191,7 +191,10 @@ public abstract class QuestionBankBeanMapper {
             QuestionBankDTO.Create create = new QuestionBankDTO.Create();
             Tclass tClass = tClassService.getClassByCode(elsQuestionDto.getClassCode());
 
-            List<ElsAttachmentDto> files = elsQuestionDto.getFiles();
+
+            List<ElsAttachmentDto> files = new ArrayList<>();
+            if (elsQuestionDto.getFiles()!=null)
+            files=elsQuestionDto.getFiles();
             List<ElsAttachmentDto> option1Files = new ArrayList<>();
             List<ElsAttachmentDto> option2Files = new ArrayList<>();
             List<ElsAttachmentDto> option3Files = new ArrayList<>();
@@ -216,28 +219,35 @@ public abstract class QuestionBankBeanMapper {
             create.setQuestionDesigner(elsQuestionDto.getTeacherFullName());
             create.setProposedPointValue(elsQuestionDto.getProposedPointValue());
 
-            List<ElsQuestionOptionDto> optionList = elsQuestionDto.getOptionList();
+            List<ElsQuestionOptionDto> optionList = new ArrayList<>();
+            if (elsQuestionDto.getOptionList()!=null){
+                optionList=elsQuestionDto.getOptionList();
+            }
             if (optionList.size() != 0) {
 
                 Optional<ElsQuestionOptionDto> option1 = optionList.stream().filter(option -> option.getOptionNumber() == 1).findFirst();
                 if (option1.isPresent()) {
                     create.setOption1(option1.get().getTitle());
-                    option1Files.addAll(option1.get().getOptionFiles());
+                    if (option1.get().getOptionFiles()!=null)
+                        option1Files.addAll(option1.get().getOptionFiles());
                 }
                 Optional<ElsQuestionOptionDto> option2 = optionList.stream().filter(option -> option.getOptionNumber() == 2).findFirst();
                 if (option2.isPresent()) {
                     create.setOption2(option2.get().getTitle());
+                    if (option2.get().getOptionFiles()!=null)
                     option2Files.addAll(option2.get().getOptionFiles());
                 }
                 Optional<ElsQuestionOptionDto> option3 = optionList.stream().filter(option -> option.getOptionNumber() == 3).findFirst();
                 if (option3.isPresent()) {
                     create.setOption3(option3.get().getTitle());
-                    option3Files.addAll(option3.get().getOptionFiles());
+                    if (option3.get().getOptionFiles()!=null)
+                        option3Files.addAll(option3.get().getOptionFiles());
                 }
                 Optional<ElsQuestionOptionDto> option4 = optionList.stream().filter(option -> option.getOptionNumber() == 4).findFirst();
                 if (option4.isPresent()) {
                     create.setOption4(option4.get().getTitle());
-                    option4Files.addAll(option4.get().getOptionFiles());
+                    if (option4.get().getOptionFiles()!=null)
+                        option4Files.addAll(option4.get().getOptionFiles());
                 }
             }
 
