@@ -1,5 +1,9 @@
 package com.nicico.training.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
@@ -11,14 +15,19 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
 import java.util.*;
 
 @Service
@@ -33,6 +42,7 @@ public class QuestionBankService implements IQuestionBankService {
     private final ICategoryService categoryService;
     private final ISubcategoryService subcategoryService;
     private  final TeacherDAO teacherDAO;
+    private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -66,6 +76,11 @@ public class QuestionBankService implements IQuestionBankService {
     public SearchDTO.SearchRs<QuestionBankDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
 
         return BaseService.<QuestionBank, QuestionBankDTO.Info, QuestionBankDAO>optimizedSearch(questionBankDAO, p -> modelMapper.map(p, QuestionBankDTO.Info.class), request);
+    }
+
+    @Override
+    public SearchDTO.SearchRs<QuestionBankDTO.IdClass> searchId(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
+        return BaseService.<QuestionBank, QuestionBankDTO.IdClass, QuestionBankDAO>optimizedSearch(questionBankDAO, p -> modelMapper.map(p, QuestionBankDTO.IdClass.class), request);
     }
 
 
@@ -173,6 +188,5 @@ public class QuestionBankService implements IQuestionBankService {
 
         return questionBankList;
     }
-
 
 }

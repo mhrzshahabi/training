@@ -157,4 +157,10 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     public static class getLastId extends QuestionBankDTO {
     }
+    @Getter
+    @Setter
+    @Accessors
+    public static class IdClass {
+        private Long id;
+    }
 }

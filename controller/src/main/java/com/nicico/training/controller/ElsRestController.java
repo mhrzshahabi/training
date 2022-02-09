@@ -1,7 +1,12 @@
 package com.nicico.training.controller;
 
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.EOperator;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.client.minio.MinIoClient;
@@ -22,6 +27,7 @@ import com.nicico.training.service.*;
 import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -70,6 +76,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.controller.util.AppUtils.getPrefix;
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RestController
@@ -119,6 +126,8 @@ public class ElsRestController {
     private final IRequestService iRequestService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final ISelfDeclarationService iSelfDeclarationService;
+    private final ObjectMapper objectMapper;
+
 
     @Value("${nicico.elsSmsUrl}")
     private String elsSmsUrl;
@@ -1004,6 +1013,75 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
+    @PostMapping("/spec-list/teacher/{page}/{size}")
+    public ElsQuestionBankDto getQuestionBankFilter(HttpServletRequest header,
+            @PathVariable Integer page, @PathVariable Integer size,@RequestBody  ElsSearchDTO elsSearchDTO ) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
+
+       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+           try {
+               SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+               List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+               if (elsSearchDTO.getNationalCode() != null) {
+                   Long teacherId = teacherService.getTeacherIdByNationalCode(elsSearchDTO.getNationalCode());
+                   if (teacherId == null) {
+                       ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                       ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                       elsQuestionDto.setStatus(406);
+                       elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
+                       dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                       return dto;
+                   }
+                   list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
+               }
+               if (elsSearchDTO.getQuestion() != null) {
+                   list.add(makeNewCriteria("question", elsSearchDTO.getQuestion().toString(), EOperator.iContains, null));
+               }
+               if (elsSearchDTO.getCourseCode() != null) {
+                   list.add(makeNewCriteria("tclass.code", elsSearchDTO.getCourseCode().toString(), EOperator.equals, null));
+               }
+               SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+               request.setCriteria(criteriaRq);
+
+
+               request.setStartIndex(0)
+                       .setCount(size - 0);
+
+               SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = questionBankService.searchId(request);
+               List<QuestionBank> questionBankList = new ArrayList<>();
+               if (response.getList() != null) {
+                   response.getList().stream().forEach(idClass -> {
+                       questionBankList.add(questionBankService.getById(idClass.getId()));
+                   });
+               }
+
+               ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList, elsSearchDTO.getNationalCode());
+               PaginationDto paginationDto = new PaginationDto();
+               paginationDto.setCurrent(page);
+               paginationDto.setSize(size);
+               paginationDto.setTotal(page + 1);
+               paginationDto.setLast(page);
+               paginationDto.setTotalItems(questionBankList.stream().count());
+               questionBankDto.setPagination(paginationDto);
+               return questionBankDto;
+
+
+           } catch (Exception e) {
+               ElsQuestionBankDto dto = new ElsQuestionBankDto();
+               ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+               elsQuestionDto.setStatus(500);
+               dto.setQuestions(Collections.singletonList(elsQuestionDto));
+               return dto;
+           }
+
+
+       } else {
+        throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+
+
+
+
+    }
 
     /**
      * return list of questions via teachers Category & Subcategory
@@ -1012,12 +1090,14 @@ public class ElsRestController {
      */
     @GetMapping("questionBankByCategory/{nationalCode}/{page}/{size}")
     public ElsQuestionBankDto getQuestionBankViaCategoryAndSubCategory(HttpServletRequest header,@PathVariable String nationalCode, @PathVariable Integer page, @PathVariable Integer size ){
-       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            try {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
 
 
                 if (teacherId != null) {
+
+
                     Teacher teacher=teacherService.getTeacher(teacherId);
                     Page<QuestionBank> questionBankList = questionBankService.getQuestionsByCategoryAndSubCategory(teacher, page, size);
 
@@ -1050,6 +1130,86 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
+
+
+    @GetMapping("spec-list/categoryAndSubcategory/{page}/{size}")
+    public ElsQuestionBankDto getQuestionBankViaCategoryAndSubCategoryByFilter(HttpServletRequest header,@PathVariable ElsSearchDTO elsSearchDTO, @PathVariable Integer page, @PathVariable Integer size ){
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(elsSearchDTO.getNationalCode());
+                List<QuestionBank> questionBankFilter = new ArrayList<>();
+                ElsQuestionBankDto questionBankDto=new ElsQuestionBankDto();
+                if (teacherId != null) {
+                    Teacher teacher=teacherService.getTeacher(teacherId);
+                    List<QuestionBank> questionBankList = questionBankService.getQuestionsByCategoryAndSubCategory(teacher, page, size).stream().toList();
+                    if(questionBankList!=null) {
+                        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+                        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+
+                        if (elsSearchDTO.getQuestion() != null) {
+                            list.add(makeNewCriteria("question", elsSearchDTO.getQuestion().toString(), EOperator.iContains, null));
+                        }
+                        if (elsSearchDTO.getCourseCode() != null) {
+                            list.add(makeNewCriteria("tclass.code", elsSearchDTO.getCourseCode().toString(), EOperator.equals, null));
+                        }
+                        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+                        request.setCriteria(criteriaRq);
+
+
+                        request.setStartIndex(0)
+                                .setCount(size - 0);
+
+                        SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = questionBankService.searchId(request);
+
+                        if (response.getList() != null) {
+                            response.getList().stream().forEach(idClass -> {
+                                questionBankFilter.add(questionBankService.getById(idClass.getId()));
+                            });
+                        }
+                         if(questionBankFilter!=null && questionBankFilter.size()>0){
+                          questionBankList= questionBankList.stream().filter(questionBank -> {
+                                 if(questionBankFilter.contains(questionBank))
+                                     return true;
+                                  else
+                                     return false;
+
+
+                             }).collect(Collectors.toList());
+                         }
+
+                         questionBankDto = questionBankBeanMapper.toElsQuestionBank(questionBankList, elsSearchDTO.getNationalCode());
+                        PaginationDto paginationDto = new PaginationDto();
+                        paginationDto.setCurrent(page);
+                        paginationDto.setSize(size);
+                        paginationDto.setTotal(page+1);
+                        paginationDto.setLast(page);
+                        paginationDto.setTotalItems(questionBankList.stream().count());
+                        questionBankDto.setPagination(paginationDto);
+
+                    }
+                    return questionBankDto;
+                } else {
+                    ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                    ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                    elsQuestionDto.setStatus(406);
+                    elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
+                    dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                    return dto;
+                }
+
+            } catch (Exception e) {
+                ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                elsQuestionDto.setStatus(500);
+                dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                return dto;
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+
 
     @GetMapping("/questionBank/{page}/{size}")
     public ElsQuestionBankDto getQuestionBank(HttpServletRequest header, @PathVariable Integer page, @PathVariable Integer size) {
