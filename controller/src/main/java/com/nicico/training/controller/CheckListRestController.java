@@ -9,6 +9,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CheckListDTO;
 import com.nicico.training.dto.CheckListItemDTO;
+import com.nicico.training.iservice.ICheckListService;
 import com.nicico.training.service.CheckListService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,48 +28,46 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/checklist")
 public class CheckListRestController {
-    private final CheckListService checkListService;
+    private final ICheckListService iCheckListService;
     private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
-    private final ReportUtil reportUtil;
 
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<CheckListDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(checkListService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<CheckListDTO.Info>> list() {
-        return new ResponseEntity<>(checkListService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
     public ResponseEntity<CheckListDTO.Info> create(@RequestBody CheckListDTO.Create req) {
         CheckListDTO.Create create = (new ModelMapper()).map(req, CheckListDTO.Create.class);
-        return new ResponseEntity<>(checkListService.create(create), HttpStatus.CREATED);
+        return new ResponseEntity<>(iCheckListService.create(create), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<CheckListDTO.Info> update(@PathVariable Long id, @RequestBody CheckListDTO.Update request) {
         CheckListDTO.Update update = (new ModelMapper()).map(request, CheckListDTO.Update.class);
-        return new ResponseEntity<>(checkListService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListService.update(id, update), HttpStatus.OK);
     }
 
 //    @Loggable
 //    @DeleteMapping("/{id}")
 //    public ResponseEntity<Void> delete(@PathVariable Long id) {
-//        checkListService.delete(id);
+//        iCheckListService.delete(id);
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
 
     @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody CheckListDTO.Delete request) {
-        checkListService.delete(request);
+        iCheckListService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -99,7 +98,7 @@ public class CheckListRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<CheckListDTO.Info> response = checkListService.search(request);
+        SearchDTO.SearchRs<CheckListDTO.Info> response = iCheckListService.search(request);
 
         final CheckListDTO.SpecRs specResponse = new CheckListDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -128,7 +127,7 @@ public class CheckListRestController {
     @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<CheckListDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(checkListService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListService.search(request), HttpStatus.OK);
     }
 
     @Loggable
@@ -137,7 +136,7 @@ public class CheckListRestController {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<CheckListItemDTO.Info> list = checkListService.getCheckListItem(CheckListId);
+        List<CheckListItemDTO.Info> list = iCheckListService.getCheckListItem(CheckListId);
 
         final CheckListItemDTO.SpecRs specResponse = new CheckListItemDTO.SpecRs();
         specResponse.setData(list)
@@ -153,9 +152,9 @@ public class CheckListRestController {
     @Loggable
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Boolean> delete1(@PathVariable Long id) {
-        boolean check = checkListService.checkForDelete(id);
+        boolean check = iCheckListService.checkForDelete(id);
         if (check) {
-            checkListService.delete(id);
+            iCheckListService.delete(id);
         }
         return new ResponseEntity<>(check, HttpStatus.OK);
     }
@@ -164,14 +163,14 @@ public class CheckListRestController {
 //    @Loggable
 //    @GetMapping(value = "/getchecklist/{classId}")
 //      public ResponseEntity<List<CheckListDTO.Info>> getCheckList(@PathVariable Long classId) {
-//            return new ResponseEntity<>(checkListService.getCheckList(classId),HttpStatus.OK);
+//            return new ResponseEntity<>(iCheckListService.getCheckList(classId),HttpStatus.OK);
 //         }
 
     @Loggable
     @GetMapping(value = "/getchecklist/{classId}")
     public ResponseEntity<CheckListDTO.CheckListSpecRs> getCheckList(@PathVariable Long classId) {
 
-        List<CheckListDTO.Info> list = checkListService.getCheckList(classId);
+        List<CheckListDTO.Info> list = iCheckListService.getCheckList(classId);
 
         final CheckListDTO.SpecRs specResponse = new CheckListDTO.SpecRs();
         specResponse.setData(list)

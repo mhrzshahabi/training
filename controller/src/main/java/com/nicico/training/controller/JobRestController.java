@@ -14,10 +14,10 @@ import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
+import com.nicico.training.iservice.ICourseService;
+import com.nicico.training.iservice.IJobService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.service.BaseService;
-import com.nicico.training.service.CourseService;
-import com.nicico.training.service.JobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -39,10 +39,10 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class JobRestController {
 
     final ObjectMapper objectMapper;
-    final CourseService courseService;
+    final ICourseService courseService;
     final DateUtil dateUtil;
     final ReportUtil reportUtil;
-    private final JobService jobService;
+    private final IJobService jobService;
     private final IPersonnelService personnelService;
 
     @GetMapping("list")

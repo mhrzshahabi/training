@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompetenceWebserviceDTO;
 import com.nicico.training.dto.DepartmentDTO;
 import com.nicico.training.dto.TargetSocietyDTO;
+import com.nicico.training.iservice.ITargetSocietyService;
 import com.nicico.training.model.TargetSociety;
 import com.nicico.training.repository.TargetSocietyDAO;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class TargetSocietyService extends BaseService<TargetSociety, Long, TargetSocietyDTO.Info, TargetSocietyDTO.Create, TargetSocietyDTO.Update, TargetSocietyDTO.Delete, TargetSocietyDAO> {
+public class TargetSocietyService extends BaseService<TargetSociety, Long, TargetSocietyDTO.Info, TargetSocietyDTO.Create, TargetSocietyDTO.Update, TargetSocietyDTO.Delete, TargetSocietyDAO> implements ITargetSocietyService {
 
     @Autowired
     TargetSocietyService(TargetSocietyDAO targetSocietyDAO, ParameterValueService parameterValueService, DepartmentService departmentService) {

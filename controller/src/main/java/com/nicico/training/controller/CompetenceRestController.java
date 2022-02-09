@@ -11,9 +11,8 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.service.CompetenceService;
-import com.nicico.training.service.WorkGroupService;
+import com.nicico.training.iservice.ICompetenceService;
+import com.nicico.training.iservice.IWorkGroupService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -22,7 +21,6 @@ import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -35,11 +33,11 @@ import java.util.Locale;
 @RequestMapping("/api/competence")
 public class CompetenceRestController {
 
-    private final CompetenceService competenceService;
+    private final ICompetenceService competenceService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
 
     @Loggable
     @GetMapping("/list")

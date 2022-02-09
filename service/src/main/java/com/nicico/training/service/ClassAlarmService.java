@@ -3,7 +3,7 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ClassAlarmDTO;
-import com.nicico.training.iservice.IClassAlarm;
+import com.nicico.training.iservice.IClassAlarmService;
 import com.nicico.training.model.Alarm;
 import com.nicico.training.model.ViewClassConflict;
 import com.nicico.training.repository.AlarmDAO;
@@ -28,7 +28,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class ClassAlarmService implements IClassAlarm {
+public class ClassAlarmService implements IClassAlarmService {
 
     @Autowired
     protected EntityManager entityManager;

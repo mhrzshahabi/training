@@ -3,7 +3,7 @@ package com.nicico.training.mapper.ClassSession;
 
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.IClassSessionService;
 import com.nicico.training.model.Tclass;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
@@ -21,7 +21,7 @@ import java.util.*;
 public abstract class SessionBeanMapper {
 
     @Autowired
-    protected IClassSession iClassSession;
+    protected IClassSessionService IClassSessionService;
 
     public ElsSessionResponse toGetElsSessionResponse(Tclass tclass) {
 
@@ -51,7 +51,7 @@ public abstract class SessionBeanMapper {
             elsSessionDetailDto.setStartTime(session.getSessionStartHour());
             elsSessionDetailDto.setEndTime(session.getSessionEndHour());
             elsSessionDetailDto.setDateOfHolding(calendar.getTime().getTime());
-            elsSessionDetailDto.setAttendances(iClassSession.getSessionPresenceState(session));
+            elsSessionDetailDto.setAttendances(IClassSessionService.getSessionPresenceState(session));
             elsSessionDetailDto.setTeacherAttendancePermission(session.getTeacherAttendancePermission());
 
             elsSessionDetailDtos.add(elsSessionDetailDto);

@@ -14,6 +14,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.ISendMessageService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import com.nicico.training.service.*;
@@ -38,7 +39,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping("/api/sendMessage")
 public class SendMessageRestController {
 
-    private final SendMessageService sendMessageService;
+    private final ISendMessageService sendMessageService;
 
     @Loggable
     @PostMapping(value = "/sendSMS")

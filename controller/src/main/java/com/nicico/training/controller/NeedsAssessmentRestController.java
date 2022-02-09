@@ -12,6 +12,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.iservice.INeedsAssessmentService;
+import com.nicico.training.iservice.INeedsAssessmentTempService;
 import com.nicico.training.mapper.needsassessment.NeedsAssessmentBeanMapper;
 import com.nicico.training.service.NeedsAssessmentService;
 import com.nicico.training.service.NeedsAssessmentTempService;
@@ -35,8 +37,8 @@ import java.util.List;
 @RequestMapping("/api/needsAssessment")
 public class NeedsAssessmentRestController {
 
-    private final NeedsAssessmentService needsAssessmentService;
-    private final NeedsAssessmentTempService needsAssessmentTempService;
+    private final INeedsAssessmentService iNeedsAssessmentService;
+    private final INeedsAssessmentTempService iNeedsAssessmentTempService;
     private final MessageSource messageSource;
     private final ModelMapper modelMapper;
     private final NeedsAssessmentBeanMapper mapper;
@@ -46,32 +48,32 @@ public class NeedsAssessmentRestController {
     @Loggable
     @GetMapping("/list")
     public ResponseEntity<List<NeedsAssessmentDTO.Info>> list() {
-        return new ResponseEntity<>(needsAssessmentService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/iscList")
     public ResponseEntity<TotalResponse<NeedsAssessmentDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(needsAssessmentService.search(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentService.search(nicicoCriteria), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/editList/{objectType}/{objectId}")
     public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscList(@PathVariable String objectType, @PathVariable Long objectId) {
-        return new ResponseEntity<>(needsAssessmentService.fullSearch(objectId, objectType), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentService.fullSearch(objectId, objectType), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/verifiedNeedsAssessmentList/{objectType}/{objectId}")
     public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> verifiedNeedsAssessmentList(@PathVariable String objectType, @PathVariable Long objectId) {
-        return new ResponseEntity<>(needsAssessmentService.verifiedNeedsAssessmentList(objectId, objectType), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentService.verifiedNeedsAssessmentList(objectId, objectType), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/workflowList/{objectType}/{objectId}")
     public ResponseEntity<SearchDTO.SearchRs<NeedsAssessmentDTO.Info>> iscWorkflowList(@PathVariable String objectType, @PathVariable Long objectId) {
-        return new ResponseEntity<>(needsAssessmentService.workflowSearch(objectId, objectType), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentService.workflowSearch(objectId, objectType), HttpStatus.OK);
     }
 
     @Loggable
@@ -83,14 +85,14 @@ public class NeedsAssessmentRestController {
     @Loggable
     @PutMapping("/commit/{objectType}/{objectId}")
     public ResponseEntity commit(@PathVariable String objectType, @PathVariable Long objectId) {
-        needsAssessmentTempService.verify(objectType, objectId);
+        iNeedsAssessmentTempService.verify(objectType, objectId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping("/rollBack/{objectType}/{objectId}")
     public ResponseEntity rollBack(@PathVariable String objectType, @PathVariable Long objectId) {
-        if (needsAssessmentTempService.rollback(objectType, objectId))
+        if (iNeedsAssessmentTempService.rollback(objectType, objectId))
             return new ResponseEntity<>(HttpStatus.OK);
         return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
     }
@@ -102,7 +104,7 @@ public class NeedsAssessmentRestController {
                                           @RequestParam(value = "competenceId", required = false) Long competenceId,
                                           @PathVariable String typeCopyTo,
                                           @PathVariable Long idCopyTo) {
-        return new ResponseEntity<>(needsAssessmentTempService.copyNA(typeCopyOf, idCopyOf, competenceId, typeCopyTo, idCopyTo), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentTempService.copyNA(typeCopyOf, idCopyOf, competenceId, typeCopyTo, idCopyTo), HttpStatus.OK);
     }
 
     @Loggable
@@ -112,19 +114,19 @@ public class NeedsAssessmentRestController {
                                                                             @RequestParam(value = "competenceId", required = false) Long competenceId,
                                                                             @PathVariable String typeCopyTo,
                                                                             @PathVariable Long idCopyTo) {
-        return new ResponseEntity<>(needsAssessmentTempService.getValuesForCopyNA(typeCopyOf, idCopyOf, competenceId, typeCopyTo, idCopyTo), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentTempService.getValuesForCopyNA(typeCopyOf, idCopyOf, competenceId, typeCopyTo, idCopyTo), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
     public ResponseEntity create(@RequestBody Object rq) throws IOException {
         NeedsAssessmentDTO.Create create = modelMapper.map(rq, NeedsAssessmentDTO.Create.class);
-        TrainingException exception = needsAssessmentTempService.checkCategoryNotEquals(create);
+        TrainingException exception = iNeedsAssessmentTempService.checkCategoryNotEquals(create);
         if (exception != null)
             throw exception;
-        if (!needsAssessmentTempService.isEditable(create.getObjectType(), create.getObjectId()))
+        if (!iNeedsAssessmentTempService.isEditable(create.getObjectType(), create.getObjectId()))
             return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
-        return new ResponseEntity<>(needsAssessmentTempService.create(create), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentTempService.create(create), HttpStatus.OK);
     }
 
     @Loggable
@@ -132,14 +134,14 @@ public class NeedsAssessmentRestController {
     public ResponseEntity<Boolean> createOrUpdateList(@RequestBody Object rq) {
         List<NeedsAssessmentDTO.Create> createList = modelMapper.map(rq, new TypeToken<List<NeedsAssessmentDTO.Create>>() {
         }.getType());
-        Boolean hasAlreadySentToWorkFlow = needsAssessmentTempService.createOrUpdateList(createList);
+        Boolean hasAlreadySentToWorkFlow = iNeedsAssessmentTempService.createOrUpdateList(createList);
         return new ResponseEntity<>(hasAlreadySentToWorkFlow, HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping("/updateWorkFlowStatesToSent")
     public ResponseEntity updateWorkFlowStatesToSent(@RequestParam String objectType, @RequestParam Long objectId) {
-        needsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 0, "ارسال به گردش کار اصلی");
+        iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 0, "ارسال به گردش کار اصلی");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -148,7 +150,7 @@ public class NeedsAssessmentRestController {
     public ResponseEntity<NeedsAssessmentUpdateResponse> update(@PathVariable Long id, @RequestBody NeedsAssessmentUpdateRequest rq) {
         NeedsAssessmentUpdateResponse response = new NeedsAssessmentUpdateResponse();
 
-        if (!needsAssessmentTempService.isEditable(rq.getObjectType(), rq.getObjectId())) {
+        if (!iNeedsAssessmentTempService.isEditable(rq.getObjectType(), rq.getObjectId())) {
             response.setMessage(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()));
             response.setStatus(HttpStatus.CONFLICT.value());
             return new ResponseEntity<>(response, HttpStatus.CONFLICT);
@@ -163,10 +165,10 @@ public class NeedsAssessmentRestController {
     @Loggable
     @DeleteMapping("/{id}/{objectType}/{objectId}")
     public ResponseEntity delete(@PathVariable Long id, @PathVariable String objectType, @PathVariable Long objectId) {
-        if (!needsAssessmentTempService.isEditable(objectType, objectId))
+        if (!iNeedsAssessmentTempService.isEditable(objectType, objectId))
             return new ResponseEntity<>(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()), HttpStatus.CONFLICT);
         try {
-            return new ResponseEntity<>(needsAssessmentTempService.delete(id), HttpStatus.OK);
+            return new ResponseEntity<>(iNeedsAssessmentTempService.delete(id), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
@@ -176,21 +178,21 @@ public class NeedsAssessmentRestController {
     @PostMapping("/workflow")
     public ResponseEntity createInWorkflow(@RequestBody Object rq) {
         NeedsAssessmentDTO.Create create = modelMapper.map(rq, NeedsAssessmentDTO.Create.class);
-        return new ResponseEntity<>(needsAssessmentTempService.create(create), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentTempService.create(create), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping("/workflow/{id}")
     public ResponseEntity updateInWorkflow(@PathVariable Long id, @RequestBody Object rq) {
         NeedsAssessmentDTO.Update update = modelMapper.map(rq, NeedsAssessmentDTO.Update.class);
-        return new ResponseEntity<>(needsAssessmentTempService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentTempService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping("/workflow/{id}")
     public ResponseEntity deleteInWorkflow(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(needsAssessmentTempService.delete(id), HttpStatus.OK);
+            return new ResponseEntity<>(iNeedsAssessmentTempService.delete(id), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
@@ -200,7 +202,7 @@ public class NeedsAssessmentRestController {
     @GetMapping("/iscTree")
     public ResponseEntity<TotalResponse<NeedsAssessmentDTO.Tree>> iscTree(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        TotalResponse<NeedsAssessmentDTO.Tree> treeTotalResponse = needsAssessmentService.tree(nicicoCriteria);
+        TotalResponse<NeedsAssessmentDTO.Tree> treeTotalResponse = iNeedsAssessmentService.tree(nicicoCriteria);
         return new ResponseEntity<>(treeTotalResponse, HttpStatus.OK);
     }
 
@@ -208,7 +210,7 @@ public class NeedsAssessmentRestController {
     @GetMapping("/isReadOnly/{objectType}/{objectId}")
     public ResponseEntity<Boolean> isReadOnly(@PathVariable String objectType,
                                               @PathVariable Long objectId) {
-        if (needsAssessmentTempService.readOnlyStatus(objectType, objectId) > 1)
+        if (iNeedsAssessmentTempService.readOnlyStatus(objectType, objectId) > 1)
             return new ResponseEntity<>(true, HttpStatus.OK);
         return new ResponseEntity<>(false, HttpStatus.OK);
     }
@@ -217,7 +219,7 @@ public class NeedsAssessmentRestController {
     @GetMapping("/isCreatedByCurrentUser/{objectType}/{objectId}")
     public ResponseEntity<Boolean> isCreatedByCurrentUser(@PathVariable String objectType,
                                                           @PathVariable Long objectId) {
-        return new ResponseEntity<>(needsAssessmentTempService.isCreatedByCurrentUser(objectType, objectId), HttpStatus.OK);
+        return new ResponseEntity<>(iNeedsAssessmentTempService.isCreatedByCurrentUser(objectType, objectId), HttpStatus.OK);
     }
 
 
@@ -227,7 +229,7 @@ public class NeedsAssessmentRestController {
 
         List<NeedsAssessmentDTO.Create> createList = modelMapper.map(rq.getList(), new TypeToken<List<NeedsAssessmentDTO.Create>>() {
         }.getType());
-        Long savedId = needsAssessmentTempService.createOrUpdateListForNewSkill(createList,rq.getSkillId());
+        Long savedId = iNeedsAssessmentTempService.createOrUpdateListForNewSkill(createList,rq.getSkillId());
         return new ResponseEntity<>(savedId, HttpStatus.OK);
     }
 

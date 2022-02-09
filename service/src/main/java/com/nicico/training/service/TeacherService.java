@@ -298,6 +298,16 @@ public class TeacherService implements ITeacherService {
         return sendingList;
     }
 
+    @Override
+    public Optional<Teacher> findByTeacherCode(String teacherCode) {
+        return teacherDAO.findByTeacherCode(teacherCode);
+    }
+
+    @Override
+    public String getTeacherFullName(Long teacherId) {
+        return teacherDAO.getTeacherFullName(teacherId);
+    }
+
     //--------------------------Teacher Basic Evaluation ---------------------------------------------------------------
     @Override
     @Transactional(readOnly = true)

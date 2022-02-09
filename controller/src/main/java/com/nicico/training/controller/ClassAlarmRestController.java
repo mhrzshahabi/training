@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.ClassAlarmDTO;
+import com.nicico.training.iservice.IClassAlarmService;
 import com.nicico.training.service.ClassAlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,8 +25,7 @@ import java.util.List;
 @RequestMapping("/api/classAlarm")
 public class ClassAlarmRestController {
 
-    private final ClassAlarmService classAlarmService;
-    private final ModelMapper modelMapper;
+    private final IClassAlarmService iClassAlarmService;
 
     //*********************************
 
@@ -34,7 +34,7 @@ public class ClassAlarmRestController {
     public ResponseEntity<ClassAlarmDTO.ClassAlarmSpecRs> list(@PathVariable Long classId, HttpServletResponse response) throws IOException {
 
         List<ClassAlarmDTO> list = new ArrayList<>();
-        list = classAlarmService.list(classId, response);
+        list = iClassAlarmService.list(classId, response);
 
         final ClassAlarmDTO.SpecRs specResponse = new ClassAlarmDTO.SpecRs();
         final ClassAlarmDTO.ClassAlarmSpecRs specRs = new ClassAlarmDTO.ClassAlarmSpecRs();

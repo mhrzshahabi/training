@@ -2,8 +2,8 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewPostGradeDTO;
+import com.nicico.training.iservice.IViewPostGradeService;
 import com.nicico.training.service.BaseService;
-import com.nicico.training.service.ViewPostGradeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.io.IOException;
 @RequestMapping(value = "/api/view-post-grade")
 public class ViewPostGradeRestController {
 
-    private final ViewPostGradeService viewPostGradeService;
+    private final IViewPostGradeService viewPostGradeService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPostGradeDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {

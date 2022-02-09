@@ -5,11 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CheckListItemDTO;
-import com.nicico.training.service.CheckListItemService;
-import com.nicico.training.service.ClassAlarmService;
+import com.nicico.training.iservice.ICheckListItemService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -27,29 +24,26 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/checklistItem")
 public class CheckListItemRestController {
-    private final CheckListItemService checkListItemService;
+    private final ICheckListItemService iCheckListItemService;
     private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
-    private final ReportUtil reportUtil;
-    private final ClassAlarmService classAlarmService;
 
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<CheckListItemDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(checkListItemService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListItemService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<CheckListItemDTO.Info>> list() {
-        return new ResponseEntity<>(checkListItemService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListItemService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
     public ResponseEntity<CheckListItemDTO.Info> create(@RequestBody CheckListItemDTO.Create req) {
         CheckListItemDTO.Create create = (new ModelMapper()).map(req, CheckListItemDTO.Create.class);
-        ResponseEntity<CheckListItemDTO.Info> infoResponseEntity = new ResponseEntity<>(checkListItemService.create(create), HttpStatus.CREATED);
+        ResponseEntity<CheckListItemDTO.Info> infoResponseEntity = new ResponseEntity<>(iCheckListItemService.create(create), HttpStatus.CREATED);
 
         //*****check alarms*****
         ////because is to long , I disabled this part, if you want to use this part you must use for update and delete to
@@ -64,27 +58,27 @@ public class CheckListItemRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<CheckListItemDTO.Info> update(@PathVariable Long id, @RequestBody CheckListItemDTO.Update request) {
         CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
-        return new ResponseEntity<>(checkListItemService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListItemService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping(value = "/edit/{id}")
     public ResponseEntity<CheckListItemDTO.Info> updateDescription(@PathVariable Long id, @RequestBody CheckListItemDTO.Update request) throws IOException {
         CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
-        return new ResponseEntity(checkListItemService.updateDescription(id, update), HttpStatus.OK);
+        return new ResponseEntity(iCheckListItemService.updateDescription(id, update), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        checkListItemService.delete(id);
+        iCheckListItemService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody CheckListItemDTO.Delete request) {
-        checkListItemService.delete(request);
+        iCheckListItemService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -115,7 +109,7 @@ public class CheckListItemRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<CheckListItemDTO.Info> response = checkListItemService.search(request);
+        SearchDTO.SearchRs<CheckListItemDTO.Info> response = iCheckListItemService.search(request);
 
         final CheckListItemDTO.SpecRs specResponse = new CheckListItemDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -133,14 +127,14 @@ public class CheckListItemRestController {
     @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<CheckListItemDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(checkListItemService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListItemService.search(request), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "is_Delete/{id}")
     public ResponseEntity<CheckListItemDTO.Info> is_Delete(@PathVariable Long id, @RequestBody CheckListItemDTO.Update request) {
         CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
-        return new ResponseEntity<>(checkListItemService.is_Delete(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(iCheckListItemService.is_Delete(id, update), HttpStatus.OK);
     }
 
 

@@ -4,6 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewAttendanceReportDTO;
+import com.nicico.training.iservice.IAttendanceReportService;
 import com.nicico.training.service.AttendanceReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/attendanceReport")
 public class AttendanceReportController {
-    private final AttendanceReportService attendanceReportService;
+    private final IAttendanceReportService iAttendanceReportService;
 
     private final ModelMapper modelMapper;
 
@@ -123,7 +124,7 @@ public class AttendanceReportController {
 
         request.setCriteria(criteriaRq);
 
-        SearchDTO.SearchRs result=attendanceReportService.search(request, o -> modelMapper.map(o,ViewAttendanceReportDTO.Info.class));
+        SearchDTO.SearchRs result=iAttendanceReportService.search(request, o -> modelMapper.map(o,ViewAttendanceReportDTO.Info.class));
 
         final ViewAttendanceReportDTO.SpecRs specResponse = new ViewAttendanceReportDTO.SpecRs();
         final ViewAttendanceReportDTO.AttendanceReportDTOSpecRs specRs = new ViewAttendanceReportDTO.AttendanceReportDTOSpecRs();

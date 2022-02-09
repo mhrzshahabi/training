@@ -18,7 +18,8 @@ import java.util.*;
 public class AnonymousRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
-    private final IClassStudentService classStudentService;
+    private final ITrainingPostService iTrainingPostService;
+//    private final IClassStudentService classStudentService;
 
     @PostMapping("/changeContactInfo")
     public void changeContactInfo(@RequestBody List<Long> ids) {
@@ -35,12 +36,17 @@ public class AnonymousRestController {
        return personnelRegisteredService.getReapeatlyPhones();
     }
 
-
-    @PostMapping("/test-add-student")
-    public void testAddStudent(@RequestBody String classCode) {
-        classStudentService.testAddStudent(classCode);
+   @GetMapping("/changePost/{id}")
+    public boolean changePost(@PathVariable long id) {
+       return iTrainingPostService.updateToUnDeleted(id);
     }
 
+
+//    @PostMapping("/test-add-student")
+//    public void testAddStudent(@RequestBody String classCode) {
+//        classStudentService.testAddStudent(classCode);
+//    }
+//
 
 //    @Loggable
 //    @PutMapping(value = "/edit-parameter-value/{id}")

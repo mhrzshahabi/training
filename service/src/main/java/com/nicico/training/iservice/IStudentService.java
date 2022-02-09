@@ -4,7 +4,6 @@ package com.nicico.training.iservice;
 */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.model.Student;
@@ -49,4 +48,6 @@ public interface IStudentService {
     Page<Student> getAllActiveStudents(Integer page, Integer size);
 
     List<Student> getAllStudentsOfClassByClassCode(String classCode);
+
+    List<Long> findOneClassByNationalCodeInClass(String nationalCode, Long classId);
 }

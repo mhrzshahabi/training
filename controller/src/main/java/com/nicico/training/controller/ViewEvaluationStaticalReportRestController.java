@@ -2,8 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewEvaluationStaticalReportDTO;
-import com.nicico.training.repository.ViewEvaluationStaticalReportDAO;
-import com.nicico.training.service.ViewEvaluationStaticalReportService;
+import com.nicico.training.iservice.IViewEvaluationStaticalReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.activiti.engine.impl.util.json.JSONArray;
@@ -17,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -26,7 +24,7 @@ import java.util.List;
 @RequestMapping(value = "/api/view-evaluation-statical-report")
 public class ViewEvaluationStaticalReportRestController {
 
-    private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
+    private final IViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
     @Autowired
     protected EntityManager entityManager;
     private final ModelMapper modelMapper;

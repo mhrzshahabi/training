@@ -110,6 +110,11 @@ public class TclassService implements ITclassService {
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
 
 
+    @Override
+    public List<Tclass> getTeacherClasses(Long teacherId) {
+        return tclassDAO.getTeacherClasses(teacherId);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public TclassDTO.Info get(Long id) {
@@ -603,6 +608,22 @@ public class TclassService implements ITclassService {
         for (Tclass tclass : gAllById) {
             delete(tclass.getId());
         }
+    }
+
+    @Transactional
+    @Override
+    public void updateTrainingReactionStatus(Integer trainingReactionStatus, Long classId) {
+        tclassDAO.updateTrainingReactionStatus(trainingReactionStatus, classId);
+    }
+
+    @Override
+    public Integer getTeacherReactionStatus(Long classId) {
+        return tclassDAO.getTeacherReactionStatus(classId);
+    }
+
+    @Override
+    public Integer getTrainingReactionStatus(Long classId) {
+        return tclassDAO.getTrainingReactionStatus(classId);
     }
 
     @Transactional(readOnly = true)

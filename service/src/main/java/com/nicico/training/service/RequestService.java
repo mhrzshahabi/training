@@ -7,8 +7,10 @@ import com.nicico.training.iservice.IRequestService;
 import com.nicico.training.mapper.request.RequestMapper;
 import com.nicico.training.model.Attachment;
 import com.nicico.training.model.Request;
+import com.nicico.training.model.RequestAudit;
 import com.nicico.training.model.enums.RequestStatus;
 import com.nicico.training.repository.AttachmentDAO;
+import com.nicico.training.repository.RequestAuditDAO;
 import com.nicico.training.repository.RequestDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -29,6 +31,7 @@ public class RequestService implements IRequestService {
     private final RequestMapper requestMapper;
     private final AttachmentDAO attachmentDAO;
     private final ModelMapper modelMapper;
+    private final RequestAuditDAO requestAuditDAO;
 
     @Override
     public List<RequestResVM> findAll() {
@@ -103,6 +106,11 @@ public class RequestService implements IRequestService {
         request.setStatus(status);
         Request save = requestDAO.save(request);
         return requestMapper.mapEntityToRes(save);
+    }
+
+    @Override
+    public List<RequestAudit> getAuditData(Long requestId) {
+      return requestAuditDAO.getAuditData(requestId);
     }
 
     @Override

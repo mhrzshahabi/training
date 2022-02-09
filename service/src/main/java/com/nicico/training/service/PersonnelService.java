@@ -221,6 +221,16 @@ public class PersonnelService implements IPersonnelService {
         return list;
     }
 
+    @Override
+    public Optional<Personnel> findById(Long PersonnelId) {
+        return personnelDAO.findById(PersonnelId);
+    }
+
+    @Override
+    public String getPersonnelFullName(Long id) {
+        return personnelDAO.getPersonnelFullName(id);
+    }
+
     //Unused
     @Override
     @Transactional

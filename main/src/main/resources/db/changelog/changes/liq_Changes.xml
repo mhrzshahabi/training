@@ -3398,7 +3398,41 @@ WHERE
                                  validate="true"/>
     </changeSet>
 
+    <changeSet author="ZPakdaman" id="2799887766557-01">
+        <createTable tableName="TBL_REQUEST_AUD">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_REQUEST_AUDPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_REQUEST_AUDPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="e_enabled" type="number(19, 0)"/>
+            <column name="e_deleted" type="number(19, 0)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
 
+            <column name="response" type="VARCHAR2(255 CHAR)"/>
+            <column name="request_status" type="VARCHAR2(255 CHAR)"/>
+
+
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ZPakdaman" id="2799887766557-02">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_REQUEST_AUD"
+                                 constraintName="FK_TBL_REQUEST_AUD_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-03">
+        <addColumn tableName="tbl_request_aud">
+            <column name="name" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
     <changeSet author="namdari" id="1641876106000-1">
         <addColumn tableName="tbl_competence">
             <column name="process_instance_id" type="number(19, 0)"/>

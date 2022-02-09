@@ -9,8 +9,8 @@ import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.ViewPostDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
+import com.nicico.training.iservice.IViewPostService;
 import com.nicico.training.service.BaseService;
-import com.nicico.training.service.ViewPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.nicico.training.service.BaseService.makeNewCriteria;
-
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -33,7 +31,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class ViewPostRestController {
 
     private final ObjectMapper objectMapper;
-    private final ViewPostService viewPostService;
+    private final IViewPostService viewPostService;
     private final IOperationalRoleService iOperationalRoleService;
 
     @GetMapping(value = "/iscList")

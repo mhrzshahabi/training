@@ -10,6 +10,8 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.iservice.IClassSessionService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.service.ClassAlarmService;
@@ -44,21 +46,19 @@ import java.util.stream.Collectors;
 public class ClassSessionRestController {
 
 
-    private final ClassSessionService classSessionService;
-    private final ClassAlarmService classAlarmService;
+    private final IClassSessionService iClassSessionService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
-    private final TclassDAO tclassDAO;
-    private final TclassService tclassService;
+    private final ITclassService iTclassService;
 
     //*********************************
 
     @Loggable
     @PostMapping(value = "/generateSessions/{classId}")
     public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement, HttpServletResponse response) {
-        classSessionService.generateSessions(classId, autoSessionsRequirement, response);
+        iClassSessionService.generateSessions(classId, autoSessionsRequirement, response);
 //        classAlarmService.alarmSumSessionsTimes(classId);
 //        classAlarmService.alarmTeacherConflict(classId);
 //        classAlarmService.alarmTrainingPlaceConflict(classId);
@@ -70,7 +70,7 @@ public class ClassSessionRestController {
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<ClassSessionDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(classSessionService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iClassSessionService.get(id), HttpStatus.OK);
     }
 
     //*********************************
@@ -78,7 +78,7 @@ public class ClassSessionRestController {
     @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<ClassSessionDTO.Info>> list() {
-        return new ResponseEntity<>(classSessionService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iClassSessionService.list(), HttpStatus.OK);
     }
 
     //*********************************
@@ -87,7 +87,7 @@ public class ClassSessionRestController {
     @PostMapping
     public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.ManualSession req, HttpServletResponse response) {
         ClassSessionDTO.ManualSession create = modelMapper.map(req, ClassSessionDTO.ManualSession.class);
-        ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.create(create, response), HttpStatus.CREATED);
+        ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(iClassSessionService.create(create, response), HttpStatus.CREATED);
         //*****check alarms*****
 //        if (infoResponseEntity.getStatusCodeValue() == 201) {
 //            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
@@ -106,7 +106,7 @@ public class ClassSessionRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody ClassSessionDTO.Update request, HttpServletResponse response) {
         ClassSessionDTO.Update update = modelMapper.map(request, ClassSessionDTO.Update.class);
-        ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(classSessionService.update(id, update, response), HttpStatus.OK);
+        ResponseEntity<ClassSessionDTO.Info> infoResponseEntity = new ResponseEntity<>(iClassSessionService.update(id, update, response), HttpStatus.OK);
         //*****check alarms*****
 //        if (infoResponseEntity.getStatusCodeValue() == 200) {
 //            classAlarmService.alarmSumSessionsTimes(infoResponseEntity.getBody().getClassId());
@@ -123,8 +123,8 @@ public class ClassSessionRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id, HttpServletResponse response) {
-        Long classId = classSessionService.getClassIdBySessionId(id);
-        classSessionService.delete(id, response);
+        Long classId = iClassSessionService.getClassIdBySessionId(id);
+        iClassSessionService.delete(id, response);
         //*****check alarms*****
 //        classAlarmService.alarmSumSessionsTimes(classId);
 //        classAlarmService.alarmTeacherConflict(classId);
@@ -137,7 +137,7 @@ public class ClassSessionRestController {
     @Transactional
     @DeleteMapping(value = "/deleteSessions/cId{classId}/sIds{sessionIds}")
     public ResponseEntity<ClassSessionDTO.DeleteStatus> deleteSessions(@PathVariable Long classId,@PathVariable List<Long> sessionIds) {
-        ClassSessionDTO.DeleteStatus deleteStatus = classSessionService.deleteSessions(classId, sessionIds);
+        ClassSessionDTO.DeleteStatus deleteStatus = iClassSessionService.deleteSessions(classId, sessionIds);
         return new ResponseEntity<>(deleteStatus,HttpStatus.OK);
     }
 
@@ -152,7 +152,7 @@ public class ClassSessionRestController {
         ////// classAlarmService.alarmStudentConflict(classId);
         ////// classAlarmService.alarmTrainingPlaceConflict(classId);
         ////// classAlarmService.saveAlarms();
-        classSessionService.delete(request);
+        iClassSessionService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -184,7 +184,7 @@ public class ClassSessionRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<ClassSessionDTO.Info> response = classSessionService.search(request);
+        SearchDTO.SearchRs<ClassSessionDTO.Info> response = iClassSessionService.search(request);
 
         final ClassSessionDTO.SpecRs specResponse = new ClassSessionDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -216,12 +216,12 @@ public class ClassSessionRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        List<ClassSessionDTO.Info> infos = classSessionService.loadSessions(Long.parseLong(classId));
+        List<ClassSessionDTO.Info> infos = iClassSessionService.loadSessions(Long.parseLong(classId));
 
 
-//////        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
+//////        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = iClassSessionService.search(searchRq);
 
-        Tclass tclass = tclassDAO.findTclassByIdEquals(Long.parseLong(classId));
+        Tclass tclass = iTclassService.getTClass(Long.parseLong(classId));
         String sessionTitle = tclass.getCode() + "لیست جلسات کلاس '" + tclass.getTitleClass() + "' با کد ";
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
@@ -240,7 +240,7 @@ public class ClassSessionRestController {
     @GetMapping(value = "/load-sessions/{classId}")
     public ResponseEntity<ClassSessionDTO.ClassSessionsSpecRs> getClassSessions(@PathVariable Long classId) {
 
-        List<ClassSessionDTO.Info> list = classSessionService.loadSessions((classId));
+        List<ClassSessionDTO.Info> list = iClassSessionService.loadSessions((classId));
 
         final ClassSessionDTO.SpecRs specResponse = new ClassSessionDTO.SpecRs();
         specResponse.setData(list)
@@ -259,7 +259,7 @@ public class ClassSessionRestController {
     public ResponseEntity<ISC<ClassSessionDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.searchWithCriteria(searchRq, classId);
+        SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = iClassSessionService.searchWithCriteria(searchRq, classId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -270,15 +270,15 @@ public class ClassSessionRestController {
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<ClassSessionDTO.WeeklySchedule> searchRs = null;
-            searchRs = classSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
+            searchRs = iClassSessionService.searchWeeklyTrainingSchedule(searchRq, userNationalCode);
             return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
 //    @Transactional(readOnly = true)
     @GetMapping(value = "/sessions/{classId}")
     public ResponseEntity<List<ClassSessionDTO.AttendanceClearForm>> sessionsOfClass(@PathVariable Long classId) {
-        List<ClassSessionDTO.AttendanceClearForm> sessions = classSessionService.loadSessionsForClearAttendance(classId);
-//        Tclass tClass = tclassService.getTClass(classId);
+        List<ClassSessionDTO.AttendanceClearForm> sessions = iClassSessionService.loadSessionsForClearAttendance(classId);
+//        Tclass tClass = iTclassService.getTClass(classId);
 //        Set<ClassSession> sessions = tClass.getClassSessions();
 //        List<ClassSessionDTO.AttendanceClearForm> sessionClear = modelMapper.map(sessions, new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>() {
 //        }.getType());
@@ -290,6 +290,6 @@ public class ClassSessionRestController {
 
     @GetMapping(value = "/classHasAnySession/{classId}")
     public ResponseEntity<String> classHasAnySession(@PathVariable Long classId) {
-        return new ResponseEntity<>(classSessionService.loadSessions(classId).stream().collect(Collectors.toList()).size() > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString() , HttpStatus.OK);
+        return new ResponseEntity<>(iClassSessionService.loadSessions(classId).stream().collect(Collectors.toList()).size() > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString() , HttpStatus.OK);
     }
 }

@@ -2,8 +2,8 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewJobGroupDTO;
+import com.nicico.training.iservice.IViewJobGroupService;
 import com.nicico.training.service.BaseService;
-import com.nicico.training.service.ViewJobGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.io.IOException;
 @RequestMapping(value = "/api/view-job-group")
 public class ViewJobGroupRestController {
 
-    private final ViewJobGroupService viewJobGroupService;
+    private final IViewJobGroupService viewJobGroupService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewJobGroupDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
