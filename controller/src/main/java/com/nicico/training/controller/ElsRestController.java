@@ -875,7 +875,7 @@ public class ElsRestController {
                     elsSessionAttendanceResponse.setStatus(HttpStatus.OK.value());
                 } else {
                     elsSessionAttendanceResponse.setStatus(HttpStatus.NO_CONTENT.value());
-                    elsSessionAttendanceResponse.setMessage("لیست حضور غیاب خالی است");
+                    elsSessionAttendanceResponse.setMessage("attendance_is_empty.message");
                 }
                 return elsSessionAttendanceResponse;
 
