@@ -10,6 +10,5 @@ import java.util.List;
 @Setter
 public class ElsSearchDTO {
     private String nationalCode;
-    private Object question;
-    private Object courseCode;
+  private  List<ElsSearch> elsSearchList;
 }

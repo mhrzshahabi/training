@@ -149,6 +149,9 @@ public class QuestionBankService implements IQuestionBankService {
         return 1;
     }
 
+
+
+
     @Transactional
     public Page<QuestionBank> getQuestionBankByTeacherId(Long teacherId, Integer page, Integer size) {
 //        return questionBankDAO.findByTeacherId(teacherId);
@@ -179,6 +182,23 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         Page<QuestionBank> questionBankList=  questionBankDAO.findAllWithCategoryAndSubCategory(categories,subCategories,pageable);
+
+
+
+
+
+
+
+        return questionBankList;
+    }
+    @Override
+    public List<QuestionBank> getQuestionListByCategoryAndSubCategory(Teacher teacher) {
+
+        List<Long> categories=categoryService.findCategoryByTeacher(teacher.getId());
+        List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacher.getId());
+
+
+        List<QuestionBank> questionBankList=  questionBankDAO.findAllWithCategoryAndSubList(categories,subCategories);
 
 
 
