@@ -11,12 +11,12 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
 import com.nicico.training.model.TClassAudit;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.model.Institute;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.repository.InstituteDAO;
@@ -31,7 +31,6 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,23 +55,22 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping(value = "/api/tclass")
 public class TclassRestController {
 
-    private final TclassService tClassService;
+    private final ITclassService tClassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
-    private final ClassAlarmService classAlarmService;
-    private final StudentDAO studentDAO;
-    private final ParameterService parameterService;
+    private final IClassAlarmService classAlarmService;
+    private final IStudentService iStudentService;
+    private final IParameterService parameterService;
     private final IInstituteService instituteService;
-    private final TclassDAO tclassDAO;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
-    private final ClassSessionService classSessionService;
-    private final PersonnelDAO personnelDAO;
-    private final InstituteDAO instituteDAO;
+    private final IClassSessionService classSessionService;
+    private final IPersonnelService iPersonnelService;
+    private final IInstituteService iInstituteService;
     private final MessageSource messageSource;
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
-     private final TclassAuditMapper tclassAuditMapper;
+    private final TclassAuditMapper tclassAuditMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -267,20 +265,20 @@ public class TclassRestController {
             tclassDTO.setOrganizerName("");
 
             if (tclassDTO.getPlannerId() != null) {
-                Optional<Personnel> planner = personnelDAO.findById(tclassDTO.getPlannerId());
-                if (planner.isPresent()) {
-                    tclassDTO.setPlannerFullName(planner.get().getFirstName() + " " + planner.get().getLastName());
+                Personnel planner = iPersonnelService.getPersonnel(tclassDTO.getPlannerId());
+                if (planner != null) {
+                    tclassDTO.setPlannerFullName(planner.getFirstName() + " " + planner.getLastName());
                 }
 
-                Optional<Personnel> supervisor = personnelDAO.findById(tclassDTO.getSupervisorId());
-                if (supervisor.isPresent()) {
-                    tclassDTO.setSupervisorFullName(supervisor.get().getFirstName() + " " + supervisor.get().getLastName());
+                Personnel supervisor = iPersonnelService.getPersonnel(tclassDTO.getPlannerId());
+                if (supervisor != null) {
+                    tclassDTO.setSupervisorFullName(supervisor.getFirstName() + " " + supervisor.getLastName());
                 }
             }
             if (tclassDTO.getOrganizerId() != null) {
-                Optional<Institute> institute = instituteDAO.findById(tclassDTO.getOrganizerId());
-                if (institute.isPresent()) {
-                    tclassDTO.setOrganizerName(institute.get().getTitleFa());
+                Institute institute = iInstituteService.getInstitute(tclassDTO.getOrganizerId());
+                if (institute != null) {
+                    tclassDTO.setOrganizerName(institute.getTitleFa());
                 }
             }
 
@@ -502,12 +500,12 @@ public class TclassRestController {
     @Loggable
     @PostMapping(value = "/checkStudentInClass/{nationalCode}/{classId}")
     public ResponseEntity<Long> checkStudentInClass(@PathVariable String nationalCode, @PathVariable Long classId) {
+        List<Long> classIdList = iStudentService.findOneClassByNationalCodeInClass(nationalCode, classId);
 
-        if (((studentDAO.findOneByNationalCodeInClass(nationalCode, classId)) != null)) {
+        if (classIdList != null) {
             return null;
         }
-        List<Long> classList = (studentDAO.findOneByNationalCodeInClass(nationalCode, classId));
-        return new ResponseEntity<Long>((MultiValueMap<String, String>) classList, HttpStatus.OK);
+        return new ResponseEntity<Long>((MultiValueMap<String, String>) classIdList, HttpStatus.OK);
 
     }
 
@@ -679,16 +677,16 @@ public class TclassRestController {
     @GetMapping(value = "/setReactionStatus/{teacherReactionStatus}/{trainingReactionStatus}/{classId}")
     public void setReactionStatus(@PathVariable Integer teacherReactionStatus, @PathVariable Integer trainingReactionStatus, @PathVariable Long classId) {
         if (teacherReactionStatus == 10)
-            tclassDAO.updateTrainingReactionStatus(trainingReactionStatus, classId);
+            tClassService.updateTrainingReactionStatus(trainingReactionStatus, classId);
         if (trainingReactionStatus == 10)
-            tclassDAO.updateTeacherReactionStatus(teacherReactionStatus, classId);
+            tClassService.updateTrainingReactionStatus(trainingReactionStatus, classId);
     }
 
     @Loggable
     @Transactional
     @GetMapping(value = "/getTeacherReactionStatus/{classId}")
     public ResponseEntity<Integer> getTeacherReactionStatus(@PathVariable Long classId) {
-        Integer result = tclassDAO.getTeacherReactionStatus(classId);
+        Integer result = tClassService.getTeacherReactionStatus(classId);
         if (result != null)
             return new ResponseEntity<>(result, HttpStatus.OK);
         else
@@ -699,7 +697,7 @@ public class TclassRestController {
     @Transactional
     @GetMapping(value = "/getTrainingReactionStatus/{classId}")
     public ResponseEntity<Integer> getTrainingReactionStatus(@PathVariable Long classId) {
-        Integer result = tclassDAO.getTrainingReactionStatus(classId);
+        Integer result = tClassService.getTrainingReactionStatus(classId);
         if (result != null)
             return new ResponseEntity<>(result, HttpStatus.OK);
         else

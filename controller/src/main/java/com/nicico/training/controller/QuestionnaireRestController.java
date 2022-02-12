@@ -4,6 +4,8 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.QuestionnaireDTO;
+import com.nicico.training.iservice.IEvaluationService;
+import com.nicico.training.iservice.IQuestionnaireService;
 import com.nicico.training.model.Evaluation;
 import com.nicico.training.repository.EvaluationDAO;
 import com.nicico.training.service.EvaluationService;
@@ -24,27 +26,27 @@ import java.util.List;
 @RequestMapping("/api/questionnaire")
 public class QuestionnaireRestController {
 
-    private final QuestionnaireService questionnaireService;
+    private final IQuestionnaireService iQuestionnaireService;
     private final ModelMapper modelMapper;
-    private final EvaluationDAO evaluationDAO;
+    private final IEvaluationService iEvaluationService;
 
     @Loggable
     @GetMapping("/isLocked/{id}")
     public ResponseEntity<Boolean> isLocked(@PathVariable Long id) {
-        return new ResponseEntity<>(questionnaireService.isLocked(id), HttpStatus.OK);
+        return new ResponseEntity<>(iQuestionnaireService.isLocked(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/list")
     public ResponseEntity<List<QuestionnaireDTO.Info>> list() {
-        return new ResponseEntity<>(questionnaireService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iQuestionnaireService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/iscList")
     public ResponseEntity<TotalResponse<QuestionnaireDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(questionnaireService.search(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(iQuestionnaireService.search(nicicoCriteria), HttpStatus.OK);
     }
 
 
@@ -56,12 +58,12 @@ public class QuestionnaireRestController {
         Long questionnarieId = null;
         Long questionnarieType = null;
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        TotalResponse<QuestionnaireDTO.Info> result = questionnaireService.search(nicicoCriteria);
+        TotalResponse<QuestionnaireDTO.Info> result = iQuestionnaireService.search(nicicoCriteria);
         if(result != null && result.getResponse().getData() != null && result.getResponse().getData().size() != 0){
             questionnarieType = result.getResponse().getData().get(0).getQuestionnaireType().getId();
         }
         if(questionnarieType != null && questionnarieType.equals(139L)){
-            List<Evaluation> evaluationList =  evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 154L, 139L);
+            List<Evaluation> evaluationList =  iEvaluationService.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 154L, 139L);
             if(evaluationList != null && evaluationList.size() != 0){
                 questionnarieId = evaluationList.get(0).getQuestionnaireId();
             }
@@ -89,27 +91,27 @@ public class QuestionnaireRestController {
     @PostMapping
     public ResponseEntity<QuestionnaireDTO.Info> create(@RequestBody Object rq) {
         QuestionnaireDTO.Create create = modelMapper.map(rq, QuestionnaireDTO.Create.class);
-        return new ResponseEntity<>(questionnaireService.create(create), HttpStatus.OK);
+        return new ResponseEntity<>(iQuestionnaireService.create(create), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping("/{id}")
     public ResponseEntity<QuestionnaireDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
         QuestionnaireDTO.Update update = modelMapper.map(rq, QuestionnaireDTO.Update.class);
-        return new ResponseEntity<>(questionnaireService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(iQuestionnaireService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping("/enable/{id}")
     public ResponseEntity<QuestionnaireDTO.Info> updateStatus(@PathVariable Long id) {
-        return new ResponseEntity<>(questionnaireService.updateEnable(id), HttpStatus.OK);
+        return new ResponseEntity<>(iQuestionnaireService.updateEnable(id), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(questionnaireService.deleteWithChildren(id), HttpStatus.OK);
+            return new ResponseEntity<>(iQuestionnaireService.deleteWithChildren(id), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
@@ -119,7 +121,7 @@ public class QuestionnaireRestController {
     @GetMapping("/getLastQuestionnarieId")
     public ResponseEntity<Long> getLastQuestionnarieId(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        List<QuestionnaireDTO.Info> result = questionnaireService.search(nicicoCriteria).getResponse().getData();
+        List<QuestionnaireDTO.Info> result = iQuestionnaireService.search(nicicoCriteria).getResponse().getData();
         Long res = null;
         if(result.size() > 0)
             res = result.get(0).getId();

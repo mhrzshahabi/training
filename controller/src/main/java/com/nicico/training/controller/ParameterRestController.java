@@ -6,6 +6,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ParameterDTO;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.iservice.IParameterService;
 import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,26 +22,26 @@ import java.util.List;
 @RequestMapping("/api/parameter")
 public class ParameterRestController {
 
-    private final ParameterService parameterService;
+    private final IParameterService iParameterService;
     private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping("/iscList/{code}")
     public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getByCode(@PathVariable String code) {
-        return new ResponseEntity<>(parameterService.getByCode(code), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterService.getByCode(code), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/list")
     public ResponseEntity<List<ParameterDTO.Info>> list() {
-        return new ResponseEntity<>(parameterService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/iscList")
     public ResponseEntity<TotalResponse<ParameterDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(parameterService.search(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterService.search(nicicoCriteria), HttpStatus.OK);
     }
 
     @Loggable
@@ -48,7 +49,7 @@ public class ParameterRestController {
     public ResponseEntity create(@RequestBody Object rq) {
         ParameterDTO.Create create = modelMapper.map(rq, ParameterDTO.Create.class);
         try {
-            return new ResponseEntity<>(parameterService.create(create), HttpStatus.OK);
+            return new ResponseEntity<>(iParameterService.create(create), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
@@ -59,7 +60,7 @@ public class ParameterRestController {
     public ResponseEntity update(@PathVariable Long id, @RequestBody Object rq) {
         ParameterDTO.Update update = modelMapper.map(rq, ParameterDTO.Update.class);
         try {
-            return new ResponseEntity<>(parameterService.update(id, update), HttpStatus.OK);
+            return new ResponseEntity<>(iParameterService.update(id, update), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
@@ -69,7 +70,7 @@ public class ParameterRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(parameterService.delete(id), HttpStatus.OK);
+            return new ResponseEntity<>(iParameterService.delete(id), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
@@ -81,6 +82,6 @@ public class ParameterRestController {
     @Loggable
     @GetMapping("/config-list")
     public ResponseEntity<SearchDTO.SearchRs<ParameterDTO.Config>> configList() {
-        return new ResponseEntity<>(parameterService.allConfig(new SearchDTO.SearchRq()), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterService.allConfig(new SearchDTO.SearchRq()), HttpStatus.OK);
     }
 }

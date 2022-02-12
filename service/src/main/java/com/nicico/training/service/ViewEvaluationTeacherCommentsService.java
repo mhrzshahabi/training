@@ -5,6 +5,7 @@ package com.nicico.training.service;
 import com.nicico.training.dto.ViewEvaluationCommentsDTO;
 
 
+import com.nicico.training.iservice.IViewEvaluationTeacherCommentsService;
 import com.nicico.training.model.ViewEvaluationTeacherComments;
 
 import com.nicico.training.repository.ViewEvaluationTeacherCommentsDAO;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class ViewEvaluationTeacherCommentsService extends BaseService<ViewEvaluationTeacherComments, Long, ViewEvaluationCommentsDTO.Info, ViewEvaluationCommentsDTO.Info, ViewEvaluationCommentsDTO.Info, ViewEvaluationCommentsDTO.Info, ViewEvaluationTeacherCommentsDAO> {
+public class ViewEvaluationTeacherCommentsService extends BaseService<ViewEvaluationTeacherComments, Long, ViewEvaluationCommentsDTO.Info, ViewEvaluationCommentsDTO.Info, ViewEvaluationCommentsDTO.Info, ViewEvaluationCommentsDTO.Info, ViewEvaluationTeacherCommentsDAO> implements IViewEvaluationTeacherCommentsService {
 
     @Autowired
     ViewEvaluationTeacherCommentsService(ViewEvaluationTeacherCommentsDAO viewEvaluationTeacherCommentsDAO) {

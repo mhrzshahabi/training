@@ -17,6 +17,7 @@ import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.repository.ViewTeacherReportDAO;
 import com.nicico.training.service.TeacherService;
+import com.nicico.training.service.ViewTeacherReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -49,7 +50,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping(value = "/api/teacher")
 public class TeacherRestController {
 
-    private final TeacherService teacherService;
+    private final ITeacherService teacherService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
@@ -57,19 +58,17 @@ public class TeacherRestController {
     private final ISubcategoryService subCategoryService;
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
-    private final TeacherDAO teacherDAO;
+    private final ITeacherService iTeacherService;
     private final IAcademicBKService academicBKService;
     private final IEmploymentHistoryService employmentHistoryService;
     private final ITeachingHistoryService teachingHistoryService;
     private final ITeacherCertificationService teacherCertificationService;
     private final IPublicationService publicationService;
     private final IForeignLangKnowledgeService foreignLangService;
-    private final TclassDAO tclassDAO;
     private final ITclassService tclassService;
     @Autowired
     protected EntityManager entityManager;
-    private final ViewTeacherReportDAO viewTeacherReportDAO;
-    private final MessageSource messageSource;
+    private final IViewTeacherReportService iViewTeacherReportService;
     private final ITeacherRoleService iTeacherRoleService;
 
 
@@ -91,7 +90,7 @@ public class TeacherRestController {
     @PostMapping
     //@PreAuthorize("hasAuthority('Teacher_C')")
     public ResponseEntity create(@Validated @RequestBody LinkedHashMap request) {
-        final Optional<Teacher> tById = teacherDAO.findByTeacherCode(request.get("teacherCode").toString());
+        final Optional<Teacher> tById = iTeacherService.findByTeacherCode(request.get("teacherCode").toString());
         Teacher teacher = null;
         if(tById.isPresent())
          teacher = tById.get();
@@ -137,7 +136,7 @@ public class TeacherRestController {
     @PutMapping(value = "/{id}")
     //@PreAuthorize("hasAuthority('Teacher_U')")
     public ResponseEntity update(@PathVariable Long id,@Validated @RequestBody LinkedHashMap request) {
-        final Optional<Teacher> tById = teacherDAO.findByTeacherCode(request.get("teacherCode").toString());
+        final Optional<Teacher> tById = iTeacherService.findByTeacherCode(request.get("teacherCode").toString());
         Teacher teacher = null;
         if(tById.isPresent())
             teacher = tById.get();
@@ -195,7 +194,7 @@ public class TeacherRestController {
     @DeleteMapping(value = "/{id}")
     //@PreAuthorize("hasAuthority('Teacher_D')")
     public ResponseEntity delete(@PathVariable Long id) {
-        List<Tclass> tclassList = tclassDAO.getTeacherClasses(id);
+        List<Tclass> tclassList = tclassService.getTeacherClasses(id);
         if(tclassList != null && tclassList.size() != 0)
             return new ResponseEntity<>(tclassList.get(0).getTitleClass(), HttpStatus.NOT_ACCEPTABLE);
         else{
@@ -570,7 +569,7 @@ public class TeacherRestController {
     @GetMapping(value = "/teacherFullName/{id}")
     //@PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<String> teacherFullName(@PathVariable Long id){
-        String result =  teacherDAO.getTeacherFullName(id);
+        String result =  iTeacherService.getTeacherFullName(id);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -1117,7 +1116,7 @@ public class TeacherRestController {
     @GetMapping(value = "/getOneByNationalCode")
     public ResponseEntity getPersonnelInfo(HttpServletRequest iscRq, HttpServletResponse response) throws IOException {
         String restApiUrl = iscRq.getRequestURL().toString().replace(iscRq.getServletPath(), "");
-        ViewTeacherReport teacher = viewTeacherReportDAO.findFirstByNationalCode(SecurityUtil.getNationalCode());
+        ViewTeacherReport teacher = iViewTeacherReportService.findFirstByNationalCode(SecurityUtil.getNationalCode());
         if (teacher != null)
             return new ResponseEntity<>(modelMapper.map(teacher,ViewTeacherReportDTO.Info.class), HttpStatus.OK);
         else if(SecurityUtil.getNationalCode() == null)

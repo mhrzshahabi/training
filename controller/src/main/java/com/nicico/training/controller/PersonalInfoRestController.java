@@ -41,8 +41,8 @@ import java.util.Optional;
 @RequestMapping(value = "/api/personalInfo")
 public class PersonalInfoRestController {
 
-    private final IPersonalInfoService personalInfoService;
-    private final PersonalInfoDAO personalInfoDAO;
+    private final IPersonalInfoService iPersonalInfoService;
+    //    private final PersonalInfoDAO personalInfoDAO;
     private final ObjectMapper objectMapper;
 
     @Value("${nicico.dirs.upload-person-img}")
@@ -55,14 +55,14 @@ public class PersonalInfoRestController {
     @GetMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<PersonalInfoDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(personalInfoService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iPersonalInfoService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<PersonalInfoDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
-        return new ResponseEntity<>(personalInfoService.getOneByNationalCode(nationalCode), HttpStatus.OK);
+        return new ResponseEntity<>(iPersonalInfoService.getOneByNationalCode(nationalCode), HttpStatus.OK);
     }
 
 
@@ -70,7 +70,7 @@ public class PersonalInfoRestController {
     @GetMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<List<PersonalInfoDTO.Info>> list() {
-        return new ResponseEntity<>(personalInfoService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iPersonalInfoService.list(), HttpStatus.OK);
     }
 
     @Loggable
@@ -78,7 +78,7 @@ public class PersonalInfoRestController {
 //    @PreAuthorize("hasAuthority('c_personalInfo')")
     public ResponseEntity create(@Validated @RequestBody PersonalInfoDTO.Create request) {
         try {
-            return new ResponseEntity<>(personalInfoService.create(request), HttpStatus.CREATED);
+            return new ResponseEntity<>(iPersonalInfoService.create(request), HttpStatus.CREATED);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -89,7 +89,7 @@ public class PersonalInfoRestController {
 //    @PreAuthorize("hasAuthority('c_personalInfo')")
     public ResponseEntity safeCreate(@RequestBody PersonalInfoDTO.SafeCreate request) {
         try {
-            return new ResponseEntity<>(personalInfoService.safeCreate(request), HttpStatus.CREATED);
+            return new ResponseEntity<>(iPersonalInfoService.safeCreate(request), HttpStatus.CREATED);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -100,7 +100,7 @@ public class PersonalInfoRestController {
 //    @PreAuthorize("hasAuthority('u_personalInfo')")
     public ResponseEntity safeUpdate(@PathVariable Long id, @RequestBody PersonalInfoDTO.SafeUpdate request) {
         try {
-            return new ResponseEntity<>(personalInfoService.safeUpdate(id, request), HttpStatus.OK);
+            return new ResponseEntity<>(iPersonalInfoService.safeUpdate(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -111,7 +111,7 @@ public class PersonalInfoRestController {
 //    @PreAuthorize("hasAuthority('u_personalInfo')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody PersonalInfoDTO.Update request) {
         try {
-            return new ResponseEntity<>(personalInfoService.update(id, request), HttpStatus.OK);
+            return new ResponseEntity<>(iPersonalInfoService.update(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -122,7 +122,7 @@ public class PersonalInfoRestController {
 //    @PreAuthorize("hasAuthority('d_personalInfo')")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            personalInfoService.delete(id);
+            iPersonalInfoService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
@@ -134,7 +134,7 @@ public class PersonalInfoRestController {
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_personalInfo')")
     public ResponseEntity<Void> delete(@Validated @RequestBody PersonalInfoDTO.Delete request) {
-        personalInfoService.delete(request);
+        iPersonalInfoService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -183,7 +183,7 @@ public class PersonalInfoRestController {
         PersonalInfoDTO.SpecRs specResponse;
         PersonalInfoDTO.PersonalInfoSpecRs  specRs = null;
         try {
-            response = personalInfoService.search(request);
+            response = iPersonalInfoService.search(request);
             specResponse = new PersonalInfoDTO.SpecRs();
             specRs = new PersonalInfoDTO.PersonalInfoSpecRs ();
             specResponse.setData(response.getList())
@@ -202,15 +202,21 @@ public class PersonalInfoRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<SearchDTO.SearchRs<PersonalInfoDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(personalInfoService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(iPersonalInfoService.search(request), HttpStatus.OK);
     }
 
     //------------------------------------------- Attach Photo ---------------------------------------------------------
     @RequestMapping(value = {"/getAttach/{Id}"}, method = RequestMethod.GET)
     @Transactional
     public ResponseEntity<InputStreamResource> getAttach(ModelMap modelMap, @PathVariable Long Id) {
-        final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
-        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//        final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
+        final PersonalInfo personalInfo = iPersonalInfoService.getPersonalInfo(Id);
+        if (personalInfo == null){
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
+
+//        final Optional<PersonalInfo> cById = Pers.findById(Id);
+//        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         String fileName = personalInfo.getPhoto();
         File file = new File(personUploadDir + "/" + fileName);
         try {
@@ -225,8 +231,12 @@ public class PersonalInfoRestController {
     @RequestMapping(value = {"/checkAttach/{Id}"}, method = RequestMethod.GET)
     @Transactional
     public ResponseEntity<Boolean> checkAttach(@PathVariable Long Id) {
-        final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
-        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//        final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
+//        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        final PersonalInfo personalInfo = iPersonalInfoService.getPersonalInfo(Id);
+        if (personalInfo == null){
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+        }
         String fileName = personalInfo.getPhoto();
         try {
             if (fileName == null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))
@@ -319,8 +329,12 @@ public class PersonalInfoRestController {
         String fileName = "";
         try {
             if (!file.isEmpty()) {
-                final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
-                final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//                final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
+//                final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                final PersonalInfo personalInfo = iPersonalInfoService.getPersonalInfo(Id);
+                if (personalInfo == null){
+                    throw new TrainingException(TrainingException.ErrorType.NotFound);
+                }
                 if (personalInfo.getPhoto() != null && personalInfo.getPhoto() != "") {
                     File file1 = new File(personUploadDir + "/" + personalInfo.getPhoto());
                     boolean fileDeleted=file1.delete();

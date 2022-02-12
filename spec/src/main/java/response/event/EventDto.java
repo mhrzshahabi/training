@@ -11,4 +11,7 @@ public class EventDto {
     private String date;
     private String title;
     private String location;
+    private String sessionId;
+    private String classCode;
+    private String classId;
 }

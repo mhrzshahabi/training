@@ -8,7 +8,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.iservice.IClassSessionService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Service
 @RequiredArgsConstructor
-public class ClassSessionService implements IClassSession {
+public class ClassSessionService implements IClassSessionService {
 
     private final ClassSessionDAO classSessionDAO;
     private final AttendanceDAO attendanceDAO;
@@ -883,8 +883,11 @@ public class ClassSessionService implements IClassSession {
                 Date end = getEpochDate(arr[0].toString(), convertToTimeZone(arr[2].toString()));
                 event.setStartTime(start.getTime()*1000);
                 event.setEndTime(end.getTime()*1000);
-                event.setTitle(arr[3] == null ? null : arr[3].toString());
-                event.setLocation(arr[4] == null ? null : arr[4].toString());
+                event.setTitle(arr[4] == null ? null : arr[4].toString());
+                event.setLocation(arr[3] == null ? null : arr[3].toString());
+                event.setSessionId(arr[6] == null ? null : arr[6].toString());
+                event.setClassCode(arr[7] == null ? null : arr[7].toString());
+                event.setClassId(arr[8] == null ? null : arr[8].toString());
                 eventDtoList.add(event);
             }
         }

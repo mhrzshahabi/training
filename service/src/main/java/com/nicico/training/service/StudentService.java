@@ -97,6 +97,11 @@ public class StudentService implements IStudentService {
         return studentDAO.getAllStudentsOfClassByClassCode(classCode);
     }
 
+    @Override
+    public List<Long> findOneClassByNationalCodeInClass(String nationalCode, Long classId) {
+        return studentDAO.findOneByNationalCodeInClass(nationalCode, classId);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<StudentDTO.Info> list() {

@@ -31,6 +31,7 @@ public interface ITrainingPostService {
     TrainingPostDTO update(Long id,TrainingPostDTO.Update update, HttpServletResponse response) throws IOException;
 
     boolean delete (Long id);
+    boolean updateToUnDeleted (Long id);
 
     List<String> getAllArea();
 

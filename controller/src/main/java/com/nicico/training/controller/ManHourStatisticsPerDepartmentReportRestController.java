@@ -4,8 +4,8 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassCourseSumByFeaturesAndDepartmentReportDTO;
 import com.nicico.training.dto.TermDTO;
+import com.nicico.training.iservice.IClassCourseSumByFeaturesAndDepartmentReportService;
 import com.nicico.training.iservice.ITermService;
-import com.nicico.training.service.ClassCourseSumByFeaturesAndDepartmentReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -30,7 +30,7 @@ public class ManHourStatisticsPerDepartmentReportRestController {
 
     private final ITermService termService;
     private final ModelMapper modelMapper;
-    private final ClassCourseSumByFeaturesAndDepartmentReportService classCourseSumByFeaturesAndDepartmentReportService;
+    private final IClassCourseSumByFeaturesAndDepartmentReportService classCourseSumByFeaturesAndDepartmentReportService;
 
     @Loggable
     @GetMapping

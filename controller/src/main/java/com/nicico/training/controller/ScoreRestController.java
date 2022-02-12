@@ -7,6 +7,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.iservice.IClassStudentService;
+import com.nicico.training.iservice.IParameterService;
 import com.nicico.training.service.ClassStudentService;
 import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
@@ -31,9 +33,9 @@ public class ScoreRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
-    private final ClassStudentService classStudentService;
+    private final IClassStudentService classStudentService;
     private final ModelMapper modelMapper;
-    private final ParameterService parameterService;
+    private final IParameterService parameterService;
 
     @PostMapping(value = {"/printWithCriteria"})
     public void printWithCriteria(HttpServletResponse response,  @RequestParam(value = "_sortBy") String sortBy, @RequestParam(value = "classId") String classId, @RequestParam(value = "CriteriaStr") String criteriaStr, @RequestParam(value = "class") String classRecord) throws Exception {

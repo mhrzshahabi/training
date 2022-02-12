@@ -2,7 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewPersonnelTrainingStatusReportDTO;
-import com.nicico.training.service.ViewPersonnelTrainingStatusReportService;
+import com.nicico.training.iservice.IViewPersonnelTrainingStatusReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -19,7 +19,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/api/view-personnel-training-status-report")
 public class ViewPersonnelTrainingStatusReportRestController {
-    private final ViewPersonnelTrainingStatusReportService viewPersonnelTrainingStatusReportService;
+    private final IViewPersonnelTrainingStatusReportService viewPersonnelTrainingStatusReportService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewPersonnelTrainingStatusReportDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {

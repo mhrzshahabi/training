@@ -43,10 +43,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping("/api/class-outside-current-term")
 public class ClassOutsideCurrentTermRestController {
     private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
-    private final ReportUtil reportUtil;
-    private final ModelMapper modelMapper;
-    private final TclassService tclassService;
+    private final ITclassService iTclassService;
 
     @Loggable
     @GetMapping(value = "/spec-list")
@@ -84,7 +81,7 @@ public class ClassOutsideCurrentTermRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+        SearchDTO.SearchRs<TclassDTO.Info> response = iTclassService.search(request);
 
 //
 //        List<Long> longList=response.getList().stream().filter(x->Long.valueOf(String.valueOf(x.getCreatedDate()).substring(0,10).replaceAll("[\\s\\-]", ""))>Long.valueOf(str))

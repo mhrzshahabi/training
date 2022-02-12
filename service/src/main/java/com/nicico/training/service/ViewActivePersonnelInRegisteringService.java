@@ -1,6 +1,7 @@
 package com.nicico.training.service;
 
 import com.nicico.training.dto.ViewActivePersonnelInRegisteringDTO;
+import com.nicico.training.iservice.IViewActivePersonnelInRegisteringService;
 import com.nicico.training.model.ViewActivePersonnelInRegistering;
 import com.nicico.training.repository.ViewActivePersonnelInRegisteringDAO;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ public class ViewActivePersonnelInRegisteringService extends BaseService<
         ViewActivePersonnelInRegisteringDTO.Info,
         ViewActivePersonnelInRegisteringDTO.Info,
         ViewActivePersonnelInRegisteringDTO.Info,
-        ViewActivePersonnelInRegisteringDAO> {
+        ViewActivePersonnelInRegisteringDAO> implements IViewActivePersonnelInRegisteringService {
 
         @Autowired
         ViewActivePersonnelInRegisteringService(ViewActivePersonnelInRegisteringDAO ViewActivePersonnelInRegisteringDAO) {

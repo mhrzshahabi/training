@@ -3,11 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.training.dto.*;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
-import com.nicico.training.iservice.IClassSession;
-import com.nicico.training.iservice.INeedsAssessmentReportsService;
-import com.nicico.training.iservice.IStudentService;
-import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.ClassSession.ClassSessionMapper;
 import com.nicico.training.mapper.student.StudentMapper;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
@@ -37,7 +33,7 @@ import java.util.List;
 public class LMSController {
 
     private final ITclassService iTclassService;
-    private final IClassSession iClassSession;
+    private final IClassSessionService iClassSession;
     private final ITeacherService iTeacherService;
     private final TclassBeanMapper tclassBeanMapper;
     private final ClassSessionMapper classSessionMapper;
@@ -45,7 +41,7 @@ public class LMSController {
     private final TeacherBeanMapper teacherBeanMapper;
     private final IStudentService iStudentService;
     private final StudentMapper studentMapper;
-    private final ViewTrainingFileService viewTrainingFileService;
+    private final IViewTrainingFileService viewTrainingFileService;
 
 
     @GetMapping("/getCourseDetails/{classCode}")

@@ -6,5 +6,5 @@ import java.io.IOException;
 import java.util.List;
 
 public interface IMonthlyStatisticalReportService {
-    public List<MonthlyStatisticalReportDTO> monthlyStatisticalList(String reportParameter) throws IOException;
+    List<MonthlyStatisticalReportDTO> monthlyStatisticalList(String reportParameter) throws IOException;
 }

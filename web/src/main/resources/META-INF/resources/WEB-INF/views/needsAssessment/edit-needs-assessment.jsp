@@ -333,19 +333,7 @@
     let buttonSendToWorkFlow = isc.ToolStripButtonCreate.create({
         title: " ذخیره و ارسال به گردش کار",
         click: async function () {
-            if (hasChanged) {
-                let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
-                if(!isSaved)
-                    return ;
-                sendNeedsAssessmentToWorkflow(mustSent);
-            } else {
-                canSendToWorkFlowNA = false;
-                let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
-                if(!isSaved)
-                    return ;
-                sendNeedsAssessmentToWorkflow(mustSent);
-                // createDialog("info", "تغییری صورت نگرفته است")
-            }
+          saveAndSendToWorkFlow()
         }
     });
     let buttonChangeCancel = isc.ToolStripButtonRemove.create({
@@ -2587,7 +2575,21 @@
         }));
 
     }
-
+async function saveAndSendToWorkFlow() {
+    if (hasChanged) {
+        let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
+        if (!isSaved)
+            return;
+        sendNeedsAssessmentToWorkflow(mustSent);
+    } else {
+        canSendToWorkFlowNA = false;
+        let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
+        if (!isSaved)
+            return;
+        sendNeedsAssessmentToWorkflow(mustSent);
+        // createDialog("info", "تغییری صورت نگرفته است")
+    }
+}
     function updatePriority_AllSelectedRecords(records, priorityId) {
 
         wait.show();

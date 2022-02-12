@@ -9,11 +9,11 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.IJobGroupService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IPostService;
 import com.nicico.training.iservice.ITrainingPostService;
 import com.nicico.training.service.BaseService;
-import com.nicico.training.service.JobGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -42,10 +42,9 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping(value = "/api/job-group")
 public class JobGroupRestController {
     private final ReportUtil reportUtil;
-    private final JobGroupService jobGroupService;
+    private final IJobGroupService jobGroupService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
-    private final DateUtil dateUtil;
     private final IPostService postService;
     private final ITrainingPostService trainingPostService;
     private final IPersonnelService personnelService;

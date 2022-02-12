@@ -11,9 +11,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.TrainingPlace;
-import com.nicico.training.service.InstituteService;
-import com.nicico.training.service.TrainingPlaceService;
+import com.nicico.training.iservice.IInstituteService;
+import com.nicico.training.iservice.ITrainingPlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -43,12 +42,12 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping(value = "/api/institute")
 public class InstituteRestController {
 
-    private final InstituteService instituteService;
+    private final IInstituteService instituteService;
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
-    private final TrainingPlaceService trainingPlaceService;
+    private final ITrainingPlaceService trainingPlaceService;
 
 
     @Loggable

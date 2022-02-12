@@ -3,15 +3,11 @@ package com.nicico.training.iservice;
 @Author:Mehran Golrokhi
 */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.QuestionBankDTO;
-import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.model.QuestionBank;
 import com.nicico.training.model.Teacher;
 import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
-import response.question.dto.ElsQuestionBankDto;
 
 import java.util.List;
 
@@ -42,4 +38,5 @@ public interface IQuestionBankService {
 
 
 
+    Integer getMaxId();
 }

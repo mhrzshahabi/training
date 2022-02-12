@@ -1,15 +1,11 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.ViewUnfinishedClassesReportDTO;
-import com.nicico.training.service.ViewUnfinishedClassesReportService;
+import com.nicico.training.iservice.IViewUnfinishedClassesReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,11 +24,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("api/unfinishedClasses")
 public class ViewUnfinishedClassesReportController {
-    private final ViewUnfinishedClassesReportService viewUnfinishedClassesReportService;
+    private final IViewUnfinishedClassesReportService viewUnfinishedClassesReportService;
     private final ModelMapper modelMapper;
-    private final ObjectMapper objectMapper;
-    private final ReportUtil reportUtil;
-    private final DateUtil dateUtil;
 
     @Loggable
     @GetMapping
