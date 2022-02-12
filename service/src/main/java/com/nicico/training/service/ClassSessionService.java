@@ -887,6 +887,7 @@ public class ClassSessionService implements IClassSessionService {
                 event.setLocation(arr[3] == null ? null : arr[3].toString());
                 event.setSessionId(arr[6] == null ? null : arr[6].toString());
                 event.setClassCode(arr[7] == null ? null : arr[7].toString());
+                event.setClassId(arr[8] == null ? null : arr[8].toString());
                 eventDtoList.add(event);
             }
         }
