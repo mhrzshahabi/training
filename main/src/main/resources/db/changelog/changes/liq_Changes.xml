@@ -3490,4 +3490,24 @@ WHERE
         </addColumn>
     </changeSet>
 
+
+    <changeSet author="namdari" id="1644662089000-1">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="process_instance_id" type="number(19, 0)"/>
+        </addColumn>
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="return_detail" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+
+       <addColumn tableName="tbl_needs_assessment_temp">
+            <column name="process_instance_id" type="number(19, 0)"/>
+        </addColumn>
+        <addColumn tableName="tbl_needs_assessment_temp">
+            <column name="return_detail" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+
+
+    </changeSet>
+
+
 </databaseChangeLog>
