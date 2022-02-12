@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IPostGradeGroupService;
 import com.nicico.training.iservice.IPostService;
 import com.nicico.training.iservice.ITrainingPostService;
 import com.nicico.training.service.BaseService;
@@ -36,7 +37,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping("/api/postGradeGroup")
 public class PostGradeGroupRestController {
 
-    private final PostGradeGroupService postGradeGroupService;
+    private final IPostGradeGroupService iPostGradeGroupService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final IPostService postService;
@@ -46,7 +47,7 @@ public class PostGradeGroupRestController {
     @Loggable
     @GetMapping("/list")
     public ResponseEntity<List<PostGradeGroupDTO.Info>> list() {
-        return new ResponseEntity<>(postGradeGroupService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iPostGradeGroupService.list(), HttpStatus.OK);
     }
 
     @GetMapping(value = "/iscList")
@@ -54,13 +55,13 @@ public class PostGradeGroupRestController {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
-        SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchRs = postGradeGroupService.searchWithoutPermission(searchRq);
+        SearchDTO.SearchRs<PostGradeGroupDTO.Info> searchRs = iPostGradeGroupService.searchWithoutPermission(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @GetMapping(value = "/postIscList/{id}")
     public ResponseEntity<ISC<PostDTO.Info>> postList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
-        List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(id);
+        List<PostGradeDTO.Info> postGrades = iPostGradeGroupService.getPostGrades(id);
         if (postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
@@ -72,7 +73,7 @@ public class PostGradeGroupRestController {
 
     @GetMapping(value = "/training-post-isc-list/{id}")
     public ResponseEntity<ISC<TrainingPostDTO.Info>> trainingPostList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
-        List<Long> postGrades = postGradeGroupService.getPostGrades(id).stream().filter(job -> job.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList());
+        List<Long> postGrades = iPostGradeGroupService.getPostGrades(id).stream().filter(job -> job.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList());
         if (postGrades == null || postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
@@ -84,7 +85,7 @@ public class PostGradeGroupRestController {
 
     @GetMapping(value = "/personnelIscList/{id}")
     public ResponseEntity<ISC<PersonnelDTO.Info>> personnelList(HttpServletRequest iscRq, @PathVariable(value = "id") Long id) throws IOException {
-        List<PostGradeDTO.Info> postGrades = postGradeGroupService.getPostGrades(id);
+        List<PostGradeDTO.Info> postGrades = iPostGradeGroupService.getPostGrades(id);
         if (postGrades == null || postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
@@ -109,7 +110,7 @@ public class PostGradeGroupRestController {
     @Loggable
     @GetMapping("/{id}")
     public ResponseEntity<PostGradeGroupDTO.Info> get(@PathVariable long id) {
-        return new ResponseEntity<>(postGradeGroupService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iPostGradeGroupService.get(id), HttpStatus.OK);
     }
 
     @Loggable
@@ -117,7 +118,7 @@ public class PostGradeGroupRestController {
     public ResponseEntity create(@RequestBody Object req) {
         try {
             PostGradeGroupDTO.Create create = modelMapper.map(req, PostGradeGroupDTO.Create.class);
-            return new ResponseEntity<>(postGradeGroupService.create(create), HttpStatus.OK);
+            return new ResponseEntity<>(iPostGradeGroupService.create(create), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
         }
@@ -128,7 +129,7 @@ public class PostGradeGroupRestController {
     public ResponseEntity update(@PathVariable Long id, @RequestBody Object req) {
         PostGradeGroupDTO.Update update = modelMapper.map(req, PostGradeGroupDTO.Update.class);
         try {
-            return new ResponseEntity<>(postGradeGroupService.update(id, update), HttpStatus.OK);
+            return new ResponseEntity<>(iPostGradeGroupService.update(id, update), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
         }
@@ -138,7 +139,7 @@ public class PostGradeGroupRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            postGradeGroupService.delete(id);
+            iPostGradeGroupService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
@@ -183,7 +184,7 @@ public class PostGradeGroupRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
         BaseService.setCriteriaToNotSearchDeleted(request);
-        SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = postGradeGroupService.searchWithoutPermission(request);
+        SearchDTO.SearchRs<PostGradeGroupDTO.Info> response = iPostGradeGroupService.searchWithoutPermission(request);
         final PostGradeGroupDTO.SpecRs specResponse = new PostGradeGroupDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
@@ -200,7 +201,7 @@ public class PostGradeGroupRestController {
     @GetMapping(value = "/{postGradeGroupId}/getPostGrades")
 //    @PreAuthorize("hasAnyAuthority('r_post_group')")
     public ResponseEntity<ISC> getPostGrades(@PathVariable Long postGradeGroupId) {
-        List<PostGradeDTO.Info> list = postGradeGroupService.getPostGrades(postGradeGroupId);
+        List<PostGradeDTO.Info> list = iPostGradeGroupService.getPostGrades(postGradeGroupId);
         ISC.Response<PostGradeDTO.Info> response = new ISC.Response<>();
         response.setData(list)
                 .setStartRow(0)
@@ -215,7 +216,7 @@ public class PostGradeGroupRestController {
     @DeleteMapping(value = "/removePostGrades/{postGradeGroupId}/{postGradeIds}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity removePostGrades(@PathVariable Long postGradeGroupId, @PathVariable Set<Long> postGradeIds) {
-        postGradeGroupService.removePostGrades(postGradeGroupId, postGradeIds);
+        iPostGradeGroupService.removePostGrades(postGradeGroupId, postGradeIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -223,7 +224,7 @@ public class PostGradeGroupRestController {
     @PostMapping(value = "/addPostGrades/{postGradeGroupId}/{postGradeIds}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity addPostGrades(@PathVariable Long postGradeGroupId, @PathVariable Set<Long> postGradeIds) {
-        postGradeGroupService.addPostGrades(postGradeGroupId, postGradeIds);
+        iPostGradeGroupService.addPostGrades(postGradeGroupId, postGradeIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 }

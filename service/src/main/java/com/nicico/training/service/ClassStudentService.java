@@ -41,7 +41,6 @@ public class ClassStudentService implements IClassStudentService {
     private final ClassStudentHistoryService classStudentHistoryService;
     private final ITclassService tclassService;
     private final StudentService studentService;
-    //    private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper mapper;
     private final IEvaluationAnalysisService evaluationAnalysisService;
@@ -315,12 +314,10 @@ public class ClassStudentService implements IClassStudentService {
 
         for (ExamResult examResult1 : examResult) {
             Long classStudentId = getStudentId(id, examResult1.getNationalCode());
-            if (classStudentId!=null){
-                ClassStudent classStudent = getClassStudent(classStudentId);
-                if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
-                    classStudent.setPreTestScore(Float.valueOf(examResult1.getFinalResult()));
-                    saveOrUpdate(classStudent);
-                }
+            ClassStudent classStudent = getClassStudent(classStudentId);
+            if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
+                classStudent.setPreTestScore(Float.valueOf(examResult1.getFinalResult()));
+                saveOrUpdate(classStudent);
             }
         }
         response.setStatus(200);
@@ -334,13 +331,12 @@ public class ClassStudentService implements IClassStudentService {
 
         for (ExamResult examResult1 : examResult) {
             Long classStudentId = getStudentId(id, examResult1.getNationalCode());
-            if (classStudentId!=null){
             ClassStudent classStudent = getClassStudent(classStudentId);
             if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
                 classStudent.setScore(Float.valueOf(examResult1.getFinalResult()));
                 classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(classStudent.getTclass().getAcceptancelimit(), Float.valueOf(examResult1.getFinalResult()))).getId());
 
-                saveOrUpdate(classStudent); }
+                saveOrUpdate(classStudent);
             }
         }
         response.setStatus(200);
@@ -507,6 +503,15 @@ public class ClassStudentService implements IClassStudentService {
     @Transactional
     public void setPeresenceTypeId(Long peresenceTypeId, Long id) {
         classStudentDAO.setPeresenceTypeId(peresenceTypeId, id);
+    }
+
+    public List<Long> findEvaluationStudentInClass(Long studentId, Long classId) {
+        return classStudentDAO.findEvaluationStudentInClass(studentId, classId);
+    }
+
+    @Override
+    public Optional<ClassStudent> findById(Long classStudentId) {
+        return classStudentDAO.findById(classStudentId);
     }
 
 

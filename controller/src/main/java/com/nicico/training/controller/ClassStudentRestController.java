@@ -11,13 +11,12 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IContactInfoService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.student.ClassStudentBeanMapper;
 import com.nicico.training.mapper.tclass.TclassStudentMapper;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.ClassStudentHistory;
 import com.nicico.training.model.ContactInfo;
-import com.nicico.training.model.TClassAudit;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.CalendarTool;
@@ -61,18 +60,16 @@ import static com.nicico.training.utility.persianDate.PersianDate.convertFtomTim
 public class ClassStudentRestController {
 
     private final ObjectMapper objectMapper;
-    private final ClassStudentHistoryService classStudentHistoryService;
+    private final IClassStudentHistoryService iClassStudentHistoryService;
     private final TclassStudentMapper tclassStudentMapper;
     private final ReportUtil reportUtil;
-    private final ClassStudentService classStudentService;
-    private final ClassStudentDAO classStudentDAO;
+    private final IClassStudentService iClassStudentService;
     private final ModelMapper modelMapper;
-    private final ParameterService parameterService;
-    private final ClassAlarmService classAlarmService;
-    private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
-    private final ViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
-    private final ContinuousStatusReportViewService continuousStatusReportViewService;
-    private final ClassSessionService classSessionService;
+    private final IParameterService parameterService;
+    private final IViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
+    private final IViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
+    private final IContinuousStatusReportViewService continuousStatusReportViewService;
+    private final IClassSessionService iClassSessionService;
     private final ClassStudentBeanMapper mapper;
     private final ElsClient client;
     private final IContactInfoService contactInfoService;
@@ -87,7 +84,7 @@ public class ClassStudentRestController {
         if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
-        SearchDTO.SearchRs<T> searchRs = classStudentService.search(searchRq, converter);
+        SearchDTO.SearchRs<T> searchRs = iClassStudentService.search(searchRq, converter);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -101,7 +98,7 @@ public class ClassStudentRestController {
         if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
-        SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.search(searchRq, converter);
+        SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = iClassStudentService.search(searchRq, converter);
         int n = Integer.parseInt(parameterService.getByCode("FEL").getResponse().getData().get(3).getValue());
         searchRs.getList().forEach(x -> {
             if (x.getPreTestScore() != null && x.getPreTestScore() >= n) {
@@ -121,7 +118,7 @@ public class ClassStudentRestController {
         if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
-        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchRs = classStudentService.searchEvaluationAnalysistLearning(searchRq, classId);
+        SearchDTO.SearchRs<ClassStudentDTO.evaluationAnalysistLearning> searchRs = iClassStudentService.searchEvaluationAnalysistLearning(searchRq, classId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -148,14 +145,14 @@ public class ClassStudentRestController {
             sortBy.add("sessionStartHour");
 
             searchRq.setSortBy(sortBy);
-            SearchDTO.SearchRs<ClassSessionDTO.Info> result = classSessionService.searchWithCriteria(searchRq, classId);
+            SearchDTO.SearchRs<ClassSessionDTO.Info> result = iClassSessionService.searchWithCriteria(searchRq, classId);
 
             if (result.getList().size() > 0) {
                 String str = DateUtil.convertKhToMi1(result.getList().get(0).getSessionDate());
                 LocalDate date = LocalDate.parse(str);
 
                 if ((date.isBefore(LocalDate.now().plusDays(7)) || date.equals(LocalDate.now().plusDays(7))) && (date.isAfter(LocalDate.now()) || date.equals(LocalDate.now()))) {
-                    Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
+                    Map<String, Integer> mobiles = iClassStudentService.getStatusSendMessageStudents(classId);
 
                     tmplist.forEach(p -> {
                         if (p.getStudent().getContactInfo().getSmSMobileNumber() != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) > 0) {
@@ -213,7 +210,7 @@ public class ClassStudentRestController {
     public ResponseEntity registerStudents(@RequestBody List<ClassStudentDTO.Create> request, @PathVariable Long classId) {
         try {
             Map<String, String> result;
-            result = classStudentService.registerStudents(request, classId);
+            result = iClassStudentService.registerStudents(request, classId);
             //// cancel alarms
 //            classAlarmService.alarmClassCapacity(classId);
 //            classAlarmService.alarmStudentConflict(classId);
@@ -252,7 +249,7 @@ public class ClassStudentRestController {
     public ResponseEntity<UpdateStudentScoreResponse> update(@PathVariable Long id, @RequestBody UpdateStudentScoreRequest request) {
         UpdateStudentScoreResponse response = new UpdateStudentScoreResponse();
         try {
-            classStudentService.saveOrUpdate(mapper.updateScoreClassStudent(request, classStudentService.getClassStudent(id)));
+            iClassStudentService.saveOrUpdate(mapper.updateScoreClassStudent(request, iClassStudentService.getClassStudent(id)));
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("ویرایش موفقیت آمیز");
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -268,7 +265,7 @@ public class ClassStudentRestController {
     public ResponseEntity<UpdateStudentScoreResponse> update(@PathVariable Long id, @PathVariable Long presenceTypeId) {
         UpdateStudentScoreResponse response = new UpdateStudentScoreResponse();
         try {
-            classStudentService.setPeresenceTypeId(presenceTypeId, id);
+            iClassStudentService.setPeresenceTypeId(presenceTypeId, id);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("ویرایش موفقیت آمیز");
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -284,7 +281,7 @@ public class ClassStudentRestController {
     public ResponseEntity<UpdatePreTestScoreResponse> updateScorePreTest(@PathVariable Long id, @RequestBody UpdatePreTestScoreRequest request) {
         UpdatePreTestScoreResponse response = new UpdatePreTestScoreResponse();
         try {
-            classStudentService.saveOrUpdate(mapper.updatePreTestScoreClassStudent(request, classStudentService.getClassStudent(id)));
+            iClassStudentService.saveOrUpdate(mapper.updatePreTestScoreClassStudent(request, iClassStudentService.getClassStudent(id)));
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("ویرایش موفقیت آمیز");
             return new ResponseEntity<>(response, HttpStatus.OK);
@@ -300,7 +297,7 @@ public class ClassStudentRestController {
 //    @PutMapping(value = "/score-pre-test/{id}")
 //    public ResponseEntity updateScorePreTest(@PathVariable Long id, @RequestBody Object request) {
 //        try {
-//            return new ResponseEntity<>(classStudentService.update(id, request, ClassStudentDTO.PreTestScoreInfo.class), HttpStatus.OK);
+//            return new ResponseEntity<>(iClassStudentService.update(id, request, ClassStudentDTO.PreTestScoreInfo.class), HttpStatus.OK);
 //        } catch (TrainingException ex) {
 //            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
 //        }
@@ -312,7 +309,7 @@ public class ClassStudentRestController {
     //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity removeStudents(@RequestBody ClassStudentDTO.Delete request) {
         try {
-            classStudentService.delete(request);
+            iClassStudentService.delete(request);
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
@@ -329,7 +326,7 @@ public class ClassStudentRestController {
             boolean haveError = false;
             StringBuilder message = new StringBuilder();
             for (Long studentId : studentIds) {
-                String error = classStudentService.delete(studentId);
+                String error = iClassStudentService.delete(studentId);
 
                 if (!error.equals("")) {
                     haveError = true;
@@ -359,14 +356,14 @@ public class ClassStudentRestController {
 //    @Loggable
 //    @PutMapping(value = "/setStudentFormIssuance/{idClassStudent}/{reaction}")
 //    public Integer setStudentFormIssuance(@PathVariable Long idClassStudent, @PathVariable Integer reaction) {
-//        return classStudentService.setStudentFormIssuance(idClassStudent, reaction);
+//        return iClassStudentService.setStudentFormIssuance(idClassStudent, reaction);
 //    }
 
 
     @Loggable
     @PutMapping(value = "/setStudentFormIssuance")
     public Integer setStudentFormIssuance(@RequestBody Map<String, String> formIssuance) {
-        return classStudentService.setStudentFormIssuance(formIssuance);
+        return iClassStudentService.setStudentFormIssuance(formIssuance);
     }
 
 
@@ -374,11 +371,11 @@ public class ClassStudentRestController {
     @GetMapping(value = "/checkEvaluationStudentInClass/{studentId}/{classId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Long> checkEvaluationStudentInClass(@PathVariable Long studentId, @PathVariable Long classId) {
+        List<Long> evalList = iClassStudentService.findEvaluationStudentInClass(studentId, classId);
 
-        if (((classStudentDAO.findEvaluationStudentInClass(studentId, classId)) == null)) {
+        if (evalList == null || evalList.size() == 0) {
             return null;
         }
-        List<Long> evalList = (classStudentDAO.findEvaluationStudentInClass(studentId, classId));
         return new ResponseEntity<>(evalList.get(0), HttpStatus.OK);
 
     }
@@ -386,17 +383,17 @@ public class ClassStudentRestController {
     @Loggable
     @PutMapping(value = "/setTotalStudentWithOutScore/{classId}")
     public ResponseEntity setTotalStudentWithOutScore(@PathVariable Long classId) {
-        classStudentService.setTotalStudentWithOutScore(classId);
+        iClassStudentService.setTotalStudentWithOutScore(classId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/getScoreState/{classId}")
     public ResponseEntity<List<Long>> getScoreState(@PathVariable Long classId) {
-        if (classStudentService.getScoreState(classId).size() == 0)
-            return new ResponseEntity<>(classStudentService.getScoreState(classId), HttpStatus.OK);
+        if (iClassStudentService.getScoreState(classId).size() == 0)
+            return new ResponseEntity<>(iClassStudentService.getScoreState(classId), HttpStatus.OK);
         else
-            return new ResponseEntity<>(classStudentService.getScoreState(classId), HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(iClassStudentService.getScoreState(classId), HttpStatus.NOT_ACCEPTABLE);
 
     }
 
@@ -423,7 +420,7 @@ public class ClassStudentRestController {
             criteriaRq.getCriteria().add(objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class));
         }
 
-        final SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs = classStudentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq), c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));
+        final SearchDTO.SearchRs<ClassStudentDTO.CoursesOfStudent> searchRs = iClassStudentService.search(new SearchDTO.SearchRq().setCriteria(criteriaRq), c -> modelMapper.map(c, ClassStudentDTO.CoursesOfStudent.class));
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
@@ -450,14 +447,14 @@ public class ClassStudentRestController {
             sortBy.add("sessionStartHour");
 
             searchRq.setSortBy(sortBy);
-            SearchDTO.SearchRs<ClassSessionDTO.Info> result = classSessionService.searchWithCriteria(searchRq, classId);
+            SearchDTO.SearchRs<ClassSessionDTO.Info> result = iClassSessionService.searchWithCriteria(searchRq, classId);
 
             if (result.getList().size() > 0) {
                 String str = DateUtil.convertKhToMi1(result.getList().get(0).getSessionDate());
                 LocalDate date = LocalDate.parse(str);
 
                 if ((date.isBefore(LocalDate.now().plusDays(7)) || date.equals(LocalDate.now().plusDays(7))) && (date.isAfter(LocalDate.now()) || date.equals(LocalDate.now()))) {
-                    Map<String, Integer> mobiles = classStudentService.getStatusSendMessageStudents(classId);
+                    Map<String, Integer> mobiles = iClassStudentService.getStatusSendMessageStudents(classId);
 
                     tmplist.forEach(p -> {
                         if (p.getStudent().getContactInfo().getSmSMobileNumber() != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) != null && mobiles.get(p.getStudent().getContactInfo().getSmSMobileNumber()) > 0) {
@@ -504,7 +501,7 @@ public class ClassStudentRestController {
     @GetMapping(value = "/history/{classId}")
     public ResponseEntity<ClassStudentHistoryDTO.InfoForAudit.TclassAuditSpecRs> history(@PathVariable Long classId) throws IOException, ParseException {
 
-        List<ClassStudentHistory> list=classStudentHistoryService.getAllHistoryWithClassId(classId);
+        List<ClassStudentHistory> list= iClassStudentHistoryService.getAllHistoryWithClassId(classId);
         List<ClassStudentHistoryDTO.InfoForAudit> dto = tclassStudentMapper.toTclassesResponse(list);
         final ClassStudentHistoryDTO.SpecAuditRs specResponse = new ClassStudentHistoryDTO.SpecAuditRs();
         final ClassStudentHistoryDTO.TclassAuditSpecRs specRs = new ClassStudentHistoryDTO.TclassAuditSpecRs();
@@ -520,7 +517,7 @@ public class ClassStudentRestController {
     @GetMapping(value = "/add/history/{classId}")
     public ResponseEntity<ClassStudentHistoryDTO.InfoForAudit.TclassAuditSpecRs> historyAdd(@PathVariable Long classId) throws IOException, ParseException {
 
-        List<ClassStudent> list=classStudentService.getClassStudents(classId);
+        List<ClassStudent> list=iClassStudentService.getClassStudents(classId);
         List<ClassStudentHistoryDTO.InfoForAudit> dto = tclassStudentMapper.toTclassesStudentResponse(list);
         final ClassStudentHistoryDTO.SpecAuditRs specResponse = new ClassStudentHistoryDTO.SpecAuditRs();
         final ClassStudentHistoryDTO.TclassAuditSpecRs specRs = new ClassStudentHistoryDTO.TclassAuditSpecRs();

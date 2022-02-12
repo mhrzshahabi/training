@@ -10,7 +10,9 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IPostGroupService;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.iservice.IViewAllPostService;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostGroupService;
 import com.nicico.training.service.ViewAllPostService;
@@ -43,49 +45,45 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping(value = "/api/post-group")
 public class PostGroupRestController {
     private final ReportUtil reportUtil;
-    private final PostGroupService postGroupService;
+    private final IPostGroupService iPostGroupService;
     private final ObjectMapper objectMapper;
-    private final ModelMapper modelMapper;
-    private final DateUtil dateUtil;
     private final IPersonnelService personnelService;
-    private final ViewAllPostService viewAllPostService;
-    private final IPostService postService;
-
+    private final IViewAllPostService iViewAllPostService;
     // ------------------------------
 
     @Loggable
     @GetMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('r_post_group')")
     public ResponseEntity<PostGroupDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(postGroupService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iPostGroupService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('r_post_group')")
     public ResponseEntity<List<PostGroupDTO.Info>> list() {
-        return new ResponseEntity<>(postGroupService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iPostGroupService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_post_group')")
     public ResponseEntity<PostGroupDTO.Info> create(@Validated @RequestBody PostGroupDTO.Create request) {
-        return new ResponseEntity<>(postGroupService.create(request), HttpStatus.CREATED);
+        return new ResponseEntity<>(iPostGroupService.create(request), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_post_group')")
     public ResponseEntity<PostGroupDTO.Info> update(@PathVariable Long id, @Validated @RequestBody PostGroupDTO.Update request) {
-        return new ResponseEntity<>(postGroupService.update(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(iPostGroupService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_post_group')")
     public ResponseEntity<BaseResponse> delete(@PathVariable Long id) {
-       boolean isDeletable= postGroupService.delete(id);
+       boolean isDeletable= iPostGroupService.delete(id);
        BaseResponse response=new BaseResponse();
        response.setStatus(200);
        if (isDeletable)
@@ -105,7 +103,7 @@ public class PostGroupRestController {
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_post_group')")
     public ResponseEntity<Void> delete(@Validated @RequestBody PostGroupDTO.Delete request) {
-        postGroupService.delete(request);
+        iPostGroupService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -145,7 +143,7 @@ public class PostGroupRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
         BaseService.setCriteriaToNotSearchDeleted(request);
-        SearchDTO.SearchRs<PostGroupDTO.Info> response = postGroupService.searchWithoutPermission(request);
+        SearchDTO.SearchRs<PostGroupDTO.Info> response = iPostGroupService.searchWithoutPermission(request);
         final PostGroupDTO.SpecRs specResponse = new PostGroupDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
@@ -165,7 +163,7 @@ public class PostGroupRestController {
 //    @PreAuthorize("hasAuthority('r_post_group')")
     public ResponseEntity<SearchDTO.SearchRs<PostGroupDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         BaseService.setCriteriaToNotSearchDeleted(request);
-        return new ResponseEntity<>(postGroupService.searchWithoutPermission(request), HttpStatus.OK);
+        return new ResponseEntity<>(iPostGroupService.searchWithoutPermission(request), HttpStatus.OK);
     }
 
     // ------------------------------
@@ -174,7 +172,7 @@ public class PostGroupRestController {
     @PostMapping(value = "/addPost/{postId}/{postGroupId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> addPost(@PathVariable Long postId, @PathVariable Long postGroupId) {
-        postGroupService.addPost(postId, postGroupId);
+        iPostGroupService.addPost(postId, postGroupId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -182,7 +180,7 @@ public class PostGroupRestController {
     @PostMapping(value = "/addTrainingPost/{postId}/{postGroupId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> addTrainingPost(@PathVariable Long trainingPostId, @PathVariable Long postGroupId) {
-        postGroupService.addTrainingPost(trainingPostId, postGroupId);
+        iPostGroupService.addTrainingPost(trainingPostId, postGroupId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -191,7 +189,7 @@ public class PostGroupRestController {
     @PostMapping(value = "/addPosts/{postGroupId}/{postIds}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> addPosts(@PathVariable Long postGroupId, @PathVariable Set<Long> postIds) {
-        postGroupService.addPosts(postGroupId, postIds);
+        iPostGroupService.addPosts(postGroupId, postIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -199,7 +197,7 @@ public class PostGroupRestController {
     @PostMapping(value = "/addTrainingPosts/{postGroupId}/{trainingPostIds}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> addTrainingPosts(@PathVariable Long postGroupId, @PathVariable Set<Long> trainingPostIds) {
-        postGroupService.addTrainingPosts(postGroupId, trainingPostIds);
+        iPostGroupService.addTrainingPosts(postGroupId, trainingPostIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -208,7 +206,7 @@ public class PostGroupRestController {
     @DeleteMapping(value = "/removePost/{postGroupId}/{postId}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> removePost(@PathVariable Long postGroupId, @PathVariable Long postId) {
-        postGroupService.removePost(postGroupId, postId);
+        iPostGroupService.removePost(postGroupId, postId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -217,21 +215,21 @@ public class PostGroupRestController {
     @DeleteMapping(value = "/removeTrainingPost/{postGroupId}/{trainingPostId}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> removeTrainingPost(@PathVariable Long postGroupId, @PathVariable Long trainingPostId) {
-        postGroupService.removeTrainingPost(postGroupId, trainingPostId);
+        iPostGroupService.removeTrainingPost(postGroupId, trainingPostId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeCompetence/{postGroupId}/{competenceId}")
     public ResponseEntity<Void> removeFromCompetence(@PathVariable Long postGroupId, @PathVariable Long competenceId) {
-        postGroupService.removeFromCompetency(postGroupId, competenceId);
+        iPostGroupService.removeFromCompetency(postGroupId, competenceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeAllCompetence/{postGroupId}/")
     public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long postGroupId) {
-        postGroupService.removeFromAllCompetences(postGroupId);
+        iPostGroupService.removeFromAllCompetences(postGroupId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -242,7 +240,7 @@ public class PostGroupRestController {
     public ResponseEntity<ISC.Response<PostDTO.Info>> unAttachPosts(@PathVariable Long postGroupId) {
 
         Set<PostDTO.Info> posts;
-        posts = postGroupService.unAttachPosts(postGroupId);
+        posts = iPostGroupService.unAttachPosts(postGroupId);
         List<PostDTO.Info> postList = new ArrayList<>();
         for (PostDTO.Info postDTOInfo : posts) {
             postList.add(postDTOInfo);
@@ -261,7 +259,7 @@ public class PostGroupRestController {
     @DeleteMapping(value = "/removePosts/{postGroupId}/{postIds}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> removePosts(@PathVariable Long postGroupId, @PathVariable Set<Long> postIds) {
-        postGroupService.removePosts(postGroupId, postIds);
+        iPostGroupService.removePosts(postGroupId, postIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -269,7 +267,7 @@ public class PostGroupRestController {
     @DeleteMapping(value = "/removeTrainingPosts/{postGroupId}/{trainingPostIds}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> removeTrainingPosts(@PathVariable Long postGroupId, @PathVariable Set<Long> trainingPostIds) {
-        postGroupService.removeTrainingPosts(postGroupId, trainingPostIds);
+        iPostGroupService.removeTrainingPosts(postGroupId, trainingPostIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -278,7 +276,7 @@ public class PostGroupRestController {
     @GetMapping(value = "/{postGroupId}/getPosts")
 //    @PreAuthorize("hasAnyAuthority('r_post_group')")
     public ResponseEntity<ISC> getPosts(@PathVariable Long postGroupId) {
-        List<PostDTO.Info> list = postGroupService.getPosts(postGroupId);
+        List<PostDTO.Info> list = iPostGroupService.getPosts(postGroupId);
         ISC.Response<PostDTO.Info> response = new ISC.Response<>();
         response.setData(list)
                 .setStartRow(0)
@@ -293,7 +291,7 @@ public class PostGroupRestController {
     @GetMapping(value = "/{postGroupId}/getTrainingPosts")
 //    @PreAuthorize("hasAnyAuthority('r_post_group')")
     public ResponseEntity<ISC> getTrainingPosts(@PathVariable Long postGroupId) {
-        List<TrainingPostDTO.Info> list = postGroupService.getTrainingPosts(postGroupId);
+        List<TrainingPostDTO.Info> list = iPostGroupService.getTrainingPosts(postGroupId);
         ISC.Response<TrainingPostDTO.Info> response = new ISC.Response<>();
         response.setData(list)
                 .setStartRow(0)
@@ -307,7 +305,7 @@ public class PostGroupRestController {
     @GetMapping(value = "/{postGroupId}/getPersonnel")
 //    @PreAuthorize("hasAnyAuthority('r_post_group')")
     public ResponseEntity<ISC<PersonnelDTO.Info>> getPersonnel(@PathVariable Long postGroupId, HttpServletRequest iscRq) throws IOException {
-        List<ViewAllPostDTO.Info> postList = viewAllPostService.getAllPosts(postGroupId);
+        List<ViewAllPostDTO.Info> postList = iViewAllPostService.getAllPosts(postGroupId);
         if (postList == null || postList.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
@@ -324,10 +322,10 @@ public class PostGroupRestController {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         params.put("todayDate", DateUtil.todayDate());
-        PostGroupDTO.Info postGroup = postGroupService.get(id);
+        PostGroupDTO.Info postGroup = iPostGroupService.get(id);
         params.put("titleFa", postGroup.getTitleFa());
         params.put("description", postGroup.getDescription());
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(postGroupService.getPosts(id)) + "}";
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(iPostGroupService.getPosts(id)) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/postGroupWithPosts.jasper", params, jsonDataSource, response);
     }
@@ -339,7 +337,7 @@ public class PostGroupRestController {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         params.put("todayDate", DateUtil.todayDate());
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(postGroupService.list()) + "}";
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(iPostGroupService.list()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/postGroups.jasper", params, jsonDataSource, response);
     }

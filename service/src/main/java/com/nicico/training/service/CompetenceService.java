@@ -4,6 +4,7 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.iservice.ICompetenceService;
 import com.nicico.training.model.Competence;
 import com.nicico.training.model.NeedsAssessment;
 import com.nicico.training.model.NeedsAssessmentTemp;
@@ -29,7 +30,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
-public class CompetenceService extends BaseService<Competence, Long, CompetenceDTO.Info, CompetenceDTO.Create, CompetenceDTO.Update, CompetenceDTO.Delete, CompetenceDAO> {
+public class CompetenceService extends BaseService<Competence, Long, CompetenceDTO.Info, CompetenceDTO.Create, CompetenceDTO.Update, CompetenceDTO.Delete, CompetenceDAO> implements ICompetenceService {
 
     @Autowired
     private MessageSource messageSource;

@@ -2,22 +2,14 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
-import com.nicico.copper.common.dto.search.EOperator;
-import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.util.CriteriaUtil;
-import com.nicico.training.dto.EvaluationQuestionDTO;
 import com.nicico.training.dto.QuestionnaireQuestionDTO;
 import com.nicico.training.dto.SkillDTO;
-import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.model.EvaluationQuestion;
+import com.nicico.training.iservice.IQuestionnaireQuestionService;
+import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.model.QuestionnaireQuestion;
 import com.nicico.training.model.Skill;
-import com.nicico.training.repository.EvaluationQuestionDAO;
-import com.nicico.training.repository.QuestionnaireQuestionDAO;
-import com.nicico.training.service.QuestionnaireQuestionService;
-import com.nicico.training.service.SkillService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -26,7 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -34,12 +25,9 @@ import java.util.List;
 @RequestMapping("/api/questionnaireQuestion")
 public class QuestionnaireQuestionRestController {
 
-    private final QuestionnaireQuestionService questionnaireQuestionValueService;
+    private final IQuestionnaireQuestionService questionnaireQuestionValueService;
     private final ModelMapper modelMapper;
-    private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
-    private final SkillService skillService;
-
-    private EvaluationQuestionDAO evaluationQuestionDAO;
+    private final ISkillService iSkillService;
 
     @Loggable
     @GetMapping("/list")
@@ -132,7 +120,7 @@ public class QuestionnaireQuestionRestController {
     @GetMapping(value = "/skillQuestionnaire/{courseId}")
     public ResponseEntity<SkillDTO.SkillSpecRs> skillQuestionnaire(@PathVariable Long courseId) {
 
-        List<Skill> skillList = skillService.skillList(courseId);
+        List<Skill> skillList = iSkillService.skillList(courseId);
 
         List<SkillDTO.Info> skillInfo = modelMapper.map(skillList,
                 new TypeToken<List<QuestionnaireQuestionDTO.Info>>() {}.getType());

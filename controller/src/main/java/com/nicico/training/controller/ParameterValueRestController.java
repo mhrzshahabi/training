@@ -5,6 +5,8 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.iservice.IParameterService;
+import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.service.ParameterService;
 import com.nicico.training.service.ParameterValueService;
@@ -25,27 +27,27 @@ import java.util.List;
 @RequestMapping("/api/parameter-value")
 public class ParameterValueRestController {
 
-    private final ParameterValueService parameterValueService;
-    private final ParameterService parameterService;
+    private final IParameterValueService iParameterValueService;
+    private final IParameterService iParameterService;
     private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping("/list")
     public ResponseEntity<List<ParameterValueDTO.Info>> list() {
-        return new ResponseEntity<>(parameterValueService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterValueService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/iscList")
     public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(parameterValueService.search(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterValueService.search(nicicoCriteria), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/listByCode/{parameterCode}")
     public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getParametersValueListByCode(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String parameterCode) {
-        return new ResponseEntity<>(parameterService.getByCode(parameterCode), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterService.getByCode(parameterCode), HttpStatus.OK);
     }
 
     @Loggable
@@ -59,7 +61,7 @@ public class ParameterValueRestController {
     public ResponseEntity create(@RequestBody Object rq) {
         ParameterValueDTO.Create create = modelMapper.map(rq, ParameterValueDTO.Create.class);
         try {
-            ParameterValueDTO.Info info=parameterValueService.checkAndCreate(create);
+            ParameterValueDTO.Info info=iParameterValueService.checkAndCreate(create);
             return new ResponseEntity<>(info, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
@@ -71,7 +73,7 @@ public class ParameterValueRestController {
     public ResponseEntity update(@PathVariable Long id, @RequestBody Object rq) {
         ParameterValueDTO.Update update = modelMapper.map(rq, ParameterValueDTO.Update.class);
         try {
-            return new ResponseEntity<>(parameterValueService.update(id, update), HttpStatus.OK);
+            return new ResponseEntity<>(iParameterValueService.update(id, update), HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
@@ -81,7 +83,7 @@ public class ParameterValueRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
         try {
-            return new ResponseEntity<>(parameterValueService.delete(id), null, HttpStatus.OK);
+            return new ResponseEntity<>(iParameterValueService.delete(id), null, HttpStatus.OK);
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
@@ -92,44 +94,44 @@ public class ParameterValueRestController {
     @Loggable
     @PutMapping(value = "/edit-config-list")
     public ResponseEntity<List<ParameterValueDTO.Info>> editConfigList(@Validated @RequestBody ParameterValueDTO.ConfigUpdate[] rq) {
-        return new ResponseEntity<>(parameterValueService.editConfigList(rq), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterValueService.editConfigList(rq), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/get-id")
     public ResponseEntity<Long> getParametersValueList(@RequestParam String code) {
-        return new ResponseEntity<>(parameterValueService.getId(code), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterValueService.getId(code), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping("/messages/{type}/{target}")
     public ResponseEntity<TotalResponse<ParameterValueDTO>> getMessages(@PathVariable String type,@PathVariable String target) throws IOException {
-        return new ResponseEntity<>(parameterValueService.getMessages(type,target), HttpStatus.OK);
+        return new ResponseEntity<>(iParameterValueService.getMessages(type,target), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "/edit-parameter-value/{id}")
     public ResponseEntity editParameterValue(@RequestParam String value,@RequestParam String title,@RequestParam String des,@RequestParam String code,@PathVariable Long id) {
-        parameterValueService.editParameterValue(value,title,des,code,id);
+        iParameterValueService.editParameterValue(value,title,des,code,id);
         return new ResponseEntity(null, HttpStatus.OK);
     }
     @Loggable
     @PutMapping(value = "/del-space-parameter-value-des/{id}")
     public ResponseEntity deleteSpaceDescription(@PathVariable Long id) {
-        parameterValueService.editDescription(id);
+        iParameterValueService.editDescription(id);
         return new ResponseEntity(null, HttpStatus.OK);
     }
     @Loggable
     @PutMapping(value = "/edit-des-parameter-value-des/{id}")
     public ResponseEntity editDesDescription(@PathVariable Long id,@RequestParam String des) {
-        parameterValueService.editDesDescription(id,des);
+        iParameterValueService.editDesDescription(id,des);
         return new ResponseEntity(null, HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "/edit-code-parameter-value-des/{id}")
     public ResponseEntity editCodeDescription(@PathVariable Long id,@RequestParam String code) {
-        parameterValueService.editCodeDescription(id,code);
+        iParameterValueService.editCodeDescription(id,code);
         return new ResponseEntity(null, HttpStatus.OK);
     }
 }

@@ -397,6 +397,40 @@ public class EvaluationService implements IEvaluationService {
                 .map(Evaluation::getId).collect(Collectors.toList());
     }
 
+    public List<Evaluation> findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long ClassId, Long EvaluationLevelId, Long QuestionnaireTypeId){
+        return evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId( ClassId, EvaluationLevelId, QuestionnaireTypeId);
+    }
+
+    @Override
+    public List<Evaluation> findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long classId, Long evaluatedId, Long evaluationLevelId, Long questionnaireTypeId) {
+        return evaluationDAO.findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, evaluatedId, evaluationLevelId, questionnaireTypeId);
+    }
+
+    @Override
+    public Evaluation findFirstByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long ClassId, Long EvaluatedId, Long EvaluatedTypeId, Long EvaluatorTypeId, Long EvaluationLevelId, Long QuestionnaireTypeId) {
+        return evaluationDAO.findFirstByClassIdAndEvaluatedIdAndEvaluatedTypeIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+                ClassId, EvaluatedId, EvaluatedTypeId, EvaluatorTypeId, EvaluationLevelId, QuestionnaireTypeId);
+    }
+
+    @Override
+    public List<Evaluation> findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long EvaluatorId, Long EvaluatorTypeId, Long EvaluationLevelId, Long QuestionnaireTypeId) {
+        return evaluationDAO.findByEvaluatorIdAndEvaluatorTypeIdAndEvaluationLevelIdAndQuestionnaireTypeId(
+                EvaluatorId,
+                EvaluatorTypeId,
+                EvaluationLevelId,
+                QuestionnaireTypeId);
+    }
+
+    @Override
+    public Optional<ViewActivePersonnel> findById(Long evaluatorId) {
+        return viewActivePersonnelDAO.findById(evaluatorId);
+    }
+
+    @Override
+    public ViewActivePersonnel findPersonnelByPersonnelNo(String personnelId) {
+        return viewActivePersonnelDAO.findPersonnelByPersonnelNo(String.valueOf(personnelId));
+    }
+
     //----------------------------------------------- evaluation updating ----------------------------------------------
     public void updateTclassInfo(Long classID, Integer reactionTrainingStatus, Integer reactionTeacherStatus) {
         Optional<Tclass> byId = tclassDAO.findById(classID);

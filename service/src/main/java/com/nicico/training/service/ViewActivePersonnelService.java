@@ -12,6 +12,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IViewActivePersonnelService;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.model.ViewActivePersonnel;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class ViewActivePersonnelService {
+public class ViewActivePersonnelService implements IViewActivePersonnelService {
 
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
@@ -266,6 +267,26 @@ public class ViewActivePersonnelService {
         values.forEach(value -> response.getList().add(new ViewActivePersonnelDTO.FieldValue(value)));
         response.setTotalCount((long) response.getList().size());
         return response;
+    }
+
+    @Override
+    public Optional<ViewActivePersonnel> findById(Long personnelId) {
+        return viewActivePersonnelDAO.findById(personnelId);
+    }
+
+    @Override
+    public String getPersonnelFullName(Long personnelId) {
+        return viewActivePersonnelDAO.getPersonnelFullName(personnelId);
+    }
+
+    @Override
+    public ViewActivePersonnel[] findByNationalCode(String personnelNationalCode) {
+        return viewActivePersonnelDAO.findByNationalCode(personnelNationalCode);
+    }
+
+    @Override
+    public ViewActivePersonnel findFirstByPostId(Long postId) {
+        return viewActivePersonnelDAO.findFirstByPostId(postId);
     }
 
 //    @Transactional(readOnly = true)

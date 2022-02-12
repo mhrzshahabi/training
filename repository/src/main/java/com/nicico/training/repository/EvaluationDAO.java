@@ -59,22 +59,22 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "         INNER JOIN TBL_TEACHER teacher ON eval.F_EVALUATOR_ID = teacher.ID " +
             "         INNER JOIN TBL_PERSONAL_INFO personal ON teacher.F_PERSONALITY = personal.ID " +
             "         INNER JOIN TBL_CLASS class ON eval.F_CLASS_ID = class.ID " +
-            "WHERE personal.C_NATIONAL_CODE =:evaluatorNationalCode " +
-            "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId " +
+            "WHERE personal.C_NATIONAL_CODE = ?1 " +
+            "  AND eval.F_EVALUATOR_TYPE_ID = ?2 " +
             "  AND class.TEACHER_ONLINE_EVAL_STATUS = 1  AND eval.f_evaluation_level_id != 156 ", nativeQuery = true)
-    List<Evaluation> getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
+    List<Evaluation> getTeacherEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(String evaluatorNationalCode, Long evaluatorTypeId);
 
     @Query(value = "SELECT eval.*  " +
             "FROM tbl_EVALUATION eval  " +
             "         INNER JOIN TBL_CLASS_STUDENT cs ON eval.F_EVALUATOR_ID = cs.ID  " +
             "         INNER JOIN TBL_STUDENT student ON cs.STUDENT_ID = student.ID  " +
             "         INNER JOIN TBL_CLASS class ON eval.F_CLASS_ID = class.ID  " +
-            "WHERE student.NATIONAL_CODE =:evaluatorNationalCode  " +
-            "  AND eval.F_EVALUATOR_TYPE_ID =:evaluatorTypeId  " +
+            "WHERE student.NATIONAL_CODE = ?1  " +
+            "  AND eval.F_EVALUATOR_TYPE_ID = ?2  " +
             "  AND class.STUDENT_ONLINE_EVAL_STATUS = 1 " +
             "And cs.evaluation_status_reaction = 1 AND eval.f_evaluation_level_id != 156" +
             "", nativeQuery = true)
-    List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(@Param("evaluatorNationalCode") String evaluatorNationalCode, @Param("evaluatorTypeId") Long evaluatorTypeId);
+    List<Evaluation> getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList( String evaluatorNationalCode, Long evaluatorTypeId);
 
     Evaluation findFirstByQuestionnaireId(Long QuestionnaireId);
 

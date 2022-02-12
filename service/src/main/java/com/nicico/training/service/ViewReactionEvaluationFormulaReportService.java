@@ -1,6 +1,7 @@
 package com.nicico.training.service;
 
 import com.nicico.training.dto.ViewReactionEvaluationFormulaReportDTO;
+import com.nicico.training.iservice.IViewReactionEvaluationFormulaReportService;
 import com.nicico.training.model.ViewReactionEvaluationFormulaReport;
 import com.nicico.training.repository.ViewReactionEvaluationFormulaReportDAO;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
 @Service
-public class ViewReactionEvaluationFormulaReportService extends BaseService<ViewReactionEvaluationFormulaReport, Long, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDAO> {
+public class ViewReactionEvaluationFormulaReportService extends BaseService<ViewReactionEvaluationFormulaReport, Long, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDTO.Info, ViewReactionEvaluationFormulaReportDAO> implements IViewReactionEvaluationFormulaReportService {
 
     private ViewReactionEvaluationFormulaReportDAO viewReactionEvaluationFormulaReportDAO;
 

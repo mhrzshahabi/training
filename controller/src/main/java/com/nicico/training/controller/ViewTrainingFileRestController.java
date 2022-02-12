@@ -1,7 +1,7 @@
 package com.nicico.training.controller;
 
 import com.nicico.training.dto.ViewTrainingFileDTO;
-import com.nicico.training.service.ViewTrainingFileService;
+import com.nicico.training.iservice.IViewTrainingFileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/view-training_file")
 public class ViewTrainingFileRestController {
 
-    private final ViewTrainingFileService viewTrainingFileService;
+    private final IViewTrainingFileService viewTrainingFileService;
 
     @GetMapping(value = "/{nationalCode}")
     public ResponseEntity<ViewTrainingFileDTO.ViewTrainingFileSpecRs> iscList(@PathVariable String nationalCode) {

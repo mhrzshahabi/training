@@ -5,7 +5,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationQuestionDTO;
-import com.nicico.training.service.EvaluationQuestionService;
+import com.nicico.training.iservice.IEvaluationQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -22,7 +22,7 @@ import java.util.List;
 @RequestMapping("/api/config-questionnaire")
 public class EvaluationQuestionRestController {
 
-    private final EvaluationQuestionService evaluationQuestionService;
+    private final IEvaluationQuestionService evaluationQuestionService;
     private final ModelMapper modelMapper;
 
     @Loggable

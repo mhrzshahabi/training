@@ -6,9 +6,12 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassBaseResponse;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.TargetSocietyDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
+import io.swagger.models.auth.In;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
@@ -19,11 +22,16 @@ import response.tclass.ElsClassDetailResponse;
 import response.tclass.ElsSessionResponse;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
+import response.tclass.dto.TclassDto;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
 public interface ITclassService {
+
+     List<Tclass> getTeacherClasses(Long teacherId);
 
     TclassDTO.Info get(Long id);
 
@@ -166,4 +174,26 @@ public interface ITclassService {
     boolean getTeacherForceToHasPhone();
 
     boolean getStudentForceToHasPhone();
+
+    ParameterValue getTargetSocietyTypeById(Long id);
+
+    List<TargetSocietyDTO.Info> getTargetSocietiesListById(Long id);
+
+    TclassDto safeCreate(TclassDTO.Create request, HttpServletResponse response);
+
+    TclassDto update(Long id, TclassDTO.Update request, List<Long> cancelClassesIds);
+
+    BaseResponse delete(Long id) throws IOException ;
+
+    boolean compareTodayDate(Long classId);
+
+    Boolean hasSessions(Long classId);
+
+    void delete(TclassDTO.Delete request, HttpServletResponse resp) throws IOException;
+
+    void updateTrainingReactionStatus(Integer trainingReactionStatus, Long classId);
+
+    Integer getTeacherReactionStatus(Long classId);
+
+    Integer getTrainingReactionStatus(Long classId);
 }

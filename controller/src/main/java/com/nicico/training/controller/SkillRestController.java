@@ -17,6 +17,7 @@ import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.ISkillService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.service.SkillService;
 
 import com.nicico.training.service.WorkGroupService;
@@ -55,9 +56,8 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class SkillRestController {
 
     private final ReportUtil reportUtil;
-    private final SkillService skillService;
     private final ISkillService iSkillService;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
 
@@ -67,14 +67,14 @@ public class SkillRestController {
     @GetMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('r_skill')")
     public ResponseEntity<SkillDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(skillService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iSkillService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/main-objective/{mainObjectiveId}")
 //    @PreAuthorize("hasAuthority('r_skill')")
     public ResponseEntity<List<SkillDTO>> list(@PathVariable Long mainObjectiveId) {
-        return new ResponseEntity<>(skillService.listMainObjective(mainObjectiveId), HttpStatus.OK);
+        return new ResponseEntity<>(iSkillService.listMainObjective(mainObjectiveId), HttpStatus.OK);
     }
 
 
@@ -84,8 +84,8 @@ public class SkillRestController {
     public ResponseEntity<SkillDTO.Info> create(@RequestBody Object request, HttpServletResponse response) {
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
-            create.setCode(skillService.getMaxSkillCode(create.getCode()));
-            return new ResponseEntity<>(skillService.create(create, response), HttpStatus.CREATED);
+            create.setCode(iSkillService.getMaxSkillCode(create.getCode()));
+            return new ResponseEntity<>(iSkillService.create(create, response), HttpStatus.CREATED);
 
 
         } catch (Exception e) {
@@ -97,13 +97,13 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/getMaxSkillCode/{code}")
     public String MaxSkillCode(@PathVariable String code) throws Exception {
-        return skillService.getMaxSkillCode(code);
+        return iSkillService.getMaxSkillCode(code);
     }
 
     @Loggable
     @GetMapping(value = "/editSkill/{id}")
     public boolean editSkill(@PathVariable Long id) throws Exception {
-        return skillService.editSkill(id);
+        return iSkillService.editSkill(id);
     }
 
 
@@ -111,7 +111,7 @@ public class SkillRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_skill')")
     public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request,HttpServletResponse response) {
-        return new ResponseEntity<>(skillService.update(id,request,response), HttpStatus.OK);
+        return new ResponseEntity<>(iSkillService.update(id,request,response), HttpStatus.OK);
     }
 
     @Loggable
@@ -123,11 +123,11 @@ public class SkillRestController {
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-//            flag = skillService.isSkillDeletable(id);
+//            flag = iSkillService.isSkillDeletable(id);
 //            if (flag)
 
             if(workGroupService.isAllowUseId("Skill",id)){
-                skillService.delete(id);
+                iSkillService.delete(id);
             }else{
                 flag = false;
                 httpStatus = HttpStatus.UNAUTHORIZED;
@@ -151,14 +151,14 @@ public class SkillRestController {
         try {
             flag = true;
             for (Long id : request.getIds()) {
-                if (!skillService.isSkillDeletable(id)) {
+                if (!iSkillService.isSkillDeletable(id)) {
                     flag = false;
                     break;
                 }
             }
-//            flag=skillService.isSkillDeletable(id);
+//            flag=iSkillService.isSkillDeletable(id);
             if (flag)
-                skillService.delete(request);
+                iSkillService.delete(request);
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
         }
@@ -199,7 +199,7 @@ public class SkillRestController {
 
         request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
 
-        SearchDTO.SearchRs<SkillDTO.Info> response = skillService.searchWithoutPermission(request);
+        SearchDTO.SearchRs<SkillDTO.Info> response = iSkillService.searchWithoutPermission(request);
 
         final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
@@ -237,7 +237,7 @@ public class SkillRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-        SearchDTO.SearchRs<SkillDTO.InfoENA> response = skillService.searchGeneric(request, SkillDTO.InfoENA.class);
+        SearchDTO.SearchRs<SkillDTO.InfoENA> response = iSkillService.searchGeneric(request, SkillDTO.InfoENA.class);
         final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
         specResponse.setData(response.getList())
@@ -254,7 +254,7 @@ public class SkillRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_skill')")
     public ResponseEntity<SearchDTO.SearchRs<SkillDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(skillService.searchWithoutPermission(request), HttpStatus.OK);
+        return new ResponseEntity<>(iSkillService.searchWithoutPermission(request), HttpStatus.OK);
     }
 
     // ------------------------------
@@ -267,7 +267,7 @@ public class SkillRestController {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         List<CourseDTO.Info> courses = new ArrayList<>();
-        courses.add(skillService.getCourses(skillId));
+        courses.add(iSkillService.getCourses(skillId));
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
@@ -297,13 +297,13 @@ public class SkillRestController {
         Integer pageNumber = (endRow - 1) / pageSize;
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId, pageable);
+        List<CourseDTO.Info> courses = iSkillService.getUnAttachedCourses(skillId, pageable);
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
                 .setStartRow(startRow)
                 .setEndRow(endRow)
-                .setTotalRows(skillService.getUnAttachedCoursesCount(skillId));
+                .setTotalRows(iSkillService.getUnAttachedCoursesCount(skillId));
 
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
@@ -318,7 +318,7 @@ public class SkillRestController {
         Long skillId = Long.parseLong(skillID);
 
         List<CourseDTO.Info> courses = new ArrayList<>();
-        courses.add(skillService.getCourses(skillId));
+        courses.add(iSkillService.getCourses(skillId));
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
@@ -349,13 +349,13 @@ public class SkillRestController {
         Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
 
-        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId, pageable);
+        List<CourseDTO.Info> courses = iSkillService.getUnAttachedCourses(skillId, pageable);
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
                 .setStartRow(startRow)
                 .setEndRow(endRow)
-                .setTotalRows(skillService.getUnAttachedCoursesCount(skillId));
+                .setTotalRows(iSkillService.getUnAttachedCoursesCount(skillId));
 
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
 
@@ -371,7 +371,7 @@ public class SkillRestController {
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            skillService.removeCourse(courseId, skillId);
+            iSkillService.removeCourse(courseId, skillId);
             flag = true;
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
@@ -387,7 +387,7 @@ public class SkillRestController {
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            skillService.removeCourses(courseIds, skillId);
+            iSkillService.removeCourses(courseIds, skillId);
             flag = true;
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
@@ -403,7 +403,7 @@ public class SkillRestController {
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            skillService.addCourse(courseId, skillId, resp);
+            iSkillService.addCourse(courseId, skillId, resp);
             flag = true;
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
@@ -419,7 +419,7 @@ public class SkillRestController {
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            skillService.addCourses(request.getIds(), skillId);
+            iSkillService.addCourses(request.getIds(), skillId);
             flag = true;
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
@@ -471,7 +471,7 @@ public class SkillRestController {
         searchRq.setSortBy(field);
 
         searchRq.setCriteria(workGroupService.addPermissionToCriteria("categoryId", searchRq.getCriteria()));
-        SearchDTO.SearchRs<SkillDTO.Info> searchSkill = skillService.searchWithoutPermission(searchRq);
+        SearchDTO.SearchRs<SkillDTO.Info> searchSkill = iSkillService.searchWithoutPermission(searchRq);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchSkill.getList()) + "}";
@@ -499,7 +499,7 @@ public class SkillRestController {
         if (searchRq.getCriteria() != null)
             criteriaRq.getCriteria().add(searchRq.getCriteria());
         searchRq.setCriteria(criteriaRq);
-        SearchDTO.SearchRs<T> searchRs = skillService.search(searchRq, infoType);
+        SearchDTO.SearchRs<T> searchRs = iSkillService.search(searchRq, infoType);
         return new ResponseEntity<ISC<T>>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 

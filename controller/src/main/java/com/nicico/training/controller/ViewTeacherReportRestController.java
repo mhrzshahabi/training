@@ -2,7 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewTeacherReportDTO;
-import com.nicico.training.service.ViewTeacherReportService;
+import com.nicico.training.iservice.IViewTeacherReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RequestMapping(value = "/api/view-teacher-report")
 public class ViewTeacherReportRestController {
 
-    private final ViewTeacherReportService viewTeacherReportService;
+    private final IViewTeacherReportService viewTeacherReportService;
     @Autowired
     protected EntityManager entityManager;
 

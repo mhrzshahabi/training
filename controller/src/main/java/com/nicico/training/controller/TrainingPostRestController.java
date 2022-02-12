@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.ITrainingPostService;
 import com.nicico.training.service.TrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,7 +34,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequestMapping(value = "/api/training-post")
 public class TrainingPostRestController {
 
-    private final TrainingPostService trainingPostService;
+    private final ITrainingPostService trainingPostService;
     private final IPersonnelService personnelService;
     private final ObjectMapper objectMapper;
 

@@ -3,7 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ContinuousStatusReportViewDTO;
-import com.nicico.training.service.ContinuousStatusReportViewService;
+import com.nicico.training.iservice.IContinuousStatusReportViewService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -21,7 +21,7 @@ import java.io.IOException;
 @RequestMapping(value = "/api/continuous-status-report-view")
 public class ContinuousStatusReportViewRestController {
 
-    private final ContinuousStatusReportViewService continuousStatusReportViewService;
+    private final IContinuousStatusReportViewService continuousStatusReportViewService;
 
     @Loggable
     @GetMapping

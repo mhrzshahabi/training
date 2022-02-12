@@ -3,15 +3,18 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.Subcategory;
 import com.nicico.training.model.Teacher;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import response.teacher.dto.TeacherInCourseDto;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ITeacherService {
 
@@ -61,6 +64,14 @@ public interface ITeacherService {
 
     Page<Teacher> getActiveTeachers(int page, int size);
 
+    List<TeacherInCourseDto> getTeachersInCourse(Long courseId);
+
+    String getTeacherNationalCodeById(Long teacherId);
+
+    List<TclassDTO.AllStudentsGradeToTeacher> getAllStudentsGradeToTeacher(Long courseId, Long teacherId);
+
+    Optional<Teacher> findByTeacherCode(String teacherCode);
 
 
+    String getTeacherFullName(Long teacherId);
 }

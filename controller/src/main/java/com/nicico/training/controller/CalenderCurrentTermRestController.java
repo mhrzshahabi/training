@@ -10,9 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IPersonnelRegisteredService;
-import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.iservice.IPostService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -43,9 +41,9 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class CalenderCurrentTermRestController {
     private final NeedsAssessmentReportsService needsAssessmentReportsService;
 
-    private final TclassService tclassService;
-    private final ParameterService parameterService;
-    private final ClassStudentReportService classStudentReportService;
+    private final ITclassService tclassService;
+    private final IParameterService parameterService;
+    private final IClassStudentReportService classStudentReportService;
     private final IPostService postService;
     private final IPersonnelService personnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;

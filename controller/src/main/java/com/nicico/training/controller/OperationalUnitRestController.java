@@ -9,6 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.OperationalUnitDTO;
+import com.nicico.training.iservice.IOperationalUnitService;
 import com.nicico.training.service.OperationalUnitService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,7 +36,7 @@ import java.util.Map;
 public class OperationalUnitRestController {
 
 
-    private final OperationalUnitService operationalUnitService;
+    private final IOperationalUnitService iOperationalUnitService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
@@ -46,7 +47,7 @@ public class OperationalUnitRestController {
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<OperationalUnitDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(operationalUnitService.get(id), HttpStatus.OK);
+        return new ResponseEntity<>(iOperationalUnitService.get(id), HttpStatus.OK);
     }
 
     //*********************************
@@ -54,7 +55,7 @@ public class OperationalUnitRestController {
     @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<OperationalUnitDTO.Info>> list() {
-        return new ResponseEntity<>(operationalUnitService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(iOperationalUnitService.list(), HttpStatus.OK);
     }
 
     //*********************************
@@ -63,7 +64,7 @@ public class OperationalUnitRestController {
     @PostMapping
     public ResponseEntity<OperationalUnitDTO.Info> create(@RequestBody OperationalUnitDTO.Create req, HttpServletResponse response) {
         OperationalUnitDTO.Create create = modelMapper.map(req, OperationalUnitDTO.Create.class);
-        return new ResponseEntity<>(operationalUnitService.create(create, response), HttpStatus.CREATED);
+        return new ResponseEntity<>(iOperationalUnitService.create(create, response), HttpStatus.CREATED);
     }
 
     //*********************************
@@ -72,7 +73,7 @@ public class OperationalUnitRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<OperationalUnitDTO.Info> update(@PathVariable Long id, @RequestBody Object request, HttpServletResponse response) {
         OperationalUnitDTO.Update update = modelMapper.map(request, OperationalUnitDTO.Update.class);
-        return new ResponseEntity<>(operationalUnitService.update(id, update, response), HttpStatus.OK);
+        return new ResponseEntity<>(iOperationalUnitService.update(id, update, response), HttpStatus.OK);
     }
 
     //*********************************
@@ -80,7 +81,7 @@ public class OperationalUnitRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        operationalUnitService.delete(id);
+        iOperationalUnitService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -89,7 +90,7 @@ public class OperationalUnitRestController {
     @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody OperationalUnitDTO.Delete request) {
-        operationalUnitService.delete(request);
+        iOperationalUnitService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -121,7 +122,7 @@ public class OperationalUnitRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<OperationalUnitDTO.Info> response = operationalUnitService.search(request);
+        SearchDTO.SearchRs<OperationalUnitDTO.Info> response = iOperationalUnitService.search(request);
 
         final OperationalUnitDTO.SpecRs specResponse = new OperationalUnitDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -152,7 +153,7 @@ public class OperationalUnitRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<OperationalUnitDTO.Info> searchRs = operationalUnitService.search(searchRq);
+        final SearchDTO.SearchRs<OperationalUnitDTO.Info> searchRs = iOperationalUnitService.search(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());

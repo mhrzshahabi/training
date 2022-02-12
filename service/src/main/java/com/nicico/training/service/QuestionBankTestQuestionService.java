@@ -241,4 +241,14 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
         return questionBankTestQuestionDAO.findAllByTestQuestionId(sourceExamId);
     }
 
+    @Override
+    public List<QuestionBankTestQuestion> findByTestQuestionId(Long testId) {
+        return questionBankTestQuestionDAO.findByTestQuestionId(testId);
+    }
+
+    @Override
+    public void save(QuestionBankTestQuestion questionBankTestQuestion) {
+        questionBankTestQuestionDAO.save(questionBankTestQuestion);
+    }
+
 }

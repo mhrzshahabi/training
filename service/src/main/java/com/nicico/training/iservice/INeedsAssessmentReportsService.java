@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.NeedAssessmentGroupResult;
 import com.nicico.training.model.NeedsAssessment;
+import org.springframework.transaction.annotation.Transactional;
 import request.needsassessment.NeedAssessmentGroupJobPromotionRequestDto;
 import request.needsassessment.NeedAssessmentGroupJobPromotionResponseDto;
 
@@ -34,4 +35,6 @@ public interface INeedsAssessmentReportsService {
 
     NAReportForLMSResponseDTO findNeedAssessmentForLMSByNationalCode(String nationalCode);
 
+    SearchDTO.SearchRs<NeedsAssessmentReportsDTO.CourseNAS> getCourseNA(SearchDTO.SearchRq searchRq, Long courseId, Boolean passedReport);
+    SearchDTO.SearchRs<NeedsAssessmentReportsDTO.ReportInfo> search(SearchDTO.SearchRq searchRq, Long objectId, String objectType, Long personnelId);
 }

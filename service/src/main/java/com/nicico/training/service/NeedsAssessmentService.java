@@ -12,6 +12,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.iservice.INeedsAssessmentService;
 import com.nicico.training.model.NeedsAssessment;
 import com.nicico.training.repository.NeedsAssessmentDAO;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria
 
 @RequiredArgsConstructor
 @Service
-public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, NeedsAssessmentDTO.Info, NeedsAssessmentDTO.Create, NeedsAssessmentDTO.Update, NeedsAssessmentDTO.Delete, NeedsAssessmentDAO> {
+public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, NeedsAssessmentDTO.Info, NeedsAssessmentDTO.Create, NeedsAssessmentDTO.Update, NeedsAssessmentDTO.Delete, NeedsAssessmentDAO> implements INeedsAssessmentService {
 
     @Autowired
     private CompetenceService competenceService;

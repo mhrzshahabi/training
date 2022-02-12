@@ -5,6 +5,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EvaluationQuestionDTO;
+import com.nicico.training.iservice.IEvaluationQuestionService;
 import com.nicico.training.model.EvaluationIndex;
 import com.nicico.training.model.EvaluationQuestion;
 import com.nicico.training.repository.EvaluationQuestionDAO;
@@ -19,7 +20,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @Service
-public class EvaluationQuestionService extends BaseService<EvaluationQuestion, Long, EvaluationQuestionDTO.Info, EvaluationQuestionDTO.Create, EvaluationQuestionDTO.Update, EvaluationQuestionDTO.Delete, EvaluationQuestionDAO> {
+public class EvaluationQuestionService extends BaseService<EvaluationQuestion, Long, EvaluationQuestionDTO.Info, EvaluationQuestionDTO.Create, EvaluationQuestionDTO.Update, EvaluationQuestionDTO.Delete, EvaluationQuestionDAO> implements IEvaluationQuestionService {
 
     private EvaluationIndexService evaluationIndexService;
 

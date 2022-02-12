@@ -24,4 +24,8 @@ public interface IQuestionBankTestQuestionService {
     boolean usedQuestion(Long questionBankId);
 
     List<QuestionBankTestQuestion> getExamQuestions(Long sourceExamId);
+
+    List<QuestionBankTestQuestion> findByTestQuestionId(Long testId);
+
+    void save(QuestionBankTestQuestion questionBankTestQuestion);
 }

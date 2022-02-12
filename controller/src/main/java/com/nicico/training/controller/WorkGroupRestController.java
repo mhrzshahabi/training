@@ -8,7 +8,6 @@ import com.nicico.training.dto.PermissionDTO;
 import com.nicico.training.dto.WorkGroupDTO;
 import com.nicico.training.iservice.IWorkGroupService;
 import lombok.RequiredArgsConstructor;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +15,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
@@ -26,7 +24,6 @@ import java.util.List;
 public class WorkGroupRestController {
 
     private final IWorkGroupService workGroupService;
-    private final ModelMapper modelMapper;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<WorkGroupDTO.Info>> list(HttpServletRequest iscRq) throws IOException {

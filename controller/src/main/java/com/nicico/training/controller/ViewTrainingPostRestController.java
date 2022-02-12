@@ -7,7 +7,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.IOperationalRoleService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +33,11 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class ViewTrainingPostRestController {
 
     private final ObjectMapper objectMapper;
-    private final TrainingPostService trainingPostService;
-    private final ViewTrainingPostService viewTrainingPostService;
-    private final JobGroupService jobGroupService;
-    private final PostGradeGroupService postGradeGroupService;
-    private final ViewTrainingPostReportService viewTrainingPostReportService;
+    private final ITrainingPostService trainingPostService;
+    private final IViewTrainingPostService viewTrainingPostService;
+    private final IJobGroupService jobGroupService;
+    private final IPostGradeGroupService postGradeGroupService;
+    private final IViewTrainingPostReportService viewTrainingPostReportService;
     private final IOperationalRoleService iOperationalRoleService;
 
     @GetMapping(value = "/iscList")

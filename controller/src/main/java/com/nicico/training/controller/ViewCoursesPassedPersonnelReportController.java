@@ -3,7 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewCoursesPassedPersonnelReportDTO;
-import com.nicico.training.service.ViewCoursesPassedPersonnelReportService;
+import com.nicico.training.iservice.IViewCoursesPassedPersonnelReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -20,7 +20,7 @@ import java.io.IOException;
 @RestController
 @RequestMapping(value = "/api/view-courses-passed-personnel-report")
 public class ViewCoursesPassedPersonnelReportController {
-    private final ViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
+    private final IViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
 
     @Loggable
     @GetMapping
