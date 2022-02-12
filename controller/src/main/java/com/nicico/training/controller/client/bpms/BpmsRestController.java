@@ -73,7 +73,7 @@ public class BpmsRestController {
     public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId, @RequestBody String reason) {
            return service.cancelProcessInstance(processInstanceId, reason);
     }
-
+    //first api for start a process
     @Loggable
     @PostMapping({"/processes/start-data-validation"})
     public ResponseEntity<BaseResponse> startProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
@@ -83,6 +83,21 @@ public class BpmsRestController {
             CompetenceDTO.Create create = beanMapper.toCompetence(params.getRq());
             create.setProcessInstanceId(processInstance.getId());
             competenceService.checkAndCreate(create, response);
+            res.setStatus(200);
+        } catch (Exception e) {
+            res.setStatus(406);
+        }
+        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+    }
+    @Loggable
+    @PostMapping({"/processes/need-assessment/start-data-validation"})
+    public ResponseEntity<BaseResponse> startNeedAssessmentProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
+        BaseResponse res = new BaseResponse();
+        try {
+            ProcessInstance processInstance=  service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId()));
+//            CompetenceDTO.Create create = beanMapper.toCompetence(params.getRq());
+//            create.setProcessInstanceId(processInstance.getId());
+//            competenceService.checkAndCreate(create, response);
             res.setStatus(200);
         } catch (Exception e) {
             res.setStatus(406);
