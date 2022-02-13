@@ -9,5 +9,6 @@ import java.util.List;
 @Getter
 public class UpdateRequest {
     private Long sourceExamId;
+    private String modifiedBy;
     private List<UpdatedResultDto> results;
 }
