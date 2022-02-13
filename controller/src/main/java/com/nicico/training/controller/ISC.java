@@ -39,6 +39,7 @@ public class ISC<T> {
         String endRowStr = rq.getParameter("_endRow");
         String constructor = rq.getParameter("_constructor");
         String[] criteriaList = rq.getParameterValues("criteria");
+
         String operator = rq.getParameter("operator");
         String[] stringIds = rq.getParameterValues("id");
 
@@ -55,8 +56,11 @@ public class ISC<T> {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            StringBuilder criteria = new StringBuilder("[" + criteriaList[0]);
+           String strTrim= criteriaList[0];
+           criteriaList[0]=strTrim.replaceAll("\\s","");
+            StringBuilder criteria = new StringBuilder("["+ criteriaList[0]);
             for (int i = 1; i < criteriaList.length; i++) {
+
                 criteria.append(",").append(criteriaList[i]);
             }
             criteria.append("]");
