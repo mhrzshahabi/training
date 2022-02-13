@@ -79,7 +79,6 @@
                 }
             }),
             </sec:authorize>
-
             isc.LayoutSpacer.create({
                 width: "*"
             }),

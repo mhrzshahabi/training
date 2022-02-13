@@ -297,16 +297,16 @@
                     }
                 }),
                 </sec:authorize>
-                <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
+                        <sec:authorize access="hasAuthority('EvaluationQuestion_R')">
                         ToolStripButton_Refresh_JspConfigQuestionnaire
+                        </sec:authorize>
                     ]
                 })
-                </sec:authorize>
             ]
     });
 

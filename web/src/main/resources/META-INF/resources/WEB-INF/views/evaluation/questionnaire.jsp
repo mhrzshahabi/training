@@ -262,9 +262,6 @@
         <sec:authorize access="hasAuthority('QuestionnaireQuestion_U')">
         recordDoubleClick: function () { editQuestionnaireQuestion_questionnaire(); },
         </sec:authorize>
-
-
-
     });
 
     EvaluationQuestionDS_questionnaire = isc.TrDS.create({

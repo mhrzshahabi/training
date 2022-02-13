@@ -2,6 +2,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 <%
     final String accessToken2 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -133,6 +135,7 @@
             HLayout_IButtons_Request
         ]
     });
+
     //------------------------------------tabSet------------------------------------------------------------------------
     var TabSet_request = isc.TabSet.create({
         enabled: false,
@@ -148,7 +151,6 @@
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
         }
     });
-
 
     //----------------------------------- layOut -----------------------------------------------------------------------
     ToolStripButton_Add_Request = isc.ToolStripButton.create({
@@ -181,15 +183,23 @@
         membersMargin: 5,
         members:
             [
+                <sec:authorize access="hasAuthority('Requests_U')">
                 ToolStripButton_Add_Request,
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('Requests_History')">
                 ToolStripButton_History_Request,
+                </sec:authorize>
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
+                        <sec:authorize access="hasAuthority('Requests_R')">
                         ToolStripButton_Refresh_Request,
+                        </sec:authorize>
+                        <sec:authorize access="hasAuthority('Requests_P')">
                         ToolStripButton_Excel_Request
+                        </sec:authorize>
                     ]
                 })
             ]
@@ -203,7 +213,9 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         gridComponents: ["filterEditor", "header", "body"],
+        <sec:authorize access="hasAuthority('Requests_R')">
         dataSource: RestDataSource_Request,
+        </sec:authorize>
         initialSort: [
             {property: "type", direction: "ascending"}
         ],
@@ -228,13 +240,13 @@
         selectionUpdated: function (record) {
             loadRequestAttachment();
         },
-
         createRecordComponent: function (record, colNum) {
 
-            var fieldName = this.getFieldName(colNum);
-            if (record == null || fieldName != "requestContent")
+            let fieldName = this.getFieldName(colNum);
+            if (record == null || fieldName !== "requestContent")
                 return null;
 
+            <sec:authorize access="hasAuthority('Requests_Files')">
             return isc.IButton.create({
                 layoutAlign: "center",
                 title: "محتوای درخواست",
@@ -244,9 +256,8 @@
                      getRequestContent(record.id);
                 }
             });
+            </sec:authorize>
         }
-
-
     });
     let HLayout_Tab_request = isc.HLayout.create({
         minWidth: "100%",
@@ -274,7 +285,20 @@
     }, 0);
 
     //------------------------------------------------- Functions ------------------------------------------------------
+    function historyOfRequest(){
+        let record = ListGrid_Request.getSelectedRecord();
+        <%--title: "<spring:message code='request.history'/>"--%>
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            if (mainTabSet.getTab("<spring:message code='request.history'/>") != null)
+                mainTabSet.removeTab("<spring:message code='request.history'/>")
+            createTab("<spring:message code='request.history'/>","<spring:url value="web/requestHistoryReport"/>");
+        }
 
+
+
+    }
     function responseToRequest() {
 
         let record = ListGrid_Request.getSelectedRecord();
@@ -285,22 +309,6 @@
             Window_Request.show();
         }
     }
-    function historyOfRequest(){
-        let record = ListGrid_Request.getSelectedRecord();
-        <%--title: "<spring:message code='request.history'/>"--%>
-        if (record == null) {
-            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
-            if (mainTabSet.getTab("<spring:message code='request.history'/>") != null)
-                mainTabSet.removeTab("<spring:message code='request.history'/>")
-           createTab("<spring:message code='request.history'/>","<spring:url value="web/requestHistoryReport"/>");
-        }
-
-
-
-    }
-
-
     function saveRequestResponse() {
 
         if (!DynamicForm_Request.validate()) {
@@ -389,8 +397,8 @@
         downloadForm.show();
         downloadForm.submitForm();
     }
-    // --------------------------------------------- create- request content-------------------------------------------------
 
+    // --------------------------------------------- create- request content-------------------------------------------------
     function showRequestResponseContent(content) {
         let RestDataSource_Request_Content = isc.TrDS.create({
             fields: [
@@ -453,7 +461,5 @@
         ListGrid_Request_Content.setData(content);
         Window_Request_Content.show();
     }
-
-
 
     // </script>

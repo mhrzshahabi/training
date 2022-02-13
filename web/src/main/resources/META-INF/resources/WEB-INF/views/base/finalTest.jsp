@@ -377,26 +377,33 @@
                         resendFinalExam_DynamicForm.getItem("time").setDisabled(true);
                         resendFinalExam_DynamicForm.getItem("startDate").setDisabled(true);
                         resendFinalExam_DynamicForm.getItem("duration").setDisabled(true);
+                        <sec:authorize access="hasAuthority('FinalTest_Send')">
                         resendFinalExam_DynamicForm.getItem("sendBtn").setDisabled(true);
+                        </sec:authorize>
                     } else {
                         resendFinalExam_DynamicForm.getItem("time").setDisabled(false);
                         resendFinalExam_DynamicForm.getItem("startDate").setDisabled(false);
                         resendFinalExam_DynamicForm.getItem("duration").setDisabled(false);
+                        <sec:authorize access="hasAuthority('FinalTest_Send')">
                         resendFinalExam_DynamicForm.getItem("sendBtn").setDisabled(false);
+                        </sec:authorize>
                     }
                 }
             }
 
         },
+        <sec:authorize access="hasAuthority('FinalTest_U')">
         doubleClick: function () {
             showEditForm_finalTest();
         },
+        </sec:authorize>
         filterEditorSubmit: function () {
             FinalTestLG_finalTest.invalidateCache();
         },
          createRecordComponent: function (record, colNum) {
                     var fieldName = this.getFieldName(colNum);
-                    if (fieldName === "sendBtn") {
+                    if(fieldName === "sendBtn") {
+                        <sec:authorize access="hasAuthority('FinalTest_Send')">
                         let button = isc.IButton.create({
                             layoutAlign: "center",
                             disabled: record.onlineFinalExamStatus,
@@ -409,7 +416,9 @@
                             }
                         });
                         return button;
-                    }if (fieldName === "showBtn") {
+                        </sec:authorize>
+                    } if(fieldName === "showBtn") {
+                        <sec:authorize access="hasAuthority('FinalTest_Result')">
                         let button = isc.IButton.create({
                             layoutAlign: "center",
                             disabled: !record.onlineFinalExamStatus,
@@ -423,19 +432,21 @@
                             }
                         });
                         return button;
-                    } if (fieldName == "checkDate"){
-                         let button = isc.IButton.create({
+                        </sec:authorize>
+                    } if(fieldName === "checkDate") {
+                        <sec:authorize access="hasAuthority('FinalTest_R')">
+                        let button = isc.IButton.create({
                             layoutAlign: "center",
                             title: "فراگیران با اطلاعات ناقص",
                             width: "145",
                             margin: 3,
                             click: function () {
                                 showInvalidUsers(record)
-
                             }
                         });
-                        return button; }
-                    else {
+                        return button;
+                        </sec:authorize>
+                    } else {
                         return null;
                     }
                 },
@@ -1592,12 +1603,16 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         resendFinalExam_DynamicForm.getItem("time").setDisabled(true);
                         resendFinalExam_DynamicForm.getItem("startDate").setDisabled(true);
                         resendFinalExam_DynamicForm.getItem("duration").setDisabled(true);
+                        <sec:authorize access="hasAuthority('FinalTest_Send')">
                         resendFinalExam_DynamicForm.getItem("sendBtn").setDisabled(true);
+                        </sec:authorize>
                     } else {
                         resendFinalExam_DynamicForm.getItem("time").setDisabled(false);
                         resendFinalExam_DynamicForm.getItem("startDate").setDisabled(false);
                         resendFinalExam_DynamicForm.getItem("duration").setDisabled(false);
+                        <sec:authorize access="hasAuthority('FinalTest_Send')">
                         resendFinalExam_DynamicForm.getItem("sendBtn").setDisabled(false);
+                        </sec:authorize>
                     }
                 }
 
@@ -1951,11 +1966,15 @@ let inValidStudents = [];
     function checkAllowToAddQuestion(record) {
         if(record !== null) {
                 if (record.onlineFinalExamStatus === true){
+                    <sec:authorize access="hasAuthority('FinalTest_Questions_C')">
                     ToolStrip_Actions_FinalTest.members[0].setDisabled(true);
                     ToolStrip_Actions_FinalTest.members[1].setDisabled(true);
+                    </sec:authorize>
                 }else {
+                    <sec:authorize access="hasAuthority('FinalTest_Questions_C')">
                     ToolStrip_Actions_FinalTest.members[0].setDisabled(false);
                     ToolStrip_Actions_FinalTest.members[1].setDisabled(false);
+                    </sec:authorize>
                 }
             }
 

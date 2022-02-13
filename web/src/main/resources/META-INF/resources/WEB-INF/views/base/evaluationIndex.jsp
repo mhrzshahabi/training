@@ -86,9 +86,11 @@
         </sec:authorize>
         contextMenu: Menu_ListGrid_Evaluation_Index,
         selectionType: "single",
+        <sec:authorize access="hasAuthority('EvaluationIndex_U')">
         doubleClick: function () {
             ListGrid_Evaluation_Index_edit();
         },
+        </sec:authorize>
         fields: [
             {name: "nameFa"},
             {name: "nameEn"},

@@ -117,7 +117,9 @@
         height: "100%",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
+        <sec:authorize access="hasAuthority('FinalTest_Questions_R')">
         dataSource: RestDataSource_FinalTest,
+        </sec:authorize>
         selectionType: "single",
         fields: [
             {name: "id", hidden:true},
@@ -131,6 +133,7 @@
             var fieldName = this.getFieldName(colNum);
 
             if (fieldName === "OnDelete") {
+                <sec:authorize access="hasAuthority('FinalTest_Questions_C')">
                 var recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
@@ -138,7 +141,6 @@
                     membersMargin: 10,
                     align: "center"
                 });
-
                 var removeIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
@@ -172,7 +174,9 @@
                 });
                 recordCanvas.addMember(removeIcon);
                 return recordCanvas;
+                </sec:authorize>
             } else if (fieldName === "questionFiles") {
+                <sec:authorize access="hasAuthority('FinalTest_Questions_Files')">
                 return isc.IButton.create({
                     layoutAlign: "center",
                     title: "فایل های سوال",
@@ -182,6 +186,7 @@
                         showFinalTestFiles(record.questionBankId);
                     }
                 });
+                </sec:authorize>
             } else
                 return null;
         }
@@ -830,18 +835,24 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('FinalTest_Questions_C')">
             ToolStripButton_InsertQuestionFromQuestionBank_FinalTest,
             ToolStripButton_InsertQuestionFromLatestQuestions_FinalTest,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('FinalTest_Questions_P')">
             ToolStripButton_PrintJasper,
             ToolStripButton_Export2EXcel,
             ToolStripButton_PrintJasperWord,
+            </sec:authorize>
             //ToolStripButton_PrintJasper,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('FinalTest_Questions_R')">
                     ToolStripButton_RefreshIssuance_FinalTest
+                    </sec:authorize>
                 ]
             })
         ]
@@ -1006,34 +1017,14 @@
         ]
     });
 
-    //----------------------------------- New Funsctions ---------------------------------------------------------------
-
     var VLayout_Body_FinalTest = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [HLayout_Actions_FinalTest, Hlayout_Grid_FinalTest]
     });
 
-    /*function print(TestQuestionId, params, fileName, type = "pdf") {
-        var criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="test-question-form/print/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "fileName", type: "hidden"},
-                    {name: "TestQuestionId", type: "hidden"},
-                    {name: "params", type: "hidden"}
-                ]
-        });
-        criteriaForm.setValue("TestQuestionId", TestQuestionId);
-        criteriaForm.setValue("fileName", fileName);
-        criteriaForm.setValue("params", JSON.stringify(params));
-        criteriaForm.show();
-        criteriaForm.submitForm();
-    }
-*/
+    //----------------------------------- New Funsctions ---------------------------------------------------------------
+
 
     function print(TestQuestionId, params, fileName, type = "pdf") {
         var criteriaForm = isc.DynamicForm.create({
@@ -1140,22 +1131,6 @@
             }
         }));
     }
-
-    <%--function downloadFinalTestFiles(groupId, key, fileName) {--%>
-
-    <%--    let downloadForm = isc.DynamicForm.create({--%>
-    <%--        method: "GET",--%>
-    <%--        action: "minIo/downloadFile/" + groupId + "/" + key + "/" + fileName,--%>
-    <%--        target: "_Blank",--%>
-    <%--        canSubmit: true,--%>
-    <%--        fields: [--%>
-    <%--            {name: "token", type: "hidden"}--%>
-    <%--        ]--%>
-    <%--    });--%>
-    <%--    downloadForm.setValue("token", "<%=accessToken%>");--%>
-    <%--    downloadForm.show();--%>
-    <%--    downloadForm.submitForm();--%>
-    <%--}--%>
 
     function downloadFinalTestFiles(id) {
 

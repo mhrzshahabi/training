@@ -2117,12 +2117,14 @@
                 },
                 </sec:authorize>
 
+                <sec:authorize access="hasAuthority('Menu_Evaluation_Requests')">
                 {
                     title: "<spring:message code="requests"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/request"/>");
                     }
                 },
+                </sec:authorize>
 
                 <sec:authorize access="hasAuthority('Menu_Evaluation_MobileVerify')">
                 {

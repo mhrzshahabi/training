@@ -170,6 +170,10 @@
       "title": "منوی ارزیابی - ثبت نمرات پيش آزمون"
     },
     {
+      "code": "Menu_Evaluation_Requests",
+      "title": "منوی ارزیابی - درخواست ها"
+    },
+    {
       "code": "Menu_Evaluation_MobileVerify",
       "title": "منوی ارزیابی - تایید شماره موبایل فر اگیران"
     },
@@ -666,17 +670,6 @@
     {"code": "User_D", "title": "حذف کاربر"},
     {"code": "User_P", "title": "چاپ کاربر"},
 
-    {"code": "Evaluation_C","title": "ایجاد ارزيابي"},
-    {"code": "Evaluation_R","title": "مشاهده ارزيابي"},
-    {"code": "Evaluation_U","title": "ویرایش ارزيابي"},
-    {"code": "Evaluation_D","title": "حذف ارزيابي"},
-    {"code": "Evaluation_P","title": "چاپ ارزيابي"},
-    {"code": "Evaluation_PrintPreTest","title": "صدور فرم پیش تست ارزيابي"},
-    {"code": "Evaluation_Reaction","title": "تب واکنشی ارزيابي"},
-    {"code": "Evaluation_Learning","title": "تب یادگیری ارزيابي"},
-    {"code": "Evaluation_Behavior","title": "تب رفتاری ارزيابي"},
-    {"code": "Evaluation_Results","title": "تب نتایج ارزيابي"},
-
     {"code": "EvaluationQuestion_C","title": "ایجاد پرسشنامه - بانک سوال"},
     {"code": "EvaluationQuestion_R","title": "مشاهده پرسشنامه - بانک سوال"},
     {"code": "EvaluationQuestion_U","title": "ویرایش پرسشنامه - بانک سوال"},
@@ -761,7 +754,6 @@
     {"code": "TclassEvaluationInfoTab_P", "title": "کلاس - تب وضعیت ارزیابی کلاس - چاپ"},
     {"code": "TclassCostsTab_C", "title": "کلاس - تب هزینه کلاس - ایجاد"},
 
-
     {"code": "TclassPreCourseTestQuestionsTab_ShowOption", "title": "کلاس - سوالات پیش آزمون - نمایش گزینه ها"},
     {"code": "Menu_Organizational_chart", "title": "درخت سازمانی"},
     {"code": "Menu_Categories_performance", "title": "گزارش عملکرد سازمانی "},
@@ -797,7 +789,40 @@
     {"code": "FinalTest_D","title": "حذف آزمون پایانی"},
     {"code": "FinalTest_P","title": "چاپ آزمون پایانی"},
     {"code": "FinalTest_Send","title": "ارسال آزمون پایانی"},
-    {"code": "FinalTest_Result","title": "نتایج آزمون پایانی"}
+    {"code": "FinalTest_Result","title": "نتایج آزمون پایانی"},
+    {"code": "FinalTest_Questions_R","title": "سوالات آزمون پایانی - مشاهده"},
+    {"code": "FinalTest_Questions_C","title": "سوالات آزمون پایانی - ایجاد"},
+    {"code": "FinalTest_Questions_P","title": "سوالات آزمون پایانی - چاپ"},
+    {"code": "FinalTest_Questions_Files","title": "سوالات آزمون پایانی - فایل ها"},
+
+    {"code": "Evaluation_C","title": "ایجاد ارزيابي"},
+    {"code": "Evaluation_R","title": "مشاهده ارزيابي"},
+    {"code": "Evaluation_U","title": "ویرایش ارزيابي"},
+    {"code": "Evaluation_D","title": "حذف ارزيابي"},
+    {"code": "Evaluation_P","title": "چاپ ارزيابي"},
+    {"code": "Evaluation_History","title": "مشاهده تاریخچه ارزيابي"},
+    {"code": "Evaluation_Reaction","title": "ارزيابي - واکنشی"},
+    {"code": "Evaluation_Reaction_R","title": "ارزيابي - واکنشی - مشاهده"},
+    {"code": "Evaluation_Reaction_Actions","title": "ارزيابي - واکنشی - عملیات"},
+    {"code": "Evaluation_Learning","title": "ارزيابي - یادگیری"},
+    {"code": "Evaluation_Learning_R","title": "ارزيابي - یادگیری - مشاهده"},
+    {"code": "Evaluation_Learning_Actions","title": "ارزيابي - یادگیری - عملیات"},
+    {"code": "Evaluation_Behavior","title": "ارزيابي - رفتاری"},
+    {"code": "Evaluation_Behavior_R","title": "ارزيابي - رفتاری - مشاهده"},
+    {"code": "Evaluation_Behavior_Actions","title": "ارزيابي - رفتاری - عملیات"},
+    {"code": "Evaluation_Results","title": "ارزيابي - نتایج"},
+    {"code": "Evaluation_Goals","title": "ارزيابي - اهداف"},
+    {"code": "Evaluation_Goals_R","title": "ارزيابي - اهداف - مشاهده"},
+    {"code": "Evaluation_Goals_Actions","title": "ارزيابي - اهداف - عملیات"},
+    {"code": "Evaluation_Scores","title": "ارزيابي - نمرات"},
+    {"code": "Evaluation_Scores_R","title": "ارزيابي - نمرات - مشاهده"},
+    {"code": "Evaluation_Scores_Actions","title": "ارزيابي - نمرات - عملیات"},
+
+    {"code": "Requests_R","title": "مشاهده درخواست ها"},
+    {"code": "Requests_U","title": "پاسخ دهی درخواست ها"},
+    {"code": "Requests_P","title": "چاپ درخواست ها"},
+    {"code": "Requests_History","title": "تاریخچه درخواست ها"},
+    {"code": "Requests_Files","title": "فایل های درخواست ها"}
 
   ]
 }
