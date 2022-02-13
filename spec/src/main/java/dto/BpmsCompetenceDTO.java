@@ -7,6 +7,7 @@ import lombok.Setter;
 @Getter
 public class BpmsCompetenceDTO {
     private String title;
+    private String type;
     private String code;
     private String description;
     private Long categoryId;

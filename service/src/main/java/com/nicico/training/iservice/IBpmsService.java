@@ -14,7 +14,7 @@ public interface IBpmsService {
 
     ProcessInstance cancelProcessInstance(String processInstanceId, String reason);
 
-    StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params,String tenantId);
+    StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params,String tenantId,String process);
 
     BaseResponse reviewCompetenceTask(ReviewTaskRequest reviewTaskRequestDto);
 }

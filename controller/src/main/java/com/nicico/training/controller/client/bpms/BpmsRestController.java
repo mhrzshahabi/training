@@ -14,6 +14,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.controller.ISC;
 import com.nicico.training.controller.util.AppUtils;
+import com.nicico.training.iservice.INeedsAssessmentTempService;
 import com.nicico.training.mapper.bpms.BPMSBeanMapper;
 import dto.bpms.*;
 import com.nicico.training.dto.CompetenceDTO;
@@ -44,8 +45,9 @@ public class BpmsRestController {
     private final IBpmsService service;
     private final BpmsClientService client;
     private final BPMSBeanMapper bpmsBeanMapper;
-    private final CompetenceBeanMapper beanMapper;
+    private final CompetenceBeanMapper competenceBeanMapper;
     private final CompetenceService competenceService;
+    private final INeedsAssessmentTempService needsAssessmentTempService;
 
 
     @Loggable
@@ -71,16 +73,17 @@ public class BpmsRestController {
     @Loggable
     @PostMapping({"/processes/cancel-process/{processInstanceId}"})
     public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId, @RequestBody String reason) {
-           return service.cancelProcessInstance(processInstanceId, reason);
+        return service.cancelProcessInstance(processInstanceId, reason);
     }
+
     //first api for start a process
     @Loggable
     @PostMapping({"/processes/start-data-validation"})
     public ResponseEntity<BaseResponse> startProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
         BaseResponse res = new BaseResponse();
         try {
-            ProcessInstance processInstance=  service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId()));
-            CompetenceDTO.Create create = beanMapper.toCompetence(params.getRq());
+            ProcessInstance processInstance = service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId(),"COMPETENCE"));
+            CompetenceDTO.Create create = competenceBeanMapper.toCompetence(params.getRq());
             create.setProcessInstanceId(processInstance.getId());
             competenceService.checkAndCreate(create, response);
             res.setStatus(200);
@@ -89,15 +92,21 @@ public class BpmsRestController {
         }
         return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
     }
+
     @Loggable
     @PostMapping({"/processes/need-assessment/start-data-validation"})
     public ResponseEntity<BaseResponse> startNeedAssessmentProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
         BaseResponse res = new BaseResponse();
         try {
-            ProcessInstance processInstance=  service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId()));
-//            CompetenceDTO.Create create = beanMapper.toCompetence(params.getRq());
-//            create.setProcessInstanceId(processInstance.getId());
-//            competenceService.checkAndCreate(create, response);
+            ProcessInstance processInstance = service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId(),"needAssessment"));
+            Long objectId = params.getRq().getId();
+            String objectType = params.getRq().getType();
+            boolean isUpdate = needsAssessmentTempService.updateNeedsAssessmentTempBpmsWorkflow(processInstance, objectId, objectType, "ارسال به گردش کار اصلی", "0");
+            if (!isUpdate) {
+                client.cancelProcessInstance(processInstance.getId());
+                res.setStatus(406);
+                return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+            }
             res.setStatus(200);
         } catch (Exception e) {
             res.setStatus(406);
@@ -110,11 +119,11 @@ public class BpmsRestController {
     public ResponseEntity<BaseResponse> editProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
         BaseResponse res = new BaseResponse();
         try {
-            ProcessInstance processInstance=  service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId()));
-            CompetenceDTO.Update update = beanMapper.toUpdateCompetence(params.getRq());
+            ProcessInstance processInstance = service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId(),"COMPETENCE"));
+            CompetenceDTO.Update update = competenceBeanMapper.toUpdateCompetence(params.getRq());
             update.setProcessInstanceId(processInstance.getId());
             update.setId(params.getRq().getId());
-            competenceService.checkAndUpdate(params.getRq().getId(), update,response);
+            competenceService.checkAndUpdate(params.getRq().getId(), update, response);
             res.setStatus(200);
         } catch (Exception e) {
             res.setStatus(406);
@@ -131,17 +140,18 @@ public class BpmsRestController {
     @PostMapping({"/tasks/searchByUserId"})
     @Loggable
     public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchTaskByUserId(HttpServletRequest iscRq,
-                                                                   @RequestParam String userId,
-                                                                   @RequestParam String tenantId,
-                                                                   @RequestParam int page,
-                                                                   @RequestParam int size) throws IOException {
+                                                                           @RequestParam String userId,
+                                                                           @RequestParam String tenantId,
+                                                                           @RequestParam int page,
+                                                                           @RequestParam int size) throws IOException {
 
         TaskSearchDto taskSearchDto = new TaskSearchDto();
         taskSearchDto.setUserId(userId);
         taskSearchDto.setTenantId(tenantId);
 
         Object object = client.searchTask(taskSearchDto, page, size);
-        BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
+        BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {
+        });
         List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
@@ -155,6 +165,7 @@ public class BpmsRestController {
 
     /**
      * to show all the tasks from bpms
+     *
      * @param iscRq
      * @param tenantId
      * @param page
@@ -173,7 +184,8 @@ public class BpmsRestController {
         taskSearchDto.setTenantId(tenantId);
 
         Object object = client.searchTask(taskSearchDto, page, size);
-        BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {});
+        BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {
+        });
         List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);

@@ -1,5 +1,6 @@
 package com.nicico.training.iservice;
 
+import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 
@@ -33,4 +34,6 @@ public interface INeedsAssessmentTempService {
     Integer readOnlyStatus(String objectType, Long objectId);
 
     Long createOrUpdateListForNewSkill(List<NeedsAssessmentDTO.Create> createList, Long skillId);
+
+    boolean updateNeedsAssessmentTempBpmsWorkflow(ProcessInstance processInstance, Long objectId, String objectType,String mainWorkflowStatus,String mainWorkflowStatusCode);
 }

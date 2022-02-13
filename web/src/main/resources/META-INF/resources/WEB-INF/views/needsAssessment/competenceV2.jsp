@@ -471,6 +471,8 @@
                 simpleDialog("<spring:message code="message"/>", "<spring:message code='course.set.on.workflow.engine'/>", 3000, "say");
             } else if (resp.httpResponseCode === 404) {
                 simpleDialog("<spring:message code="message"/>", "<spring:message code='workflow.bpmn.not.uploaded'/>", 3000, "stop");
+            } else if (resp.httpResponseCode === 401) {
+                simpleDialog("<spring:message code="message"/>", JSON.parse(resp.httpResponseText).message);
             } else {
                 simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.send.to.workflow.problem'/>", 3000, "stop");
             }

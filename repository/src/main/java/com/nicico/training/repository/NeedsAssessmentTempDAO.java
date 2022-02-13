@@ -24,4 +24,8 @@ public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Lon
     @Modifying
     @Query(value = "update TBL_NEEDS_ASSESSMENT_TEMP SET N_MAIN_WORKFLOW_STATUS_CODE = :mainWorkflowStatusCode , C_MAIN_WORKFLOW_STATUS = :mainWorkflowStatus WHERE f_object = :objectId AND c_object_type = :objectType", nativeQuery = true)
     Integer updateNeedsAssessmentTempWorkflowMainStatus(String objectType, Long objectId, Integer mainWorkflowStatusCode, String mainWorkflowStatus);
+
+    @Modifying
+    @Query(value = "update TBL_NEEDS_ASSESSMENT_TEMP SET N_MAIN_WORKFLOW_STATUS_CODE = :mainWorkflowStatusCode , C_MAIN_WORKFLOW_STATUS = :mainWorkflowStatus , PROCESS_INSTANCE_ID = :ProcessInstanceId WHERE f_object = :objectId AND c_object_type = :objectType", nativeQuery = true)
+    Integer updateNeedsAssessmentTempBpmsWorkflow(String ProcessInstanceId, Long objectId, String objectType,String mainWorkflowStatus,String mainWorkflowStatusCode);
 }

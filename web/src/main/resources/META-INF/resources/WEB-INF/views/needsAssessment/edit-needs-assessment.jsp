@@ -2464,6 +2464,23 @@
                 this.close();
                 if (index === 0) {
                     if (mustSend) {
+                        // let param={}
+                        // param.data={
+                        //     "processDefinitionKey": "نیازسنجی",
+                        //     "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
+                        // }
+                        // param.rq= {
+                        //     "id": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
+                        //     "type": DynamicForm_JspEditNeedsAssessment.getValue("objectType"),
+                        //     "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
+                        //     // "competenceTypeId": record.competenceTypeId,
+                        //     // "code": record.code,
+                        //     // "categoryId": record.categoryId,
+                        //     // "subCategoryId": record.subCategoryId,
+                        //     // "description": record.description,
+                        //     // "workFlowStatusCode": method !== "POST" ? 4 : 0,
+                        // };
+
                         let varParams = [{
                             "processKey": "needAssessment_MainWorkflow",
                             "cId": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
@@ -2481,6 +2498,7 @@
                             "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         }];
                         wait.show();
+                        // isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/need-assessment/start-data-validation", "POST", JSON.stringify(param), startProcess_callback));
                         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
                     } else {
                         let url = needsAssessmentUrl.concat("/updateWorkFlowStatesToSent?objectId=")

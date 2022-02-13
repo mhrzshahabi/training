@@ -67,7 +67,7 @@ public class BpmsService implements IBpmsService {
     }
 
     @Override
-    public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId) {
+    public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId,String process) {
         Map<String, Object> map = new HashMap<>();
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
 //        String mainConfirmBoss = "ahmadi_z";
@@ -82,6 +82,10 @@ public class BpmsService implements IBpmsService {
         map.put("userId", SecurityUtil.getUserId());
         map.put("tenantId", tenantId);
         map.put("title", params.getData().get("title").toString());
+        if (process.equals("needAssessment")){
+            map.put("objectType",params.getRq().getType());
+            map.put("objectId",params.getRq().getId());
+        }
         map.put("createBy", SecurityUtil.getFullName());
         StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
         startProcessDto.setProcessDefinitionKey(getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());

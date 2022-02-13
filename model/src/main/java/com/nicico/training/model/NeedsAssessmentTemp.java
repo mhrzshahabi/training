@@ -87,4 +87,13 @@ public class NeedsAssessmentTemp<E> extends Auditable {
 
     @Column(name = "n_main_workflow_status_code")
     private Integer mainWorkflowStatusCode;
+
+
+    @Column(name = "process_instance_id")
+    private String processInstanceId;
+
+
+    @Column(name = "return_detail")
+    private String returnDetail;
+
 }

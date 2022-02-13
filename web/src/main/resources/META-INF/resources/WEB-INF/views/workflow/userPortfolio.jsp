@@ -147,7 +147,7 @@
             {name: "taskDefinitionKey", hidden: true},
             {name: "processDefinitionKey", hidden: true}
         ],
-        sortField: 0,
+        sortField: ["date"],
         dataPageSize: 50,
         showFilterEditor: true,
         filterOnKeypress: true,
@@ -251,7 +251,7 @@
                     isc.DynamicForm.create({
                         ID: "reasonForm",
                         width: "100%",
-                        height: "100%",
+                        height: "75%",
                         autoFocus: "true",
                         cellPadding: 5,
                         fields: [
@@ -273,6 +273,7 @@
                     }),
                     isc.HLayout.create({
                         width: "100%",
+                        height: "25%",
                         align: "center",
                         membersMargin: 10,
                         members: [
@@ -312,7 +313,7 @@
             let DynamicForm_Completion_UserPortfolio = isc.DynamicForm.create({
                 colWidths: ["10%", "80%", "10%"],
                 width: "100%",
-                height: "100%",
+                height: "75%",
                 numCols: "3",
                 autoFocus: "true",
                 cellPadding: 5,
@@ -334,6 +335,7 @@
                 align: "center",
                 width: "120",
                 click: function () {
+                    // showWindowDiffNeedsAssessment(workflowRecordId, data.cType,"aaaaaaaaaaa",false);
                     showProcessDetail(record.name, record.processInstanceId);
                 }
             });
@@ -363,6 +365,7 @@
             });
             let HLayout_Completion_UserPortfolio = isc.HLayout.create({
                 width: "100%",
+                height: "25%",
                 align: "center",
                 membersMargin: 10,
                 members: [
