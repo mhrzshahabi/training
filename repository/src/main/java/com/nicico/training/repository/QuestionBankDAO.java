@@ -34,4 +34,7 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
 
    @Query(value = "SELECT * FROM tbl_question_bank WHERE (f_category_id IS NULL AND f_subcategory_id IS NULL ) OR (f_category_id IN (:categories) OR f_subcategory_id IN (:subCategories))",nativeQuery = true)
    Page<QuestionBank> findAllWithCategoryAndSubCategory(List<Long> categories,List<Long> subCategories,Pageable pageable);
+
+    @Query(value = "SELECT * FROM tbl_question_bank WHERE (f_category_id IS NULL AND f_subcategory_id IS NULL ) OR (f_category_id IN (:categories) OR f_subcategory_id IN (:subCategories))",nativeQuery = true)
+   List<QuestionBank>  findAllWithCategoryAndSubList(List<Long> categories,List<Long> subCategories);
 }
