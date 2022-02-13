@@ -1204,7 +1204,7 @@ public class ElsRestController {
 
 
                     request.setStartIndex(0)
-                            .setCount(1000- 0);
+                            .setCount(size- 0);
                        if(list2.size()>0) {
                            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
                            criteria.getCriteria().add(addCriteria);
