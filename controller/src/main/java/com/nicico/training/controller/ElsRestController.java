@@ -1163,6 +1163,8 @@ public class ElsRestController {
         try {
             SearchDTO.SearchRq request = new SearchDTO.SearchRq();
             List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+            List<SearchDTO.CriteriaRq> list2 = new ArrayList<>();
+
             List<QuestionBank> questionBankList = new ArrayList<>();
             List<QuestionBank> filterQuestions=new ArrayList<>();
             if (elsSearchDTO.getNationalCode() != null) {
@@ -1175,8 +1177,15 @@ public class ElsRestController {
                     dto.setQuestions(Collections.singletonList(elsQuestionDto));
                     return dto;
                 }
+                List<Long> categories=categoryService.findCategoryByTeacher(teacherId);
+                List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacherId);
+                list.add(makeNewCriteria("categoryId", null, EOperator.isNull, null));
+                list.add(makeNewCriteria("subCategoryId", null, EOperator.isNull, null));
+                if(categories.size()>0)
+                list2.add(makeNewCriteria("categoryId",categories,EOperator.inSet,null));
+                if(subCategories.size()>0)
+                list2.add(makeNewCriteria("subCategoryId",subCategories,EOperator.inSet,null));
 
-                List<QuestionBank> totalQuestions = questionBankService.getQuestionListByCategoryAndSubCategory(teacherService.getTeacher(teacherId));
 
                 if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
                     elsSearchDTO.getElsSearchList().stream().forEach(elsSearch -> {
@@ -1184,12 +1193,25 @@ public class ElsRestController {
                             list.add(makeNewCriteria(elsSearch.getFieldName(), elsSearch.getValue().toString(), EOperator.iContains, null));
                         }
                     });
+                }
                     SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
                     request.setCriteria(criteriaRq);
 
 
+
+                    SearchDTO.CriteriaRq addCriteria = makeNewCriteria(null, null, EOperator.or, list2);
+
+
+
                     request.setStartIndex(0)
-                            .setCount(totalQuestions.size() - 0);
+                            .setCount(size- 0);
+                       if(list2.size()>0) {
+                           SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
+                           criteria.getCriteria().add(addCriteria);
+                           if (request.getCriteria() != null)
+                               criteria.getCriteria().add(request.getCriteria());
+                           request.setCriteria(criteria);
+                       }
 
                     SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = questionBankService.searchId(request);
 
@@ -1199,20 +1221,13 @@ public class ElsRestController {
                             questionBankList.add(questionBankService.getById(idClass.getId()));
                         });
                     }
-                }
 
-                if(questionBankList.size()>0 && totalQuestions!=null &&  totalQuestions.size()>0) {
-                    filterQuestions = totalQuestions.stream().filter(questionBank -> {
-                        if (questionBankList.contains(questionBank))
-                            return true;
-                        else
-                            return false;
 
-                    }).collect(Collectors.toList());
+
                     Pageable pageable = PageRequest.of(page, size, Sort.by(
                             Sort.Order.desc("id")
                     ));
-                    Page<QuestionBank> pageQuestion = new PageImpl<QuestionBank>(filterQuestions, pageable, filterQuestions.size());
+                    Page<QuestionBank> pageQuestion = new PageImpl<QuestionBank>(questionBankList, pageable, questionBankList.size());
 
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(pageQuestion.getContent(), elsSearchDTO.getNationalCode());
                     PaginationDto paginationDto = new PaginationDto();
@@ -1224,23 +1239,6 @@ public class ElsRestController {
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
 
-                }else{
-                    Pageable pageable = PageRequest.of(page, size, Sort.by(
-                            Sort.Order.desc("id")
-                    ));
-                    Page<QuestionBank> pageQuestion = new PageImpl<QuestionBank>(totalQuestions, pageable, totalQuestions.size());
-
-                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(pageQuestion.getContent(), elsSearchDTO.getNationalCode());
-                    PaginationDto paginationDto = new PaginationDto();
-                    paginationDto.setCurrent(page);
-                    paginationDto.setSize(size);
-                    paginationDto.setTotal(pageQuestion.getTotalPages());
-                    paginationDto.setLast(pageQuestion.getTotalPages() - 1);
-                    paginationDto.setTotalItems(pageQuestion.get().count());
-                    questionBankDto.setPagination(paginationDto);
-                    return questionBankDto;
-
-                }
 
 
             } else {
@@ -1349,6 +1347,7 @@ public class ElsRestController {
     @GetMapping("/questionBankById/{id}")
     public ElsQuestionDto getQuestionBankById(HttpServletRequest header, @PathVariable long id) {
         ElsQuestionDto response = new ElsQuestionDto();
+
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 QuestionBank questionBank = questionBankService.getById(id);
