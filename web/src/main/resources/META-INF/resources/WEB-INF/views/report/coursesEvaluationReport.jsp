@@ -94,9 +94,22 @@
                 multiple: true,
                 filterLocally: true,
                 pickListProperties: {
+                    canSelectAll: true,
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان گروه",
+                        align: "center"
+                    }
+                ],
                 changed: function () {
                     isCriteriaCategoriesChanged_CER = true;
                     var subCategoryField = DynamicForm_CER.getField("courseSubCategory");
@@ -111,9 +124,11 @@
                     var subCategories = subCategoryField.getSelectedRecords();
                     var categoryNames = this.getValue();
                     var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
-                        if (categoryNames.contains(subCategories[i].category.titleFa))
-                            SubCats.add(subCategories[i].titleFa);
+                    if (subCategories !== undefined && subCategories !== null) {
+                        for (var i = 0; i < subCategories.length; i++) {
+                            if (categoryNames.contains(subCategories[i].category.titleFa))
+                                SubCats.add(subCategories[i].titleFa);
+                        }
                     }
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
@@ -135,9 +150,30 @@
                 multiple: true,
                 filterLocally: true,
                 pickListProperties: {
+                    canSelectAll: true,
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
+                pickListFields: [
+                    {
+                        name: "id",
+                        hidden: true,
+                        align: "center"
+                    },
+                    {
+                        name: "category.titleFa",
+                        title: "عنوان گروه",
+                        align: "center",
+                        sortNormalizer: function (record) {
+                            return record.category.titleFa;
+                        }
+                    },
+                    {
+                        name: "titleFa",
+                        title: "عنوان زیرگروه",
+                        align: "center"
+                    }
+                ],
                 focus: function () {
                     if (isCriteriaCategoriesChanged_CER) {
                         isCriteriaCategoriesChanged_CER = false;
