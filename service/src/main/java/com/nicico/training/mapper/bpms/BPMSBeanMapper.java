@@ -15,6 +15,8 @@ public interface BPMSBeanMapper {
 
     @Mapping(source = "processVariables", target = "createBy", qualifiedByName = "processVariablesToCreateBy")
     @Mapping(source = "processVariables", target = "title", qualifiedByName = "processVariablesToTitle")
+    @Mapping(source = "processVariables", target = "objectId", qualifiedByName = "processVariablesToObjectId")
+    @Mapping(source = "processVariables", target = "objectType", qualifiedByName = "processVariablesToObjectType")
     BPMSUserTasksContentDto toUserTasksContent (BPMSUserTasksResponseDto bpmsUserTasksResponseDto);
 
     List<BPMSUserTasksContentDto> toUserTasksContentList(List<BPMSUserTasksResponseDto> bpmsUserTasksResponseDtoList);
@@ -27,6 +29,20 @@ public interface BPMSBeanMapper {
             return null;
     }
 
+    @Named("processVariablesToObjectType")
+    default String processVariablesToObjectType(LinkedHashMap<String, Object> variables) {
+        if(variables!=null && variables.get("objectType")!=null)
+            return String.valueOf(variables.get("objectType"));
+        else
+            return null;
+    }
+    @Named("processVariablesToObjectId")
+    default String processVariablesToObjectId(LinkedHashMap<String, Object> variables) {
+        if(variables!=null && variables.get("objectId")!=null)
+            return String.valueOf(variables.get("objectId"));
+        else
+            return null;
+    }
     @Named("processVariablesToTitle")
     default String processVariablesToTitle(LinkedHashMap<String, Object> variables) {
         if(variables!=null)

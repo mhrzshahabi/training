@@ -2464,22 +2464,22 @@
                 this.close();
                 if (index === 0) {
                     if (mustSend) {
-                        // let param={}
-                        // param.data={
-                        //     "processDefinitionKey": "نیازسنجی",
-                        //     "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
-                        // }
-                        // param.rq= {
-                        //     "id": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
-                        //     "type": DynamicForm_JspEditNeedsAssessment.getValue("objectType"),
-                        //     "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
-                        //     // "competenceTypeId": record.competenceTypeId,
-                        //     // "code": record.code,
-                        //     // "categoryId": record.categoryId,
-                        //     // "subCategoryId": record.subCategoryId,
-                        //     // "description": record.description,
-                        //     // "workFlowStatusCode": method !== "POST" ? 4 : 0,
-                        // };
+                        let param={}
+                        param.data={
+                            "processDefinitionKey": "نیازسنجی",
+                            "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
+                        }
+                        param.rq= {
+                            "id": DynamicForm_JspEditNeedsAssessment.getValue("objectId"),
+                            "type": DynamicForm_JspEditNeedsAssessment.getValue("objectType"),
+                            "title": "تغییر نیازسنجی " + priorityList[DynamicForm_JspEditNeedsAssessment.getValue("objectType")] + " : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa + (DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code !== undefined ? " با کد : " + DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code : "")
+                            // "competenceTypeId": record.competenceTypeId,
+                            // "code": record.code,
+                            // "categoryId": record.categoryId,
+                            // "subCategoryId": record.subCategoryId,
+                            // "description": record.description,
+                            // "workFlowStatusCode": method !== "POST" ? 4 : 0,
+                        };
 
                         let varParams = [{
                             "processKey": "needAssessment_MainWorkflow",
