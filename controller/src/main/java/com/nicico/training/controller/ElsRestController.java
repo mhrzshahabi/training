@@ -1347,6 +1347,7 @@ public class ElsRestController {
     @GetMapping("/questionBankById/{id}")
     public ElsQuestionDto getQuestionBankById(HttpServletRequest header, @PathVariable long id) {
         ElsQuestionDto response = new ElsQuestionDto();
+
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 QuestionBank questionBank = questionBankService.getById(id);
