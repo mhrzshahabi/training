@@ -21,6 +21,7 @@ public interface IQuestionBankService {
     QuestionBankDTO.FullInfo get(Long Id);
 
     SearchDTO.SearchRs<QuestionBankDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
+    SearchDTO.SearchRs<QuestionBankDTO.IdClass> searchId(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
     QuestionBankDTO.Info create(QuestionBankDTO.Create request);
 
@@ -34,4 +35,5 @@ public interface IQuestionBankService {
     Page<QuestionBank> getQuestionsByCategoryAndSubCategory(Teacher teacher,Integer page ,Integer size);
 
     Integer getMaxId();
+    List<QuestionBank> getQuestionListByCategoryAndSubCategory(Teacher teacher);
 }
