@@ -1,6 +1,7 @@
 package com.nicico.training.mapper.evaluation;
 
 
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
@@ -2010,6 +2011,7 @@ public abstract class EvaluationBeanMapper {
     public UpdateRequest convertScoresToDto(List<ExamResult> examResult, long id) {
         UpdateRequest request = new UpdateRequest();
         request.setSourceExamId(id);
+        request.setModifiedBy(SecurityUtil.getFirstName()+" "+SecurityUtil.getLastName());
         List<UpdatedResultDto> resultDtoList = new ArrayList<>();
         for (ExamResult data : examResult) {
             UpdatedResultDto updatedResultDto = new UpdatedResultDto();
