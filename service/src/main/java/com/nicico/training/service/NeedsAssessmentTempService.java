@@ -303,6 +303,12 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         return dao.updateNeedsAssessmentTempWorkflowMainStatus(objectType, objectId, workflowStatusCode, workflowStatus);
     }
 
+    @Override
+    public Integer updateNeedsAssessmentTempWorkflowMainStatusInBpms(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus, String reason) {
+        return dao.updateNeedsAssessmentTempWorkflowMainStatusInBpms(objectType, objectId, workflowStatusCode, workflowStatus,reason);
+
+    }
+
     @Transactional(readOnly = true)
     public Boolean isCreatedByCurrentUser(String objectType, Long objectId) {
         SearchDTO.CriteriaRq criteriaRq = getCriteria(objectType, objectId, false);

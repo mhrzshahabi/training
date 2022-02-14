@@ -288,9 +288,44 @@
                                     if (!reasonForm.validate()) {
                                         return;
                                     }
+
+                                    let url =""
+                                    let reviewTaskRequest={}
+                                    let data={}
+                                    switch (ListGrid_Processes_UserPortfolio.getSelectedRecord().name) {
+                                        case "بررسی نیازسنجی":
+                                            url="/needAssessment/processes/cancel-process/";
+                                            var map_data = {"objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId, "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType};
+                                            reviewTaskRequest  = {
+                                                // reason:reasonForm.getField("returnReason").getValue(),
+                                                variables:map_data,
+                                                processInstanceId:record.processInstanceId,
+                                                taskId: record.taskId,
+                                                approve: false,
+                                                userName: userUserName,
+                                            };
+                                            break;
+                                        case "بررسی شایستگی":
+                                            url="/processes/cancel-process/";
+                                            reviewTaskRequest  = {
+                                                taskId: record.taskId,
+                                                userName: userUserName,
+                                                approve: false,
+                                                processInstanceId:record.processInstanceId
+                                            };
+                                            break;
+                                        default:
+                                    }
+                                    data = {
+                                        reviewTaskRequest:reviewTaskRequest,
+                                        reason:reasonForm.getField("returnReason").getValue()
+                                    }
+
+
                                     // TODO call return process API
-                                    let reason = reasonForm.getField("returnReason").getValue();
-                                    isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/cancel-process/" + record.processInstanceId , "POST", reason, function (resp) {
+
+                                    wait.show();
+                                    isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + url  , "POST", JSON.stringify(data), function (resp) {
                                         wait.close();
                                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                             window.close();
@@ -536,15 +571,34 @@
         }));
     }
     function confirmProcess(taskId, processInstanceId, window) {
+        let url =""
+        let reviewTaskRequest={}
+        switch (ListGrid_Processes_UserPortfolio.getSelectedRecord().name) {
+            case "بررسی نیازسنجی":
+                var map_data = {"objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId, "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType};
+                url="/needAssessment/tasks/review"
+                reviewTaskRequest  = {
+                    taskId: taskId,
+                    approve: true,
+                    userName: userUserName,
+                    processInstanceId: processInstanceId,
+                    variables:map_data
+                };
+                break;
+            case "بررسی شایستگی":
+                 reviewTaskRequest = {
+                    taskId: taskId,
+                    approve: true,
+                    userName: userUserName,
+                    processInstanceId: processInstanceId
+                };
+                url="/tasks/review"
+                break;
+            default:
+        }
 
-        let reviewTaskRequest = {
-          taskId: taskId,
-          approve: false,
-          userName: userUserName,
-          processInstanceId: processInstanceId
-        };
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/tasks/review", "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl +url , "POST", JSON.stringify(reviewTaskRequest), function (resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 window.close();

@@ -11,6 +11,7 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.INeedsAssessmentTempService;
 import com.nicico.training.repository.PersonnelDAO;
+import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsContent;
 import dto.bpms.BpmsDefinitionDto;
 import dto.bpms.BpmsStartParamsDto;
@@ -61,11 +62,9 @@ public class BpmsService implements IBpmsService {
 
     @Override
     @Transactional
-    public ProcessInstance cancelProcessInstance(String processInstanceId, String reason) {
-        competenceService.updateStatus(processInstanceId, 1L, reason);
-        return client.cancelProcessInstance(processInstanceId);
-
-
+    public void cancelProcessInstance(ReviewTaskRequest reviewTaskRequest, String reason) {
+        competenceService.updateStatus(reviewTaskRequest.getProcessInstanceId(), 1L, reason);
+        client.reviewTask(reviewTaskRequest);
     }
 
     @Override
@@ -120,8 +119,8 @@ public class BpmsService implements IBpmsService {
     public BaseResponse reviewNeedAssessmentTask(ReviewTaskRequest reviewTaskRequestDto) {
         BaseResponse res = new BaseResponse();
         try {
-//            iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 1, "تایید نهایی اصلی");
-//            iNeedsAssessmentTempService.verify(objectType, objectId);
+            iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(reviewTaskRequestDto.getVariables().get("objectType").toString(), Long.valueOf(reviewTaskRequestDto.getVariables().get("objectId").toString()), 1, "تایید نهایی اصلی");
+            iNeedsAssessmentTempService.verify(reviewTaskRequestDto.getVariables().get("objectType").toString(), Long.valueOf(reviewTaskRequestDto.getVariables().get("objectId").toString()));
 
             try {
                 client.reviewTask(reviewTaskRequestDto);
@@ -139,5 +138,12 @@ public class BpmsService implements IBpmsService {
             res.setMessage("تغییر وضعیت شایستگی انجام نشد");
             return res;
         }
+    }
+
+    @Override
+    public void cancelNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data) {
+
+        iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), -1, "عدم تایید اصلی",data.getReason());
+         client.reviewTask(reviewTaskRequest);
     }
 }
