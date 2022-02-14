@@ -1,16 +1,20 @@
 package com.nicico.training.service;
 
+import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.ICompetenceService;
+import com.nicico.training.mapper.bpmsNeedAssessment.CompetenceBeanMapper;
 import com.nicico.training.model.Competence;
 import com.nicico.training.model.NeedsAssessment;
 import com.nicico.training.model.NeedsAssessmentTemp;
 import com.nicico.training.repository.CompetenceDAO;
 import com.nicico.training.repository.NeedsAssessmentDAO;
 import com.nicico.training.repository.NeedsAssessmentTempDAO;
+import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,21 +37,51 @@ import java.util.Optional;
 public class CompetenceService extends BaseService<Competence, Long, CompetenceDTO.Info, CompetenceDTO.Create, CompetenceDTO.Update, CompetenceDTO.Delete, CompetenceDAO> implements ICompetenceService {
 
     @Autowired
-    private MessageSource messageSource;
-
+    private IBpmsService bPMSService;
     @Autowired
-    private ParameterValueService parameterValueService;
-
+    private MessageSource messageSource;
     @Autowired
     private CompetenceDAO competenceDAO;
     @Autowired
     private NeedsAssessmentDAO needsAssessmentDAO;
+    @Autowired
+    private CompetenceBeanMapper competenceBeanMapper;
+    @Autowired
+    private ParameterValueService parameterValueService;
     @Autowired
     private NeedsAssessmentTempDAO needsAssessmentTempDAO;
 
     @Autowired
     CompetenceService(CompetenceDAO competenceDAO) {
         super(new Competence(), competenceDAO);
+    }
+
+    @Transactional
+    public BaseResponse checkAndCreateInBPMS(BpmsStartParamsDto params, HttpServletResponse response) {
+
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            CompetenceDTO.Create create = competenceBeanMapper.toCompetence(params.getRq());
+            if (parameterValueService.isExist(create.getCompetenceTypeId()) && !dao.existsByTitle(create.getTitle())) {
+                create.setCode(codeCompute(create.getCode()));
+                CompetenceDTO.Info info = create(create);
+                ProcessInstance processInstance = bPMSService.startProcessWithData(bPMSService.getStartProcessDto(params, "Training","COMPETENCE"));
+                CompetenceDTO.Update update = modelMapper.map(info, CompetenceDTO.Update.class);
+                update.setProcessInstanceId(processInstance.getId());
+                checkAndUpdate(info.getId(), update, response);
+                baseResponse.setStatus(200);
+            } else {
+                baseResponse.setStatus(405);
+                baseResponse.setMessage("عنوان شایستگی تکراری است");
+            }
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            baseResponse.setStatus(404);
+            baseResponse.setMessage("مشکلی در ایجاد شایستگی وجود دارد");
+        } catch (Exception e) {
+            baseResponse.setStatus(406);
+            baseResponse.setMessage("ارسال به گردش کار انجام نشد، لطفا دوباره تلاش کنيد");
+        }
+        return baseResponse;
     }
 
     @Transactional
