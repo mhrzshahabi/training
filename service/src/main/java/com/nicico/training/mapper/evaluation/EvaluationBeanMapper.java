@@ -2011,7 +2011,7 @@ public abstract class EvaluationBeanMapper {
     public UpdateRequest convertScoresToDto(List<ExamResult> examResult, long id) {
         UpdateRequest request = new UpdateRequest();
         request.setSourceExamId(id);
-        request.setModifiedBy(SecurityUtil.getFirstName()+" "+SecurityUtil.getLastName());
+        request.setModifiedBy(SecurityUtil.getNationalCode());
         List<UpdatedResultDto> resultDtoList = new ArrayList<>();
         for (ExamResult data : examResult) {
             UpdatedResultDto updatedResultDto = new UpdatedResultDto();
