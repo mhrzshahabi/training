@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
 
@@ -48,7 +49,8 @@
     });
     ToolStripButton_Refresh_MV = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_MV.fetchData();
+            ListGrid_MV.clearFilterValues();
+            ListGrid_MV.invalidateCache();
         }
     });
     ToolStrip_Actions_MV = isc.ToolStrip.create({
@@ -57,14 +59,20 @@
         membersMargin: 5,
         members:
             [
+                <sec:authorize access="hasAuthority('MobileVerify_Detail')">
                 ToolStripButton_ShowDetail_MV,
+                </sec:authorize>
+                <sec:authorize access="hasAuthority('MobileVerify_Verify')">
                 ToolStripButton_VerifyMobile_MV,
+                </sec:authorize>
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
+                        <sec:authorize access="hasAuthority('MobileVerify_R')">
                         ToolStripButton_Refresh_MV,
+                        </sec:authorize>
                         // ToolStripButton_Excel_MV
                     ]
                 })
@@ -77,7 +85,9 @@
         showFilterEditor: true,
         autoFetchData: true,
         gridComponents: ["filterEditor", "header", "body"],
+        <sec:authorize access="hasAuthority('MobileVerify_R')">
         dataSource: RestDataSource_MV,
+        </sec:authorize>
         fields: [
             {name: "id", hidden: true},
             {name: "mobileNumber"},

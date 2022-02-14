@@ -381,8 +381,12 @@
     var ListGrid_class_Evaluation = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('Evaluation_R')">
         dataSource: RestDataSource_class_Evaluation,
+        </sec:authorize>
+        <sec:authorize access="hasAuthority('Evaluation_History')">
         contextMenu: Menu_class_Evaluation,
+        </sec:authorize>
         canAddFormulaFields: false,
         autoFetchData: false,
         showFilterEditor: true,
@@ -575,14 +579,12 @@
             }
             return style;
         },
-
         cellClick: function (record, rowNum, colNum) {
 
             if (this.getFieldName(colNum) == "teacherLastName") {
                 ListGrid_teacher_edit(record.teacherId,"evaluation")
             }
         },
-
         selectionUpdated: function () {
             loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
             set_Evaluation_Tabset_status();
@@ -624,6 +626,7 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Evaluation_R')">
             DynamicForm_AlarmSelection,
             isc.ToolStrip.create({
                 width: "5%",
@@ -633,6 +636,7 @@
                     ToolStripButton_Refresh_Evaluation
                 ]
             })
+            </sec:authorize>
         ]
     });
 
@@ -674,16 +678,22 @@
                 pane: null
             },
             </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Evaluation_Goals')">
             {
                 id: "TabPane_EditGoalQuestions",
                 title: "ویرایش سوالات ارزیابی مربوط به اهداف",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/edit-goal-questions-form"})
             },
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Evaluation_Scores')">
             {
                 id: "TabPane_Class_Scores",
                 title: "<spring:message code="register.scores"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/class-scores-form"})
             }
+            </sec:authorize>
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded()) {
@@ -718,12 +728,14 @@
     var VLayout_Body_Evaluation = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [HLayout_Actions_Evaluation,
+        members: [
+            HLayout_Actions_Evaluation,
             isc.HLayout.create({
                 width: "75%",
                 height: "1%",
                 members: [
                     labelGuide(ListGrid_class_Evaluation.getFieldByName("evaluation").valueMap),
+                    <sec:authorize access="hasAuthority('Evaluation_R')">
                     isc.DynamicForm.create({
                         padding: 0,
                         fields: [
@@ -771,10 +783,13 @@
                                 //     }
                                 // ],
                             }]
-                    })]
+                    })
+                    </sec:authorize>
+                ]
             }),
             Hlayout_Grid_Evaluation,
-            Hlayout_Tab_Evaluation]
+            Hlayout_Tab_Evaluation
+        ]
     });
 
     //----------------------------------------- Functions --------------------------------------------------------------
@@ -829,30 +844,44 @@
                         classRecord.teacherEvalStatus === undefined ||
                         classRecord.teacherEvalStatus === null) {
 
+                        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                         ToolStrip_SendForms_RE.getField("sendButtonTeacher").hideIcon("ok");
                         ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                        </sec:authorize>
                         ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
 
                         ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                     } else if (classRecord.teacherEvalStatus === 1) {
+                        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                         ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                        </sec:authorize>
                         if (classRecord.classTeacherOnlineEvalStatus) {
+                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                             ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                            </sec:authorize>
                             ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
                         } else {
+                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                             ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                            </sec:authorize>
                             ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
 
                         }
 
                         ToolStrip_SendForms_RE.getField("registerButtonTeacher").hideIcon("ok");
                     } else {
+                        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                         ToolStrip_SendForms_RE.getField("sendButtonTeacher").showIcon("ok");
+                        </sec:authorize>
                         if (classRecord.classTeacherOnlineEvalStatus) {
+                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                             ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(true);
+                            </sec:authorize>
                             ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(false);
                         } else {
+                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                             ToolStrip_SendForms_RE.getField("sendToEls_teacher").setDisabled(false);
+                            </sec:authorize>
                             ToolStrip_SendForms_RE.getField("showResultsEls_teacher").setDisabled(true);
                         }
 

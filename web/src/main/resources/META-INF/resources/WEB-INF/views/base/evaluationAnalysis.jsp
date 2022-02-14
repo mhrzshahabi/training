@@ -65,7 +65,7 @@
     ListGrid_evaluationAnalysis_class = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        <sec:authorize access="hasAuthority('Evaluation_R')">
+        <sec:authorize access="hasAuthority('EvaluationAnalysis_R')">
         dataSource: RestDataSource_evaluationAnalysis_class,
         </sec:authorize>
         canAddFormulaFields: false,
@@ -217,6 +217,7 @@
             {name: "teacherId", hidden: true},
             {name: "teacherFullName", hidden:true}
         ],
+        <sec:authorize access="hasAuthority('EvaluationAnalysis_R')">
         rowDoubleClick: function(record, recordNum, fieldNum) {
             Window_Evaluation_Analysis.title = "نتایج ارزیابی کلاس " + record.courseTitleFa;
             Window_Evaluation_Analysis.show();
@@ -224,6 +225,7 @@
             set_evaluation_analysis_tabset_status(record);
             Detail_Tab_Evaluation_Analysis.selectTab(0);
         },
+        </sec:authorize>
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
             if (fieldName == "iconField") {
@@ -327,8 +329,12 @@
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('EvaluationAnalysis_R')">
                     ToolStripButton_Refresh_Evaluation_Analysis,
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('EvaluationAnalysis_P')">
                     ToolStripButton_Export2EXcel_Evaluation_Analysis
+                    </sec:authorize>
                 ]
             })
         ]
@@ -518,5 +524,6 @@
 
     Window_Evaluation_Analysis.hide();
 
+    // </script>
 
 

@@ -197,7 +197,9 @@
         var ListGrid_student_BE = isc.TrLG.create({
             width: "100%",
             height: "100%",
+            <sec:authorize access="hasAuthority('Evaluation_Behavior_R')">
             dataSource: RestDataSource_student_BE,
+            </sec:authorize>
             selectionType: "single",
             showRecordComponents: true,
             showRecordComponentsByCell: true,
@@ -276,6 +278,7 @@
                     });
                     return button;
                 } else if (fieldName == "sendForm") {
+                    <sec:authorize access="hasAuthority('Evaluation_Behavior_Actions')">
                     let button = isc.IButton.create({
                         layoutAlign: "center",
                         baseStyle: "sendFile",
@@ -286,10 +289,12 @@
                         }
                     });
                     return button;
+                    </sec:authorize>
                 } else {
                     return null;
                 }
             },
+            <sec:authorize access="hasAuthority('Evaluation_Behavior_Actions')">
             cellClick: function (record, rowNum, colNum) {
                 editMobileForm.callBack = (contactInfo ,m) => {record.student.contactInfo = contactInfo;record.student.contactInfo.smSMobileNumber = m;};
                 if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber") {
@@ -324,7 +329,7 @@
                     }
                 }
             },
-
+            </sec:authorize>
         });
 
     //----------------------------------------- ToolStrips -------------------------------------------------------------
@@ -372,9 +377,13 @@
                     align: "left",
                     border: '0px',
                     members: [
+                        <sec:authorize access="hasAuthority('Evaluation_Behavior_Actions')">
                         ToolStripButton_Excel_BE,
                         ToolStripButton_Print_BE,
+                        </sec:authorize>
+                        <sec:authorize access="hasAuthority('Evaluation_Behavior_R')">
                         ToolStripButton_RefreshIssuance_BE
+                        </sec:authorize>
                     ]
                 })
             ]
@@ -827,6 +836,7 @@
                         return recordCanvas;
                     }
                     else if (fieldName == "removeForm") {
+                        <sec:authorize access="hasAuthority('Evaluation_Behavior_Actions')">
                         let recordCanvas = isc.HLayout.create({
                             height: "100%",
                             width: "100%",
@@ -879,8 +889,10 @@
                         });
                         recordCanvas.addMember(addIcon);
                         return recordCanvas;
+                        </sec:authorize>
                     }
                     else if (fieldName == "printForm") {
+                        <sec:authorize access="hasAuthority('Evaluation_Behavior_Actions')">
                         let recordCanvas = isc.HLayout.create({
                             height: "100%",
                             width: "100%",
@@ -903,6 +915,7 @@
                         });
                         recordCanvas.addMember(addIcon);
                         return recordCanvas;
+                        </sec:authorize>
                     }
                     else
                         return null;
@@ -1064,7 +1077,9 @@
                             DynamicForm_Description_JspEvaluation,
                             isc.TrHLayoutButtons.create({
                                 members: [
+                                    <sec:authorize access="hasAuthority('Evaluation_Behavior_Actions')">
                                     IButton_Questions_Save,
+                                    </sec:authorize>
                                     isc.IButtonCancel.create({
                                         click: function () {
                                             Window_Questions_JspEvaluation.close();
@@ -1325,5 +1340,6 @@
         }
     }
 
+    // </script>
 
 

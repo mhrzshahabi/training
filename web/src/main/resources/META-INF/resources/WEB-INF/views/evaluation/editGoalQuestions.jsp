@@ -2,15 +2,18 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
-<!--  <script> -->
+// <script>
     var change_value_JspEGQ = false;
     var classRecord_JspEGQ;
     var wait_JspEGQ;
 
     var RestDataSource_Golas_JspEGQ = isc.TrDS.create({
         transformResponse: function (dsResponse, dsRequest, data) {
+            <sec:authorize access="hasAuthority('Evaluation_Goals_R')">
             ListGrid_Goal_JspEGQ.setData(data.response.data.toArray());
+            </sec:authorize>
             return this.Super("transformResponse", arguments);
         },
         fields: [
@@ -27,15 +30,17 @@
         width: "100%",
         height: "100%",
         selectionType: "single",
-        editOnFocus: true,
         showRowNumbers: false,
+        <sec:authorize access="hasAuthority('Evaluation_Goals_Actions')">
+        editOnFocus: true,
         editByCell: true,
         editEvent: "click",
         modalEditing: true,
-        canHover: true,
         canSelectCells: true,
-        autoFetchData: false,
         canRemoveRecords: true,
+        </sec:authorize>
+        canHover: true,
+        autoFetchData: false,
         fields: [
             {
                 name: "originQuestion",
@@ -45,7 +50,9 @@
             {
                 name: "question",
                 title: "سوالات ویرایش شده",
+                <sec:authorize access="hasAuthority('Evaluation_Goals_Actions')">
                 canEdit: true,
+                </sec:authorize>
                 validateOnChange: false,
                 editEvent: "click",
                 autoFithWidth: true,
@@ -100,7 +107,9 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Evaluation_Goals_Actions')">
             ToolStripButton_Refresh_JspEGQ
+            </sec:authorize>
         ]
     });
 
@@ -118,7 +127,9 @@
         alignLayout: "center",
         padding: 10,
         members: [
+            <sec:authorize access="hasAuthority('Evaluation_Goals_Actions')">
             IButton_SaveButton_JspEGQ
+            </sec:authorize>
         ]
     });
 
@@ -129,3 +140,5 @@
             HLayOut_SaveButton_JspEGQ
         ]
     });
+
+    // </script>

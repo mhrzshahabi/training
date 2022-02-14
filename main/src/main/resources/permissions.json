@@ -111,14 +111,6 @@
     },
 
 
-
-
-
-
-
-
-
-
     {
       "code": "Menu_Run",
       "title": "منوی اجرا"
@@ -139,12 +131,6 @@
       "code": "Menu_Run_Institute",
       "title": "منوی اجرا - مرکز آموزشي"
     },
-
-
-
-
-
-
 
 
     {
@@ -172,8 +158,20 @@
       "title": "منوی ارزیابی - ضرايب ارزيابي"
     },
     {
+      "code": "Menu_Evaluation_QuestionBank",
+      "title": "منوی ارزیابی - بانک سوالات"
+    },
+    {
+      "code": "Menu_Evaluation_FinalTest",
+      "title": "منوی ارزیابی - آزمون پایانی"
+    },
+    {
       "code": "Menu_Evaluation_RegisterScorePreTest",
       "title": "منوی ارزیابی - ثبت نمرات پيش آزمون"
+    },
+    {
+      "code": "Menu_Evaluation_Requests",
+      "title": "منوی ارزیابی - درخواست ها"
     },
     {
       "code": "Menu_Evaluation_MobileVerify",
@@ -209,11 +207,6 @@
       "code": "Menu_Cartable_StudentPortal",
       "title": "منوی کارپوشه - پرتال دانشجو"
     },
-
-
-
-
-
 
 
     {
@@ -306,8 +299,6 @@
     },
 
 
-
-
     {
       "code": "Menu_Security",
       "title": "منوی امنیت"
@@ -354,49 +345,51 @@
     },
 
 
-
-
     {
       "code": "NICICO_Ticketing",
       "title": "پشتیبانی سیستم"
     },
 
 
-
-
-
     {"code": "Parameter_C", "title": "ایجاد پارامتر"},
     {"code": "Parameter_R", "title": "مشاهده پارامتر"},
+
     {"code": "AccountInfo_C", "title": "ایجاد اطلاعات حساب"},
     {"code": "AccountInfo_R", "title": "مشاهده اطلاعات حساب"},
     {"code": "AccountInfo_U", "title": "ویرایش اطلاعات حساب"},
     {"code": "AccountInfo_D", "title": "حذف اطلاعات حساب"},
     {"code": "AccountInfo_P", "title": "چاپ اطلاعات حساب"},
+
     {"code": "Address_C", "title": "ایجاد آدرس"},
     {"code": "Address_R", "title": "مشاهده آدرس"},
     {"code": "Address_U", "title": "ویرایش آدرس"},
     {"code": "Address_D", "title": "حذف آدرس"},
     {"code": "Address_P", "title": "چاپ آدرس"},
+
     {"code": "Attachment_C", "title": "ایجاد ضمیمه"},
     {"code": "Attachment_R", "title": "مشاهده ضمیمه"},
     {"code": "Attachment_U", "title": "ویرایش ضمیمه"},
     {"code": "Attachment_D", "title": "حذف ضمیمه"},
     {"code": "Attachment_P", "title": "چاپ ضمیمه"},
+
     {"code": "Bank_C", "title": "ایجاد بانک"},
     {"code": "Bank_R", "title": "مشاهده بانک"},
     {"code": "Bank_U", "title": "ویرایش بانک"},
     {"code": "Bank_D", "title": "حذف بانک"},
     {"code": "Bank_P", "title": "چاپ بانک"},
+
     {"code": "BankBranch_C", "title": "ایجاد شعبه بانک"},
     {"code": "BankBranch_R", "title": "مشاهده شعبه بانک"},
     {"code": "BankBranch_U", "title": "ویرایش شعبه بانک"},
     {"code": "BankBranch_D", "title": "حذف شعبه بانک"},
     {"code": "BankBranch_P", "title": "چاپ شعبه بانک"},
+
     {"code": "Category_C", "title": "ایجاد گروه"},
     {"code": "Category_R", "title": "مشاهده گروه"},
     {"code": "Category_U", "title": "ویرایش گروه"},
     {"code": "Category_D", "title": "حذف گروه"},
     {"code": "Category_P", "title": "چاپ گروه"},
+
     {"code": "CheckList_C", "title": "ایجاد چک لیست"},
     {"code": "CheckList_R", "title": "مشاهده چک لیست"},
     {"code": "CheckList_U", "title": "ویرایش چک لیست"},
@@ -407,47 +400,56 @@
     {"code": "CheckListItem_U", "title": "ویرایش آیتم چک لیست"},
     {"code": "CheckListItem_D", "title": "حذف آیتم چک لیست"},
     {"code": "CheckListItem_P", "title": "چاپ آیتم چک لیست"},
+
     {"code": "City_C", "title": "ایجاد شهر"},
     {"code": "City_R", "title": "مشاهده شهر"},
     {"code": "City_U", "title": "ویرایش شهر"},
     {"code": "City_D", "title": "حذف شهر"},
     {"code": "City_P", "title": "چاپ شهر"},
+
     {"code": "ClassSession_C", "title": "ایجاد جلسات کلاس"},
     {"code": "ClassSession_R", "title": "مشاهده جلسات کلاس"},
     {"code": "ClassSession_U", "title": "ویرایش جلسات کلاس"},
     {"code": "ClassSession_D", "title": "حذف جلسات کلاس"},
     {"code": "ClassSession_P", "title": "چاپ جلسات کلاس"},
+
     {"code": "Committee_C", "title": "ایجاد کمیته تخصصی"},
     {"code": "Committee_AM", "title": "کميته تخصصي ليست اعضا"},
     {"code": "Committee_R", "title": "مشاهده کمیته تخصصی"},
     {"code": "Committee_U", "title": "ویرایش کمیته تخصصی"},
     {"code": "Committee_D", "title": "حذف کمیته تخصصی"},
     {"code": "Committee_P", "title": "چاپ کمیته تخصصی"},
+
     {"code": "Company_C", "title": "ایجاد شرکت"},
     {"code": "Company_R", "title": "مشاهده شرکت"},
     {"code": "Company_U", "title": "ویرایش شرکت"},
     {"code": "Company_D", "title": "حذف شرکت"},
     {"code": "Company_P", "title": "چاپ شرکت"},
+
     {"code": "Competence_C", "title": "ایجاد شایستگی"},
     {"code": "Competence_R", "title": "مشاهده شایستگی"},
     {"code": "Competence_U", "title": "ویرایش شایستگی"},
     {"code": "Competence_D", "title": "حذف شایستگی"},
     {"code": "Competence_P", "title": "چاپ شایستگی"},
+
     {"code": "CompetenceRequest_C", "title": "ایجاد درخواست تایید صلاحیت"},
     {"code": "CompetenceRequest_R", "title": "مشاهده درخواست تایید صلاحیت"},
     {"code": "CompetenceRequest_U", "title": "ویرایش درخواست تایید صلاحیت"},
     {"code": "CompetenceRequest_D", "title": "حذف درخواست تایید صلاحیت"},
     {"code": "CompetenceRequest_P", "title": "چاپ درخواست تایید صلاحیت"},
+
     {"code": "ContactInfo_C", "title": "ایجاد اطلاعات تماس"},
     {"code": "ContactInfo_R", "title": "مشاهده اطلاعات تماس"},
     {"code": "ContactInfo_U", "title": "ویرایش اطلاعات تماس"},
     {"code": "ContactInfo_D", "title": "حذف اطلاعات تماس"},
     {"code": "ContactInfo_P", "title": "چاپ اطلاعات تماس"},
+
     {"code": "Country_C", "title": "ایجاد کشور"},
     {"code": "Country_R", "title": "مشاهده کشور"},
     {"code": "Country_U", "title": "ویرایش کشور"},
     {"code": "Country_D", "title": "حذف کشور"},
     {"code": "Country_P", "title": "چاپ کشور"},
+
     {"code": "Course_C", "title": "ایجاد دوره"},
     {"code": "Course_R", "title": "مشاهده دوره"},
     {"code": "Course_U", "title": "ویرایش دوره"},
@@ -459,11 +461,13 @@
     {"code": "Course_Post", "title": "پست دوره"},
     {"code": "Course_Skill", "title": "مهارت دوره"},
     {"code": "Course_Teachers", "title": "اساتیدی که این دوره را تدریس کرده اند دوره"},
+
     {"code": "Department_C", "title": "ایجاد دپارتمان"},
     {"code": "Department_R", "title": "مشاهده دپارتمان"},
     {"code": "Department_U", "title": "ویرایش دپارتمان"},
     {"code": "Department_D", "title": "حذف دپارتمان"},
     {"code": "Department_P", "title": "چاپ دپارتمان"},
+
     {"code": "EducationLevel_C", "title": "ایجاد مقطع تحصیلی"},
     {"code": "EducationLevel_R", "title": "مشاهده مقطع تحصیلی"},
     {"code": "EducationLevel_U", "title": "ویرایش مقطع تحصیلی"},
@@ -479,41 +483,49 @@
     {"code": "EducationOrientation_U", "title": "ویرایش گرایش تحصیلی"},
     {"code": "EducationOrientation_D", "title": "حذف گرایش تحصیلی"},
     {"code": "EducationOrientation_P", "title": "چاپ گرایش تحصیلی"},
+
     {"code": "EqualCourse_C", "title": "ایجاد دوره معادل"},
     {"code": "EqualCourse_R", "title": "مشاهده دوره معادل"},
     {"code": "EqualCourse_U", "title": "ویرایش دوره معادل"},
     {"code": "EqualCourse_D", "title": "حذف دوره معادل"},
     {"code": "EqualCourse_P", "title": "چاپ دوره معادل"},
+
     {"code": "Equipment_C", "title": "ایجاد تجهیزات"},
     {"code": "Equipment_R", "title": "مشاهده تجهیزات"},
     {"code": "Equipment_U", "title": "ویرایش تجهیزات"},
     {"code": "Equipment_D", "title": "حذف تجهیزات"},
     {"code": "Equipment_P", "title": "چاپ تجهیزات"},
+
     {"code": "Goal_C", "title": "ایجاد هدف"},
     {"code": "Goal_R", "title": "مشاهده هدف"},
     {"code": "Goal_U", "title": "ویرایش هدف"},
     {"code": "Goal_D", "title": "حذف هدف"},
     {"code": "Goal_P", "title": "چاپ هدف"},
+
     {"code": "Holiday_C", "title": "ایجاد تعطیلات"},
     {"code": "Holiday_R", "title": "مشاهده تعطیلات"},
     {"code": "Holiday_U", "title": "ویرایش تعطیلات"},
     {"code": "Holiday_D", "title": "حذف تعطیلات"},
     {"code": "Holiday_P", "title": "چاپ تعطیلات"},
+
     {"code": "Institute_C", "title": "ایجاد مرکز آموزشی"},
     {"code": "Institute_R", "title": "مشاهده مرکز آموزشی"},
     {"code": "Institute_U", "title": "ویرایش مرکز آموزشی"},
     {"code": "Institute_D", "title": "حذف مرکز آموزشی"},
     {"code": "Institute_P", "title": "چاپ مرکز آموزشی"},
+
     {"code": "Job_C", "title": "ایجاد شغل"},
     {"code": "Job_R", "title": "مشاهده شغل"},
     {"code": "Job_U", "title": "ویرایش شغل"},
     {"code": "Job_D", "title": "حذف شغل"},
     {"code": "Job_P", "title": "چاپ شغل"},
+
     {"code": "JobGroup_C", "title": "ایجاد گروه شغلی"},
     {"code": "JobGroup_R", "title": "مشاهده گروه شغلی"},
     {"code": "JobGroup_U", "title": "ویرایش گروه شغلی"},
     {"code": "JobGroup_D", "title": "حذف گروه شغلی"},
     {"code": "JobGroup_P", "title": "چاپ گروه شغلی"},
+
     {"code": "NeedAssessment_C", "title": "ایجاد نیازسنجی"},
     {"code": "NeedAssessment_R", "title": "مشاهده نیازسنجی"},
     {"code": "NeedAssessment_U", "title": "ویرایش نیازسنجی"},
@@ -527,21 +539,25 @@
     {"code": "NeedAssessmentSkillBased_U", "title": "ویرایش نیازسنجی مبتنی بر مهارت"},
     {"code": "NeedAssessmentSkillBased_D", "title": "حذف نیازسنجی مبتنی بر مهارت"},
     {"code": "NeedAssessmentSkillBased_P", "title": "چاپ نیازسنجی مبتنی بر مهارت"},
+
     {"code": "OperationalUnit_C", "title": "ایجاد واحد عملیاتی"},
     {"code": "OperationalUnit_R", "title": "مشاهده واحد عملیاتی"},
     {"code": "OperationalUnit_U", "title": "ویرایش واحد عملیاتی"},
     {"code": "OperationalUnit_D", "title": "حذف واحد عملیاتی"},
     {"code": "OperationalUnit_P", "title": "چاپ واحد عملیاتی"},
+
     {"code": "PersonalInfo_C", "title": "ایجاد اطلاعات فردی"},
     {"code": "PersonalInfo_R", "title": "مشاهده اطلاعات فردی"},
     {"code": "PersonalInfo_U", "title": "ویرایش اطلاعات فردی"},
     {"code": "PersonalInfo_D", "title": "حذف اطلاعات فردی"},
     {"code": "PersonalInfo_P", "title": "چاپ اطلاعات فردی"},
+
     {"code": "Personnel_C", "title": "ایجاد پرسنل"},
     {"code": "Personnel_R", "title": "مشاهده پرسنل"},
     {"code": "Personnel_U", "title": "ویرایش پرسنل"},
     {"code": "Personnel_D", "title": "حذف پرسنل"},
     {"code": "Personnel_P", "title": "چاپ پرسنل"},
+
     {"code": "Training_Post_C", "title": "ایجاد پست"},
     {"code": "Training_Post_R", "title": "مشاهده پست"},
     {"code": "Training_Post_U", "title": "ویرایش پست"},
@@ -569,6 +585,7 @@
     {"code": "PostGroup_U", "title": "ویرایش گروه پستی"},
     {"code": "PostGroup_D", "title": "حذف گروه پستی"},
     {"code": "PostGroup_P", "title": "چاپ گروه پستی"},
+
     {"code": "Skill_C", "title": "ایجاد مهارت"},
     {"code": "Skill_R", "title": "مشاهده مهارت"},
     {"code": "Skill_U", "title": "ویرایش مهارت"},
@@ -589,72 +606,74 @@
     {"code": "SkillType_U", "title": "ویرایش نوع مهارت"},
     {"code": "SkillType_D", "title": "حذف نوع مهارت"},
     {"code": "SkillType_P", "title": "چاپ نوع مهارت"},
+
     {"code": "State_C", "title": "ایجاد استان"},
     {"code": "State_R", "title": "مشاهده استان"},
     {"code": "State_U", "title": "ویرایش استان"},
     {"code": "State_D", "title": "حذف استان"},
     {"code": "State_P", "title": "چاپ استان"},
+
     {"code": "Student_C", "title": "ایجاد فراگیر"},
     {"code": "Student_R", "title": "مشاهده فراگیر"},
     {"code": "Student_U", "title": "ویرایش فراگیر"},
     {"code": "Student_D", "title": "حذف فراگیر"},
     {"code": "Student_P", "title": "چاپ فراگیر"},
+
     {"code": "SubCategory_C", "title": "ایجاد زیرگروه"},
     {"code": "SubCategory_R", "title": "مشاهده زیرگروه"},
     {"code": "SubCategory_U", "title": "ویرایش زیرگروه"},
     {"code": "SubCategory_D", "title": "حذف زیرگروه"},
     {"code": "SubCategory_P", "title": "چاپ زیرگروه"},
+
     {"code": "Syllabus_C", "title": "ایجاد سرفصل"},
     {"code": "Syllabus_R", "title": "مشاهده سرفصل"},
     {"code": "Syllabus_U", "title": "ویرایش سرفصل"},
     {"code": "Syllabus_D", "title": "حذف سرفصل"},
     {"code": "Syllabus_P", "title": "چاپ سرفصل"},
+
     {"code": "Task_C", "title": "ایجاد وظیفه"},
     {"code": "Task_R", "title": "مشاهده وظیفه"},
     {"code": "Task_U", "title": "ویرایش وظیفه"},
     {"code": "Task_D", "title": "حذف وظیفه"},
     {"code": "Task_P", "title": "چاپ وظیفه"},
+
     {"code": "Tclass_C", "title": "ایجاد کلاس"},
     {"code": "Tclass_R", "title": "مشاهده کلاس"},
     {"code": "Tclass_U", "title": "ویرایش کلاس"},
     {"code": "Tclass_D", "title": "حذف کلاس"},
     {"code": "Tclass_P", "title": "چاپ کلاس"},
+
     {"code": "Personnel_Registered_C", "title": "ایجاد قراگیر متفرقه"},
     {"code": "Personnel_Registered_R", "title": "مشاهده قراگیر متفرقه"},
     {"code": "Personnel_Registered_U", "title": "ویرایش قراگیر متفرقه"},
     {"code": "Personnel_Registered_D", "title": "حذف قراگیر متفرقه"},
     {"code": "Personnel_Registered_P", "title": "چاپ قراگیر متفرقه"},
+
     {"code": "Teacher_C", "title": "ایجاد استاد"},
     {"code": "Teacher_E", "title": "ارزيابي استاد"},
     {"code": "Teacher_R", "title": "مشاهده استاد"},
     {"code": "Teacher_U", "title": "ویرایش استاد"},
     {"code": "Teacher_D", "title": "حذف استاد"},
     {"code": "Teacher_P", "title": "چاپ استاد"},
+
     {"code": "Term_C", "title": "ایجاد ترم"},
     {"code": "Term_R", "title": "مشاهده ترم"},
     {"code": "Term_U", "title": "ویرایش ترم"},
     {"code": "Term_D", "title": "حذف ترم"},
     {"code": "Term_P", "title": "چاپ ترم"},
+
     {"code": "TrainingPlace_C", "title": "ایجاد مکان آموزشی"},
     {"code": "TrainingPlace_R", "title": "مشاهده مکان آموزشی"},
     {"code": "TrainingPlace_U", "title": "ویرایش مکان آموزشی"},
     {"code": "TrainingPlace_D", "title": "حذف مکان آموزشی"},
     {"code": "TrainingPlace_P", "title": "چاپ مکان آموزشی"},
+
     {"code": "User_C", "title": "ایجاد کاربر"},
     {"code": "User_R", "title": "مشاهده کاربر"},
     {"code": "User_U", "title": "ویرایش کاربر"},
     {"code": "User_D", "title": "حذف کاربر"},
     {"code": "User_P", "title": "چاپ کاربر"},
-    {"code": "Evaluation_C","title": "ایجاد ارزيابي"},
-    {"code": "Evaluation_R","title": "مشاهده ارزيابي"},
-    {"code": "Evaluation_U","title": "ویرایش ارزيابي"},
-    {"code": "Evaluation_D","title": "حذف ارزيابي"},
-    {"code": "Evaluation_P","title": "چاپ ارزيابي"},
-    {"code": "Evaluation_PrintPreTest","title": "صدور فرم پیش تست ارزيابي"},
-    {"code": "Evaluation_Reaction","title": "تب واکنشی ارزيابي"},
-    {"code": "Evaluation_Learning","title": "تب یادگیری ارزيابي"},
-    {"code": "Evaluation_Behavior","title": "تب رفتاری ارزيابي"},
-    {"code": "Evaluation_Results","title": "تب نتایج ارزيابي"},
+
     {"code": "EvaluationQuestion_C","title": "ایجاد پرسشنامه - بانک سوال"},
     {"code": "EvaluationQuestion_R","title": "مشاهده پرسشنامه - بانک سوال"},
     {"code": "EvaluationQuestion_U","title": "ویرایش پرسشنامه - بانک سوال"},
@@ -670,6 +689,7 @@
     {"code": "QuestionnaireQuestion_U","title": "ویرایش پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_D","title": "حذف پرسشنامه - پرسشنامه - مقدار"},
     {"code": "QuestionnaireQuestion_P","title": "چاپ پرسشنامه - پرسشنامه - مقدار"},
+
     {"code": "HelpFiles_C","title": "ایجاد فایل آموزشی"},
     {"code": "HelpFiles_R","title": "مشاهده فایل آموزشی"},
     {"code": "HelpFiles_U","title": "ویرایش فایل آموزشی"},
@@ -738,13 +758,76 @@
     {"code": "TclassEvaluationInfoTab_P", "title": "کلاس - تب وضعیت ارزیابی کلاس - چاپ"},
     {"code": "TclassCostsTab_C", "title": "کلاس - تب هزینه کلاس - ایجاد"},
 
-
     {"code": "TclassPreCourseTestQuestionsTab_ShowOption", "title": "کلاس - سوالات پیش آزمون - نمایش گزینه ها"},
     {"code": "Menu_Organizational_chart", "title": "درخت سازمانی"},
     {"code": "Menu_Categories_performance", "title": "گزارش عملکرد سازمانی "},
     {"code": "Menu_continuous_Status_Report", "title": "گزارش مستمر "},
     {"code": "Menu_Personnel_Training_Status_Report", "title": "گزارش وضعیت آموزشی افراد "},
-    {"code": "Menu_ReportMaker", "title": "منوی گزارش ساز"}
+    {"code": "Menu_ReportMaker", "title": "منوی گزارش ساز"},
+
+    {"code": "EvaluationIndex_C","title": "ایجاد شاخص ارزيابي"},
+    {"code": "EvaluationIndex_R","title": "مشاهده شاخص ارزيابي"},
+    {"code": "EvaluationIndex_U","title": "ویرایش شاخص ارزيابي"},
+    {"code": "EvaluationIndex_D","title": "حذف شاخص ارزيابي"},
+    {"code": "EvaluationIndex_P","title": "چاپ شاخص ارزيابي"},
+
+    {"code": "EvaluationAnalysis_R","title": "مشاهده تحليل ارزيابي"},
+    {"code": "EvaluationAnalysis_P","title": "چاپ تحليل ارزيابي"},
+
+    {"code": "EvaluationCoefficient_R","title": "مشاهده ضرايب ارزيابي"},
+    {"code": "EvaluationCoefficient_U","title": "ویرایش ضرايب ارزيابي"},
+
+    {"code": "MobileVerify_R","title": "مشاهده تایید شماره موبایل فر اگیران"},
+    {"code": "MobileVerify_Verify","title": "تایید شماره موبایل فر اگیران"},
+    {"code": "MobileVerify_Detail","title": "نمایش جزییات تایید شماره موبایل فر اگیران"},
+
+    {"code": "QuestionBank_C","title": "ایجاد بانک سوالات"},
+    {"code": "QuestionBank_R","title": "مشاهده بانک سوالات"},
+    {"code": "QuestionBank_U","title": "ویرایش بانک سوالات"},
+    {"code": "QuestionBank_D","title": "حذف بانک سوالات"},
+    {"code": "QuestionBank_P","title": "چاپ بانک سوالات"},
+
+    {"code": "FinalTest_C","title": "ایجاد آزمون پایانی"},
+    {"code": "FinalTest_R","title": "مشاهده آزمون پایانی"},
+    {"code": "FinalTest_U","title": "ویرایش آزمون پایانی"},
+    {"code": "FinalTest_D","title": "حذف آزمون پایانی"},
+    {"code": "FinalTest_P","title": "چاپ آزمون پایانی"},
+    {"code": "FinalTest_Send","title": "ارسال آزمون پایانی"},
+    {"code": "FinalTest_Result","title": "نتایج آزمون پایانی"},
+    {"code": "FinalTest_Questions_R","title": "سوالات آزمون پایانی - مشاهده"},
+    {"code": "FinalTest_Questions_C","title": "سوالات آزمون پایانی - ایجاد"},
+    {"code": "FinalTest_Questions_P","title": "سوالات آزمون پایانی - چاپ"},
+    {"code": "FinalTest_Questions_Files","title": "سوالات آزمون پایانی - فایل ها"},
+
+    {"code": "Evaluation_C","title": "ایجاد ارزيابي"},
+    {"code": "Evaluation_R","title": "مشاهده ارزيابي"},
+    {"code": "Evaluation_U","title": "ویرایش ارزيابي"},
+    {"code": "Evaluation_D","title": "حذف ارزيابي"},
+    {"code": "Evaluation_P","title": "چاپ ارزيابي"},
+    {"code": "Evaluation_History","title": "مشاهده تاریخچه ارزيابي"},
+    {"code": "Evaluation_Reaction","title": "ارزيابي - واکنشی"},
+    {"code": "Evaluation_Reaction_R","title": "ارزيابي - واکنشی - مشاهده"},
+    {"code": "Evaluation_Reaction_Actions","title": "ارزيابي - واکنشی - عملیات"},
+    {"code": "Evaluation_Learning","title": "ارزيابي - یادگیری"},
+    {"code": "Evaluation_Learning_R","title": "ارزيابي - یادگیری - مشاهده"},
+    {"code": "Evaluation_Learning_Actions","title": "ارزيابي - یادگیری - عملیات"},
+    {"code": "Evaluation_Behavior","title": "ارزيابي - رفتاری"},
+    {"code": "Evaluation_Behavior_R","title": "ارزيابي - رفتاری - مشاهده"},
+    {"code": "Evaluation_Behavior_Actions","title": "ارزيابي - رفتاری - عملیات"},
+    {"code": "Evaluation_Results","title": "ارزيابي - نتایج"},
+    {"code": "Evaluation_Goals","title": "ارزيابي - اهداف"},
+    {"code": "Evaluation_Goals_R","title": "ارزيابي - اهداف - مشاهده"},
+    {"code": "Evaluation_Goals_Actions","title": "ارزيابي - اهداف - عملیات"},
+    {"code": "Evaluation_Scores","title": "ارزيابي - نمرات"},
+    {"code": "Evaluation_Scores_R","title": "ارزيابي - نمرات - مشاهده"},
+    {"code": "Evaluation_Scores_Actions","title": "ارزيابي - نمرات - عملیات"},
+
+    {"code": "Requests_R","title": "مشاهده درخواست ها"},
+    {"code": "Requests_U","title": "پاسخ دهی درخواست ها"},
+    {"code": "Requests_P","title": "چاپ درخواست ها"},
+    {"code": "Requests_History","title": "تاریخچه درخواست ها"},
+    {"code": "Requests_Files","title": "فایل های درخواست ها"}
+
   ]
 }
 

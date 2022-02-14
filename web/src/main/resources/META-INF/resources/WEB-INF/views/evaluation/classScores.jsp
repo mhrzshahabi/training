@@ -260,6 +260,7 @@
             isc.Label.create({
                 ID: "totalsLabel_scores_Eval"
             }),
+            <sec:authorize access="hasAuthority('Evaluation_Scores_Actions')">
             Button1_Eval,
             Button2_Eval,
             Button3_Eval,
@@ -270,12 +271,15 @@
                         ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_Student_Eval, tclassStudentUrl + "/scores-iscList/" + classId_Eval, 0, ListGrid_class_Evaluation, '', "ارزیابی - ثبت نمرات", ListGrid_Class_Student_Eval.getCriteria(), null);
                 }
             }),
+            </sec:authorize>
             isc.ToolStrip.create({
                 width: "50%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Evaluation_Scores_R')">
                     ToolStripButton_Refresh_Eval
+                    </sec:authorize>
                 ]
             })
         ]
@@ -290,7 +294,9 @@
         modalEditing: true,
         autoSaveEdits: false,
         canSelectCells: true,
+        <sec:authorize access="hasAuthority('Evaluation_Scores_R')">
         dataSource: RestDataSource_ClassStudent_Eval,
+        </sec:authorize>
         fields: [
             {
                 name: "student.firstName",
@@ -441,7 +447,9 @@
                 title: "نوع ارزشی",
                 showIf: "false",
                 filterOperator: "iContains",
+                <sec:authorize access="hasAuthority('Evaluation_Scores_Actions')">
                 canEdit: true,
+                </sec:authorize>
                 canSort: false,
                 editorType: "SelectItem",
                 valueMap: {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"},
@@ -528,7 +536,9 @@
                 name: "score",
                 title: "<spring:message code="score"/>",
                 filterOperator: "iContains",
+                <sec:authorize access="hasAuthority('Evaluation_Scores_Actions')">
                 canEdit: true,
+                </sec:authorize>
                 // canEdit: record.evaluationStatusReaction===1,
                 canSort: false,
                 validateOnChange: false,
@@ -641,6 +651,7 @@
             }
         },
         gridComponents: [ToolStrip_Actions_Eval, "filterEditor", "header", "body"],
+        <sec:authorize access="hasAuthority('Evaluation_Scores_Actions')">
         canEditCell: function (rowNum, colNum) {
 
             var record = this.getRecord(rowNum);
@@ -712,6 +723,7 @@
             }
             return true;
         },
+        </sec:authorize>
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.save == true) {
                 return "background-color:#98B334;font-size: 12px;";
@@ -1008,3 +1020,5 @@
             }
         }));
     }
+
+    // </script>
