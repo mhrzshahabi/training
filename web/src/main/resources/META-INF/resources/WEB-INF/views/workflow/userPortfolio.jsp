@@ -5,6 +5,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
     final String tenantId = AppUtils.getTenantId();
@@ -22,6 +23,8 @@
         fields: [
             {name: "name", title: "فرایند"},
             {name: "deploymentId"},
+            {name: "objectId"},
+            {name: "objectType"},
             {name: "tenantId", title: "زیرسیستم"},
             {name: "createBy", title: "ایجاد کننده"},
             {name: "title", title: "عنوان"},
@@ -135,6 +138,8 @@
         fields: [
             {name: "name"},
             {name: "deploymentId", hidden: true},
+            {name: "objectId", hidden: true},
+            {name: "objectType", hidden: true},
             {name: "tenantId", hidden: true},
             {name: "createBy"},
             {name: "title"},
@@ -147,7 +152,7 @@
             {name: "taskDefinitionKey", hidden: true},
             {name: "processDefinitionKey", hidden: true}
         ],
-        sortField: 0,
+        sortField: ["date"],
         dataPageSize: 50,
         showFilterEditor: true,
         filterOnKeypress: true,
@@ -251,7 +256,7 @@
                     isc.DynamicForm.create({
                         ID: "reasonForm",
                         width: "100%",
-                        height: "100%",
+                        height: "75%",
                         autoFocus: "true",
                         cellPadding: 5,
                         fields: [
@@ -273,6 +278,7 @@
                     }),
                     isc.HLayout.create({
                         width: "100%",
+                        height: "25%",
                         align: "center",
                         membersMargin: 10,
                         members: [
@@ -312,7 +318,7 @@
             let DynamicForm_Completion_UserPortfolio = isc.DynamicForm.create({
                 colWidths: ["10%", "80%", "10%"],
                 width: "100%",
-                height: "100%",
+                height: "75%",
                 numCols: "3",
                 autoFocus: "true",
                 cellPadding: 5,
@@ -326,6 +332,11 @@
                         name: "createBy",
                         title: "ایجاد کننده فرایند",
                         type: "staticText"
+                    },
+                    {
+                        name: "objectType",
+                        title: "نوع",
+                        type: "staticText"
                     }
                 ]
             });
@@ -334,7 +345,17 @@
                 align: "center",
                 width: "120",
                 click: function () {
-                    showProcessDetail(record.name, record.processInstanceId);
+
+                    switch (ListGrid_Processes_UserPortfolio.getSelectedRecord().name) {
+                        case "بررسی نیازسنجی":
+                            showWindowDiffNeedsAssessment(ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId, ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType,"",false);
+                            break;
+                        case "بررسی شایستگی":
+                            showProcessDetail(record.name, record.processInstanceId);
+                            break;
+                        default:
+                    }
+
                 }
             });
             let Button_Completion_Confirm = isc.IButton.create({
@@ -363,6 +384,7 @@
             });
             let HLayout_Completion_UserPortfolio = isc.HLayout.create({
                 width: "100%",
+                height: "25%",
                 align: "center",
                 membersMargin: 10,
                 members: [
@@ -389,6 +411,15 @@
             });
             DynamicForm_Completion_UserPortfolio.setValue("title", record.title);
             DynamicForm_Completion_UserPortfolio.setValue("createBy", record.createBy);
+            switch (ListGrid_Processes_UserPortfolio.getSelectedRecord().name) {
+                case "بررسی نیازسنجی":
+                    DynamicForm_Completion_UserPortfolio.setValue("objectType", setTitle(record.objectType));
+                    break;
+                case "بررسی شایستگی":
+                    DynamicForm_Completion_UserPortfolio.setValue("objectType", "شایستگی");
+                    break;
+                default:
+            }
             Window_Completion_UserPortfolio.show();
         }
     }
@@ -507,5 +538,27 @@
             }
         }));
     }
+    function setTitle(name) {
+        debugger
+    switch (name) {
 
+        case "Job":
+            return "<spring:message code="job"/>";
+        case "Post":
+            return "<spring:message code="post"/>";
+        case "PostGrade":
+            return "<spring:message code="post.grade"/>";
+        case "PostGroup":
+            return "<spring:message code="post.group"/>";
+        case "JobGroup":
+            return "<spring:message code="job.group"/>";
+        case "PostGradeGroup":
+            return "<spring:message code="post.grade.group"/>";
+        case "TrainingPost":
+            return "<spring:message code="post.grade.group"/>";
+
+        default:
+            return name.split('_').last();
+    }
+}
 // </script>

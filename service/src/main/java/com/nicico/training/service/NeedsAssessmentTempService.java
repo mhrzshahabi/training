@@ -1,6 +1,7 @@
 
 package com.nicico.training.service;
 
+import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -21,8 +22,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -187,7 +186,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         if (needsAssessmentTemps == null || needsAssessmentTemps.isEmpty())
             return 0; //this object is editable and needs to be initialize
         if (needsAssessmentTemps.get(0).getCreatedBy().equals(SecurityUtil.getUsername())) {
-                return 1; //this object is editable and dont needs to be initialize
+            return 1; //this object is editable and dont needs to be initialize
         } else
             return 2;
     }
@@ -348,8 +347,9 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
                 .anyMatch(needsAssessmentTemp -> needsAssessmentTemp.getMainWorkflowStatusCode() != null && needsAssessmentTemp.getMainWorkflowStatusCode() == 0);
         return hasAlreadySentToWorkFlow;
     }
+
     public Long createOrUpdateListForNewSkill(List<NeedsAssessmentDTO.Create> createList, Long skill) {
-        List<NeedsAssessmentDTO.Create> newList=new ArrayList<>();
+        List<NeedsAssessmentDTO.Create> newList = new ArrayList<>();
         for (NeedsAssessmentDTO.Create needsAssessmentDTO : createList) {
             if (needsAssessmentDTO.getSkillId().equals(skill))
                 newList.add(needsAssessmentDTO);
@@ -361,12 +361,22 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             if (!isEditable(create.getObjectType(), create.getObjectId()))
                 throw new TrainingException(TrainingException.ErrorType.NeedsAssessmentIsNotEditable, messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()));
         }
-        NeedsAssessmentDTO.Info createItem =new   NeedsAssessmentDTO.Info ();
+        NeedsAssessmentDTO.Info createItem = new NeedsAssessmentDTO.Info();
 
         for (NeedsAssessmentDTO.Create create : newList) {
-            createItem  =   create(create);
+            createItem = create(create);
         }
-          return createItem.getId();
+        return createItem.getId();
+    }
+
+    @Override
+    public boolean updateNeedsAssessmentTempBpmsWorkflow(ProcessInstance ProcessInstance, Long objectId, String objectType, String mainWorkflowStatus, String mainWorkflowStatusCode) {
+        try {
+            dao.updateNeedsAssessmentTempBpmsWorkflow(ProcessInstance.getId(), objectId, objectType, mainWorkflowStatus, mainWorkflowStatusCode);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
 }

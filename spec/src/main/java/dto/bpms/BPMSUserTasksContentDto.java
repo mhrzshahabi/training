@@ -19,4 +19,6 @@ public class BPMSUserTasksContentDto {
     private String processStartTime;
     private String taskDefinitionKey;
     private String processDefinitionKey;
+    private String objectId;
+    private String objectType;
 }

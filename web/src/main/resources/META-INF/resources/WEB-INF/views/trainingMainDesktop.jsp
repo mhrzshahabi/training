@@ -2596,7 +2596,15 @@
                                     createTab(this.title, "<spring:url value="web/reactionEvaluationReport"/>");
                                 }
                             },
-<%--                            </sec:authorize>--%>
+                            <sec:authorize access="hasAuthority('Menu_Report_ReportsFECR_AnsweredEvalQuestionsDetailsReport')">
+                            {
+                                title: "<spring:message code="evaluation.answered.questions.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/evaluationAnsweredQuestionsReport"/>");
+                                }
+                            },
+                            </sec:authorize>
+                            <%--                            </sec:authorize>--%>
                         ]
                 },
                 {isSeparator: true},

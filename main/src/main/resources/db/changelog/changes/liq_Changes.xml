@@ -3508,6 +3508,9 @@ WHERE
 
 
     </changeSet>
-
+    <changeSet author="namdari" id="1644662089000-2">
+        <modifyDataType tableName="tbl_needs_assessment" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
+        <modifyDataType tableName="tbl_needs_assessment_temp" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
+    </changeSet>
 
 </databaseChangeLog>
