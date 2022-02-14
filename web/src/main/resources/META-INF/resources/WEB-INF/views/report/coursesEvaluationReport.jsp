@@ -113,6 +113,7 @@
                 changed: function () {
                     isCriteriaCategoriesChanged_CER = true;
                     var subCategoryField = DynamicForm_CER.getField("courseSubCategory");
+                    subCategoryField.clearValue();
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -144,7 +145,7 @@
                 autoFetchData: false,
                 disabled: true,
                 optionDataSource: RestDataSource_SubCategory_CER,
-                valueField: "titleFa",
+                valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
@@ -291,7 +292,7 @@
                     data_values.criteria[i].fieldName = "categoryTitleFa";
                     data_values.criteria[i].operator = "inSet";
                 } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
-                    data_values.criteria[i].fieldName = "subCategoryTitleFa";
+                    data_values.criteria[i].fieldName = "subCategoryId";
                     data_values.criteria[i].operator = "inSet";
                 } else if (data_values.criteria[i].fieldName === "startDate") {
                     data_values.criteria[i].fieldName = "classEndDate";

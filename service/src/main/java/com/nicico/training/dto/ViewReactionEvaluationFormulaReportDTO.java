@@ -30,6 +30,7 @@ public class ViewReactionEvaluationFormulaReportDTO implements Serializable {
         private String courseTitleFa;
         private String categoryTitleFa;
         private String subCategoryTitleFa;
+        private Long subCategoryId;
         private Double studentsGradeToTeacher;
         private Double studentsGradeToGoals;
         private Double studentsGradeToFacility;

@@ -30,6 +30,7 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
             "    z.course_titlefa                                                   AS course_titlefa,\n" +
             "    z.category_titlefa                                                 AS category_titlefa,\n" +
             "    z.sub_category_titlefa                                             AS sub_category_titlefa,\n" +
+            "    z.sub_category_id                                                  AS sub_category_id,\n" +
             "    z.class_id                                                         AS class_id,\n" +
             "    z.course_id                                                        AS course_id,\n" +
             "    z.class_complex                                                    AS complex,\n" +
@@ -83,6 +84,7 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
             "            course.c_title_fa                                                                        AS course_titlefa,\n" +
             "            cat.c_title_fa                                                                           AS category_titlefa,\n" +
             "            sucat.c_title_fa                                                                         AS sub_category_titlefa,\n" +
+            "            sucat.id                                                                                 AS sub_category_id,\n" +
             "            concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher,\n" +
             "            tbl_personal_info.c_first_name_fa                                                        AS teacher_name,\n" +
             "            tbl_personal_info.c_last_name_fa                                                         AS teacher_family,\n" +
