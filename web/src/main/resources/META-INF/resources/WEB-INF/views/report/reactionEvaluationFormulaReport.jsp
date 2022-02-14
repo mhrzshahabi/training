@@ -364,7 +364,9 @@
                 multiple: true,
                 filterLocally: true,
                 pickListProperties: {
-                    canSelectAll: false
+                    canSelectAll: true,
+                    showFilterEditor: true,
+                    filterOperator: "iContains"
                 },
                 pickListFields: [
                     {
