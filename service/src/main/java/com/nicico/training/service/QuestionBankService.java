@@ -299,9 +299,18 @@ public class QuestionBankService implements IQuestionBankService {
             request.setCriteria(criteria);
             TotallRequest.setCriteria(criteria);
         }
-        if(secondList.size()>0){
+        if(filterList.size()>0){
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             criteria.getCriteria().add(criteriaRqFilter);
+            if (TotallRequest.getCriteria() != null)
+                criteria.getCriteria().add(TotallRequest.getCriteria());
+
+            request.setCriteria(criteria);
+            TotallRequest.setCriteria(criteria);
+        }
+        if(list.size()>0){
+            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            criteria.getCriteria().add(criteriaRq);
             if (TotallRequest.getCriteria() != null)
                 criteria.getCriteria().add(TotallRequest.getCriteria());
 
