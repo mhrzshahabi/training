@@ -4,6 +4,8 @@ package com.nicico.training.iservice;
 */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ElsSearchDTO;
+import com.nicico.training.dto.PageQuestionDto;
 import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.model.QuestionBank;
 import com.nicico.training.model.Teacher;
@@ -36,4 +38,8 @@ public interface IQuestionBankService {
 
     Integer getMaxId();
     List<QuestionBank> getQuestionListByCategoryAndSubCategory(Teacher teacher);
+
+    PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException;
+
+    PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException;
 }
