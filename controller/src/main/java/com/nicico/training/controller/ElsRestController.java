@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.controller.client.minio.MinIoClient;
@@ -628,7 +629,7 @@ public class ElsRestController {
                 baseResponse.setMessage("نمرات نهایی وارد شده از بیشترین مقدار روش نمره دهی کلاس بیشتر است");
 
             } else {
-                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id);
+                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id,SecurityUtil.getFirstName()+" "+SecurityUtil.getLastName());
                 try {
                     baseResponse= classStudentService.updateTestScore(testQuestionService.get(id).getTclass().getId(),examResult);
                     baseResponse = client.sendScoresToEls(requestDto);
@@ -663,7 +664,7 @@ public class ElsRestController {
             } else {
                 long idPreTEst=testQuestionService.getPreTestId(id);
 
-                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, idPreTEst);
+                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, idPreTEst,SecurityUtil.getFirstName()+" "+SecurityUtil.getLastName());
                 try {
                     baseResponse= classStudentService.updatePreTestScore(id,examResult);
                     baseResponse = client.sendScoresToEls(requestDto);
