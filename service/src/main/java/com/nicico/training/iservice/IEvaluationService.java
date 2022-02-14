@@ -8,6 +8,7 @@ import com.nicico.training.model.EvaluationAnswer;
 import com.nicico.training.model.ViewActivePersonnel;
 import dto.evaluuation.EvalElsData;
 import dto.evaluuation.EvalQuestionDto;
+import dto.evaluuation.EvaluationAnsweredQuestionsDetailsDTO;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.HashMap;
@@ -67,6 +68,8 @@ public interface IEvaluationService {
 
     List<Evaluation> getEvaluationsByEvaluatorNationalCode(String evaluatorNationalCode, Long EvaluatorTypeId , String evaluatorType);
 
+    List<EvaluationAnsweredQuestionsDetailsDTO> getAnsweredQuestionsDetails(List<Long> questionIds);
+}
     List<Evaluation> findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long ClassId, Long EvaluationLevelId, Long QuestionnaireTypeId);
 
     List<Evaluation> findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long classId, Long evaluatedId, Long evaluationLevelId, Long questionnaireTypeId);

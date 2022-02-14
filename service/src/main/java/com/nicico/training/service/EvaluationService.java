@@ -8,10 +8,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IEvaluationService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
-import dto.evaluuation.EvalElsData;
-import dto.evaluuation.EvalQuestionDto;
-import dto.evaluuation.EvalQuestionOptional;
-import dto.evaluuation.EvalQuestionType;
+import dto.evaluuation.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -316,6 +313,26 @@ public class EvaluationService implements IEvaluationService {
         } else {
             return null;
         }
+    }
+
+    @Override
+    public List<EvaluationAnsweredQuestionsDetailsDTO> getAnsweredQuestionsDetails(List<Long> questionIds) {
+        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds);
+        List<EvaluationAnsweredQuestionsDetailsDTO> dtoList = new ArrayList<>();
+        for (Object o : list){
+            EvaluationAnsweredQuestionsDetailsDTO dto = new EvaluationAnsweredQuestionsDetailsDTO();
+            Object[] arr = (Object[]) o;
+            dto.setClassCode(arr[0] == null ? null : arr[0].toString());
+            dto.setClassTitle(arr[1] == null ? null : arr[1].toString());
+            dto.setAnswerTitle(arr[2] == null ? null : arr[2].toString());
+            dto.setFirstName(arr[3] == null ? null : arr[3].toString());
+            dto.setLastName(arr[4] == null ? null : arr[4].toString());
+            dto.setNationalCode(arr[5] == null ? null : arr[5].toString());
+            dto.setComplexTitle(arr[6] == null ? null : arr[6].toString());
+            dto.setQuestionTitle(arr[7] == null ? null : arr[7].toString());
+            dtoList.add(dto);
+        }
+        return dtoList;
     }
 
     private List<Evaluation> getBehavioralEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
