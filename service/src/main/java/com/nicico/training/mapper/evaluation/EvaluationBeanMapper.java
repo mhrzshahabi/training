@@ -2008,7 +2008,7 @@ public abstract class EvaluationBeanMapper {
             return false;
     }
 
-    public UpdateRequest convertScoresToDto(List<ExamResult> examResult, long id,String user) {
+    public UpdateRequest convertScoresToDto(List<ExamResult> examResult, long id, String user) {
         UpdateRequest request = new UpdateRequest();
         request.setSourceExamId(id);
         request.setModifiedBy(user);
