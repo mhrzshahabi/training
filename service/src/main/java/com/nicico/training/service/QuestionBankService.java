@@ -226,7 +226,7 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         request.setStartIndex(size*page)
-                .setCount(size);
+                .setCount(10000000);
 
 
         SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = searchId(request);
@@ -257,6 +257,7 @@ public class QuestionBankService implements IQuestionBankService {
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         List<QuestionBank> questionBankList = new ArrayList<>();
         List<SearchDTO.CriteriaRq> secondList = new ArrayList<>();
+        List<SearchDTO.CriteriaRq> filterList = new ArrayList<>();
         Long teacherId = teacherDAO.getTeacherId(elsSearchDTO.getNationalCode());
         List<Long> categories=categoryService.findCategoryByTeacher(teacherId);
         List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacherId);
@@ -271,11 +272,13 @@ public class QuestionBankService implements IQuestionBankService {
         if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
             elsSearchDTO.getElsSearchList().stream().forEach(elsSearch -> {
                 if (elsSearch.getValue() != null) {
-                    list.add(makeNewCriteria(elsSearch.getFieldName(), elsSearch.getValue().toString(), EOperator.iContains, null));
+                   filterList.add(makeNewCriteria(elsSearch.getFieldName(), elsSearch.getValue().toString(), EOperator.iContains, null));
                 }
             });
         }
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+        SearchDTO.CriteriaRq criteriaRqFilter = makeNewCriteria(null, null, EOperator.and, filterList);
+
         request.setCriteria(criteriaRq);
         TotallRequest.setCriteria(criteriaRq);
 
@@ -292,6 +295,16 @@ public class QuestionBankService implements IQuestionBankService {
             criteria.getCriteria().add(addCriteria);
             if (request.getCriteria() != null)
                 criteria.getCriteria().add(request.getCriteria());
+
+            request.setCriteria(criteria);
+            TotallRequest.setCriteria(criteria);
+        }
+        if(secondList.size()>0){
+            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+            criteria.getCriteria().add(criteriaRqFilter);
+            if (TotallRequest.getCriteria() != null)
+                criteria.getCriteria().add(TotallRequest.getCriteria());
+
             request.setCriteria(criteria);
             TotallRequest.setCriteria(criteria);
         }
