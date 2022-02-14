@@ -17,7 +17,7 @@ import java.io.Serializable;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_reaction_evaluation_formula_report")
+@Subselect("select * from VIEW_REACTION_EVALUATION_FORMULA_REPORT")
 @DiscriminatorValue("ViewCoursesEvaluationReport")
 public class ViewReactionEvaluationFormulaReport implements Serializable {
 
@@ -45,6 +45,9 @@ public class ViewReactionEvaluationFormulaReport implements Serializable {
 
     @Column(name = "category_titlefa")
     private String category_titlefa;
+
+    @Column(name = "sub_category_id")
+    private Long sub_category_id;
 
     @Column(name = "sub_category_titlefa")
     private String sub_category_titlefa;

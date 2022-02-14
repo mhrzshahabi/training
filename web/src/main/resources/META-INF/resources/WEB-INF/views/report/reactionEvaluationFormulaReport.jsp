@@ -329,6 +329,7 @@
 
                     isCriteriaCategoriesChanged_REFR = true;
                     var subCategoryField = DynamicForm_CriteriaForm_REFR.getField("courseSubCategory");
+                    subCategoryField.clearValue();
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -358,13 +359,15 @@
                 autoFetchData: false,
                 disabled: true,
                 optionDataSource: RestDataSource_SubCategory_REFR,
-                valueField: "titleFa",
+                valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
                 filterLocally: true,
                 pickListProperties: {
-                    canSelectAll: false
+                    canSelectAll: true,
+                    showFilterEditor: true,
+                    filterOperator: "iContains"
                 },
                 pickListFields: [
                     {
@@ -434,7 +437,7 @@
                     data_values.criteria[i].fieldName = "categoryTitleFa";
                     data_values.criteria[i].operator = "inSet";
                 } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
-                    data_values.criteria[i].fieldName = "subCategoryTitleFa";
+                    data_values.criteria[i].fieldName = "subCategoryId";
                     data_values.criteria[i].operator = "inSet";
                 } else if (data_values.criteria[i].fieldName === "startDate") {
                     data_values.criteria[i].fieldName = "classStartDate";
@@ -501,7 +504,7 @@
                     data_values.criteria[i].fieldName = "categoryTitleFa";
                     data_values.criteria[i].operator = "inSet";
                 } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
-                    data_values.criteria[i].fieldName = "subCategoryTitleFa";
+                    data_values.criteria[i].fieldName = "subCategoryId";
                     data_values.criteria[i].operator = "inSet";
                 } else if (data_values.criteria[i].fieldName === "startDate") {
                     data_values.criteria[i].fieldName = "classStartDate";
@@ -584,7 +587,7 @@
                     data_values.criteria[i].fieldName = "categoryTitleFa";
                     data_values.criteria[i].operator = "inSet";
                 } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
-                    data_values.criteria[i].fieldName = "subCategoryTitleFa";
+                    data_values.criteria[i].fieldName = "subCategoryId";
                     data_values.criteria[i].operator = "inSet";
                 } else if (data_values.criteria[i].fieldName === "startDate") {
                     data_values.criteria[i].fieldName = "classStartDate";
