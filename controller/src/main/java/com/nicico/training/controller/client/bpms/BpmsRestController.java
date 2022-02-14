@@ -85,17 +85,8 @@ public class BpmsRestController {
     @Loggable
     @PostMapping({"/processes/start-data-validation"})
     public ResponseEntity<BaseResponse> startProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
-        BaseResponse res = new BaseResponse();
-        try {
-            ProcessInstance processInstance = service.startProcessWithData(service.getStartProcessDto(params, AppUtils.getTenantId(),"COMPETENCE"));
-            CompetenceDTO.Create create = competenceBeanMapper.toCompetence(params.getRq());
-            create.setProcessInstanceId(processInstance.getId());
-            competenceService.checkAndCreate(create, response);
-            res.setStatus(200);
-        } catch (Exception e) {
-            res.setStatus(406);
-        }
-        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+        BaseResponse baseResponse = competenceService.checkAndCreateInBPMS(params, response);
+        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
     }
 
     @Loggable
