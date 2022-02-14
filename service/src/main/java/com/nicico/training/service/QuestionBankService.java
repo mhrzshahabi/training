@@ -205,6 +205,7 @@ public class QuestionBankService implements IQuestionBankService {
     @Override
     public PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.SearchRq totalRequest = new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         List<QuestionBank> questionBankList = new ArrayList<>();
         Long teacherId = teacherDAO.getTeacherId(elsSearchDTO.getNationalCode());
@@ -221,6 +222,7 @@ public class QuestionBankService implements IQuestionBankService {
 
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
         request.setCriteria(criteriaRq);
+        totalRequest.setCriteria(criteriaRq);
 
 
         request.setStartIndex(size*page)
@@ -228,7 +230,10 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = searchId(request);
-        Long totalSpecCount = searchId(request).getTotalCount();
+        totalRequest.setStartIndex(0)
+                .setCount(10000000);
+
+        Long totalSpecCount = searchId(totalRequest).getTotalCount();
         if (response.getList().size()>0) {
             response.getList().stream().forEach(idClass -> {
 
@@ -248,6 +253,7 @@ public class QuestionBankService implements IQuestionBankService {
     @Override
     public PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.SearchRq TotallRequest = new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         List<QuestionBank> questionBankList = new ArrayList<>();
         List<SearchDTO.CriteriaRq> secondList = new ArrayList<>();
@@ -271,6 +277,7 @@ public class QuestionBankService implements IQuestionBankService {
         }
         SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
         request.setCriteria(criteriaRq);
+        TotallRequest.setCriteria(criteriaRq);
 
 
 
@@ -286,8 +293,12 @@ public class QuestionBankService implements IQuestionBankService {
             if (request.getCriteria() != null)
                 criteria.getCriteria().add(request.getCriteria());
             request.setCriteria(criteria);
+            TotallRequest.setCriteria(criteria);
         }
-        Long totalSpecCount = searchId(request).getTotalCount();
+
+        TotallRequest.setStartIndex(0)
+                .setCount(10000000);
+        Long totalSpecCount = searchId(TotallRequest).getTotalCount();
 
         SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = searchId(request);
 

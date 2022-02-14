@@ -1041,7 +1041,7 @@ public class ElsRestController {
                    }
 
                    paginationDto.setLast(pageQuestionDto.getPageQuestion().getTotalPages() - 1);
-                   paginationDto.setTotalItems(pageQuestionDto.getPageQuestion().get().count());
+                   paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
                    questionBankDto.setPagination(paginationDto);
                  return questionBankDto;
 
@@ -1156,7 +1156,7 @@ public class ElsRestController {
                 }
 
                 paginationDto.setLast(pageQuestionDto.getPageQuestion().getTotalPages() - 1);
-                    paginationDto.setTotalItems(pageQuestionDto.getPageQuestion().get().count());
+                    paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
 

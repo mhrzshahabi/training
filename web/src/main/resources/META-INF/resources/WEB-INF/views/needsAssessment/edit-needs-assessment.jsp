@@ -2498,8 +2498,8 @@
                             "cType": DynamicForm_JspEditNeedsAssessment.getValue("objectType")
                         }];
                         wait.show();
-                        // isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/need-assessment/start-data-validation", "POST", JSON.stringify(param), startProcess_callback));
-                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/need-assessment/start-data-validation", "POST", JSON.stringify(param), startProcess_callback));
+                        // isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
                     } else {
                         let url = needsAssessmentUrl.concat("/updateWorkFlowStatesToSent?objectId=")
                             .concat(DynamicForm_JspEditNeedsAssessment.getValue("objectId"))

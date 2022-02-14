@@ -9,6 +9,7 @@ import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.iservice.IBpmsService;
+import com.nicico.training.iservice.INeedsAssessmentTempService;
 import com.nicico.training.repository.PersonnelDAO;
 import dto.bpms.BpmsContent;
 import dto.bpms.BpmsDefinitionDto;
@@ -30,6 +31,7 @@ public class BpmsService implements IBpmsService {
     private final ObjectMapper mapper;
     private final PersonnelDAO personnelDAO;
     private final CompetenceService competenceService;
+    private final INeedsAssessmentTempService iNeedsAssessmentTempService;
 
 
     @Override
@@ -60,14 +62,14 @@ public class BpmsService implements IBpmsService {
     @Override
     @Transactional
     public ProcessInstance cancelProcessInstance(String processInstanceId, String reason) {
-        competenceService.updateStatus(processInstanceId, 1L,reason);
+        competenceService.updateStatus(processInstanceId, 1L, reason);
         return client.cancelProcessInstance(processInstanceId);
 
 
     }
 
     @Override
-    public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId,String process) {
+    public StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params, String tenantId, String process) {
         Map<String, Object> map = new HashMap<>();
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
 //        String mainConfirmBoss = "ahmadi_z";
@@ -82,9 +84,9 @@ public class BpmsService implements IBpmsService {
         map.put("userId", SecurityUtil.getUserId());
         map.put("tenantId", tenantId);
         map.put("title", params.getData().get("title").toString());
-        if (process.equals("needAssessment")){
-            map.put("objectType",params.getRq().getType());
-            map.put("objectId",params.getRq().getId());
+        if (process.equals("needAssessment")) {
+            map.put("objectType", params.getRq().getType());
+            map.put("objectId", params.getRq().getId());
         }
         map.put("createBy", SecurityUtil.getFullName());
         StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
@@ -112,5 +114,30 @@ public class BpmsService implements IBpmsService {
             res.setMessage("تغییر وضعیت شایستگی انجام نشد");
         }
         return res;
+    }
+
+    @Override
+    public BaseResponse reviewNeedAssessmentTask(ReviewTaskRequest reviewTaskRequestDto) {
+        BaseResponse res = new BaseResponse();
+        try {
+//            iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 1, "تایید نهایی اصلی");
+//            iNeedsAssessmentTempService.verify(objectType, objectId);
+
+            try {
+                client.reviewTask(reviewTaskRequestDto);
+                res.setStatus(200);
+                res.setMessage("عملیات موفقیت آمیز به پایان رسید");
+                return res;
+            } catch (Exception e) {
+                res.setStatus(404);
+                res.setMessage("عملیات bpms انجام نشد");
+                return res;
+            }
+
+        } catch (Exception e) {
+            res.setStatus(406);
+            res.setMessage("تغییر وضعیت شایستگی انجام نشد");
+            return res;
+        }
     }
 }

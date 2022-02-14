@@ -61,6 +61,11 @@ public class BpmsRestController {
     @PostMapping({"/tasks/review"})
     public BaseResponse reviewTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
         return service.reviewCompetenceTask(reviewTaskRequestDto);
+    }   //confirm task
+    @Loggable
+    @PostMapping({"needAssessment/tasks/review"})
+    public BaseResponse reviewNeedAssessmentTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
+        return service.reviewNeedAssessmentTask(reviewTaskRequestDto);
     }
 
     @Loggable

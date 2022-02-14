@@ -17,4 +17,6 @@ public interface IBpmsService {
     StartProcessWithDataDTO getStartProcessDto(BpmsStartParamsDto params,String tenantId,String process);
 
     BaseResponse reviewCompetenceTask(ReviewTaskRequest reviewTaskRequestDto);
+
+    BaseResponse reviewNeedAssessmentTask(ReviewTaskRequest reviewTaskRequestDto);
 }

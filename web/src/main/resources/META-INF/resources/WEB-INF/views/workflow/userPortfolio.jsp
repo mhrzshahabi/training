@@ -363,7 +363,25 @@
                 align: "center",
                 width: "120",
                 click: function () {
-                    confirmProcess(record.taskId, record.processInstanceId, Window_Completion_UserPortfolio);
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index == 0) {
+                                confirmProcess(record.taskId, record.processInstanceId, Window_Completion_UserPortfolio);
+
+                            }
+                            this.hide();
+                        }
+                    });
+
+
                 }
             });
             let Button_Completion_Return = isc.IButton.create({
@@ -539,7 +557,6 @@
         }));
     }
     function setTitle(name) {
-        debugger
     switch (name) {
 
         case "Job":
