@@ -629,7 +629,7 @@ public class ElsRestController {
                 baseResponse.setMessage("نمرات نهایی وارد شده از بیشترین مقدار روش نمره دهی کلاس بیشتر است");
 
             } else {
-                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id,SecurityUtil.getFirstName()+" "+SecurityUtil.getLastName());
+                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id, SecurityUtil.getNationalCode());
                 try {
                     baseResponse= classStudentService.updateTestScore(testQuestionService.get(id).getTclass().getId(),examResult);
                     baseResponse = client.sendScoresToEls(requestDto);
@@ -664,7 +664,7 @@ public class ElsRestController {
             } else {
                 long idPreTEst=testQuestionService.getPreTestId(id);
 
-                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, idPreTEst,SecurityUtil.getFirstName()+" "+SecurityUtil.getLastName());
+                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, idPreTEst, SecurityUtil.getNationalCode());
                 try {
                     baseResponse= classStudentService.updatePreTestScore(id,examResult);
                     baseResponse = client.sendScoresToEls(requestDto);
