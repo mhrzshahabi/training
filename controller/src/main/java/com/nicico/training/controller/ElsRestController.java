@@ -1020,7 +1020,7 @@ public class ElsRestController {
     public ElsQuestionBankDto getQuestionBankFilter(HttpServletRequest header,
             @PathVariable Integer page, @PathVariable Integer size,@RequestBody  ElsSearchDTO elsSearchDTO ) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
 
-       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
            try {
                SearchDTO.SearchRq request = new SearchDTO.SearchRq();
                List<SearchDTO.CriteriaRq> list = new ArrayList<>();
@@ -1050,10 +1050,11 @@ public class ElsRestController {
 
                        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
                        request.setCriteria(criteriaRq);
+                   Long totlalSpecCount = questionBankService.searchId(request).getTotalCount();
 
+                   request.setStartIndex(size*page)
+                           .setCount(size);
 
-                       request.setStartIndex(0)
-                               .setCount(size - 0);
 
                        SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = questionBankService.searchId(request);
 
@@ -1072,7 +1073,12 @@ public class ElsRestController {
                    PaginationDto paginationDto = new PaginationDto();
                    paginationDto.setCurrent(page);
                    paginationDto.setSize(size);
-                   paginationDto.setTotal(pageQuestion.getTotalPages());
+                   if((totlalSpecCount % size)==0)
+                   paginationDto.setTotal((int) Math.ceil(totlalSpecCount/size));
+                   else{
+                       paginationDto.setTotal((int) Math.ceil(totlalSpecCount/size)+1);
+                   }
+
                    paginationDto.setLast(pageQuestion.getTotalPages() - 1);
                    paginationDto.setTotalItems(pageQuestion.get().count());
                    questionBankDto.setPagination(paginationDto);
@@ -1098,9 +1104,9 @@ public class ElsRestController {
            }
 
 
-       } else {
-        throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//       } else {
+//        throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
 
 
 
@@ -1203,8 +1209,8 @@ public class ElsRestController {
 
 
 
-                    request.setStartIndex(0)
-                            .setCount(size- 0);
+                    request.setStartIndex(size*page)
+                            .setCount(size);
                        if(list2.size()>0) {
                            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
                            criteria.getCriteria().add(addCriteria);
@@ -1212,6 +1218,7 @@ public class ElsRestController {
                                criteria.getCriteria().add(request.getCriteria());
                            request.setCriteria(criteria);
                        }
+                Long totlalSpecCount = questionBankService.searchId(request).getTotalCount();
 
                     SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = questionBankService.searchId(request);
 
@@ -1233,8 +1240,13 @@ public class ElsRestController {
                     PaginationDto paginationDto = new PaginationDto();
                     paginationDto.setCurrent(page);
                     paginationDto.setSize(size);
-                    paginationDto.setTotal(pageQuestion.getTotalPages());
-                    paginationDto.setLast(pageQuestion.getTotalPages() - 1);
+                if((totlalSpecCount % size)==0)
+                    paginationDto.setTotal((int) Math.ceil(totlalSpecCount/size));
+                else{
+                    paginationDto.setTotal((int) Math.ceil(totlalSpecCount/size)+1);
+                }
+
+                paginationDto.setLast(pageQuestion.getTotalPages() - 1);
                     paginationDto.setTotalItems(pageQuestion.get().count());
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
