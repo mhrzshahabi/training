@@ -1,7 +1,5 @@
 package com.nicico.training.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -15,20 +13,14 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.util.*;
+
+import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Service
 @RequiredArgsConstructor
@@ -43,6 +35,7 @@ public class QuestionBankService implements IQuestionBankService {
     private final ISubcategoryService subcategoryService;
     private  final TeacherDAO teacherDAO;
     private final ObjectMapper objectMapper;
+
 
     @Transactional(readOnly = true)
     @Override
@@ -207,6 +200,115 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         return questionBankList;
+    }
+
+    @Override
+    public PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        List<QuestionBank> questionBankList = new ArrayList<>();
+        Long teacherId = teacherDAO.getTeacherId(elsSearchDTO.getNationalCode());
+
+        list.add(makeNewCriteria("teacherId",teacherId,EOperator.equals,null));
+
+        if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
+            elsSearchDTO.getElsSearchList().stream().forEach(elsSearch -> {
+                if (elsSearch.getValue() != null) {
+                    list.add(makeNewCriteria(elsSearch.getFieldName(), elsSearch.getValue().toString(), EOperator.iContains, null));
+                }
+            });
+        }
+
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+        request.setCriteria(criteriaRq);
+
+
+        request.setStartIndex(size*page)
+                .setCount(size);
+
+
+        SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = searchId(request);
+        Long totalSpecCount = searchId(request).getTotalCount();
+        if (response.getList().size()>0) {
+            response.getList().stream().forEach(idClass -> {
+
+                questionBankList.add(getById(idClass.getId()));
+            });
+        }
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                Sort.Order.desc("id")
+        ));
+        Page<QuestionBank> pageQuestion=new PageImpl<QuestionBank>(questionBankList,pageable,questionBankList.size());
+        PageQuestionDto pageQuestionDto=new PageQuestionDto();
+        pageQuestionDto.setPageQuestion(pageQuestion);
+        pageQuestionDto.setTotalSpecCount(totalSpecCount);
+        return pageQuestionDto;
+    }
+
+    @Override
+    public PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        List<QuestionBank> questionBankList = new ArrayList<>();
+        List<SearchDTO.CriteriaRq> secondList = new ArrayList<>();
+        Long teacherId = teacherDAO.getTeacherId(elsSearchDTO.getNationalCode());
+        List<Long> categories=categoryService.findCategoryByTeacher(teacherId);
+        List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacherId);
+        list.add(makeNewCriteria("categoryId", null, EOperator.isNull, null));
+        list.add(makeNewCriteria("subCategoryId", null, EOperator.isNull, null));
+        if(categories.size()>0)
+            secondList.add(makeNewCriteria("categoryId",categories,EOperator.inSet,null));
+        if(subCategories.size()>0)
+            secondList.add(makeNewCriteria("subCategoryId",subCategories,EOperator.inSet,null));
+
+
+        if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
+            elsSearchDTO.getElsSearchList().stream().forEach(elsSearch -> {
+                if (elsSearch.getValue() != null) {
+                    list.add(makeNewCriteria(elsSearch.getFieldName(), elsSearch.getValue().toString(), EOperator.iContains, null));
+                }
+            });
+        }
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+        request.setCriteria(criteriaRq);
+
+
+
+        SearchDTO.CriteriaRq addCriteria = makeNewCriteria(null, null, EOperator.or, secondList);
+
+
+
+        request.setStartIndex(size*page)
+                .setCount(size);
+        if(secondList.size()>0) {
+            SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
+            criteria.getCriteria().add(addCriteria);
+            if (request.getCriteria() != null)
+                criteria.getCriteria().add(request.getCriteria());
+            request.setCriteria(criteria);
+        }
+        Long totalSpecCount = searchId(request).getTotalCount();
+
+        SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = searchId(request);
+
+        if (response.getList().size() > 0) {
+            response.getList().stream().forEach(idClass -> {
+
+                questionBankList.add(getById(idClass.getId()));
+            });
+        }
+
+
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(
+                Sort.Order.desc("id")
+        ));
+        Page<QuestionBank> pageQuestion = new PageImpl<QuestionBank>(questionBankList, pageable, questionBankList.size());
+        PageQuestionDto pageQuestionDto=new PageQuestionDto();
+        pageQuestionDto.setPageQuestion(pageQuestion);
+        pageQuestionDto.setTotalSpecCount(totalSpecCount);
+        return pageQuestionDto;
+
     }
 
 }
