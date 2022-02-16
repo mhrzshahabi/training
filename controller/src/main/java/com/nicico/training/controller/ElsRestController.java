@@ -1048,7 +1048,7 @@ public class ElsRestController {
                    PageQuestionDto pageQuestionDto=questionBankService.getPageQuestionByTeacher(page,size,elsSearchDTO);
 
 
-                  ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(pageQuestionDto.getPageQuestion(),elsSearchDTO.getNationalCode());
+                  ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(),elsSearchDTO.getNationalCode());
                    PaginationDto paginationDto = new PaginationDto();
                    paginationDto.setCurrent(page);
                    paginationDto.setSize(size);
@@ -1163,7 +1163,7 @@ public class ElsRestController {
             PageQuestionDto pageQuestionDto= questionBankService.getPageQuestionByCategoryAndSub(page,size,elsSearchDTO);
 
 
-                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
+                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
                     PaginationDto paginationDto = new PaginationDto();
                     paginationDto.setCurrent(page);
                     paginationDto.setSize(size);
