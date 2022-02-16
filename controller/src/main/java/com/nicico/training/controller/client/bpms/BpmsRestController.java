@@ -76,9 +76,15 @@ public class BpmsRestController {
 
     //cancel task
     @Loggable
-    @PostMapping({"/processes/cancel-process/{processInstanceId}"})
-    public ProcessInstance cancelProcessInstance(@PathVariable(name = "processInstanceId") String processInstanceId, @RequestBody String reason) {
-        return service.cancelProcessInstance(processInstanceId, reason);
+    @PostMapping({"/processes/cancel-process"})
+    public void cancelProcessInstance(@RequestBody BpmsCancelTaskDto value) {
+         service.cancelProcessInstance(value.getReviewTaskRequest(), value.getReason());
+    }
+    //cancel task
+    @Loggable
+    @PostMapping({"/needAssessment/processes/cancel-process"})
+    public void cancelNeedAssessmentProcessInstance( @RequestBody BpmsCancelTaskDto value) {
+         service.cancelNeedAssessmentProcessInstance(value.getReviewTaskRequest(), value);
     }
 
     //first api for start a process

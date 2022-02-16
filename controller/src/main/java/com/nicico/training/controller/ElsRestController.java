@@ -618,28 +618,37 @@ public class ElsRestController {
         BaseResponse baseResponse = new BaseResponse();
         BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
         if (checkValidScores.getStatus() != 200) {
+
             baseResponse.setStatus(checkValidScores.getStatus());
             baseResponse.setMessage(checkValidScores.getMessage());
-
         } else {
+
             String scoringMethod = testQuestionService.get(id).getTclass().getScoringMethod();
             boolean checkScoreInRange = evaluationBeanMapper.checkScoreInRange(scoringMethod, examResult);
             if (!checkScoreInRange) {
+
                 baseResponse.setStatus(406);
                 baseResponse.setMessage("نمرات نهایی وارد شده از بیشترین مقدار روش نمره دهی کلاس بیشتر است");
-
             } else {
-                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id, SecurityUtil.getNationalCode());
-                try {
-                    baseResponse= classStudentService.updateTestScore(testQuestionService.get(id).getTclass().getId(),examResult);
-                    baseResponse = client.sendScoresToEls(requestDto);
-                    if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
-                        return baseResponse;
-                } catch (Exception e) {
-                    baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+
+                if (SecurityUtil.getFirstName() == null && SecurityUtil.getLastName() == null) {
+
+                    baseResponse.setMessage("توکن منقصی شده است؛ مجدد لاگین کنید");
                     baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                     return baseResponse;
+                } else {
 
+                    UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id, SecurityUtil.getFirstName() + " " + SecurityUtil.getLastName());
+                    try {
+                        baseResponse= classStudentService.updateTestScore(testQuestionService.get(id).getTclass().getId(),examResult);
+                        baseResponse = client.sendScoresToEls(requestDto);
+                        if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
+                            return baseResponse;
+                    } catch (Exception e) {
+                        baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                        baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                        return baseResponse;
+                    }
                 }
             }
         }
@@ -651,30 +660,38 @@ public class ElsRestController {
         BaseResponse baseResponse = new BaseResponse();
         BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
         if (checkValidScores.getStatus() != 200) {
+
             baseResponse.setStatus(checkValidScores.getStatus());
             baseResponse.setMessage(checkValidScores.getMessage());
-
         } else {
+
             String scoringMethod = iTclassService.get(id).getScoringMethod();
             boolean checkScoreInRange = evaluationBeanMapper.checkScoreInRange(scoringMethod, examResult);
             if (!checkScoreInRange) {
+
                 baseResponse.setStatus(406);
                 baseResponse.setMessage("نمرات نهایی وارد شده از بیشترین مقدار روش نمره دهی کلاس بیشتر است");
-
             } else {
-                long idPreTEst=testQuestionService.getPreTestId(id);
 
-                UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, idPreTEst, SecurityUtil.getNationalCode());
-                try {
-                    baseResponse= classStudentService.updatePreTestScore(id,examResult);
-                    baseResponse = client.sendScoresToEls(requestDto);
-                    if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
-                        return baseResponse;
-                } catch (Exception e) {
-                    baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                long idPreTEst=testQuestionService.getPreTestId(id);
+                if (SecurityUtil.getFirstName() == null && SecurityUtil.getLastName() == null) {
+
+                    baseResponse.setMessage("توکن منقصی شده است؛ مجدد لاگین کنید");
                     baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                     return baseResponse;
+                } else {
 
+                    UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, idPreTEst, SecurityUtil.getFirstName() + " " + SecurityUtil.getLastName());
+                    try {
+                        baseResponse= classStudentService.updatePreTestScore(id,examResult);
+                        baseResponse = client.sendScoresToEls(requestDto);
+                        if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
+                            return baseResponse;
+                    } catch (Exception e) {
+                        baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                        baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                        return baseResponse;
+                    }
                 }
             }
         }

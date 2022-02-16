@@ -49,6 +49,9 @@ public class ViewReactionEvaluationFormulaReportForCourse implements Serializabl
     @Column(name = "sub_category_titlefa")
     private String sub_category_titlefa;
 
+    @Column(name = "sub_category_id")
+    private Long sub_category_id;
+
     @Column(name = "class_id")
     private String class_id;
 

@@ -197,7 +197,9 @@
         height: "100%",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
+        <sec:authorize access="hasAuthority('Evaluation_Learning_R')">
         dataSource: RestDataSource_PreTest,
+        </sec:authorize>
         selectionType: "single",
         fields: [
             {name: "id", hidden:true},
@@ -210,6 +212,7 @@
             var fieldName = this.getFieldName(colNum);
 
             if (fieldName === "OnDelete") {
+                <sec:authorize access="hasAuthority('Evaluation_Learning_Actions')">
                 var recordCanvas = isc.HLayout.create({
                     height: 20,
                     width: "100%",
@@ -251,6 +254,7 @@
                 });
                 recordCanvas.addMember(removeIcon);
                 return recordCanvas;
+                </sec:authorize>
             } else
                 return null;
         }
@@ -1758,6 +1762,7 @@
         width: "100%",
         membersMargin: 5,
         members: [
+            <sec:authorize access="hasAuthority('Evaluation_Learning_Actions')">
             ToolStripButton_InsertQuestionFromQuestionBank_PreTest,
             ToolStripButton_InsertQuestionFromLatestQuestions_PreTest,
             ToolStripButton_PrintJasper,
@@ -1784,6 +1789,8 @@
                     loadPreExamResult(ListGrid_class_Evaluation.getSelectedRecord());
                 }
             }),
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('Evaluation_Learning_R')">
             isc.IButton.create({
                 title: "فراگیران با اطلاعات ناقص",
                 width: "170",
@@ -1793,13 +1800,16 @@
                     showPreTestInvalidUsers(ListGrid_class_Evaluation.getSelectedRecord());
                 }
             }),
+            </sec:authorize>
 
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
                 border: '0px',
                 members: [
+                    <sec:authorize access="hasAuthority('Evaluation_Learning_R')">
                     ToolStripButton_RefreshIssuance_PreTest
+                    </sec:authorize>
                 ]
             })
         ]

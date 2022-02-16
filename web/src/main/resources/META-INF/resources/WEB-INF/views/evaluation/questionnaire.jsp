@@ -117,6 +117,7 @@
             Button2,
             </sec:authorize>
 
+            <sec:authorize access="hasAuthority('Questionnaire_P')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     if (QuestionnaireLG_questionnaire.data.size()<1)
@@ -125,6 +126,7 @@
                     ExportToFile.downloadExcelRestUrl(null, QuestionnaireLG_questionnaire, questionnaireUrl + "/iscList", 0, null, '', "ارزیابی - پرسشنامه", QuestionnaireLG_questionnaire.getCriteria(), null);
                 }
             }),
+            </sec:authorize>
 
             isc.LayoutSpacer.create({width: "*"}),
             <sec:authorize access="hasAuthority('Questionnaire_R')">
@@ -152,6 +154,7 @@
             isc.ToolStripButtonRemove.create({click: function () {removeQuestionnaireQuestion_questionnaire(); }}),
             </sec:authorize>
 
+            <sec:authorize access="hasAuthority('QuestionnaireQuestion_P')">
             isc.ToolStripButtonExcel.create({
                 click: function () {
                     if (QuestionnaireQuestionLG_questionnaire.data.size()<1)
@@ -160,6 +163,7 @@
                     ExportToFile.downloadExcelRestUrl(null, QuestionnaireQuestionLG_questionnaire, questionnaireQuestionUrl + "/iscList/" + selectedRecord, 0, null, '', "ارزیابی - پرسشنامه - سوالات", QuestionnaireLG_questionnaire.getCriteria(), null);
                 }
             }),
+            </sec:authorize>
 
             isc.LayoutSpacer.create({width: "*"}),
 
@@ -202,7 +206,6 @@
         <sec:authorize access="hasAuthority('Questionnaire_R')">
         dataSource: QuestionnaireDS_questionnaire,
         </sec:authorize>
-
         autoFetchData: true,
         fields: [{name: "title"},{name:"questionnaireType.title"},{name: "description"}],
         gridComponents: [
@@ -243,7 +246,9 @@
 
     QuestionnaireQuestionLG_questionnaire = isc.TrLG.create({
         ID: "QuestionnaireQuestionLG_questionnaire",
+        <sec:authorize access="hasAuthority('QuestionnaireQuestion_R')">
         dataSource: QuestionnaireQuestionDS_questionnaire,
+        </sec:authorize>
         dataFetchMode: "local",
         fields: [{name: "evaluationQuestion.question"}, {name: "weight"}, {name: "order"}],
         gridComponents: [
@@ -257,9 +262,6 @@
         <sec:authorize access="hasAuthority('QuestionnaireQuestion_U')">
         recordDoubleClick: function () { editQuestionnaireQuestion_questionnaire(); },
         </sec:authorize>
-
-
-
     });
 
     EvaluationQuestionDS_questionnaire = isc.TrDS.create({
@@ -633,3 +635,5 @@
             QuestionnaireQuestionLG_questionnaire.invalidateCache()
         }
     }
+
+// </script>

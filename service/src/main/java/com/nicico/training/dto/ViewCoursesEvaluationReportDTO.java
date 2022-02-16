@@ -25,6 +25,7 @@ public class ViewCoursesEvaluationReportDTO implements Serializable {
         private String courseTitleFa;
         private String categoryTitleFa;
         private String subCategoryTitleFa;
+        private Long subCategoryId;
         private Integer classStudentStatusReaction;
         private String evaluationAnalysisReactionGrade;
         private String evaluationAnalysisReactionPass;

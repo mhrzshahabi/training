@@ -2099,26 +2099,32 @@
                 },
                 </sec:authorize>
 
+                <sec:authorize access="hasAuthority('Menu_Evaluation_QuestionBank')">
                 {
                     title: "<spring:message code="evaluation.question.bank"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluation-question-bank/show-form"/>");
                     }
                 },
+                </sec:authorize>
 
+                <sec:authorize access="hasAuthority('Menu_Evaluation_FinalTest')">
                 {
                     title: "<spring:message code="evaluation.final.test"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluation-final-test/show-form"/>");
                     }
                 },
+                </sec:authorize>
 
+                <sec:authorize access="hasAuthority('Menu_Evaluation_Requests')">
                 {
                     title: "<spring:message code="requests"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/request"/>");
                     }
                 },
+                </sec:authorize>
 
                 <sec:authorize access="hasAuthority('Menu_Evaluation_MobileVerify')">
                 {

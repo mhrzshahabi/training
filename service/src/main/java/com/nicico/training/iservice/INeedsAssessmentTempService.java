@@ -26,6 +26,7 @@ public interface INeedsAssessmentTempService {
     Boolean isCreatedByCurrentUser(String objectType, Long objectId);
 
     Integer updateNeedsAssessmentTempMainWorkflow(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus);
+    Integer updateNeedsAssessmentTempWorkflowMainStatusInBpms(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus,String reason);
 
     NeedsAssessmentDTO.Info delete(Long id);
 

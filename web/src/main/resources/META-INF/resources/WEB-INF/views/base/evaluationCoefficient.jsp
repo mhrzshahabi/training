@@ -2,6 +2,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -446,231 +448,237 @@
         canDragResize: false,
         closeClick: false,
         minimize: false,
-        items: [DynamicForm_Evaluation_Coefficient, isc.MyHLayoutButtons.create({
-            members: [isc.IButtonSave.create({
-                title: "ذخیره",
-                click: function () {
+        items: [
+            <sec:authorize access="hasAuthority('EvaluationCoefficient_R')">
+            DynamicForm_Evaluation_Coefficient,
+            </sec:authorize>
+            isc.MyHLayoutButtons.create({
+                members: [
+                    <sec:authorize access="hasAuthority('EvaluationCoefficient_U')">
+                    isc.IButtonSave.create({
+                        title: "ذخیره",
+                        click: function () {
+                        DynamicForm_Evaluation_Coefficient.validate();
+                        if (!DynamicForm_Evaluation_Coefficient.validate()) {
 
-                    DynamicForm_Evaluation_Coefficient.validate();
-                    if (!DynamicForm_Evaluation_Coefficient.validate()) {
-
-                        return;
-                    }
-
-
-                    var fields = DynamicForm_Evaluation_Coefficient.getFields();
-                    var toUpdate = [];
-
-                    for (let i = 0; i < fields.length; i++) {
-                        if (fields[i].getID().startsWith("isc"))
-                            continue;
-                        toUpdate.add({
-                            "id": ((fields[i].getID()).split('_'))[0],
-                            "value": fields[i].getValue(),
-                        });
-                    }
-                    if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z2")) != 100) {
-                        var str1 = DynamicForm_Evaluation_Coefficient.getItem("z1").title
-                        var str2 = DynamicForm_Evaluation_Coefficient.getItem("z2").title
-                         if (DynamicForm_Evaluation_Coefficient.getItem("z1").getValue() == null)
-                         {
-                             DynamicForm_Evaluation_Coefficient.getItem("z1").focusInItem()
-                             createDialog("info", "فیلد ' " + str1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                         else if (DynamicForm_Evaluation_Coefficient.getItem("z2").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("z2").focusInItem()
-                             createDialog("info", "فیلد ' " + str2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                          else{
-                           createDialog("info", "جمع ضرایب فرمول یک باید 100 شود", "<spring:message code="message"/>")
-                           }
-                    }
-
-
-                    else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z3")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z4")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z5")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z6")) != 100) {
-                        var str3 = DynamicForm_Evaluation_Coefficient.getItem("z3").title
-                        var str4 = DynamicForm_Evaluation_Coefficient.getItem("z4").title
-                        var str5 = DynamicForm_Evaluation_Coefficient.getItem("z5").title
-                        var str6 = DynamicForm_Evaluation_Coefficient.getItem("z6").title
-                         if (DynamicForm_Evaluation_Coefficient.getItem("z3").getValue() == null)
-                         {
-                             DynamicForm_Evaluation_Coefficient.getItem("z3").focusInItem()
-                             createDialog("info", "فیلد ' " + str3.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                         else if (DynamicForm_Evaluation_Coefficient.getItem("z4").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("z4").focusInItem()
-                             createDialog("info", "فیلد ' " + str4.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                           else if (DynamicForm_Evaluation_Coefficient.getItem("z5").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("z5").focusInItem()
-                             createDialog("info", "فیلد ' " + str5.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          } else if (DynamicForm_Evaluation_Coefficient.getItem("z6").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("z6").focusInItem()
-                             createDialog("info", "فیلد ' " + str6.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                          else{
-                           createDialog("info", "جمع ضرایب فرمول دو باید 100 شود", "<spring:message code="message"/>")
-                           }
-
-                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z7")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z8")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("scoreEvaluationRTEB")) +  parseFloat(DynamicForm_Evaluation_Coefficient.getValue("scoreEvaluationPartnersEB")) != 100) {
-                        var str7 = DynamicForm_Evaluation_Coefficient.getItem("z7").title
-                        var str8 = DynamicForm_Evaluation_Coefficient.getItem("z8").title
-                        var str9 = DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").title
-                        var str10 = DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").title
-                        if (DynamicForm_Evaluation_Coefficient.getItem("z7").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("z7").focusInItem()
-                             createDialog("info", "فیلد ' " + str7.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          } else if (DynamicForm_Evaluation_Coefficient.getItem("z8").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("z8").focusInItem()
-                             createDialog("info", "فیلد ' " + str8.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                        else if (DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").getValue() == null)
-                        {
-                            DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").focusInItem()
-                            createDialog("info", "فیلد ' " + str9.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        }
-                        else if (DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").getValue() == null)
-                        {
-                            DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").focusInItem()
-                            createDialog("info", "فیلد ' " + str10.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        }
-                          else{
-                             createDialog("info", "جمع ضرایب فرمول چهارباید 100 شود", "<spring:message code="message"/>")
-                             return;
-                          }
-                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECLZ1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECLZ2")) != 100) {
-                        var strFECLZ1 = DynamicForm_Evaluation_Coefficient.getItem("FECLZ1").title
-                        var strFECLZ2 = DynamicForm_Evaluation_Coefficient.getItem("FECLZ2").title
-                         if (DynamicForm_Evaluation_Coefficient.getItem("FECLZ1").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("FECLZ1").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECLZ1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          } else if (DynamicForm_Evaluation_Coefficient.getItem("FECLZ2").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("FECLZ2").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECLZ2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                          else{
-                            createDialog("info", "جمع ضرایب فرمول شش باید 100 شود", "<spring:message code="message"/>")
                             return;
-                          }
-                    } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECBZ1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECBZ2")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECBZ3")) != 100) {
-                        var strFECBZ1 = DynamicForm_Evaluation_Coefficient.getItem("FECBZ1").title
-                        var strFECBZ2 = DynamicForm_Evaluation_Coefficient.getItem("FECBZ2").title
-                        var strFECBZ3 = DynamicForm_Evaluation_Coefficient.getItem("FECBZ3").title
-                       if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ1").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("FECBZ1").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECBZ1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          } else if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ2").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("FECBZ2").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECBZ2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                          else if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ3").getValue() == null)
-                          {
-                             DynamicForm_Evaluation_Coefficient.getItem("FECBZ3").focusInItem()
-                             createDialog("info", "فیلد ' " + strFECBZ3.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                          }
-                          else{
-                            createDialog("info", "جمع ضرایب فرمول هفت باید 100 شود", "<spring:message code="message"/>")
-                        return;
-                          }
-                            } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusET").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minQusET").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        DynamicForm_Evaluation_Coefficient.getItem("minQusET").focusInItem();
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("FECRZ").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("FECRZ").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
-                        DynamicForm_Evaluation_Coefficient.getItem("FECRZ").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreET").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreET").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        DynamicForm_Evaluation_Coefficient.getItem("minScoreET").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreER").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreER").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        DynamicForm_Evaluation_Coefficient.getItem("minScoreER").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusER").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minQusER").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        DynamicForm_Evaluation_Coefficient.getItem("minQusER").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").focusInItem()
-                        return;
-                    }else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                        }
+                        var fields = DynamicForm_Evaluation_Coefficient.getFields();
+                        var toUpdate = [];
 
-                        DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                        for (let i = 0; i < fields.length; i++) {
+                            if (fields[i].getID().startsWith("isc"))
+                                continue;
+                            toUpdate.add({
+                                "id": ((fields[i].getID()).split('_'))[0],
+                                "value": fields[i].getValue(),
+                            });
+                        }
+                        if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z2")) != 100) {
+                            var str1 = DynamicForm_Evaluation_Coefficient.getItem("z1").title
+                            var str2 = DynamicForm_Evaluation_Coefficient.getItem("z2").title
+                             if (DynamicForm_Evaluation_Coefficient.getItem("z1").getValue() == null)
+                             {
+                                 DynamicForm_Evaluation_Coefficient.getItem("z1").focusInItem()
+                                 createDialog("info", "فیلد ' " + str1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                             else if (DynamicForm_Evaluation_Coefficient.getItem("z2").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("z2").focusInItem()
+                                 createDialog("info", "فیلد ' " + str2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                              else{
+                               createDialog("info", "جمع ضرایب فرمول یک باید 100 شود", "<spring:message code="message"/>")
+                               }
+                        }
+                        else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z3")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z4")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z5")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z6")) != 100) {
+                            var str3 = DynamicForm_Evaluation_Coefficient.getItem("z3").title
+                            var str4 = DynamicForm_Evaluation_Coefficient.getItem("z4").title
+                            var str5 = DynamicForm_Evaluation_Coefficient.getItem("z5").title
+                            var str6 = DynamicForm_Evaluation_Coefficient.getItem("z6").title
+                             if (DynamicForm_Evaluation_Coefficient.getItem("z3").getValue() == null)
+                             {
+                                 DynamicForm_Evaluation_Coefficient.getItem("z3").focusInItem()
+                                 createDialog("info", "فیلد ' " + str3.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                             else if (DynamicForm_Evaluation_Coefficient.getItem("z4").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("z4").focusInItem()
+                                 createDialog("info", "فیلد ' " + str4.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                               else if (DynamicForm_Evaluation_Coefficient.getItem("z5").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("z5").focusInItem()
+                                 createDialog("info", "فیلد ' " + str5.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              } else if (DynamicForm_Evaluation_Coefficient.getItem("z6").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("z6").focusInItem()
+                                 createDialog("info", "فیلد ' " + str6.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                              else{
+                               createDialog("info", "جمع ضرایب فرمول دو باید 100 شود", "<spring:message code="message"/>")
+                               }
 
-                        DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusEL").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minQusEL").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                        } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z7")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z8")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("scoreEvaluationRTEB")) +  parseFloat(DynamicForm_Evaluation_Coefficient.getValue("scoreEvaluationPartnersEB")) != 100) {
+                            var str7 = DynamicForm_Evaluation_Coefficient.getItem("z7").title
+                            var str8 = DynamicForm_Evaluation_Coefficient.getItem("z8").title
+                            var str9 = DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").title
+                            var str10 = DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").title
+                            if (DynamicForm_Evaluation_Coefficient.getItem("z7").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("z7").focusInItem()
+                                 createDialog("info", "فیلد ' " + str7.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              } else if (DynamicForm_Evaluation_Coefficient.getItem("z8").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("z8").focusInItem()
+                                 createDialog("info", "فیلد ' " + str8.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                            else if (DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").getValue() == null)
+                            {
+                                DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationRTEB").focusInItem()
+                                createDialog("info", "فیلد ' " + str9.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            }
+                            else if (DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").getValue() == null)
+                            {
+                                DynamicForm_Evaluation_Coefficient.getItem("scoreEvaluationPartnersEB").focusInItem()
+                                createDialog("info", "فیلد ' " + str10.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            }
+                              else{
+                                 createDialog("info", "جمع ضرایب فرمول چهارباید 100 شود", "<spring:message code="message"/>")
+                                 return;
+                              }
+                        } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECLZ1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECLZ2")) != 100) {
+                            var strFECLZ1 = DynamicForm_Evaluation_Coefficient.getItem("FECLZ1").title
+                            var strFECLZ2 = DynamicForm_Evaluation_Coefficient.getItem("FECLZ2").title
+                             if (DynamicForm_Evaluation_Coefficient.getItem("FECLZ1").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("FECLZ1").focusInItem()
+                                 createDialog("info", "فیلد ' " + strFECLZ1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              } else if (DynamicForm_Evaluation_Coefficient.getItem("FECLZ2").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("FECLZ2").focusInItem()
+                                 createDialog("info", "فیلد ' " + strFECLZ2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                              else{
+                                createDialog("info", "جمع ضرایب فرمول شش باید 100 شود", "<spring:message code="message"/>")
+                                return;
+                              }
+                        } else if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECBZ1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECBZ2")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("FECBZ3")) != 100) {
+                            var strFECBZ1 = DynamicForm_Evaluation_Coefficient.getItem("FECBZ1").title
+                            var strFECBZ2 = DynamicForm_Evaluation_Coefficient.getItem("FECBZ2").title
+                            var strFECBZ3 = DynamicForm_Evaluation_Coefficient.getItem("FECBZ3").title
+                           if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ1").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("FECBZ1").focusInItem()
+                                 createDialog("info", "فیلد ' " + strFECBZ1.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              } else if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ2").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("FECBZ2").focusInItem()
+                                 createDialog("info", "فیلد ' " + strFECBZ2.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                              else if (DynamicForm_Evaluation_Coefficient.getItem("FECBZ3").getValue() == null)
+                              {
+                                 DynamicForm_Evaluation_Coefficient.getItem("FECBZ3").focusInItem()
+                                 createDialog("info", "فیلد ' " + strFECBZ3.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                              }
+                              else{
+                                createDialog("info", "جمع ضرایب فرمول هفت باید 100 شود", "<spring:message code="message"/>")
+                            return;
+                              }
+                                } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusET").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minQusET").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minQusET").focusInItem();
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("FECRZ").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("FECRZ").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            createDialog("info", "فیلد مشخص شده خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("FECRZ").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreET").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreET").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minScoreET").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreER").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreER").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minScoreER").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusER").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minQusER").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minQusER").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minPreTestEL").focusInItem()
+                            return;
+                        }else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
-                        DynamicForm_Evaluation_Coefficient.getItem("minQusEL").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minScoreEL").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
-                        DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minPasTestEL").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusEL").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minQusEL").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
-                        DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").focusInItem()
-                        return;
-                    } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusEB").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minQusEB").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minQusEL").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
 
-                        DynamicForm_Evaluation_Coefficient.getItem("minQusEB").focusInItem()
-                        return;
+                            DynamicForm_Evaluation_Coefficient.getItem("minScoreEB").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+
+                            DynamicForm_Evaluation_Coefficient.getItem("minScorePreTestEB").focusInItem()
+                            return;
+                        } else if (DynamicForm_Evaluation_Coefficient.getItem("minQusEB").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minQusEB").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+
+                            DynamicForm_Evaluation_Coefficient.getItem("minQusEB").focusInItem()
+                            return;
+                        }
+                         else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").getValue() == null) {
+                            var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").title
+                            createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
+                            DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").focusInItem()
+                            return;
+                        }
+                        else {
+                            var parameterValue = parameterValueUrl + "/edit-config-list"
+                            isc.RPCManager.sendRequest(TrDSRequest(parameterValue, "PUT", JSON.stringify(toUpdate), "callback:show_Result(rpcResponse)"));
+                            DynamicForm_Evaluation_Coefficient.refreshFields();
+                        }
+
                     }
-                     else if (DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").getValue() == null) {
-                        var str = DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").title
-                        createDialog("info", "فیلد ' " + str.replace("%","") + " ' خالی می باشد", "<spring:message code="message"/>")
-                        DynamicForm_Evaluation_Coefficient.getItem("minScoreFECR").focusInItem()
-                        return;
-                    }
-                    else {
-                        var parameterValue = parameterValueUrl + "/edit-config-list"
-                        isc.RPCManager.sendRequest(TrDSRequest(parameterValue, "PUT", JSON.stringify(toUpdate), "callback:show_Result(rpcResponse)"));
-                        DynamicForm_Evaluation_Coefficient.refreshFields();
-                    }
-
-                }
-            }), isc.IButtonCancel.create({
-                title: "بستن",
-                click: function () {
-                    mainTabSet.removeTab(mainTabSet.getSelectedTab())
-
-                }
-            })],
-        }),]
+                    }),
+                    </sec:authorize>
+                    <sec:authorize access="hasAuthority('EvaluationCoefficient_R')">
+                    isc.IButtonCancel.create({
+                        title: "بستن",
+                        click: function () {
+                            mainTabSet.removeTab(mainTabSet.getSelectedTab())
+                        }
+                    })
+                    </sec:authorize>
+                ]
+            })
+        ]
     })
 
     function show_Result(resp) {

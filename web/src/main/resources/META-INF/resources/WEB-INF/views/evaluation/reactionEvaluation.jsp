@@ -215,7 +215,9 @@
     var ListGrid_student_RE = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        <sec:authorize access="hasAuthority('Evaluation_Reaction_R')">
         dataSource: RestDataSource_student_RE,
+        </sec:authorize>
         selectionType: "single",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
@@ -278,6 +280,7 @@
             {name: "removeForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true, hidden: true},
             {name: "printForm", title: " ", align: "center", canSort: false, canFilter: false, autoFithWidth: true}
         ],
+        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
         cellClick: function (record, rowNum, colNum) {
             editMobileForm.callBack = (contactInfo ,m) => {record.student.contactInfo = contactInfo;record.student.contactInfo.smSMobileNumber = m;};
             if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber") {
@@ -311,6 +314,7 @@
                 }
             }
         },
+        </sec:authorize>
         filterEditorSubmit: function () {
             ListGrid_student_RE.invalidateCache();
         },
@@ -327,6 +331,7 @@
         createRecordComponent: function (record, colNum) {
             let fieldName = this.getFieldName(colNum);
             if (fieldName == "saveResults") {
+                <sec:authorize access="hasAuthority('Evaluation_Reaction_R')">
                 let button = isc.IButton.create({
                     layoutAlign: "center",
                     title: "ثبت و مشاهده نتیجه ارزیابی",
@@ -340,7 +345,9 @@
                     }
                 });
                 return button;
+                </sec:authorize>
             } else if (fieldName == "sendForm") {
+                <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                 let button = isc.IButton.create({
                     layoutAlign: "center",
                     baseStyle: "sendFile",
@@ -354,7 +361,9 @@
                     }
                 });
                 return button;
+                </sec:authorize>
             } else if (fieldName == "removeForm") {
+                <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                 let recordCanvas = isc.HLayout.create({
                     height: "100%",
                     width: "100%",
@@ -421,7 +430,9 @@
                 });
                 // recordCanvas.addMember(removeIcon);
                 return recordCanvas;
+                </sec:authorize>
             } else if (fieldName == "printForm") {
+                <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                 let recordCanvas = isc.HLayout.create({
                     height: "100%",
                     width: "100%",
@@ -447,6 +458,7 @@
                 });
                 recordCanvas.addMember(printIcon);
                 return recordCanvas;
+                </sec:authorize>
             } else {
                 return null;
             }
@@ -860,6 +872,7 @@
                                         defaultLayoutAlign: "center",
                                         ID: "ToolStrip_SendForms_RE",
                                         fields: [
+                                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                                             {
                                                 name: "sendButtonTeacher",
                                                 title: "صدور فرم ارزیابی مدرس از کلاس",
@@ -891,6 +904,8 @@
                                                     }
                                                 ]
                                             },
+                                            </sec:authorize>
+                                            <sec:authorize access="hasAuthority('Evaluation_Reaction_R')">
                                             {
                                                 name: "registerButtonTeacher",
                                                 title: "ثبت و مشاهده نتایج ارزیابی مدرس از کلاس",
@@ -906,6 +921,7 @@
                                                         register_Teacher_Reaction_Form_RE();
                                                 },
                                                 icons: [
+                                                    <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                                                     {
                                                         name: "ok",
                                                         src: "[SKIN]actions/ok.png",
@@ -993,8 +1009,11 @@
                                                                 print_Teacher_Reaction_Form_RE();
                                                         }
                                                     }
+                                                    </sec:authorize>
                                                 ]
                                             },
+                                            </sec:authorize>
+                                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                                             {
                                                 name: "sendToEls_teacher",
                                                 title: "ارسال به سیستم ارزشیابی آنلاین",
@@ -1009,6 +1028,7 @@
                                                     sendToEls('teacher');
                                                 }
                                             },
+                                            </sec:authorize>
                                             {
                                                 name: "showResultsEls_teacher",
                                                 title: "مشاهده نتایج ارزیابی",
@@ -1179,9 +1199,13 @@
                                     isc.VLayout.create({
                                         membersMargin: 5,
                                         members: [
+                                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                                             ToolStripButton_FormIssuanceForAll_RE,
                                             ToolStripButton_FormIssuanceDeleteForAll_RE,
+                                            </sec:authorize>
+                                            <sec:authorize access="hasAuthority('Evaluation_Reaction_R')">
                                             ToolStripButton_FormIssuance‌InCompleteUsers
+                                            </sec:authorize>
                                         ]
                                     }),
                                     isc.LayoutSpacer.create({height: "22"})
@@ -1225,6 +1249,7 @@
                                 layoutAlign: "center",
                                 defaultLayoutAlign: "center",
                                 members: [
+                                    <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                                     isc.DynamicForm.create({
                                         height: "100%",
                                         width: 400,
@@ -1247,6 +1272,7 @@
                                         ]
                                     }),
                                     ToolStripButton_MSG_RE,
+                                    </sec:authorize>
                                 ]
                             }),
                             isc.HLayout.create({
@@ -1258,7 +1284,9 @@
                                     isc.VLayout.create({
                                         membersMargin: 5,
                                         members: [
+                                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                                             ToolStripButton_OnlineFormIssuanceForAll_RE
+                                            </sec:authorize>
                                         ]
                                     }),
                                 ]
@@ -1268,9 +1296,13 @@
                                 align: "left",
                                 border: '0px',
                                 members: [
+                                    <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                                     ToolStripButton_Excel_RE,
                                     ToolStripButton_Print_RE,
+                                    </sec:authorize>
+                                    <sec:authorize access="hasAuthority('Evaluation_Reaction_R')">
                                     ToolStripButton_RefreshIssuance_RE
+                                    </sec:authorize>
                                 ]
                             })
                         ]
@@ -2350,7 +2382,9 @@
                 DynamicForm_Description_JspEvaluation,
                 isc.TrHLayoutButtons.create({
                     members: [
+                        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                         IButton_Questions_Save,
+                        </sec:authorize>
                         isc.IButtonCancel.create({
                             click: function () {
                                 Window_Questions_JspEvaluation.close();
@@ -3144,7 +3178,9 @@
                 DynamicForm_Description_JspEvaluation,
                 isc.TrHLayoutButtons.create({
                     members: [
+                        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
                         IButton_Questions_Save,
+                        </sec:authorize>
                         isc.IButtonCancel.create({
                             click: function () {
                                 Window_Questions_JspEvaluation.close();
