@@ -17,7 +17,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.question.dto.ElsQuestionDto;
 
+import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -35,6 +37,7 @@ public class QuestionBankService implements IQuestionBankService {
     private final ISubcategoryService subcategoryService;
     private  final TeacherDAO teacherDAO;
     private final ObjectMapper objectMapper;
+
 
 
     @Transactional(readOnly = true)
@@ -69,6 +72,13 @@ public class QuestionBankService implements IQuestionBankService {
     public SearchDTO.SearchRs<QuestionBankDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
 
         return BaseService.<QuestionBank, QuestionBankDTO.Info, QuestionBankDAO>optimizedSearch(questionBankDAO, p -> modelMapper.map(p, QuestionBankDTO.Info.class), request);
+    }
+
+    @Override
+    public List<QuestionBank> searchModels(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
+     SearchDTO.SearchRs<QuestionBank>  searchRs=  BaseService.optimizedSearch(questionBankDAO,p->modelMapper.map(p,QuestionBank.class),request);
+     List<QuestionBank> list=searchRs.getList();
+     return list;
     }
 
     @Override
@@ -230,24 +240,17 @@ public class QuestionBankService implements IQuestionBankService {
                 .setCount(10000000);
 
 
-        SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = searchId(request);
+
         totalRequest.setStartIndex(0)
                 .setCount(10000000);
+        List<QuestionBank> questionBanks=searchModels(request);
+        questionBanks.sort(Comparator.comparing(QuestionBank::getId).reversed());
+        Long totalModelsCount = searchModels(request).stream().count();
 
-        Long totalSpecCount = searchId(totalRequest).getTotalCount();
-        if (response.getList().size()>0) {
-            response.getList().stream().forEach(idClass -> {
 
-                questionBankList.add(getById(idClass.getId()));
-            });
-        }
-        Pageable pageable = PageRequest.of(page, size, Sort.by(
-                Sort.Order.desc("id")
-        ));
-        Page<QuestionBank> pageQuestion=new PageImpl<QuestionBank>(questionBankList,pageable,questionBankList.size());
         PageQuestionDto pageQuestionDto=new PageQuestionDto();
-        pageQuestionDto.setPageQuestion(pageQuestion);
-        pageQuestionDto.setTotalSpecCount(totalSpecCount);
+        pageQuestionDto.setPageQuestion(questionBanks);
+        pageQuestionDto.setTotalSpecCount(totalModelsCount);
         return pageQuestionDto;
     }
 
@@ -313,26 +316,15 @@ public class QuestionBankService implements IQuestionBankService {
 
         TotallRequest.setStartIndex(0)
                 .setCount(10000000);
-        Long totalSpecCount = searchId(TotallRequest).getTotalCount();
 
-        SearchDTO.SearchRs<QuestionBankDTO.IdClass> response = searchId(request);
-
-        if (response.getList().size() > 0) {
-            response.getList().stream().forEach(idClass -> {
-
-                questionBankList.add(getById(idClass.getId()));
-            });
-        }
+        List<QuestionBank> questionBanks=searchModels(TotallRequest);
+        questionBanks.sort(Comparator.comparing(QuestionBank::getId).reversed());
+        Long totalModelsCount = searchModels(TotallRequest).stream().count();
 
 
-
-        Pageable pageable = PageRequest.of(page, size, Sort.by(
-                Sort.Order.desc("id")
-        ));
-        Page<QuestionBank> pageQuestion = new PageImpl<QuestionBank>(questionBankList, pageable, questionBankList.size());
         PageQuestionDto pageQuestionDto=new PageQuestionDto();
-        pageQuestionDto.setPageQuestion(pageQuestion);
-        pageQuestionDto.setTotalSpecCount(totalSpecCount);
+        pageQuestionDto.setPageQuestion(questionBanks);
+        pageQuestionDto.setTotalSpecCount(totalModelsCount);
         return pageQuestionDto;
 
     }

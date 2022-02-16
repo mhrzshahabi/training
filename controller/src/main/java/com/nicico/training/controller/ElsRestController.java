@@ -1048,7 +1048,7 @@ public class ElsRestController {
                    PageQuestionDto pageQuestionDto=questionBankService.getPageQuestionByTeacher(page,size,elsSearchDTO);
 
 
-                  ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(pageQuestionDto.getPageQuestion().getContent(),elsSearchDTO.getNationalCode());
+                  ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(pageQuestionDto.getPageQuestion(),elsSearchDTO.getNationalCode());
                    PaginationDto paginationDto = new PaginationDto();
                    paginationDto.setCurrent(page);
                    paginationDto.setSize(size);
@@ -1058,7 +1058,7 @@ public class ElsRestController {
                        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount()/size)+1);
                    }
 
-                   paginationDto.setLast(pageQuestionDto.getPageQuestion().getTotalPages() - 1);
+                   paginationDto.setLast((int) (paginationDto.getTotal() - 1));
                    paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
                    questionBankDto.setPagination(paginationDto);
                  return questionBankDto;
@@ -1163,7 +1163,7 @@ public class ElsRestController {
             PageQuestionDto pageQuestionDto= questionBankService.getPageQuestionByCategoryAndSub(page,size,elsSearchDTO);
 
 
-                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(pageQuestionDto.getPageQuestion().getContent(), elsSearchDTO.getNationalCode());
+                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
                     PaginationDto paginationDto = new PaginationDto();
                     paginationDto.setCurrent(page);
                     paginationDto.setSize(size);
@@ -1173,7 +1173,7 @@ public class ElsRestController {
                     paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount()/size)+1);
                 }
 
-                paginationDto.setLast(pageQuestionDto.getPageQuestion().getTotalPages() - 1);
+                paginationDto.setLast((int) (paginationDto.getTotal() - 1));
                     paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;

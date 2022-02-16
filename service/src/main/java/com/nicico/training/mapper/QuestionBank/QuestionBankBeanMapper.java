@@ -123,7 +123,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setType(mapAnswerType(questionBank.getQuestionTypeId()));
             elsQuestionDto.setQuestionLevel(questionBank.getEQuestionLevel().getTitleFa());
 
-            elsQuestionDto.setQuestionTargetIds(questionBank.getQuestionTargets());
+//            elsQuestionDto.setQuestionTargetIds(questionBank.getQuestionTargets());
             elsQuestionDto.setCategoryId(questionBank.getCategoryId());
             elsQuestionDto.setCategoryName(questionBank.getCategoryId() != null ? categoryService.get(questionBank.getCategoryId()).getTitleFa() : null);
             elsQuestionDto.setSubCategory(questionBank.getSubCategoryId());
