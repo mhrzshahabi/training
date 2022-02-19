@@ -23,6 +23,8 @@ public interface IQuestionBankService {
     QuestionBankDTO.FullInfo get(Long Id);
 
     SearchDTO.SearchRs<QuestionBankDTO.Info> search(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
+    List<QuestionBank> searchModels(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
+
     SearchDTO.SearchRs<QuestionBankDTO.IdClass> searchId(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException;
 
     QuestionBankDTO.Info create(QuestionBankDTO.Create request);
