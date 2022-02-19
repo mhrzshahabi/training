@@ -1804,19 +1804,20 @@
                 {
                     title: "<spring:message code="competence"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/competence/"/>");
-                    }
-                },
-                </sec:authorize>
-
-                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">
-                {
-                    title: "<spring:message code="competenceV2"/>",
-                    click: function () {
+                        <%--createTab(this.title, "<spring:url value="web/competence/"/>");--%>
                         createTab(this.title, "<spring:url value="web/competenceV2/"/>");
                     }
                 },
                 </sec:authorize>
+
+<%--                <sec:authorize access="hasAuthority('Menu_NeedAssessment_Competence')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="competenceV2"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="web/competenceV2/"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Skill')">
                 {
@@ -2163,21 +2164,22 @@
         menu: isc.Menu.create({
             placement: "none",
             data: [
-                <sec:authorize access="hasAuthority('Menu_Cartable_Personal')">
-                {
-                    title: "<spring:message code="bpms.personal"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/web/workflow/userBPMSPortfolio/showForm"/>");
-                    }
-                },
-                {isSeparator: true},
-                </sec:authorize>
+<%--                <sec:authorize access="hasAuthority('Menu_Cartable_Personal')">--%>
+<%--                {--%>
+<%--                    title: "<spring:message code="bpms.personal"/>",--%>
+<%--                    click: function () {--%>
+<%--                        createTab(this.title, "<spring:url value="/web/workflow/userBPMSPortfolio/showForm"/>");--%>
+<%--                    }--%>
+<%--                },--%>
+<%--                {isSeparator: true},--%>
+<%--                </sec:authorize>--%>
 
                 <sec:authorize access="hasAuthority('Menu_Cartable_Personal')">
                 {
                     title: "<spring:message code="personal"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/web/workflow/userCartable/showForm"/>");
+                        createTab(this.title, "<spring:url value="/web/workflow/userBPMSPortfolio/showForm"/>");
+                        <%--createTab(this.title, "<spring:url value="/web/workflow/userCartable/showForm"/>");--%>
                     }
                 },
                 {isSeparator: true},
@@ -2211,17 +2213,18 @@
                         {
                             title: "<spring:message code="all.processes"/>",
                             click: function () {
-                                createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")
+                                createTab(this.title, "<spring:url value="/web/workflow/bPMSProcesses/showForm"/>")
+                                <%--createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")--%>
                             }
                         },
                         </sec:authorize>
-                        {isSeparator: true},
-                        {
-                            title: "<spring:message code="bpms.all.processes"/>",
-                            click: function () {
-                                createTab(this.title, "<spring:url value="/web/workflow/bPMSProcesses/showForm"/>")
-                            }
-                        }
+                        <%--{isSeparator: true},--%>
+                        <%--{--%>
+                        <%--    title: "<spring:message code="bpms.all.processes"/>",--%>
+                        <%--    click: function () {--%>
+                        <%--        createTab(this.title, "<spring:url value="/web/workflow/bPMSProcesses/showForm"/>")--%>
+                        <%--    }--%>
+                        <%--}--%>
                     ]
                 },
                 {isSeparator: true},
