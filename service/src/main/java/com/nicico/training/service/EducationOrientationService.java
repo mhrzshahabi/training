@@ -14,6 +14,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.academicBK.ElsEducationOrientationDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,8 +121,6 @@ public class EducationOrientationService implements IEducationOrientationService
         return SearchUtil.search(educationOrientationDAO, request, educationOrientation -> modelMapper.map(educationOrientation, EducationOrientationDTO.Info.class));
     }
 
-    // ------------------------------
-
     private EducationOrientationDTO.Info save(EducationOrientation educationOrientation) {
         final EducationOrientation saved = educationOrientationDAO.saveAndFlush(educationOrientation);
         return modelMapper.map(saved, EducationOrientationDTO.Info.class);
@@ -136,6 +135,17 @@ public class EducationOrientationService implements IEducationOrientationService
             eduOrientationInfo.add(modelMapper.map(eduOrient, EducationOrientationDTO.Info.class));
         }
         return eduOrientationInfo;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ElsEducationOrientationDto> elsEducationOrientationList(Long levelId, Long majorId) {
+        List<EducationOrientation> educationOrientations = educationOrientationDAO.listByLevelIdAndMajorId(levelId, majorId);
+        List<ElsEducationOrientationDto> elsEducationOrientationDtoList = new ArrayList<>();
+        for (EducationOrientation eduOrient : educationOrientations) {
+            elsEducationOrientationDtoList.add(modelMapper.map(eduOrient, ElsEducationOrientationDto.class));
+        }
+        return elsEducationOrientationDtoList;
     }
 
 }

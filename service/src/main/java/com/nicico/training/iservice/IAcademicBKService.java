@@ -14,7 +14,7 @@ public interface IAcademicBKService {
 
     SearchDTO.SearchRs<AcademicBKDTO.Info> search(SearchDTO.SearchRq request, Long teacherId);
 
-    void addAcademicBK(AcademicBKDTO.Create request, Long teacherId);
+    AcademicBKDTO.Info addAcademicBK(AcademicBKDTO.Create request, Long teacherId);
 
     void deleteAcademicBK(Long teacherId, Long academicBKId);
 }

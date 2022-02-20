@@ -16,6 +16,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.academicBK.ElsEducationMajorDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,6 +115,14 @@ public class EducationMajorService implements IEducationMajorService {
     @Override
     public SearchDTO.SearchRs<EducationMajorDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(educationMajorDAO, request, educationMajor -> modelMapper.map(educationMajor, EducationMajorDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ElsEducationMajorDto> elsEducationMajorList() {
+        final List<EducationMajor> gAll = educationMajorDAO.findAll();
+        return modelMapper.map(gAll, new TypeToken<List<ElsEducationMajorDto>>() {
+        }.getType());
     }
 
     // ------------------------------

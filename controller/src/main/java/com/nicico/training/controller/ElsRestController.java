@@ -4,8 +4,6 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
-import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
@@ -39,6 +37,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import request.academicBK.ElsAcademicBKReqDto;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.evaluation.ElsUserEvaluationListResponseDto;
 import request.evaluation.StudentEvaluationAnswerDto;
@@ -46,6 +45,7 @@ import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import response.BaseResponse;
 import response.PaginationDto;
+import response.academicBK.ElsAcademicBKRespDto;
 import response.attendance.AttendanceListSaveResponse;
 import response.evaluation.ElsEvaluationsListResponse;
 import response.evaluation.EvalListResponse;
@@ -63,6 +63,9 @@ import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
 import response.tclass.dto.ElsClassListDto;
+import response.academicBK.ElsEducationLevelDto;
+import response.academicBK.ElsEducationMajorDto;
+import response.academicBK.ElsEducationOrientationDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -74,7 +77,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.controller.util.AppUtils.getPrefix;
-import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RestController
@@ -125,7 +127,10 @@ public class ElsRestController {
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final ISelfDeclarationService iSelfDeclarationService;
     private final ObjectMapper objectMapper;
-
+    private final IEducationLevelService iEducationLevelService;
+    private final IEducationMajorService iEducationMajorService;
+    private final IEducationOrientationService iEducationOrientationService;
+    private final IAcademicBKService iAcademicBKService;
 
     @Value("${nicico.elsSmsUrl}")
     private String elsSmsUrl;
@@ -1605,4 +1610,104 @@ public class ElsRestController {
             return elsClassDetailResponse;
         }
     }
+
+    @GetMapping("/educationLevelList")
+    public List<ElsEducationLevelDto> getEducationLevelList(HttpServletRequest header) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return iEducationLevelService.elsEducationLevelList();
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @GetMapping("/educationMajorList")
+    public List<ElsEducationMajorDto> getEducationMajorList(HttpServletRequest header) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return iEducationMajorService.elsEducationMajorList();
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @GetMapping("/educationOrientationList/{levelId}/{majorId}")
+    public List<ElsEducationOrientationDto> getEducationOrientationList(HttpServletRequest header, @PathVariable Long levelId, @PathVariable Long majorId) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return iEducationOrientationService.elsEducationOrientationList(levelId, majorId);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @PostMapping("/academicBK")
+    ElsAcademicBKRespDto createAcademicBK(HttpServletRequest header, @RequestBody ElsAcademicBKReqDto elsAcademicBKReqDto) {
+        ElsAcademicBKRespDto elsAcademicBKRespDto = new ElsAcademicBKRespDto();
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(elsAcademicBKReqDto.getTeacherNationalCode());
+                AcademicBKDTO.Create create = modelMapper.map(elsAcademicBKReqDto, AcademicBKDTO.Create.class);
+                create.setTeacherId(teacherId);
+                AcademicBKDTO.Info info = iAcademicBKService.addAcademicBK(create, teacherId);
+                elsAcademicBKRespDto.setId(info.getId());
+                elsAcademicBKRespDto.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                elsAcademicBKRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                elsAcademicBKRespDto.setMessage("مشکلی در ایجاد سابقه استاد وجود دارد");
+            }
+//        } else {
+//            elsAcademicBKRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+//        }
+        return elsAcademicBKRespDto;
+    }
+
+    @PostMapping("/edit/academicBK")
+    ResponseEntity<BaseResponse> editAcademicBK(HttpServletRequest header, @RequestBody ElsAcademicBKReqDto elsAcademicBKReqDto) {
+        BaseResponse response = new BaseResponse();
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(elsAcademicBKReqDto.getTeacherNationalCode());
+                AcademicBKDTO.Update update = modelMapper.map(elsAcademicBKReqDto, AcademicBKDTO.Update.class);
+                update.setTeacherId(teacherId);
+                iAcademicBKService.update(elsAcademicBKReqDto.getId(), update);
+                response.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("مشکلی در ویرایش سابقه استاد وجود دارد");
+            }
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+//        } else
+//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+
+    @DeleteMapping("/academicBK")
+    ResponseEntity<BaseResponse> removeAcademicBK(HttpServletRequest header, @RequestBody ElsAcademicBKReqDto elsAcademicBKReqDto) {
+        BaseResponse response = new BaseResponse();
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(elsAcademicBKReqDto.getTeacherNationalCode());
+                iAcademicBKService.deleteAcademicBK(teacherId, elsAcademicBKReqDto.getId());
+                response.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("مشکلی در حذف سابقه استاد وجود دارد");
+            }
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+//        } else
+//            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+
 }

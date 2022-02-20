@@ -92,12 +92,15 @@ public class AcademicBKService implements IAcademicBKService {
 
     @Transactional
     @Override
-    public void addAcademicBK(AcademicBKDTO.Create request, Long teacherId) {
+    public AcademicBKDTO.Info addAcademicBK(AcademicBKDTO.Create request, Long teacherId) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        AcademicBK academicBK = new AcademicBK();
-        modelMapper.map(request, academicBK);
+        AcademicBK academicBK = modelMapper.map(request, AcademicBK.class);
+        AcademicBKDTO.Info info = save(academicBK);
+//        AcademicBK academicBK = new AcademicBK();
+//        modelMapper.map(request, academicBK);
         try {
             teacher.getAcademicBKs().add(academicBK);
+            return info;
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
