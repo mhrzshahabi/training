@@ -1106,7 +1106,6 @@ public class ElsRestController {
 
                 if (teacherId != null) {
 
-
                     Teacher teacher=teacherService.getTeacher(teacherId);
                     Page<QuestionBank> questionBankList = questionBankService.getQuestionsByCategoryAndSubCategory(teacher, page, size);
 
