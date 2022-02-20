@@ -1612,7 +1612,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/educationLevelList")
-    public List<ElsEducationLevelDto> getEducationLevelList(HttpServletRequest header) {
+    List<ElsEducationLevelDto> getEducationLevelList(HttpServletRequest header) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
@@ -1626,7 +1626,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/educationMajorList")
-    public List<ElsEducationMajorDto> getEducationMajorList(HttpServletRequest header) {
+    List<ElsEducationMajorDto> getEducationMajorList(HttpServletRequest header) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
@@ -1640,7 +1640,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/educationOrientationList/{levelId}/{majorId}")
-    public List<ElsEducationOrientationDto> getEducationOrientationList(HttpServletRequest header, @PathVariable Long levelId, @PathVariable Long majorId) {
+    List<ElsEducationOrientationDto> getEducationOrientationList(HttpServletRequest header, @PathVariable Long levelId, @PathVariable Long majorId) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
@@ -1662,7 +1662,7 @@ public class ElsRestController {
                 AcademicBKDTO.Create create = modelMapper.map(elsAcademicBKReqDto, AcademicBKDTO.Create.class);
                 create.setTeacherId(teacherId);
                 AcademicBKDTO.Info info = iAcademicBKService.addAcademicBK(create, teacherId);
-                elsAcademicBKRespDto.setId(info.getId());
+                elsAcademicBKRespDto = modelMapper.map(info, ElsAcademicBKRespDto.class);
                 elsAcademicBKRespDto.setStatus(HttpStatus.OK.value());
             } catch (Exception e) {
                 elsAcademicBKRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
@@ -1675,22 +1675,23 @@ public class ElsRestController {
     }
 
     @PostMapping("/edit/academicBK")
-    ResponseEntity<BaseResponse> editAcademicBK(HttpServletRequest header, @RequestBody ElsAcademicBKReqDto elsAcademicBKReqDto) {
-        BaseResponse response = new BaseResponse();
+    ElsAcademicBKRespDto editAcademicBK(HttpServletRequest header, @RequestBody ElsAcademicBKReqDto elsAcademicBKReqDto) {
+        ElsAcademicBKRespDto elsAcademicBKRespDto = new ElsAcademicBKRespDto();
 //        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(elsAcademicBKReqDto.getTeacherNationalCode());
                 AcademicBKDTO.Update update = modelMapper.map(elsAcademicBKReqDto, AcademicBKDTO.Update.class);
                 update.setTeacherId(teacherId);
-                iAcademicBKService.update(elsAcademicBKReqDto.getId(), update);
-                response.setStatus(HttpStatus.OK.value());
+                AcademicBKDTO.Info info = iAcademicBKService.update(elsAcademicBKReqDto.getId(), update);
+                elsAcademicBKRespDto = modelMapper.map(info, ElsAcademicBKRespDto.class);
+                elsAcademicBKRespDto.setStatus(HttpStatus.OK.value());
             } catch (Exception e) {
-                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                response.setMessage("مشکلی در ویرایش سابقه استاد وجود دارد");
+                elsAcademicBKRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                elsAcademicBKRespDto.setMessage("مشکلی در ویرایش سابقه استاد وجود دارد");
             }
-            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
 //        } else
 //            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+        return elsAcademicBKRespDto;
     }
 
     @DeleteMapping("/academicBK")

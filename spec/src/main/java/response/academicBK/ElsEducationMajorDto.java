@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ElsEducationMajorDto {
-    private Long educationMajorId;
-    private Long educationMajorTitleFa;
+    private Long id;
+    private String titleFa;
 }
