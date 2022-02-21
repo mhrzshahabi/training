@@ -13,9 +13,11 @@ import com.nicico.training.repository.AcademicBKDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.academicBK.ElsAcademicBKRespDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -96,8 +98,6 @@ public class AcademicBKService implements IAcademicBKService {
         final Teacher teacher = teacherService.getTeacher(teacherId);
         AcademicBK academicBK = modelMapper.map(request, AcademicBK.class);
         AcademicBKDTO.Info info = save(academicBK);
-//        AcademicBK academicBK = new AcademicBK();
-//        modelMapper.map(request, academicBK);
         try {
             teacher.getAcademicBKs().add(academicBK);
             return info;
@@ -120,5 +120,12 @@ public class AcademicBKService implements IAcademicBKService {
         }
     }
 
+    @Override
+    public List<ElsAcademicBKRespDto> findAcademicBKsByTeacherNationalCode(String nationalCode) {
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        List<AcademicBK> academicBKList = academicBKDAO.findAllByTeacherId(teacherId);
+        return modelMapper.map(academicBKList, new TypeToken<List<ElsAcademicBKRespDto>>() {
+        }.getType());
+    }
 
 }
