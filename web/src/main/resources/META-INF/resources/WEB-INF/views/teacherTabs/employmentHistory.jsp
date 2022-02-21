@@ -26,6 +26,7 @@
             {name: "subCategoriesIds", filterOperator: "inSet"},
             {name: "categories"},
             {name: "subCategories"},
+            {name: "collaborationType.title"},
             {name: "collaborationDuration"},
             {name: "startDate"},
             {name: "endDate"}
@@ -421,6 +422,14 @@
                         {name: "titleFa"}
                     ]
                 }
+            },
+            {
+                name: "collaborationType.title",
+                title: "نوع همکاری"
+            },
+            {
+                name: "collaborationDuration",
+                title: "مدت همکاری (ماه)"
             },
             {
                 name: "startDate",
