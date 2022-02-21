@@ -55,7 +55,7 @@ public class EmploymentHistoryDTO {
         private Long id;
         private List<CategoryDTO.Info> categories;
         private List<SubcategoryDTO.Info> subCategories;
-        private ParameterValueDTO.TupleInfo collaborationType;
+//        private ParameterValueDTO.TupleInfo collaborationType;
     }
 
     @Getter

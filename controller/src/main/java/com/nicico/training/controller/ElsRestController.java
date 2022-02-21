@@ -19,6 +19,7 @@ import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
+import com.nicico.training.mapper.employmentHistory.EmploymentHistoryBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
 import com.nicico.training.model.*;
@@ -40,6 +41,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
+import request.employmentHistory.ElsEmploymentHistoryReqDto;
 import request.evaluation.ElsUserEvaluationListResponseDto;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
@@ -47,6 +49,7 @@ import request.exam.*;
 import response.BaseResponse;
 import response.PaginationDto;
 import response.attendance.AttendanceListSaveResponse;
+import response.employmentHistory.ElsEmploymentHistoryRespDto;
 import response.evaluation.ElsEvaluationsListResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
@@ -125,6 +128,8 @@ public class ElsRestController {
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final ISelfDeclarationService iSelfDeclarationService;
     private final ObjectMapper objectMapper;
+    private final IEmploymentHistoryService iEmploymentHistoryService;
+    private final EmploymentHistoryBeanMapper employmentHistoryBeanMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -1604,5 +1609,26 @@ public class ElsRestController {
             elsClassDetailResponse.setMessage("دسترسی موردنظر یافت نشد");
             return elsClassDetailResponse;
         }
+    }
+
+    @PostMapping("/employment-history")
+    ElsEmploymentHistoryRespDto createEmploymentHistory(HttpServletRequest header, @RequestBody ElsEmploymentHistoryReqDto elsEmploymentHistoryReqDto) {
+        ElsEmploymentHistoryRespDto elsEmploymentHistoryRespDto = new ElsEmploymentHistoryRespDto();
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            try {
+                EmploymentHistoryDTO.Create create = employmentHistoryBeanMapper.elsEmpHistoryReqToEmpHistoryCreate(elsEmploymentHistoryReqDto);
+                iEmploymentHistoryService.addEmploymentHistory(create, create.getTeacherId());
+//            AcademicBKDTO.Create create = academicBKBeanMapper.elsAcademicBKReqToAcademicBKCreate(elsAcademicBKReqDto);
+//            AcademicBKDTO.Info info = iAcademicBKService.addAcademicBK(create, create.getTeacherId());
+//            elsEmploymentHistoryRespDto = academicBKBeanMapper.academicBKInfoToElsAcademicBKRes(info);
+                elsEmploymentHistoryRespDto.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                elsEmploymentHistoryRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                elsEmploymentHistoryRespDto.setMessage("مشکلی در ایجاد سابقه اجرایی استاد وجود دارد");
+            }
+//        } else {
+//            elsEmploymentHistoryRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+//        }
+        return elsEmploymentHistoryRespDto;
     }
 }
