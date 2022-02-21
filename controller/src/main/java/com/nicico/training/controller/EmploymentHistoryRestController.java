@@ -42,7 +42,6 @@ public class EmploymentHistoryRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('r_educationLevel')")
     public ResponseEntity<EmploymentHistoryDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(employmentHistoryService.get(id), HttpStatus.OK);
     }
@@ -98,7 +97,6 @@ public class EmploymentHistoryRestController {
     @Loggable
     @PostMapping(value = "/{teacherId}")
     @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity addEmploymentHistory(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
         List<CategoryDTO.Info> categories = null;
         List<SubcategoryDTO.Info> subCategories = null;
@@ -124,7 +122,6 @@ public class EmploymentHistoryRestController {
 
     @Loggable
     @DeleteMapping(value = "/{teacherId},{id}")
-//    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity deleteEmploymentHistory(@PathVariable Long teacherId, @PathVariable Long id) {
         try {
             employmentHistoryService.deleteEmploymentHistory(teacherId, id);
@@ -137,7 +134,6 @@ public class EmploymentHistoryRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('u_educationLevel')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request) {
         List<CategoryDTO.Info> categories = null;
         List<SubcategoryDTO.Info> subCategories = null;

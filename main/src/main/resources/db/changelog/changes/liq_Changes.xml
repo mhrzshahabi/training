@@ -3505,12 +3505,27 @@ WHERE
         <addColumn tableName="tbl_needs_assessment_temp">
             <column name="return_detail" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
-
-
     </changeSet>
+
     <changeSet author="namdari" id="1644662089000-2">
         <modifyDataType tableName="tbl_needs_assessment" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
         <modifyDataType tableName="tbl_needs_assessment_temp" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-044">
+        <addColumn tableName="tbl_employment_history">
+            <column name="f_parameter_value_collaboration_type" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-045">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_collaboration_type" baseTableName="tbl_employment_history" constraintName="FK_EMPLOYMENT_HISTORY_TO_PARAMETER_VALUE" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-046">
+        <addColumn tableName="tbl_employment_history">
+            <column name="n_collaboration_duration" type="NUMBER(10, 0)"/>
+        </addColumn>
     </changeSet>
 
 </databaseChangeLog>

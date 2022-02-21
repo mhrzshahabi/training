@@ -26,6 +26,7 @@
             {name: "subCategoriesIds", filterOperator: "inSet"},
             {name: "categories"},
             {name: "subCategories"},
+            {name: "collaborationDuration"},
             {name: "startDate"},
             {name: "endDate"}
         ]
@@ -41,6 +42,15 @@
         fetchDataURL: subCategoryUrl + "iscList"
     });
 
+    RestDataSource_Collaboration_Type_JspEmploymentHistory = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/CollaborationType"
+    });
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*window*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -53,13 +63,13 @@
             {name: "id", hidden: true},
             {
                 name: "jobTitle",
-                title: "<spring:message code='job.title'/>",
+                title: "سمت یا موضوع همکاری",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "companyName",
-                title: "<spring:message code='company.name'/>",
+                title: "نام سازمان / امور",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
@@ -133,6 +143,31 @@
                         this.fetchData();
                     }
                 }
+            },
+            {
+                name: "collaborationTypeId",
+                editorType: "ComboBoxItem",
+                title: "نوع همکاری",
+                // pickListWidth: 200,
+                optionDataSource: RestDataSource_Collaboration_Type_JspEmploymentHistory,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                // required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
+            },
+            {
+                name: "collaborationDuration",
+                title: "مدت همکاری (ماه)",
+                keyPressFilter: "[0-9]"
             },
             {
                 name: "startDate",

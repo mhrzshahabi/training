@@ -20,6 +20,8 @@ public class EmploymentHistoryDTO {
     private String startDate;
     private String endDate;
     private Long teacherId;
+    private Long collaborationTypeId;
+    private Integer collaborationDuration;
 
     @Getter
     @Setter
@@ -30,6 +32,7 @@ public class EmploymentHistoryDTO {
         private Integer version;
         private List<CategoryDTO.CategoryInfoTuple> categories;
         private List<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
+        private ParameterValueDTO.TupleInfo collaborationType;
 
         public List<Long> getCategoriesIds() {
             if (categories == null)
@@ -52,6 +55,7 @@ public class EmploymentHistoryDTO {
         private Long id;
         private List<CategoryDTO.Info> categories;
         private List<SubcategoryDTO.Info> subCategories;
+        private ParameterValueDTO.TupleInfo collaborationType;
     }
 
     @Getter
@@ -62,6 +66,7 @@ public class EmploymentHistoryDTO {
         private Long id;
         private List<CategoryDTO.Info> categories;
         private List<SubcategoryDTO.Info> subCategories;
+        private ParameterValueDTO.TupleInfo collaborationType;
     }
 
     @Getter
