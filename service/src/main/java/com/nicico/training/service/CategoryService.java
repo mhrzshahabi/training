@@ -45,6 +45,11 @@ public class CategoryService implements ICategoryService {
         return modelMapper.map(category, CategoryDTO.Info.class);
     }
 
+    @Override
+    public Category getCategory(Long id) {
+        return categoryDAO.getById(id);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<CategoryDTO.Info> list() {

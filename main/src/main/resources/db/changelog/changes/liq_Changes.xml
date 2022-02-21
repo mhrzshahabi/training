@@ -3512,5 +3512,16 @@ WHERE
         <modifyDataType tableName="tbl_needs_assessment" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
         <modifyDataType tableName="tbl_needs_assessment_temp" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
     </changeSet>
+    <changeSet id="2799887766557-04" author="ZPakdaman">
+        <addColumn tableName="tbl_teacher_certification">
+            <column name="certification_status" type="BOOLEAN"></column>
+        </addColumn>
+
+    </changeSet>
+    <changeSet id="2799887766557-05" author="ZPakdaman">
+        <addColumn tableName="tbl_teacher_certification" >
+            <column name="certification_status_detail" type="VARCHAR2(255 CHAR)"></column>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

@@ -16,6 +16,8 @@ import java.util.function.Function;
 public interface ICategoryService {
     CategoryDTO.Info get(Long id);
 
+    Category getCategory(Long id);
+
     List<CategoryDTO.Info> list();
 
     Set<Category> getCategoriesByIds(List<Long> categoryIds);
