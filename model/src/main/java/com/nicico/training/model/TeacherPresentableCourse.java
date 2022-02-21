@@ -17,8 +17,8 @@ import java.util.Set;
 @Table(name = "tbl_teacher_presentable_course")
 public class TeacherPresentableCourse {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacher_certification_seq")
-    @SequenceGenerator(name = "teacher_certification_seq", sequenceName = "seq_teacher_certification_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacher_presentable_course_seq")
+    @SequenceGenerator(name = "teacher_presentable_course_seq", sequenceName = "seq_teacher_presentable_course_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 
@@ -48,7 +48,7 @@ public class TeacherPresentableCourse {
     private List<Course> preCourseList;
 
 
-   private List<String> courseHeaders;
+//   private List<String> courseHeaders;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)
