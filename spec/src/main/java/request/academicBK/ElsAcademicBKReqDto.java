@@ -18,6 +18,6 @@ public class ElsAcademicBKReqDto {
     private Long educationMajorId;
     private Long educationOrientationId;
     private String collageName;
-    private String date;
+    private Long date;
     private String teacherNationalCode;
 }

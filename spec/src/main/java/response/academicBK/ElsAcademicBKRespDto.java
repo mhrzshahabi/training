@@ -19,5 +19,5 @@ public class ElsAcademicBKRespDto extends BaseResponse {
     private Long educationMajorId;
     private Long educationOrientationId;
     private String collageName;
-    private String date;
+    private Long date;
 }
