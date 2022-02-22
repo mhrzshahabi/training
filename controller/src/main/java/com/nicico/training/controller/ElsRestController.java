@@ -30,6 +30,7 @@ import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
@@ -49,7 +50,7 @@ import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import response.BaseResponse;
 import response.PaginationDto;
-import response.academicBK.ElsAcademicBKRespDto;
+import response.academicBK.*;
 import response.attendance.AttendanceListSaveResponse;
 import response.evaluation.ElsEvaluationsListResponse;
 import response.evaluation.EvalListResponse;
@@ -67,9 +68,6 @@ import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
 import response.tclass.dto.ElsClassListDto;
-import response.academicBK.ElsEducationLevelDto;
-import response.academicBK.ElsEducationMajorDto;
-import response.academicBK.ElsEducationOrientationDto;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -142,6 +140,7 @@ public class ElsRestController {
     private final ITeacherSuggestedService teacherSuggestedService;
     private final TeacherSuggestedCourseMapper teacherSuggestedCourseMapper;
     private final TeacherBeanMapper teacherBeanMapper;
+    private final IParameterService iParameterService;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -1954,6 +1953,22 @@ public class ElsRestController {
         }
     }
 
+    @GetMapping("/universityList")
+    List<ElsUniversityDto> getUniversityList(HttpServletRequest header) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                List<ParameterValueDTO.TupleInfo> tupleInfoList = iParameterService.getValueListByCode("University");
+                return modelMapper.map(tupleInfoList, new TypeToken<List<ParameterValueDTO.TupleInfo>>() {
+                }.getType());
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
     @PostMapping("/academicBK")
     ElsAcademicBKRespDto createAcademicBK(@RequestHeader(name = "X-Auth-Token") String header, @RequestBody ElsAcademicBKReqDto elsAcademicBKReqDto) {
         ElsAcademicBKRespDto elsAcademicBKRespDto = new ElsAcademicBKRespDto();
@@ -2011,7 +2026,7 @@ public class ElsRestController {
     }
 
     @GetMapping("/academicBK/{nationalCode}")
-    List<ElsAcademicBKRespDto> findAcademicBKsByTeacherNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode) {
+    List<ElsAcademicBKFindAllRespDto> findAcademicBKsByTeacherNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header))
             return iAcademicBKService.findAcademicBKsByTeacherNationalCode(nationalCode);
         else

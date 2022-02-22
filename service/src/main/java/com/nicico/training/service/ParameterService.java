@@ -65,5 +65,13 @@ public class ParameterService extends BaseService<Parameter, Long, ParameterDTO.
         return parameterMap;
     }
 
+    @Transactional(readOnly = true)
+    public List<ParameterValueDTO.TupleInfo> getValueListByCode(String code) {
+        Optional<Parameter> pByCode = dao.findByCode(code);
+        Parameter parameter = pByCode.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(parameter.getParameterValueList(), new TypeToken<List<ParameterValueDTO.TupleInfo>>() {
+        }.getType());
+    }
+
 
 }
