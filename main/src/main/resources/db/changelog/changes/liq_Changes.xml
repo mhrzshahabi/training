@@ -3512,6 +3512,72 @@ WHERE
         <modifyDataType tableName="tbl_needs_assessment" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
         <modifyDataType tableName="tbl_needs_assessment_temp" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
     </changeSet>
+    <changeSet id="2799887766557-04" author="ZPakdaman">
+        <addColumn tableName="tbl_teacher_certification">
+            <column name="certification_status" type="BOOLEAN"></column>
+        </addColumn>
+
+    </changeSet>
+    <changeSet id="2799887766557-05" author="ZPakdaman">
+        <addColumn tableName="tbl_teacher_certification" >
+            <column name="certification_status_detail" type="VARCHAR2(255 CHAR)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2799887766557-0" author="ZPakdaman">
+        <createTable tableName="tbl_teacher_suggested_course">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_suggested_coursePK"/>
+            </column>
+            <column name="c_course_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-06">
+        <createTable tableName="tbl_teacher_suggested_course_category">
+            <column name="f_teacher_suggested_course" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-07">
+        <createTable tableName="tbl_teacher_suggested_course_subcategory">
+            <column name="f_teacher_suggested_course" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet  author="ZPakdaman" id="2799887766557-08">
+        <addColumn tableName="tbl_teacher_suggested_course">
+            <column name="c_course_description" type="VARCHAR2(255 CHAR)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-09" >
+        <addColumn tableName="tbl_teacher_suggested_course">
+            <column name="f_teacher_id" type="NUMBER(19, 0)"></column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
 
     <changeSet author="nick (generated)" id="1638772362566-772">
         <addColumn tableName="tbl_teacher">
