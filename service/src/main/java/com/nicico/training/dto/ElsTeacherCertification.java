@@ -15,7 +15,7 @@ public class ElsTeacherCertification extends BaseResponse {
     private String companyName;
     private Long courseDate;
     private Boolean certificationStatus;
-    private String certification;
+
     private List<Long> categoryIds;
     private List<Long>subcategoryIds;
 

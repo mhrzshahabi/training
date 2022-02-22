@@ -1831,7 +1831,7 @@ public class ElsRestController {
      * @return this method send confirmation to client about modify teacherSuggestedCourse
      */
     @PostMapping("suggested-courses/modify")
-    public ElsSuggestedCourse editTeacherCertification(HttpServletRequest header,@RequestBody ElsSuggestedCourse elsSuggestedCourse){
+    public ElsSuggestedCourse editTeacherSuggestedCourse(HttpServletRequest header,@RequestBody ElsSuggestedCourse elsSuggestedCourse){
         ElsSuggestedCourse response=new ElsSuggestedCourse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Long teacherId = teacherService.getTeacherIdByNationalCode(elsSuggestedCourse.getNationalCode());

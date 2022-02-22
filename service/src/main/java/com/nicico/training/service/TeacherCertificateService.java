@@ -61,7 +61,7 @@ public class TeacherCertificateService implements ITeacherCertificationService {
         if(saved!=null) {
            dto.setId(saved.getId());
            dto.setCourseTitle(saved.getCourseTitle());
-           dto.setCertification(saved.getCertificationStatusDetail());
+
            dto.setCourseDate(elsTeacherCertification.getCourseDate());
            dto.setCompanyName(saved.getCompanyName());
 
@@ -104,7 +104,7 @@ public class TeacherCertificateService implements ITeacherCertificationService {
                    teacherCertification.setStartDate(persianDate);
                }
                teacherCertification.setCertificationStatus(elsTeacherCertification.getCertificationStatus());
-               teacherCertification.setCertificationStatusDetail(elsTeacherCertification.getCertification());
+
                if (elsTeacherCertification.getCategoryIds() != null && elsTeacherCertification.getCategoryIds().size() > 0) {
 
                    Set<Category> categories = categoryService.getCategoriesByIds(elsTeacherCertification.getCategoryIds());

@@ -45,7 +45,7 @@ public abstract class TeacherCertificationMapper {
            ElsTeacherCertificationDate dto=new ElsTeacherCertificationDate();
            dto.setCourseTitle(teacherCertification.getCourseTitle());
            dto.setCompanyName(teacherCertification.getCompanyName());
-           dto.setCertification(teacherCertification.getCertificationStatusDetail());
+
            dto.setCourseDate(teacherCertification.getStartDate());
            list.add(dto);
        });
@@ -75,7 +75,7 @@ public abstract class TeacherCertificationMapper {
         String persianDate=convertToPersianDate(date);
         teacherCertification.setStartDate(persianDate);
         teacherCertification.setCertificationStatus(elsTeacherCertification.getCertificationStatus());
-        teacherCertification.setCertificationStatusDetail(elsTeacherCertification.getCertification());
+
 
         teacherCertification.setTeacherId(teacherId);
       Teacher teacher=  teacherService.getTeacher(teacherId);
