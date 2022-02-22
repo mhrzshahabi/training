@@ -9,7 +9,7 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
-public class ElsAcademicBKRespDto extends BaseResponse {
+public class ElsAcademicBKFindAllRespDto extends BaseResponse {
     private Long id;
     @NotEmpty
     @ApiModelProperty(required = true)
@@ -19,5 +19,5 @@ public class ElsAcademicBKRespDto extends BaseResponse {
     private Long educationMajorId;
     private Long educationOrientationId;
     private Long universityId;
-    private Long date;
+    private String date;
 }

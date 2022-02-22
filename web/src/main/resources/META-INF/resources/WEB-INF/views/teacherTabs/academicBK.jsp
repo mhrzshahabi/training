@@ -19,6 +19,7 @@
             {name: "educationLevel.titleFa"},
             {name: "educationMajor.titleFa"},
             {name: "educationOrientation.titleFa"},
+            {name: "university.title"},
             {name: "date"},
             {name: "duration"},
             {name: "academicGrade"},
@@ -39,6 +40,15 @@
     RestDataSource_EducationOrientation_JspAcademicBK = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: educationOrientationUrl + "iscList"
+    });
+
+    RestDataSource_University_JspAcademicBK  = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/University"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -103,7 +113,6 @@
                     }
                 ]
             },
-
             {
                 name: "educationOrientationId",
                 title: "<spring:message code='education.orientation'/>",
@@ -130,8 +139,29 @@
                 ]
             },
             {
+                name: "universityId",
+                editorType: "ComboBoxItem",
+                title: "دانشگاه",
+                colSpan: 1,
+                optionDataSource: RestDataSource_University_JspAcademicBK,
+                displayField: "title",
+                autoFetchData: false,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                }
+            },
+            {
                 name: "collageName",
                 title: "<spring:message code='collage.name'/>",
+                hidden: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
@@ -287,7 +317,15 @@
                 name: "educationOrientation.titleFa",
                 title: "<spring:message code='education.orientation'/>"
             },
-            {name: "collageName", title: "<spring:message code='collage.name'/>"},
+            {
+                name: "university.title",
+                title: "دانشگاه"
+            },
+            {
+                name: "collageName",
+                title: "<spring:message code='collage.name'/>",
+                hidden: true
+            },
             {name: "academicGrade", title: "<spring:message code='academic.grade'/>"},
             {
                 name: "duration",
