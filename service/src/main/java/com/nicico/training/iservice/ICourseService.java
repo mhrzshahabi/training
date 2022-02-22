@@ -109,4 +109,5 @@ public interface ICourseService {
 
     <T> SearchDTO.SearchRs<T> searchGeneric(SearchDTO.SearchRq request, Class<T> infoType);
 
+    List<Course> getCoursesViaCategoryAndSubCategory(Long categoryId, Long subCategoryId);
 }

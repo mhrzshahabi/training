@@ -17,6 +17,8 @@ import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
+import com.nicico.training.mapper.course.CourseBeanMapper;
+import com.nicico.training.mapper.course.CourseMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
@@ -128,6 +130,10 @@ public class ElsRestController {
     private final ITeacherCertificationService teacherCertificationService;
     private final ITeacherSuggestedService teacherSuggestedService;
     private final TeacherSuggestedCourseMapper teacherSuggestedCourseMapper;
+    private final ICourseService courseService;
+    private final CourseBeanMapper courseBeanMapper;
+    private final CourseMapper courseMapper;
+    private final ITeacherPresentableCourseService teacherPresentableCourseService;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -1879,4 +1885,50 @@ public class ElsRestController {
         }
     }
 
+    /**
+     *
+     * @param header
+     * @param categoryId
+     * @param subCategoryId
+     * @return this method return courseList with specific category-id & subcategory -id
+     */
+    @GetMapping("courseList/CategoryAndSubcategory/{categoryId}/{subCategoryId}")
+    public  List<CourseDTO.TupleInfo>  getCourseListViaCategoryAndSubCategory(HttpServletRequest header, @PathVariable Long categoryId,@PathVariable Long subCategoryId ){
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+         List<Course> courses=   courseService.getCoursesViaCategoryAndSubCategory(categoryId,subCategoryId);
+             List<CourseDTO.TupleInfo> dtos=   courseBeanMapper.toCourseDTOTupleInfos(courses);
+             return dtos;
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    /**
+     *
+     * @param header
+     * @param courseId
+     * @return this methd return courseDetails via course-id;
+     */
+    @GetMapping("courseDetails/{courseId}")
+     public  ElsCourseDTO getCourseDetails(HttpServletRequest header,@PathVariable Long courseId)  {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+          Course course= courseService.getCourse(courseId);
+                 ElsCourseDTO dto= courseMapper.toCourseDTO(course);
+                 return dto;
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @PostMapping("presentable-coureses")
+    public ElsPresentableCourse createPresentableCourse(HttpServletRequest header,@RequestBody ElsPresentableCourse elsPresentableCourse){
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+           teacherPresentableCourseService.savePresentableCourse(elsPresentableCourse);
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
 }
