@@ -4,8 +4,6 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
-import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
@@ -21,6 +19,7 @@ import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
+import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
@@ -74,7 +73,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.controller.util.AppUtils.getPrefix;
-import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
 @RestController
@@ -125,6 +123,7 @@ public class ElsRestController {
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final ISelfDeclarationService iSelfDeclarationService;
     private final ObjectMapper objectMapper;
+    private final TeacherBeanMapper teacherBeanMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -1605,4 +1604,25 @@ public class ElsRestController {
             return elsClassDetailResponse;
         }
     }
+
+    @GetMapping("/teacher/infoByNationalCode/{nationalCode}")
+    public ElsTeacherInfoDto getTeacherInfo(HttpServletRequest header, @PathVariable String nationalCode) {
+        ElsTeacherInfoDto elsTeacherInfoDto = new ElsTeacherInfoDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                Teacher teacher = teacherService.getTeacher(teacherId);
+                elsTeacherInfoDto = teacherBeanMapper.toElsTeacherInfoDto(teacher);
+                elsTeacherInfoDto.setStatus(200);
+            } catch (Exception e) {
+                elsTeacherInfoDto.setStatus(HttpStatus.NOT_FOUND.value());
+                elsTeacherInfoDto.setMessage(" موردی یافت نشد");
+            }
+        } else {
+            elsTeacherInfoDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsTeacherInfoDto.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return elsTeacherInfoDto;
+    }
+
 }
