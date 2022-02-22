@@ -57,11 +57,19 @@ public class TeacherCertificateService implements ITeacherCertificationService {
     @Override
     public ElsTeacherCertification saveCertification(TeacherCertification teacherCertification, ElsTeacherCertification elsTeacherCertification) {
         TeacherCertification saved= teacherCertificationDAO.save(teacherCertification);
+        ElsTeacherCertification dto=new ElsTeacherCertification();
         if(saved!=null) {
-            elsTeacherCertification.setId(saved.getId());
+           dto.setId(saved.getId());
+           dto.setCourseTitle(saved.getCourseTitle());
+           dto.setCertification(saved.getCertificationStatusDetail());
+           dto.setCourseDate(elsTeacherCertification.getCourseDate());
+           dto.setCompanyName(saved.getCompanyName());
+
+
+
 
         }
-      return   elsTeacherCertification;
+      return  dto;
     }
 
     @Transactional

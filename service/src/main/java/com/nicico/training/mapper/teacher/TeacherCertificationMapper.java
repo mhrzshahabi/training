@@ -3,16 +3,15 @@ package com.nicico.training.mapper.teacher;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.TimeZone;
 import com.ibm.icu.util.ULocale;
+import com.nicico.training.dto.ElsSuggestedCourse;
 import com.nicico.training.dto.ElsTeacherCertification;
+import com.nicico.training.dto.ElsTeacherCertificationDate;
 import com.nicico.training.dto.ElsTeacherCertificationsDto;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.iservice.ITeacherCertificationService;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.Category;
-import com.nicico.training.model.Subcategory;
-import com.nicico.training.model.Teacher;
-import com.nicico.training.model.TeacherCertification;
+import com.nicico.training.model.*;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Mappings;
@@ -40,10 +39,10 @@ public abstract class TeacherCertificationMapper {
     @Autowired
     protected ITeacherService teacherService;
 
-   public  List< ElsTeacherCertificationsDto> toElsTeacherCertifications(List<TeacherCertification> teacherCertifications){
-     List<ElsTeacherCertificationsDto> list=new ArrayList<>();
+   public  List<ElsTeacherCertificationDate> toElsTeacherCertifications(List<TeacherCertification> teacherCertifications){
+     List<ElsTeacherCertificationDate> list=new ArrayList<>();
        teacherCertifications.stream().forEach(teacherCertification -> {
-           ElsTeacherCertificationsDto dto=new ElsTeacherCertificationsDto();
+           ElsTeacherCertificationDate dto=new ElsTeacherCertificationDate();
            dto.setCourseTitle(teacherCertification.getCourseTitle());
            dto.setCompanyName(teacherCertification.getCompanyName());
            dto.setCertification(teacherCertification.getCertificationStatusDetail());
@@ -97,6 +96,7 @@ public abstract class TeacherCertificationMapper {
         df.setTimeZone(TimeZone.getTimeZone("GMT+3:30"));
         return df.format(date);
     }
+
 
 
 }

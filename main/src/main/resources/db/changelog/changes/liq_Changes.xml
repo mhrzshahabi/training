@@ -3528,6 +3528,40 @@ WHERE
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_suggested_coursePK"/>
             </column>
+            <column name="c_course_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+
+        </createTable>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-06">
+        <createTable tableName="tbl_teacher_suggested_course_category">
+            <column name="f_teacher_suggested_course" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-07">
+        <createTable tableName="tbl_teacher_suggested_course_subcategory">
+            <column name="f_teacher_suggested_course" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet  author="ZPakdaman" id="2799887766557-08">
+        <addColumn tableName="tbl_teacher_suggested_course">
+            <column name="c_course_description" type="VARCHAR2(255 CHAR)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-09" >
+        <addColumn tableName="tbl_teacher_suggested_course">
+            <column name="f_teacher_id" type="NUMBER(19, 0)"></column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
@@ -3541,16 +3575,8 @@ WHERE
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="FMS_REFERENCE" type="VARCHAR2(255 CHAR)"/>
-            <column name="GROUP_ID" type="VARCHAR2(255 CHAR)"/>
-            <column name="name" type="VARCHAR2(255 CHAR)"/>
-            <column name="NATIONAL_CODE" type="VARCHAR2(255 CHAR)"/>
-            <column name="reference" type="VARCHAR2(255 CHAR)"/>
-            <column name="response" type="VARCHAR2(255 CHAR)"/>
-            <column name="REQUEST_STATUS" type="VARCHAR2(255 CHAR)"/>
-            <column name="text" type="VARCHAR2(255 CHAR)"/>
-            <column name="REQUEST_TYPE" type="VARCHAR2(255 CHAR)"/>
-        </createTable>
+        </addColumn>
     </changeSet>
+
 
 </databaseChangeLog>
