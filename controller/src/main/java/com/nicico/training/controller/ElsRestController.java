@@ -138,7 +138,6 @@ public class ElsRestController {
     private final IEducationOrientationService iEducationOrientationService;
     private final IAcademicBKService iAcademicBKService;
     private final AcademicBKBeanMapper academicBKBeanMapper;
-    private final ObjectMapper objectMapper;
     private final TeacherCertificationMapper teacherCertificationMapper;
     private final ITeacherCertificationService teacherCertificationService;
     private final ITeacherSuggestedService teacherSuggestedService;
