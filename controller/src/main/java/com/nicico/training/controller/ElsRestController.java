@@ -1,8 +1,6 @@
 package com.nicico.training.controller;
 
-
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
@@ -127,7 +125,6 @@ public class ElsRestController {
     private final IRequestService iRequestService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final ISelfDeclarationService iSelfDeclarationService;
-    private final ObjectMapper objectMapper;
     private final IEmploymentHistoryService iEmploymentHistoryService;
     private final EmploymentHistoryBeanMapper employmentHistoryBeanMapper;
     private final TeacherCertificationMapper teacherCertificationMapper;
