@@ -96,6 +96,7 @@ public class ElsRestController {
     private final SubcategoryService subcategoryService;
     private final ITclassService iTclassService;
     private final PersonalInfoService personalInfoService;
+    private final IPersonalInfoService iPersonalInfoService;
     private final ElsClient client;
     private final MinIoClient client2;
     private final TestQuestionService testQuestionService;
@@ -1889,6 +1890,8 @@ public class ElsRestController {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
                 Teacher teacher = teacherService.getTeacher(teacherId);
+                PersonalInfo personalInfo = iPersonalInfoService.getPersonalInfo(teacher.getPersonalityId());
+                teacher.setPersonality(personalInfo);
                 elsTeacherInfoDto = teacherBeanMapper.toElsTeacherInfoDto(teacher);
                 elsTeacherInfoDto.setStatus(200);
             } catch (Exception e) {
