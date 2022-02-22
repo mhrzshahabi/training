@@ -113,10 +113,14 @@ public abstract class QuestionBankBeanMapper {
                 });
             }
 
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption1(), 1, option1HasAttachment, elsAttachmentDtoOption1Files));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption2(), 2, option2HasAttachment, elsAttachmentDtoOption2Files));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, option3HasAttachment, elsAttachmentDtoOption3Files));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, option4HasAttachment, elsAttachmentDtoOption4Files));
+            if (questionBank.getOption1() != null)
+                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption1(), 1, option1HasAttachment, elsAttachmentDtoOption1Files));
+            if (questionBank.getOption2() != null)
+                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption2(), 2, option2HasAttachment, elsAttachmentDtoOption2Files));
+            if (questionBank.getOption3() != null)
+                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, option3HasAttachment, elsAttachmentDtoOption3Files));
+            if (questionBank.getOption4() != null)
+                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, option4HasAttachment, elsAttachmentDtoOption4Files));
 
             elsQuestionDto.setQuestionId(questionBank.getId());
             elsQuestionDto.setTitle(questionBank.getQuestion());
