@@ -17,7 +17,7 @@ public class ElsAcademicBKReqDto {
     @ApiModelProperty(required = true)
     private Long educationMajorId;
     private Long educationOrientationId;
-    private String collageName;
+    private Long universityId;
     private Long date;
     private String teacherNationalCode;
 }

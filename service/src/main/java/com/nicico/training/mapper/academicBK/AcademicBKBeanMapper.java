@@ -11,6 +11,7 @@ import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 import request.academicBK.ElsAcademicBKReqDto;
+import response.academicBK.ElsAcademicBKFindAllRespDto;
 import response.academicBK.ElsAcademicBKRespDto;
 
 import java.text.ParseException;
@@ -28,19 +29,20 @@ public abstract class AcademicBKBeanMapper {
 
     @Mapping(source = "teacherNationalCode", target = "teacherId", qualifiedByName = "nationalCodeToTeacherId")
     @Mapping(source = "date", target = "date", qualifiedByName = "longDateToStringDate")
+    @Mapping(source = "elsAcademicBKReqDto", target = "collageName", qualifiedByName = "toCollageName")
     public abstract AcademicBKDTO.Create elsAcademicBKReqToAcademicBKCreate (ElsAcademicBKReqDto elsAcademicBKReqDto);
 
     @Mapping(source = "teacherNationalCode", target = "teacherId", qualifiedByName = "nationalCodeToTeacherId")
     @Mapping(source = "date", target = "date", qualifiedByName = "longDateToStringDate")
+    @Mapping(source = "elsAcademicBKReqDto", target = "collageName", qualifiedByName = "toCollageName")
     public abstract AcademicBKDTO.Update elsAcademicBKReqToAcademicBKUpdate (ElsAcademicBKReqDto elsAcademicBKReqDto);
 
     @Mapping(source = "date", target = "date", qualifiedByName = "StringDateToLongDate")
     public abstract ElsAcademicBKRespDto academicBKInfoToElsAcademicBKRes (AcademicBKDTO.Info info);
 
-    @Mapping(source = "date", target = "date", qualifiedByName = "StringDateToLongDate")
-    public abstract ElsAcademicBKRespDto academicBKToElsAcademicBKRes (AcademicBK academicBK);
+    public abstract ElsAcademicBKFindAllRespDto academicBKToElsAcademicBKRes (AcademicBK academicBK);
 
-    public abstract List<ElsAcademicBKRespDto> academicBKToElsAcademicBKResList(List<AcademicBK> academicBKList);
+    public abstract List<ElsAcademicBKFindAllRespDto> academicBKToElsAcademicBKFindAllRes(List<AcademicBK> academicBKList);
 
     @Named("nationalCodeToTeacherId")
     Long nationalCodeToTeacherId(String nationalCode) {
@@ -56,6 +58,11 @@ public abstract class AcademicBKBeanMapper {
     @Named("StringDateToLongDate")
     Long StringDateToLongDate(String sDate) throws ParseException {
         return 1L;
+    }
+
+    @Named("toCollageName")
+    String longDateToStringDate(ElsAcademicBKReqDto reqDto) {
+        return null;
     }
 
 }

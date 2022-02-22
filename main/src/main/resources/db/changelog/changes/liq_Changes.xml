@@ -3577,7 +3577,6 @@ WHERE
         </addColumn>
     </changeSet>
 
-
     <changeSet author="nick (generated)" id="1638772362566-772">
         <addColumn tableName="tbl_teacher">
             <column name="F_TEACHING_BACKGROUND" type="number(19, 0)"/>
@@ -3599,6 +3598,16 @@ WHERE
         <addColumn tableName="tbl_employment_history">
             <column name="n_collaboration_duration" type="NUMBER(10, 0)"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-047">
+        <addColumn tableName="tbl_academic_bk">
+            <column name="f_parameter_value_university" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-048">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_university" baseTableName="tbl_academic_bk" constraintName="FK_ACADEMIC_BK_TO_PARAMETER_VALUE" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
 
 </databaseChangeLog>

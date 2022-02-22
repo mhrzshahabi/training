@@ -59,4 +59,11 @@ public class AcademicBK extends Auditable {
 
     @Column(name = "f_teacher")
     private Long teacherId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_parameter_value_university", insertable = false, updatable = false)
+    private ParameterValue university;
+
+    @Column(name = "f_parameter_value_university")
+    private Long universityId;
 }

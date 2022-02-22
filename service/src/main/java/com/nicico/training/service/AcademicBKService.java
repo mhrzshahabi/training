@@ -17,7 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import response.academicBK.ElsAcademicBKRespDto;
+import response.academicBK.ElsAcademicBKFindAllRespDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -122,10 +122,10 @@ public class AcademicBKService implements IAcademicBKService {
     }
 
     @Override
-    public List<ElsAcademicBKRespDto> findAcademicBKsByTeacherNationalCode(String nationalCode) {
+    public List<ElsAcademicBKFindAllRespDto> findAcademicBKsByTeacherNationalCode(String nationalCode) {
         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
         List<AcademicBK> academicBKList = academicBKDAO.findAllByTeacherId(teacherId);
-        return academicBKBeanMapper.academicBKToElsAcademicBKResList(academicBKList);
+        return academicBKBeanMapper.academicBKToElsAcademicBKFindAllRes(academicBKList);
     }
 
 }

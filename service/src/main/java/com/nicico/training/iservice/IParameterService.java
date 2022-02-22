@@ -28,4 +28,7 @@ public interface IParameterService {
     SearchDTO.SearchRs<ParameterDTO.Config> allConfig(SearchDTO.SearchRq searchRq);
 
     Map<Long, String> getMapByCode(String studentScoreState);
+
+    List<ParameterValueDTO.TupleInfo> getValueListByCode(String code);
+
 }

@@ -3,7 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AcademicBKDTO;
 import com.nicico.training.model.AcademicBK;
-import response.academicBK.ElsAcademicBKRespDto;
+import response.academicBK.ElsAcademicBKFindAllRespDto;
 
 import java.util.List;
 
@@ -21,5 +21,5 @@ public interface IAcademicBKService {
 
     void deleteAcademicBK(Long teacherId, Long academicBKId);
 
-    List<ElsAcademicBKRespDto> findAcademicBKsByTeacherNationalCode(String nationalCode);
+    List<ElsAcademicBKFindAllRespDto> findAcademicBKsByTeacherNationalCode(String nationalCode);
 }
