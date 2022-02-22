@@ -58,4 +58,10 @@ public class TeacherCertification extends Auditable {
 
     @Column(name = "f_teacher_id")
     private Long teacherId;
+
+    @Column(name="certification_status")
+    private Boolean certificationStatus;
+
+    @Column(name="certification_status_detail")
+    private String certificationStatusDetail;
 }

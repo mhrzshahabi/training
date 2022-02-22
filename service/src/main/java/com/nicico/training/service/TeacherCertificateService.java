@@ -1,12 +1,21 @@
 package com.nicico.training.service;
 
+import com.ibm.icu.text.SimpleDateFormat;
+import com.ibm.icu.util.TimeZone;
+import com.ibm.icu.util.ULocale;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ElsTeacherCertification;
+import com.nicico.training.dto.TeacherCertificationBaseResponse;
 import com.nicico.training.dto.TeacherCertificationDTO;
+import com.nicico.training.iservice.ICategoryService;
+import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.iservice.ITeacherCertificationService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.Category;
+import com.nicico.training.model.Subcategory;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.model.TeacherCertification;
 import com.nicico.training.repository.TeacherCertificationDAO;
@@ -16,11 +25,11 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +38,8 @@ public class TeacherCertificateService implements ITeacherCertificationService {
     private final ModelMapper modelMapper;
     private final TeacherCertificationDAO teacherCertificationDAO;
     private final ITeacherService teacherService;
+    private final ICategoryService categoryService;
+    private final ISubcategoryService subcategoryService;
 
     @Transactional(readOnly = true)
     @Override
@@ -43,6 +54,24 @@ public class TeacherCertificateService implements ITeacherCertificationService {
         return optionalTeacherCertification.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
+    @Override
+    public ElsTeacherCertification saveCertification(TeacherCertification teacherCertification, ElsTeacherCertification elsTeacherCertification) {
+        TeacherCertification saved= teacherCertificationDAO.save(teacherCertification);
+        ElsTeacherCertification dto=new ElsTeacherCertification();
+        if(saved!=null) {
+           dto.setId(saved.getId());
+           dto.setCourseTitle(saved.getCourseTitle());
+
+           dto.setCourseDate(elsTeacherCertification.getCourseDate());
+           dto.setCompanyName(saved.getCompanyName());
+
+
+
+
+        }
+      return  dto;
+    }
+
     @Transactional
     @Override
     public void deleteTeacherCertification(Long teacherId, Long teacherCertificationId) {
@@ -55,6 +84,80 @@ public class TeacherCertificateService implements ITeacherCertificationService {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
     }
+
+    @Override
+    @Transactional
+    public TeacherCertificationBaseResponse editTeacherCertification(ElsTeacherCertification elsTeacherCertification) {
+        TeacherCertificationBaseResponse response=new TeacherCertificationBaseResponse();
+
+       try {
+           Long teacherCertificationId = elsTeacherCertification.getId();
+
+           TeacherCertification optionalTeacherCertification = teacherCertificationDAO.getById(teacherCertificationId);
+           if (optionalTeacherCertification.getId() != null) {
+               TeacherCertification teacherCertification = optionalTeacherCertification;
+               teacherCertification.setCourseTitle(elsTeacherCertification.getCourseTitle());
+               teacherCertification.setCompanyName(elsTeacherCertification.getCompanyName());
+               if (elsTeacherCertification.getCourseDate() != null) {
+                   Date date = new Date(elsTeacherCertification.getCourseDate());
+                   String persianDate = convertToPersianDate(date);
+                   teacherCertification.setStartDate(persianDate);
+               }
+               teacherCertification.setCertificationStatus(elsTeacherCertification.getCertificationStatus());
+
+               if (elsTeacherCertification.getCategoryIds() != null && elsTeacherCertification.getCategoryIds().size() > 0) {
+
+                   Set<Category> categories = categoryService.getCategoriesByIds(elsTeacherCertification.getCategoryIds());
+                   if (categories != null)
+                       teacherCertification.setCategories(categories);
+               }
+
+               if (elsTeacherCertification.getSubcategoryIds() != null && elsTeacherCertification.getSubcategoryIds().size() > 0) {
+
+                   Set<Subcategory> subcategories = subcategoryService.getSubcategoriesByIds(elsTeacherCertification.getSubcategoryIds());
+                   if (subcategories != null)
+                       teacherCertification.setSubCategories(subcategories);
+
+               }
+               TeacherCertification finalResult = teacherCertificationDAO.saveAndFlush(teacherCertification);
+               if (finalResult != null) {
+                   response.setElsTeacherCertification(elsTeacherCertification);
+                   response.setMessage("successfully edited!");
+                   response.setStatus(200);
+                   return response;
+               } else {
+                   response.setStatus(406);
+                   response.setMessage("not edited!");
+                   return response;
+               }
+
+
+           }
+       }catch (Exception e){
+           response.setStatus(406);
+           response.setMessage("questionId does not exist");
+            return response;
+       }
+
+     return response;
+
+    }
+
+    @Override
+    public List<TeacherCertification> findAllTeacherCertifications(Long teacherId) {
+       return teacherCertificationDAO.findAllByTeacherId(teacherId);
+    }
+
+    private String convertToPersianDate(Date _date) {
+        Long date = _date.getTime();
+        ULocale PERSIAN_LOCALE = new ULocale("fa_IR");
+        ZoneId IRAN_ZONE_ID = ZoneId.of("Asia/Tehran");
+
+        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd", PERSIAN_LOCALE );
+        df.setTimeZone(TimeZone.getTimeZone("GMT+3:30"));
+        return df.format(date);
+    }
+
 
     @Transactional
     @Override
