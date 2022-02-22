@@ -3579,4 +3579,11 @@ WHERE
     </changeSet>
 
 
+    <changeSet author="nick (generated)" id="1638772362566-772">
+        <addColumn tableName="tbl_teacher">
+            <column name="F_TEACHING_BACKGROUND" type="number(19, 0)"/>
+            <column name="C_IBAN" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

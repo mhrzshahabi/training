@@ -19,6 +19,7 @@ import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
+import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
 import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.model.*;
@@ -128,6 +129,7 @@ public class ElsRestController {
     private final ITeacherCertificationService teacherCertificationService;
     private final ITeacherSuggestedService teacherSuggestedService;
     private final TeacherSuggestedCourseMapper teacherSuggestedCourseMapper;
+    private final TeacherBeanMapper teacherBeanMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -1047,7 +1049,7 @@ public class ElsRestController {
     public ElsQuestionBankDto getQuestionBankFilter(HttpServletRequest header,
             @PathVariable Integer page, @PathVariable Integer size,@RequestBody  ElsSearchDTO elsSearchDTO ) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
 
-//       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
            try {
 
                if (elsSearchDTO.getNationalCode() != null) {
@@ -1097,10 +1099,10 @@ public class ElsRestController {
                return dto;
            }
 
-//
-//       } else {
-//        throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-//        }
+
+       } else {
+        throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
 
 
 
@@ -1879,4 +1881,24 @@ public class ElsRestController {
         }
     }
 
+
+    @GetMapping("/teacher/infoByNationalCode/{nationalCode}")
+    public ElsTeacherInfoDto getTeacherInfo(HttpServletRequest header, @PathVariable String nationalCode) {
+        ElsTeacherInfoDto elsTeacherInfoDto = new ElsTeacherInfoDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                Teacher teacher = teacherService.getTeacher(teacherId);
+                elsTeacherInfoDto = teacherBeanMapper.toElsTeacherInfoDto(teacher);
+                elsTeacherInfoDto.setStatus(200);
+            } catch (Exception e) {
+                elsTeacherInfoDto.setStatus(HttpStatus.NOT_FOUND.value());
+                elsTeacherInfoDto.setMessage(" موردی یافت نشد");
+            }
+        } else {
+            elsTeacherInfoDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsTeacherInfoDto.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return elsTeacherInfoDto;
+    }
 }

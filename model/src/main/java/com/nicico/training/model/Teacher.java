@@ -47,6 +47,12 @@ public class Teacher extends Auditable {
     @Column(name = "f_personality", nullable = false, insertable = false, updatable = false)
     private Long personalityId;
 
+    @Column(name = "F_TEACHING_BACKGROUND")
+    private Long teachingBackground;
+
+    @Column(name = "C_IBAN")
+    private String iban;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_teacher_category",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
