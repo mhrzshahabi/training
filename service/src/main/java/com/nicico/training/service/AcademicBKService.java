@@ -7,6 +7,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AcademicBKDTO;
 import com.nicico.training.iservice.IAcademicBKService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.mapper.academicBK.AcademicBKBeanMapper;
 import com.nicico.training.model.AcademicBK;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.AcademicBKDAO;
@@ -16,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.academicBK.ElsAcademicBKRespDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,7 @@ public class AcademicBKService implements IAcademicBKService {
     private final ModelMapper modelMapper;
     private final AcademicBKDAO academicBKDAO;
     private final ITeacherService teacherService;
+    private final AcademicBKBeanMapper academicBKBeanMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -92,12 +95,13 @@ public class AcademicBKService implements IAcademicBKService {
 
     @Transactional
     @Override
-    public void addAcademicBK(AcademicBKDTO.Create request, Long teacherId) {
+    public AcademicBKDTO.Info addAcademicBK(AcademicBKDTO.Create request, Long teacherId) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        AcademicBK academicBK = new AcademicBK();
-        modelMapper.map(request, academicBK);
+        AcademicBK academicBK = modelMapper.map(request, AcademicBK.class);
+        AcademicBKDTO.Info info = save(academicBK);
         try {
             teacher.getAcademicBKs().add(academicBK);
+            return info;
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -117,5 +121,11 @@ public class AcademicBKService implements IAcademicBKService {
         }
     }
 
+    @Override
+    public List<ElsAcademicBKRespDto> findAcademicBKsByTeacherNationalCode(String nationalCode) {
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        List<AcademicBK> academicBKList = academicBKDAO.findAllByTeacherId(teacherId);
+        return academicBKBeanMapper.academicBKToElsAcademicBKResList(academicBKList);
+    }
 
 }
