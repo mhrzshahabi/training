@@ -191,6 +191,7 @@
                     ListGrid_Answered_Questions_Details.setData(data);
                 } else {
                     wait.close();
+                    ListGrid_Answered_Questions_Details.setData([]);
                     createDialog("info", "هیچ رکوردی برای نمایش وحود ندارد", "<spring:message code="message"/>")
                 }
             }));

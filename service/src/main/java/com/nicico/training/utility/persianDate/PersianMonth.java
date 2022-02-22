@@ -26,7 +26,7 @@ public enum PersianMonth {
 
     /**
      * The singleton instance for the month of Farvardin with 31 days.
-     * This has the numeric value of {@code 1}.
+     * This has the numeric value of {@code 1}.z
      */
     FARVARDIN("فروردین"),
 

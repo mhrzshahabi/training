@@ -328,5 +328,8 @@
     <changeSet author="MShahabi" id="1799887766557-037">
         <createSequence sequenceName="seq_help_files_id"/>
     </changeSet>
+    <changeSet id="2799887766557-10" author="ZPakdaman">
+        <createSequence sequenceName="seq_teacher_suggested_course_id"/>
+    </changeSet>
 
 </databaseChangeLog>
