@@ -3,7 +3,7 @@ package com.nicico.training.dto;
 import lombok.Data;
 
 @Data
-public class GeneralInfoDTO {
+public class TeacherGeneralInfoDTO {
     private Long id;
     private Long birthDate;
     private Long teachingBackground;

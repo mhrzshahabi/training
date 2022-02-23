@@ -5,6 +5,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -22,11 +23,17 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 import response.teacher.dto.TeacherInCourseDto;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
+
+import static com.nicico.training.utility.persianDate.MyUtils.checkEmailFormat;
 
 @Service
 @RequiredArgsConstructor
@@ -47,6 +54,9 @@ public class TeacherService implements ITeacherService {
     private final IEducationMajorService educationMajorService;
     private final IEducationOrientationService educationOrientationService;
     private final ITeacherRoleService iTeacherRoleService;
+    private final IPersonalInfoService iPersonalInfoService;
+    private final IContactInfoService iContactInfoService;
+
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -306,6 +316,53 @@ public class TeacherService implements ITeacherService {
     @Override
     public String getTeacherFullName(Long teacherId) {
         return teacherDAO.getTeacherFullName(teacherId);
+    }
+
+    @Override
+    public BaseResponse saveElsTeacherGeneralInfo(Teacher teacher, TeacherGeneralInfoDTO teacherGeneralInfoDTO) {
+        BaseResponse baseResponse = new BaseResponse();
+        if (teacher != null) {
+            PersonalInfo teacherPersonalInfo = iPersonalInfoService.getPersonalInfo(teacher.getPersonalityId());
+            ContactInfo contactInfo = teacherPersonalInfo.getContactInfo();
+            if (teacherGeneralInfoDTO.getBirthDate() != null) {
+                long time = teacherGeneralInfoDTO.getBirthDate();
+                Date date = new Date(time);
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String birtDate = DateUtil.convertMiToKh(dateFormat.format(date));
+                teacherPersonalInfo.setBirthDate(birtDate);
+            }
+            if (teacherGeneralInfoDTO.getEmail() != null && teacherGeneralInfoDTO.getEmail() != "") {
+
+                if (checkEmailFormat(teacherGeneralInfoDTO.getEmail())) {
+                    contactInfo.setEmail(teacherGeneralInfoDTO.getEmail());
+                } else {
+                    baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    baseResponse.setMessage("فرمت ایمیل نادرست است");
+                    return baseResponse;
+                }
+
+            }
+            if (teacherGeneralInfoDTO.getIban() != null && teacherGeneralInfoDTO.getIban() != "") {
+                if (teacherGeneralInfoDTO.getIban().length() == 24 && teacherGeneralInfoDTO.getIban().matches("\\d+")) {
+                    teacher.setIban(teacherGeneralInfoDTO.getIban());
+                } else {
+                    baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    baseResponse.setMessage("مقداز شماره شبا باید دارای ۲۴ رقم و بصورت عددی بدون IR وارد کنید");
+                    return baseResponse;
+                }
+            }
+            if (teacherGeneralInfoDTO.getTeachingBackground() != null) {
+                teacher.setTeachingBackground(teacherGeneralInfoDTO.getTeachingBackground());
+            }
+            teacherPersonalInfo.setContactInfo(contactInfo);
+            teacher.setPersonality(teacherPersonalInfo);
+            teacherDAO.save(teacher);
+            baseResponse.setStatus(200);
+        } else {
+            baseResponse.setStatus(HttpStatus.NO_CONTENT.value());
+            baseResponse.setMessage("استادی با این اطلاعات یافت نشد");
+        }
+        return baseResponse;
     }
 
     //--------------------------Teacher Basic Evaluation ---------------------------------------------------------------
