@@ -17,8 +17,7 @@ public class ElsEmploymentHistoryRespDto extends BaseResponse {
     private String jobTitle;
     private String companyName;
     private Long collaborationTypeId;
-    private Integer collaborationDurationYear;
-    private Integer collaborationDurationMonth;
+    private Integer collaborationDuration;
     @NotEmpty
     @ApiModelProperty(required = true)
     private List<Long> categoryIds;

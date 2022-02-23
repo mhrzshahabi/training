@@ -1,10 +1,4 @@
-package com.nicico.training.service;/*
-com.nicico.training.service
-@author : banifatemi
-@Date : 6/8/2019
-@Time :9:14 AM
-    */
-
+package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -156,6 +150,11 @@ public class CategoryService implements ICategoryService {
     @Override
     public List<Long> findCategoryByTeacher(Long teacherId) {
         return categoryDAO.findAllWithTeacher(teacherId);
+    }
+
+    @Override
+    public List<String> findCategoryNamesByEmpHistoryId(Long empHistoryId) {
+        return categoryDAO.findCategoryNamesByEmpHistoryId(empHistoryId);
     }
 
     @Transactional(readOnly = true)

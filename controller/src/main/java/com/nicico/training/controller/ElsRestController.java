@@ -2,7 +2,6 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
@@ -53,6 +52,7 @@ import response.BaseResponse;
 import response.PaginationDto;
 import response.academicBK.*;
 import response.attendance.AttendanceListSaveResponse;
+import response.employmentHistory.ElsEmploymentHistoryFindAllRespDto;
 import response.employmentHistory.ElsEmploymentHistoryRespDto;
 import response.evaluation.ElsEvaluationsListResponse;
 import response.evaluation.EvalListResponse;
@@ -75,7 +75,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -2016,7 +2015,7 @@ public class ElsRestController {
                 elsAcademicBKRespDto.setStatus(HttpStatus.OK.value());
             } catch (Exception e) {
                 elsAcademicBKRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                elsAcademicBKRespDto.setMessage("مشکلی در ایجاد سابقه استاد وجود دارد");
+                elsAcademicBKRespDto.setMessage("مشکلی در ایجاد سابقه تحصیلی استاد وجود دارد");
             }
         } else {
             elsAcademicBKRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -2036,7 +2035,7 @@ public class ElsRestController {
                 elsAcademicBKRespDto.setStatus(HttpStatus.OK.value());
             } catch (Exception e) {
                 elsAcademicBKRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                elsAcademicBKRespDto.setMessage("مشکلی در ویرایش سابقه استاد وجود دارد");
+                elsAcademicBKRespDto.setMessage("مشکلی در ویرایش سابقه تحصیلی استاد وجود دارد");
             }
         } else
             elsAcademicBKRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -2053,7 +2052,7 @@ public class ElsRestController {
                 response.setStatus(HttpStatus.OK.value());
             } catch (Exception e) {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                response.setMessage("مشکلی در حذف سابقه استاد وجود دارد");
+                response.setMessage("مشکلی در حذف سابقه تحصیلی استاد وجود دارد");
             }
             return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
         } else
@@ -2068,25 +2067,68 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
     }
 
+    //------------------------------------------------
 
     @PostMapping("/employment-history")
     ElsEmploymentHistoryRespDto createEmploymentHistory(HttpServletRequest header, @RequestBody ElsEmploymentHistoryReqDto elsEmploymentHistoryReqDto) {
         ElsEmploymentHistoryRespDto elsEmploymentHistoryRespDto = new ElsEmploymentHistoryRespDto();
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 EmploymentHistoryDTO.Create create = employmentHistoryBeanMapper.elsEmpHistoryReqToEmpHistoryCreate(elsEmploymentHistoryReqDto);
-                iEmploymentHistoryService.addEmploymentHistory(create, create.getTeacherId());
-//            AcademicBKDTO.Create create = academicBKBeanMapper.elsAcademicBKReqToAcademicBKCreate(elsAcademicBKReqDto);
-//            AcademicBKDTO.Info info = iAcademicBKService.addAcademicBK(create, create.getTeacherId());
-//            elsEmploymentHistoryRespDto = academicBKBeanMapper.academicBKInfoToElsAcademicBKRes(info);
+                EmploymentHistoryDTO.Info info = iEmploymentHistoryService.addEmploymentHistory(create, create.getTeacherId());
+                elsEmploymentHistoryRespDto = employmentHistoryBeanMapper.empHistoryInfoToElsHistoryResp(info);
                 elsEmploymentHistoryRespDto.setStatus(HttpStatus.OK.value());
             } catch (Exception e) {
                 elsEmploymentHistoryRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                 elsEmploymentHistoryRespDto.setMessage("مشکلی در ایجاد سابقه اجرایی استاد وجود دارد");
             }
-//        } else {
-//            elsEmploymentHistoryRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
-//        }
+        } else {
+            elsEmploymentHistoryRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+        }
         return elsEmploymentHistoryRespDto;
     }
+
+    @PostMapping("/edit/employment-history")
+    ElsEmploymentHistoryRespDto editEmploymentHistory(HttpServletRequest header, @RequestBody ElsEmploymentHistoryReqDto elsEmploymentHistoryReqDto) {
+        ElsEmploymentHistoryRespDto elsEmploymentHistoryRespDto = new ElsEmploymentHistoryRespDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                EmploymentHistoryDTO.Update update = employmentHistoryBeanMapper.elsEmpHistoryReqToEmpHistoryUpdate(elsEmploymentHistoryReqDto);
+                EmploymentHistoryDTO.Info info = iEmploymentHistoryService.update(elsEmploymentHistoryReqDto.getId(), update);
+                elsEmploymentHistoryRespDto = employmentHistoryBeanMapper.empHistoryInfoToElsHistoryResp(info);
+                elsEmploymentHistoryRespDto.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                elsEmploymentHistoryRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                elsEmploymentHistoryRespDto.setMessage("مشکلی در ویرایش سابقه اجرایی استاد وجود دارد");
+            }
+        } else
+            elsEmploymentHistoryRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return elsEmploymentHistoryRespDto;
+    }
+
+    @DeleteMapping("/employment-history")
+    ResponseEntity<BaseResponse> removeEmploymentHistory(HttpServletRequest header, @RequestParam Long id, @RequestParam String nationalCode) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                iEmploymentHistoryService.deleteEmploymentHistory(teacherId, id);
+                response.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("مشکلی در حذف سابقه اجرایی استاد وجود دارد");
+            }
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+        } else
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/employment-history/{nationalCode}")
+    List<ElsEmploymentHistoryFindAllRespDto> findEmploymentHistoriesByTeacherNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token")))
+            return iEmploymentHistoryService.findEmploymentHistoriesByNationalCode(nationalCode);
+        else
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+    }
+
 }

@@ -5,9 +5,9 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EmploymentHistoryDTO;
-import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IEmploymentHistoryService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.mapper.employmentHistory.EmploymentHistoryBeanMapper;
 import com.nicico.training.model.EmploymentHistory;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.EmploymentHistoryDAO;
@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.employmentHistory.ElsEmploymentHistoryFindAllRespDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +30,9 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class EmploymentHistoryService implements IEmploymentHistoryService {
 
     private final ModelMapper modelMapper;
-    private final EmploymentHistoryDAO employmentHistoryDAO;
     private final ITeacherService teacherService;
+    private final EmploymentHistoryDAO employmentHistoryDAO;
+    private final EmploymentHistoryBeanMapper employmentHistoryBeanMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -60,12 +62,13 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
 
     @Transactional
     @Override
-    public void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId) {
+    public EmploymentHistoryDTO.Info addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        EmploymentHistory employmentHistory = new EmploymentHistory();
-        modelMapper.map(request, employmentHistory);
+        EmploymentHistory employmentHistory = modelMapper.map(request, EmploymentHistory.class);
+        EmploymentHistoryDTO.Info info = save(employmentHistory);
         try {
             teacher.getEmploymentHistories().add(employmentHistory);
+            return info;
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -124,6 +127,13 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
             }
         }
         return SearchUtil.search(employmentHistoryDAO, request, employmentHistory -> modelMapper.map(employmentHistory, EmploymentHistoryDTO.Info.class));
+    }
+
+    @Override
+    public List<ElsEmploymentHistoryFindAllRespDto> findEmploymentHistoriesByNationalCode(String nationalCode) {
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        List<EmploymentHistory> employmentHistoryList = employmentHistoryDAO.findAllByTeacherId(teacherId);
+        return employmentHistoryBeanMapper.empHistoryListToElsFindRespList(employmentHistoryList);
     }
 
     private EmploymentHistoryDTO.Info save(EmploymentHistory employmentHistory) {
