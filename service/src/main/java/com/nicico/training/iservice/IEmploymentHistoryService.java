@@ -3,6 +3,9 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.EmploymentHistoryDTO;
 import com.nicico.training.model.EmploymentHistory;
+import response.employmentHistory.ElsEmploymentHistoryFindAllRespDto;
+
+import java.util.List;
 
 public interface IEmploymentHistoryService {
 
@@ -14,7 +17,10 @@ public interface IEmploymentHistoryService {
 
     SearchDTO.SearchRs<EmploymentHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId);
 
-    void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId);
+    EmploymentHistoryDTO.Info addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId);
 
     void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId);
+
+    List<ElsEmploymentHistoryFindAllRespDto> findEmploymentHistoriesByNationalCode(String nationalCode);
+
 }

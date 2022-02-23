@@ -535,7 +535,7 @@
             },
             {
                 ID: "employmentHistory",
-                title: "<spring:message code='employmentHistory'/>",
+                title: "سوابق اجرایی",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/employmentHistory-tab"})
             },
             {
