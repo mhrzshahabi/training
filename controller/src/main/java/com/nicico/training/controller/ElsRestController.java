@@ -2067,8 +2067,6 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
     }
 
-    //------------------------------------------------
-
     @PostMapping("/employment-history")
     ElsEmploymentHistoryRespDto createEmploymentHistory(HttpServletRequest header, @RequestBody ElsEmploymentHistoryReqDto elsEmploymentHistoryReqDto) {
         ElsEmploymentHistoryRespDto elsEmploymentHistoryRespDto = new ElsEmploymentHistoryRespDto();
