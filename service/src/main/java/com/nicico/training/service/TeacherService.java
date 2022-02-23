@@ -29,8 +29,13 @@ import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 import response.teacher.dto.TeacherInCourseDto;
 
+import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 import static com.nicico.training.utility.persianDate.MyUtils.checkEmailFormat;
@@ -326,9 +331,13 @@ public class TeacherService implements ITeacherService {
             ContactInfo contactInfo = teacherPersonalInfo.getContactInfo();
             if (teacherGeneralInfoDTO.getBirthDate() != null && teacherGeneralInfoDTO.getBirthDate() != 0 ) {
                 long time = teacherGeneralInfoDTO.getBirthDate();
-                Date date = new Date(time);
+                LocalDate date =
+                        Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+                LocalDateTime atStartOfDay = date.atStartOfDay();
+                Date startOfDate = Timestamp.valueOf(atStartOfDay);
+
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String birtDate = DateUtil.convertMiToKh(dateFormat.format(date));
+                String birtDate = DateUtil.convertMiToKh(dateFormat.format(startOfDate));
                 teacherPersonalInfo.setBirthDate(birtDate);
             }
             if (teacherGeneralInfoDTO.getEmail() != null && teacherGeneralInfoDTO.getEmail() != "") {
