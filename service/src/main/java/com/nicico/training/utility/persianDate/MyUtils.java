@@ -474,6 +474,17 @@ public class MyUtils {
             return matcher.find();
         }
     }
+
+    public static boolean checkEmailFormat(String email) {
+        if (email == null || email.equals("")) {
+            return false;
+        } else {
+            String regexStr = "(?i)[-a-z0-9+_][-a-z0-9+_.]*@[-a-z0-9][-a-z0-9.]*\\.[a-z]{2,6}";
+            Pattern pattern = Pattern.compile(regexStr);
+            Matcher matcher = pattern.matcher(email);
+            return matcher.find();
+        }
+    }
     public static boolean validateNationalCode(String melliCode) {
 
         String[] identicalDigits = {"0000000000", "1111111111", "2222222222", "3333333333", "4444444444", "5555555555", "6666666666", "7777777777", "8888888888", "9999999999"};

@@ -4,6 +4,7 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
@@ -73,6 +74,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -1889,6 +1891,12 @@ public class ElsRestController {
         }
     }
 
+    /**
+     * to return teacher's general info by national code
+     * @param header
+     * @param nationalCode
+     * @return
+     */
     @GetMapping("/teacher/infoByNationalCode/{nationalCode}")
     public ElsTeacherInfoDto getTeacherInfo(HttpServletRequest header, @PathVariable String nationalCode) {
         ElsTeacherInfoDto elsTeacherInfoDto = new ElsTeacherInfoDto();
@@ -1909,6 +1917,31 @@ public class ElsRestController {
             elsTeacherInfoDto.setMessage("دسترسی موردنظر یافت نشد");
         }
         return elsTeacherInfoDto;
+    }
+
+    /**
+     * to update teacher general info comming from els
+     * @param header
+     * @param teacherGeneralInfoDTO
+     * @return
+     */
+    @PostMapping("/teacher/updateGeneralInfo")
+    public ResponseEntity<BaseResponse> updateGeneralInfo(HttpServletRequest header, @RequestBody TeacherGeneralInfoDTO teacherGeneralInfoDTO) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Teacher teacher = teacherService.getTeacher(teacherGeneralInfoDTO.getId());
+                response = teacherService.saveElsTeacherGeneralInfo(teacher, teacherGeneralInfoDTO);
+
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage(((TrainingException) e).getMsg());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
 
     @GetMapping("/educationLevelList")
