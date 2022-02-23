@@ -324,7 +324,7 @@ public class TeacherService implements ITeacherService {
         if (teacher != null) {
             PersonalInfo teacherPersonalInfo = iPersonalInfoService.getPersonalInfo(teacher.getPersonalityId());
             ContactInfo contactInfo = teacherPersonalInfo.getContactInfo();
-            if (teacherGeneralInfoDTO.getBirthDate() != null) {
+            if (teacherGeneralInfoDTO.getBirthDate() != null && teacherGeneralInfoDTO.getBirthDate() != 0 ) {
                 long time = teacherGeneralInfoDTO.getBirthDate();
                 Date date = new Date(time);
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");

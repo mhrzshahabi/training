@@ -1926,7 +1926,7 @@ public class ElsRestController {
      * @return
      */
     @PostMapping("/teacher/updateGeneralInfo")
-    public ResponseEntity<BaseResponse> updateGeneralInfo(HttpServletRequest header, @RequestBody TeacherGeneralInfoDTO teacherGeneralInfoDTO) {
+    public BaseResponse updateGeneralInfo(HttpServletRequest header, @RequestBody TeacherGeneralInfoDTO teacherGeneralInfoDTO) {
         BaseResponse response = new BaseResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
@@ -1941,7 +1941,7 @@ public class ElsRestController {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("دسترسی موردنظر یافت نشد");
         }
-        return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+        return response;
     }
 
     @GetMapping("/educationLevelList")
