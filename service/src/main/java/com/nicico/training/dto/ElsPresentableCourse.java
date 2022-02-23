@@ -15,4 +15,5 @@ public class ElsPresentableCourse {
     private List<Long> categoryIds;
     private List<Long> subCategoryIds;
 
+
 }

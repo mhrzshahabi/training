@@ -341,8 +341,8 @@ public class CourseService implements ICourseService {
     }
 
     @Override
-    public List<Course> getCoursesViaCategoryAndSubCategory(Long categoryId, Long subCategoryId) {
-     return    courseDAO.findAllByCategoryIdAndSubCategoryId(categoryId,subCategoryId);
+    public List<Course> getCoursesViaCategoryAndSubCategory(ElsCatAndSub elsCatAndSub) {
+        return     courseDAO.findAllByCategoryIdAndSubCategoryId(elsCatAndSub.getCategories(),elsCatAndSub.getSubCategories());
     }
 
 

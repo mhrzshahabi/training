@@ -30,11 +30,9 @@ public abstract class CourseMapper {
     @Transactional
     public ElsCourseDTO toCourseDTO(Course course){
         ElsCourseDTO elsCourseDTO=new ElsCourseDTO();
-        List<Long> goalsIds=new ArrayList<>();
+
         List<String> syllablesList=new ArrayList<>();
-        if(course.getHasGoal()) {
-           goalsIds  = courseDAO.findAllGoalId(course.getId());
-        }
+       List<Long> goalsIds=courseDAO.findAllGoalId(course.getId());
        if(goalsIds!=null && goalsIds.size()>0){
            goalsIds.stream().forEach(goalId->{
                Goal goal=goalService.getById(goalId);

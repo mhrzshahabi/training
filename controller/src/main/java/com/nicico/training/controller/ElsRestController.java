@@ -151,6 +151,7 @@ public class ElsRestController {
     private final ITeacherPresentableCourseService teacherPresentableCourseService;
 
 
+
     @Value("${nicico.elsSmsUrl}")
     private String elsSmsUrl;
 
@@ -1900,4 +1901,50 @@ public class ElsRestController {
         }
     }
 
-}
+    /**
+<<<<<<< HEAD
+     *
+     * @param header
+     * @param categoryId
+     * @param subCategoryId
+     * @return this method return courseList with specific category-id & subcategory -id
+     */
+    @PostMapping("courseList/CategoryAndSubcategory")
+    public  List<CourseDTO.TupleInfo>  getCourseListViaCategoryAndSubCategory(HttpServletRequest header, @RequestParam ElsCatAndSub elsCatAndSub ){
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+         List<Course> courses=   courseService.getCoursesViaCategoryAndSubCategory(elsCatAndSub);
+             List<CourseDTO.TupleInfo> dtos=   courseBeanMapper.toCourseDTOTupleInfos(courses);
+             return dtos;
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    /**
+     *
+     * @param header
+     * @param courseId
+     * @return this methd return courseDetails via course-id;
+     */
+    @GetMapping("courseDetails/{courseId}")
+     public  ElsCourseDTO getCourseDetails(HttpServletRequest header,@PathVariable Long courseId) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            Course course = courseService.getCourse(courseId);
+            ElsCourseDTO dto = courseMapper.toCourseDTO(course);
+            return dto;
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+    @PostMapping("presentable-coureses")
+    public ElsPresentableResponse createPresentableCourse(HttpServletRequest header,@RequestBody ElsPresentableCourse elsPresentableCourse){
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            teacherPresentableCourseService.savePresentableCourse(elsPresentableCourse);
+                 return null;
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+        }

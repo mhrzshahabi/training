@@ -149,4 +149,7 @@ public interface CourseDAO extends NicicoRepository<Course> {
     @Query(value ="SELECT f_pre_course_id FROM tbl_pre_course where f_course_id= :courseId" ,nativeQuery = true)
     List<Long> findAllPreCourseId(Long courseId);
 
+    @Query(value = "SELECT * FROM tbl_course WHERE (category_id IN (:categories) AND subcategory_id IN (:subCategories))",nativeQuery = true)
+    List<Course> findAllByCategoryIdAndSubCategoryId(List<Long> categories,List<Long> subCategories);
+
 }

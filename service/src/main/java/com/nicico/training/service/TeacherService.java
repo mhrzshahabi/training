@@ -318,52 +318,7 @@ public class TeacherService implements ITeacherService {
         return teacherDAO.getTeacherFullName(teacherId);
     }
 
-    @Override
-    public BaseResponse saveElsTeacherGeneralInfo(Teacher teacher, TeacherGeneralInfoDTO teacherGeneralInfoDTO) {
-        BaseResponse baseResponse = new BaseResponse();
-        if (teacher != null) {
-            PersonalInfo teacherPersonalInfo = iPersonalInfoService.getPersonalInfo(teacher.getPersonalityId());
-            ContactInfo contactInfo = teacherPersonalInfo.getContactInfo();
-            if (teacherGeneralInfoDTO.getBirthDate() != null) {
-                long time = teacherGeneralInfoDTO.getBirthDate();
-                Date date = new Date(time);
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String birtDate = DateUtil.convertMiToKh(dateFormat.format(date));
-                teacherPersonalInfo.setBirthDate(birtDate);
-            }
-            if (teacherGeneralInfoDTO.getEmail() != null && teacherGeneralInfoDTO.getEmail() != "") {
 
-                if (checkEmailFormat(teacherGeneralInfoDTO.getEmail())) {
-                    contactInfo.setEmail(teacherGeneralInfoDTO.getEmail());
-                } else {
-                    baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                    baseResponse.setMessage("فرمت ایمیل نادرست است");
-                    return baseResponse;
-                }
-
-            }
-            if (teacherGeneralInfoDTO.getIban() != null && teacherGeneralInfoDTO.getIban() != "") {
-                if (teacherGeneralInfoDTO.getIban().length() == 24 && teacherGeneralInfoDTO.getIban().matches("\\d+")) {
-                    teacher.setIban(teacherGeneralInfoDTO.getIban());
-                } else {
-                    baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                    baseResponse.setMessage("مقداز شماره شبا باید دارای ۲۴ رقم و بصورت عددی بدون IR وارد کنید");
-                    return baseResponse;
-                }
-            }
-            if (teacherGeneralInfoDTO.getTeachingBackground() != null) {
-                teacher.setTeachingBackground(teacherGeneralInfoDTO.getTeachingBackground());
-            }
-            teacherPersonalInfo.setContactInfo(contactInfo);
-            teacher.setPersonality(teacherPersonalInfo);
-            teacherDAO.save(teacher);
-            baseResponse.setStatus(200);
-        } else {
-            baseResponse.setStatus(HttpStatus.NO_CONTENT.value());
-            baseResponse.setMessage("استادی با این اطلاعات یافت نشد");
-        }
-        return baseResponse;
-    }
 
     //--------------------------Teacher Basic Evaluation ---------------------------------------------------------------
     @Override
