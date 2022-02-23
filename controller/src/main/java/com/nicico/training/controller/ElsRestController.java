@@ -4,6 +4,7 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
@@ -16,11 +17,13 @@ import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
+import com.nicico.training.mapper.academicBK.AcademicBKBeanMapper;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.mapper.course.CourseMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
+import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
 import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.model.*;
@@ -30,6 +33,7 @@ import dto.evaluuation.EvalTargetUser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
@@ -41,6 +45,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import request.academicBK.ElsAcademicBKReqDto;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
 import request.evaluation.ElsUserEvaluationListResponseDto;
 import request.evaluation.StudentEvaluationAnswerDto;
@@ -48,6 +53,7 @@ import request.evaluation.TeacherEvaluationAnswerDto;
 import request.exam.*;
 import response.BaseResponse;
 import response.PaginationDto;
+import response.academicBK.*;
 import response.attendance.AttendanceListSaveResponse;
 import response.evaluation.ElsEvaluationsListResponse;
 import response.evaluation.EvalListResponse;
@@ -70,6 +76,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -97,6 +104,7 @@ public class ElsRestController {
     private final SubcategoryService subcategoryService;
     private final ITclassService iTclassService;
     private final PersonalInfoService personalInfoService;
+    private final IPersonalInfoService iPersonalInfoService;
     private final ElsClient client;
     private final MinIoClient client2;
     private final TestQuestionService testQuestionService;
@@ -125,11 +133,18 @@ public class ElsRestController {
     private final IRequestService iRequestService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final ISelfDeclarationService iSelfDeclarationService;
+    private final IEducationLevelService iEducationLevelService;
+    private final IEducationMajorService iEducationMajorService;
+    private final IEducationOrientationService iEducationOrientationService;
+    private final IAcademicBKService iAcademicBKService;
+    private final AcademicBKBeanMapper academicBKBeanMapper;
     private final ObjectMapper objectMapper;
     private final TeacherCertificationMapper teacherCertificationMapper;
     private final ITeacherCertificationService teacherCertificationService;
     private final ITeacherSuggestedService teacherSuggestedService;
     private final TeacherSuggestedCourseMapper teacherSuggestedCourseMapper;
+    private final TeacherBeanMapper teacherBeanMapper;
+    private final IParameterService iParameterService;
     private final ICourseService courseService;
     private final CourseBeanMapper courseBeanMapper;
     private final CourseMapper courseMapper;
@@ -1885,50 +1900,4 @@ public class ElsRestController {
         }
     }
 
-    /**
-     *
-     * @param header
-     * @param categoryId
-     * @param subCategoryId
-     * @return this method return courseList with specific category-id & subcategory -id
-     */
-    @GetMapping("courseList/CategoryAndSubcategory/{categoryId}/{subCategoryId}")
-    public  List<CourseDTO.TupleInfo>  getCourseListViaCategoryAndSubCategory(HttpServletRequest header, @PathVariable Long categoryId,@PathVariable Long subCategoryId ){
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-         List<Course> courses=   courseService.getCoursesViaCategoryAndSubCategory(categoryId,subCategoryId);
-             List<CourseDTO.TupleInfo> dtos=   courseBeanMapper.toCourseDTOTupleInfos(courses);
-             return dtos;
-
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
-    }
-
-    /**
-     *
-     * @param header
-     * @param courseId
-     * @return this methd return courseDetails via course-id;
-     */
-    @GetMapping("courseDetails/{courseId}")
-     public  ElsCourseDTO getCourseDetails(HttpServletRequest header,@PathVariable Long courseId)  {
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-          Course course= courseService.getCourse(courseId);
-                 ElsCourseDTO dto= courseMapper.toCourseDTO(course);
-                 return dto;
-
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
-    }
-
-    @PostMapping("presentable-coureses")
-    public ElsPresentableCourse createPresentableCourse(HttpServletRequest header,@RequestBody ElsPresentableCourse elsPresentableCourse){
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-           teacherPresentableCourseService.savePresentableCourse(elsPresentableCourse);
-
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
-    }
 }

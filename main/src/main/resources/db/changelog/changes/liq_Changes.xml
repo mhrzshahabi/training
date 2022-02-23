@@ -3577,6 +3577,24 @@ WHERE
             </column>
         </addColumn>
     </changeSet>
+
+    <changeSet author="nick (generated)" id="1638772362566-772">
+        <addColumn tableName="tbl_teacher">
+            <column name="F_TEACHING_BACKGROUND" type="number(19, 0)"/>
+            <column name="C_IBAN" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-047">
+        <addColumn tableName="tbl_academic_bk">
+            <column name="f_parameter_value_university" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-048">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_university" baseTableName="tbl_academic_bk" constraintName="FK_ACADEMIC_BK_TO_PARAMETER_VALUE" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
     <changeSet  author="ZPakdaman" id="2799887766557-11">
         <createTable tableName="tbl_teacher_presentable_coursee">
             <column name="id" type="NUMBER(19, 0)">

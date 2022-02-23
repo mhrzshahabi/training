@@ -141,6 +141,11 @@ public class SubcategoryService implements ISubcategoryService {
         return subCategoryDAO.findAllWithTeacher(teacherId);
     }
 
+    @Override
+    public Subcategory getById(Long id) {
+        return subCategoryDAO.getById(id);
+    }
+
     @Transactional(readOnly = true)
     public List<ElsSubCategoryDto> getSubCategoriesForEls(Long categoryId) {
 

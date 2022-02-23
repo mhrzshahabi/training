@@ -2,16 +2,20 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.model.Category;
-import com.nicico.training.model.Subcategory;
-import com.nicico.training.model.Teacher;
+import com.nicico.training.dto.TeacherGeneralInfoDTO;
+import com.nicico.training.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 import response.teacher.dto.TeacherInCourseDto;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -74,4 +78,6 @@ public interface ITeacherService {
 
 
     String getTeacherFullName(Long teacherId);
+
+    BaseResponse saveElsTeacherGeneralInfo(Teacher teacher, TeacherGeneralInfoDTO teacherGeneralInfoDTO);
 }

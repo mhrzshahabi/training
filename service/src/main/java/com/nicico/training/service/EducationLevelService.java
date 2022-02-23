@@ -14,6 +14,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.academicBK.ElsEducationLevelDto;
 
 import java.util.List;
 import java.util.Optional;
@@ -96,7 +97,13 @@ public class EducationLevelService implements IEducationLevelService {
         return SearchUtil.search(educationLevelDAO, request, educationLevel -> modelMapper.map(educationLevel, EducationLevelDTO.Info.class));
     }
 
-    // ------------------------------
+    @Transactional(readOnly = true)
+    @Override
+    public List<ElsEducationLevelDto> elsEducationLevelList() {
+        final List<EducationLevel> gAll = educationLevelDAO.findAll();
+        return modelMapper.map(gAll, new TypeToken<List<ElsEducationLevelDto>>() {
+        }.getType());
+    }
 
     private EducationLevelDTO.Info save(EducationLevel educationLevel) {
         final EducationLevel saved = educationLevelDAO.saveAndFlush(educationLevel);
