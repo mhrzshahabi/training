@@ -20,8 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -103,11 +101,6 @@ public class SyllabusService implements ISyllabusService {
                             ));
         }
         return syllabusInfoTuples;
-    }
-
-    @Override
-    public Set<Syllabus> getByGoal(Long goalId) {
-        return syllabusDAO.findAllByGoalId(goalId).stream().collect(Collectors.toSet());
     }
 
     // ------------------------------

@@ -32,7 +32,6 @@ public interface ISubcategoryService {
     Set<Subcategory> getSubcategoriesByIds(List<Long> subCategoryIds);
 
     List<Long> findSubCategoriesByTeacher(Long teacherId);
-    Subcategory getById(Long id);
 
     List<String> findSubCategoryNamesByEmpHistoryId(Long empHistoryId);
 
