@@ -340,11 +340,6 @@ public class CourseService implements ICourseService {
         return SearchUtil.search(courseDAO, request, e -> modelMapper.map(e, infoType));
     }
 
-    @Override
-    public List<Course> getCoursesViaCategoryAndSubCategory(ElsCatAndSub elsCatAndSub) {
-        return     courseDAO.findAllByCategoryIdAndSubCategoryId(elsCatAndSub.getCategories(),elsCatAndSub.getSubCategories());
-    }
-
 
     //-------jafari--------
     @Transactional(readOnly = true)

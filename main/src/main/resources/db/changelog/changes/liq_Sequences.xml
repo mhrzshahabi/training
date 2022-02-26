@@ -331,8 +331,5 @@
     <changeSet id="2799887766557-10" author="ZPakdaman">
         <createSequence sequenceName="seq_teacher_suggested_course_id"/>
     </changeSet>
-    <changeSet id="2799887766557-12" author="ZPakdaman">
-        <createSequence sequenceName="seq_teacher_presentable_course_id"/>
-    </changeSet>
 
 </databaseChangeLog>
