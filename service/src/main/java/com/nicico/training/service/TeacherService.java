@@ -336,21 +336,25 @@ public class TeacherService implements ITeacherService {
                 long time = teacherGeneralInfoDTO.getBirthDate();
                 log.info(" epoch time from UI : {}", time);
 
-                LocalDate date =
-                        Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-                log.info("LocalDate : {}", date);
-
-                LocalDateTime atStartOfDay = date.atStartOfDay();
-                Date startOfDate = Timestamp.valueOf(atStartOfDay);
-                log.info("startOfDate : {}", startOfDate);
+//                LocalDate date =
+//                        Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+//                log.info("LocalDate : {}", date);
+//
+//                LocalDateTime atStartOfDay = date.atStartOfDay();
+//                Date startOfDate = Timestamp.valueOf(atStartOfDay);
+//                log.info("startOfDate : {}", startOfDate);
+                Date date = new Date(time);
+                log.info("date : {}", date);
                 Calendar calendar = Calendar.getInstance();
-                calendar.setTime(startOfDate);
+                calendar.setTime(date);
                 calendar.add(Calendar.HOUR_OF_DAY, 4);
                 calendar.add(Calendar.MINUTE, 30);
-                startOfDate = calendar.getTime();
+                date = calendar.getTime();
+                log.info("date after adding 4:30 : {}", date);
+
 
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-                String birtDate = DateUtil.convertMiToKh(dateFormat.format(startOfDate));
+                String birtDate = DateUtil.convertMiToKh(dateFormat.format(date));
                 log.info("birtDate string : {}", birtDate);
                 teacherPersonalInfo.setBirthDate(birtDate);
             }
