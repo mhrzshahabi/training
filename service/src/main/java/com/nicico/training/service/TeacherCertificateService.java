@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ElsTeacherCertification;
+import com.nicico.training.dto.ElsTeacherCertificationDate;
 import com.nicico.training.dto.TeacherCertificationBaseResponse;
 import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.iservice.ICategoryService;
@@ -146,6 +147,28 @@ public class TeacherCertificateService implements ITeacherCertificationService {
     @Override
     public List<TeacherCertification> findAllTeacherCertifications(Long teacherId) {
        return teacherCertificationDAO.findAllByTeacherId(teacherId);
+    }
+
+    @Override
+    public ElsTeacherCertificationDate getElsTeacherCertification(Long id) {
+        ElsTeacherCertificationDate response=new ElsTeacherCertificationDate();
+       Optional<TeacherCertification> optional=teacherCertificationDAO.findById(id);
+       if(optional.isPresent()){
+           response.setId(optional.get().getId());
+           response.setCompanyName(optional.get().getCompanyName());
+           response.setCertification(optional.get().getCourseTitle());
+           response.setCertification(optional.get().getCertificationStatusDetail());
+           response.setCertificationStatus(optional.get().getCertificationStatus());
+           response.setCourseDate(optional.get().getStartDate());
+           response.setStatus(200);
+           response.setMessage("successfully get");
+
+
+       }else{
+           response.setStatus(406);
+           response.setMessage("get failed!");
+       }
+       return response;
     }
 
     private String convertToPersianDate(Date _date) {

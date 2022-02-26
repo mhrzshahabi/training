@@ -1759,6 +1759,21 @@ public class ElsRestController {
         }
 
     }
+    @GetMapping("passed-courses/getById/{id}")
+    public ElsTeacherCertificationDate getById(HttpServletRequest header,@PathVariable Long id) {
+
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+         ElsTeacherCertificationDate response= teacherCertificationService.getElsTeacherCertification(id);
+         return response;
+
+
+
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
+    }
+
 
     /**
      *
