@@ -62,4 +62,11 @@ public class TeachingHistory extends Auditable {
 
     @Column(name = "c_company_name")
     private String companyName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_parameter_value_students_level", insertable = false, updatable = false)
+    private ParameterValue studentsLevel;
+
+    @Column(name = "f_parameter_value_students_level")
+    private Long studentsLevelId;
 }

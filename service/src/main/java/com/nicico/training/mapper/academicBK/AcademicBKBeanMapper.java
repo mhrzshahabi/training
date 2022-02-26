@@ -1,7 +1,6 @@
 package com.nicico.training.mapper.academicBK;
 
 import com.nicico.training.dto.AcademicBKDTO;
-import com.nicico.training.iservice.IFileLabelService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.AcademicBK;
 import com.nicico.training.utility.persianDate.PersianDate;
@@ -20,9 +19,6 @@ import java.util.List;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public abstract class AcademicBKBeanMapper {
-
-    @Autowired
-    protected IFileLabelService iFileLabelService;
 
     @Autowired
     protected ITeacherService teacherService;

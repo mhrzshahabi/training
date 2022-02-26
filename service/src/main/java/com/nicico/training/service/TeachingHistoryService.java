@@ -7,6 +7,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TeachingHistoryDTO;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.iservice.ITeachingHistoryService;
+import com.nicico.training.mapper.teachingHistory.TeachingHistoryBeanMapper;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.model.TeachingHistory;
 import com.nicico.training.repository.TeachingHistoryDAO;
@@ -16,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.teachingHistory.ElsTeachingHistoryFindAllRespDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +28,9 @@ import java.util.Optional;
 public class TeachingHistoryService implements ITeachingHistoryService {
 
     private final ModelMapper modelMapper;
-    private final TeachingHistoryDAO teachingHistoryDAO;
     private final ITeacherService teacherService;
+    private final TeachingHistoryDAO teachingHistoryDAO;
+    private final TeachingHistoryBeanMapper teachingHistoryBeanMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -57,12 +60,13 @@ public class TeachingHistoryService implements ITeachingHistoryService {
 
     @Transactional
     @Override
-    public void addTeachingHistory(TeachingHistoryDTO.Create request, Long teacherId) {
+    public TeachingHistoryDTO.Info addTeachingHistory(TeachingHistoryDTO.Create request, Long teacherId) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        TeachingHistory teachingHistory = new TeachingHistory();
-        modelMapper.map(request, teachingHistory);
+        TeachingHistory teachingHistory = modelMapper.map(request, TeachingHistory.class);
+        TeachingHistoryDTO.Info info = save(teachingHistory);
         try {
             teacher.getTeachingHistories().add(teachingHistory);
+            return info;
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -84,6 +88,12 @@ public class TeachingHistoryService implements ITeachingHistoryService {
         }
     }
 
+    @Override
+    public List<ElsTeachingHistoryFindAllRespDto> findTeachingHistoriesByNationalCode(String nationalCode) {
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        List<TeachingHistory> teachingHistoryList = teachingHistoryDAO.findAllByTeacherId(teacherId);
+        return teachingHistoryBeanMapper.teachHistoryListToElsFindRespList(teachingHistoryList);
+    }
 
     @Transactional(readOnly = true)
     @Override

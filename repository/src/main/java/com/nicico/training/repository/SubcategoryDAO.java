@@ -22,4 +22,11 @@ public interface SubcategoryDAO extends JpaRepository<Subcategory, Long>, JpaSpe
             "WHERE\n" +
             "    emp.id =:empHistoryId",nativeQuery = true)
     List<String> findSubCategoryNamesByEmpHistoryId(Long empHistoryId);
+
+    @Query(value = "SELECT sub.c_title_fa FROM tbl_teaching_history teach\n" +
+            "    LEFT JOIN tbl_teaching_history_subcategory teachsub ON teach.id = teachsub.f_teaching_history\n" +
+            "    LEFT JOIN tbl_sub_category sub ON sub.id = teachsub.f_subcategory\n" +
+            "WHERE\n" +
+            "    teach.id =:teachHistoryId",nativeQuery = true)
+    List<String> findSubCategoryNamesByTeachHistoryId(Long teachHistoryId);
 }
