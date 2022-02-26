@@ -37,6 +37,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import java.util.Calendar;
 
 import static com.nicico.training.utility.persianDate.MyUtils.checkEmailFormat;
 
@@ -329,12 +330,17 @@ public class TeacherService implements ITeacherService {
         if (teacher != null) {
             PersonalInfo teacherPersonalInfo = iPersonalInfoService.getPersonalInfo(teacher.getPersonalityId());
             ContactInfo contactInfo = teacherPersonalInfo.getContactInfo();
-            if (teacherGeneralInfoDTO.getBirthDate() != null && teacherGeneralInfoDTO.getBirthDate() != 0 ) {
+            if (teacherGeneralInfoDTO.getBirthDate() != null && teacherGeneralInfoDTO.getBirthDate() != 0) {
                 long time = teacherGeneralInfoDTO.getBirthDate();
                 LocalDate date =
                         Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
                 LocalDateTime atStartOfDay = date.atStartOfDay();
                 Date startOfDate = Timestamp.valueOf(atStartOfDay);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(startOfDate);
+                calendar.add(Calendar.HOUR_OF_DAY, 4);
+                calendar.add(Calendar.MINUTE, 30);
+                startOfDate = calendar.getTime();
 
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String birtDate = DateUtil.convertMiToKh(dateFormat.format(startOfDate));
@@ -350,6 +356,8 @@ public class TeacherService implements ITeacherService {
                     return baseResponse;
                 }
 
+            } else {
+                contactInfo.setEmail(null);
             }
             if (teacherGeneralInfoDTO.getIban() != null && teacherGeneralInfoDTO.getIban() != "") {
                 if (teacherGeneralInfoDTO.getIban().length() == 24 && teacherGeneralInfoDTO.getIban().matches("\\d+")) {
@@ -359,10 +367,10 @@ public class TeacherService implements ITeacherService {
                     baseResponse.setMessage("مقداز شماره شبا باید دارای ۲۴ رقم و بصورت عددی بدون IR وارد کنید");
                     return baseResponse;
                 }
+            } else {
+                teacher.setIban(null);
             }
-            if (teacherGeneralInfoDTO.getTeachingBackground() != null) {
-                teacher.setTeachingBackground(teacherGeneralInfoDTO.getTeachingBackground());
-            }
+            teacher.setTeachingBackground(teacherGeneralInfoDTO.getTeachingBackground());
             teacherPersonalInfo.setContactInfo(contactInfo);
             teacher.setPersonality(teacherPersonalInfo);
             teacherDAO.save(teacher);
