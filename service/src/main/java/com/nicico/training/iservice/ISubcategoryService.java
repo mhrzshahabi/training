@@ -36,4 +36,6 @@ public interface ISubcategoryService {
 
     List<String> findSubCategoryNamesByEmpHistoryId(Long empHistoryId);
 
+    List<String> findSubCategoryNamesByTeachHistoryId(Long teachHistoryId);
+
 }

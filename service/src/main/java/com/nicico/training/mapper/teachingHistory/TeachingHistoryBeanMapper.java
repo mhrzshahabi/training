@@ -1,28 +1,25 @@
-package com.nicico.training.mapper.employmentHistory;
+package com.nicico.training.mapper.teachingHistory;
 
-import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.EmploymentHistoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
+import com.nicico.training.dto.TeachingHistoryDTO;
 import com.nicico.training.iservice.*;
-import com.nicico.training.model.EmploymentHistory;
-import com.nicico.training.model.ParameterValue;
+import com.nicico.training.model.TeachingHistory;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
-import request.employmentHistory.ElsEmploymentHistoryReqDto;
-import response.employmentHistory.ElsEmploymentHistoryFindAllRespDto;
-import response.employmentHistory.ElsEmploymentHistoryRespDto;
+import request.teachingHistory.ElsTeachingHistoryReqDto;
+import response.teachingHistory.ElsTeachingHistoryFindAllRespDto;
+import response.teachingHistory.ElsTeachingHistoryRespDto;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
-public abstract class EmploymentHistoryBeanMapper {
+public abstract class TeachingHistoryBeanMapper {
 
     @Autowired
     protected ITeacherService iTeacherService;
@@ -33,29 +30,25 @@ public abstract class EmploymentHistoryBeanMapper {
     @Autowired
     protected ISubcategoryService iSubcategoryService;
 
-    @Autowired
-    protected IParameterValueService iParameterValueService;
+    @Mapping(source = "categoryIds", target = "categories", qualifiedByName = "toCategoryInfos")
+    @Mapping(source = "subCategoryIds", target = "subCategories", qualifiedByName = "toSubCategoryInfos")
+    @Mapping(source = "teacherNationalCode", target = "teacherId", qualifiedByName = "nationalCodeToTeacherId")
+    public abstract TeachingHistoryDTO.Create elsTeachHistoryReqToTeachHistoryCreate(ElsTeachingHistoryReqDto elsTeachingHistoryReqDto);
 
     @Mapping(source = "categoryIds", target = "categories", qualifiedByName = "toCategoryInfos")
     @Mapping(source = "subCategoryIds", target = "subCategories", qualifiedByName = "toSubCategoryInfos")
     @Mapping(source = "teacherNationalCode", target = "teacherId", qualifiedByName = "nationalCodeToTeacherId")
-    public abstract EmploymentHistoryDTO.Create elsEmpHistoryReqToEmpHistoryCreate(ElsEmploymentHistoryReqDto elsEmploymentHistoryReqDto);
-
-    @Mapping(source = "categoryIds", target = "categories", qualifiedByName = "toCategoryInfos")
-    @Mapping(source = "subCategoryIds", target = "subCategories", qualifiedByName = "toSubCategoryInfos")
-    @Mapping(source = "teacherNationalCode", target = "teacherId", qualifiedByName = "nationalCodeToTeacherId")
-    public abstract EmploymentHistoryDTO.Update elsEmpHistoryReqToEmpHistoryUpdate(ElsEmploymentHistoryReqDto elsEmploymentHistoryReqDto);
+    public abstract TeachingHistoryDTO.Update elsTeachHistoryReqToTeachHistoryUpdate(ElsTeachingHistoryReqDto elsTeachingHistoryReqDto);
 
     @Mapping(source = "categories", target = "categoryIds", qualifiedByName = "toCategoryIds")
     @Mapping(source = "subCategories", target = "subCategoryIds", qualifiedByName = "toSubCategoryIds")
-    public abstract ElsEmploymentHistoryRespDto empHistoryInfoToElsHistoryResp(EmploymentHistoryDTO.Info employmentHistoryDTO);
+    public abstract ElsTeachingHistoryRespDto teachHistoryInfoToElsHistoryResp(TeachingHistoryDTO.Info teachingHistoryDTO);
 
     @Mapping(source = "id", target = "categories", qualifiedByName = "toCategoryNames")
     @Mapping(source = "id", target = "subCategories", qualifiedByName = "toSubCategoryNames")
-    @Mapping(source = "collaborationTypeId", target = "collaborationType", qualifiedByName = "toCollaborationTypeTitle")
-    public abstract ElsEmploymentHistoryFindAllRespDto empHistoryToElsFindResp(EmploymentHistory employmentHistory);
+    public abstract ElsTeachingHistoryFindAllRespDto teachHistoryToElsFindResp(TeachingHistory teachingHistory);
 
-    public abstract List<ElsEmploymentHistoryFindAllRespDto> empHistoryListToElsFindRespList(List<EmploymentHistory> employmentHistoryList);
+    public abstract List<ElsTeachingHistoryFindAllRespDto> teachHistoryListToElsFindRespList(List<TeachingHistory> employmentHistoryList);
 
     @Named("toCategoryInfos")
     List<CategoryDTO.Info> toCategoryInfos(List<Long> categoryIds) {
@@ -91,23 +84,13 @@ public abstract class EmploymentHistoryBeanMapper {
     }
 
     @Named("toCategoryNames")
-    List<String> toCategoryNames(Long empHistoryId) {
-        return iCategoryService.findCategoryNamesByEmpHistoryId(empHistoryId);
+    List<String> toCategoryNames(Long teachHistoryId) {
+        return iCategoryService.findCategoryNamesByTeachHistoryId(teachHistoryId);
     }
 
     @Named("toSubCategoryNames")
-    List<String> toSubCategoryNames(Long empHistoryId) {
-        return iSubcategoryService.findSubCategoryNamesByEmpHistoryId(empHistoryId);
-    }
-
-    @Named("toCollaborationTypeTitle")
-    String toCollaborationTypeTitle(Long collaborationTypeId) {
-        if (collaborationTypeId != null) {
-            Optional<ParameterValue> parameterValue = iParameterValueService.findById(collaborationTypeId);
-            ParameterValue collaborationType = parameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-            return collaborationType.getTitle();
-        } else
-            return null;
+    List<String> toSubCategoryNames(Long teachHistoryId) {
+        return iSubcategoryService.findSubCategoryNamesByTeachHistoryId(teachHistoryId);
     }
 
 }

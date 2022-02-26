@@ -157,6 +157,11 @@ public class CategoryService implements ICategoryService {
         return categoryDAO.findCategoryNamesByEmpHistoryId(empHistoryId);
     }
 
+    @Override
+    public List<String> findCategoryNamesByTeachHistoryId(Long teachHistoryId) {
+        return categoryDAO.findCategoryNamesByTeachHistoryId(teachHistoryId);
+    }
+
     @Transactional(readOnly = true)
     public List<ElsCategoryDto> getCategoriesForEls() {
 

@@ -27,6 +27,7 @@
             {name: "subCategories"},
             {name: "categoriesIds", filterOperator: "inSet"},
             {name: "subCategoriesIds", filterOperator: "inSet"},
+            {name: "studentsLevel.title"},
             {name: "startDate"},
             {name: "endDate"},
             {name: "companyName", filterOperator: "iContains"}
@@ -46,6 +47,15 @@
     RestDataSource_EducationLevel_JspTeachingHistory = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: educationLevelUrl + "spec-list-by-id"
+    });
+
+    RestDataSource_Students_Level_JspTeachingHistory = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/StudentsLevel"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -165,6 +175,24 @@
                         }
                         this.fetchData();
                     }
+                }
+            },
+            {
+                name: "studentsLevelId",
+                editorType: "ComboBoxItem",
+                title: "سطح فراگیران",
+                optionDataSource: RestDataSource_Students_Level_JspTeachingHistory,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
                 }
             },
             {
@@ -434,6 +462,10 @@
                         {name: "titleFa"}
                     ]
                 }
+            },
+            {
+                name: "studentsLevel.title",
+                title: "سطح فراگیران"
             },
             {
                 name: "duration",

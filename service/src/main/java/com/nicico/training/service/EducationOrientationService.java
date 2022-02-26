@@ -148,4 +148,11 @@ public class EducationOrientationService implements IEducationOrientationService
         return elsEducationOrientationDtoList;
     }
 
+    @Override
+    public ElsEducationOrientationDto elsEducationOrientation(Long id) {
+        final Optional<EducationOrientation> gById = educationOrientationDAO.findById(id);
+        final EducationOrientation EducationOrientation = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationOrientationNotFound));
+        return modelMapper.map(EducationOrientation, ElsEducationOrientationDto.class);
+    }
+
 }
