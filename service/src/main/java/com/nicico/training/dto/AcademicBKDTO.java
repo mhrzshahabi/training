@@ -27,6 +27,8 @@ public class AcademicBKDTO {
     private String academicGrade;
     private String collageName;
     private Long teacherId;
+    private Long universityId;
+
 
     @Getter
     @Setter
@@ -38,6 +40,7 @@ public class AcademicBKDTO {
         private EducationLevelDTO.Info educationLevel;
         private EducationMajorDTO.Info educationMajor;
         private EducationOrientationDTO.Info educationOrientation;
+        private ParameterValueDTO.TupleInfo university;
     }
 
     @Getter

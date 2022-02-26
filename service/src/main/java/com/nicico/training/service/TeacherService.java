@@ -15,6 +15,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,10 +29,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 import response.teacher.dto.TeacherInCourseDto;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Calendar;
 
 import static com.nicico.training.utility.persianDate.MyUtils.checkEmailFormat;
 
@@ -318,7 +319,59 @@ public class TeacherService implements ITeacherService {
         return teacherDAO.getTeacherFullName(teacherId);
     }
 
+    @Override
+    public BaseResponse saveElsTeacherGeneralInfo(Teacher teacher, TeacherGeneralInfoDTO teacherGeneralInfoDTO) {
+        BaseResponse baseResponse = new BaseResponse();
+        if (teacher != null) {
+            PersonalInfo teacherPersonalInfo = iPersonalInfoService.getPersonalInfo(teacher.getPersonalityId());
+            ContactInfo contactInfo = teacherPersonalInfo.getContactInfo();
+            if (teacherGeneralInfoDTO.getBirthDate() != null && teacherGeneralInfoDTO.getBirthDate() != 0) {
+                long time = teacherGeneralInfoDTO.getBirthDate();
+                Date date = new Date(time);
+                Calendar calendar = Calendar.getInstance();
+                calendar.setTime(date);
+                calendar.add(Calendar.HOUR_OF_DAY, 4);
+                calendar.add(Calendar.MINUTE, 30);
+                date = calendar.getTime();
+                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                String birtDate = DateUtil.convertMiToKh(dateFormat.format(date));
+                teacherPersonalInfo.setBirthDate(birtDate);
+            }
+            if (teacherGeneralInfoDTO.getEmail() != null && teacherGeneralInfoDTO.getEmail() != "") {
 
+                if (checkEmailFormat(teacherGeneralInfoDTO.getEmail())) {
+                    contactInfo.setEmail(teacherGeneralInfoDTO.getEmail());
+                } else {
+                    baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    baseResponse.setMessage("فرمت ایمیل نادرست است");
+                    return baseResponse;
+                }
+
+            } else {
+                contactInfo.setEmail(null);
+            }
+            if (teacherGeneralInfoDTO.getIban() != null && teacherGeneralInfoDTO.getIban() != "") {
+                if (teacherGeneralInfoDTO.getIban().length() == 24 && teacherGeneralInfoDTO.getIban().matches("\\d+")) {
+                    teacher.setIban(teacherGeneralInfoDTO.getIban());
+                } else {
+                    baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    baseResponse.setMessage("مقداز شماره شبا باید دارای ۲۴ رقم و بصورت عددی بدون IR وارد کنید");
+                    return baseResponse;
+                }
+            } else {
+                teacher.setIban(null);
+            }
+            teacher.setTeachingBackground(teacherGeneralInfoDTO.getTeachingBackground());
+            teacherPersonalInfo.setContactInfo(contactInfo);
+            teacher.setPersonality(teacherPersonalInfo);
+            teacherDAO.save(teacher);
+            baseResponse.setStatus(200);
+        } else {
+            baseResponse.setStatus(HttpStatus.NO_CONTENT.value());
+            baseResponse.setMessage("استادی با این اطلاعات یافت نشد");
+        }
+        return baseResponse;
+    }
 
     //--------------------------Teacher Basic Evaluation ---------------------------------------------------------------
     @Override

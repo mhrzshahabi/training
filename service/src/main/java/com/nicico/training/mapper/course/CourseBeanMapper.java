@@ -1,6 +1,5 @@
 package com.nicico.training.mapper.course;
 
-import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.model.Course;
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
@@ -32,10 +31,6 @@ public interface CourseBeanMapper {
     @Mapping(source = "issueTitle", target = "needText")
     @Mapping(source = "mainSkills", target = "skillMainObjectiveSet", ignore = true)
     Course updateCourse (CourseUpdateRequest request, @MappingTarget Course course);
-
-
-    CourseDTO.TupleInfo toCourseDTOTupleInfo(Course course);
-    List<CourseDTO.TupleInfo>  toCourseDTOTupleInfos(List<Course> courses);
 
     default List<CourseDto> toCourseDtoList(List<Course> courseList) {
         return courseList.stream().map(this::toCourseDto).collect(Collectors.toList());

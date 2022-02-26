@@ -42,6 +42,4 @@ public interface IGoalService {
     @Transactional
     SearchDTO.SearchRs<GoalDTO.Info> getGoalsByCategory(SearchDTO.SearchRq request, Long categoryID);
 
-    Goal getById(Long id);
-
 }
