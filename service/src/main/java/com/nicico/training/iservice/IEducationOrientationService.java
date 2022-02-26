@@ -26,4 +26,6 @@ public interface IEducationOrientationService {
 
     List<ElsEducationOrientationDto> elsEducationOrientationList(Long levelId, Long majorId);
 
+    ElsEducationOrientationDto elsEducationOrientation(Long id);
+
 }

@@ -105,6 +105,14 @@ public class EducationLevelService implements IEducationLevelService {
         }.getType());
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public ElsEducationLevelDto elsEducationLevel(Long id) {
+        final Optional<EducationLevel> gById = educationLevelDAO.findById(id);
+        final EducationLevel educationLevel = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
+        return modelMapper.map(educationLevel, ElsEducationLevelDto.class);
+    }
+
     private EducationLevelDTO.Info save(EducationLevel educationLevel) {
         final EducationLevel saved = educationLevelDAO.saveAndFlush(educationLevel);
         return modelMapper.map(saved, EducationLevelDTO.Info.class);

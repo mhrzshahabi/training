@@ -1951,6 +1951,7 @@ public class ElsRestController {
         return response;
     }
 
+    //-----------------------------------------
     @GetMapping("/educationLevelList")
     List<ElsEducationLevelDto> getEducationLevelList(HttpServletRequest header) {
 
@@ -2066,6 +2067,15 @@ public class ElsRestController {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 
+    @GetMapping("/academicBK/find-by/{id}")
+    ElsAcademicBKRespDto findAcademicBKById(/*@RequestHeader(name = "X-Auth-Token") String header, */@PathVariable Long id) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header))
+        AcademicBKDTO.Info info = iAcademicBKService.get(id);
+        return academicBKBeanMapper.academicBKInfoToElsAcademicBKRes(info);
+//        else
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+    }
+
     @GetMapping("/academicBK/{nationalCode}")
     List<ElsAcademicBKFindAllRespDto> findAcademicBKsByTeacherNationalCode(/*@RequestHeader(name = "X-Auth-Token") String header, */@PathVariable String nationalCode) {
 //        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header))
@@ -2129,6 +2139,15 @@ public class ElsRestController {
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
     }
 
+    @GetMapping("/employment-history/find-by/{id}")
+    ElsEmploymentHistoryRespDto findEmploymentHistoryById(/*@RequestHeader(name = "X-Auth-Token") String header, */@PathVariable Long id) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header))
+        EmploymentHistoryDTO.Info info = iEmploymentHistoryService.get(id);
+        return employmentHistoryBeanMapper.empHistoryInfoToElsHistoryResp(info);
+//        else
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+    }
+
     @GetMapping("/employment-history/{nationalCode}")
     List<ElsEmploymentHistoryFindAllRespDto> findEmploymentHistoriesByTeacherNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token")))
@@ -2190,6 +2209,15 @@ public class ElsRestController {
             return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
         } else
             return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/teaching-history/find-by/{id}")
+    ElsTeachingHistoryRespDto findTeachingHistoryById(/*@RequestHeader(name = "X-Auth-Token") String header, */@PathVariable Long id) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header))
+        TeachingHistoryDTO.Info info = iTeachingHistoryService.get(id);
+        return teachingHistoryBeanMapper.teachHistoryInfoToElsHistoryResp(info);
+//        else
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
     }
 
     @GetMapping("/teaching-history/{nationalCode}")
