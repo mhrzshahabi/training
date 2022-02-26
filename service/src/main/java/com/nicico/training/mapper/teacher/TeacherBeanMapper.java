@@ -1,6 +1,5 @@
 package com.nicico.training.mapper.teacher;
 
-import com.nicico.training.dto.ElsTeacherInfoDto;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.TeacherInfoDTO;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
@@ -12,12 +11,9 @@ import org.mapstruct.*;
 import response.teacher.dto.TeacherInCourseDto;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-
-import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN,uses = {TclassBeanMapper.class})
 public interface TeacherBeanMapper {
@@ -69,27 +65,5 @@ public interface TeacherBeanMapper {
       return categories;
     }
 
-    @Mappings({
-            @Mapping(target = "id", source = "id"),
-            @Mapping(target = "firstName", source = "personality.firstNameFa"),
-            @Mapping(target = "lastName", source = "personality.lastNameFa"),
-            @Mapping(target = "fatherName", source = "personality.fatherName"),
-            @Mapping(target = "nationalCode", source = "personality.nationalCode"),
-            @Mapping(target = "birthDate", source = "personality.birthDate", qualifiedByName = "getBirthDate"),
-            @Mapping(target = "mobileNumber", source = "personality.contactInfo.mobile"),
-            @Mapping(target = "teachingBackground", source = "teachingBackground"),
-            @Mapping(target = "iban", source = "iban"),
-            @Mapping(target = "email", source = "personality.contactInfo.email"),
-    })
-    ElsTeacherInfoDto toElsTeacherInfoDto(Teacher teacher);
 
-    @Named("getBirthDate")
-    default Long getBirthDate(String birthDate) {
-        if (birthDate != null) {
-            Date date = getEpochDate(birthDate, "04:30");
-            return (date.getTime() * 1000);
-        } else {
-            return null;
-        }
-    }
 }

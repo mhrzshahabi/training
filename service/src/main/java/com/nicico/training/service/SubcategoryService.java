@@ -137,6 +137,11 @@ public class SubcategoryService implements ISubcategoryService {
     }
 
     @Override
+    public Subcategory getById(Long id) {
+        return subCategoryDAO.getById(id);
+    }
+
+    @Override
     public List<String> findSubCategoryNamesByEmpHistoryId(Long empHistoryId) {
         return subCategoryDAO.findSubCategoryNamesByEmpHistoryId(empHistoryId);
     }

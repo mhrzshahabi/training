@@ -6,7 +6,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.dto.TeacherGeneralInfoDTO;
+
 import com.nicico.training.model.*;
 import org.springframework.data.domain.Page;
 import org.springframework.transaction.annotation.Transactional;
@@ -79,5 +79,5 @@ public interface ITeacherService {
 
     String getTeacherFullName(Long teacherId);
 
-    BaseResponse saveElsTeacherGeneralInfo(Teacher teacher, TeacherGeneralInfoDTO teacherGeneralInfoDTO);
+
 }
