@@ -20,4 +20,11 @@ public interface CategoryDAO extends JpaRepository<Category, Long>, JpaSpecifica
             "WHERE\n" +
             "    emp.id =:empHistoryId",nativeQuery = true)
     List<String> findCategoryNamesByEmpHistoryId(Long empHistoryId);
+
+    @Query(value = "SELECT ca.c_title_fa FROM tbl_teaching_history teach\n" +
+            "    LEFT JOIN tbl_teaching_history_category teachsub ON teach.id = teachsub.f_teaching_history\n" +
+            "    LEFT JOIN tbl_category ca ON ca.id = teachsub.f_category\n" +
+            "WHERE\n" +
+            "    teach.id =:teachHistoryId",nativeQuery = true)
+    List<String> findCategoryNamesByTeachHistoryId(Long teachHistoryId);
 }

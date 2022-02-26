@@ -125,7 +125,12 @@ public class EducationMajorService implements IEducationMajorService {
         }.getType());
     }
 
-    // ------------------------------
+    @Override
+    public ElsEducationMajorDto elsEducationMajor(Long id) {
+        final Optional<EducationMajor> gById = educationMajorDAO.findById(id);
+        final EducationMajor educationMajor = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationMajorNotFound));
+        return modelMapper.map(educationMajor, ElsEducationMajorDto.class);
+    }
 
     private EducationMajorDTO.Info save(EducationMajor educationMajor) {
         final EducationMajor saved = educationMajorDAO.saveAndFlush(educationMajor);

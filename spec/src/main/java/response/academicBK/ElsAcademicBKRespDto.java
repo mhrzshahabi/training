@@ -14,10 +14,14 @@ public class ElsAcademicBKRespDto extends BaseResponse {
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long educationLevelId;
+    private ElsEducationLevelDto educationLevel;
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long educationMajorId;
+    private ElsEducationMajorDto educationMajor;
     private Long educationOrientationId;
+    private ElsEducationOrientationDto educationOrientation;
     private Long universityId;
+    private ElsUniversityDto university;
     private Long date;
 }

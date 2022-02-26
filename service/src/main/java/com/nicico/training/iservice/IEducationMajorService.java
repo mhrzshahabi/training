@@ -27,4 +27,6 @@ public interface IEducationMajorService {
 
     List<ElsEducationMajorDto> elsEducationMajorList();
 
+    ElsEducationMajorDto elsEducationMajor(Long id);
+
 }

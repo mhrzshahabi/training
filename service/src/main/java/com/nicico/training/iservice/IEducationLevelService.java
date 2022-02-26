@@ -24,4 +24,6 @@ public interface IEducationLevelService {
 
     List<ElsEducationLevelDto> elsEducationLevelList();
 
+    ElsEducationLevelDto elsEducationLevel(Long id);
+
 }

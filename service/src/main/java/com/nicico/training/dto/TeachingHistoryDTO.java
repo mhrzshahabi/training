@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 public class TeachingHistoryDTO {
     private String courseTitle;
     private Long educationLevelId;
+    private Long studentsLevelId;
     private Integer duration;
     private String startDate;
     private String endDate;
@@ -32,6 +33,7 @@ public class TeachingHistoryDTO {
         private List<CategoryDTO.CategoryInfoTuple> categories;
         private List<SubcategoryDTO.SubCategoryInfoTuple> subCategories;
         private EducationLevelDTO.Info educationLevel;
+        private ParameterValueDTO.TupleInfo studentsLevel;
 
         public List<Long> getCategoriesIds() {
             if (categories == null)
