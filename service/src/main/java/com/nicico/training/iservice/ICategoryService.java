@@ -1,8 +1,4 @@
-package com.nicico.training.iservice;/* com.nicico.training.iservice
-@Author:jafari-h
-@Date:6/2/2019
-@Time:1:30 PM
-*/
+package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
@@ -14,6 +10,7 @@ import java.util.Set;
 import java.util.function.Function;
 
 public interface ICategoryService {
+
     CategoryDTO.Info get(Long id);
 
     Category getCategory(Long id);
@@ -21,7 +18,6 @@ public interface ICategoryService {
     List<CategoryDTO.Info> list();
 
     Set<Category> getCategoriesByIds(List<Long> categoryIds);
-
 
     CategoryDTO.Info create(CategoryDTO.Create request);
 
@@ -35,10 +31,10 @@ public interface ICategoryService {
 
     <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
 
-    // ---------------
-
     List<SubcategoryDTO.Info> getSubCategories(Long categoryId);
 
     List<Long> findCategoryByTeacher(Long teacherId);
+
+    List<String> findCategoryNamesByEmpHistoryId(Long empHistoryId);
 
 }

@@ -174,6 +174,6 @@ public class GoalService implements IGoalService {
 
     @Override
     public Goal getById(Long id) {
-        return goalDAO.getById(id);
+        return goalDAO.findById(id).get();
     }
 }

@@ -3505,9 +3505,8 @@ WHERE
         <addColumn tableName="tbl_needs_assessment_temp">
             <column name="return_detail" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
-
-
     </changeSet>
+
     <changeSet author="namdari" id="1644662089000-2">
         <modifyDataType tableName="tbl_needs_assessment" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
         <modifyDataType tableName="tbl_needs_assessment_temp" columnName="process_instance_id" newDataType="VARCHAR2(255 CHAR)"/>
@@ -3585,6 +3584,22 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-044">
+        <addColumn tableName="tbl_employment_history">
+            <column name="f_parameter_value_collaboration_type" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-045">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_collaboration_type" baseTableName="tbl_employment_history" constraintName="FK_EMPLOYMENT_HISTORY_TO_PARAMETER_VALUE" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-046">
+        <addColumn tableName="tbl_employment_history">
+            <column name="n_collaboration_duration" type="NUMBER(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet author="MShahabi" id="1799887766557-047">
         <addColumn tableName="tbl_academic_bk">
             <column name="f_parameter_value_university" type="NUMBER(19, 0)"/>
@@ -3633,4 +3648,72 @@ WHERE
             <column name="c_course_id" type="NUMBER(19, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-16">
+        <createTable tableName="tbl_teacher_presentable_course_category">
+            <column name="f_teacher_presentable_course" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-17">
+        <createTable tableName="tbl_teacher_presentable_course_subcategory">
+            <column name="f_teacher_presentable_course" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-1b">
+        <dropColumn tableName="tbl_teacher_presentable_coursee">
+            <column name="category_id"></column>
+            <column name="subcategory_id"></column>
+        </dropColumn>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-18">
+        <renameTable oldTableName="tbl_teacher_presentable_coursee" newTableName="tbl_teacher_presentable_course"/>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-19">
+        <addColumn tableName="tbl_teacher_presentable_course">
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-20">
+        <addColumn tableName="tbl_teacher_presentable_course">
+            <column name="c_created_by" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-21">
+       <dropColumn tableName="tbl_teacher_presentable_course">
+           <column name="n_duration"></column>
+       </dropColumn>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-22">
+        <addColumn tableName="tbl_teacher_presentable_course">
+            <column name="n_duration" type="VARCHAR2(255 CHAR)"></column>
+        </addColumn>
+
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-23">
+       <dropColumn tableName="tbl_teacher_presentable_course">
+           <column name="n_duration"></column>
+       </dropColumn>
+
+    </changeSet>
+
+    <changeSet author="ZPakdaman" id="2799887766557-25">
+        <modifyDataType tableName="tbl_teacher_presentable_course" columnName="f_teacher_id" newDataType="NUMBER(19, 0)"/>
+    </changeSet>
+    <changeSet author="ZPakdaman" id="2799887766557-27">
+        <modifyDataType tableName="tbl_teacher_presentable_course" columnName="c_created_by" newDataType="VARCHAR2(255 CHAR)"/>
+    </changeSet>
+
 </databaseChangeLog>

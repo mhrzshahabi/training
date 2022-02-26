@@ -21,10 +21,12 @@ import com.nicico.training.mapper.academicBK.AcademicBKBeanMapper;
 import com.nicico.training.mapper.attendance.AttendanceBeanMapper;
 import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.mapper.course.CourseMapper;
+import com.nicico.training.mapper.employmentHistory.EmploymentHistoryBeanMapper;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.mapper.person.PersonBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
+import com.nicico.training.mapper.teacher.TeacherPresentableCourseMapper;
 import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EGender;
@@ -47,6 +49,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import request.academicBK.ElsAcademicBKReqDto;
 import request.attendance.ElsTeacherAttendanceListSaveDto;
+import request.employmentHistory.ElsEmploymentHistoryReqDto;
 import request.evaluation.ElsUserEvaluationListResponseDto;
 import request.evaluation.StudentEvaluationAnswerDto;
 import request.evaluation.TeacherEvaluationAnswerDto;
@@ -55,6 +58,8 @@ import response.BaseResponse;
 import response.PaginationDto;
 import response.academicBK.*;
 import response.attendance.AttendanceListSaveResponse;
+import response.employmentHistory.ElsEmploymentHistoryFindAllRespDto;
+import response.employmentHistory.ElsEmploymentHistoryRespDto;
 import response.evaluation.ElsEvaluationsListResponse;
 import response.evaluation.EvalListResponse;
 import response.evaluation.SendEvalToElsResponse;
@@ -133,12 +138,13 @@ public class ElsRestController {
     private final IRequestService iRequestService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final ISelfDeclarationService iSelfDeclarationService;
+    private final IEmploymentHistoryService iEmploymentHistoryService;
+    private final EmploymentHistoryBeanMapper employmentHistoryBeanMapper;
     private final IEducationLevelService iEducationLevelService;
     private final IEducationMajorService iEducationMajorService;
     private final IEducationOrientationService iEducationOrientationService;
     private final IAcademicBKService iAcademicBKService;
     private final AcademicBKBeanMapper academicBKBeanMapper;
-    private final ObjectMapper objectMapper;
     private final TeacherCertificationMapper teacherCertificationMapper;
     private final ITeacherCertificationService teacherCertificationService;
     private final ITeacherSuggestedService teacherSuggestedService;
@@ -149,6 +155,7 @@ public class ElsRestController {
     private final CourseBeanMapper courseBeanMapper;
     private final CourseMapper courseMapper;
     private final ITeacherPresentableCourseService teacherPresentableCourseService;
+    private final TeacherPresentableCourseMapper teacherPresentableCourseMapper;
 
 
 
@@ -1069,7 +1076,7 @@ public class ElsRestController {
     public ElsQuestionBankDto getQuestionBankFilter(HttpServletRequest header,
             @PathVariable Integer page, @PathVariable Integer size,@RequestBody  ElsSearchDTO elsSearchDTO ) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
 
-//       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+       if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
            try {
 
                if (elsSearchDTO.getNationalCode() != null) {
@@ -1119,10 +1126,10 @@ public class ElsRestController {
                return dto;
            }
 
-//
-//       } else {
-//        throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-//        }
+
+       } else {
+        throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
 
 
 
@@ -1693,7 +1700,6 @@ public class ElsRestController {
      * @param id
      * @return this method  confirm that the teacher certification with specific id  is removed from database.
      */
-
     @DeleteMapping("/passed-courses/remove")
     public BaseResponse deleteTeacherCertifications(HttpServletRequest header, @RequestParam String nationalCode ,@RequestParam(name = "id") Long id){
         BaseResponse response=new BaseResponse();
@@ -1729,7 +1735,6 @@ public class ElsRestController {
      * @param elsTeacherCertification
      * @return thid method return dto that has been modified  by teacher .
      */
-
     @PostMapping("passed-courses/modify")
     public ElsTeacherCertification editTeacherCertification(HttpServletRequest header,@RequestBody ElsTeacherCertification elsTeacherCertification){
         ElsTeacherCertification response=new ElsTeacherCertification();
@@ -1902,15 +1907,13 @@ public class ElsRestController {
     }
 
     /**
-<<<<<<< HEAD
      *
      * @param header
-     * @param categoryId
-     * @param subCategoryId
-     * @return this method return courseList with specific category-id & subcategory -id
+     * @param elsCatAndSub
+     * @return  this method return courseList with specific category-ids & subcategory -ids
      */
     @PostMapping("courseList/CategoryAndSubcategory")
-    public  List<CourseDTO.TupleInfo>  getCourseListViaCategoryAndSubCategory(HttpServletRequest header, @RequestParam ElsCatAndSub elsCatAndSub ){
+    public  List<CourseDTO.TupleInfo>  getCourseListViaCategoryAndSubCategory(HttpServletRequest header, @RequestBody ElsCatAndSub elsCatAndSub ){
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
          List<Course> courses=   courseService.getCoursesViaCategoryAndSubCategory(elsCatAndSub);
              List<CourseDTO.TupleInfo> dtos=   courseBeanMapper.toCourseDTOTupleInfos(courses);
@@ -1938,13 +1941,222 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
     }
+
+    /**
+     *
+     * @param header
+     * @param elsPresentableCourse
+     * @return this method save TeacherPresentableCourse
+     */
     @PostMapping("presentable-coureses")
-    public ElsPresentableResponse createPresentableCourse(HttpServletRequest header,@RequestBody ElsPresentableCourse elsPresentableCourse){
+    public ElsPresentableResponse createPresentableCourse(HttpServletRequest header,@RequestBody ElsPresentableResponse elsPresentableCourse){
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            teacherPresentableCourseService.savePresentableCourse(elsPresentableCourse);
-                 return null;
+            ElsPresentableResponse response=new ElsPresentableResponse();
+
+                TeacherPresentableCourse teacherPresentableCourse = teacherPresentableCourseService.savePresentableCourse(elsPresentableCourse);
+                response = teacherPresentableCourseMapper.toElsPresentableCourse(teacherPresentableCourse);
+                response.setStatus(200);
+                response.setMessage("successfully saved");
+                return response;
+
 
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
+    }
+
+    /**
+     *
+     * @param header
+     * @param id
+     * @return this method remove teacherPresentableCourse by id.
+     */
+    @DeleteMapping("/presentable-courses/remove")
+    public BaseResponse deletePresentableCourse(HttpServletRequest header,@RequestParam(name="id") Long id){
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            BaseResponse response= new BaseResponse ();
+            try {
+                teacherPresentableCourseService.deletePresentableCourse(id);
+                response.setStatus(200);
+                response.setMessage("successfully deleted");
+                return response;
+
+            }catch (Exception e){
+                response.setMessage("not deleted!");
+                response.setStatus(406);
+                return response;
+            }
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
         }
+
+    }
+
+    /**
+     *
+     * @param header
+     * @param elsPresentableCourse
+     * @return this method edit TeacherPresentableCourse
+     */
+    @PostMapping("presntable-courses/modify")
+    public ElsPresentableResponse editTeacherPresentableCourse(HttpServletRequest header,@RequestBody ElsPresentableResponse elsPresentableCourse){
+       ElsPresentableResponse response=new ElsPresentableResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(elsPresentableCourse.getNationalCode());
+                if (teacherId == null) {
+                    response.setStatus(406);
+                    response.setMessage("این استاد در آموزش وجود ندارد");
+                    return response;
+
+                }
+
+               response = teacherPresentableCourseService.editPresentableCourse(elsPresentableCourse);
+
+                response.setStatus(200);
+                response.setMessage("successfully modified!");
+
+                return response;
+            }catch (Exception e){
+                response.setStatus(406);
+                response.setMessage("not modified");
+                return response;
+            }
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+
+    }
+
+    /**
+     *
+     * @param header
+     * @param nationalCode
+     * @return this method return list of TeacherPresentableCourse-list via  teachers nationalCode.
+     */
+    @GetMapping("presentable-courses/getAllBy/{nationalCode}")
+    public List<ElsPresentableResponse> getAllPresentableByTeacher(HttpServletRequest header,@PathVariable String nationalCode) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+
+
+                List<ElsPresentableResponse> responseList=teacherPresentableCourseService.getAllByNationalCode(nationalCode);
+                return responseList;
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+
+    @PostMapping("/edit/academicBK")
+   public ElsAcademicBKRespDto editAcademicBK(@RequestHeader(name = "X-Auth-Token") String header, @RequestBody ElsAcademicBKReqDto elsAcademicBKReqDto) {
+        ElsAcademicBKRespDto elsAcademicBKRespDto = new ElsAcademicBKRespDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            try {
+                AcademicBKDTO.Update update = academicBKBeanMapper.elsAcademicBKReqToAcademicBKUpdate(elsAcademicBKReqDto);
+                AcademicBKDTO.Info info = iAcademicBKService.update(elsAcademicBKReqDto.getId(), update);
+                elsAcademicBKRespDto = academicBKBeanMapper.academicBKInfoToElsAcademicBKRes(info);
+                elsAcademicBKRespDto.setDate(elsAcademicBKReqDto.getDate());
+                elsAcademicBKRespDto.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                elsAcademicBKRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                elsAcademicBKRespDto.setMessage("مشکلی در ویرایش سابقه تحصیلی استاد وجود دارد");
+            }
+        } else
+            elsAcademicBKRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return elsAcademicBKRespDto;
+    }
+
+    @DeleteMapping("/academicBK")
+    ResponseEntity<BaseResponse> removeAcademicBK(@RequestHeader(name = "X-Auth-Token") String header, @RequestParam Long id, @RequestParam String nationalCode) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                iAcademicBKService.deleteAcademicBK(teacherId, id);
+                response.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("مشکلی در حذف سابقه تحصیلی استاد وجود دارد");
+            }
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+        } else
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/academicBK/{nationalCode}")
+    List<ElsAcademicBKFindAllRespDto> findAcademicBKsByTeacherNationalCode(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable String nationalCode) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header))
+            return iAcademicBKService.findAcademicBKsByTeacherNationalCode(nationalCode);
+        else
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+
+        }
+
+
+    @PostMapping("/employment-history")
+  public   ElsEmploymentHistoryRespDto createEmploymentHistory(HttpServletRequest header, @RequestBody ElsEmploymentHistoryReqDto elsEmploymentHistoryReqDto) {
+        ElsEmploymentHistoryRespDto elsEmploymentHistoryRespDto = new ElsEmploymentHistoryRespDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                EmploymentHistoryDTO.Create create = employmentHistoryBeanMapper.elsEmpHistoryReqToEmpHistoryCreate(elsEmploymentHistoryReqDto);
+                EmploymentHistoryDTO.Info info = iEmploymentHistoryService.addEmploymentHistory(create, create.getTeacherId());
+                elsEmploymentHistoryRespDto = employmentHistoryBeanMapper.empHistoryInfoToElsHistoryResp(info);
+                elsEmploymentHistoryRespDto.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                elsEmploymentHistoryRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                elsEmploymentHistoryRespDto.setMessage("مشکلی در ایجاد سابقه اجرایی استاد وجود دارد");
+            }
+        } else {
+            elsEmploymentHistoryRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+        }
+        return elsEmploymentHistoryRespDto;
+    }
+
+    @PostMapping("/edit/employment-history")
+  public   ElsEmploymentHistoryRespDto editEmploymentHistory(HttpServletRequest header, @RequestBody ElsEmploymentHistoryReqDto elsEmploymentHistoryReqDto) {
+        ElsEmploymentHistoryRespDto elsEmploymentHistoryRespDto = new ElsEmploymentHistoryRespDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                EmploymentHistoryDTO.Update update = employmentHistoryBeanMapper.elsEmpHistoryReqToEmpHistoryUpdate(elsEmploymentHistoryReqDto);
+                EmploymentHistoryDTO.Info info = iEmploymentHistoryService.update(elsEmploymentHistoryReqDto.getId(), update);
+                elsEmploymentHistoryRespDto = employmentHistoryBeanMapper.empHistoryInfoToElsHistoryResp(info);
+                elsEmploymentHistoryRespDto.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                elsEmploymentHistoryRespDto.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                elsEmploymentHistoryRespDto.setMessage("مشکلی در ویرایش سابقه اجرایی استاد وجود دارد");
+            }
+        } else
+            elsEmploymentHistoryRespDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return elsEmploymentHistoryRespDto;
+    }
+
+    @DeleteMapping("/employment-history")
+    ResponseEntity<BaseResponse> removeEmploymentHistory(HttpServletRequest header, @RequestParam Long id, @RequestParam String nationalCode) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                iEmploymentHistoryService.deleteEmploymentHistory(teacherId, id);
+                response.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("مشکلی در حذف سابقه اجرایی استاد وجود دارد");
+            }
+            return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
+        } else
+            return new ResponseEntity<>(null, HttpStatus.UNAUTHORIZED);
+    }
+
+    @GetMapping("/employment-history/{nationalCode}")
+   public List<ElsEmploymentHistoryFindAllRespDto> findEmploymentHistoriesByTeacherNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token")))
+            return iEmploymentHistoryService.findEmploymentHistoriesByNationalCode(nationalCode);
+        else
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+    }
+
+}

@@ -14,6 +14,9 @@ public class ElsPresentableResponse extends BaseResponse {
     private String courseTitle;
     private String courseDuration;
     private String description;
+    private String nationalCode;
+    private List<Long> categoryIds;
+    private List<Long> subCategoryIds;
     private List<String> categoryTitles;
     private List<String> subCategoryTitles;
     private List<String> preCourseTitles;

@@ -52,4 +52,15 @@ public class EmploymentHistory extends Auditable {
 
     @Column(name = "f_teacher_id")
     private Long teacherId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_parameter_value_collaboration_type", insertable = false, updatable = false)
+    private ParameterValue collaborationType;
+
+    @Column(name = "f_parameter_value_collaboration_type")
+    private Long collaborationTypeId;
+
+    @Column(name = "n_collaboration_duration")
+    private Integer collaborationDuration;
+
 }

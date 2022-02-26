@@ -24,33 +24,26 @@ public class TeacherPresentableCourse  extends Auditable{
 
     @Column(name = "c_course_title")
     private String courseTitle;
-
     @Column(name="c_course_id")
     private Long courseId;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)
+    @JoinColumn(name = "c_course_id", insertable = false, updatable = false)
     private Course course;
 
 
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_teacher_presentable_course_category",
+            joinColumns = {@JoinColumn(name = "f_teacher_presentable_course", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
+    private Set<Category> categories;
 
-    @Column(name = "category_id", insertable = false, updatable = false)
-    private Long categoryId;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_teacher_presentable_course_subcategory",
+            joinColumns = {@JoinColumn(name = "f_teacher_presentable_course", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
+    private Set<Subcategory> subCategories;
 
-    @ManyToOne
-    @JoinColumn(name = "subcategory_id")
-    private Subcategory subCategory;
-
-    @Column(name = "subcategory_id", insertable = false, updatable = false)
-    private Long subCategoryId;
-
-
-    @Column(name = "n_duration")
-    private String duration;
 
 
 

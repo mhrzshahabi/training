@@ -1,9 +1,4 @@
-package com.nicico.training.service;/*
-com.nicico.training.service
-@author : banifatemi
-@Date : 6/8/2019
-@Time :9:15 AM
-    */
+package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -144,6 +139,11 @@ public class SubcategoryService implements ISubcategoryService {
     @Override
     public Subcategory getById(Long id) {
         return subCategoryDAO.getById(id);
+    }
+
+    @Override
+    public List<String> findSubCategoryNamesByEmpHistoryId(Long empHistoryId) {
+        return subCategoryDAO.findSubCategoryNamesByEmpHistoryId(empHistoryId);
     }
 
     @Transactional(readOnly = true)
