@@ -15,6 +15,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,6 +42,7 @@ import java.util.Calendar;
 
 import static com.nicico.training.utility.persianDate.MyUtils.checkEmailFormat;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TeacherService implements ITeacherService {
@@ -332,10 +334,15 @@ public class TeacherService implements ITeacherService {
             ContactInfo contactInfo = teacherPersonalInfo.getContactInfo();
             if (teacherGeneralInfoDTO.getBirthDate() != null && teacherGeneralInfoDTO.getBirthDate() != 0) {
                 long time = teacherGeneralInfoDTO.getBirthDate();
+                log.info(" epoch time from UI : {}", time);
+
                 LocalDate date =
                         Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
+                log.info("LocalDate : {}", date);
+
                 LocalDateTime atStartOfDay = date.atStartOfDay();
                 Date startOfDate = Timestamp.valueOf(atStartOfDay);
+                log.info("startOfDate : {}", startOfDate);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(startOfDate);
                 calendar.add(Calendar.HOUR_OF_DAY, 4);
@@ -344,6 +351,7 @@ public class TeacherService implements ITeacherService {
 
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String birtDate = DateUtil.convertMiToKh(dateFormat.format(startOfDate));
+                log.info("birtDate string : {}", birtDate);
                 teacherPersonalInfo.setBirthDate(birtDate);
             }
             if (teacherGeneralInfoDTO.getEmail() != null && teacherGeneralInfoDTO.getEmail() != "") {
