@@ -29,20 +29,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 import response.teacher.dto.TeacherInCourseDto;
-
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.*;
 import java.util.Calendar;
 
 import static com.nicico.training.utility.persianDate.MyUtils.checkEmailFormat;
 
-@Slf4j
 @Service
 @RequiredArgsConstructor
 public class TeacherService implements ITeacherService {
@@ -334,28 +327,14 @@ public class TeacherService implements ITeacherService {
             ContactInfo contactInfo = teacherPersonalInfo.getContactInfo();
             if (teacherGeneralInfoDTO.getBirthDate() != null && teacherGeneralInfoDTO.getBirthDate() != 0) {
                 long time = teacherGeneralInfoDTO.getBirthDate();
-                log.info(" epoch time from UI : {}", time);
-
-//                LocalDate date =
-//                        Instant.ofEpochMilli(time).atZone(ZoneId.systemDefault()).toLocalDate();
-//                log.info("LocalDate : {}", date);
-//
-//                LocalDateTime atStartOfDay = date.atStartOfDay();
-//                Date startOfDate = Timestamp.valueOf(atStartOfDay);
-//                log.info("startOfDate : {}", startOfDate);
                 Date date = new Date(time);
-                log.info("date : {}", date);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTime(date);
                 calendar.add(Calendar.HOUR_OF_DAY, 4);
                 calendar.add(Calendar.MINUTE, 30);
                 date = calendar.getTime();
-                log.info("date after adding 4:30 : {}", date);
-
-
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String birtDate = DateUtil.convertMiToKh(dateFormat.format(date));
-                log.info("birtDate string : {}", birtDate);
                 teacherPersonalInfo.setBirthDate(birtDate);
             }
             if (teacherGeneralInfoDTO.getEmail() != null && teacherGeneralInfoDTO.getEmail() != "") {
