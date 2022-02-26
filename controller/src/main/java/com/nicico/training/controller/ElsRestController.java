@@ -1901,7 +1901,7 @@ public class ElsRestController {
     @GetMapping("/teacher/infoByNationalCode/{nationalCode}")
     public ElsTeacherInfoDto getTeacherInfo(HttpServletRequest header, @PathVariable String nationalCode) {
         ElsTeacherInfoDto elsTeacherInfoDto = new ElsTeacherInfoDto();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
                 Teacher teacher = teacherService.getTeacher(teacherId);
@@ -1913,10 +1913,10 @@ public class ElsRestController {
                 elsTeacherInfoDto.setStatus(HttpStatus.NOT_FOUND.value());
                 elsTeacherInfoDto.setMessage(" موردی یافت نشد");
             }
-        } else {
-            elsTeacherInfoDto.setStatus(HttpStatus.UNAUTHORIZED.value());
-            elsTeacherInfoDto.setMessage("دسترسی موردنظر یافت نشد");
-        }
+//        } else {
+//            elsTeacherInfoDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            elsTeacherInfoDto.setMessage("دسترسی موردنظر یافت نشد");
+//        }
         return elsTeacherInfoDto;
     }
 
@@ -1929,7 +1929,7 @@ public class ElsRestController {
     @PostMapping("/teacher/updateGeneralInfo")
     public BaseResponse updateGeneralInfo(HttpServletRequest header, @RequestBody TeacherGeneralInfoDTO teacherGeneralInfoDTO) {
         BaseResponse response = new BaseResponse();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Teacher teacher = teacherService.getTeacher(teacherGeneralInfoDTO.getId());
                 response = teacherService.saveElsTeacherGeneralInfo(teacher, teacherGeneralInfoDTO);
@@ -1938,10 +1938,10 @@ public class ElsRestController {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
                 response.setMessage(((TrainingException) e).getMsg());
             }
-        } else {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setMessage("دسترسی موردنظر یافت نشد");
-        }
+//        } else {
+//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            response.setMessage("دسترسی موردنظر یافت نشد");
+//        }
         return response;
     }
 
