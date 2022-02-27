@@ -2187,10 +2187,10 @@ public class ElsRestController {
     @GetMapping("/academicBK/find-by/{id}")
     ElsAcademicBKRespDto findAcademicBKById(@RequestHeader(name = "X-Auth-Token") String header, @PathVariable Long id) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header)) {
-        AcademicBKDTO.Info info = iAcademicBKService.get(id);
-        ElsAcademicBKRespDto elsAcademicBKRespDto = academicBKBeanMapper.academicBKInfoToElsAcademicBKRes(info);
-        elsAcademicBKRespDto.setStatus(200);
-        return elsAcademicBKRespDto;
+            AcademicBKDTO.Info info = iAcademicBKService.get(id);
+            ElsAcademicBKRespDto elsAcademicBKRespDto = academicBKBeanMapper.academicBKInfoToElsAcademicBKRes(info);
+            elsAcademicBKRespDto.setStatus(200);
+            return elsAcademicBKRespDto;
         } else
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
     }
