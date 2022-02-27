@@ -11927,7 +11927,7 @@ ORDER BY
     </changeSet>
 
 
-    <changeSet author="nick (generated)" id="1638772362566-781">
+    <changeSet author="nick (generated)" id="1645952073000-1">
         <createView viewName="VIEW-CLASS-COST-REPORTING" replaceIfExists="true">
             <![CDATA[
 SELECT
