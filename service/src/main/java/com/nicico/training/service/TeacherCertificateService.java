@@ -156,10 +156,11 @@ public class TeacherCertificateService implements ITeacherCertificationService {
        if(optional.isPresent()){
            response.setId(optional.get().getId());
            response.setCompanyName(optional.get().getCompanyName());
-           response.setCertification(optional.get().getCourseTitle());
+           response.setCourseTitle(optional.get().getCourseTitle());
            response.setCertification(optional.get().getCertificationStatusDetail());
            response.setCertificationStatus(optional.get().getCertificationStatus());
            response.setCourseDate(optional.get().getStartDate());
+           response.setCompanyName(optional.get().getCompanyName());
            response.setStatus(200);
            response.setMessage("successfully get");
 

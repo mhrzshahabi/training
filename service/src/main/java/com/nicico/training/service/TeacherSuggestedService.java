@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Service
@@ -99,5 +100,23 @@ public class TeacherSuggestedService implements ITeacherSuggestedService {
     @Override
     public List<TeacherSuggestedCourse> findAllTeacherSuggested(Long teacherId) {
        return  dao.findAllByTeacherId(teacherId);
+    }
+
+    @Override
+    public ElsSuggestedCourse getById(Long id) {
+        ElsSuggestedCourse response=new ElsSuggestedCourse();
+       Optional< TeacherSuggestedCourse> optional=dao.findById(id);
+       if(optional.isPresent()){
+           response.setId(optional.get().getId());
+           response.setCourseTitle(optional.get().getCourseTitle());
+           response.setDescription(optional.get().getDescription());
+           response.setStatus(200);
+           response.setMessage("successfully get");
+
+       }else{
+           response.setStatus(406);
+           response.setMessage("get failed");
+       }
+       return response;
     }
 }

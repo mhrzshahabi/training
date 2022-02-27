@@ -15,7 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_teacher_presentable_course")
-public class TeacherPresentableCourse {
+public class TeacherPresentableCourse  extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacher_presentable_course_seq")
     @SequenceGenerator(name = "teacher_presentable_course_seq", sequenceName = "seq_teacher_presentable_course_id", allocationSize = 1)
@@ -24,6 +24,12 @@ public class TeacherPresentableCourse {
 
     @Column(name = "c_course_title")
     private String courseTitle;
+    @Column(name="c_course_id")
+    private Long courseId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "c_course_id", insertable = false, updatable = false)
+    private Course course;
 
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -57,5 +63,7 @@ public class TeacherPresentableCourse {
     @Column(name = "f_teacher_id")
     private Long teacherId;
 
+    @Column(name="c_description")
+    private String description;
 
 }

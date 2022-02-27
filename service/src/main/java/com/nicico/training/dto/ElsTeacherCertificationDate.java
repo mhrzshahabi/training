@@ -2,17 +2,19 @@ package com.nicico.training.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import response.BaseResponse;
 
 import java.util.List;
 
 @Getter
 @Setter
-public class ElsTeacherCertificationDate {
+public class ElsTeacherCertificationDate extends BaseResponse {
     private Long id;
     private String nationalCode;
     private String courseTitle;
     private String companyName;
     private String courseDate;
+
     private Boolean certificationStatus;
     private String certification;
     private List<Long> categoryIds;

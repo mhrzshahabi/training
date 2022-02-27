@@ -14,4 +14,6 @@ public interface ITeacherSuggestedService {
     ElsSuggestedCourse editSuggestedService(ElsSuggestedCourse elsSuggestedCourse);
 
     List<TeacherSuggestedCourse> findAllTeacherSuggested(Long teacherId);
+
+    ElsSuggestedCourse getById(Long id);
 }
