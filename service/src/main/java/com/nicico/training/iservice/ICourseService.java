@@ -54,7 +54,6 @@ public interface ICourseService {
 
     SearchDTO.SearchRs<CourseDTO.TupleInfo> safeSearch(SearchDTO.SearchRq request);
 
-    //-------jafari--------
     SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request);
 
     <T> SearchDTO.SearchRs<T> search(SearchDTO.SearchRq request, Function converter);
@@ -64,10 +63,6 @@ public interface ICourseService {
     List<GoalDTO.Info> getGoalWithOut(Long courseId);
 
     List<SkillDTO.Info> getSkill(Long courseId);
-
-//    List<CompetenceDTOOld.Info> getCompetence(Long courseId);
-
-//    List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
 
     List<SkillDTO.Info> getMainObjective(Long courseId);
 
@@ -91,23 +86,20 @@ public interface ICourseService {
 
     int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
 
-    //---------------------heydari---------------------------
-
     CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request);
 
     List<CourseDTO.Info> getEvaluation(Long courseId);
 
     CourseDTO.CourseGoals getCourseGoals(Long courseId);
 
-    //--------------------Amin ------------------------------
-
     CourseDTO.CourseDependence checkDependence(Long courseId);
-
-    //----------------------------------------------------------------------
 
     SearchDTO.SearchRs<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(SearchDTO.SearchRq request);
 
     <T> SearchDTO.SearchRs<T> searchGeneric(SearchDTO.SearchRq request, Class<T> infoType);
 
     List<Course> getCoursesViaCategoryAndSubCategory(ElsCatAndSub elsCatAndSub);
+
+    void updateDurationByCourseCode(String code, Float theoryDuration);
+
 }
