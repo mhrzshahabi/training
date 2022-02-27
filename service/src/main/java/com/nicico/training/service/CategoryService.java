@@ -164,18 +164,9 @@ public class CategoryService implements ICategoryService {
 
     @Transactional(readOnly = true)
     public List<ElsCategoryDto> getCategoriesForEls() {
-
-        List<ElsCategoryDto> categoryDtoList = new ArrayList<>();
         List<CategoryDTO.Info> categories = list();
-        categories.forEach(category -> {
-            ElsCategoryDto elsCategoryDto = new ElsCategoryDto();
-            elsCategoryDto.setCategoryId(category.getId());
-            elsCategoryDto.setCategoryCode(category.getCode());
-            elsCategoryDto.setCategoryName(category.getTitleFa());
-            elsCategoryDto.setCategoryNameEn(category.getTitleEn());
-            categoryDtoList.add(elsCategoryDto);
-        });
-        return categoryDtoList;
+        return modelMapper.map(categories, new TypeToken<List<ElsCategoryDto>>() {
+        }.getType());
     }
 
 }

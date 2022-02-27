@@ -8,13 +8,13 @@ import lombok.Setter;
 @Setter
 public class ElsSubCategoryDto {
     @ApiModelProperty
-    private Long subCategoryId;
+    private Long id;
     @ApiModelProperty
-    private String subCategoryCode;
+    private String code;
     @ApiModelProperty
-    private String subCategoryName;
+    private String titleFa;
     @ApiModelProperty
-    private String subCategoryNameEn;
+    private String titleEn;
     @ApiModelProperty
     private Long categoryId;
 }

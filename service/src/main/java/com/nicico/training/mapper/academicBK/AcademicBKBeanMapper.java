@@ -15,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import request.academicBK.ElsAcademicBKReqDto;
 import response.academicBK.*;
 
-import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -28,13 +27,14 @@ public abstract class AcademicBKBeanMapper {
     @Autowired
     protected ITeacherService teacherService;
     @Autowired
+    protected IParameterValueService parameterValueService;
+    @Autowired
     protected IEducationLevelService educationLevelService;
     @Autowired
     protected IEducationMajorService educationMajorService;
     @Autowired
     protected IEducationOrientationService educationOrientationService;
-    @Autowired
-    protected IParameterValueService parameterValueService;
+
 
     @Mapping(source = "teacherNationalCode", target = "teacherId", qualifiedByName = "nationalCodeToTeacherId")
     @Mapping(source = "date", target = "date", qualifiedByName = "longDateToStringDate")

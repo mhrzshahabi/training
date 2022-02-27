@@ -4,6 +4,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import response.BaseResponse;
+import response.academicBK.ElsEducationLevelDto;
 
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
@@ -20,7 +21,9 @@ public class ElsTeachingHistoryFindAllRespDto extends BaseResponse {
     @NotEmpty
     @ApiModelProperty(required = true)
     private Long educationLevelId;
+    private ElsEducationLevelDto educationLevel;
     private Long studentsLevelId;
+    private ElsStudentsLevelDto studentsLevel;
     @NotEmpty
     @ApiModelProperty(required = true)
     private List<String> categories;

@@ -11,10 +11,15 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import request.employmentHistory.ElsEmploymentHistoryReqDto;
+import response.employmentHistory.ElsCollaborationTypeDto;
 import response.employmentHistory.ElsEmploymentHistoryFindAllRespDto;
 import response.employmentHistory.ElsEmploymentHistoryRespDto;
+import response.question.dto.ElsCategoryDto;
+import response.question.dto.ElsSubCategoryDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,14 +30,13 @@ import java.util.stream.Collectors;
 public abstract class EmploymentHistoryBeanMapper {
 
     @Autowired
+    protected ModelMapper modelMapper;
+    @Autowired
     protected ITeacherService iTeacherService;
-
     @Autowired
     protected ICategoryService iCategoryService;
-
     @Autowired
     protected ISubcategoryService iSubcategoryService;
-
     @Autowired
     protected IParameterValueService iParameterValueService;
 
@@ -48,6 +52,9 @@ public abstract class EmploymentHistoryBeanMapper {
 
     @Mapping(source = "categories", target = "categoryIds", qualifiedByName = "toCategoryIds")
     @Mapping(source = "subCategories", target = "subCategoryIds", qualifiedByName = "toSubCategoryIds")
+    @Mapping(source = "categories", target = "categories", qualifiedByName = "toElsCategories")
+    @Mapping(source = "subCategories", target = "subCategories", qualifiedByName = "toElsSubCategories")
+    @Mapping(source = "collaborationTypeId", target = "collaborationType", qualifiedByName = "toElsCollaborationType")
     public abstract ElsEmploymentHistoryRespDto empHistoryInfoToElsHistoryResp(EmploymentHistoryDTO.Info employmentHistoryDTO);
 
     @Mapping(source = "id", target = "categories", qualifiedByName = "toCategoryNames")
@@ -100,12 +107,34 @@ public abstract class EmploymentHistoryBeanMapper {
         return iSubcategoryService.findSubCategoryNamesByEmpHistoryId(empHistoryId);
     }
 
+    @Named("toElsCategories")
+    List<ElsCategoryDto> toElsCategories(List<CategoryDTO.CategoryInfoTuple> categories) {
+        return modelMapper.map(categories, new TypeToken<List<ElsCategoryDto>>() {
+        }.getType());
+    }
+
+    @Named("toElsSubCategories")
+    List<ElsSubCategoryDto> toElsSubCategories(List<SubcategoryDTO.SubCategoryInfoTuple> subCategories) {
+        return modelMapper.map(subCategories, new TypeToken<List<ElsSubCategoryDto>>() {
+        }.getType());
+    }
+
     @Named("toCollaborationTypeTitle")
     String toCollaborationTypeTitle(Long collaborationTypeId) {
         if (collaborationTypeId != null) {
             Optional<ParameterValue> parameterValue = iParameterValueService.findById(collaborationTypeId);
             ParameterValue collaborationType = parameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             return collaborationType.getTitle();
+        } else
+            return null;
+    }
+
+    @Named("toElsCollaborationType")
+    ElsCollaborationTypeDto toElsCollaborationType(Long collaborationTypeId) {
+        if (collaborationTypeId != null) {
+            Optional<ParameterValue> parameterValue = iParameterValueService.findById(collaborationTypeId);
+            ParameterValue collaborationType = parameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            return modelMapper.map(collaborationType, ElsCollaborationTypeDto.class);
         } else
             return null;
     }
