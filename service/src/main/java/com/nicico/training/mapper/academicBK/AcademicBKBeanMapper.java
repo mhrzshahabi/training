@@ -38,12 +38,10 @@ public abstract class AcademicBKBeanMapper {
 
     @Mapping(source = "teacherNationalCode", target = "teacherId", qualifiedByName = "nationalCodeToTeacherId")
     @Mapping(source = "date", target = "date", qualifiedByName = "longDateToStringDate")
-    @Mapping(source = "elsAcademicBKReqDto", target = "collageName", qualifiedByName = "toCollageName")
     public abstract AcademicBKDTO.Create elsAcademicBKReqToAcademicBKCreate (ElsAcademicBKReqDto elsAcademicBKReqDto);
 
     @Mapping(source = "teacherNationalCode", target = "teacherId", qualifiedByName = "nationalCodeToTeacherId")
     @Mapping(source = "date", target = "date", qualifiedByName = "longDateToStringDate")
-    @Mapping(source = "elsAcademicBKReqDto", target = "collageName", qualifiedByName = "toCollageName")
     public abstract AcademicBKDTO.Update elsAcademicBKReqToAcademicBKUpdate (ElsAcademicBKReqDto elsAcademicBKReqDto);
 
     @Mapping(source = "date", target = "date", qualifiedByName = "StringDateToLongDate")
@@ -68,8 +66,10 @@ public abstract class AcademicBKBeanMapper {
 
     @Named("longDateToStringDate")
     String longDateToStringDate(Long lDate) {
-        Date _date = new Date(lDate);
-        return PersianDate.convertToTrainingPersianDate(_date);
+        if (lDate != null) {
+            Date _date = new Date(lDate);
+            return PersianDate.convertToTrainingPersianDate(_date);
+        } else return null;
     }
 
     @Named("StringDateToLongDate")
@@ -79,11 +79,6 @@ public abstract class AcademicBKBeanMapper {
             return (date.getTime()*1000);
         } else
             return null;
-    }
-
-    @Named("toCollageName")
-    String longDateToStringDate(ElsAcademicBKReqDto reqDto) {
-        return null;
     }
 
     @Named("toEducationLevel")
