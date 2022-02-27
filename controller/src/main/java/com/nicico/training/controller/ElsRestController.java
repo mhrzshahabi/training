@@ -1976,6 +1976,28 @@ public class ElsRestController {
 //        }
     }
 
+
+
+    /**
+     *
+     * @param header
+     * @param nationalCode
+     * @return this method return list of TeacherPresentableCourse-list via  teachers nationalCode.
+     */
+    @GetMapping("/presentable-courses/getAllBy/{nationalCode}")
+    public List<ElsPresentableResponse> getAllPresentableByTeacher(HttpServletRequest header,@PathVariable String nationalCode) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+
+
+            List<ElsPresentableResponse> responseList=teacherPresentableCourseService.getAllByNationalCode(nationalCode);
+            return responseList;
+
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
+    }
+
     /**
      * @param header
      * @param id
