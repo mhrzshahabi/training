@@ -11927,4 +11927,74 @@ ORDER BY
     </changeSet>
 
 
+    <changeSet author="nick (generated)" id="1638772362566-781">
+        <createView viewName="VIEW-CLASS-COST-REPORTING" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    ROWNUM                                                                                                           AS id,
+    tbl_class.c_acceptance_limit,
+    CASE
+        WHEN tbl_class.c_status = 1 THEN
+            'برنامه ریزی'
+        WHEN tbl_class.c_status = 2 THEN
+            'در حال اجرا'
+        WHEN tbl_class.c_status = 3 THEN
+            'پایان یافته'
+        WHEN tbl_class.c_status = 4 THEN
+            'لغو شده'
+        WHEN tbl_class.c_status = 5 THEN
+            'اختتام'
+    END                                                                                                              AS class_status,
+    tbl_class.c_code,
+    tbl_class.c_start_date,
+      tbl_class.c_end_date,
+    tbl_class.c_title_class,
+    tbl_class.c_student_cost,
+   CASE
+WHEN tbl_class.f_student_cost_currency = 619 THEN 'ریال'
+WHEN tbl_class.f_student_cost_currency IS NULL THEN Null
+ELSE 'دلار'
+END AS f_student_cost_currency,
+    tbl_course.c_code                                                                                    AS c_code1,
+    tbl_course.c_title_fa,
+    concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher_fullname,
+    tbl_personal_info.c_national_code,
+    view_complex.c_title                                                                                             AS complex,
+    CASE
+        WHEN tbl_teacher.b_personnel = 0 THEN
+            'برون سازمانی'
+        WHEN tbl_teacher.b_personnel = 1 THEN
+            'درون سازمانی'
+    END                                                                                                              AS is_personnel ,
+    classStu.total_std ,
+    (classStu.total_std * tbl_class.c_student_cost) as hazine
+
+FROM
+         tbl_class
+    INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+    INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
+    INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+    LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id
+    LEFT JOIN (
+         SELECT DISTINCT
+            class_id,
+            total_std
+        FROM
+            (
+                SELECT
+                    tbl_class_student.class_id ,
+                    tbl_class_student.student_id ,
+                    COUNT(*)
+                    OVER(PARTITION BY tbl_class_student.class_id) total_std
+                FROM
+                    tbl_class_student
+            )
+
+    ) classStu ON tbl_class.id = classStu.class_id
+            ]]>
+        </createView>
+    </changeSet>
+
+
+
 </databaseChangeLog>
