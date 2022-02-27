@@ -336,6 +336,8 @@ public class TeacherService implements ITeacherService {
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                 String birtDate = DateUtil.convertMiToKh(dateFormat.format(date));
                 teacherPersonalInfo.setBirthDate(birtDate);
+            } else {
+                teacherPersonalInfo.setBirthDate(null);
             }
             if (teacherGeneralInfoDTO.getEmail() != null && teacherGeneralInfoDTO.getEmail() != "") {
 
