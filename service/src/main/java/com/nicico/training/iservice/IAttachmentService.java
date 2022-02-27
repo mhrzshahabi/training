@@ -6,6 +6,7 @@ import com.nicico.training.dto.MessagesAttDTO;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.model.Attachment;
 import response.BaseResponse;
+import response.question.dto.ElsAttachmentDto;
 
 import java.util.List;
 import java.util.Map;
@@ -38,4 +39,6 @@ public interface IAttachmentService {
 
     List<AttachmentDTO.Info> findQuestionFilesByQuestionId(String questionBank, Long questionBankId);
     List<Attachment> findAllByObjectTypeAndObjectId(String objectType,Long objectId);
+
+    BaseResponse saveTeacherCv(Long teacherId, ElsAttachmentDto elsAttachmentDto);
 }

@@ -2407,5 +2407,20 @@ public class ElsRestController {
         return response;
     }
 
+    @PostMapping("/teacher/cv/{nationalCode}")
+    BaseResponse saveTeacherCv(HttpServletRequest header, @RequestBody ElsAttachmentDto elsAttachmentDto,@PathVariable String nationalCode) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                response=  iAttachmentService.saveTeacherCv(teacherId,elsAttachmentDto);
 
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("مشکلی در ذخیره رزومه استاد وجود دارد");
+            }
+        } else
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return response;
+    }
 }

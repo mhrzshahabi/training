@@ -22,6 +22,7 @@ import response.BaseResponse;
 import response.question.dto.ElsAttachmentDto;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class AttachmentService implements IAttachmentService {
     private String uploadDir;
     @Value("${nicico.minioQuestionsGroup}")
     private String groupId;
+
     @Transactional(readOnly = true)
     @Override
     public AttachmentDTO.Info get(Long id) {
@@ -308,5 +310,21 @@ public class AttachmentService implements IAttachmentService {
     @Override
     public List<Attachment> findAllByObjectTypeAndObjectId(String objectType, Long objectId) {
        return attachmentDAO.findAttachmentByObjectTypeAndObjectId(objectType,objectId);
+    }
+
+    @Override
+    public BaseResponse saveTeacherCv(Long teacherId, ElsAttachmentDto elsAttachmentDto) {
+        BaseResponse response=new BaseResponse();
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(Calendar.getInstance().getTime());
+        AttachmentDTO.Create create = new AttachmentDTO.Create();
+        create.setFileTypeId(1L);
+        create.setFileName(timeStamp+"-"+elsAttachmentDto.getFileName());
+        create.setObjectId(teacherId);
+        create.setObjectType("Teacher");
+        create.setKey(elsAttachmentDto.getAttachment());
+        create.setGroup_id(elsAttachmentDto.getGroupId());
+        create(create);
+        response.setStatus(200);
+        return response;
     }
 }
