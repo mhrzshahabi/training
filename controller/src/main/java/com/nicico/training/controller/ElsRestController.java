@@ -2286,4 +2286,116 @@ public class ElsRestController {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
     }
 
+
+    /**
+     * to return teacher's general info by national code
+     * @param header
+     * @param nationalCode
+     * @return
+     */
+    @GetMapping("/teacher/infoByNationalCode/{nationalCode}")
+    public ElsTeacherInfoDto getTeacherInfo(HttpServletRequest header, @PathVariable String nationalCode) {
+        ElsTeacherInfoDto elsTeacherInfoDto = new ElsTeacherInfoDto();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                Teacher teacher = teacherService.getTeacher(teacherId);
+                PersonalInfo personalInfo = iPersonalInfoService.getPersonalInfo(teacher.getPersonalityId());
+                teacher.setPersonality(personalInfo);
+                elsTeacherInfoDto = teacherBeanMapper.toElsTeacherInfoDto(teacher);
+                elsTeacherInfoDto.setStatus(200);
+            } catch (Exception e) {
+                elsTeacherInfoDto.setStatus(HttpStatus.NOT_FOUND.value());
+                elsTeacherInfoDto.setMessage(" موردی یافت نشد");
+            }
+        } else {
+            elsTeacherInfoDto.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsTeacherInfoDto.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return elsTeacherInfoDto;
+    }
+
+    /**
+     * to update teacher general info comming from els
+     * @param header
+     * @param teacherGeneralInfoDTO
+     * @return
+     */
+    @PostMapping("/teacher/updateGeneralInfo")
+    public BaseResponse updateGeneralInfo(HttpServletRequest header, @RequestBody TeacherGeneralInfoDTO teacherGeneralInfoDTO) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                Teacher teacher = teacherService.getTeacher(teacherGeneralInfoDTO.getId());
+                response = teacherService.saveElsTeacherGeneralInfo(teacher, teacherGeneralInfoDTO);
+
+            } catch (Exception e) {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage(((TrainingException) e).getMsg());
+            }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return response;
+    }
+
+    @GetMapping("/educationLevelList")
+    List<ElsEducationLevelDto> getEducationLevelList(HttpServletRequest header) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return iEducationLevelService.elsEducationLevelList();
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @GetMapping("/educationMajorList")
+    List<ElsEducationMajorDto> getEducationMajorList(HttpServletRequest header) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return iEducationMajorService.elsEducationMajorList();
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @GetMapping("/educationOrientationList/{levelId}/{majorId}")
+    List<ElsEducationOrientationDto> getEducationOrientationList(HttpServletRequest header, @PathVariable Long levelId, @PathVariable Long majorId) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return iEducationOrientationService.elsEducationOrientationList(levelId, majorId);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @GetMapping("/universityList")
+    List<ElsUniversityDto> getUniversityList(HttpServletRequest header) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                List<ParameterValueDTO.TupleInfo> tupleInfoList = iParameterService.getValueListByCode("University");
+                return modelMapper.map(tupleInfoList, new TypeToken<List<ParameterValueDTO.TupleInfo>>() {
+                }.getType());
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
 }
