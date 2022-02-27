@@ -1950,7 +1950,7 @@ public class ElsRestController {
      * @param elsCatAndSub
      * @return  this method return courseList with specific category-ids & subcategory -ids
      */
-    @PostMapping("courseList/CategoryAndSubcategory")
+    @PostMapping("/courseList/CategoryAndSubcategory")
     public  List<CourseDTO.TupleInfo>  getCourseListViaCategoryAndSubCategory(HttpServletRequest header, @RequestBody ElsCatAndSub elsCatAndSub ){
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
          List<Course> courses=   courseService.getCoursesViaCategoryAndSubCategory(elsCatAndSub);
@@ -1968,7 +1968,7 @@ public class ElsRestController {
      * @param courseId
      * @return this methd return courseDetails via course-id;
      */
-    @GetMapping("courseDetails/{courseId}")
+    @GetMapping("/courseDetails/{courseId}")
      public  ElsCourseDTO getCourseDetails(HttpServletRequest header,@PathVariable Long courseId) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Course course = courseService.getCourse(courseId);
@@ -1986,7 +1986,7 @@ public class ElsRestController {
      * @param elsPresentableCourse
      * @return this method save TeacherPresentableCourse
      */
-    @PostMapping("presentable-coureses")
+    @PostMapping("/presentable-coureses")
     public ElsPresentableResponse createPresentableCourse(HttpServletRequest header,@RequestBody ElsPresentableResponse elsPresentableCourse){
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             ElsPresentableResponse response=new ElsPresentableResponse();
@@ -2074,7 +2074,7 @@ public class ElsRestController {
      * @param nationalCode
      * @return this method return list of TeacherPresentableCourse-list via  teachers nationalCode.
      */
-    @GetMapping("presentable-courses/getAllBy/{nationalCode}")
+    @GetMapping("/presentable-courses/getAllBy/{nationalCode}")
     public List<ElsPresentableResponse> getAllPresentableByTeacher(HttpServletRequest header,@PathVariable String nationalCode) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
