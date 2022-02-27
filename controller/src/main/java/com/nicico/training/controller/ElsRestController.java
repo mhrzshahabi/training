@@ -1661,7 +1661,7 @@ public class ElsRestController {
     @PostMapping("/passed-courses")
     public ElsTeacherCertification addTeacherCertification(HttpServletRequest header, @RequestBody ElsTeacherCertification elsTeacherCertification) {
         ElsTeacherCertification response = new ElsTeacherCertification();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Long teacherId = teacherService.getTeacherIdByNationalCode(elsTeacherCertification.getNationalCode());
             if (teacherId == null) {
                 response.setStatus(406);
@@ -1682,9 +1682,9 @@ public class ElsRestController {
                 return response;
             }
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
 
     }
 
@@ -1697,7 +1697,7 @@ public class ElsRestController {
     @DeleteMapping("/passed-courses/remove")
     public BaseResponse deleteTeacherCertifications(HttpServletRequest header, @RequestParam String nationalCode, @RequestParam(name = "id") Long id) {
         BaseResponse response = new BaseResponse();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
             if (teacherId == null) {
                 response.setStatus(406);
@@ -1714,9 +1714,9 @@ public class ElsRestController {
             return response;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
 
 
     }
@@ -1729,7 +1729,7 @@ public class ElsRestController {
     @PostMapping("/passed-courses/modify")
     public ElsTeacherCertification editTeacherCertification(HttpServletRequest header, @RequestBody ElsTeacherCertification elsTeacherCertification) {
         ElsTeacherCertification response = new ElsTeacherCertification();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Long teacherId = teacherService.getTeacherIdByNationalCode(elsTeacherCertification.getNationalCode());
             if (teacherId == null) {
                 response.setStatus(406);
@@ -1745,9 +1745,9 @@ public class ElsRestController {
             return response;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
 
     }
 
@@ -1759,15 +1759,15 @@ public class ElsRestController {
     @GetMapping("/passed-courses/getById/{id}")
     public ElsTeacherCertificationDate getPassedById(HttpServletRequest header, @PathVariable Long id) {
 
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
             ElsTeacherCertificationDate response = teacherCertificationService.getElsTeacherCertification(id);
             return response;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
 
@@ -1779,7 +1779,7 @@ public class ElsRestController {
     @GetMapping("/passed-courses/getAllBy/{nationalCode}")
     public List<ElsTeacherCertificationDate> getAll(HttpServletRequest header, @PathVariable String nationalCode) {
 
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
 
             List<ElsTeacherCertificationDate> dtos = new ArrayList<>();
@@ -1790,9 +1790,9 @@ public class ElsRestController {
             return dtos;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     /**
@@ -1802,7 +1802,7 @@ public class ElsRestController {
      */
     @PostMapping("/suggested-courses")
     public ElsSuggestedCourse addSuggestedCourse(HttpServletRequest header, @RequestBody ElsSuggestedCourse elsSuggestedCourse) {
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             TeacherSuggestedCourse teacherSuggestedCourse = teacherSuggestedService.saveSuggestion(elsSuggestedCourse);
             ElsSuggestedCourse dto = teacherSuggestedCourseMapper.toElsSuggestedCourse(teacherSuggestedCourse);
             if (dto != null) {
@@ -1815,9 +1815,9 @@ public class ElsRestController {
 
             return dto;
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     /**
@@ -1829,7 +1829,7 @@ public class ElsRestController {
     @DeleteMapping("/suggested-courses/remove")
     public BaseResponse deleteTeacherSuggestedCourse(HttpServletRequest header, @RequestParam String nationalCode, @RequestParam(name = "id") Long id) {
         BaseResponse response = new BaseResponse();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
             if (teacherId == null) {
                 response.setStatus(406);
@@ -1846,9 +1846,9 @@ public class ElsRestController {
             return response;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
 
 
     }
@@ -1861,7 +1861,7 @@ public class ElsRestController {
     @PostMapping("/suggested-courses/modify")
     public ElsSuggestedCourse editTeacherSuggestedCourse(HttpServletRequest header, @RequestBody ElsSuggestedCourse elsSuggestedCourse) {
         ElsSuggestedCourse response = new ElsSuggestedCourse();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Long teacherId = teacherService.getTeacherIdByNationalCode(elsSuggestedCourse.getNationalCode());
             if (teacherId == null) {
                 response.setStatus(406);
@@ -1875,24 +1875,24 @@ public class ElsRestController {
             return response;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
 
     }
 
     @GetMapping("/suggested-courses/getById/{id}")
     public ElsSuggestedCourse getSuggestedById(HttpServletRequest header, @PathVariable Long id) {
 
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
             ElsSuggestedCourse response = teacherSuggestedService.getById(id);
             return response;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
 
@@ -1904,7 +1904,7 @@ public class ElsRestController {
     @GetMapping("/suggested-courses/getAllBy/{nationalCode}")
     public List<ElsSuggestedCourse> getAllSuggestedByTeacher(HttpServletRequest header, @PathVariable String nationalCode) {
 
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
 
             List<ElsSuggestedCourse> dtos = new ArrayList<>();
@@ -1915,9 +1915,9 @@ public class ElsRestController {
             return dtos;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     /**
@@ -1927,14 +1927,14 @@ public class ElsRestController {
      */
     @PostMapping("/courseList/CategoryAndSubcategory")
     public List<CourseDTO.TupleInfo> getCourseListViaCategoryAndSubCategory(HttpServletRequest header, @RequestBody ElsCatAndSub elsCatAndSub) {
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             List<Course> courses = courseService.getCoursesViaCategoryAndSubCategory(elsCatAndSub);
             List<CourseDTO.TupleInfo> dtos = courseBeanMapper.toCourseDTOTupleInfos(courses);
             return dtos;
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     /**
@@ -1944,14 +1944,14 @@ public class ElsRestController {
      */
     @GetMapping("/courseDetails/{courseId}")
     public ElsCourseDTO getCourseDetails(HttpServletRequest header, @PathVariable Long courseId) {
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             Course course = courseService.getCourse(courseId);
             ElsCourseDTO dto = courseMapper.toCourseDTO(course);
             return dto;
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     /**
@@ -1961,7 +1961,7 @@ public class ElsRestController {
      */
     @PostMapping("/presentable-coureses")
     public ElsPresentableResponse createPresentableCourse(HttpServletRequest header, @RequestBody ElsPresentableResponse elsPresentableCourse) {
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             ElsPresentableResponse response = new ElsPresentableResponse();
 
             TeacherPresentableCourse teacherPresentableCourse = teacherPresentableCourseService.savePresentableCourse(elsPresentableCourse);
@@ -1971,9 +1971,9 @@ public class ElsRestController {
             return response;
 
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     /**
@@ -1983,7 +1983,7 @@ public class ElsRestController {
      */
     @DeleteMapping("/presentable-courses/remove")
     public BaseResponse deletePresentableCourse(HttpServletRequest header, @RequestParam(name = "id") Long id) {
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             BaseResponse response = new BaseResponse();
             try {
                 teacherPresentableCourseService.deletePresentableCourse(id);
@@ -1997,9 +1997,9 @@ public class ElsRestController {
                 return response;
             }
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
 
     }
 
@@ -2011,7 +2011,7 @@ public class ElsRestController {
     @PostMapping("presntable-courses/modify")
     public ElsPresentableResponse editTeacherPresentableCourse(HttpServletRequest header, @RequestBody ElsPresentableResponse elsPresentableCourse) {
         ElsPresentableResponse response = new ElsPresentableResponse();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(elsPresentableCourse.getNationalCode());
                 if (teacherId == null) {
@@ -2033,9 +2033,9 @@ public class ElsRestController {
                 return response;
             }
 
-        } else {
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
-        }
+//        } else {
+//            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+//        }
     }
 
     //-----------------------------------------
