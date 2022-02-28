@@ -30,7 +30,7 @@ public class ViewClassCostDTO implements Serializable {
 
         private String acceptanceLimit;
 
-        private String classStudent;
+        private String classStatus;
 
         private String classCode;
 
@@ -53,7 +53,7 @@ public class ViewClassCostDTO implements Serializable {
 
         private String teacherNationalCode;
 
-        private String COMPLEX;
+        private String complex;
 
         private String isPersonnel;
 

@@ -7,7 +7,6 @@
 
     //----------------------------------------------------Variables-----------------------------------------------------
     let reportCriteria_Cost_REFR = null;
-    // let excelData = [];
     //----------------------------------------------------Default Rest--------------------------------------------------
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
@@ -18,24 +17,32 @@
             { name: "id", title: "id", primaryKey: true, hidden: true},
             {name: "classCode", title: "<spring:message code="class.code"/>", filterOperator: "iContains"},
             {name: "classTitle", title: "<spring:message code="class.title"/>", filterOperator: "iContains"},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains"},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {name: "teacher", title: "استاد", filterOperator: "iContains"},
+            {name: "teacherNationalCode", title: "کد ملی استاد", filterOperator: "iContains"},
+            {name: "isPersonnel", title: "نوع استاد", filterOperator: "iContains"},
             {name: "startDate", title: "<spring:message code="start.date"/>", filterOperator: "iContains"},
             {name: "endDate", title: "<spring:message code="end.date"/>", filterOperator: "iContains"},
-            {name: "titleCategory", title: "<spring:message code="category"/>", filterOperator: "iContains"},
-            {name: "titleSubCategory", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
-            {name: "description", title: "<spring:message code="suggestions"/>", filterOperator: "iContains"},
+            {name: "acceptanceLimit", title: "حد قبولی کلاس", filterOperator: "iContains"},
+            {name: "courseCode", title: "کد دوره", filterOperator: "iContains"},
+            {name: "courseTitle", title: "عنوان دوره", filterOperator: "iContains"},
+            {name: "complex", title: "مجتمع", filterOperator: "iContains"},
+            {name: "moavenat", title: "معاونت", filterOperator: "iContains"},
+            {name: "omor", title: "امور", filterOperator: "iContains"},
+            {name: "totalStudent", title: "تعداد دانشجویان کلاس", filterOperator: "iContains"},
+            {name: "studentCost", title: "هزینه هر دانشجو", filterOperator: "iContains"},
+            {name: "currency", title: "واحد", filterOperator: "iContains"},
+            {name: "cost", title: "هزینه کلی", filterOperator: "iContains"},
 
         ],
         fetchDataURL: viewClassCostReportUrl + "/iscList",
     });
 
     //----------------------------------------------------Criteria Form------------------------------------------------
-    // ToolStripButton_Excel_Comment_REFR = isc.ToolStripButtonExcel.create({
-    //     click: function () {
-    //         makeExcelComments();
-    //     }
-    // });
+    ToolStripButton_Excel_Cost_REFR = isc.ToolStripButtonExcel.create({
+        click: function () {
+            makeExcelCost();
+        }
+    });
     ToolStripButton_Refresh_Cost_REFR = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Cost_REFR.invalidateCache();
@@ -52,7 +59,7 @@
                     border: '0px',
                     members: [
                         ToolStripButton_Refresh_Cost_REFR,
-                        // ToolStripButton_Excel_Comment_REFR
+                        ToolStripButton_Excel_Cost_REFR
                     ]
                 })
             ]
@@ -164,13 +171,7 @@
 
             for (let i = 0; i < data_values.criteria.size(); i++) {
 
-                if (data_values.criteria[i].fieldName === "titleSubCategory") {
-                    data_values.criteria[i].fieldName = "titleSubCategory";
-                    data_values.criteria[i].operator = "inSet";
-                } else if (data_values.criteria[i].fieldName === "titleCategory") {
-                    data_values.criteria[i].fieldName = "titleCategory";
-                    data_values.criteria[i].operator = "inSet";
-                } else if (data_values.criteria[i].fieldName === "startDate") {
+               if (data_values.criteria[i].fieldName === "startDate") {
                     data_values.criteria[i].fieldName = "startDate";
                     data_values.criteria[i].operator = "greaterOrEqual";
                 } else if (data_values.criteria[i].fieldName === "endDate") {
@@ -179,19 +180,7 @@
                 }
             }
 
-            excelData = [];
-            excelData.add({
-                classCode: "کد کلاس",
-                classTitle: "عنوان کلاس",
-                firstName: "نام ",
-                lastName: "نام خانوادگی ",
-                startDate: "تاریخ شروع",
-                endDate: "تاریخ پایان",
-                titleCategory: "گروه",
-                titleSubCategory: "زیرگروه",
-                description: "نظرات"
 
-            });
             reportCriteria_Cost_REFR = data_values;
             ListGrid_Cost_REFR.invalidateCache();
             ListGrid_Cost_REFR.fetchData(reportCriteria_Cost_REFR);
@@ -244,13 +233,23 @@
         fields: [
             {name: "classCode"},
             {name: "classTitle"},
-            {name: "firstName"},
-            {name: "lastName"},
+            {name: "teacher"},
+            {name: "teacherNationalCode"},
+            {name: "isPersonnel"},
             {name: "startDate"},
             {name: "endDate"},
-            {name: "titleCategory"},
-            {name: "titleSubCategory"},
-            {name: "description"},
+            {name: "acceptanceLimit"},
+            {name: "courseCode"},
+            {name: "courseTitle"},
+            {name: "complex"},
+            {name: "moavenat"},
+            {name: "omor"},
+            {name: "totalStudent"},
+            {name: "studentCost"},
+            {name: "currency"},
+            {name: "cost"},
+
+
 
         ]
     });
@@ -267,55 +266,79 @@
 
     //------------------------------------------------- Functions ------------------------------------------------------
     //
-    // function makeExcelComments() {
-    //
-    //     if (ListGrid_Cost_REFR.getOriginalData().localData === undefined)
-    //         createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
-    //     else {
-    //         let records = ListGrid_Cost_REFR.data.localData.toArray();
-    //         excelData = [];
-    //         excelData.add({
-    //             classCode: "کد کلاس",
-    //             classTitle: "عنوان کلاس",
-    //             firstName: "نام ",
-    //             lastName: "نام خانوادگی ",
-    //             startDate: "تاریخ شروع",
-    //             endDate: "تاریخ پایان",
-    //             titleCategory: "گروه",
-    //             titleSubCategory: "زیرگروه",
-    //             description: "نظرات",
-    //         });
-    //
-    //         if(records) {
-    //             for (let j = 0; j < records.length; j++) {
-    //                 excelData.add({
-    //                     rowNum: j+1,
-    //                     classCode: records[j].classCode,
-    //                     classTitle: records[j].classTitle,
-    //                     firstName: records[j].firstName,
-    //                     lastName: records[j].lastName,
-    //                     startDate: records[j].startDate,
-    //                     endDate: records[j].endDate,
-    //                     titleCategory: records[j].titleCategory,
-    //                     titleSubCategory: records[j].titleSubCategory,
-    //                     description: records[j].description
-    //                 });
-    //
-    //             }
-    //         }
-    //         let fields = [
-    //             {name: "rowNum"},
-    //             {name: "classCode"},
-    //             {name: "classTitle"},
-    //             {name: "firstName"},
-    //             {name: "lastName"},
-    //             {name: "startDate"},
-    //             {name: "endDate"},
-    //             {name: "titleCategory"},
-    //             {name: "titleSubCategory"},
-    //             {name: "description"}
-    //         ];
-    //         ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش نظرات ارزیابی ", null);
-    //     }
-    // }
+    function makeExcelCost() {
+
+        if (ListGrid_Cost_REFR.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else {
+            let records = ListGrid_Cost_REFR.data.localData.toArray();
+            excelData = [];
+            excelData.add({
+                classCode: "کد کلاس",
+                classTitle: "عنوان کلاس",
+                teacher: "استاد ",
+                teacherNationalCode: "کد ملی استاد",
+                isPersonnel: "نوع استاد",
+                startDate: "تاریخ شروع",
+                endDate: "تاریخ پایان",
+                acceptanceLimit: "حد قبولی کلاس",
+                courseCode: "کد دوره",
+                courseTitle: "عنوان دوره",
+                complex: "مجتمع",
+                moavenat: "معاونت",
+                omor: "امور",
+                totalStudent: "تعداد دانشجویان کلاس",
+                studentCost: "هزینه هر دانشجو",
+                currency: "واحد",
+                cost: "هزینه کلی",
+            });
+
+            if(records) {
+                for (let j = 0; j < records.length; j++) {
+                    excelData.add({
+                        rowNum: j+1,
+                        classCode: records[j].classCode,
+                        classTitle: records[j].classTitle,
+                        teacher: records[j].teacher,
+                        teacherNationalCode: records[j].teacherNationalCode,
+                        isPersonnel: records[j].isPersonnel,
+                        startDate: records[j].startDate,
+                        endDate: records[j].endDate,
+                        acceptanceLimit: records[j].acceptanceLimit,
+                        courseCode: records[j].courseCode,
+                        courseTitle: records[j].courseTitle,
+                        complex: records[j].complex,
+                        moavenat: records[j].moavenat,
+                        omor: records[j].omor,
+                        totalStudent: records[j].totalStudent,
+                        studentCost: records[j].studentCost,
+                        currency: records[j].currency,
+                        cost: records[j].cost
+                    });
+
+                }
+            }
+            let fields = [
+                {name: "id"},
+                {name: "classCode"},
+                {name: "classTitle"},
+                {name: "teacher"},
+                {name: "teacherNationalCode"},
+                {name: "isPersonnel"},
+                {name: "startDate"},
+                {name: "endDate"},
+                {name: "acceptanceLimit"},
+                {name: "courseCode"},
+                {name: "courseTitle"},
+                {name: "complex"},
+                {name: "moavenat"},
+                {name: "omor"},
+                {name: "totalStudent"},
+                {name: "studentCost"},
+                {name: "currency"},
+                {name: "cost"}
+            ];
+            ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش هزینه کلاس ها ", null);
+        }
+    }
     // </script>

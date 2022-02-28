@@ -2724,16 +2724,16 @@
                 },
                 {
                     title: "گزارشات مالی",
-                    <%--submenu:--%>
-                    <%--    [--%>
-                    <%--        {--%>
-                    <%--            title: "گزارش هزینه کلاس ها",--%>
-                    <%--            click: function () {--%>
-                    <%--                createTab(this.title, "<spring:url value="web/classCostReport"/>");--%>
-                    <%--            }--%>
-                    <%--        }--%>
+                    submenu:
+                        [
+                            {
+                                title: "گزارش هزینه کلاس ها",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/classCostReport"/>");
+                                }
+                            }
 
-                    <%--    ]--%>
+                        ]
                 },
             ]
         }),

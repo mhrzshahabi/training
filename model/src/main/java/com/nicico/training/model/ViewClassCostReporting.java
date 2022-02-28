@@ -32,7 +32,7 @@ public class ViewClassCostReporting {
     private String classStatus;
 
 
-    @Column(name = "CLASS_STATUS", insertable = false, updatable = false)
+    @Column(name = "c_code", insertable = false, updatable = false)
     private String classCode;
 
 
@@ -70,7 +70,7 @@ public class ViewClassCostReporting {
 
 
     @Column(name = "COMPLEX")
-    private String COMPLEX;
+    private String complex;
 
     @Column(name = "IS_PERSONNEL")
     private String isPersonnel;
