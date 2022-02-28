@@ -17,13 +17,11 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.course.CourseUpdateResponse;
 import response.course.dto.CourseDto;
 
-import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
@@ -59,9 +57,6 @@ public class CourseService implements ICourseService {
     private final EnumsConverter.ETheoTypeConverter eTheoTypeConverter = new EnumsConverter.ETheoTypeConverter();
     private final CourseBeanMapper beanMapper;
     private final IContactInfoService contactInfoService;
-
-    @Autowired
-    protected EntityManager entityManager;
 
 
     @Transactional(readOnly = true)
@@ -342,19 +337,21 @@ public class CourseService implements ICourseService {
 
     @Override
     public List<Course> getCoursesViaCategoryAndSubCategory(ElsCatAndSub elsCatAndSub) {
-        return     courseDAO.findAllByCategoryIdAndSubCategoryId(elsCatAndSub.getCategories(),elsCatAndSub.getSubCategories());
+        return courseDAO.findAllByCategoryIdAndSubCategoryId(elsCatAndSub.getCategories(),elsCatAndSub.getSubCategories());
     }
 
+    @Transactional
+    @Override
+    public void updateDurationByCourseCode(String code, Float theoryDuration) {
+        courseDAO.updateDurationByCourseCode(code, theoryDuration);
+    }
 
-    //-------jafari--------
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request) {
         SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> search = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.GoalsWithSyllabus.class));
         return search;
     }
-    //-------jafari--------
-
 
     @Transactional(readOnly = true)
     @Override
@@ -657,9 +654,6 @@ public class CourseService implements ICourseService {
         return courseDAO.updateCourseState(courseId, workflowStatus, workflowStatusCode);
     }
 
-
-    //---------------------heydari---------------------------
-    //
     @Transactional()
     @Override
     public CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request) {
@@ -686,7 +680,6 @@ public class CourseService implements ICourseService {
         return modelMapper.map(course, CourseDTO.CourseGoals.class);
     }
 
-    //----------------------------------------------------------------------
     @Transactional
     @Override
     public SearchDTO.SearchRs<CourseDTO.courseWithOutTeacher> courseWithOutTeacher(SearchDTO.SearchRq request) {
@@ -761,9 +754,6 @@ public class CourseService implements ICourseService {
         searchRs.setTotalCount((long) courseWithOutTeacherList.size());
         return searchRs;
     }
-
-    //----------------------------------------------------------------------
-
 
 }
 

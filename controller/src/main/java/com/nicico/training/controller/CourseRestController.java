@@ -31,6 +31,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import request.course.CourseUpdateRequest;
+import response.BaseResponse;
 import response.course.CourseDeleteResponse;
 import response.course.CourseListResponse;
 import response.course.CourseUpdateResponse;
@@ -747,5 +748,13 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             });
         }
         return request;
+    }
+
+    @GetMapping(value = "/update-duration/{code}/{theoryDuration}")
+    public BaseResponse updateDurationByCourseCode(@PathVariable String code, @PathVariable Float theoryDuration) {
+        BaseResponse response = new BaseResponse();
+        iCourseService.updateDurationByCourseCode(code, theoryDuration);
+        response.setStatus(200);
+        return response;
     }
 }
