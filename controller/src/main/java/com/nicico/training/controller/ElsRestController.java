@@ -165,7 +165,6 @@ public class ElsRestController {
     private final ITeacherPresentableCourseService teacherPresentableCourseService;
     private final TeacherPresentableCourseMapper teacherPresentableCourseMapper;
     private final ITeacherSpecialSkillService iTeacherSpecialSkillService;
-    private final TeacherSpecialSkillBeanMapper teacherSpecialSkillBeanMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -2501,4 +2500,24 @@ public class ElsRestController {
         }
         return teacherSpecialSkillResponseDTO;
     }
+
+    /**
+     * For creating a new special skill
+     * the input DTO contains teacher's national code
+     * @param header
+     * @param teacherSpecialSkillDTO
+     * @return
+     */
+    @PostMapping("/teacher/special-skills")
+    public BaseResponse createTeacherSpecialSkill(HttpServletRequest header, @RequestBody TeacherSpecialSkillDTO.Create teacherSpecialSkillDTO) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            response = iTeacherSpecialSkillService.create(teacherSpecialSkillDTO);
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return response;
+    }
+
 }

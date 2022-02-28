@@ -1254,6 +1254,7 @@
     const viewCoursesEvaluationReportUrl = rootUrl + "/view_courses_evaluation_report";
     const viewReactionEvaluationFormulaReportUrl = rootUrl + "/view_reaction_evaluation_formula_report";
     const viewReactionEvaluationCommentUrl = rootUrl + "/evaluation/comments";
+    const viewClassCostReportUrl = rootUrl + "/view-class-cost";
     const masterDataUrl = rootUrl + "/masterData";
     const viewEvaluationStaticalReportUrl = rootUrl + "/view-evaluation-statical-report";
     const viewTeacherReportUrl = rootUrl + "/view-teacher-report/";
@@ -2722,7 +2723,17 @@
                         ]
                 },
                 {
-                    title: "گزارشات مالی"
+                    title: "گزارشات مالی",
+                    <%--submenu:--%>
+                    <%--    [--%>
+                    <%--        {--%>
+                    <%--            title: "گزارش هزینه کلاس ها",--%>
+                    <%--            click: function () {--%>
+                    <%--                createTab(this.title, "<spring:url value="web/classCostReport"/>");--%>
+                    <%--            }--%>
+                    <%--        }--%>
+
+                    <%--    ]--%>
                 },
             ]
         }),

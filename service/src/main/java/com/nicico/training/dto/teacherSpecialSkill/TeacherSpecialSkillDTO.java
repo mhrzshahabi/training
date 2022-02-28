@@ -1,5 +1,4 @@
 package com.nicico.training.dto.teacherSpecialSkill;
-
 import com.nicico.training.dto.ParameterValueDTO;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -33,7 +32,8 @@ public class TeacherSpecialSkillDTO {
     @ApiModel("TeacherSpecialSkillDTO.Create")
     public static class Create extends TeacherSpecialSkillDTO {
         @ApiModelProperty(required = true)
-        private Long id;
+        private String nationalCode;
+        private Long teacherId;
     }
 
     @Getter
@@ -41,6 +41,7 @@ public class TeacherSpecialSkillDTO {
     @Accessors(chain = true)
     @ApiModel("TeacherSpecialSkillDTO.Update")
     public static class Update extends TeacherSpecialSkillDTO {
+        @ApiModelProperty(required = true)
         private Long id;
     }
 

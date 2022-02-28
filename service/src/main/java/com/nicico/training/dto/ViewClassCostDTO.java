@@ -34,9 +34,9 @@ public class ViewClassCostDTO implements Serializable {
 
         private String classCode;
 
-        private String classStartDate;
+        private String startDate;
 
-        private String classEndDate;
+        private String endDate;
 
         private String classTitle;
 

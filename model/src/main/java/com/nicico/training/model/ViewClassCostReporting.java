@@ -38,10 +38,10 @@ public class ViewClassCostReporting {
 
 
     @Column(name = "C_START_DATE")
-    private String classStartDate;
+    private String startDate;
 
     @Column(name = "C_END_DATE")
-    private String classEndDate;
+    private String endDate;
 
     @Column(name = "C_TITLE_CLASS")
     private String classTitle;

@@ -352,6 +352,12 @@ public class MainFormController {
         return "security/workGroup";
     }
 
+    @RequestMapping("/classCostReport")
+    public String showClassCostReportForm() {
+        return "report/viewClassCostReport";
+    }
+
+
     @RequestMapping("/course-needs-assessment-reports")
     public String showCourseNAReportsForm() {
         return "planning/courseNAReports";
