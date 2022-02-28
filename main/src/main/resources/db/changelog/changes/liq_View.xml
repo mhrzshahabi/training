@@ -11928,7 +11928,7 @@ ORDER BY
 
 
     <changeSet author="xaniar (generated)" id="1645952073000-2">
-        <createView viewName="VIEW-CLASS-COST-REPORTING" replaceIfExists="true">
+        <createView viewName="VIEW_CLASS_COST_REPORTING" replaceIfExists="true">
             <![CDATA[
 SELECT
     ROWNUM                                                                                                           AS id,
@@ -11960,6 +11960,8 @@ END AS f_student_cost_currency,
     concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher_fullname,
     tbl_personal_info.c_national_code,
     view_complex.c_title                                                                                             AS complex,
+     view_assistant.c_title                                                                                             AS moavenat,
+      view_affairs.c_title                                                                                             AS omor,
     CASE
         WHEN tbl_teacher.b_personnel = 0 THEN
             'برون سازمانی'
@@ -11975,6 +11977,9 @@ FROM
     INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
     INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
     LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id
+    LEFT JOIN view_assistant ON tbl_class.assistant_id = view_assistant.id
+    LEFT JOIN view_affairs ON tbl_class.affairs_id = view_affairs.id
+
     LEFT JOIN (
          SELECT DISTINCT
             class_id,
@@ -11991,6 +11996,7 @@ FROM
             )
 
     ) classStu ON tbl_class.id = classStu.class_id
+    ORDER BY tbl_class.id DESC
             ]]>
         </createView>
     </changeSet>

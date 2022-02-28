@@ -3671,5 +3671,33 @@ WHERE
     <changeSet author="MShahabi" id="1799887766557-050">
         <addForeignKeyConstraint baseColumnNames="f_parameter_value_students_level" baseTableName="tbl_teaching_history" constraintName="FK_TEACHING_HISTORY_TO_PARAMETER_VALUE" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="nick (generated)" id="1638772362566-773">
+        <sql>
+            <![CDATA[
+            INSERT INTO TBL_PARAMETER (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, C_TITLE, C_TYPE) VALUES (477, 'tavassoli', TO_TIMESTAMP('2022-02-23 10:07:01.595000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillField', 'زمینه ی مهارت استاد', 'زمینه مهارت', null);
+            INSERT INTO TBL_PARAMETER (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, C_TITLE, C_TYPE) VALUES (478, 'tavassoli', TO_TIMESTAMP('2022-02-23 10:09:42.677000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillType', 'نوع مهارت استاد', 'نوع مهارت', null);
+            INSERT INTO TBL_PARAMETER (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, C_TITLE, C_TYPE) VALUES (480, 'tavassoli', TO_TIMESTAMP('2022-02-23 10:12:09.449000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillLevel', 'سطح مهارت استاد', 'سطح مهارت استاد', null);
+
+            INSERT INTO TBL_PARAMETER_VALUE (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, F_PARAMETER_ID, C_TITLE, C_TYPE, C_VALUE) VALUES (896, 'tavassoli', TO_TIMESTAMP('2022-02-23 11:44:34.243000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillFieldMetalogy', 'زمینه مهارت استاد_متالوژی', 477, 'متالوژی', 'TeacherSkillField', null);
+            INSERT INTO TBL_PARAMETER_VALUE (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, F_PARAMETER_ID, C_TITLE, C_TYPE, C_VALUE) VALUES (898, 'tavassoli', TO_TIMESTAMP('2022-02-23 12:07:00.028000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillFieldMechanics', 'زمینه مهارت استاد_مکانیک', 477, 'مکانیک', null, null);
+            INSERT INTO TBL_PARAMETER_VALUE (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, F_PARAMETER_ID, C_TITLE, C_TYPE, C_VALUE) VALUES (899, 'tavassoli', TO_TIMESTAMP('2022-02-23 12:10:55.568000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillFieldElectronics', 'زمینه مهارت استاد_برق', 477, 'برق', null, null);
+            INSERT INTO TBL_PARAMETER_VALUE (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, F_PARAMETER_ID, C_TITLE, C_TYPE, C_VALUE) VALUES (900, 'tavassoli', TO_TIMESTAMP('2022-02-23 12:20:44.699000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillTypeWelding', 'نوع مهارت استادـجوشکاری', 478, 'جوشکاری', null, null);
+            INSERT INTO TBL_PARAMETER_VALUE (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, F_PARAMETER_ID, C_TITLE, C_TYPE, C_VALUE) VALUES (901, 'tavassoli', TO_TIMESTAMP('2022-02-23 12:22:58.506000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillTypePLC', 'نوع مهارت استادـPLC', 478, 'PLC', null, null);
+            INSERT INTO TBL_PARAMETER_VALUE (ID, C_CREATED_BY, D_CREATED_DATE, E_DELETED, E_ENABLED, C_LAST_MODIFIED_BY, D_LAST_MODIFIED_DATE, N_VERSION, C_CODE, C_DESCRIPTION, F_PARAMETER_ID, C_TITLE, C_TYPE, C_VALUE) VALUES (902, 'tavassoli', TO_TIMESTAMP('2022-02-23 12:31:45.118000', 'YYYY-MM-DD HH24:MI:SS.FF6'), null, null, null, null, 0, 'TeacherSkillLevelVocationalT', 'سطح مهارت استاد-فنی حرفه ای', 480, 'فنی حرفه ای', null, null);
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="nick (generated)" id="1638772362566-774">
+        <createTable tableName="TBL_TEACHER_SPECIAL_SKILL">
+            <column name="ID" type="NUMBER(19, 0)"/>
+            <column name="F_TEACHER_ID" type="NUMBER(19, 0)"/>
+            <column name="F_FIELD_ID" type="NUMBER(19, 0)"/>
+            <column name="F_TYPE_ID" type="NUMBER(19, 0)"/>
+            <column name="F_LEVEL_ID" type="NUMBER(19, 0)"/>
+            <column name="C_DESCRIPTION" type="varchar2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
 
 </databaseChangeLog>

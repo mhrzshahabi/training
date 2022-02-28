@@ -12,6 +12,7 @@ import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
+import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.mapper.academicBK.AcademicBKBeanMapper;
@@ -27,9 +28,12 @@ import com.nicico.training.mapper.teacher.TeacherPresentableCourseMapper;
 import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.mapper.teachingHistory.TeachingHistoryBeanMapper;
 import com.nicico.training.model.*;
+import com.nicico.training.mapper.teacherSpecialSkil.TeacherSpecialSkillBeanMapper;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
+import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
+import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -160,6 +164,8 @@ public class ElsRestController {
     private final CourseMapper courseMapper;
     private final ITeacherPresentableCourseService teacherPresentableCourseService;
     private final TeacherPresentableCourseMapper teacherPresentableCourseMapper;
+    private final ITeacherSpecialSkillService iTeacherSpecialSkillService;
+    private final TeacherSpecialSkillBeanMapper teacherSpecialSkillBeanMapper;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -2444,5 +2450,44 @@ public class ElsRestController {
         } else
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
         return response;
+    }
+
+
+    /**
+     * returns list of teacher special skills by national code
+     * the output is based on baseResponse
+     *
+     * @param header
+     * @param nationalCode
+     * @return
+     */
+    @GetMapping("/teacher/special-skills/{nationalCode}")
+    TeacherSpecialSkillResponseDTO getTeacherSpecialSkillsByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+        TeacherSpecialSkillResponseDTO teacherSpecialSkillResponseDTO = new TeacherSpecialSkillResponseDTO();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                if (MyUtils.validateNationalCode(nationalCode)) {
+                    Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+                    if (teacherId == null) {
+                        teacherSpecialSkillResponseDTO.setStatus(HttpStatus.NO_CONTENT.value());
+                        teacherSpecialSkillResponseDTO.setMessage("اطلاعات استاد با کد ملی " + nationalCode + " موجود نیست.");
+                    } else {
+                        List<TeacherSpecialSkillDTO.Info> infoList = iTeacherSpecialSkillService.findTeacherSpecialSkills(teacherId);
+                        teacherSpecialSkillResponseDTO.setSpecialSkillDTOS(infoList);
+                        teacherSpecialSkillResponseDTO.setStatus(200);
+                    }
+                } else {
+                    teacherSpecialSkillResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
+                    teacherSpecialSkillResponseDTO.setMessage("کدملی معتبر نیست");
+                }
+            } catch (Exception e) {
+                teacherSpecialSkillResponseDTO.setStatus(HttpStatus.NOT_FOUND.value());
+                teacherSpecialSkillResponseDTO.setMessage(" موردی یافت نشد");
+            }
+        } else {
+            teacherSpecialSkillResponseDTO.setStatus(HttpStatus.UNAUTHORIZED.value());
+            teacherSpecialSkillResponseDTO.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return teacherSpecialSkillResponseDTO;
     }
 }

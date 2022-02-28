@@ -81,5 +81,12 @@ public class ViewClassCostReporting {
     @Column(name = "HAZINE")
     private String cost;
 
+    @Column(name = "moavenat")
+    private String moavenat;
+
+
+    @Column(name = "omor")
+    private String omor;
+
 
 }

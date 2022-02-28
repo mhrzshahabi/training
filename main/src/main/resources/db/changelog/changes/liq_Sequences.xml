@@ -334,5 +334,7 @@
     <changeSet id="2799887766557-12" author="ZPakdaman">
         <createSequence sequenceName="seq_teacher_presentable_course_id"/>
     </changeSet>
-
+    <changeSet author="nick (generated)" id="1638772362566-775">
+        <createSequence sequenceName="SEQ_TEACHER_SPECIAL_SKILL_ID"/>
+    </changeSet>
 </databaseChangeLog>

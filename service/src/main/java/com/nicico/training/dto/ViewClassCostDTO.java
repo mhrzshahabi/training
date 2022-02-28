@@ -60,6 +60,9 @@ public class ViewClassCostDTO implements Serializable {
         private String totalStudent;
 
         private String cost;
+        private String omor;
+
+        private String moavenat;
     }
 
     @Getter
