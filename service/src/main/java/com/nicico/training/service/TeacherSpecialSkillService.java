@@ -6,7 +6,6 @@ import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.iservice.ITeacherSpecialSkillService;
 import com.nicico.training.mapper.teacherSpecialSkil.TeacherSpecialSkillBeanMapper;
 import com.nicico.training.model.TeacherSpecialSkill;
-import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.repository.TeacherSpecialSkillDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -50,6 +49,34 @@ public class TeacherSpecialSkillService implements ITeacherSpecialSkillService {
             baseResponse.setMessage(((TrainingException) e).getMsg());
         }
         return baseResponse;
+    }
+
+    @Override
+    @Transactional
+    public TeacherSpecialSkillDTO.UpdatedInfo update(TeacherSpecialSkillDTO.Update teacherSpecialSkillDTO) {
+        TeacherSpecialSkillDTO.UpdatedInfo response = new TeacherSpecialSkillDTO.UpdatedInfo();
+        try {
+            TeacherSpecialSkill mainTeacherSpecialSkill = teacherSpecialSkillDAO.getById(teacherSpecialSkillDTO.getId());
+            if (mainTeacherSpecialSkill != null) {
+                TeacherSpecialSkill teacherSpecialSkill = teacherSpecialSkillBeanMapper.toTeacherUpdatedSpecialSkill(teacherSpecialSkillDTO);
+                teacherSpecialSkill.setTeacherId(mainTeacherSpecialSkill.getTeacherId());
+                TeacherSpecialSkill teacherSpecialSkill2 = teacherSpecialSkillDAO.save(teacherSpecialSkill);
+                response = teacherSpecialSkillBeanMapper.toTeacherUpdatedInfoDto(teacherSpecialSkill2);
+                response.setStatus(HttpStatus.OK.value());
+            } else {
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+                response.setMessage("مهارت مورد نظر یافت نشد");
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(((TrainingException) e).getMsg());
+        }
+        return response;
+    }
+
+    @Override
+    public void deleteSpecialSkill(Long id) {
+        teacherSpecialSkillDAO.deleteById(id);
     }
 
 }

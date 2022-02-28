@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import response.BaseResponse;
 
 @Setter
 @Getter
@@ -24,6 +25,17 @@ public class TeacherSpecialSkillDTO {
         private ParameterValueDTO.TupleInfo field;
         private ParameterValueDTO.TupleInfo type;
         private ParameterValueDTO.TupleInfo level;
+    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherSpecialSkillDTO.UpdatedInfo")
+    public static class UpdatedInfo extends BaseResponse {
+        private Long id;
+        private Long fieldId;
+        private Long typeId;
+        private Long levelId;
+        private String description;
     }
 
     @Getter
