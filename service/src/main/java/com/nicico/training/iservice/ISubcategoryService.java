@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.model.Subcategory;
+import response.question.dto.ElsSubCategoryDto;
 
 import java.util.List;
 import java.util.Set;
@@ -36,5 +37,7 @@ public interface ISubcategoryService {
     List<String> findSubCategoryNamesByEmpHistoryId(Long empHistoryId);
 
     List<String> findSubCategoryNamesByTeachHistoryId(Long teachHistoryId);
+
+    List<ElsSubCategoryDto> getAllSubCategoriesForEls();
 
 }

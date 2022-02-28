@@ -1304,7 +1304,6 @@ public class ElsRestController {
 
     @GetMapping("/categoryList")
     public List<ElsCategoryDto> getCategories(HttpServletRequest header) {
-
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 return categoryService.getCategoriesForEls();
@@ -1318,10 +1317,22 @@ public class ElsRestController {
 
     @GetMapping("/subCategoryList/{categoryId}")
     public List<ElsSubCategoryDto> getSubCategories(HttpServletRequest header, @PathVariable Long categoryId) {
-
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 return subcategoryService.getSubCategoriesForEls(categoryId);
+            } catch (Exception e) {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
+    @GetMapping("/subCategoryList-all")
+    public List<ElsSubCategoryDto> getAllSubCategories(HttpServletRequest header) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                return subcategoryService.getAllSubCategoriesForEls();
             } catch (Exception e) {
                 throw new TrainingException(TrainingException.ErrorType.NotFound);
             }

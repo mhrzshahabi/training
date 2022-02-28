@@ -151,4 +151,12 @@ public class SubcategoryService implements ISubcategoryService {
         return modelMapper.map(subCategories, new TypeToken<List<ElsSubCategoryDto>>() {
         }.getType());
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<ElsSubCategoryDto> getAllSubCategoriesForEls() {
+        final List<Subcategory> cAll = subCategoryDAO.findAll();
+        return modelMapper.map(cAll, new TypeToken<List<ElsSubCategoryDto>>() {
+        }.getType());
+    }
 }
