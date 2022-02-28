@@ -28,7 +28,6 @@ import com.nicico.training.mapper.teacher.TeacherPresentableCourseMapper;
 import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.mapper.teachingHistory.TeachingHistoryBeanMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.mapper.teacherSpecialSkil.TeacherSpecialSkillBeanMapper;
 import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
@@ -2513,6 +2512,48 @@ public class ElsRestController {
         BaseResponse response = new BaseResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             response = iTeacherSpecialSkillService.create(teacherSpecialSkillDTO);
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return response;
+    }
+
+    /**
+     * edit a special skill of the teacher
+     * @param header
+     * @param teacherSpecialSkillDTO
+     * @return
+     */
+    @PutMapping("/teacher/special-skills/edit")
+    TeacherSpecialSkillDTO.UpdatedInfo updateSpecialSkill(HttpServletRequest header, @RequestBody TeacherSpecialSkillDTO.Update teacherSpecialSkillDTO){
+        TeacherSpecialSkillDTO.UpdatedInfo updatedInfoResponse = new TeacherSpecialSkillDTO.UpdatedInfo();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            updatedInfoResponse = iTeacherSpecialSkillService.update(teacherSpecialSkillDTO);
+        } else {
+            updatedInfoResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            updatedInfoResponse.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return updatedInfoResponse;
+    }
+
+    /**
+     * for deleting special skills by id
+     * @param header
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/teacher/special-skills/remove")
+    BaseResponse removeSpecialSkill(HttpServletRequest header, @RequestParam(name = "id") Long id) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+                iTeacherSpecialSkillService.deleteSpecialSkill(id);
+                response.setStatus(HttpStatus.OK.value());
+            } catch (Exception e) {
+                response.setMessage("حذف مهارت امکان پذیر نیست");
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            }
         } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("دسترسی موردنظر یافت نشد");
