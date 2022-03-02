@@ -56,11 +56,11 @@ public class ISC<T> {
         ObjectMapper objectMapper = new ObjectMapper();
 
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-           String strTrim= criteriaList[0];
-           criteriaList[0]=strTrim.replaceAll("\\s","");
+//            StringBuilder criteria = new StringBuilder("[" + criteriaList[0]);
+//            String strTrim= criteriaList[0];
+//           criteriaList[0]=strTrim.replaceAll("\\s","");
             StringBuilder criteria = new StringBuilder("["+ criteriaList[0]);
             for (int i = 1; i < criteriaList.length; i++) {
-
                 criteria.append(",").append(criteriaList[i]);
             }
             criteria.append("]");
