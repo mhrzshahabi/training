@@ -9,4 +9,8 @@ public interface ITeacherSpecialSkillService {
     List<TeacherSpecialSkillDTO.Info> findTeacherSpecialSkills(Long teacherId);
     BaseResponse create(TeacherSpecialSkillDTO.Create teacherSpecialSkillDTO);
 
+    TeacherSpecialSkillDTO.UpdatedInfo update(TeacherSpecialSkillDTO.Update teacherSpecialSkillDTO);
+
+    void deleteSpecialSkill(Long id);
+
 }
