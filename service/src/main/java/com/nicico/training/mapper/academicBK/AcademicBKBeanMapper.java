@@ -1,11 +1,11 @@
 package com.nicico.training.mapper.academicBK;
 
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AcademicBKDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.AcademicBK;
 import com.nicico.training.model.ParameterValue;
-import com.nicico.training.utility.persianDate.PersianDate;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -15,9 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import request.academicBK.ElsAcademicBKReqDto;
 import response.academicBK.*;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+
+import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public abstract class AcademicBKBeanMapper {
@@ -67,16 +72,22 @@ public abstract class AcademicBKBeanMapper {
     @Named("longDateToStringDate")
     String longDateToStringDate(Long lDate) {
         if (lDate != null) {
-            Date _date = new Date(lDate);
-            return PersianDate.convertToTrainingPersianDate(_date);
+            Date date = new Date(lDate);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(Calendar.HOUR_OF_DAY, 4);
+            calendar.add(Calendar.MINUTE, 30);
+            date = calendar.getTime();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            return DateUtil.convertMiToKh(dateFormat.format(date));
         } else return null;
     }
 
     @Named("StringDateToLongDate")
     Long StringDateToLongDate(String sDate) {
         if (sDate != null) {
-            Date date = PersianDate.getEpochDate(sDate, "00:01");
-            return (date.getTime()*1000);
+            Date date = getEpochDate(sDate, "04:30");
+            return (date.getTime() * 1000);
         } else
             return null;
     }
