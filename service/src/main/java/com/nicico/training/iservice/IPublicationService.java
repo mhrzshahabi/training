@@ -2,7 +2,10 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PublicationDTO;
+import com.nicico.training.dto.teacherPublications.ElsPublicationDTO;
+import com.nicico.training.dto.teacherPublications.TeacherPublicationResponseDTO;
 import com.nicico.training.model.Publication;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -22,4 +25,13 @@ public interface IPublicationService {
     void deletePublication(Long teacherId, Long publicationId);
 
     PublicationDTO.Info save(Publication publication, HttpServletResponse response);
+
+    TeacherPublicationResponseDTO findTeacherPublicationsByNationalCode(String nationalCode);
+
+    BaseResponse create(ElsPublicationDTO.Create elsPublicationDTO);
+
+    ElsPublicationDTO.UpdatedInfo updateElsPub(ElsPublicationDTO.Update elsPublicationDTO);
+
+    BaseResponse deleteTeacherPublication(Long id);
+
 }

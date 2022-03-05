@@ -3699,5 +3699,11 @@ WHERE
         </createTable>
     </changeSet>
 
+    <changeSet author="nick (generated)" id="1638772362566-777">
+        <addColumn tableName="tbl_publication">
+            <column name="c_publication_number" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>

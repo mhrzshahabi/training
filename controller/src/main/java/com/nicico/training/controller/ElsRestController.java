@@ -12,6 +12,8 @@ import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
+import com.nicico.training.dto.teacherPublications.ElsPublicationDTO;
+import com.nicico.training.dto.teacherPublications.TeacherPublicationResponseDTO;
 import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
@@ -164,6 +166,7 @@ public class ElsRestController {
     private final ITeacherPresentableCourseService teacherPresentableCourseService;
     private final TeacherPresentableCourseMapper teacherPresentableCourseMapper;
     private final ITeacherSpecialSkillService iTeacherSpecialSkillService;
+    private final IPublicationService iPublicationService;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -2554,6 +2557,82 @@ public class ElsRestController {
                 response.setMessage("حذف مهارت امکان پذیر نیست");
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
             }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return response;
+    }
+
+    /**
+     * it returns teacher publications by National code
+     *
+     * @param header
+     * @param nationalCode
+     * @return
+     */
+    @GetMapping("/teacher/publications/{nationalCode}")
+    TeacherPublicationResponseDTO getTeacherPublicationsByNationalCode(HttpServletRequest header, @PathVariable String nationalCode) {
+        TeacherPublicationResponseDTO teacherPublicationResponseDTO = new TeacherPublicationResponseDTO();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            teacherPublicationResponseDTO = iPublicationService.findTeacherPublicationsByNationalCode(nationalCode);
+        } else {
+            teacherPublicationResponseDTO.setStatus(HttpStatus.UNAUTHORIZED.value());
+            teacherPublicationResponseDTO.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return teacherPublicationResponseDTO;
+    }
+
+    /**
+     * to create  teacher publication
+     *
+     * @param header
+     * @param elsPublicationDTO
+     * @return
+     */
+    @PostMapping("/teacher/publications/")
+    public BaseResponse createTeacherPublications(HttpServletRequest header, @RequestBody ElsPublicationDTO.Create elsPublicationDTO) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            response = iPublicationService.create(elsPublicationDTO);
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return response;
+    }
+
+    /**
+     * for updating teacher publication
+     *
+     * @param header
+     * @param elsPublicationDTO
+     * @return
+     */
+    @PutMapping("/teacher/publications/edit")
+    public ElsPublicationDTO.UpdatedInfo updateTeacherPublications(HttpServletRequest header, @RequestBody ElsPublicationDTO.Update elsPublicationDTO) {
+        ElsPublicationDTO.UpdatedInfo updatedInfoResponse = new ElsPublicationDTO.UpdatedInfo();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            updatedInfoResponse = iPublicationService.updateElsPub(elsPublicationDTO);
+        } else {
+            updatedInfoResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            updatedInfoResponse.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return updatedInfoResponse;
+    }
+
+    /**
+     * for removing teacher publication by publication Id
+     *
+     * @param header
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/teacher/publications/removePublication")
+    public BaseResponse removeTeacherPublication(HttpServletRequest header, @RequestParam(name = "id") Long id) {
+        BaseResponse response = new BaseResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            response = iPublicationService.deleteTeacherPublication(id);
         } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("دسترسی موردنظر یافت نشد");

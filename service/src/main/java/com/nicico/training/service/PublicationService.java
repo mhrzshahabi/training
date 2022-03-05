@@ -5,17 +5,24 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PublicationDTO;
+import com.nicico.training.dto.teacherPublications.ElsPublicationDTO;
+import com.nicico.training.dto.teacherPublications.TeacherPublicationResponseDTO;
 import com.nicico.training.iservice.IPublicationService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.mapper.teacherPublication.TeacherPublicationBeanMapper;
 import com.nicico.training.model.Publication;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.PublicationDAO;
+import com.nicico.training.utility.persianDate.MyUtils;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,6 +36,7 @@ public class PublicationService implements IPublicationService {
     private final ModelMapper modelMapper;
     private final PublicationDAO publicationDAO;
     private final ITeacherService teacherService;
+    private final TeacherPublicationBeanMapper teacherPublicationBeanMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -148,6 +156,104 @@ public class PublicationService implements IPublicationService {
     public PublicationDTO.Info save(Publication publication, HttpServletResponse response) {
             final Publication saved = publicationDAO.saveAndFlush(publication);
             return modelMapper.map(saved, PublicationDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public TeacherPublicationResponseDTO findTeacherPublicationsByNationalCode(String nationalCode) {
+        TeacherPublicationResponseDTO teacherPublicationResponseDTO = new TeacherPublicationResponseDTO();
+        if (MyUtils.validateNationalCode(nationalCode)) {
+            Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+            if (teacherId == null) {
+                teacherPublicationResponseDTO.setStatus(HttpStatus.NO_CONTENT.value());
+                teacherPublicationResponseDTO.setMessage("اطلاعات استاد با کد ملی " + nationalCode + " موجود نیست.");
+            } else {
+                List<Publication> publications = publicationDAO.findAllByTeacherIdOrderByPublicationDate(teacherId);
+                List<ElsPublicationDTO.Info> infoList = teacherPublicationBeanMapper.toElsPublicationDTOInfoList(publications);
+                teacherPublicationResponseDTO.setPublicationDTOInfoList(infoList);
+                teacherPublicationResponseDTO.setStatus(200);
+            }
+        } else {
+            teacherPublicationResponseDTO.setStatus(HttpStatus.BAD_REQUEST.value());
+            teacherPublicationResponseDTO.setMessage("کدملی معتبر نیست");
+        }
+        return teacherPublicationResponseDTO;
+    }
+
+    @Override
+    public BaseResponse create(ElsPublicationDTO.Create elsPublicationDTO) {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            Long teacherId = teacherService.getTeacherIdByNationalCode(elsPublicationDTO.getNationalCode());
+            if (teacherId != null) {
+                elsPublicationDTO.setTeacherId(teacherId);
+                ElsPublicationDTO.Create2 elsPublicationCreate2 = teacherPublicationBeanMapper.toPublicationCreate2(elsPublicationDTO);
+                Publication publication = teacherPublicationBeanMapper.toPublication(elsPublicationCreate2);
+                publicationDAO.save(publication);
+                baseResponse.setStatus(HttpStatus.OK.value());
+
+            } else {
+                baseResponse.setStatus(HttpStatus.NO_CONTENT.value());
+                baseResponse.setMessage("استاد با این اطلاعات یافت نشد");
+            }
+        } catch (Exception e) {
+            baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            baseResponse.setMessage(((TrainingException) e).getMsg());
+        }
+        return baseResponse;
+    }
+
+    @Override
+    @Transactional
+    public ElsPublicationDTO.UpdatedInfo updateElsPub(ElsPublicationDTO.Update elsPublicationDTO) {
+        ElsPublicationDTO.UpdatedInfo response = new ElsPublicationDTO.UpdatedInfo();
+        try {
+            Optional<Publication> mainOptionalPublication = publicationDAO.findById(elsPublicationDTO.getId());
+            if (mainOptionalPublication.isPresent()) {
+                Publication mainPublication = mainOptionalPublication.get();
+                ElsPublicationDTO.Update2 elsPublicationUpdateDto2 = teacherPublicationBeanMapper.toPublicationUpdateDto2(elsPublicationDTO);
+                Publication publication = teacherPublicationBeanMapper.toTeacherUpdatedPublication(elsPublicationUpdateDto2);
+                mainPublication.setPublicationDate(publication.getPublicationDate());
+                mainPublication.setSubjectTitle(publication.getSubjectTitle());
+                mainPublication.setPublicationDate(publication.getPublicationDate());
+                mainPublication.setPublisher(publication.getPublisher());
+                mainPublication.setPublicationSubjectTypeId(publication.getPublicationSubjectTypeId());
+                mainPublication.setCategories(publication.getCategories());
+                mainPublication.setSubCategories(publication.getSubCategories());
+                mainPublication.setPublicationNumber(publication.getPublicationNumber());
+
+                Publication result = publicationDAO.save(mainPublication);
+                response = teacherPublicationBeanMapper.toTeacherUpdatedPublicationInfoDto(result);
+                response.setStatus(HttpStatus.OK.value());
+            } else {
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+                response.setMessage("سابقه مورد نظر یافت نشد");
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(((TrainingException) e).getMsg());
+        }
+
+        return response;
+    }
+
+    @Override
+    public BaseResponse deleteTeacherPublication(Long id) {
+        BaseResponse baseResponse = new BaseResponse();
+        try {
+            Optional<Publication> mainOptionalPublication = publicationDAO.findById(id);
+            if (mainOptionalPublication.isPresent()) {
+                publicationDAO.deleteById(id);
+                baseResponse.setStatus(HttpStatus.OK.value());
+            } else {
+                baseResponse.setStatus(HttpStatus.NO_CONTENT.value());
+                baseResponse.setMessage("سابقه مورد نظر یافت نشد");
+            }
+        } catch (Exception e) {
+            baseResponse.setMessage("حذف سابقه امکان پذیر نیست");
+            baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        }
+        return baseResponse;
     }
 
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
