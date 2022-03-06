@@ -1098,7 +1098,7 @@ public class ElsRestController {
                         dto.setQuestions(Collections.singletonList(elsQuestionDto));
                         return dto;
                     }
-                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO);
+                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO,teacherId);
 
 
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
@@ -1121,7 +1121,7 @@ public class ElsRestController {
                     ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
                     elsQuestionDto.setStatus(500);
                     elsQuestionDto.setMessage("کد ملی استاد را وارد کنید");
-                    dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                    dto.setQuestions(null);
                     return dto;
                 }
 
@@ -1130,7 +1130,7 @@ public class ElsRestController {
                 ElsQuestionBankDto dto = new ElsQuestionBankDto();
                 ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
                 elsQuestionDto.setStatus(500);
-                dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                dto.setQuestions(null);
                 return dto;
             }
 
@@ -1215,7 +1215,7 @@ public class ElsRestController {
                         dto.setQuestions(Collections.singletonList(elsQuestionDto));
                         return dto;
                     }
-                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByCategoryAndSub(page, size, elsSearchDTO);
+                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByCategoryAndSub(page, size, elsSearchDTO,teacherId);
 
 
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
@@ -1239,7 +1239,8 @@ public class ElsRestController {
                     ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
                     elsQuestionDto.setStatus(500);
                     elsQuestionDto.setMessage("کد ملی استاد را وارد کنید");
-                    dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                    dto.setQuestions(null);
+
                     return dto;
                 }
 
@@ -1248,7 +1249,8 @@ public class ElsRestController {
                 ElsQuestionBankDto dto = new ElsQuestionBankDto();
                 ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
                 elsQuestionDto.setStatus(500);
-                dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                dto.setQuestions(null);
+
                 return dto;
             }
 

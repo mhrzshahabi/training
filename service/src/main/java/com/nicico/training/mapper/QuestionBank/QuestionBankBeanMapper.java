@@ -430,9 +430,11 @@ public abstract class QuestionBankBeanMapper {
         update.setQuestionTypeId(reMapAnswerType(elsQuestionDto.getType()));
         update.setCategoryId(tClass.getCourse().getCategoryId());
         update.setSubCategoryId(tClass.getCourse().getSubCategoryId());
+        update.setQuestionDesigner(teacherService.getTeacherFullName(teacherId));
         update.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
         update.setLines(1);
         update.setTclassId(tClass.getId());
+        update.setCourseId(tClass.getCourseId());
         update.setDisplayTypeId(521L);
         update.setTeacherId(teacherId);
         update.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());

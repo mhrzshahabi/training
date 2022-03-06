@@ -122,6 +122,7 @@ public class QuestionBankService implements IQuestionBankService {
         model.setEQuestionLevel(eQuestionLevelConverter.convertToEntityAttribute(request.getQuestionLevelId()));
         model.setEQuestionLevelId(request.getQuestionLevelId());
         model.setProposedPointValue(request.getProposedPointValue());
+        model.setQuestionDesigner(request.getQuestionDesigner());
 
         QuestionBank updating = new QuestionBank();
         modelMapper.map(model, updating);
@@ -214,13 +215,11 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
     @Override
-    public PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException {
+    @Transactional(readOnly = true)
+    public PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long teacherId) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.SearchRq totalRequest = new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-        List<QuestionBank> questionBankList = new ArrayList<>();
-        Long teacherId = teacherDAO.getTeacherId(elsSearchDTO.getNationalCode());
-
         list.add(makeNewCriteria("teacherId",teacherId,EOperator.equals,null));
 
         if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
@@ -237,15 +236,15 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         request.setStartIndex(size*page)
-                .setCount(10000000);
+                .setCount(size);
 
 
 
         totalRequest.setStartIndex(0)
-                .setCount(10000000);
+                .setCount(1000);
         List<QuestionBank> questionBanks=searchModels(request);
         questionBanks.sort(Comparator.comparing(QuestionBank::getId).reversed());
-        Long totalModelsCount = searchModels(request).stream().count();
+        Long totalModelsCount = (long) searchModels(totalRequest).size();
 
 
         PageQuestionDto pageQuestionDto=new PageQuestionDto();
@@ -255,14 +254,13 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
     @Override
-    public PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException {
+    @Transactional(readOnly = true)
+    public PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long teacherId) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.SearchRq TotallRequest = new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-        List<QuestionBank> questionBankList = new ArrayList<>();
         List<SearchDTO.CriteriaRq> secondList = new ArrayList<>();
         List<SearchDTO.CriteriaRq> filterList = new ArrayList<>();
-        Long teacherId = teacherDAO.getTeacherId(elsSearchDTO.getNationalCode());
         List<Long> categories=categoryService.findCategoryByTeacher(teacherId);
         List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacherId);
         list.add(makeNewCriteria("categoryId", null, EOperator.isNull, null));
@@ -315,11 +313,11 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         TotallRequest.setStartIndex(0)
-                .setCount(10000000);
+                .setCount(1000);
 
-        List<QuestionBank> questionBanks=searchModels(TotallRequest);
+        List<QuestionBank> questionBanks=searchModels(request);
         questionBanks.sort(Comparator.comparing(QuestionBank::getId).reversed());
-        Long totalModelsCount = searchModels(TotallRequest).stream().count();
+        Long totalModelsCount = (long) searchModels(TotallRequest).size();
 
 
         PageQuestionDto pageQuestionDto=new PageQuestionDto();
