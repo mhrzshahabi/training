@@ -59,4 +59,7 @@ public class Publication extends Auditable {
 
     @Column(name = "f_teacher_id")
     private Long teacherId;
+
+    @Column(name = "c_publication_number")
+    private String publicationNumber;
 }
