@@ -189,6 +189,6 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
 
     @Modifying
     @Query(value = "update TBL_CLASS set C_RELEASE_DATE =:date where ID IN (:classIds)", nativeQuery = true)
-    void updateCalendarStatus(List<Long> classIds, String date);
+    void updateReleaseDate(List<Long> classIds, String date);
 
 }
