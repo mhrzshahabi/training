@@ -616,7 +616,7 @@
         case "Job":
             return "<spring:message code="job"/>";
         case "Post":
-            return "<spring:message code="post"/>";
+            return "پست انفرادی";
         case "PostGrade":
             return "<spring:message code="post.grade"/>";
         case "PostGroup":
@@ -626,7 +626,7 @@
         case "PostGradeGroup":
             return "<spring:message code="post.grade.group"/>";
         case "TrainingPost":
-            return "<spring:message code="post.grade.group"/>";
+            return "پست";
 
         default:
             return name.split('_').last();
