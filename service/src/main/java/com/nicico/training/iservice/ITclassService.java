@@ -193,5 +193,5 @@ public interface ITclassService {
 
     Integer getTrainingReactionStatus(Long classId);
 
-    void updateCalendarStatus(List<Long> classIds, String date);
+    void updateReleaseDate(List<Long> classIds, String date);
 }
