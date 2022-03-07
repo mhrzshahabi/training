@@ -1,7 +1,4 @@
 package com.nicico.training.iservice;
-/* com.nicico.training.iservice
-@Author:roya
-*/
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassBaseResponse;
@@ -11,7 +8,6 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
-import io.swagger.models.auth.In;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
@@ -196,4 +192,6 @@ public interface ITclassService {
     Integer getTeacherReactionStatus(Long classId);
 
     Integer getTrainingReactionStatus(Long classId);
+
+    void updateCalendarStatus(List<Long> classIds, String date);
 }

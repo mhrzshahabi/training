@@ -1,7 +1,4 @@
 package com.nicico.training.service;
-/* com.nicico.training.service
-@Author:roya
-*/
 
 import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
@@ -2168,5 +2165,10 @@ public class TclassService implements ITclassService {
         } else throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
 
+    @Transactional
+    @Override
+    public void updateCalendarStatus(List<Long> classIds, String date) {
+        tclassDAO.updateCalendarStatus(classIds, date);
+    }
 
 }

@@ -187,4 +187,8 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Query(value = "SELECT  * FROM TBL_CLASS WHERE c_status= :status And f_teaching_method_id IN (:longs) And  f_term= :termId ",nativeQuery = true)
     Page<Tclass> findAllClassWithTermFilter(List<Long> longs, String status, Long termId, Pageable pageable);
 
+    @Modifying
+    @Query(value = "update TBL_CLASS set c_calendar_status =:date where ID IN (:classIds)", nativeQuery = true)
+    void updateCalendarStatus(List<Long> classIds, String date);
+
 }
