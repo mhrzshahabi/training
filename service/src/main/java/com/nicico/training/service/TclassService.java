@@ -2167,8 +2167,8 @@ public class TclassService implements ITclassService {
 
     @Transactional
     @Override
-    public void updateCalendarStatus(List<Long> classIds, String date) {
-        tclassDAO.updateCalendarStatus(classIds, date);
+    public void updateReleaseDate(List<Long> classIds, String date) {
+        tclassDAO.updateReleaseDate(classIds, date);
     }
 
 }

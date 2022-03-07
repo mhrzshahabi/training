@@ -858,11 +858,11 @@ public class TclassRestController {
         return tClassService.getStudentForceToHasPhone();
     }
 
-    @PutMapping(value = "/calendar-status")
-    public BaseResponse updateCalendarStatus(@RequestParam String date, @RequestBody List<Long> classIds) {
+    @PutMapping(value = "/release-date")
+    public BaseResponse updateReleaseDate(@RequestParam String date, @RequestBody List<Long> classIds) {
         BaseResponse response = new BaseResponse();
         try {
-            tClassService.updateCalendarStatus(classIds, date);
+            tClassService.updateReleaseDate(classIds, date);
             response.setStatus(HttpStatus.OK.value());
         } catch (TrainingException ex) {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
