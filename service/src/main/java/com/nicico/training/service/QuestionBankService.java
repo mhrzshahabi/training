@@ -236,6 +236,7 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         request.setStartIndex(size*page)
+                .setSortBy("-id")
                 .setCount(size);
 
 
@@ -243,7 +244,6 @@ public class QuestionBankService implements IQuestionBankService {
         totalRequest.setStartIndex(0)
                 .setCount(1000);
         List<QuestionBank> questionBanks=searchModels(request);
-        questionBanks.sort(Comparator.comparing(QuestionBank::getId).reversed());
         Long totalModelsCount = (long) searchModels(totalRequest).size();
 
 
@@ -291,6 +291,7 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         request.setStartIndex(size*page)
+                .setSortBy("-id")
                 .setCount(size);
         if(secondList.size()>0) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
@@ -316,7 +317,6 @@ public class QuestionBankService implements IQuestionBankService {
                 .setCount(1000);
 
         List<QuestionBank> questionBanks=searchModels(request);
-        questionBanks.sort(Comparator.comparing(QuestionBank::getId).reversed());
         Long totalModelsCount = (long) searchModels(TotallRequest).size();
 
 
