@@ -1804,11 +1804,13 @@ public class ElsRestController {
 
             List<ElsTeacherCertificationDate> dtos = new ArrayList<>();
             List<TeacherCertification> teacherCertifications = teacherCertificationService.findAllTeacherCertifications(teacherId);
+
             if (teacherCertifications != null && teacherCertifications.size() > 0)
                 dtos = teacherCertificationMapper.toElsTeacherCertifications(teacherCertifications);
+         List<ElsTeacherCertificationDate>  sorted= dtos.stream().sorted(Comparator.comparing(ElsTeacherCertificationDate::getId).reversed()).collect(Collectors.toList());
 
-            return dtos;
 
+            return sorted;
 
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);

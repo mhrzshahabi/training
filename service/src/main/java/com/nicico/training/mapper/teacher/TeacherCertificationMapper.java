@@ -45,7 +45,8 @@ public abstract class TeacherCertificationMapper {
            ElsTeacherCertificationDate dto=new ElsTeacherCertificationDate();
            dto.setCourseTitle(teacherCertification.getCourseTitle());
            dto.setCompanyName(teacherCertification.getCompanyName());
-
+           dto.setId(teacherCertification.getId());
+           dto.setCertificationStatus(teacherCertification.getCertificationStatus());
            dto.setCourseDate(teacherCertification.getStartDate());
            list.add(dto);
        });
