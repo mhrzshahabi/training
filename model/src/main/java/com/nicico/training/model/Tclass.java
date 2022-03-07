@@ -317,6 +317,7 @@ public class Tclass extends Auditable {
     @Column(name = "affairs_id")
     private Long affairsId;
 
-//    @Column(name = "c_calendar_status")
-//    private String calendarStatus;
+    @Column(name = "C_RELEASE_DATE")
+    @NotAudited
+    private String releaseDate;
 }
