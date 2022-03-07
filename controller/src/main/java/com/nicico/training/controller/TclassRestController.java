@@ -845,15 +845,29 @@ public class TclassRestController {
     public boolean getScoreDependency() {
         return tClassService.getScoreDependency();
     }
+
     @Loggable
     @GetMapping(value = "/teacherForceToHasOhone")
     public boolean getTeacherForceToHasPhone() {
         return tClassService.getTeacherForceToHasPhone();
     }
- @Loggable
+
+    @Loggable
     @GetMapping(value = "/studentForceToHasPhone")
     public boolean getStudentForceToHasPhone() {
         return tClassService.getStudentForceToHasPhone();
+    }
+
+    @PutMapping(value = "/calendar-status")
+    public BaseResponse updateCalendarStatus(@RequestParam String date, @RequestBody List<Long> classIds) {
+        BaseResponse response = new BaseResponse();
+        try {
+            tClassService.updateCalendarStatus(classIds, date);
+            response.setStatus(HttpStatus.OK.value());
+        } catch (TrainingException ex) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+        }
+        return response;
     }
 
 }
