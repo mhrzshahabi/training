@@ -62,7 +62,7 @@ public class TeacherCertificateService implements ITeacherCertificationService {
         if(saved!=null) {
            dto.setId(saved.getId());
            dto.setCourseTitle(saved.getCourseTitle());
-
+           dto.setCertificationStatus(elsTeacherCertification.getCertificationStatus());
            dto.setCourseDate(elsTeacherCertification.getCourseDate());
            dto.setCompanyName(saved.getCompanyName());
 
