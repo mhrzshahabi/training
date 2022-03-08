@@ -26,7 +26,7 @@ public class TeacherSpecialSkillService implements ITeacherSpecialSkillService {
     @Override
     @Transactional
     public List<TeacherSpecialSkillDTO.Info> findTeacherSpecialSkills(Long teacherId) {
-        List<TeacherSpecialSkill> teacherSpecialSkills = teacherSpecialSkillDAO.findTeacherSpecialSkillByTeacherIdOrderById(teacherId);
+        List<TeacherSpecialSkill> teacherSpecialSkills = teacherSpecialSkillDAO.findTeacherSpecialSkillByTeacherIdOrderByIdDesc(teacherId);
         return  teacherSpecialSkillBeanMapper.toTeacherSpecialSkillInfoList(teacherSpecialSkills);
     }
 

@@ -14,5 +14,5 @@ public interface PublicationDAO extends JpaRepository<Publication, Long>, JpaSpe
 
     boolean existsBySubjectTitleAndTeacherIdAndIdIsNot(String SubjectTitle,Long teacherId,Long id);
 
-    List<Publication> findAllByTeacherIdOrderByPublicationDate(Long teacherId);
+    List<Publication> findAllByTeacherIdOrderByIdDesc(Long teacherId);
 }
