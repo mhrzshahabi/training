@@ -32,6 +32,8 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.util.*;
 
+import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
+
 @Service
 @RequiredArgsConstructor
 public class TeacherCertificateService implements ITeacherCertificationService {
@@ -150,17 +152,21 @@ public class TeacherCertificateService implements ITeacherCertificationService {
     }
 
     @Override
-    public ElsTeacherCertificationDate getElsTeacherCertification(Long id) {
-        ElsTeacherCertificationDate response=new ElsTeacherCertificationDate();
+    public ElsTeacherCertification getElsTeacherCertification(Long id) {
+
+        ElsTeacherCertification response=new ElsTeacherCertification();
        Optional<TeacherCertification> optional=teacherCertificationDAO.findById(id);
        if(optional.isPresent()){
            response.setId(optional.get().getId());
            response.setCompanyName(optional.get().getCompanyName());
            response.setCourseTitle(optional.get().getCourseTitle());
-           response.setCertification(optional.get().getCertificationStatusDetail());
+
            response.setCertificationStatus(optional.get().getCertificationStatus());
-           response.setCourseDate(optional.get().getStartDate());
+           response.setCourseDate(getPublicationDate(optional.get().getStartDate()));
            response.setCompanyName(optional.get().getCompanyName());
+           response.setCategoryIds(teacherCertificationDAO.getCategories(id));
+           response.setSubcategoryIds(teacherCertificationDAO.getSubcategories(id));
+
            response.setStatus(200);
            response.setMessage("successfully get");
 
@@ -170,6 +176,14 @@ public class TeacherCertificateService implements ITeacherCertificationService {
            response.setMessage("get failed!");
        }
        return response;
+    }
+   private Long getPublicationDate(String publicationDate) {
+        if (publicationDate != null) {
+            Date date = getEpochDate(publicationDate, "04:30");
+            return (date.getTime() * 1000);
+        } else {
+            return null;
+        }
     }
 
     private String convertToPersianDate(Date _date) {
