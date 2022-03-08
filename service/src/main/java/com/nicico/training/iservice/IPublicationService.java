@@ -28,10 +28,11 @@ public interface IPublicationService {
 
     TeacherPublicationResponseDTO findTeacherPublicationsByNationalCode(String nationalCode);
 
-    BaseResponse create(ElsPublicationDTO.Create elsPublicationDTO);
+    ElsPublicationDTO.UpdatedInfo create(ElsPublicationDTO.Create elsPublicationDTO);
 
     ElsPublicationDTO.UpdatedInfo updateElsPub(ElsPublicationDTO.Update elsPublicationDTO);
 
     BaseResponse deleteTeacherPublication(Long id);
 
+    ElsPublicationDTO.UpdatedInfo getOneById(Long id);
 }

@@ -11,6 +11,8 @@ import java.util.Optional;
 public interface IParameterValueService {
     List<ParameterValueDTO.Info> list();
 
+    ParameterValueDTO.TupleInfo getInfo(Long id);
+
     TotalResponse<ParameterValueDTO.Info> search(NICICOCriteria nicicoCriteria);
 
     ParameterValueDTO.Info checkAndCreate(ParameterValueDTO.Create create);

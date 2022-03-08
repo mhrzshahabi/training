@@ -35,6 +35,9 @@ public class TeacherSpecialSkillDTO {
         private Long fieldId;
         private Long typeId;
         private Long levelId;
+        private ParameterValueDTO.TupleInfo field;
+        private ParameterValueDTO.TupleInfo type;
+        private ParameterValueDTO.TupleInfo level;
         private String description;
     }
 

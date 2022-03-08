@@ -1,22 +1,40 @@
 package com.nicico.training.mapper.teacherSpecialSkil;
 
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillDTO;
-import com.nicico.training.mapper.tclass.TclassBeanMapper;
+import com.nicico.training.iservice.IParameterValueService;
+
 import com.nicico.training.model.TeacherSpecialSkill;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN,uses = {TclassBeanMapper.class})
-public interface TeacherSpecialSkillBeanMapper {
-    TeacherSpecialSkillDTO.Info toTeacherSpecialSkillInfoDTO(TeacherSpecialSkill teacherSpecialSkill);
+@Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
+public abstract class TeacherSpecialSkillBeanMapper {
+    @Autowired
+    protected IParameterValueService iParameterValueService;
 
-    List<TeacherSpecialSkillDTO.Info> toTeacherSpecialSkillInfoList(List<TeacherSpecialSkill> teacherSpecialSkillList);
+    public abstract TeacherSpecialSkillDTO.Info toTeacherSpecialSkillInfoDTO(TeacherSpecialSkill teacherSpecialSkill);
 
-    TeacherSpecialSkill toTeacherSpecialSkill(TeacherSpecialSkillDTO.Create teacherSpecialSkillDTO);
+    public abstract List<TeacherSpecialSkillDTO.Info> toTeacherSpecialSkillInfoList(List<TeacherSpecialSkill> teacherSpecialSkillList);
 
-    TeacherSpecialSkill toTeacherUpdatedSpecialSkill(TeacherSpecialSkillDTO.Update teacherSpecialSkillDTO);
+    public abstract TeacherSpecialSkill toTeacherSpecialSkill(TeacherSpecialSkillDTO.Create teacherSpecialSkillDTO);
 
-    TeacherSpecialSkillDTO.UpdatedInfo toTeacherUpdatedInfoDto(TeacherSpecialSkill teacherSpecialSkill);
+    public abstract TeacherSpecialSkill toTeacherUpdatedSpecialSkill(TeacherSpecialSkillDTO.Update teacherSpecialSkillDTO);
+
+    @Mapping(source = "fieldId", target = "field", qualifiedByName = "toParameterTupleInfo")
+    @Mapping(source = "typeId", target = "type", qualifiedByName = "toParameterTupleInfo")
+    @Mapping(source = "levelId", target = "level", qualifiedByName = "toParameterTupleInfo")
+    public abstract TeacherSpecialSkillDTO.UpdatedInfo toTeacherUpdatedInfoDto(TeacherSpecialSkill teacherSpecialSkill);
+
+    @Named("toParameterTupleInfo")
+    ParameterValueDTO.TupleInfo toParameterTupleInfo(Long parameterValueId) {
+        ParameterValueDTO.TupleInfo info = new ParameterValueDTO.TupleInfo();
+        info = iParameterValueService.getInfo(parameterValueId);
+        return info;
+    }
 }

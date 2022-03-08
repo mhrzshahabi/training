@@ -11,9 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import response.BaseResponse;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,24 +31,26 @@ public class TeacherSpecialSkillService implements ITeacherSpecialSkillService {
     }
 
     @Override
-    public BaseResponse create(TeacherSpecialSkillDTO.Create teacherSpecialSkillDTO) {
-        BaseResponse baseResponse = new BaseResponse();
+    @Transactional
+    public TeacherSpecialSkillDTO.UpdatedInfo create(TeacherSpecialSkillDTO.Create teacherSpecialSkillDTO) {
+        TeacherSpecialSkillDTO.UpdatedInfo response = new TeacherSpecialSkillDTO.UpdatedInfo();
         try {
             Long teacherId = iTeacherService.getTeacherIdByNationalCode(teacherSpecialSkillDTO.getNationalCode());
             if (teacherId != null) {
                 teacherSpecialSkillDTO.setTeacherId(teacherId);
                 TeacherSpecialSkill teacherSpecialSkill = teacherSpecialSkillBeanMapper.toTeacherSpecialSkill(teacherSpecialSkillDTO);
-                teacherSpecialSkillDAO.save(teacherSpecialSkill);
-                baseResponse.setStatus(HttpStatus.OK.value());
+                TeacherSpecialSkill finalSpecialSkill = teacherSpecialSkillDAO.save(teacherSpecialSkill);
+                response = teacherSpecialSkillBeanMapper.toTeacherUpdatedInfoDto(finalSpecialSkill);
+                response.setStatus(HttpStatus.OK.value());
             } else {
-                baseResponse.setStatus(HttpStatus.NO_CONTENT.value());
-                baseResponse.setMessage("استاد با این اطلاعات یافت نشد");
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+                response.setMessage("استاد با این اطلاعات یافت نشد");
             }
-        }catch (Exception e){
-            baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-            baseResponse.setMessage(((TrainingException) e).getMsg());
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(((TrainingException) e).getMsg());
         }
-        return baseResponse;
+        return response;
     }
 
     @Override
@@ -56,10 +58,11 @@ public class TeacherSpecialSkillService implements ITeacherSpecialSkillService {
     public TeacherSpecialSkillDTO.UpdatedInfo update(TeacherSpecialSkillDTO.Update teacherSpecialSkillDTO) {
         TeacherSpecialSkillDTO.UpdatedInfo response = new TeacherSpecialSkillDTO.UpdatedInfo();
         try {
-            TeacherSpecialSkill mainTeacherSpecialSkill = teacherSpecialSkillDAO.getById(teacherSpecialSkillDTO.getId());
-            if (mainTeacherSpecialSkill != null) {
+            Optional<TeacherSpecialSkill> mainTeacherSpecialSkill = teacherSpecialSkillDAO.findById(teacherSpecialSkillDTO.getId());
+            if (mainTeacherSpecialSkill.isPresent()) {
+                TeacherSpecialSkill finalTeacherSpecialSkill = mainTeacherSpecialSkill.get();
                 TeacherSpecialSkill teacherSpecialSkill = teacherSpecialSkillBeanMapper.toTeacherUpdatedSpecialSkill(teacherSpecialSkillDTO);
-                teacherSpecialSkill.setTeacherId(mainTeacherSpecialSkill.getTeacherId());
+                teacherSpecialSkill.setTeacherId(finalTeacherSpecialSkill.getTeacherId());
                 TeacherSpecialSkill teacherSpecialSkill2 = teacherSpecialSkillDAO.save(teacherSpecialSkill);
                 response = teacherSpecialSkillBeanMapper.toTeacherUpdatedInfoDto(teacherSpecialSkill2);
                 response.setStatus(HttpStatus.OK.value());
@@ -77,6 +80,27 @@ public class TeacherSpecialSkillService implements ITeacherSpecialSkillService {
     @Override
     public void deleteSpecialSkill(Long id) {
         teacherSpecialSkillDAO.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public TeacherSpecialSkillDTO.UpdatedInfo get(Long id) {
+        TeacherSpecialSkillDTO.UpdatedInfo response = new TeacherSpecialSkillDTO.UpdatedInfo();
+        try {
+            Optional<TeacherSpecialSkill> teacherSpecialSkill = teacherSpecialSkillDAO.findById(id);
+            if (teacherSpecialSkill.isPresent()) {
+                response = teacherSpecialSkillBeanMapper.toTeacherUpdatedInfoDto(teacherSpecialSkill.get());
+                response.setStatus(HttpStatus.OK.value());
+            } else {
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+                response.setMessage("مهارت مورد نظر یافت نشد");
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(((TrainingException) e).getMsg());
+        }
+        return response;
+
     }
 
 }

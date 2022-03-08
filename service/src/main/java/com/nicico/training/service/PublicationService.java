@@ -181,26 +181,28 @@ public class PublicationService implements IPublicationService {
     }
 
     @Override
-    public BaseResponse create(ElsPublicationDTO.Create elsPublicationDTO) {
-        BaseResponse baseResponse = new BaseResponse();
+    @Transactional
+    public ElsPublicationDTO.UpdatedInfo create(ElsPublicationDTO.Create elsPublicationDTO) {
+        ElsPublicationDTO.UpdatedInfo response = new ElsPublicationDTO.UpdatedInfo();
         try {
             Long teacherId = teacherService.getTeacherIdByNationalCode(elsPublicationDTO.getNationalCode());
             if (teacherId != null) {
                 elsPublicationDTO.setTeacherId(teacherId);
                 ElsPublicationDTO.Create2 elsPublicationCreate2 = teacherPublicationBeanMapper.toPublicationCreate2(elsPublicationDTO);
                 Publication publication = teacherPublicationBeanMapper.toPublication(elsPublicationCreate2);
-                publicationDAO.save(publication);
-                baseResponse.setStatus(HttpStatus.OK.value());
+                Publication finalPublication = publicationDAO.save(publication);
+                response = teacherPublicationBeanMapper.toTeacherUpdatedPublicationInfoDto(finalPublication);
+                response.setStatus(HttpStatus.OK.value());
 
             } else {
-                baseResponse.setStatus(HttpStatus.NO_CONTENT.value());
-                baseResponse.setMessage("استاد با این اطلاعات یافت نشد");
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+                response.setMessage("استاد با این اطلاعات یافت نشد");
             }
         } catch (Exception e) {
-            baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-            baseResponse.setMessage(((TrainingException) e).getMsg());
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(((TrainingException) e).getMsg());
         }
-        return baseResponse;
+        return response;
     }
 
     @Override
@@ -254,6 +256,26 @@ public class PublicationService implements IPublicationService {
             baseResponse.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
         }
         return baseResponse;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ElsPublicationDTO.UpdatedInfo getOneById(Long id) {
+        ElsPublicationDTO.UpdatedInfo response = new ElsPublicationDTO.UpdatedInfo();
+        try {
+            Optional<Publication> teacherPublication = publicationDAO.findById(id);
+            if (teacherPublication.isPresent()) {
+                response = teacherPublicationBeanMapper.toTeacherUpdatedPublicationInfoDto(teacherPublication.get());
+                response.setStatus(HttpStatus.OK.value());
+            } else {
+                response.setStatus(HttpStatus.NO_CONTENT.value());
+                response.setMessage("مدرک مورد نظر یافت نشد");
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(((TrainingException) e).getMsg());
+        }
+        return response;
     }
 
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
