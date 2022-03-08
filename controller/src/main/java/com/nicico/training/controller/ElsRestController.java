@@ -2506,6 +2506,25 @@ public class ElsRestController {
     }
 
     /**
+     * it returns teacher special skill by id
+     *
+     * @param header
+     * @param id
+     * @return
+     */
+    @GetMapping("/teacher/special-skills/find-by/{id}")
+    TeacherSpecialSkillDTO.UpdatedInfo findTeacherSpecialSkillById(HttpServletRequest header, @PathVariable Long id) {
+        TeacherSpecialSkillDTO.UpdatedInfo updatedInfoResponse = new TeacherSpecialSkillDTO.UpdatedInfo();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            updatedInfoResponse = iTeacherSpecialSkillService.get(id);
+        } else {
+            updatedInfoResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            updatedInfoResponse.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return updatedInfoResponse;
+    }
+
+    /**
      * For creating a new special skill
      * the input DTO contains teacher's national code
      * @param header
@@ -2513,8 +2532,8 @@ public class ElsRestController {
      * @return
      */
     @PostMapping("/teacher/special-skills")
-    public BaseResponse createTeacherSpecialSkill(HttpServletRequest header, @RequestBody TeacherSpecialSkillDTO.Create teacherSpecialSkillDTO) {
-        BaseResponse response = new BaseResponse();
+    TeacherSpecialSkillDTO.UpdatedInfo createTeacherSpecialSkill(HttpServletRequest header, @RequestBody TeacherSpecialSkillDTO.Create teacherSpecialSkillDTO) {
+        TeacherSpecialSkillDTO.UpdatedInfo response = new TeacherSpecialSkillDTO.UpdatedInfo();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             response = iTeacherSpecialSkillService.create(teacherSpecialSkillDTO);
         } else {
@@ -2586,6 +2605,25 @@ public class ElsRestController {
     }
 
     /**
+     * it returns teacher publication by id
+     *
+     * @param header
+     * @param id
+     * @return
+     */
+    @GetMapping("/teacher/publications/find-by/{id}")
+    public ElsPublicationDTO.UpdatedInfo findTeacherPublicationsById(HttpServletRequest header, @PathVariable Long id) {
+        ElsPublicationDTO.UpdatedInfo response = new ElsPublicationDTO.UpdatedInfo();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            response = iPublicationService.getOneById(id);
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return response;
+    }
+
+    /**
      * to create  teacher publication
      *
      * @param header
@@ -2593,8 +2631,8 @@ public class ElsRestController {
      * @return
      */
     @PostMapping("/teacher/publications/")
-    public BaseResponse createTeacherPublications(HttpServletRequest header, @RequestBody ElsPublicationDTO.Create elsPublicationDTO) {
-        BaseResponse response = new BaseResponse();
+    public ElsPublicationDTO.UpdatedInfo createTeacherPublications(HttpServletRequest header, @RequestBody ElsPublicationDTO.Create elsPublicationDTO) {
+        ElsPublicationDTO.UpdatedInfo response = new ElsPublicationDTO.UpdatedInfo();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             response = iPublicationService.create(elsPublicationDTO);
         } else {

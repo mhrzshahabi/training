@@ -5,7 +5,6 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IParameterValueService;
-import com.nicico.training.model.Parameter;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.repository.ParameterValueDAO;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +27,16 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
     @Autowired
     ParameterValueService(ParameterValueDAO parameterValueDAO) {
         super(new ParameterValue(), parameterValueDAO);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public ParameterValueDTO.TupleInfo getInfo(Long id) {
+
+        final Optional<ParameterValue> parameterValue = dao.findById(id);
+        final ParameterValue parameterValue1 = parameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ParameterNotFound));
+
+        return modelMapper.map(parameterValue1, ParameterValueDTO.TupleInfo.class);
     }
 
     @Transactional
