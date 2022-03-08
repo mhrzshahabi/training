@@ -646,6 +646,12 @@
         tabBarPosition: "top",
         enabled: false,
         tabs: [
+            {
+                id: "TabPane_during_execution",
+                title: "حین اجرا",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/during-execution-evaluation-form"})
+            }
+            ,
             <sec:authorize access="hasAuthority('Evaluation_Reaction')">
             {
                 id: "TabPane_Reaction",
@@ -801,6 +807,88 @@
             Detail_Tab_Evaluation.enable();
 
             switch (tab.id) {
+                case "TabPane_duringـexecution": {
+                    RestDataSource_student_DE.implicitCriteria = null;
+                    RestDataSource_student_DE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                    ListGrid_student_DE.invalidateCache();
+                    ListGrid_student_DE.fetchData();
+                    DynamicForm_ReturnDate_DE.clearValues();
+                    classRecord_DE = classRecord;
+
+                    if (classRecord.trainingEvalStatus === 0 ||
+                        classRecord.trainingEvalStatus === undefined ||
+                        classRecord.trainingEvalStatus === null) {
+                        ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
+                        ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
+                        ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(true);
+                        ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
+                    } else if (classRecord.trainingEvalStatus === 1) {
+                        ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
+                        ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
+                    } else {
+                        ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
+                        ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
+                    }
+
+                    if (classRecord.classStudentOnlineEvalStatus) {
+                        ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(true);
+                        ToolStripButton_OnlineFormIssuanceResultForAll_DE.setDisabled(false);
+                    } else {
+                        ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(false);
+                        ToolStripButton_OnlineFormIssuanceResultForAll_DE.setDisabled(true);
+                    }
+
+                    if (classRecord.teacherEvalStatus === 0 ||
+                        classRecord.teacherEvalStatus === undefined ||
+                        classRecord.teacherEvalStatus === null) {
+
+                        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                        ToolStrip_SendForms_DE.getField("sendButtonTeacher").hideIcon("ok");
+                        ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
+                        </sec:authorize>
+                        ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
+
+                        ToolStrip_SendForms_DE.getField("registerButtonTeacher").hideIcon("ok");
+                    } else if (classRecord.teacherEvalStatus === 1) {
+                        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                        ToolStrip_SendForms_DE.getField("sendButtonTeacher").showIcon("ok");
+                        </sec:authorize>
+                        if (classRecord.classTeacherOnlineEvalStatus) {
+                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                            ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
+                            </sec:authorize>
+                            ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(false);
+                        } else {
+                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                            ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(false);
+                            </sec:authorize>
+                            ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
+
+                        }
+
+                        ToolStrip_SendForms_DE.getField("registerButtonTeacher").hideIcon("ok");
+                    } else {
+                        <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                        ToolStrip_SendForms_DE.getField("sendButtonTeacher").showIcon("ok");
+                        </sec:authorize>
+                        if (classRecord.classTeacherOnlineEvalStatus) {
+                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                            ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
+                            </sec:authorize>
+                            ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(false);
+                        } else {
+                            <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                            ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(false);
+                            </sec:authorize>
+                            ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
+                        }
+
+                        ToolStrip_SendForms_DE.getField("registerButtonTeacher").showIcon("ok");
+                    }
+                    ToolStrip_SendForms_DE.redraw();
+
+                    break;
+                }
                 case "TabPane_Reaction": {
                     RestDataSource_student_RE.implicitCriteria = null;
                     RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;

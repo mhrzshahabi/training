@@ -53,6 +53,10 @@ public class EvaluationFormController {
     public String loadPageReactionEvaluation() {
         return "evaluation/reactionEvaluation";
     }
+    @RequestMapping("/during-execution-evaluation-form")
+    public String loadPageExecutionEvaluation() {
+        return "evaluation/executionEvaluation";
+    }
 
     @RequestMapping("/behavioral-evaluation-form")
     public String loadPageBehavioralEvaluation() {
