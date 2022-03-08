@@ -10,5 +10,5 @@ import java.util.List;
 @Repository
 public interface TeacherSpecialSkillDAO extends JpaRepository<TeacherSpecialSkill, Long>, JpaSpecificationExecutor<TeacherSpecialSkill> {
 
-    List<TeacherSpecialSkill> findTeacherSpecialSkillByTeacherIdOrderById(Long teacherId);
+    List<TeacherSpecialSkill> findTeacherSpecialSkillByTeacherIdOrderByIdDesc(Long teacherId);
 }

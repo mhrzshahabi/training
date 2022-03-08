@@ -168,7 +168,7 @@ public class PublicationService implements IPublicationService {
                 teacherPublicationResponseDTO.setStatus(HttpStatus.NO_CONTENT.value());
                 teacherPublicationResponseDTO.setMessage("اطلاعات استاد با کد ملی " + nationalCode + " موجود نیست.");
             } else {
-                List<Publication> publications = publicationDAO.findAllByTeacherIdOrderByPublicationDate(teacherId);
+                List<Publication> publications = publicationDAO.findAllByTeacherIdOrderByIdDesc(teacherId);
                 List<ElsPublicationDTO.Info> infoList = teacherPublicationBeanMapper.toElsPublicationDTOInfoList(publications);
                 teacherPublicationResponseDTO.setPublicationDTOInfoList(infoList);
                 teacherPublicationResponseDTO.setStatus(200);
