@@ -1777,11 +1777,11 @@ public class ElsRestController {
      * @return this method return teachercertificationDetails via id.
      */
     @GetMapping("/passed-courses/getById/{id}")
-    public ElsTeacherCertificationDate getPassedById(HttpServletRequest header, @PathVariable Long id) {
+    public ElsTeacherCertification getPassedById(HttpServletRequest header, @PathVariable Long id) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
-            ElsTeacherCertificationDate response = teacherCertificationService.getElsTeacherCertification(id);
+            ElsTeacherCertification response = teacherCertificationService.getElsTeacherCertification(id);
             return response;
 
 
