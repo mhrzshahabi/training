@@ -110,6 +110,8 @@ public class TeacherSuggestedService implements ITeacherSuggestedService {
            response.setId(optional.get().getId());
            response.setCourseTitle(optional.get().getCourseTitle());
            response.setDescription(optional.get().getDescription());
+           response.setCategories(dao.getCategoriesBySuggestedId(id));
+           response.setSubcategories(dao.getSubcategories(id));
            response.setStatus(200);
            response.setMessage("successfully get");
 
