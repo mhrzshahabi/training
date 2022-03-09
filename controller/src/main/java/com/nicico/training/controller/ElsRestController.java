@@ -1933,8 +1933,9 @@ public class ElsRestController {
             List<TeacherSuggestedCourse> teacherSuggestedCourses = teacherSuggestedService.findAllTeacherSuggested(teacherId);
             if (teacherSuggestedCourses != null && teacherSuggestedCourses.size() > 0)
                 dtos = teacherSuggestedCourseMapper.toElsSuggestedCourses(teacherSuggestedCourses);
+            List<ElsSuggestedCourse>  sorted= dtos.stream().sorted(Comparator.comparing(ElsSuggestedCourse::getId).reversed()).collect(Collectors.toList());
 
-            return dtos;
+            return sorted;
 
 
         } else {
@@ -2013,7 +2014,8 @@ public class ElsRestController {
 
 
             List<ElsPresentableResponse> responseList=teacherPresentableCourseService.getAllByNationalCode(nationalCode);
-            return responseList;
+            List<ElsPresentableResponse>  sorted= responseList.stream().sorted(Comparator.comparing(ElsPresentableResponse::getId).reversed()).collect(Collectors.toList());
+            return sorted;
 
         } else {
             throw new TrainingException(TrainingException.ErrorType.Unauthorized);
