@@ -709,7 +709,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 },
                 { name: "time",type: "long", title: "زمان(دقیقه)", width: "10%", align:"center", change: function(form, item, value, oldValue) {
                         setTimeValue(value, form)
-                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click" ,
                 }
             ]
         });
@@ -1183,13 +1183,13 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
         if (totalTime !== 0) {
             for (let i = 0; i < questionsList.length; i++) {
-                if (questionsList[i].time !== undefined && (questionsList[i].time === 0 )) {
+                if (questionsList[i].time !== undefined && (questionsList[i].time === 0  && totalTime!==0)) {
                     return false;
                 }
             }
         }
 
-        if (totalTime === 0)
+        if (totalTime === 0 )
             return true;
         else if (Number(duration) === totalTime) {
             return true;
