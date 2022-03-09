@@ -1696,7 +1696,9 @@
                 },
                 changed: function (form, item, value) {
                     DynamicForm_Class_JspClass.getItem("affairsId").setValue(null);
-                    DynamicForm_Class_JspClass.getItem("affairsId").enable();
+                    // DynamicForm_Class_JspClass.getItem("affairsId").enable();
+                    //todo
+                    DynamicForm_Class_JspClass.getItem("affairsId").disabled();
                     let myCriteria='{"fieldName":"moavenatTitle","operator":"inSet","value":"' + form.getItem("assistantId").getSelectedRecord().title + '"}';
                     RestDataSource_class_affairs_List.fetchDataURL = departmentUrl + "/organ-segment-iscList/omor" + "?operator=and&_constructor=AdvancedCriteria&criteria=" + myCriteria;
                     form.getItem("affairsId").fetchData();
@@ -1712,7 +1714,8 @@
                 autoFetchData: false,
                 valueField: "id",
                 textAlign: "center",
-                required: true,
+                //todo
+                required: false,
                 colSpan: 2,
                 rowSpan: 1,
                 textMatchStyle: "substring",
