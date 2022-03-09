@@ -550,7 +550,13 @@ public abstract class EvaluationBeanMapper {
              long totalQuestionsTime=0;
              int questionsSize=0;
             if (object.getQuestionData() != null) {
-                totalQuestionsTime += object.getQuestionData().stream().mapToLong(questionScore -> Long.valueOf(questionScore.getTime())).sum();
+                totalQuestionsTime += object.getQuestionData().stream().mapToLong(questionScore -> {
+                    String time=questionScore.getTime();
+                    if(time==null)
+                        return 0;
+                    else
+                        return Long.valueOf(questionScore.getTime());
+                }).sum();
                questionsSize =object.getQuestions().size();
             }
             for (QuestionData questionData : object.getQuestions()) {
@@ -646,7 +652,13 @@ public abstract class EvaluationBeanMapper {
                                .get();
 
                        questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
-                    Integer t=  Integer.valueOf(questionScore.getTime());
+                    Integer t=0;
+                       if(questionScore.getTime()==null) {
+                            t=0;
+                       }else{
+                           t  = Integer.valueOf(questionScore.getTime());
+                       }
+
                         if(totalQuestionsTime!=0) {
 
                        questionProtocol.setTime(t*60);
