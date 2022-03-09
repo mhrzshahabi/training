@@ -1183,7 +1183,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
         if (totalTime !== 0) {
             for (let i = 0; i < questionsList.length; i++) {
-                if (questionsList[i].time !== undefined && (questionsList[i].time === 0  && totalTime!==0)) {
+                if ((questionsList[i].time === undefined || questionsList[i].time === 0 ) && totalTime!==0) {
                     return false;
                 }
             }
