@@ -327,9 +327,9 @@ public abstract class EvaluationBeanMapper {
 
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
-        int timeQues = 0;
-        if (object.getQuestions() != null && object.getQuestions().size() > 0)
-            timeQues = (time * 60) / object.getQuestions().size();
+       int timeQues = 0;
+//        if (object.getQuestions() != null && object.getQuestions().size() > 0)
+//            timeQues = (time * 60) / object.getQuestions().size();
 
         ExamCreateDTO exam = getExamData(object, tClass);
         ImportedCourseCategory courseCategory = getCourseCategoryData(object);
@@ -544,10 +544,15 @@ public abstract class EvaluationBeanMapper {
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
         Boolean findDuplicate = false;
-
+        int examTime = Math.toIntExact(object.getExamItem().getDuration());
         if (object.getQuestions().size() > 0) {
 //            Double questionScore = (double) (20 / object.getQuestions().size());
-
+             long totalQuestionsTime=0;
+             int questionsSize=0;
+            if (object.getQuestionData() != null) {
+                totalQuestionsTime += object.getQuestionData().stream().mapToLong(questionScore -> Long.valueOf(questionScore.getTime())).sum();
+               questionsSize =object.getQuestions().size();
+            }
             for (QuestionData questionData : object.getQuestions()) {
 
 
@@ -631,16 +636,29 @@ public abstract class EvaluationBeanMapper {
                     questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
                     question.setHasAttachment(questionBank.getHasAttachment());
                 }
-                if (object.getQuestionData() != null) {
-                    QuestionScores questionScore = object.getQuestionData().stream()
-                            .filter(x -> x.getId().equals(question.getId()))
-                            .findFirst()
-                            .get();
 
-                    questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
+                if (object.getQuestionData() != null) {
+
+
+                       QuestionScores questionScore = object.getQuestionData().stream()
+                               .filter(x -> x.getId().equals(question.getId()))
+                               .findFirst()
+                               .get();
+
+                       questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
+                    Integer t=  Integer.valueOf(questionScore.getTime());
+                        if(totalQuestionsTime!=0) {
+
+                       questionProtocol.setTime(t*60);
+                   }else{
+                       questionProtocol.setTime(  (examTime * 60) / questionsSize);
+
+                   }
+
+
                 }
 
-                questionProtocol.setTime(timeQues);
+
                 questionProtocol.setQuestion(question);
                 questionProtocols.add(questionProtocol);
             }

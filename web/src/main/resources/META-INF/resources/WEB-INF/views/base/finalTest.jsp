@@ -11,6 +11,7 @@
     let finalTestMethod_finalTest;
     let oLoadAttachments_finalTest;
     let totalScore = 0;
+    let totalTime = 0;
     let sourceExamId = 0;
     let firstHour = "";
     let diffHour = "";
@@ -23,6 +24,12 @@
     let allResultScores;
     var scoreLabel = isc.Label.create({
         contents: "مجموع بارم وارد شده : ",
+        border: "0px solid black",
+        align: "center",
+        width: "100%"
+    });
+    var timeLabel = isc.Label.create({
+        contents: "مجموع زمان وارد شده : ",
         border: "0px solid black",
         align: "center",
         width: "100%"
@@ -467,7 +474,10 @@
                 { name: "options", title: "گزینه ها"},
                 { name: "proposedPointValue", title: "<spring:message code="question.bank.proposed.point.value"/>"},
                 { name: "score", title: "بارم",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
-                }
+                },
+            { name: "time", title: "زمان(دقیقه)",canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+            }
+
         ]
     });
 
@@ -650,6 +660,21 @@ totalScore=totalScore+q.score
 scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
         }
+    function setTimeValue(value, form) {
+        let index = questionData.findIndex(f => f.id === form.values.id)
+        questionData[index].time = value;
+        totalTime=0;
+        form.grid.data.forEach(
+            q=>{ if (q.time!== null && q.time !== undefined)
+            {
+                totalTime=totalTime+q.time
+            }
+            }
+        )
+
+        timeLabel.setContents("مجموع زمان وارد شده : "+totalTime)
+
+    }
     function setDescriptiveResultValue(value, form) {
 
          let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
@@ -680,6 +705,10 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 { name: "proposedPointValue",type: "float", title: "<spring:message code="question.bank.proposed.point.value"/>", width: "10%",align:"center"},
                 { name: "score",type: "float", title: "بارم", width: "10%", align:"center", change: function(form, item, value, oldValue) {
                    setScoreValue(value, form)
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
+                },
+                { name: "time",type: "long", title: "زمان(دقیقه)", width: "10%", align:"center", change: function(form, item, value, oldValue) {
+                        setTimeValue(value, form)
                     },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click",
                 }
             ]
@@ -731,9 +760,10 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             }),
                                     isc.VLayout.create({
                                         width: "100%",
-                                        height: "90%",
-                                        members: [ListGrid_Questions_finalTest,scoreLabel]
+                                        height: "70%",
+                                        members: [ListGrid_Questions_finalTest,scoreLabel,timeLabel]
                                     }),
+
                                     isc.HLayout.create({
                                         width: "100%",
                                         height: "90%",
@@ -817,7 +847,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                                                             isc.IButtonSave.create({
                                                                                             title: "<spring:message code="continue"/>",
                                                                                             click: function () {
-                                                                                             loadExamQuestions(record,questionData,Window_result_Finaltest)
+                                                                                             loadExamQuestions(record,questionData,Window_result_Finaltest, ListGrid_Questions_finalTest.data)
                                                                                                 Window_InValid_Students.close();
                                                                                             }}),
                                                                                             isc.IButtonCancel.create({
@@ -830,7 +860,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                                                 });
                                                                 Window_InValid_Students.show();
                                                             } else {
-                                                                loadExamQuestions(record,questionData,Window_result_Finaltest)
+                                                                loadExamQuestions(record,questionData,Window_result_Finaltest, ListGrid_Questions_finalTest.data)
                                                             }
                                                         }
                                                     }));
@@ -849,6 +879,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                     });
                     totalScore=0;
                     scoreLabel.setContents("مجموع بارم وارد شده :")
+                   totalTime=0;
+                    timeLabel.setContents("مجموع زمان وارد شده :")
                     Window_result_Finaltest.show();
                 } else {
                    let errorResponseMessage = resp.httpResponseText;
@@ -1139,7 +1171,32 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             return false;
         }
     }
-    function checkExamValidation (examData) {
+    function checkExamDuration(examData, questionsList) {
+        let duration=examData.examItem.duration;
+        let totalTime = 0;
+        for (let i = 0; i < questionsList.length; i++) {
+            if (questionsList[i].time !== undefined) {
+                let time = questionsList[i].time;
+                totalTime = totalTime + Number(time);
+            }
+        }
+
+        if (totalTime !== 0) {
+            for (let i = 0; i < questionsList.length; i++) {
+                if (questionsList[i].time !== undefined && (questionsList[i].time === 0 )) {
+                    return false;
+                }
+            }
+        }
+
+        if (totalTime === 0)
+            return true;
+        else if (Number(duration) === totalTime) {
+            return true;
+        } else
+            return false;
+    }
+    function checkExamValidation (examData, questionsList) {
 
         let validationData = {
             isValid: true,
@@ -1158,10 +1215,13 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
             validationData.isValid = false;
             validationData.message = validationData.message.concat("بارم بندی آزمون صحیح نمی باشد");
+        }else if(!checkExamDuration(examData, questionsList)){
+            validationData.isValid = false;
+            validationData.message = validationData.message.concat("زمان بندی آزمون صحیح نمی باشد");
         }
         return validationData;
     }
-    function loadExamQuestions(record,questionData,dialog) {
+    function loadExamQuestions(record,questionData,dialog, questionsList) {
 
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list-final-test", "GET",null, function (resp) {
@@ -1174,7 +1234,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                     deleteAbsentUsers: false,
                     questionData: questionData
                     };
-                    let validationData = checkExamValidation(examData);
+                    let validationData = checkExamValidation(examData, questionsList);
 
 
                     if (validationData.isValid) {
@@ -1425,7 +1485,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
+                    click: function ()
+                    {
                         closeCalendarWindow();
                         displayDatePicker('date_FinalTest', this, 'ymd', '/');
                     }

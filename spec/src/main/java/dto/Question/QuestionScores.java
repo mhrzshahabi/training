@@ -11,4 +11,5 @@ public class QuestionScores {
     private Long id;
     private String question;
     private String score;
+    private String time;
 }
