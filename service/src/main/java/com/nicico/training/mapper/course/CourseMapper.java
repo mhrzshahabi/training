@@ -57,6 +57,7 @@ public abstract class CourseMapper {
        elsCourseDTO.setDuration(course.getTheoryDuration().toString());
        elsCourseDTO.setPreCourseTitles(preCourseList);
        elsCourseDTO.setCourseSyllabusList(syllablesList);
+       elsCourseDTO.setStatus(200);
        return elsCourseDTO;
     }
 }
