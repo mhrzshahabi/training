@@ -1293,7 +1293,7 @@ public class ExportController {
                 end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
                 categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryTitleFa")){
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")) {
                 subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
             }
 
@@ -1315,7 +1315,7 @@ public class ExportController {
         if (subCategoryList.size()>0){
             data =secondData.stream()
                     .filter(sec -> finalSubCategoryList.stream()
-                            .anyMatch(sub -> sec.getSub_category_titlefa().equals(sub)))
+                            .anyMatch(sub -> sec.getSub_category_id().equals(Long.valueOf(sub.toString()))))
                     .collect(Collectors.toList());
         }else {
             data=secondData;
@@ -1684,7 +1684,7 @@ public class ExportController {
                 end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
                 categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryTitleFa")){
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")){
                 subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
             }
 
@@ -1706,7 +1706,7 @@ public class ExportController {
         if (subCategoryList.size()>0){
             data =secondData.stream()
                     .filter(sec -> finalSubCategoryList.stream()
-                            .anyMatch(sub -> sec.getSub_category_titlefa().equals(sub)))
+                            .anyMatch(sub -> sec.getSub_category_id().equals(Long.valueOf(sub.toString()))))
                     .collect(Collectors.toList());
         }else {
             data=secondData;

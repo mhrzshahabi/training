@@ -49,6 +49,9 @@ public class ViewLearningEvaluationStudentReport implements Serializable {
     @Column(name = "sub_category_titlefa")
     private String sub_category_titlefa;
 
+    @Column(name = "sub_category_id")
+    private Long sub_category_id;
+
     @Column(name = "complex")
     private String complex;
 
