@@ -240,7 +240,7 @@ public class ExportController {
 
                 switch (z) {
                     case 0: {
-                        headers[z] = "کد ملی فراگیر";
+                        headers[z] = "نام فراگیر";
                         columns[z] = "student";
                         break;
                     }
