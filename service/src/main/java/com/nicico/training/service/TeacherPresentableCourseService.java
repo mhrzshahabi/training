@@ -116,6 +116,7 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
 
                response.setDescription(teacherPresentableCourse.getDescription());
                Course course = courseService.getCourse(teacherPresentableCourse.getCourseId());
+               response.setCourseTitle(course.getTitleFa());
                List<Long> categoryIds = dao.findAllCatById(teacherPresentableCourse.getId());
                response.setCategoryIds(categoryIds);
 
