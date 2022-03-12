@@ -69,7 +69,7 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
 
     @Override
     public void deletePresentableCourse(Long id) {
-        dao.deleteById(id);
+    dao.deleteById(id);
 
     }
 
@@ -79,9 +79,11 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
         ElsPresentableResponse response=new ElsPresentableResponse();
         Long id = elsPresentableCourse.getId();
         TeacherPresentableCourse saved = new TeacherPresentableCourse();
+
         Optional<TeacherPresentableCourse> teacherPresentableCourse = dao.findById(id);
         if (teacherPresentableCourse.isPresent()) {
             teacherPresentableCourse.get().setDescription(elsPresentableCourse.getDescription());
+
             saved = dao.save(teacherPresentableCourse.get());
         } else {
             throw new  NotFoundException("not edited");
@@ -105,6 +107,7 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
                List<String>  subcategoryTitles=new ArrayList<>();
                List<String> preCourseTitle=new ArrayList<>();
                List<String> syllabusTitles=new ArrayList<>();
+
                ElsPresentableResponse response = new ElsPresentableResponse();
                response.setId(teacherPresentableCourse.getId());
                response.setCourseId(teacherPresentableCourse.getCourseId());
@@ -112,6 +115,7 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
                response.setDescription(teacherPresentableCourse.getDescription());
                Course course = courseService.getCourse(teacherPresentableCourse.getCourseId());
                List<Long> categoryIds = dao.findAllCatById(teacherPresentableCourse.getId());
+               response.setCategoryIds(categoryIds);
 
                Set<Category> categories = categoryService.getCategoriesByIds(categoryIds);
 
@@ -122,6 +126,7 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
                    response.setCategoryTitles(categoryTitles);
                }
                List<Long> subcategoryIds = dao.findAllSubById(course.getId());
+               response.setSubCategoryIds(subcategoryIds);
 
                Set<Subcategory> subcategories = subcategoryService.getSubcategoriesByIds(subcategoryIds);
 

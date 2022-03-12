@@ -47,11 +47,11 @@ public class TeacherPresentableCourse  extends Auditable{
     @Column(name = "n_duration")
     private String duration;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_pre_course", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_teacher_presentable_course_id", "f_pre_course_id"})},
-            joinColumns = {@JoinColumn(name = "f_teacher_presentable_course_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
-    private List<Course> preCourseList;
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(name = "tbl_pre_course", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_teacher_presentable_course_id", "f_pre_course_id"})},
+//            joinColumns = {@JoinColumn(name = "f_teacher_presentable_course", referencedColumnName = "id")},
+//            inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
+//    private List<Course> preCourseList;
 
 
 //   private List<String> courseHeaders;
