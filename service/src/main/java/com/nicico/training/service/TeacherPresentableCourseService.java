@@ -76,7 +76,7 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
     @Override
     @Transactional
     public ElsPresentableResponse editPresentableCourse(ElsPresentableResponse elsPresentableCourse) {
-        ElsPresentableResponse response=new ElsPresentableResponse();
+
         Long id = elsPresentableCourse.getId();
         TeacherPresentableCourse saved = new TeacherPresentableCourse();
 
@@ -84,6 +84,8 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
         if (teacherPresentableCourse.isPresent()) {
             teacherPresentableCourse.get().setDescription(elsPresentableCourse.getDescription());
 
+            Course course=   courseService.getCourse(elsPresentableCourse.getCourseId());
+           elsPresentableCourse.setCourseTitle(course.getTitleFa());
             saved = dao.save(teacherPresentableCourse.get());
         } else {
             throw new  NotFoundException("not edited");
