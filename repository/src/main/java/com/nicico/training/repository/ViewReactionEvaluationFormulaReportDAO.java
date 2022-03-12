@@ -27,6 +27,7 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
             "    z.class_start_date                                                 AS class_start_date,\n" +
             "    z.class_end_date                                                   AS class_end_date,\n" +
             "    z.course_code                                                      AS course_code,\n" +
+            "arzyabiFardi.arzyabi as student_evaluation ,"+
             "    z.course_titlefa                                                   AS course_titlefa,\n" +
             "    z.category_titlefa                                                 AS category_titlefa,\n" +
             "    z.sub_category_titlefa                                             AS sub_category_titlefa,\n" +
@@ -55,12 +56,14 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
             "FROM\n" +
             "         (\n" +
             "        SELECT\n" +
+            "            IDCLASSSTU,\n" +
             "            class_id,\n" +
             "            student_id,\n" +
             "            total_std\n" +
             "        FROM\n" +
             "            (\n" +
             "                SELECT\n" +
+            "                    tbl_class_student.id as IDCLASSSTU,\n" +
             "                    tbl_class_student.class_id,\n" +
             "                    tbl_class_student.student_id,\n" +
             "                    COUNT(*)\n" +
@@ -156,6 +159,7 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
             "            idmodares\n" +
             "    )              mianginmasol ON masol.id = mianginmasol.idmodares\n" +
             "    \n" +
+
             "    LEFT JOIN (\n" +
             "SELECT\n" +
             "COUNT(*) as javabDade,\n" +
@@ -170,6 +174,39 @@ public interface ViewReactionEvaluationFormulaReportDAO extends BaseDAO<ViewReac
             "    tbl_evaluation.f_class_id,\n" +
             "    tbl_evaluation.b_status,\n" +
             "    tbl_evaluation.f_evaluator_type_id)   darsadJavab ON z.class_id = darsadJavab.classId\n" +
+
+            "  \n" +
+            "        LEFT JOIN (\n" +
+            "        SELECT\n" +
+            "    id_eval,\n" +
+            "    miangin as arzyabi,\n" +
+            "    tbl_evaluation.f_evaluator_id\n" +
+            "FROM\n" +
+            "         (\n" +
+            "        SELECT\n" +
+            "            CAST(SUM(rate * w) / SUM(w) AS DECIMAL(8, 2)) AS miangin,\n" +
+            "            id_eval\n" +
+            "        FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "                    tbl_questionnaire_question.f_weight   AS w,\n" +
+            "                    tbl_parameter_value.c_value           AS rate,\n" +
+            "                    tbl_evaluation_answer.f_evaluation_id AS id_eval\n" +
+            "                FROM\n" +
+            "                         tbl_evaluation_answer\n" +
+            "                    INNER JOIN tbl_questionnaire_question ON tbl_evaluation_answer.f_evaluation_question_id = tbl_questionnaire_question.\n" +
+            "                    id\n" +
+            "                    INNER JOIN tbl_parameter_value ON tbl_evaluation_answer.f_answer_id = tbl_parameter_value.id\n" +
+            "            )\n" +
+            "        GROUP BY\n" +
+            "            id_eval\n" +
+            "    )\n" +
+            "    INNER JOIN tbl_evaluation ON id_eval = tbl_evaluation.id\n" +
+            "    INNER JOIN tbl_class ON tbl_evaluation.f_class_id = tbl_class.id\n" +
+            "    INNER JOIN tbl_parameter_value ON tbl_evaluation.f_evaluator_type_id = tbl_parameter_value.id\n" +
+            "\n" +
+            "\n" +
+            "    ) arzyabiFardi on  clsstu.idClassStu = arzyabiFardi.f_evaluator_id\n"+
             "ORDER BY\n" +
             "    class_code", nativeQuery = true)
     List<ViewReactionEvaluationFormulaReport> getAll(String start, String end);

@@ -108,4 +108,8 @@ public class ViewReactionEvaluationFormulaReport implements Serializable {
 
     @Column(name = "miangin_javab_dade")
     private String miangin_javab_dade;
+
+
+    @Column(name = "student_evaluation")
+    private String studentEvaluation;
 }

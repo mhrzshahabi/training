@@ -232,11 +232,11 @@ public class ExportController {
         FileInputStream in = null;
         try {
 
-            String[] headers = new String[25];
-            String[] columns = new String[25];
+            String[] headers = new String[26];
+            String[] columns = new String[26];
 
 
-            for (int z = 0; z < 25; z++) {
+            for (int z = 0; z < 26; z++) {
 
                 switch (z) {
                     case 0: {
@@ -351,20 +351,26 @@ public class ExportController {
                         break;
                     }
                     case 22: {
+                        headers[z] = "نمره ارزیابی واکنشی فراگیر";
+                        columns[z] = "student_evaluation";
+                        break;
+                    }
+                    case 23: {
                         headers[z] = "ارزیابی نهایی استاد در کلاس";
                         columns[z] = "final_teacher";
                         break;
                     }
-                    case 23: {
+                    case 24: {
                         headers[z] = "تعداد دانشجویان جواب داده به ارزیابی این کلاس";
                         columns[z] = "tedadJavabDade";
                         break;
                     }
-                    case 24: {
+                    case 25: {
                         headers[z] = "درصد مشارکت فراگیران";
                         columns[z] = "mianginJavabDadeHa";
                         break;
                     }
+
                 }
             }
 
@@ -456,7 +462,10 @@ public class ExportController {
                             row.createCell(i).setCellValue(map.getClass_status());
                             break;
                         }
-
+                        case "student_evaluation": {
+                            row.createCell(i).setCellValue(map.getStudentEvaluation());
+                            break;
+                        }
                         case "student_per_number": {
                             row.createCell(i).setCellValue(map.getStudent_per_number());
                             break;
