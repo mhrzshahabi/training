@@ -48,6 +48,7 @@ public abstract class TeacherPresentableCourseMapper {
                response.setSubCategoryTitles(subcategoryTitles);
        }
        Course course=teacherPresentableCourse.getCourse();
+       response.setCourseTitle(course.getTitleFa());
         response.setCourseDuration(teacherPresentableCourse.getCourse().getTheoryDuration().toString());
        List<Long> courseIds=courseDAO.findAllPrecourseBy(course.getId());
        if(courseIds!=null && courseIds.size()>0) {
