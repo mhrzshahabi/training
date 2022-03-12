@@ -356,7 +356,7 @@ public class ExportController {
                         break;
                     }
                     case 23: {
-                        headers[z] = "ارزیابی نهایی استاد در کلاس";
+                        headers[z] = "نمره ارزیابی نهایی استاد در کلاس";
                         columns[z] = "final_teacher";
                         break;
                     }
@@ -366,7 +366,7 @@ public class ExportController {
                         break;
                     }
                     case 25: {
-                        headers[z] = "درصد مشارکت فراگیران";
+                        headers[z] = "درصد مشارکت فراگیران در ارزیابی";
                         columns[z] = "mianginJavabDadeHa";
                         break;
                     }
@@ -1081,7 +1081,7 @@ public class ExportController {
                         break;
                     }
                     case 16: {
-                        headers[z] = "ارزیابی نهایی استاد در کلاس";
+                        headers[z] = "نمره ارزیابی نهایی استاد در کلاس";
                         columns[z] = "final_teacher";
                         break;
                     }
@@ -1091,7 +1091,7 @@ public class ExportController {
                         break;
                     }
                     case 18: {
-                        headers[z] = "درصد مشارکت فراگیران";
+                        headers[z] = "درصد مشارکت فراگیران در ارزیابی";
                         columns[z] = "mianginJavabDadeHa";
                         break;
                     }
