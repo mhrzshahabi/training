@@ -124,7 +124,8 @@ public class ExportToFileController {
 
 
     @PostMapping(value = {"/exportExcelFromClient"})
-    public void exportExcelFromClient(final HttpServletResponse response, @RequestParam(value = "fields") String fields,
+    public void exportExcelFromClient(final HttpServletResponse response,
+                                      @RequestParam(value = "fields") String fields,
                                       @RequestParam(value = "data") String data,
                                       @RequestParam(value = "titr") String titr,
                                       @RequestParam(value = "pageName") String pageName) throws IOException {

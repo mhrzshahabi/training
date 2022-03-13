@@ -1133,6 +1133,38 @@
                     this.downloadExcelFromClient(listgrid, parentListGrid, titr, pageName, exceptColumn);
                 }
             }
+
+            static makeExcelOutputWithFieldsAndData(dataSource, listGridDataArray, title, pageName, sliceStart, sliceEnd) {
+
+                let excelData = [];
+                let excelFields = [];
+
+                let data = listGridDataArray;
+                let fields = Object.values(dataSource.getFields());
+                let fieldNames = fields.map(q => q.name).slice(sliceStart, fields.length - sliceEnd);
+                let fieldTitles = fields.map(q => q.title).slice(sliceStart, fields.length - sliceEnd);
+
+                let obj = {};
+                for (let i = 0; i < fieldNames.length; i++) {
+                    obj[fieldNames[i]] = fieldTitles[i];
+                }
+                excelData.push(obj);
+
+                for (let d of data) {
+                    let obj = {};
+                    for (let i = 0; i < fieldNames.length; i++) {
+                        obj[fieldNames[i]] = d[fieldNames[i]];
+                    }
+                    excelData.push(obj);
+                }
+
+                for (let i = 0; i < fieldNames.length; i++) {
+                    let obj = {};
+                    obj["name"] = fieldNames[i];
+                    excelFields.push(obj);
+                }
+                ExportToFile.exportToExcelFromClient(excelFields, excelData, title, pageName, null);
+            }
         }
 
         function generalGetResp(resp) {

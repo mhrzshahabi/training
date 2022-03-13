@@ -50,7 +50,9 @@
     //----------------------------------------------------Criteria Form------------------------------------------------
     ToolStripButton_Excel_Comment_REFR = isc.ToolStripButtonExcel.create({
         click: function () {
-            makeExcelComments();
+            let listGridDataArray = ListGrid_Comment_REFR.data.localData;
+            ExportToFile.makeExcelOutputWithFieldsAndData(RestDataSource_Comment_REFR, listGridDataArray, "", "گزارش نظرات ارزیابی", 1, 0);
+            // makeExcelComments();
         }
     });
     ToolStripButton_Refresh_Comment_REFR = isc.ToolStripButtonRefresh.create({
@@ -444,4 +446,5 @@
             ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش نظرات ارزیابی ", null);
         }
     }
+
     // </script>

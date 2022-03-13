@@ -143,12 +143,6 @@ public class ExportToFileService implements IExportToFileService {
                 sheet.setColumnWidth(columns.length - 1, 26000 - sumWidth);
             }
 
-            //CellStyle mine = workbook.createCellStyle();
-            //mine.setFillForegroundColor(IndexedColors.BLACK.index);
-            //mine.setFillForegroundColor(IndexedColors.BLUE_GREY.index);
-            //mine.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            //sheet.getRow(4).setRowStyle(mine);
-
 
             String mimeType = "application/octet-stream";
             String fileName = URLEncoder.encode("ExportExcel.xlsx", "UTF-8").replace("+", "%20");
