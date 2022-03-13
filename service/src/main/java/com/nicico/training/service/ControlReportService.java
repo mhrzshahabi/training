@@ -519,6 +519,28 @@ public class ControlReportService {
                 //3: num new lines after each class in sheet
                 cnt = cnt + 8 + 3 + students.get(m).size();
             }//end main for
+            XSSFCellStyle rCellStyle = workbook.createCellStyle();
+            rCellStyle.setFont(rFont);
+            XSSFRow row = sheet.createRow(cnt);
+            Cell cellOfRow = row.createCell(1);
+            row.setHeight((short) 575);
+            cellOfRow.setCellValue("نام و امضای مسئول واحد ");
+            cellOfRow.setCellStyle(rCellStyle);
+            rCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+            rCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+
+            XSSFRow rowSec = sheet.createRow(cnt+1);
+            Cell cellOfRowSec = rowSec.createCell(1);
+            rowSec.setHeight((short) 575);
+            cellOfRowSec.setCellValue("نام و امضای استاد ");
+            cellOfRowSec.setCellStyle(rCellStyle);
+
+            XSSFRow rowTh = sheet.createRow(cnt+2);
+            Cell cellOfRowTh = rowTh.createCell(1);
+            rowTh.setHeight((short) 575);
+            cellOfRowTh.setCellValue("نام و امضای سرپرست آزمون ");
+            cellOfRowTh.setCellStyle(rCellStyle);
 
             ///////////////////////now export the excel
             String mimeType = "application/octet-stream";
@@ -920,6 +942,29 @@ public class ControlReportService {
                 //3: num new lines after each class in sheet
                 cnt = cnt + 8 + 3 + students.get(m).size();
             }//end main for
+            XSSFCellStyle rCellStyle = workbook.createCellStyle();
+            rCellStyle.setFont(rFont);
+            XSSFRow row = sheet.createRow(cnt);
+            Cell cellOfRow = row.createCell(1);
+            row.setHeight((short) 575);
+            cellOfRow.setCellValue("نام و امضای مسئول واحد ");
+            cellOfRow.setCellStyle(rCellStyle);
+            rCellStyle.setAlignment(HorizontalAlignment.RIGHT);
+            rCellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
+
+
+            XSSFRow rowSec = sheet.createRow(cnt+1);
+            Cell cellOfRowSec = rowSec.createCell(1);
+            rowSec.setHeight((short) 575);
+            cellOfRowSec.setCellValue("نام و امضای استاد ");
+            cellOfRowSec.setCellStyle(rCellStyle);
+
+            XSSFRow rowTh = sheet.createRow(cnt+2);
+            Cell cellOfRowTh = rowTh.createCell(1);
+            rowTh.setHeight((short) 575);
+            cellOfRowTh.setCellValue("نام و امضای سرپرست آزمون ");
+            cellOfRowTh.setCellStyle(rCellStyle);
+
 
             ///////////////////////now export the excel
             String mimeType = "application/octet-stream";
@@ -1320,7 +1365,8 @@ public class ControlReportService {
                 //8: num rows in main header
                 //3: num new lines after each class in sheet
                 cnt = cnt + 8 + 3 + students.get(m).size();
-            }//end main for
+            }
+            //end main for
 
             ///////////////////////now export the excel
             String mimeType = "application/octet-stream";
