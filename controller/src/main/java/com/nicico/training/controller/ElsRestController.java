@@ -1988,7 +1988,7 @@ public class ElsRestController {
             ElsPresentableResponse response = new ElsPresentableResponse();
 
             TeacherPresentableCourse teacherPresentableCourse = teacherPresentableCourseService.savePresentableCourse(elsPresentableCourse);
-            response = teacherPresentableCourseMapper.toElsPresentableCourse(teacherPresentableCourse);
+            response = teacherPresentableCourseMapper.toElsPresentableCourse(teacherPresentableCourse,elsPresentableCourse);
             response.setStatus(200);
             response.setMessage("successfully saved");
             return response;

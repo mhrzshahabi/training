@@ -20,25 +20,27 @@ public abstract class TeacherPresentableCourseMapper {
     @Autowired
     protected IGoalService goalService;
     @Transactional
-    public ElsPresentableResponse toElsPresentableCourse(TeacherPresentableCourse teacherPresentableCourse) {
+    public ElsPresentableResponse toElsPresentableCourse(TeacherPresentableCourse teacherPresentableCourse,ElsPresentableResponse elsPresentableResponse) {
         ElsPresentableResponse response=new ElsPresentableResponse();
         List<String> categoryTitles=new ArrayList<>();
         List<String> subcategoryTitles=new ArrayList<>();
         List<String> preCourseTitle=new ArrayList<>();
         List<String> syllabusTitles=new ArrayList<>();
+
         response.setId(teacherPresentableCourse.getId());
         if(teacherPresentableCourse.getCourseId()!=null)
         response.setCourseId(teacherPresentableCourse.getCourseId());
 
         response.setDescription(teacherPresentableCourse.getDescription());
        Set<Category > categories= teacherPresentableCourse.getCategories();
+       response.setCategoryIds(elsPresentableResponse.getCategoryIds());
        if(categories!=null) {
            categories.stream().forEach(category -> {
                categoryTitles.add(category.getTitleFa());
            });
            response.setCategoryTitles(categoryTitles);
        }
-
+       response.setSubCategoryIds(elsPresentableResponse.getSubCategoryIds());
        Set<Subcategory> subcategories=teacherPresentableCourse.getSubCategories();
        if(subcategories!=null) {
            subcategories.stream().forEach(subcategory -> {
@@ -72,7 +74,7 @@ public abstract class TeacherPresentableCourseMapper {
             Set<Syllabus> syllabusSet=  goal.getSyllabusSet();
             if(syllabusSet.stream().count()>0L){
                 syllabusSet.stream().forEach(syllabus -> {
-                    subcategoryTitles.add(syllabus.getTitleFa());
+                    syllabusTitles.add(syllabus.getTitleFa());
                 });
             }
           });
