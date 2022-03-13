@@ -78,7 +78,11 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
     public ElsPresentableResponse editPresentableCourse(ElsPresentableResponse elsPresentableCourse) {
 
         Long id = elsPresentableCourse.getId();
-        TeacherPresentableCourse saved = new TeacherPresentableCourse();
+        List<String> categoryTitles=new ArrayList<>();
+        List<String> subcategoryTitles=new ArrayList<>();
+        List<String> preCourseTitle=new ArrayList<>();
+        List<String> syllabusTitles=new ArrayList<>();
+
 
         Optional<TeacherPresentableCourse> teacherPresentableCourse = dao.findById(id);
         if (teacherPresentableCourse.isPresent()) {
@@ -86,7 +90,58 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
 
             Course course=   courseService.getCourse(elsPresentableCourse.getCourseId());
            elsPresentableCourse.setCourseTitle(course.getTitleFa());
-            saved = dao.save(teacherPresentableCourse.get());
+            TeacherPresentableCourse saved = dao.save(teacherPresentableCourse.get());
+
+            Set<Category > categories= saved.getCategories();
+           elsPresentableCourse.setCategoryIds(dao.findAllCatById(saved.getId()));
+            if(categories!=null) {
+                categories.stream().forEach(category -> {
+                    categoryTitles.add(category.getTitleFa());
+                });
+                elsPresentableCourse.setCategoryTitles(categoryTitles);
+            }
+            elsPresentableCourse.setSubCategoryIds(dao.findAllSubById(saved.getId()));
+            Set<Subcategory> subcategories=saved.getSubCategories();
+            if(subcategories!=null) {
+                subcategories.stream().forEach(subcategory -> {
+                    subcategoryTitles.add(subcategory.getTitleFa());
+                });
+                if (subcategoryTitles != null)
+                    elsPresentableCourse.setSubCategoryTitles(subcategoryTitles);
+            }
+
+            elsPresentableCourse.setCourseTitle(course.getTitleFa());
+           elsPresentableCourse.setCourseDuration(saved.getCourse().getTheoryDuration().toString());
+            List<Long> courseIds=courseDAO.findAllPrecourseBy(course.getId());
+            if(courseIds!=null && courseIds.size()>0) {
+                courseIds.stream().forEach(courseId -> {
+                    preCourseTitle.add(courseDAO.getById(courseId).getTitleFa());
+                });
+            }
+            if(preCourseTitle!=null)
+               elsPresentableCourse.setPreCourseTitles(preCourseTitle);
+            if(course.getHasGoal() ){
+                List<Goal> goals=new ArrayList<>();
+                List<Long> goalIds= courseDAO.findAllGoalId(course.getId());
+                if(goalIds!=null && goalIds.size()>0){
+                    goalIds.stream().forEach(goalId->{
+                        Goal goal= goalService.getById(goalId);
+                        goals.add(goal);
+                    });
+                }
+
+                goals.stream().forEach(goal -> {
+                    Set<Syllabus> syllabusSet=  goal.getSyllabusSet();
+                    if(syllabusSet.stream().count()>0L){
+                        syllabusSet.stream().forEach(syllabus -> {
+                            syllabusTitles.add(syllabus.getTitleFa());
+                        });
+                    }
+                });
+            }
+            if(subcategoryTitles!=null)
+                elsPresentableCourse.setCourseSyllabusTitles(syllabusTitles);
+
         } else {
             throw new  NotFoundException("not edited");
 
@@ -128,7 +183,7 @@ public class TeacherPresentableCourseService implements ITeacherPresentableCours
                    });
                    response.setCategoryTitles(categoryTitles);
                }
-               List<Long> subcategoryIds = dao.findAllSubById(course.getId());
+               List<Long> subcategoryIds = dao.findAllSubById(teacherPresentableCourse.getId());
                response.setSubCategoryIds(subcategoryIds);
 
                Set<Subcategory> subcategories = subcategoryService.getSubcategoriesByIds(subcategoryIds);
