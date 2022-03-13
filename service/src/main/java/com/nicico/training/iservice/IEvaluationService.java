@@ -45,7 +45,7 @@ public interface IEvaluationService {
 
     Boolean deleteEvaluation(@RequestBody HashMap req);
 
-    void deleteAllReactionEvaluationForms(Long classId);
+    void deleteAllReactionEvaluationForms(Long classId,Long evaluation);
 
     Double getEvaluationFormGrade(Evaluation evaluation);
 

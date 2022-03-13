@@ -404,8 +404,8 @@ public class EvaluationRestController {
     @Loggable
     @GetMapping(value = "/deleteAllReactionEvaluationForms/{classId}/{deleteInEls}")
     public ResponseEntity<Void> deleteAllReactionEvaluationForms(@PathVariable Long classId, @PathVariable boolean deleteInEls, HttpServletRequest iscRq) throws IOException {
-        
-        return deleteAllEvaluationAfterEls(classId, true);
+
+        return deleteAllEvaluationAfterEls(classId, true, 139L);
 
 //        if (deleteInEls) {
 //            BaseResponse response;
@@ -424,10 +424,37 @@ public class EvaluationRestController {
 //        }
     }
 
-    private ResponseEntity<Void> deleteAllEvaluationAfterEls(Long classId, boolean b) {
-        evaluationService.deleteAllReactionEvaluationForms(classId);
+    @Loggable
+    @GetMapping(value = "/deleteAllExecutionEvaluationForms/{classId}/{deleteInEls}")
+    public ResponseEntity<Void> deleteAllExecutionEvaluationForms(@PathVariable Long classId, @PathVariable boolean deleteInEls, HttpServletRequest iscRq) throws IOException {
+
+        return deleteAllEvaluationAfterEls(classId, true, 758L);
+
+//        if (deleteInEls) {
+//            BaseResponse response;
+//            List<Long> allEvaluationIds = evaluationService.getAllReactionEvaluationForms(classId);
+//            if (!allEvaluationIds.isEmpty()) {
+//                response = client.deleteEvaluationForOneClass(allEvaluationIds);
+//            } else {
+//                return deleteAllEvaluationAfterEls(classId, false);
+//            }
+//            if (response.getStatus() == 200)
+//                return deleteAllEvaluationAfterEls(classId, true);
+//            else
+//                return deleteAllEvaluationAfterEls(classId, false);
+//        } else {
+//            return deleteAllEvaluationAfterEls(classId, false);
+//        }
+    }
+
+    private ResponseEntity<Void> deleteAllEvaluationAfterEls(Long classId, boolean b, Long evaluation) {
+        evaluationService.deleteAllReactionEvaluationForms(classId, evaluation);
         if (classId != null) {
-            iTclassService.changeOnlineEvalStudentStatus(classId, false);
+            if (evaluation.equals(139L))
+                iTclassService.changeOnlineEvalStudentStatus(classId, false);
+            else if (evaluation.equals(758L))
+                iTclassService.changeOnlineExecutionEvalStudentStatus(classId, false);
+
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -786,7 +813,7 @@ public class EvaluationRestController {
 
         SearchDTO.SearchRs<EvaluationDTO.EvaluationForm> finalResult = new SearchDTO.SearchRs<>();
         finalResult.setList(result);
-        finalResult.setTotalCount((long)result.size());
+        finalResult.setTotalCount((long) result.size());
         return new ResponseEntity<>(ISC.convertToIscRs(finalResult, 0), HttpStatus.OK);
     }
 
@@ -843,7 +870,7 @@ public class EvaluationRestController {
 
         SearchDTO.SearchRs<EvaluationDTO.EvaluationForm> finalResult = new SearchDTO.SearchRs<>();
         finalResult.setList(result);
-        finalResult.setTotalCount((long)result.size());
+        finalResult.setTotalCount((long) result.size());
         return new ResponseEntity<>(ISC.convertToIscRs(finalResult, 0), HttpStatus.OK);
     }
 
@@ -973,6 +1000,7 @@ public class EvaluationRestController {
     /**
      * it returns list of answered evaluation questions with the details like
      * information of the student who answered to that and other infos with giving the question Ids
+     *
      * @param questionIds
      * @return
      */

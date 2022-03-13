@@ -391,10 +391,10 @@
                                                 isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                                     classRecord_DE.id,"GET", null, null));
                                                 const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                                if (classRecord_DE.classStudentOnlineEvalStatus) {
+                                                if (classRecord_DE.studentOnlineEvalExecutionStatus) {
                                                     ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(false);
-                                                    classRecord_DE.classStudentOnlineEvalStatus= false;
-                                                    ListGrid_class_Evaluation.getSelectedRecord().classStudentOnlineEvalStatus = false;
+                                                    classRecord_DE.studentOnlineEvalExecutionStatus= false;
+                                                    ListGrid_class_Evaluation.getSelectedRecord().studentOnlineEvalExecutionStatus = false;
                                                 }
                                                 setTimeout(() => {
                                                     msg.close();
@@ -769,17 +769,17 @@
                     this.close();
                     if (index === 0) {
                         evalWait_DE = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteAllReactionEvaluationForms/" +
+                        isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/deleteAllExecutionEvaluationForms/" +
                             classRecord_DE.id+"/true", "GET", null, function (resp) {
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     ListGrid_student_DE.invalidateCache();
                                     isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                         classRecord_DE.id,"GET", null, null));
                                     const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                    if (classRecord_DE.classStudentOnlineEvalStatus) {
+                                    if (classRecord_DE.studentOnlineEvalExecutionStatus) {
                                         ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(false);
-                                        classRecord_DE.classStudentOnlineEvalStatus= false;
-                                        ListGrid_class_Evaluation.getSelectedRecord().classStudentOnlineEvalStatus = false;
+                                        classRecord_DE.studentOnlineEvalExecutionStatus= false;
+                                        ListGrid_class_Evaluation.getSelectedRecord().studentOnlineEvalExecutionStatus = false;
 
                                     }
                                     setTimeout(() => {
@@ -1352,7 +1352,7 @@
 
                 if (type == 'eval') {
 
-                    isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
+                    isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/758/" + result[0].evaluationId, "GET", null, function (resp) {
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             wait.close();
                             var OK = isc.Dialog.create({
@@ -1363,8 +1363,8 @@
 
                             ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(true);
                             ToolStripButton_OnlineFormIssuanceResultForAll_DE.setDisabled(false);
-                            ListGrid_class_Evaluation.getSelectedRecord().classStudentOnlineEvalStatus = true;
-                            classRecord_DE.classStudentOnlineEvalStatus = true;
+                            ListGrid_class_Evaluation.getSelectedRecord().studentOnlineEvalExecutionStatus = true;
+                            classRecord_DE.studentOnlineEvalExecutionStatus = true;
                             setTimeout(function () {
                                 OK.close();
                             }, 2000);
@@ -2094,7 +2094,7 @@
         DynamicForm_Questions_Title_JspEvaluation.getItem("startDate").setValue(classRecord_DE.tclassStartDate);
         DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", classRecord_DE.courseTitleFa);
         DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی فراگیر از کلاس");
-        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
+        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("حین اجرا");
         DynamicForm_Questions_Title_JspEvaluation.setValue("evaluator", StdRecord.student.firstName + " " + StdRecord.student.lastName);
         DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "teacherFullName/" + classRecord_DE.teacherId, "GET", null, function (resp) {
@@ -2123,7 +2123,6 @@
 
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
                 let result = JSON.parse(resp.httpResponseText).response.data;
-                debugger
                 description = result[0].description;
                 evaluationId = result[0].evaluationId;
                 for (let i = 0; i < result.size(); i++) {
@@ -2484,7 +2483,7 @@
 
         DynamicForm_Questions_Title_JspEvaluation.getItem("startDate").setValue(classRecord_DE.tclassStartDate);
         DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی مسئول آموزش از مدرس");
-        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
+        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("حین اجرا");
         DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "teacherFullName/" + classRecord_DE.teacherId, "GET", null, function (resp1) {
             DynamicForm_Questions_Title_JspEvaluation.getItem("teacher").setValue(resp1.httpResponseText);
@@ -2889,7 +2888,7 @@
 
         DynamicForm_Questions_Title_JspEvaluation.getItem("startDate").setValue(classRecord_DE.tclassStartDate);
         DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationType").setValue("ارزیابی استاد از کلاس");
-        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("واکنشی");
+        DynamicForm_Questions_Title_JspEvaluation.getItem("evaluationLevel").setValue("حین اجرا");
         DynamicForm_Questions_Title_JspEvaluation.setValue("user", "<%= SecurityUtil.getFullName()%>");
         DynamicForm_Questions_Title_JspEvaluation.setValue("evaluated", classRecord_DE.courseTitleFa);
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "teacherFullName/" + classRecord_DE.teacherId, "GET", null, function (resp1) {

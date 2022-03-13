@@ -3719,4 +3719,15 @@ WHERE
     </changeSet>
 
 
+    <changeSet author="namdari" id="1647154846000-02">
+        <addColumn tableName="tbl_class">
+            <column name="STUDENT_ONLINE_EVAL_EXECUTION_STATUS" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="namdari" id="1647154846000-03">
+        <addColumn tableName="TBL_CLASS_AUD">
+            <column name="STUDENT_ONLINE_EVAL_EXECUTION_STATUS" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

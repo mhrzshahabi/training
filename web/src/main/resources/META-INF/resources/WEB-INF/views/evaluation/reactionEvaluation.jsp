@@ -1593,7 +1593,7 @@
 
                 if (type == 'eval') {
 
-                    isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/" + result[0].evaluationId, "GET", null, function (resp) {
+                    isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/139/" + result[0].evaluationId, "GET", null, function (resp) {
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             wait.close();
                             var OK = isc.Dialog.create({

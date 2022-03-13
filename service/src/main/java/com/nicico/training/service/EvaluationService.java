@@ -83,7 +83,15 @@ public class EvaluationService implements IEvaluationService {
                 updateClassStudentInfo(evaluation, 2);
             else if (!evaluation.getEvaluationFull())
                 updateClassStudentInfo(evaluation, 3);
-        } else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
+        }
+
+        else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(758L)) {
+            if (evaluation.getEvaluationFull())
+                updateClassStudentInfo(evaluation, 2);
+            else if (!evaluation.getEvaluationFull())
+                updateClassStudentInfo(evaluation, 3);
+        }
+        else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
             if (evaluation.getEvaluationFull())
                 updateTclassInfo(evaluation.getClassId(), 2, -1);
             else if (!evaluation.getEvaluationFull())
@@ -385,8 +393,8 @@ public class EvaluationService implements IEvaluationService {
 
     @Transactional
     @Override
-    public void deleteAllReactionEvaluationForms(Long classId) {
-        List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 154L, 139L);
+    public void deleteAllReactionEvaluationForms(Long classId,Long evaluationFormId) {
+        List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 154L, evaluationFormId);
         for (Evaluation evaluation : evaluations) {
             updateClassStudentInfo(modelMapper.map(evaluation, Evaluation.class), 0);
         }

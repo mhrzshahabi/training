@@ -182,6 +182,9 @@ public class TClassAudit implements Serializable {
     @Column(name = "STUDENT_ONLINE_EVAL_STATUS")
     private Boolean studentOnlineEvalStatus;
 
+    @Column(name = "STUDENT_ONLINE_EVAL_EXECUTION_STATUS")
+    private Boolean studentOnlineEvalExecutionStatus;
+
     @Column(name = "b_has_test")
     private Boolean hasTest;
 
