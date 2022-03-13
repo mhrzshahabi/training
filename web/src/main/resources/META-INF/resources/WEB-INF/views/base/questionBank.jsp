@@ -492,6 +492,13 @@
                 hidden: true
             },
             {
+                name: "questionTargets",
+                title: "هدف سوال",
+                optionDataSource: questionTargetDS_questionBank,
+                valueField: "id",
+                displayField: "title"
+            },
+            {
                 name: "questionDesigner",
                 width: "10%",
                 align: "center"
