@@ -90,13 +90,15 @@ public abstract class TeacherCertificationMapper {
     }
 
     private String convertToPersianDate(Date _date) {
-        Long date = _date.getTime();
-        ULocale PERSIAN_LOCALE = new ULocale("fa_IR");
-        ZoneId IRAN_ZONE_ID = ZoneId.of("Asia/Tehran");
 
-        SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd", PERSIAN_LOCALE );
-        df.setTimeZone(TimeZone.getTimeZone("GMT+3:30"));
-        return df.format(date);
+            Long date = _date.getTime();
+            ULocale PERSIAN_LOCALE = new ULocale("fa_IR");
+            ZoneId IRAN_ZONE_ID = ZoneId.of("Asia/Tehran");
+
+            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd", PERSIAN_LOCALE );
+            df.setTimeZone(TimeZone.getTimeZone("GMT+3:30"));
+            return df.format(date);
+
     }
 
 
