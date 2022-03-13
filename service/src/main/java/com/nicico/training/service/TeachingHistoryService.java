@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import response.teachingHistory.ElsTeachingHistoryFindAllRespDto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -92,7 +94,7 @@ public class TeachingHistoryService implements ITeachingHistoryService {
     public List<ElsTeachingHistoryFindAllRespDto> findTeachingHistoriesByNationalCode(String nationalCode) {
         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
         List<TeachingHistory> teachingHistoryList = teachingHistoryDAO.findAllByTeacherId(teacherId);
-        return teachingHistoryBeanMapper.teachHistoryListToElsFindRespList(teachingHistoryList);
+        return teachingHistoryBeanMapper.teachHistoryListToElsFindRespList(teachingHistoryList).stream().sorted(Comparator.comparing(ElsTeachingHistoryFindAllRespDto::getId).reversed()).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

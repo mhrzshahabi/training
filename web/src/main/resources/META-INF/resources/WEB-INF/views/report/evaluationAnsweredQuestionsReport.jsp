@@ -1,6 +1,8 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
 
 
 // <script>
@@ -62,7 +64,9 @@
     //---------------------------------------------------- Form------------------------------------------------
     ToolStripButton_Excel_Answered_Questions_Details = isc.ToolStripButtonExcel.create({
         click: function () {
-            makeExcelAnsweredQuestions();
+            let listGridDataArray = ListGrid_Answered_Questions_Details.data;
+            ExportToFile.makeExcelOutputWithFieldsAndData(RestDataSource_Answered_Questions_Details, listGridDataArray, "", "گزارش سوالات ارزیابی", 0, 0);
+            // makeExcelAnsweredQuestions();
         }
     });
 
@@ -302,7 +306,7 @@
                 {name: "nationalCode"},
                 {name: "complexTitle"},
                 {name: "questionTitle"},
-                {name: "answerTitle"},
+                {name: "answerTitle"}
             ];
             ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش سوالات ارزیابی ", null);
         }

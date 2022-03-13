@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import response.employmentHistory.ElsEmploymentHistoryFindAllRespDto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -133,7 +135,7 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
     public List<ElsEmploymentHistoryFindAllRespDto> findEmploymentHistoriesByNationalCode(String nationalCode) {
         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
         List<EmploymentHistory> employmentHistoryList = employmentHistoryDAO.findAllByTeacherId(teacherId);
-        return employmentHistoryBeanMapper.empHistoryListToElsFindRespList(employmentHistoryList);
+        return employmentHistoryBeanMapper.empHistoryListToElsFindRespList(employmentHistoryList).stream().sorted(Comparator.comparing(ElsEmploymentHistoryFindAllRespDto::getId).reversed()).collect(Collectors.toList());
     }
 
     private EmploymentHistoryDTO.Info save(EmploymentHistory employmentHistory) {

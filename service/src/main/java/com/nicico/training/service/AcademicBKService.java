@@ -20,8 +20,10 @@ import org.springframework.transaction.annotation.Transactional;
 import response.academicBK.ElsAcademicBKFindAllRespDto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -125,7 +127,7 @@ public class AcademicBKService implements IAcademicBKService {
     public List<ElsAcademicBKFindAllRespDto> findAcademicBKsByTeacherNationalCode(String nationalCode) {
         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
         List<AcademicBK> academicBKList = academicBKDAO.findAllByTeacherId(teacherId);
-        return academicBKBeanMapper.academicBKToElsAcademicBKFindAllRes(academicBKList);
+        return academicBKBeanMapper.academicBKToElsAcademicBKFindAllRes(academicBKList).stream().sorted(Comparator.comparing(ElsAcademicBKFindAllRespDto::getId).reversed()).collect(Collectors.toList());
     }
 
 }
