@@ -128,6 +128,11 @@ public class EvaluationService implements IEvaluationService {
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
             updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+        }else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(758L)) {
+            updateClassStudentInfo(saved, 1);
+            List<EvaluationAnswer> list = createEvaluationAnswers(saved);
+            saved.setEvaluationAnswerList(list);
+            updateQuestionnarieInfo(evaluation.getQuestionnaireId());
         } else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
@@ -449,7 +454,15 @@ public class EvaluationService implements IEvaluationService {
                 ClassStudent classStudent = byId.get();
                 classStudent.setEvaluationStatusReaction(version);
             }
-        } else if (evaluation.getQuestionnaireTypeId().equals(230L)) {
+        }
+        else if (evaluation.getQuestionnaireTypeId().equals(758L)) {
+            Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatorId());
+            if (byId.isPresent()) {
+                ClassStudent classStudent = byId.get();
+                classStudent.setEvaluationStatusExecution(version);
+            }
+        }
+        else if (evaluation.getQuestionnaireTypeId().equals(230L)) {
             Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatedId());
             if (byId.isPresent()) {
                 ClassStudent classStudent = byId.get();
@@ -572,7 +585,20 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
                 evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate, EvaluationAnswer.class));
             }
-        } else if (evaluation.getQuestionnaireTypeId().equals(141L)) {
+        }
+        else if (evaluation.getQuestionnaireTypeId().equals(758L)) {
+            Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
+            Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            for (QuestionnaireQuestion questionnaireQuestion : questionnaire.getQuestionnaireQuestionList()) {
+                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                evaluationAnswerCreate.setQuestionSourceId(199L);
+                evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate, EvaluationAnswer.class));
+            }
+        }
+
+        else if (evaluation.getQuestionnaireTypeId().equals(141L)) {
             Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
             Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             for (QuestionnaireQuestion questionnaireQuestion : questionnaire.getQuestionnaireQuestionList()) {

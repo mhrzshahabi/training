@@ -3711,4 +3711,12 @@ WHERE
         </addColumn>
     </changeSet>
 
+
+    <changeSet author="namdari" id="1647154846000-01">
+        <addColumn tableName="tbl_class_student">
+            <column name="evaluation_status_execution" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+
 </databaseChangeLog>

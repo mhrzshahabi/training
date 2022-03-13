@@ -40,6 +40,8 @@ public class ClassStudentDTO implements Serializable {
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusReaction;
         @Getter(AccessLevel.NONE)
+        private Integer evaluationStatusExecution;
+        @Getter(AccessLevel.NONE)
         private Integer evaluationStatusLearning;
         @Getter(AccessLevel.NONE)
         private Integer evaluationStatusBehavior;
@@ -58,6 +60,9 @@ public class ClassStudentDTO implements Serializable {
 
         public Integer getEvaluationStatusReaction() {
             return evaluationStatusReaction == null ? 0 : evaluationStatusReaction;
+        }
+        public Integer getEvaluationStatusExecution() {
+            return evaluationStatusExecution == null ? 0 : evaluationStatusExecution;
         }
 
         public Integer getEvaluationStatusLearning() {
@@ -214,6 +219,7 @@ public class ClassStudentDTO implements Serializable {
         private Long presenceTypeId;
         private Long id;
         private Integer evaluationStatusReaction;
+        private Integer evaluationStatusExecution;
         private Integer evaluationStatusLearning;
         private Integer evaluationStatusBehavior;
         private Integer evaluationStatusResults;
@@ -236,6 +242,7 @@ public class ClassStudentDTO implements Serializable {
         private String scoreStateTitle;
         private String failureReasonTitle;
         private Integer evaluationStatusReaction;
+        private Integer evaluationStatusExecution;
     }
 
     @Getter
@@ -252,6 +259,7 @@ public class ClassStudentDTO implements Serializable {
     public static class EvaluationInfo {
         private Long id;
         private Integer evaluationStatusReaction;
+        private Integer evaluationStatusExecution;
         private Integer evaluationStatusLearning;
         private Integer evaluationStatusBehavior;
         private Integer evaluationStatusResults;

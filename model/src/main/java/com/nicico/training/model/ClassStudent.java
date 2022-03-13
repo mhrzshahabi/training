@@ -83,6 +83,12 @@ public class ClassStudent extends Auditable {
     @NotAudited
     private Integer evaluationStatusReaction;
 
+
+    @Column(name = "evaluation_status_execution")
+    @NotAudited
+    private Integer evaluationStatusExecution;
+
+
     @Column(name = "evaluation_status_learning")
     @NotAudited
     private Integer evaluationStatusLearning;

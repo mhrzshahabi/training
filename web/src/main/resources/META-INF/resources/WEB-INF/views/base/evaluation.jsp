@@ -807,7 +807,7 @@
             Detail_Tab_Evaluation.enable();
 
             switch (tab.id) {
-                case "TabPane_duringـexecution": {
+                case "TabPane_during_execution": {
                     RestDataSource_student_DE.implicitCriteria = null;
                     RestDataSource_student_DE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
                     ListGrid_student_DE.invalidateCache();
@@ -818,16 +818,16 @@
                     if (classRecord.trainingEvalStatus === 0 ||
                         classRecord.trainingEvalStatus === undefined ||
                         classRecord.trainingEvalStatus === null) {
-                        ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
-                        ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
                         ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(true);
-                        ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
                     } else if (classRecord.trainingEvalStatus === 1) {
-                        ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
-                        ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
                     } else {
-                        ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
-                        ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("sendButtonTraining").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("registerButtonTraining").hideIcon("ok");
                     }
 
                     if (classRecord.classStudentOnlineEvalStatus) {
@@ -843,49 +843,49 @@
                         classRecord.teacherEvalStatus === null) {
 
                         <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
-                        ToolStrip_SendForms_DE.getField("sendButtonTeacher").hideIcon("ok");
-                        ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
+                        // ToolStrip_SendForms_DE.getField("sendButtonTeacher").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
                         </sec:authorize>
-                        ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
+                        // ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
 
-                        ToolStrip_SendForms_DE.getField("registerButtonTeacher").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("registerButtonTeacher").hideIcon("ok");
                     } else if (classRecord.teacherEvalStatus === 1) {
                         <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
-                        ToolStrip_SendForms_DE.getField("sendButtonTeacher").showIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("sendButtonTeacher").showIcon("ok");
                         </sec:authorize>
                         if (classRecord.classTeacherOnlineEvalStatus) {
                             <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
-                            ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
+                            // ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
                             </sec:authorize>
-                            ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(false);
+                            // ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(false);
                         } else {
                             <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
-                            ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(false);
+                            // ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(false);
                             </sec:authorize>
-                            ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
+                            // ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
 
                         }
 
-                        ToolStrip_SendForms_DE.getField("registerButtonTeacher").hideIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("registerButtonTeacher").hideIcon("ok");
                     } else {
                         <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
-                        ToolStrip_SendForms_DE.getField("sendButtonTeacher").showIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("sendButtonTeacher").showIcon("ok");
                         </sec:authorize>
                         if (classRecord.classTeacherOnlineEvalStatus) {
                             <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
-                            ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
+                            // ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(true);
                             </sec:authorize>
-                            ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(false);
+                            // ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(false);
                         } else {
                             <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
-                            ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(false);
+                            // ToolStrip_SendForms_DE.getField("sendToEls_teacher").setDisabled(false);
                             </sec:authorize>
-                            ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
+                            // ToolStrip_SendForms_DE.getField("showResultsEls_teacher").setDisabled(true);
                         }
 
-                        ToolStrip_SendForms_DE.getField("registerButtonTeacher").showIcon("ok");
+                        // ToolStrip_SendForms_DE.getField("registerButtonTeacher").showIcon("ok");
                     }
-                    ToolStrip_SendForms_DE.redraw();
+                    // ToolStrip_SendForms_DE.redraw();
 
                     break;
                 }
