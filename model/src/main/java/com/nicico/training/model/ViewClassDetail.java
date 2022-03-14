@@ -70,11 +70,11 @@ public class ViewClassDetail extends Auditable {
     @Column(name = "tclass_n_duration")
     private Long tclassDuration;
 
-   @Column(name = "tclass_organizer")
-   private Long tclassOrganizerId;
+    @Column(name = "tclass_organizer")
+    private Long tclassOrganizerId;
 
-   @Column(name = "tclass_status")
-   private String tclassStatus;
+    @Column(name = "tclass_status")
+    private String tclassStatus;
 
     @Column(name = "tclass_reason")
     private String tclassReason;
@@ -83,22 +83,25 @@ public class ViewClassDetail extends Auditable {
     private String tclassEndingStatus;
 
     @Column(name = "tclass_planner")
-   private Long tclassPlanner;
+    private Long tclassPlanner;
 
-   @Column(name = "tclass_supervisor")
-   private Long tclassSupervisor;
+    @Column(name = "tclass_supervisor")
+    private Long tclassSupervisor;
 
-   @Column(name = "TERM_TITLEFA")
-   private String termTitleFa;
+    @Column(name = "TERM_TITLEFA")
+    private String termTitleFa;
 
-   @Column(name = "tclass_institute")
-   private String instituteTitleFa;
+    @Column(name = "tclass_institute")
+    private String instituteTitleFa;
 
-   @Column(name = "tclass_scoring_method")
-   private String classScoringMethod;
+    @Column(name = "tclass_scoring_method")
+    private String classScoringMethod;
 
-   @Column(name = "tclass_has_pre_test")
-   private Boolean classPreCourseTest;
+    @Column(name = "tclass_has_pre_test")
+    private Boolean classPreCourseTest;
+
+    @Column(name = "STUDENT_ONLINE_EVAL_EXECUTION_STATUS")
+    private Boolean studentOnlineEvalExecutionStatus;
 
     @Column(name = "TEACHER_EVAL_STATUS")
     private Integer teacherEvalStatus;
@@ -130,7 +133,7 @@ public class ViewClassDetail extends Auditable {
     @Column(name = "TEACHER_FIRST_NAME")
     private String teacherFirstName;
 
-    @Column(name="TEACHER_LAST_NAME")
+    @Column(name = "TEACHER_LAST_NAME")
     private String teacherLastName;
 
     @Column(name = "BEHAVIORAL_DUE_DATE")

@@ -173,8 +173,8 @@ public class ElsRestController {
     private String elsSmsUrl;
 
 
-    @GetMapping("/eval/{id}")
-    public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id) {
+    @GetMapping("/eval/{evalId}/{id}")
+    public ResponseEntity<SendEvalToElsResponse> sendEvalToEls(@PathVariable long id, @PathVariable long evalId) {
 
         SendEvalToElsResponse response = new SendEvalToElsResponse();
         Evaluation evaluation = evaluationService.getById(id);
@@ -195,7 +195,11 @@ public class ElsRestController {
         } catch (Exception e) {
             log.error("Exception evaluation ", e);
         }
-        iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
+        if (evalId == 139)
+            iTclassService.changeOnlineEvalStudentStatus(evaluation.getClassId(), true);
+        else if (evalId == 758)
+            iTclassService.changeOnlineExecutionEvalStudentStatus(evaluation.getClassId(), true);
+
         response.setStatus(200);
         return new ResponseEntity<>(response, HttpStatus.valueOf(response.getStatus()));
     }
@@ -2531,6 +2535,7 @@ public class ElsRestController {
     /**
      * For creating a new special skill
      * the input DTO contains teacher's national code
+     *
      * @param header
      * @param teacherSpecialSkillDTO
      * @return
@@ -2549,12 +2554,13 @@ public class ElsRestController {
 
     /**
      * edit a special skill of the teacher
+     *
      * @param header
      * @param teacherSpecialSkillDTO
      * @return
      */
     @PutMapping("/teacher/special-skills/edit")
-    TeacherSpecialSkillDTO.UpdatedInfo updateSpecialSkill(HttpServletRequest header, @RequestBody TeacherSpecialSkillDTO.Update teacherSpecialSkillDTO){
+    TeacherSpecialSkillDTO.UpdatedInfo updateSpecialSkill(HttpServletRequest header, @RequestBody TeacherSpecialSkillDTO.Update teacherSpecialSkillDTO) {
         TeacherSpecialSkillDTO.UpdatedInfo updatedInfoResponse = new TeacherSpecialSkillDTO.UpdatedInfo();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             updatedInfoResponse = iTeacherSpecialSkillService.update(teacherSpecialSkillDTO);

@@ -21,6 +21,7 @@
             {name: "teacherFullName"},
             {name: "teacherLastName"},
             {name: "tclassStudentsCount"},
+            {name: "studentOnlineEvalExecutionStatus"},
             {name: "tclassCode"},
             {name: "tclassStartDate"},
             {name: "tclassEndDate"},
@@ -554,6 +555,7 @@
             {name: "teacherId", hidden: true},
             {name: "x", hidden: true},
             {name: "trainingEvalStatus", hidden: true},
+            {name: "studentOnlineEvalExecutionStatus", hidden: true},
             {name: "tclassSupervisor", hidden: true},
             {name: "classStudentOnlineEvalStatus", title: "classStudentOnlineEvalStatus", hidden: true},
             {name: "classTeacherOnlineEvalStatus", title: "classTeacherOnlineEvalStatus", hidden: true},
@@ -646,6 +648,12 @@
         tabBarPosition: "top",
         enabled: false,
         tabs: [
+            {
+                id: "TabPane_during_execution",
+                title: "حین اجرا",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation/during-execution-evaluation-form"})
+            }
+            ,
             <sec:authorize access="hasAuthority('Evaluation_Reaction')">
             {
                 id: "TabPane_Reaction",
@@ -801,6 +809,26 @@
             Detail_Tab_Evaluation.enable();
 
             switch (tab.id) {
+                case "TabPane_during_execution": {
+                    RestDataSource_student_DE.implicitCriteria = null;
+                    RestDataSource_student_DE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                    ListGrid_student_DE.invalidateCache();
+                    ListGrid_student_DE.fetchData();
+                    DynamicForm_ReturnDate_DE.clearValues();
+                    classRecord_DE = classRecord;
+                    if (classRecord.studentOnlineEvalExecutionStatus === true ) {
+                        ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(true);
+
+                    } else   {
+
+                        ToolStripButton_OnlineFormIssuanceForAll_DE.setDisabled(false);
+
+                    }
+
+                    // ToolStrip_SendForms_DE.redraw();
+
+                    break;
+                }
                 case "TabPane_Reaction": {
                     RestDataSource_student_RE.implicitCriteria = null;
                     RestDataSource_student_RE.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
@@ -937,24 +965,28 @@
 
         if (evaluationType === "1") {
             Detail_Tab_Evaluation.enableTab(0);
-            Detail_Tab_Evaluation.disableTab(1);
-            Detail_Tab_Evaluation.disableTab(2);
-            Detail_Tab_Evaluation.disableTab(3);
-        } else if (evaluationType === "2") {
-            Detail_Tab_Evaluation.enableTab(0);
             Detail_Tab_Evaluation.enableTab(1);
             Detail_Tab_Evaluation.disableTab(2);
             Detail_Tab_Evaluation.disableTab(3);
-        } else if (evaluationType === "3") {
+            Detail_Tab_Evaluation.disableTab(4);
+        } else if (evaluationType === "2") {
             Detail_Tab_Evaluation.enableTab(0);
             Detail_Tab_Evaluation.enableTab(1);
             Detail_Tab_Evaluation.enableTab(2);
             Detail_Tab_Evaluation.disableTab(3);
+            Detail_Tab_Evaluation.disableTab(4);
+        } else if (evaluationType === "3") {
+            Detail_Tab_Evaluation.enableTab(0);
+            Detail_Tab_Evaluation.enableTab(1);
+            Detail_Tab_Evaluation.enableTab(2);
+            Detail_Tab_Evaluation.enableTab(3);
+            Detail_Tab_Evaluation.disableTab(4);
         } else if (evaluationType === "4") {
             Detail_Tab_Evaluation.enableTab(0);
             Detail_Tab_Evaluation.enableTab(1);
             Detail_Tab_Evaluation.enableTab(2);
             Detail_Tab_Evaluation.enableTab(3);
+            Detail_Tab_Evaluation.enableTab(4);
         }
     }
 

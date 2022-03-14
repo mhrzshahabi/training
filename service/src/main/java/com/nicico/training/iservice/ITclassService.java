@@ -126,6 +126,8 @@ public interface ITclassService {
 
     @Transactional
     void changeOnlineEvalStudentStatus(Long classId ,boolean state);
+    @Transactional
+    void changeOnlineExecutionEvalStudentStatus(Long classId ,boolean state);
 
     @Transactional
     BaseResponse changeClassStatus(Long classId , String statem, String reason);

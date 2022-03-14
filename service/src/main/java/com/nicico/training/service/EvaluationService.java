@@ -83,7 +83,15 @@ public class EvaluationService implements IEvaluationService {
                 updateClassStudentInfo(evaluation, 2);
             else if (!evaluation.getEvaluationFull())
                 updateClassStudentInfo(evaluation, 3);
-        } else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
+        }
+
+        else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(758L)) {
+            if (evaluation.getEvaluationFull())
+                updateClassStudentInfo(evaluation, 2);
+            else if (!evaluation.getEvaluationFull())
+                updateClassStudentInfo(evaluation, 3);
+        }
+        else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(141L)) {
             if (evaluation.getEvaluationFull())
                 updateTclassInfo(evaluation.getClassId(), 2, -1);
             else if (!evaluation.getEvaluationFull())
@@ -124,6 +132,11 @@ public class EvaluationService implements IEvaluationService {
     public EvaluationDTO.Info save(Evaluation evaluation) {
         final Evaluation saved = evaluationDAO.saveAndFlush(evaluation);
         if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(139L)) {
+            updateClassStudentInfo(saved, 1);
+            List<EvaluationAnswer> list = createEvaluationAnswers(saved);
+            saved.setEvaluationAnswerList(list);
+            updateQuestionnarieInfo(evaluation.getQuestionnaireId());
+        }else if (evaluation.getQuestionnaireTypeId() != null && evaluation.getQuestionnaireTypeId().equals(758L)) {
             updateClassStudentInfo(saved, 1);
             List<EvaluationAnswer> list = createEvaluationAnswers(saved);
             saved.setEvaluationAnswerList(list);
@@ -309,7 +322,8 @@ public class EvaluationService implements IEvaluationService {
             return getBehavioralEvaluations(notAnsweredEvaluations, evaluatorNationalCode);
         } else if (evaluatorType.equals("student")) {
             List<Evaluation> list = evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
-            return getBehavioralEvaluations(list,evaluatorNationalCode);
+            List<Evaluation> behavioralEvaluations= getBehavioralEvaluations(list,evaluatorNationalCode);
+            return  getExecutionEvaluations(behavioralEvaluations,evaluatorNationalCode);
         } else {
             return null;
         }
@@ -356,6 +370,28 @@ public class EvaluationService implements IEvaluationService {
             return finalList;
     }
 
+    private List<Evaluation> getExecutionEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
+        List<Evaluation> finalList = new ArrayList<>(list);
+        List<Evaluation> evaluationList = evaluationDAO.getExecutionEvaluations();
+        for (Evaluation evaluation : evaluationList){
+//            if (evaluation.getEvaluatorTypeId() == 187L) {
+//                Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
+//                if (teacher.isPresent() && teacher.get().getTeacherCode() != null && teacher.get().getTeacherCode().equals(evaluatorNationalCode))
+//                    finalList.add(evaluation);
+//            } else
+                if (evaluation.getEvaluatorTypeId() == 188L ) {
+                Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
+                if (classStudent.isPresent() && classStudent.get().getStudent() != null && classStudent.get().getStudent().getNationalCode().equals(evaluatorNationalCode))
+                    finalList.add(evaluation);
+            } else if (evaluation.getEvaluatorTypeId() != 188L && evaluation.getEvaluatorTypeId() != 187L){
+                Optional<ViewActivePersonnel> activePersonnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId());
+                if (activePersonnel.isPresent() && activePersonnel.get().getNationalCode() != null && activePersonnel.get().getNationalCode().equals(evaluatorNationalCode))
+                    finalList.add(evaluation);
+            }
+        }
+            return finalList;
+    }
+
     @Transactional
     @Override
     public Boolean deleteEvaluation(HashMap req) {
@@ -380,8 +416,8 @@ public class EvaluationService implements IEvaluationService {
 
     @Transactional
     @Override
-    public void deleteAllReactionEvaluationForms(Long classId) {
-        List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 154L, 139L);
+    public void deleteAllReactionEvaluationForms(Long classId,Long evaluationFormId) {
+        List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 154L, evaluationFormId);
         for (Evaluation evaluation : evaluations) {
             updateClassStudentInfo(modelMapper.map(evaluation, Evaluation.class), 0);
         }
@@ -449,7 +485,15 @@ public class EvaluationService implements IEvaluationService {
                 ClassStudent classStudent = byId.get();
                 classStudent.setEvaluationStatusReaction(version);
             }
-        } else if (evaluation.getQuestionnaireTypeId().equals(230L)) {
+        }
+        else if (evaluation.getQuestionnaireTypeId().equals(758L)) {
+            Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatorId());
+            if (byId.isPresent()) {
+                ClassStudent classStudent = byId.get();
+                classStudent.setEvaluationStatusExecution(version);
+            }
+        }
+        else if (evaluation.getQuestionnaireTypeId().equals(230L)) {
             Optional<ClassStudent> byId = classStudentDAO.findById(evaluation.getEvaluatedId());
             if (byId.isPresent()) {
                 ClassStudent classStudent = byId.get();
@@ -572,7 +616,20 @@ public class EvaluationService implements IEvaluationService {
                 evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
                 evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate, EvaluationAnswer.class));
             }
-        } else if (evaluation.getQuestionnaireTypeId().equals(141L)) {
+        }
+        else if (evaluation.getQuestionnaireTypeId().equals(758L)) {
+            Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
+            Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            for (QuestionnaireQuestion questionnaireQuestion : questionnaire.getQuestionnaireQuestionList()) {
+                EvaluationAnswerDTO.Create evaluationAnswerCreate = new EvaluationAnswerDTO.Create();
+                evaluationAnswerCreate.setEvaluationId(evaluation.getId());
+                evaluationAnswerCreate.setQuestionSourceId(199L);
+                evaluationAnswerCreate.setEvaluationQuestionId(questionnaireQuestion.getId());
+                evaluationAnswers.add(modelMapper.map(evaluationAnswerCreate, EvaluationAnswer.class));
+            }
+        }
+
+        else if (evaluation.getQuestionnaireTypeId().equals(141L)) {
             Optional<Questionnaire> qId = questionnaireDAO.findById(evaluation.getQuestionnaireId());
             Questionnaire questionnaire = qId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
             for (QuestionnaireQuestion questionnaireQuestion : questionnaire.getQuestionnaireQuestionList()) {

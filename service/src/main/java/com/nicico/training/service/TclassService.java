@@ -512,6 +512,14 @@ public class TclassService implements ITclassService {
         tclass.setStudentOnlineEvalStatus(state);
         tclassDAO.save(tclass);    }
 
+    @Override
+    public void changeOnlineExecutionEvalStudentStatus(Long classId, boolean state) {
+        final Tclass tclass = tclassDAO.findById(classId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+        tclass.setId(classId);
+        tclass.setStudentOnlineEvalExecutionStatus(state);
+        tclassDAO.save(tclass);
+    }
+
     //state 3 = payan yafte
     //state 5 = ekhtemam
     @Transactional
