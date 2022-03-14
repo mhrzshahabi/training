@@ -90,6 +90,17 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
             "       tbl_evaluation.f_evaluation_level_id=156", nativeQuery = true)
     List<Evaluation> getBehavioralEvaluations();
 
+    @Query(value = "SELECT\n" +
+            "    *\n" +
+            "\n" +
+            "FROM\n" +
+            "         tbl_evaluation\n" +
+            "WHERE\n" +
+            "       tbl_evaluation.b_status = 0\n" +
+            "       and\n" +
+            "       tbl_evaluation.f_evaluation_level_id=757", nativeQuery = true)
+    List<Evaluation> getExecutionEvaluations();
+
     @Query(value = """
             SELECT TCLASS.C_CODE            AS class_code,
                                TCLASS.C_TITLE_CLASS     AS class_title,

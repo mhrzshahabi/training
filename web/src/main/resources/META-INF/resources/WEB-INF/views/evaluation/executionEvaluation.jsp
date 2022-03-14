@@ -379,7 +379,7 @@
                                         data.evaluatedId = classRecord_DE.id;
                                         data.evaluatedTypeId = 504;
                                         data.questionnaireTypeId = 758;
-                                        data.evaluationLevelId = 154;
+                                        data.evaluationLevelId = 757;
                                         data.alow = true;
                                         data.nationalCode = record.student.nationalCode;
                                         data.isTeacher = false;
@@ -932,7 +932,7 @@
                                     <%--                                        data.evaluatedId = classRecord_DE.id;--%>
                                     <%--                                        data.evaluatedTypeId = 504;--%>
                                     <%--                                        data.questionnaireTypeId = 140;--%>
-                                    <%--                                        data.evaluationLevelId = 154;--%>
+                                    <%--                                        data.evaluationLevelId = 757;--%>
                                     <%--                                        data.alow = true;--%>
                                     <%--                                        data.isTeacher = true;--%>
                                     <%--                                        wait.show();--%>
@@ -1192,7 +1192,7 @@
             data.evaluatedId = classRecord_DE.teacherId;
             data.evaluatedTypeId = 187;
             data.questionnaireTypeId = 141;
-            data.evaluationLevelId = 154;
+            data.evaluationLevelId = 757;
             toElsRquestDE(data,type);
         } else {
 
@@ -1202,7 +1202,7 @@
             data.evaluatedId = classRecord_DE.id;
             data.evaluatedTypeId = 504;
             data.questionnaireTypeId = 140;
-            data.evaluationLevelId = 154;
+            data.evaluationLevelId = 757;
 
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "" + data.evaluatorId, "GET", null, function (resp) {
@@ -1224,7 +1224,7 @@
             data.evaluatedId = classRecord_DE.teacherId;
             data.evaluatedTypeId = 187;
             data.questionnaireTypeId = 141;
-            data.evaluationLevelId = 154;
+            data.evaluationLevelId = 757;
         }else {
             data.classId = classRecord_DE.id;
             data.evaluatorId = classRecord_DE.teacherId;
@@ -1232,7 +1232,7 @@
             data.evaluatedId = classRecord_DE.id;
             data.evaluatedTypeId = 504;
             data.questionnaireTypeId = 140;
-            data.evaluationLevelId = 154;
+            data.evaluationLevelId = 757;
         }
 
 
@@ -1347,11 +1347,9 @@
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
                 let result = JSON.parse(resp.httpResponseText).response.data;
 
                 if (type == 'eval') {
-
                     isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/eval/758/" + result[0].evaluationId, "GET", null, function (resp) {
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             wait.close();
@@ -1448,6 +1446,7 @@
                     }));
                 }
             } else {
+                wait.close();
                 var ERROR = isc.Dialog.create({
                     message: "<spring:message code='exception.un-managed'/>",
                     icon: "[SKIN]stop.png",
@@ -1457,7 +1456,7 @@
                     ERROR.close();
                 }, 8000);
             }
-            wait.close()
+
         }));
     }
     function showOnlineResultsDE(type) {
@@ -1486,7 +1485,7 @@
                 data.evaluatedId = classRecord_DE.id;
                 data.evaluatedTypeId = 504;
                 data.questionnaireTypeId = 758;
-                data.evaluationLevelId = 154;
+                data.evaluationLevelId = 757;
 
                 let ListGrid_Result_evaluation_DE = isc.TrLG.create({
                     width: "100%",
@@ -1716,7 +1715,7 @@
                     createDialog("info", "پرسشنامه ای انتخاب نشده است.");
                 } else {
                     Window_SelectQuestionnarie_DE.close();
-                    create_evaluation_form_DE(null, ListGrid_SelectQuestionnarie_DE.getSelectedRecord().id, studentRecord.id, 188, classRecord_DE.id, 504, 758, 154);
+                    create_evaluation_form_DE(null, ListGrid_SelectQuestionnarie_DE.getSelectedRecord().id, studentRecord.id, 188, classRecord_DE.id, 504, 758, 757);
                 }
             }
         });
@@ -1833,7 +1832,7 @@
                                 stdIds.push(record.id);
                             }
                         }
-                        create_multiple_evaluation_form_DE(null, ListGrid_SelectQuestionnarie_DE.getSelectedRecord().id, stdIds, 188, classRecord_DE.id, 504, 758, 154, check)
+                        create_multiple_evaluation_form_DE(null, ListGrid_SelectQuestionnarie_DE.getSelectedRecord().id, stdIds, 188, classRecord_DE.id, 504, 758, 757, check)
                     }
                 }
             });
@@ -2019,7 +2018,7 @@
                 data.evaluatedId = classRecord_DE.id;
                 data.evaluatedTypeId = 504;
                 data.questionnaireTypeId = 758;
-                data.evaluationLevelId = 154;
+                data.evaluationLevelId = 757;
                 data.status = true;
                 if(evaluationEmpty == false){
                     isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
@@ -2115,7 +2114,7 @@
             data.evaluatedId = classRecord_DE.id;
             data.evaluatedTypeId = 504;
             data.questionnaireTypeId = 758;
-            data.evaluationLevelId = 154;
+            data.evaluationLevelId = 757;
 
             let itemList = [];
             let description;
@@ -2249,7 +2248,7 @@
     <%--                createDialog("info", "پرسشنامه ای انتخاب نشده است.");--%>
     <%--            } else {--%>
     <%--                Window_SelectQuestionnarie_DE.close();--%>
-    <%--                create_evaluation_form_DE(null, ListGrid_SelectQuestionnarie_DE.getSelectedRecord().id, classRecord_DE.tclassSupervisor, 454, classRecord_DE.teacherId, 187, 141, 154);--%>
+    <%--                create_evaluation_form_DE(null, ListGrid_SelectQuestionnarie_DE.getSelectedRecord().id, classRecord_DE.tclassSupervisor, 454, classRecord_DE.teacherId, 187, 141, 757);--%>
     <%--            }--%>
     <%--        }--%>
     <%--    });--%>
@@ -2420,15 +2419,15 @@
                 data.evaluatedId = classRecord_DE.teacherId;
                 data.evaluatedTypeId = 187;
                 data.questionnaireTypeId = 141;
-                data.evaluationLevelId = 154;
+                data.evaluationLevelId = 757;
                 if(evaluationEmpty == false ){
                     isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                             Window_Questions_JspEvaluation.close();
                             if (evaluationFull == true)
-                                classRecord_DE.trainingEvalStatus = 2;
+                                classRecord_DE.studentOnlineEvalExecutionStatus = 2;
                             else
-                                classRecord_DE.trainingEvalStatus = 3;
+                                classRecord_DE.studentOnlineEvalExecutionStatus = 3;
                             isc.RPCManager.sendRequest(TrDSRequest(evaluationAnalysisUrl + "/updateEvaluationAnalysis" + "/" +
                                 classRecord_DE.id,"GET", null, null));
                             ToolStrip_SendForms_DE.getField("registerButtonTraining").showIcon("ok");
@@ -2507,7 +2506,7 @@
             data.evaluatedId = classRecord_DE.teacherId;
             data.evaluatedTypeId = 187;
             data.questionnaireTypeId = 141;
-            data.evaluationLevelId = 154;
+            data.evaluationLevelId = 757;
 
             let itemList = [];
             let description;
@@ -2641,7 +2640,7 @@
     <%--                createDialog("info", "پرسشنامه ای انتخاب نشده است.");--%>
     <%--            } else {--%>
     <%--                Window_SelectQuestionnarie_DE.close();--%>
-    <%--                create_evaluation_form_DE(null, ListGrid_SelectQuestionnarie_DE.getSelectedRecord().id, classRecord_DE.teacherId, 187, classRecord_DE.id, 504, 140, 154);--%>
+    <%--                create_evaluation_form_DE(null, ListGrid_SelectQuestionnarie_DE.getSelectedRecord().id, classRecord_DE.teacherId, 187, classRecord_DE.id, 504, 140, 757);--%>
     <%--            }--%>
     <%--        }--%>
     <%--    });--%>
@@ -2812,7 +2811,7 @@
                 data.evaluatedId = classRecord_DE.id;
                 data.evaluatedTypeId = 504;
                 data.questionnaireTypeId = 140;
-                data.evaluationLevelId = 154;
+                data.evaluationLevelId = 757;
                 if(evaluationEmpty == false){
                     isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/" + evaluationId, "PUT", JSON.stringify(data), function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -2910,7 +2909,7 @@
             data.evaluatedId = classRecord_DE.id;
             data.evaluatedTypeId = 504;
             data.questionnaireTypeId = 140;
-            data.evaluationLevelId = 154;
+            data.evaluationLevelId = 757;
 
             let itemList = [];
             let description;
@@ -3038,7 +3037,7 @@
     function print_Teacher_Reaction_Form_DE() {
         let myObj = {
             classId: classRecord_DE.id,
-            evaluationLevelId: 154,
+            evaluationLevelId: 757,
             questionnarieTypeId: 140,
             evaluatorId: classRecord_DE.teacherId,
             evaluatorTypeId: 187,
@@ -3051,7 +3050,7 @@
     function print_Training_Reaction_Form_DE() {
         let myObj = {
             classId: classRecord_DE.id,
-            evaluationLevelId: 154,
+            evaluationLevelId: 757,
             questionnarieTypeId: 141,
             evaluatorId: classRecord_DE.tclassSupervisor,
             evaluatorTypeId: 454,
@@ -3064,7 +3063,7 @@
     function print_Student_Reaction_Form_DE(stdId) {
         let myObj = {
             classId: classRecord_DE.id,
-            evaluationLevelId: 154,
+            evaluationLevelId: 757,
             questionnarieTypeId: 758,
             evaluatorId: stdId,
             evaluatorTypeId: 188,
@@ -3106,7 +3105,7 @@
                 if (questionnarieTypeId == 758) {
                     ListGrid_student_DE.invalidateCache();
                 } else if (questionnarieTypeId == 141) {
-                    classRecord_DE.trainingEvalStatus = 1;
+                    classRecord_DE.studentOnlineEvalExecutionStatus = 1;
 
                     ToolStrip_SendForms_DE.getField("sendButtonTraining").showIcon("ok");
 
@@ -3158,7 +3157,7 @@
                     if (questionnarieTypeId == 758) {
                         ListGrid_student_DE.invalidateCache();
                     } else if (questionnarieTypeId == 141) {
-                        classRecord_DE.trainingEvalStatus = 1;
+                        classRecord_DE.studentOnlineEvalExecutionStatus = 1;
 
                         ToolStrip_SendForms_DE.getField("sendButtonTraining").showIcon("ok");
 

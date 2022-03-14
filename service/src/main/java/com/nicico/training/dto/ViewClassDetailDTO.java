@@ -47,6 +47,7 @@ public class ViewClassDetailDTO implements Serializable {
         private Boolean classPreCourseTest;
         private Integer teacherEvalStatus;
         private Integer trainingEvalStatus;
+        private Boolean studentOnlineEvalExecutionStatus;
         private Integer startEvaluation;
         private String evaluation;
         private String behavioralLevel;

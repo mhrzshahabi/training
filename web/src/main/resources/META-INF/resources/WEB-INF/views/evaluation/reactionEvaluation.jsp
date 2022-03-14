@@ -1689,6 +1689,7 @@
                     }));
                 }
             } else {
+                wait.close()
                 var ERROR = isc.Dialog.create({
                     message: "<spring:message code='exception.un-managed'/>",
                     icon: "[SKIN]stop.png",
@@ -1698,7 +1699,6 @@
                     ERROR.close();
                 }, 8000);
             }
-            wait.close()
         }));
     }
     function showOnlineResults(type) {

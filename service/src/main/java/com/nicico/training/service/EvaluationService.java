@@ -322,7 +322,8 @@ public class EvaluationService implements IEvaluationService {
             return getBehavioralEvaluations(notAnsweredEvaluations, evaluatorNationalCode);
         } else if (evaluatorType.equals("student")) {
             List<Evaluation> list = evaluationDAO.getStudentEvaluationsWithEvaluatorNationalCodeAndEvaluatorList(evaluatorNationalCode, EvaluatorTypeId);
-            return getBehavioralEvaluations(list,evaluatorNationalCode);
+            List<Evaluation> behavioralEvaluations= getBehavioralEvaluations(list,evaluatorNationalCode);
+            return  getExecutionEvaluations(behavioralEvaluations,evaluatorNationalCode);
         } else {
             return null;
         }
@@ -361,6 +362,28 @@ public class EvaluationService implements IEvaluationService {
                 if (classStudent.isPresent() && classStudent.get().getStudent() != null && classStudent.get().getStudent().getNationalCode().equals(evaluatorNationalCode))
                     finalList.add(evaluation);
             } else {
+                Optional<ViewActivePersonnel> activePersonnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId());
+                if (activePersonnel.isPresent() && activePersonnel.get().getNationalCode() != null && activePersonnel.get().getNationalCode().equals(evaluatorNationalCode))
+                    finalList.add(evaluation);
+            }
+        }
+            return finalList;
+    }
+
+    private List<Evaluation> getExecutionEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
+        List<Evaluation> finalList = new ArrayList<>(list);
+        List<Evaluation> evaluationList = evaluationDAO.getExecutionEvaluations();
+        for (Evaluation evaluation : evaluationList){
+//            if (evaluation.getEvaluatorTypeId() == 187L) {
+//                Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
+//                if (teacher.isPresent() && teacher.get().getTeacherCode() != null && teacher.get().getTeacherCode().equals(evaluatorNationalCode))
+//                    finalList.add(evaluation);
+//            } else
+                if (evaluation.getEvaluatorTypeId() == 188L ) {
+                Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
+                if (classStudent.isPresent() && classStudent.get().getStudent() != null && classStudent.get().getStudent().getNationalCode().equals(evaluatorNationalCode))
+                    finalList.add(evaluation);
+            } else if (evaluation.getEvaluatorTypeId() != 188L && evaluation.getEvaluatorTypeId() != 187L){
                 Optional<ViewActivePersonnel> activePersonnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId());
                 if (activePersonnel.isPresent() && activePersonnel.get().getNationalCode() != null && activePersonnel.get().getNationalCode().equals(evaluatorNationalCode))
                     finalList.add(evaluation);
