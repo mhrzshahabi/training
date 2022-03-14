@@ -110,6 +110,7 @@ public class TclassDTO {
         private String teacher;
         private String createdBy;
         private String modifiedBy;
+        private String modifiedDate;
     }
 
     @Getter
