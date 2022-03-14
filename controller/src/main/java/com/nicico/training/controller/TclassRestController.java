@@ -46,6 +46,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -825,16 +826,21 @@ public class TclassRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/evalAudit/{classId}")
-    public ResponseEntity<TclassDTO.TClassAuditEvalSpecRs> getClassEvalAudit(@PathVariable Long classId) {
+    @GetMapping(value = "/evalAudit/{classId}/{type}")
+    public ResponseEntity<TclassDTO.TClassAuditEvalSpecRs> getClassEvalAudit(@PathVariable Long classId, @PathVariable String type) {
         List<TClassAudit> list = tClassService.getAuditData(classId);
+        List<TclassDTO.InfoForEvalAudit> infoList;
         List<TclassDTO.InfoForEvalAudit> data = tclassAuditMapper.toEvalAuditList(list);
+        if (type.equalsIgnoreCase("student")) {
+            infoList = data.stream().filter(item -> item.getStudentOnlineEvalStatus() != null).collect(Collectors.toList());
+        } else
+            infoList = data.stream().filter(item -> item.getTeacherOnlineEvalStatus() != null).collect(Collectors.toList());
         final TclassDTO.SpecAuditEvalRs specResponse = new TclassDTO.SpecAuditEvalRs();
         final TclassDTO.TClassAuditEvalSpecRs specRs = new TclassDTO.TClassAuditEvalSpecRs();
-        specResponse.setData(data)
+        specResponse.setData(infoList)
                 .setStartRow(0)
-                .setEndRow(data.size())
-                .setTotalRows(data.size());
+                .setEndRow(infoList.size())
+                .setTotalRows(infoList.size());
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);

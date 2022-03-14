@@ -1064,7 +1064,7 @@
                     {name: "modifiedBy"},
                     {name: "modifiedDate"}
                 ],
-                fetchDataURL: classEvalAuditUrl + record.id
+                fetchDataURL: classEvalAuditUrl + record.id + "/student"
             });
             let ListGrid_Student_Eval_History = isc.TrLG.create({
                 width: "100%",
@@ -1164,7 +1164,7 @@
                     {name: "modifiedBy"},
                     {name: "modifiedDate"}
                 ],
-                fetchDataURL: classEvalAuditUrl + record.id
+                fetchDataURL: classEvalAuditUrl + record.id + "/teacher"
             });
             let ListGrid_Teacher_Eval_History = isc.TrLG.create({
                 width: "100%",
