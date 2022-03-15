@@ -597,132 +597,134 @@
                         wait.close();
                     }
                 }));
-            } else if (contactSelector_DE.getValue() == 2) {//ارسال پیام به مدرس کلاس
+            }
+            <%--else if (contactSelector_DE.getValue() == 2) {//ارسال پیام به مدرس کلاس--%>
 
-                if(ListGrid_class_Evaluation.getSelectedRecord().teacherEvalStatus!=1){
-                    wait.close();
-                    createDialog("warning", "امکان ارسال پیام به مدرس وجود ندارد.", "<spring:message code="error"/>");
+            <%--    if(ListGrid_class_Evaluation.getSelectedRecord().teacherEvalStatus!=1){--%>
+            <%--        wait.close();--%>
+            <%--        createDialog("warning", "امکان ارسال پیام به مدرس وجود ندارد.", "<spring:message code="error"/>");--%>
 
-                    return;
-                }
+            <%--        return;--%>
+            <%--    }--%>
 
-                isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "spec-list?_constructor=AdvancedCriteria&_endRow=1000&_sortBy=id&_startRow=0&criteria=%7B%22operator%22%3A%22equals%22%2C%22fieldName%22%3A%22tclasse.id%22%2C%22value%22%3A%22" + row.id + "%22%7D&operator=and", "GET", null, function (resp) {
-                    if (generalGetResp(resp)) {
-                        if (resp.httpResponseCode == 200) {
+            <%--    isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "spec-list?_constructor=AdvancedCriteria&_endRow=1000&_sortBy=id&_startRow=0&criteria=%7B%22operator%22%3A%22equals%22%2C%22fieldName%22%3A%22tclasse.id%22%2C%22value%22%3A%22" + row.id + "%22%7D&operator=and", "GET", null, function (resp) {--%>
+            <%--        if (generalGetResp(resp)) {--%>
+            <%--            if (resp.httpResponseCode == 200) {--%>
 
-                            isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MTeacher2\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {
-                                wait.close();
-                                if (generalGetResp(resp)) {
-                                    if (resp.httpResponseCode == 200) {
+            <%--                isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MTeacher2\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {--%>
+            <%--                    wait.close();--%>
+            <%--                    if (generalGetResp(resp)) {--%>
+            <%--                        if (resp.httpResponseCode == 200) {--%>
 
-                                        let id = [];
-                                        JSON.parse(resp.data).response.data.filter(p => p.personality?.contactInfo?.mobile).forEach(p => id.push(p.id));
-                                        MSG_sendTypesItems = [];
-                                        MSG_msgContent.type = [];
-                                        MSG_sendTypesItems.push('MSG_messageType_sms');
-                                        MSG_msgContent.type = MSG_sendTypesItems;
+            <%--                            let id = [];--%>
+            <%--                            JSON.parse(resp.data).response.data.filter(p => p.personality?.contactInfo?.mobile).forEach(p => id.push(p.id));--%>
+            <%--                            MSG_sendTypesItems = [];--%>
+            <%--                            MSG_msgContent.type = [];--%>
+            <%--                            MSG_sendTypesItems.push('MSG_messageType_sms');--%>
+            <%--                            MSG_msgContent.type = MSG_sendTypesItems;--%>
 
-                                        sendMessageFunc = sendMessage_evaluation;
-                                        RestDataSource_student_DE.fetchDataURL = teacherUrl + "spec-list";
-                                        RestDataSource_student_DE.implicitCriteria = {
-                                            _constructor: "AdvancedCriteria",
-                                            operator: "and",
-                                            criteria: [{fieldName: "tclasse.id", operator: "equals", value: row.id}]
-                                        };
-                                        MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_DE;
-                                        MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
-                                            {
-                                                name: "teacherCode",
-                                                title: "<spring:message code="national.code"/>",
-                                                autoFitWidth: false,
-                                                align: "center"
-                                            },
-                                            {
-                                                name: "personality.firstNameFa",
-                                                title: "<spring:message code="firstName"/>",
-                                                autoFitWidth: false,
-                                                align: "center"
-                                            },
-                                            {
-                                                name: "personality.lastNameFa",
-                                                title: "<spring:message code="lastName"/>",
-                                                width: 100,
-                                                align: "center"
-                                            },
-                                            {
-                                                name: "personnelCode",
-                                                title: "<spring:message code="personnel.code.six.digit"/>",
-                                                width: 100,
-                                                align: "center"
-                                            },
-                                            {
-                                                name: "personality.contactInfo.mobile",
-                                                title: "<spring:message code="mobile"/>",
-                                                width: 100,
-                                                align: "center"
-                                            },
-                                            {
-                                                name: "enableStatus",
-                                                title: "<spring:message code="status"/>",
-                                                width: 100,
-                                                align: "center",
-                                                type: "boolean"
-                                            },
-                                        ];
-                                        MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";
-                                        MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
-                                        MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
-                                            let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p?.personality?.contactInfo?.mobile).map(function (item) {
-                                                return item.id;
-                                            });
-                                            let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
-                                                _constructor: "AdvancedCriteria",
-                                                operator: "and",
-                                                criteria: [{fieldName: "id", operator: "inSet", value: ids}]
-                                            });
-                                            findRows.setProperty("enabled", false);
+            <%--                            sendMessageFunc = sendMessage_evaluation;--%>
+            <%--                            RestDataSource_student_DE.fetchDataURL = teacherUrl + "spec-list";--%>
+            <%--                            RestDataSource_student_DE.implicitCriteria = {--%>
+            <%--                                _constructor: "AdvancedCriteria",--%>
+            <%--                                operator: "and",--%>
+            <%--                                criteria: [{fieldName: "tclasse.id", operator: "equals", value: row.id}]--%>
+            <%--                            };--%>
+            <%--                            MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_DE;--%>
+            <%--                            MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [--%>
+            <%--                                {--%>
+            <%--                                    name: "teacherCode",--%>
+            <%--                                    title: "<spring:message code="national.code"/>",--%>
+            <%--                                    autoFitWidth: false,--%>
+            <%--                                    align: "center"--%>
+            <%--                                },--%>
+            <%--                                {--%>
+            <%--                                    name: "personality.firstNameFa",--%>
+            <%--                                    title: "<spring:message code="firstName"/>",--%>
+            <%--                                    autoFitWidth: false,--%>
+            <%--                                    align: "center"--%>
+            <%--                                },--%>
+            <%--                                {--%>
+            <%--                                    name: "personality.lastNameFa",--%>
+            <%--                                    title: "<spring:message code="lastName"/>",--%>
+            <%--                                    width: 100,--%>
+            <%--                                    align: "center"--%>
+            <%--                                },--%>
+            <%--                                {--%>
+            <%--                                    name: "personnelCode",--%>
+            <%--                                    title: "<spring:message code="personnel.code.six.digit"/>",--%>
+            <%--                                    width: 100,--%>
+            <%--                                    align: "center"--%>
+            <%--                                },--%>
+            <%--                                {--%>
+            <%--                                    name: "personality.contactInfo.mobile",--%>
+            <%--                                    title: "<spring:message code="mobile"/>",--%>
+            <%--                                    width: 100,--%>
+            <%--                                    align: "center"--%>
+            <%--                                },--%>
+            <%--                                {--%>
+            <%--                                    name: "enableStatus",--%>
+            <%--                                    title: "<spring:message code="status"/>",--%>
+            <%--                                    width: 100,--%>
+            <%--                                    align: "center",--%>
+            <%--                                    type: "boolean"--%>
+            <%--                                },--%>
+            <%--                            ];--%>
+            <%--                            MSG_selectUsersForm.getItem("multipleSelect").displayField = "fullName";--%>
+            <%--                            MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";--%>
+            <%--                            MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {--%>
+            <%--                                let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p?.personality?.contactInfo?.mobile).map(function (item) {--%>
+            <%--                                    return item.id;--%>
+            <%--                                });--%>
+            <%--                                let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({--%>
+            <%--                                    _constructor: "AdvancedCriteria",--%>
+            <%--                                    operator: "and",--%>
+            <%--                                    criteria: [{fieldName: "id", operator: "inSet", value: ids}]--%>
+            <%--                                });--%>
+            <%--                                findRows.setProperty("enabled", false);--%>
 
-                                            MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
-                                        }
-                                        MSG_selectUsersForm.getItem("multipleSelect").fetchData();
-
-
-                                        linkFormMLanding.getItem('link').setValue('');
-
-                                        if (JSON.parse(resp.data).response.data.length == 1 && JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
-                                            ErrorMsg.setContents('برای مدرس این کلاس، شماره موبایل تعریف نشده است.');
-                                        } else if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {
-                                            ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length + ' مدرس، شماره موبایل تعریف نشده است.');
-                                        } else {
-                                            ErrorMsg.setContents('');
-                                        }
-                                        MSG_userType = "classTeacher";
-                                        MSG_classID = row.id;
-                                        MSG_repeatOptions.getItem('maxRepeat').setValue(0);
-                                        MSG_repeatOptions.getItem('timeBMessages').setValue(1);
-                                        linkFormMLanding.getItem('link').setValue('');
-                                        linkFormMLanding.getItem('link').setRequired(false);
-                                        linkFormMLanding.getItem('link').enable();
-                                        MSG_Window_MSG_Main.show();
+            <%--                                MSG_selectUsersForm.getItem("multipleSelect").setValue(id);--%>
+            <%--                            }--%>
+            <%--                            MSG_selectUsersForm.getItem("multipleSelect").fetchData();--%>
 
 
-                                        RestDataSource_Messages_DE.fetchDataURL =  parameterValueUrl + "/messages/evaluation/teacher";
-                                        MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_DE;
-                                        MSG_main_layout.members[0].getField("messageType").fetchData();
+            <%--                            linkFormMLanding.getItem('link').setValue('');--%>
 
-                                    }
-                                }
-                            }));
-                        } else {
-                            wait.close();
-                            createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
-                        }
-                    } else {
-                        wait.close();
-                    }
-                }));
+            <%--                            if (JSON.parse(resp.data).response.data.length == 1 && JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {--%>
+            <%--                                ErrorMsg.setContents('برای مدرس این کلاس، شماره موبایل تعریف نشده است.');--%>
+            <%--                            } else if (JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length != 0) {--%>
+            <%--                                ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p?.personality?.contactInfo?.mobile).length + ' مدرس، شماره موبایل تعریف نشده است.');--%>
+            <%--                            } else {--%>
+            <%--                                ErrorMsg.setContents('');--%>
+            <%--                            }--%>
+            <%--                            MSG_userType = "classTeacher";--%>
+            <%--                            MSG_classID = row.id;--%>
+            <%--                            MSG_repeatOptions.getItem('maxRepeat').setValue(0);--%>
+            <%--                            MSG_repeatOptions.getItem('timeBMessages').setValue(1);--%>
+            <%--                            linkFormMLanding.getItem('link').setValue('');--%>
+            <%--                            linkFormMLanding.getItem('link').setRequired(false);--%>
+            <%--                            linkFormMLanding.getItem('link').enable();--%>
+            <%--                            MSG_Window_MSG_Main.show();--%>
 
-            } else {
+
+            <%--                            RestDataSource_Messages_DE.fetchDataURL =  parameterValueUrl + "/messages/evaluation/teacher";--%>
+            <%--                            MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_DE;--%>
+            <%--                            MSG_main_layout.members[0].getField("messageType").fetchData();--%>
+
+            <%--                        }--%>
+            <%--                    }--%>
+            <%--                }));--%>
+            <%--            } else {--%>
+            <%--                wait.close();--%>
+            <%--                createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");--%>
+            <%--            }--%>
+            <%--        } else {--%>
+            <%--            wait.close();--%>
+            <%--        }--%>
+            <%--    }));--%>
+
+            <%--} --%>
+            else {
                 wait.close();
             }
 
@@ -1068,30 +1070,30 @@
                                 layoutAlign: "center",
                                 defaultLayoutAlign: "center",
                                 members: [
-<%--                                    <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">--%>
-<%--                                    isc.DynamicForm.create({--%>
-<%--                                        height: "100%",--%>
-<%--                                        width: 400,--%>
-<%--                                        margin: 0,--%>
-<%--                                        fields: [--%>
-<%--                                            {--%>
-<%--                                                ID: 'contactSelector_DE',--%>
-<%--                                                type: "SelectItem",--%>
-<%--                                                textAlign: "center",--%>
-<%--                                                pickListProperties: {--%>
-<%--                                                    showFilterEditor: false--%>
-<%--                                                },--%>
-<%--                                                valueMap: {--%>
-<%--                                                    1: "ارسال پیام به فراگیران تکمیل نکرده",--%>
-<%--                                                    2: "ارسال پیام به مدرس  تکمیل نکرده",--%>
-<%--                                                    //3: "ارسال پیام به فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده<spring:message code="title"/>اند"--%>
-<%--                                                },--%>
-<%--                                                defaultValue: 1--%>
-<%--                                            }--%>
-<%--                                        ]--%>
-<%--                                    }),--%>
-<%--                                    ToolStripButton_MSG_DE,--%>
-<%--                                    </sec:authorize>--%>
+                                    <sec:authorize access="hasAuthority('Evaluation_Reaction_Actions')">
+                                    isc.DynamicForm.create({
+                                        height: "100%",
+                                        width: 400,
+                                        margin: 0,
+                                        fields: [
+                                            {
+                                                ID: 'contactSelector_DE',
+                                                type: "SelectItem",
+                                                textAlign: "center",
+                                                pickListProperties: {
+                                                    showFilterEditor: false
+                                                },
+                                                valueMap: {
+                                                    1: "ارسال پیام به فراگیران تکمیل نکرده",
+                                                    // 2: "ارسال پیام به مدرس  تکمیل نکرده",
+                                                    //3: "ارسال پیام به فراگیرانی که فرم ارزیابی مدرس را تکمیل نکرده<spring:message code="title"/>اند"
+                                                },
+                                                defaultValue: 1
+                                            }
+                                        ]
+                                    }),
+                                    ToolStripButton_MSG_DE,
+                                    </sec:authorize>
                                 ]
                             }),
                             isc.HLayout.create({
