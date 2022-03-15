@@ -544,7 +544,7 @@ public abstract class EvaluationBeanMapper {
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
         Boolean findDuplicate = false;
-        int examTime = Math.toIntExact(object.getExamItem().getDuration());
+        int examTime = Math.toIntExact(object.getExamItem().getDuration()!=null? object.getExamItem().getDuration() : 0);
         if (object.getQuestions().size() > 0) {
 //            Double questionScore = (double) (20 / object.getQuestions().size());
              long totalQuestionsTime=0;
@@ -555,7 +555,7 @@ public abstract class EvaluationBeanMapper {
                     if(time==null)
                         return 0;
                     else
-                        return Long.valueOf(questionScore.getTime());
+                        return Long.parseLong(questionScore.getTime());
                 }).sum();
                questionsSize =object.getQuestions().size();
             }
