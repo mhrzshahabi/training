@@ -429,32 +429,17 @@ public class EvaluationRestController {
     public ResponseEntity<Void> deleteAllExecutionEvaluationForms(@PathVariable Long classId, @PathVariable boolean deleteInEls, HttpServletRequest iscRq) throws IOException {
 
         return deleteAllEvaluationAfterEls(classId, true, 758L);
-
-//        if (deleteInEls) {
-//            BaseResponse response;
-//            List<Long> allEvaluationIds = evaluationService.getAllReactionEvaluationForms(classId);
-//            if (!allEvaluationIds.isEmpty()) {
-//                response = client.deleteEvaluationForOneClass(allEvaluationIds);
-//            } else {
-//                return deleteAllEvaluationAfterEls(classId, false);
-//            }
-//            if (response.getStatus() == 200)
-//                return deleteAllEvaluationAfterEls(classId, true);
-//            else
-//                return deleteAllEvaluationAfterEls(classId, false);
-//        } else {
-//            return deleteAllEvaluationAfterEls(classId, false);
-//        }
     }
 
     private ResponseEntity<Void> deleteAllEvaluationAfterEls(Long classId, boolean b, Long evaluation) {
-        evaluationService.deleteAllReactionEvaluationForms(classId, evaluation);
         if (classId != null) {
-            if (evaluation.equals(139L))
+            if (evaluation.equals(139L)){
+                evaluationService.deleteAllReactionEvaluationForms(classId, evaluation);
                 iTclassService.changeOnlineEvalStudentStatus(classId, false);
-            else if (evaluation.equals(758L))
+            } else if (evaluation.equals(758L)){
+                evaluationService.deleteAllExecutionEvaluationForms(classId, evaluation);
                 iTclassService.changeOnlineExecutionEvalStudentStatus(classId, false);
-
+            }
         }
         return new ResponseEntity<>(HttpStatus.OK);
     }

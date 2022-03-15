@@ -424,6 +424,17 @@ public class EvaluationService implements IEvaluationService {
         evaluationDAO.deleteAll(evaluations);
     }
 
+
+    @Transactional
+    @Override
+    public void deleteAllExecutionEvaluationForms(Long classId,Long evaluationFormId) {
+        List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 757L, evaluationFormId);
+        for (Evaluation evaluation : evaluations) {
+            updateClassStudentInfo(modelMapper.map(evaluation, Evaluation.class), 0);
+        }
+        evaluationDAO.deleteAll(evaluations);
+    }
+
     @Transactional
     @Override
     public List<Long> getAllReactionEvaluationForms(Long classId) {

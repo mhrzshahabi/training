@@ -47,6 +47,8 @@ public interface IEvaluationService {
 
     void deleteAllReactionEvaluationForms(Long classId,Long evaluation);
 
+    void deleteAllExecutionEvaluationForms(Long classId,Long evaluation);
+
     Double getEvaluationFormGrade(Evaluation evaluation);
 
     List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationFormAnswerDetail(Evaluation evaluation);
