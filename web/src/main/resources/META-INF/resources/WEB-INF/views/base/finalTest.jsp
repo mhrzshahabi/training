@@ -26,13 +26,15 @@
         contents: "مجموع بارم وارد شده : ",
         border: "0px solid black",
         align: "center",
-        width: "100%"
+        width: "100%",
+        height: "100%"
     });
     var timeLabel = isc.Label.create({
         contents: "مجموع زمان وارد شده : ",
         border: "0px solid black",
         align: "center",
-        width: "100%"
+        width: "100%",
+        height: "100%"
     });
     let DynamicForm_Filter_exam =isc.DynamicForm.create({
             height: "100%",
@@ -867,6 +869,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                 }
                                             }),
                                             isc.IButtonCancel.create({
+                                                layoutAlign: "center",
                                                 click: function () {
                                                 Window_result_Finaltest.close();
                                                 }
