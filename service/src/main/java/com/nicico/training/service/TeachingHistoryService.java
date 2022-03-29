@@ -95,6 +95,13 @@ public class TeachingHistoryService implements ITeachingHistoryService {
         return teachingHistoryBeanMapper.teachHistoryListToElsFindRespList(teachingHistoryList);
     }
 
+    @Override
+    public List<ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume> findTeachingHistoriesResumeByNationalCode(String nationalCode) {
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        List<TeachingHistory> teachingHistoryList = teachingHistoryDAO.findAllByTeacherId(teacherId);
+        return teachingHistoryBeanMapper.teachHistoryListToElsResumeRespList(teachingHistoryList);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TeachingHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {

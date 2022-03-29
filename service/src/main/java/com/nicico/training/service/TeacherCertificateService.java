@@ -15,6 +15,7 @@ import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.iservice.ITeacherCertificationService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.mapper.teacher.TeacherCertificationMapper;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.Subcategory;
 import com.nicico.training.model.Teacher;
@@ -43,6 +44,7 @@ public class TeacherCertificateService implements ITeacherCertificationService {
     private final ITeacherService teacherService;
     private final ICategoryService categoryService;
     private final ISubcategoryService subcategoryService;
+    private final TeacherCertificationMapper teacherCertificationMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -177,7 +179,17 @@ public class TeacherCertificateService implements ITeacherCertificationService {
        }
        return response;
     }
-   private Long getPublicationDate(String publicationDate) {
+
+    @Transactional
+    @Override
+    public List<ElsTeacherCertificationDate> findTeacherCertificationList(String nationalCode) {
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        List<TeacherCertification> teacherCertifications = findAllTeacherCertifications(teacherId);
+        List<ElsTeacherCertificationDate> dtos = teacherCertificationMapper.toElsTeacherCertifications(teacherCertifications);
+        return dtos;
+    }
+
+    private Long getPublicationDate(String publicationDate) {
         if (publicationDate != null) {
             Date date = getEpochDate(publicationDate, "04:30");
             return (date.getTime() * 1000);

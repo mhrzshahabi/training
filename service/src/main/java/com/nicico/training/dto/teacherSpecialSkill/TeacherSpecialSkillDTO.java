@@ -60,4 +60,14 @@ public class TeacherSpecialSkillDTO {
         private Long id;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TeacherSpecialSkillDTO.Resume")
+    public static class Resume {
+        private String fieldTitle;
+        private String typeTitle;
+        private String levelTitle;
+    }
+
 }

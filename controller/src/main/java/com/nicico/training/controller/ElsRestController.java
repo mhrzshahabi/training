@@ -12,6 +12,7 @@ import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
 import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
+import com.nicico.training.dto.teacherPdfRequirments.RequirementItemsResumeDTO;
 import com.nicico.training.dto.teacherPublications.ElsPublicationDTO;
 import com.nicico.training.dto.teacherPublications.TeacherPublicationResponseDTO;
 import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillDTO;
@@ -2677,6 +2678,42 @@ public class ElsRestController {
         BaseResponse response = new BaseResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             response = iPublicationService.deleteTeacherPublication(id);
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
+        return response;
+    }
+
+    /**
+     * returns all teacher's data for pdf output for els by national code
+     * @param header
+     * @param nationalCode
+     * @return
+     */
+    @GetMapping("/teacher/pdfRequirementItems/{nationalCode}")
+    public RequirementItemsResumeDTO getPdfRequirementItems(HttpServletRequest header, @PathVariable String nationalCode) {
+        RequirementItemsResumeDTO response = new RequirementItemsResumeDTO();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            ElsTeacherInfoDto.Resume infoDTO = teacherService.getTeacherResumeByNationalCode(nationalCode);
+            List<ElsAcademicBKFindAllRespDto> academicBKDTOs = iAcademicBKService.findAcademicBKsByTeacherNationalCode(nationalCode);
+            List<ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume> teachingHistoryRespDTOs = iTeachingHistoryService.findTeachingHistoriesResumeByNationalCode(nationalCode);
+            List<ElsPublicationDTO.Resume> publicationDTOS = iPublicationService.findTeacherPublicationsResumeListByNationalCode(nationalCode);
+            List<ElsEmploymentHistoryFindAllRespDto.Resume> executiveHistoryRespDTOs = iEmploymentHistoryService.findEmploymentHistoryResumeListByNationalCode(nationalCode);
+            List<ElsTeacherCertificationDate> passedCourseRespDTOs = teacherCertificationService.findTeacherCertificationList(nationalCode);
+            List<ElsSuggestedCourse> suggestedCourseDTOs = teacherSuggestedService.findAllTeacherSuggestedDtoList(nationalCode);
+            List<TeacherSpecialSkillDTO.Resume> specialSkillsInfos = iTeacherSpecialSkillService.findTeacherSpecialSkillsByNationalCode(nationalCode);
+            List<ElsPresentableResponse> presentableCourseDTOS = teacherPresentableCourseService.getAllByNationalCode(nationalCode);
+            response.setInfoDTO(infoDTO);
+            response.setAcademicBKDTOs(academicBKDTOs);
+            response.setTeachingHistoryRespDTOs(teachingHistoryRespDTOs);
+            response.setPublicationDTOS(publicationDTOS);
+            response.setExecutiveHistoryRespDTOs(executiveHistoryRespDTOs);
+            response.setPassedCourseRespDTOs(passedCourseRespDTOs);
+            response.setSuggestedCourseDTOs(suggestedCourseDTOs);
+            response.setSpecialSkillsInfos(specialSkillsInfos);
+            response.setPresentableCourseDTOS(presentableCourseDTOS);
+            response.setStatus(HttpStatus.OK.value());
         } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.setMessage("دسترسی موردنظر یافت نشد");

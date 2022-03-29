@@ -139,4 +139,30 @@ public abstract class EmploymentHistoryBeanMapper {
             return null;
     }
 
+    @Mapping(source = "collaborationTypeId", target = "collaborationType", qualifiedByName = "toCollaborationTypeTitle")
+    @Mapping(source = "collaborationDuration", target = "collaborationDurationInMonth", qualifiedByName = "getCollaborationDurationInMonth")
+    @Mapping(source = "collaborationDuration", target = "collaborationDurationInYear", qualifiedByName = "getCollaborationDurationInYear")
+    public abstract ElsEmploymentHistoryFindAllRespDto.Resume empHistoryResumeToElsFindResp(EmploymentHistory employmentHistory);
+
+    public abstract List<ElsEmploymentHistoryFindAllRespDto.Resume> empHistoryResumeListToElsFindRespList(List<EmploymentHistory> employmentHistoryList);
+
+    @Named("getCollaborationDurationInMonth")
+    String getCollaborationDurationInMonth(Integer collaborationDuration) {
+        if (collaborationDuration != null) {
+            Integer mounth = collaborationDuration % 12;
+            return mounth.toString();
+        } else {
+            return null;
+        }
+    }
+
+    @Named("getCollaborationDurationInYear")
+    String getCollaborationDurationInYear(Integer collaborationDuration) {
+        if (collaborationDuration != null) {
+            Integer year = collaborationDuration / 12;
+            return year.toString();
+        } else {
+            return null;
+        }
+    }
 }
