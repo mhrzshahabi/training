@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ElsTeacherCertification;
+import com.nicico.training.dto.ElsTeacherCertificationDate;
 import com.nicico.training.dto.TeacherCertificationBaseResponse;
 import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.model.TeacherCertification;
@@ -30,4 +31,7 @@ public interface ITeacherCertificationService {
     List<TeacherCertification> findAllTeacherCertifications(Long teacherId);
 
     ElsTeacherCertification getElsTeacherCertification(Long id);
+
+    List<ElsTeacherCertificationDate> findTeacherCertificationList(String nationalCode);
+
 }

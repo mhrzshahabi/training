@@ -3,24 +3,16 @@ package com.nicico.training.mapper.teacher;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.TimeZone;
 import com.ibm.icu.util.ULocale;
-import com.nicico.training.dto.ElsSuggestedCourse;
 import com.nicico.training.dto.ElsTeacherCertification;
 import com.nicico.training.dto.ElsTeacherCertificationDate;
-import com.nicico.training.dto.ElsTeacherCertificationsDto;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubcategoryService;
-import com.nicico.training.iservice.ITeacherCertificationService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.*;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.format.datetime.DateFormatterRegistrar;
 
-import javax.persistence.metamodel.IdentifiableType;
-import java.sql.Timestamp;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,8 +26,6 @@ public abstract class TeacherCertificationMapper {
     @Autowired
     protected ISubcategoryService subcategoryService;
 
-    @Autowired
-    protected ITeacherCertificationService teacherCertificationService;
     @Autowired
     protected ITeacherService teacherService;
 

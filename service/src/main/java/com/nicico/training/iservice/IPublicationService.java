@@ -8,6 +8,7 @@ import com.nicico.training.model.Publication;
 import response.BaseResponse;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 
 public interface IPublicationService {
@@ -27,6 +28,8 @@ public interface IPublicationService {
     PublicationDTO.Info save(Publication publication, HttpServletResponse response);
 
     TeacherPublicationResponseDTO findTeacherPublicationsByNationalCode(String nationalCode);
+
+    List<ElsPublicationDTO.Resume> findTeacherPublicationsResumeListByNationalCode(String nationalCode);
 
     ElsPublicationDTO.UpdatedInfo create(ElsPublicationDTO.Create elsPublicationDTO);
 

@@ -1,13 +1,10 @@
 package com.nicico.training.mapper.teacher;
 
 import com.nicico.training.dto.ElsTeacherInfoDto;
-import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.TeacherInfoDTO;
 import com.nicico.training.mapper.tclass.TclassBeanMapper;
 import com.nicico.training.model.Category;
-import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
-import com.nicico.training.service.CategoryService;
 import org.mapstruct.*;
 import response.teacher.dto.TeacherInCourseDto;
 
@@ -92,4 +89,35 @@ public interface TeacherBeanMapper {
             return null;
         }
     }
+
+    @Mappings({
+            @Mapping(target = "fatherName", source = "personality.fatherName"),
+            @Mapping(target = "birthDate", source = "personality.birthDate"),
+            @Mapping(target = "teachingBackgroundInMonth", source = "teachingBackground", qualifiedByName = "getBackgroundInMonth"),
+            @Mapping(target = "teachingBackgroundInYear", source = "teachingBackground", qualifiedByName = "getBackgroundInYear"),
+            @Mapping(target = "iban", source = "iban"),
+            @Mapping(target = "email", source = "personality.contactInfo.email"),
+    })
+    ElsTeacherInfoDto.Resume toElsTeacherResumeDto(Teacher teacher);
+
+
+    @Named("getBackgroundInMonth")
+    default String getBackgroundInMonth(Long teachingBackground) {
+        if (teachingBackground != null) {
+            Long mounth = teachingBackground % 12;
+            return mounth.toString();
+        } else {
+            return null;
+        }
+    }
+    @Named("getBackgroundInYear")
+    default String getBackgroundInYear(Long teachingBackground) {
+        if (teachingBackground != null) {
+            Long year = teachingBackground / 12;
+            return year.toString();
+        } else {
+            return null;
+        }
+    }
+
 }

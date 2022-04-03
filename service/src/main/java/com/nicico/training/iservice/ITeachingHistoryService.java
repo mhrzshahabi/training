@@ -23,4 +23,6 @@ public interface ITeachingHistoryService {
 
     List<ElsTeachingHistoryFindAllRespDto> findTeachingHistoriesByNationalCode(String nationalCode);
 
+    List<ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume> findTeachingHistoriesResumeByNationalCode(String nationalCode);
+
 }

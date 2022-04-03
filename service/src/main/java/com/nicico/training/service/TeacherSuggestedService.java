@@ -5,6 +5,7 @@ import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.iservice.ITeacherSuggestedService;
+import com.nicico.training.mapper.teacher.TeacherSuggestedCourseMapper;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.Subcategory;
 import com.nicico.training.model.Teacher;
@@ -30,6 +31,7 @@ public class TeacherSuggestedService implements ITeacherSuggestedService {
     @Autowired
     private final ISubcategoryService subcategoryService;
     private final ITeacherService teacherService;
+    private final TeacherSuggestedCourseMapper teacherSuggestedCourseMapper;
     @Override
     public TeacherSuggestedCourse saveSuggestion(ElsSuggestedCourse elsSuggestedCourse) {
         TeacherSuggestedCourse teacherSuggestedCourse=new TeacherSuggestedCourse();
@@ -120,5 +122,14 @@ public class TeacherSuggestedService implements ITeacherSuggestedService {
            response.setMessage("get failed");
        }
        return response;
+    }
+
+    @Override
+    @Transactional
+    public List<ElsSuggestedCourse> findAllTeacherSuggestedDtoList(String nationalCode) {
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        List<TeacherSuggestedCourse> teacherSuggestedCourses = dao.findAllByTeacherId(teacherId);
+        List<ElsSuggestedCourse> dtos = teacherSuggestedCourseMapper.toElsSuggestedCourses(teacherSuggestedCourses);
+        return dtos;
     }
 }

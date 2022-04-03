@@ -146,4 +146,16 @@ public class ElsPublicationDTO {
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
+
+    @Setter
+    @Getter
+    @Accessors(chain = true)
+    @ApiModel("ElsPublicationDTO.Resume")
+    public static class Resume {
+        private String subjectTitle;
+        private String publicationDate;
+        private String publicationLocation;
+        private String publisher;
+        private String publicationNumber;
+    }
 }

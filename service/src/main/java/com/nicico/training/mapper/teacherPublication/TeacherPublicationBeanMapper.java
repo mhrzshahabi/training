@@ -98,4 +98,7 @@ public abstract class TeacherPublicationBeanMapper {
         return subCategoryInfoList;
     }
 
+    public abstract ElsPublicationDTO.Resume toElsPublicationResumeDTO(Publication publications);
+
+    public abstract List<ElsPublicationDTO.Resume> toElsPublicationResumeDTOList(List<Publication> publications);
 }
