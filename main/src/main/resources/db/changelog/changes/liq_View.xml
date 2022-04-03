@@ -12413,4 +12413,83 @@ FROM
         </createView>
     </changeSet>
 
+
+    <changeSet author="namdari" id="1637643011000-8">
+        <createView viewName="view_synonym_personnel" replaceIfExists="true">
+            <![CDATA[
+SELECT
+DISTINCT
+    mdms_tbl_md_employee.c_id                       AS id,
+    mdms_tbl_md_employee.c_em_number                AS emp_no,
+    mdms_tbl_md_employee.c_em_number_10             AS personnel_no,
+    mdms_tbl_md_employee.c_address                  AS address,
+    mdms_tbl_md_employee.c_national_code            AS national_code,
+    mdms_tbl_md_employee.deleted                    AS deleted,
+    mdms_tbl_md_people.c_birth_city                 AS birth_place,
+    mdms_tbl_md_people.c_birthdate                  AS birth_date,
+    mdms_tbl_md_people.c_father_name                AS father_name,
+    mdms_tbl_md_people.c_first_name                 AS first_name,
+    mdms_tbl_md_people.c_last_name                  AS last_name,
+    mdms_tbl_md_people.c_ssn                        AS birth_certificate_no,
+    mdms_tbl_md_people.c_mobile                     AS phone,
+    mdms_tbl_md_post.c_title                        AS post_title,
+    mdms_tbl_md_post.c_code                         AS post_code,
+    CASE
+        WHEN mdms_tbl_md_people.c_gender = 'MALE'   THEN
+            'مرد'
+        WHEN mdms_tbl_md_people.c_gender = 'FEMALE' THEN
+            'زن'
+    END                                             AS gender_title,
+    tbl_post.id                                     AS f_post_id,
+    mdms_tbl_md_employee.c_inc_dep_code             AS department_code,
+    mdms_tbl_md_employee.c_inc_dep_title            AS department_title,
+    mdms_tbl_md_employee.c_area_of_study            AS education_field_title,
+    mdms_tbl_md_department.c_omor_title             AS ccp_affairs,
+    mdms_tbl_md_department.c_moavenat_title         AS ccp_assistant,
+    mdms_tbl_md_department.c_hoze_title             AS ccp_area,
+    mdms_tbl_md_department.c_code                   AS ccp_code,
+    mdms_tbl_md_department.c_ghesmat_title          AS ccp_section,
+    mdms_tbl_md_department.c_vahed_title            AS ccp_unit,
+    mdms_tbl_md_department.c_title                  AS ccp_title,
+    mdms_tbl_md_employee.p_type                     AS p_type,
+    mdms_tbl_md_employee.c_dep_id                   AS f_department_id,
+    mdms_tbl_md_employee.c_geo_id                   AS f_geo_id,
+    mdms_tbl_md_people.c_username                   AS c_username,
+    mdms_tbl_md_post_grade.c_code                   AS post_grade_code,
+    mdms_tbl_md_post_grade.c_title                  AS post_grade_title,
+    mdms_tbl_md_employee.c_emp_date                 AS employment_date,
+    mdms_tbl_md_employee.c_work_place_title         AS work_place_title,
+    mdms_tbl_md_employee.c_edu_lvl_title            AS education_level_title,
+    mdms_tbl_md_job.c_title                         AS job_title,
+    CASE
+        WHEN mdms_tbl_md_employee.p_type = 'ContractorPersonal' THEN
+            mdms_tbl_md_geo_work.c_title
+        ELSE
+            'شرکت ملي صنايع مس ايران'
+    END                                             AS company_name,
+    mdms_tbl_md_people.c_email                      AS email,
+    mdms_tbl_md_employee_status.c_title AS employment_status_title,
+    mdms_tbl_md_employee.c_emp_status_id as employment_status_id,
+    mdms_tbl_md_department.c_mojtame_title as complex_title
+FROM
+    mdms_tbl_md_employee
+    LEFT JOIN mdms_tbl_md_people ON mdms_tbl_md_employee.c_people_id = mdms_tbl_md_people.c_id
+    LEFT JOIN mdms_tbl_md_post ON mdms_tbl_md_employee.c_post_id = mdms_tbl_md_post.c_id
+    LEFT JOIN mdms_tbl_md_department ON mdms_tbl_md_employee.c_dep_id = mdms_tbl_md_department.c_id
+    LEFT JOIN mdms_tbl_md_post_grade ON mdms_tbl_md_post.c_grade_id = mdms_tbl_md_post_grade.c_id
+    LEFT JOIN mdms_tbl_md_job ON mdms_tbl_md_employee.c_job_code = mdms_tbl_md_job.c_code
+    LEFT JOIN mdms_tbl_md_geo_work ON mdms_tbl_md_employee.c_geo_id = mdms_tbl_md_geo_work.c_id
+    LEFT JOIN tbl_post ON mdms_tbl_md_post.c_code = tbl_post.c_code
+                          AND tbl_post.e_deleted IS NULL
+    INNER JOIN mdms_tbl_md_employee_status ON mdms_tbl_md_employee.c_emp_status_id = mdms_tbl_md_employee_status.
+    c_id
+WHERE
+    mdms_tbl_md_employee.deleted = 0
+ORDER BY
+    id DESC
+]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>
