@@ -16,4 +16,6 @@ public interface ITeacherSuggestedService {
     List<TeacherSuggestedCourse> findAllTeacherSuggested(Long teacherId);
 
     ElsSuggestedCourse getById(Long id);
+
+    List<ElsSuggestedCourse> findAllTeacherSuggestedDtoList(String nationalCode);
 }

@@ -13,4 +13,7 @@ public interface ITeacherSpecialSkillService {
     void deleteSpecialSkill(Long id);
 
     TeacherSpecialSkillDTO.UpdatedInfo get(Long id);
+
+    List<TeacherSpecialSkillDTO.Resume> findTeacherSpecialSkillsByNationalCode(String nationalCode);
+
 }

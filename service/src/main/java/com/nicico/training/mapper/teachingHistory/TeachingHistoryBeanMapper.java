@@ -2,6 +2,7 @@ package com.nicico.training.mapper.teachingHistory;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.EducationLevelDTO;
 import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.dto.TeachingHistoryDTO;
 import com.nicico.training.iservice.*;
@@ -139,6 +140,38 @@ public abstract class TeachingHistoryBeanMapper {
             return modelMapper.map(studentsLevel, ElsStudentsLevelDto.class);
         } else
             return null;
+    }
+
+    @Mapping(source = "educationLevelId", target = "eduLevel", qualifiedByName = "toEducationLevelُTitle")
+    @Mapping(source = "studentsLevelId", target = "stdLevel", qualifiedByName = "toStudentsLevelTitle")
+    @Mapping(source = "duration", target = "durationInHour", qualifiedByName = "toDurationInHour")
+    public abstract ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume teachHistoryListToElsResumeResp(TeachingHistory teachingHistory);
+
+    public abstract List<ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume> teachHistoryListToElsResumeRespList(List<TeachingHistory> teachingHistoryList);
+
+    @Named("toStudentsLevelTitle")
+    String toStudentsLevelTitle(Long studentsLevelId) {
+        if (studentsLevelId != null) {
+            Optional<ParameterValue> parameterValue = parameterValueService.findById(studentsLevelId);
+            ParameterValue studentsLevel = parameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            return studentsLevel.getTitle();
+        } else
+            return null;
+    }
+
+    @Named("toEducationLevelُTitle")
+    String toEducationLevelُTitle(Long educationLevelId) {
+        if (educationLevelId != null) {
+            EducationLevelDTO.Info levelDTO = iEducationLevelService.get(educationLevelId);
+            return levelDTO.getTitleFa();
+        } else return null;
+    }
+
+    @Named("toDurationInHour")
+    String toDurationInHour(Integer duration) {
+        if (duration != null) {
+            return duration.toString();
+        } else return null;
     }
 
 }

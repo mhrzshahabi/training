@@ -37,4 +37,18 @@ public abstract class TeacherSpecialSkillBeanMapper {
         info = iParameterValueService.getInfo(parameterValueId);
         return info;
     }
+
+    @Mapping(source = "fieldId", target = "fieldTitle", qualifiedByName = "toParameterTitle")
+    @Mapping(source = "typeId", target = "typeTitle", qualifiedByName = "toParameterTitle")
+    @Mapping(source = "levelId", target = "levelTitle", qualifiedByName = "toParameterTitle")
+    public abstract TeacherSpecialSkillDTO.Resume toTeacherSpecialSkillResume(TeacherSpecialSkill teacherSpecialSkills);
+
+    public abstract List<TeacherSpecialSkillDTO.Resume> toTeacherSpecialSkillResumeList(List<TeacherSpecialSkill> teacherSpecialSkills);
+
+    @Named("toParameterTitle")
+    String toParameterTitle(Long parameterValueId) {
+        ParameterValueDTO.TupleInfo info = iParameterValueService.getInfo(parameterValueId);
+        return info.getTitle();
+    }
+
 }

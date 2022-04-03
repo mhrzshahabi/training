@@ -3,18 +3,13 @@ package com.nicico.training.mapper.teacher;
 import com.nicico.training.dto.ElsSuggestedCourse;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubcategoryService;
-import com.nicico.training.model.Category;
-import com.nicico.training.model.Subcategory;
 import com.nicico.training.model.TeacherSuggestedCourse;
-import org.checkerframework.checker.units.qual.C;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
 public  abstract class TeacherSuggestedCourseMapper {

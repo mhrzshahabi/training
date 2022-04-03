@@ -15,7 +15,6 @@ import com.nicico.training.model.*;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
@@ -373,6 +372,21 @@ public class TeacherService implements ITeacherService {
             baseResponse.setMessage("استادی با این اطلاعات یافت نشد");
         }
         return baseResponse;
+    }
+
+    @Override
+    @Transactional
+    public ElsTeacherInfoDto.Resume getTeacherResumeByNationalCode(String nationalCode) {
+        ElsTeacherInfoDto.Resume resume = new ElsTeacherInfoDto.Resume();
+        try {
+            Long teacherId = getTeacherIdByNationalCode(nationalCode);
+            Teacher teacher = getTeacher(teacherId);
+            resume = teacherBeanMapper.toElsTeacherResumeDto(teacher);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return resume;
     }
 
     //--------------------------Teacher Basic Evaluation ---------------------------------------------------------------

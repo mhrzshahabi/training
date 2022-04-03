@@ -181,6 +181,19 @@ public class PublicationService implements IPublicationService {
     }
 
     @Override
+    public List<ElsPublicationDTO.Resume> findTeacherPublicationsResumeListByNationalCode(String nationalCode) {
+
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+        if (teacherId == null) {
+            return null;
+        } else {
+            List<Publication> publications = publicationDAO.findAllByTeacherIdOrderByIdDesc(teacherId);
+            List<ElsPublicationDTO.Resume> resumeList = teacherPublicationBeanMapper.toElsPublicationResumeDTOList(publications);
+            return resumeList;
+        }
+    }
+
+    @Override
     @Transactional
     public ElsPublicationDTO.UpdatedInfo create(ElsPublicationDTO.Create elsPublicationDTO) {
         ElsPublicationDTO.UpdatedInfo response = new ElsPublicationDTO.UpdatedInfo();

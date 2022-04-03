@@ -103,4 +103,12 @@ public class TeacherSpecialSkillService implements ITeacherSpecialSkillService {
 
     }
 
+    @Override
+    @Transactional
+    public List<TeacherSpecialSkillDTO.Resume> findTeacherSpecialSkillsByNationalCode(String nationalCode) {
+        Long teacherId = iTeacherService.getTeacherIdByNationalCode(nationalCode);
+        List<TeacherSpecialSkill> teacherSpecialSkills = teacherSpecialSkillDAO.findTeacherSpecialSkillByTeacherIdOrderByIdDesc(teacherId);
+        return teacherSpecialSkillBeanMapper.toTeacherSpecialSkillResumeList(teacherSpecialSkills);
+    }
+
 }

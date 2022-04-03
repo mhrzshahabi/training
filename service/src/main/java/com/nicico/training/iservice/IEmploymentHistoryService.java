@@ -23,4 +23,6 @@ public interface IEmploymentHistoryService {
 
     List<ElsEmploymentHistoryFindAllRespDto> findEmploymentHistoriesByNationalCode(String nationalCode);
 
+    List<ElsEmploymentHistoryFindAllRespDto.Resume> findEmploymentHistoryResumeListByNationalCode(String nationalCode);
+
 }
