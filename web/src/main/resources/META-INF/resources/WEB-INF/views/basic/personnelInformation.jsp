@@ -110,6 +110,12 @@
                         autoFitWidth: true
                     },
                     {
+                        name: "employmentStatus",
+                        title: "<spring:message code="employment.status"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
                         name: "ccpArea",
                         title: "<spring:message code="reward.cost.center.area"/>",
                         filterOperator: "iContains"
@@ -231,6 +237,12 @@
                     {
                         name: "postCode",
                         title: "<spring:message code="post.code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "employmentStatus",
+                        title: "<spring:message code="employment.status"/>",
                         filterOperator: "iContains",
                         autoFitWidth: true
                     },
@@ -399,6 +411,7 @@
                             keyPressFilter: "[0-9]"
                         }
                     },
+                    {name: "employmentStatus"},
                     {name: "ccpArea"},
                     {name: "ccpAssistant"},
                     {name: "ccpAffairs"},
@@ -451,6 +464,7 @@
                             keyPressFilter: "[0-9]"
                         }
                     },
+                    {name: "employmentStatus"},
                     {name: "ccpArea"},
                     {name: "ccpAssistant"},
                     {name: "ccpAffairs"},
