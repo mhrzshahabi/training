@@ -6,6 +6,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 @Getter
 @Setter
@@ -28,8 +29,27 @@ public class ViewCoursesEvaluationReportDTO implements Serializable {
         private Long subCategoryId;
         private Integer classStudentStatusReaction;
         private String evaluationAnalysisReactionGrade;
+
+        public String getEvaluationAnalysisReactionGrade() {
+            if (evaluationAnalysisReactionGrade!=null)
+                return new DecimalFormat("#.00").format(Double.parseDouble(evaluationAnalysisReactionGrade));
+            return null;
+        }
+
         private String evaluationAnalysisReactionPass;
+        public String getEvaluationAnalysisReactionPass() {
+            if (evaluationAnalysisReactionPass!=null && evaluationAnalysisReactionPass.equals("0")) {
+                return "نهایی شده";
+            } else {
+                return "ناقص";
+            }
+        }
         private String evaluationAnalysisTeacherGrade;
+        public String getEvaluationAnalysisTeacherGrade() {
+            if (evaluationAnalysisTeacherGrade!=null)
+            return new DecimalFormat("#.00").format(Double.parseDouble(evaluationAnalysisTeacherGrade));
+            return null;
+        }
         private String evaluationAnalysisTeacherPass;
     }
 }

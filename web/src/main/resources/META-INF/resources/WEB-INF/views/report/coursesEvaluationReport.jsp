@@ -32,7 +32,7 @@
             {name: "courseTitleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name: "categoryTitleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
             {name: "subCategoryTitleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
-            {name: "classStudentStatusReaction", title: "وضعیت ارزیابی واکنشی فراگیران"},
+            {name: "evaluationAnalysisReactionPass", title: "وضعیت ارزیابی واکنشی فراگیران"},
             {name: "evaluationAnalysisReactionGrade", title: "نمره ارزیابی واکنشی فراگیران"},
             {name: "evaluationAnalysisTeacherGrade", title: "نمره ارزیابی نهایی مدرس"}
         ],
@@ -359,33 +359,33 @@
             {name: "categoryTitleFa"},
             {name: "subCategoryTitleFa"},
             {
-                name: "classStudentStatusReaction",
+                name: "evaluationAnalysisReactionPass",
                 canFilter: false,
-                formatCellValue: function (value) {
-                    if (value === 0) {
-                        return "نهایی شده";
-                    } else if (value) {
-                        return "ناقص";
-                    }
-                }
+                // formatCellValue: function (value) {
+                //     if (value === 0) {
+                //         return "نهایی شده";
+                //     } else if (value) {
+                //         return "ناقص";
+                //     }
+                // }
             },
             {
                 name: "evaluationAnalysisReactionGrade",
                 canFilter: false,
-                formatCellValue: function (value) {
-                    if (value) {
-                        return NumberUtil.format(Number(value), "0.##");
-                    }
-                }
+                // formatCellValue: function (value) {
+                //     if (value) {
+                //         return NumberUtil.format(Number(value), "0.##");
+                //     }
+                // }
             },
             {
                 name: "evaluationAnalysisTeacherGrade",
                 canFilter: false,
-                formatCellValue: function (value) {
-                    if (value) {
-                        return NumberUtil.format(Number(value), "0.##");
-                    }
-                }
+                // formatCellValue: function (value) {
+                //     // if (value) {
+                //     //     return NumberUtil.format(Number(value), "0.##");
+                //     // }
+                // }
             }
         ]
     });
@@ -407,7 +407,7 @@
     //------------------------------------------------- Functions ------------------------------------------------------
 
     function makeExcelOutput() {
-
+//zaza print excel
         if (ListGrid_CER.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else
