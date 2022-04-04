@@ -70,7 +70,7 @@ public interface IEvaluationService {
 
     List<Evaluation> getEvaluationsByEvaluatorNationalCode(String evaluatorNationalCode, Long EvaluatorTypeId , String evaluatorType);
 
-    List<EvaluationAnsweredQuestionsDetailsDTO> getAnsweredQuestionsDetails(List<Long> questionIds);
+    EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs  getAnsweredQuestionsDetails(List<Long> questionIds);
 
     List<Evaluation> findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(Long ClassId, Long EvaluationLevelId, Long QuestionnaireTypeId);
 

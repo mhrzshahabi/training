@@ -34,6 +34,7 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Calendar;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -986,13 +987,14 @@ public class EvaluationRestController {
      * it returns list of answered evaluation questions with the details like
      * information of the student who answered to that and other infos with giving the question Ids
      *
-     * @param questionIds
+     * @param Ids
      * @return
      */
-    @PostMapping(value = "/getAnsweredEvalQuestionsDetails")
-    public ResponseEntity<List<EvaluationAnsweredQuestionsDetailsDTO>> getAnsweredQuestionsDetails(@RequestBody List<Long> questionIds) {
-        List<EvaluationAnsweredQuestionsDetailsDTO> dtos = evaluationService.getAnsweredQuestionsDetails(questionIds);
-        if (dtos.size() > 0) {
+    @GetMapping(value = "/getAnsweredEvalQuestionsDetails/{Ids}")
+    public ResponseEntity<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs> getAnsweredQuestionsDetails(@PathVariable String Ids) {
+        List<Long> questionIds = Arrays.stream(Ids.split(",")).map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
+        EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs dtos = evaluationService.getAnsweredQuestionsDetails(questionIds);
+        if (dtos.getResponse().getTotalRows() > 0) {
             return new ResponseEntity<>(dtos, HttpStatus.OK);
         } else {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);

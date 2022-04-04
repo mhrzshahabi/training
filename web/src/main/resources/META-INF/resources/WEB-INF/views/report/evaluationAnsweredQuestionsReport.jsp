@@ -9,6 +9,7 @@
 
     //----------------------------------------------------Variables-----------------------------------------------------
     let excelData = [];
+    let ids = "";
     var isCriteriaCategoriesChanged_Answered_Questions_Details = false;
     let reportCriteria_Answered_Questions_Details = null;
 
@@ -26,7 +27,7 @@
             {name: "answerTitle", title: "<spring:message code="answer"/>", filterOperator: "iContains"},
 
         ],
-        fetchDataURL: evaluationUrl + "/getAnsweredEvalQuestionsDetails/",
+        fetchDataURL: evaluationUrl + "/getAnsweredEvalQuestionsDetails/"+ids.toString(),
     });
 
     QuestionnaireDS_Answered_Questions_Details = isc.TrDS.create({
@@ -64,9 +65,9 @@
     //---------------------------------------------------- Form------------------------------------------------
     ToolStripButton_Excel_Answered_Questions_Details = isc.ToolStripButtonExcel.create({
         click: function () {
-            let listGridDataArray = ListGrid_Answered_Questions_Details.data;
-            ExportToFile.makeExcelOutputWithFieldsAndData(RestDataSource_Answered_Questions_Details, listGridDataArray, "", "گزارش سوالات ارزیابی", 0, 0);
-            // makeExcelAnsweredQuestions();
+            // let listGridDataArray = ListGrid_Answered_Questions_Details.data;
+            // ExportToFile.makeExcelOutputWithFieldsAndData(RestDataSource_Answered_Questions_Details, listGridDataArray, "", "گزارش سوالات ارزیابی", 0, 0);
+            makeExcelAnsweredQuestions();
         }
     });
 
@@ -187,16 +188,19 @@
                 return;
             }
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(questionIds), function (resp) {
+            ids= JSON.stringify(questionIds).toString().replace("]", "").replace("[","");
+                isc.RPCManager.sendRequest(TrDSRequest(url+ids,"GET",null, function (resp) {
                 wait.close();
                 if (resp.httpResponseCode === 200) {
+
                     ListGrid_Answered_Questions_Details.invalidateCache();
-                    let data = JSON.parse(resp.data);
+                    let data = (JSON.parse(resp.data)).response.data;
+
                     ListGrid_Answered_Questions_Details.setData(data);
                 } else {
                     wait.close();
                     ListGrid_Answered_Questions_Details.setData([]);
-                    createDialog("info", "هیچ رکوردی برای نمایش وحود ندارد", "<spring:message code="message"/>")
+                    createDialog("info", "هیچ رکوردی برای نمایش وجود ندارد", "<spring:message code="message"/>")
                 }
             }));
         }
@@ -232,7 +236,7 @@
 
     var ListGrid_Answered_Questions_Details = isc.TrLG.create({
         height: "70%",
-        dataPageSize: 1000,
+        // dataPageSize: 1000,
         filterOnKeypress: false,
         showFilterEditor: false,
         dataSource: RestDataSource_Answered_Questions_Details,
@@ -263,53 +267,11 @@
     //------------------------------------------------- Functions ------------------------------------------------------
 
     function makeExcelAnsweredQuestions() {
-        if (ListGrid_Answered_Questions_Details.getOriginalData().length === 0) {
-            createDialog("info", "جدول نتایج خالیست.");
-        } else {
-            let records = ListGrid_Answered_Questions_Details.data.toArray();
-            excelData = [];
-            excelData.add({
-                classCode: "کد کلاس",
-                classTitle: "عنوان کلاس",
-                firstName: "نام ",
-                lastName: "نام خانوادگی ",
-                nationalCode: "کد ملی",
-                complexTitle: "مجتمع",
-                questionTitle: "سوال",
-                answerTitle: "پاسخ"
+        if (ListGrid_Answered_Questions_Details.getOriginalData().length === 0)
+            createDialog("info", "جدول نتایج خالیست");
+        else
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Answered_Questions_Details, evaluationUrl + "/getAnsweredEvalQuestionsDetails/"+ids, 0, null, '',"گزارش سوالات ارزیابی"  , reportCriteria_Answered_Questions_Details, null);
 
-            });
-
-            if (records) {
-                for (let j = 0; j < records.length; j++) {
-                    excelData.add({
-                        rowNum: j + 1,
-                        classCode: records[j].classCode,
-                        classTitle: records[j].classTitle,
-                        firstName: records[j].firstName,
-                        lastName: records[j].lastName,
-                        nationalCode: records[j].nationalCode,
-                        complexTitle: records[j].complexTitle,
-                        questionTitle: records[j].questionTitle,
-                        answerTitle: records[j].answerTitle
-
-                    });
-
-                }
-            }
-            let fields = [
-                {name: "rowNum"},
-                {name: "classCode"},
-                {name: "classTitle"},
-                {name: "firstName"},
-                {name: "lastName"},
-                {name: "nationalCode"},
-                {name: "complexTitle"},
-                {name: "questionTitle"},
-                {name: "answerTitle"}
-            ];
-            ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش سوالات ارزیابی ", null);
-        }
     }
 
     // </script>

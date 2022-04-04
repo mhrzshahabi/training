@@ -330,11 +330,11 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public List<EvaluationAnsweredQuestionsDetailsDTO> getAnsweredQuestionsDetails(List<Long> questionIds) {
+    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Long> questionIds) {
         List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds);
-        List<EvaluationAnsweredQuestionsDetailsDTO> dtoList = new ArrayList<>();
+        List<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList> dtoList = new ArrayList<>();
         for (Object o : list){
-            EvaluationAnsweredQuestionsDetailsDTO dto = new EvaluationAnsweredQuestionsDetailsDTO();
+            EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList dto = new EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList();
             Object[] arr = (Object[]) o;
             dto.setClassCode(arr[0] == null ? null : arr[0].toString());
             dto.setClassTitle(arr[1] == null ? null : arr[1].toString());
@@ -346,7 +346,15 @@ public class EvaluationService implements IEvaluationService {
             dto.setQuestionTitle(arr[7] == null ? null : arr[7].toString());
             dtoList.add(dto);
         }
-        return dtoList;
+        final EvaluationAnsweredQuestionsDetailsDTO.SpecRs specResponse = new EvaluationAnsweredQuestionsDetailsDTO.SpecRs();
+        specResponse.setData(dtoList)
+                .setStartRow(0)
+                .setEndRow(dtoList.size())
+                .setTotalRows(dtoList.size());
+
+        final EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs specRs = new EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs();
+        specRs.setResponse(specResponse);
+        return specRs;
     }
 
     private List<Evaluation> getBehavioralEvaluations(List<Evaluation> list, String evaluatorNationalCode) {
