@@ -749,6 +749,8 @@
                         fields: [
                             {
                                 name: "departmentFilter",
+                                type: "SelectItem",
+                                multiple: true,
                                 title: "<spring:message code='complex'/>",
                                 width: "300",
                                 height: 25,

@@ -28,6 +28,12 @@ public class ViewClassDetailRestController {
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewClassDetailDTO.Info>> iscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+       if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null){
+           for (SearchDTO.CriteriaRq criteriaRq: searchRq.getCriteria().getCriteria()){
+               if (criteriaRq.getFieldName().equals("tclassCode"))
+                   criteriaRq.setValue(criteriaRq.getValue().toString().replace("]","").replace("[","").trim());
+           }
+       }
         SearchDTO.SearchRs<ViewClassDetailDTO.Info> searchRs = viewClassDetailService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
