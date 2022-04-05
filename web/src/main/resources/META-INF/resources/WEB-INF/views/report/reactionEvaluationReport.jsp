@@ -811,3 +811,5 @@
             HLayOut_Confirm_RER
         ]
     });
+
+    // </script>

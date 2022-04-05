@@ -2646,6 +2646,12 @@
                                 }
                             },
                             </sec:authorize>
+                            {
+                                title: "گزارش آماری ارزیابی دوره ها",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/coursesEvaluationStatisticalReport"/>");
+                                }
+                            },
                             <%--                            </sec:authorize>--%>
                         ]
                 },
