@@ -32,6 +32,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.evaluation.dto.EvalAverageResult;
+
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
@@ -244,6 +246,7 @@ public class TeacherRestController {
 
         specRs.setResponse(specResponse);
 
+
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
@@ -286,6 +289,62 @@ public class TeacherRestController {
         }
 
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
+
+        final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
+        final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+    @Loggable
+    @GetMapping(value = "/spec-list-satisfaction")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRsGrid> gridListSatisfaction(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                 @RequestParam(value = "id", required = false) Long id,
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException, NoSuchFieldException, IllegalAccessException {
+
+        SearchDTO.SearchRq request = setSearchCriteriaNotInBlackList(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        for (SearchDTO.CriteriaRq o : request.getCriteria().getCriteria()) {
+            if(o.getFieldName().equalsIgnoreCase("categories"))
+                o.setValue(Long.parseLong(o.getValue().get(0)+""));
+            if(o.getFieldName().equalsIgnoreCase("subCategories"))
+                o.setValue(Long.parseLong(o.getValue().get(0)+""));
+            if(o.getFieldName().equalsIgnoreCase("personnelStatus")) {
+                if (o.getValue().get(0).equals("false")){
+                    o.setValue(0);
+                } else if (o.getValue().get(0).equals("true")){
+                    o.setValue(1);
+                }
+            }
+
+        }
+
+        SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
+        if(response.getList()!= null && response.getList().size()>0){
+            response.getList().stream().forEach(grid -> {
+                Long teacherId=  grid.getId();
+                List<Tclass> teacherClasses= tclassService.getTeacherClasses(teacherId);
+                if(teacherClasses!=null && teacherClasses.size()>0) {
+                    Long teacherClassesNumber = teacherClasses.stream().count();
+                    grid.setTeacherClassCount(teacherClassesNumber.toString());
+                    List<Tclass> sortedClasses = teacherClasses.stream().sorted(Comparator.comparing(Tclass::getId).reversed()).collect(Collectors.toList());
+                    Tclass lastClassByTeacher = sortedClasses.get(0);
+                    EvalAverageResult evalAverageResult = tclassService.getEvaluationAverageResultToTeacher(lastClassByTeacher.getId());
+                    Double totalAverage = evalAverageResult.getTotalAverage();
+                    grid.setTeacherLastEvalAverageResult(totalAverage.toString());
+                }
+            });
+        }
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
         final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();

@@ -505,6 +505,10 @@ public class MainFormController {
     public String reactionEvaluationCommentsReport() {
         return "report/reactionEvaluationCommentsReport";
     }
+    @RequestMapping("/studentsSatisfactionOfTeachersReport")
+    public String studentsSatisfactionOfTeachersReport(){
+        return "report/studentsSatisfactionOfTeachersReport";
+    }
 
     @RequestMapping("/CoursePassedOrUnPassedInNAReport")
     public String CoursePassedOrUnPassedInNAReport() {
