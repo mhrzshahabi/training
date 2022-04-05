@@ -13,11 +13,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.TclassDAO;
-import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.repository.ViewTeacherReportDAO;
-import com.nicico.training.service.TeacherService;
-import com.nicico.training.service.ViewTeacherReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -25,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -72,7 +67,7 @@ public class TeacherRestController {
     protected EntityManager entityManager;
     private final IViewTeacherReportService iViewTeacherReportService;
     private final ITeacherRoleService iTeacherRoleService;
-
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -340,8 +335,8 @@ public class TeacherRestController {
                     List<Tclass> sortedClasses = teacherClasses.stream().sorted(Comparator.comparing(Tclass::getId).reversed()).collect(Collectors.toList());
                     Tclass lastClassByTeacher = sortedClasses.get(0);
                     EvalAverageResult evalAverageResult = tclassService.getEvaluationAverageResultToTeacher(lastClassByTeacher.getId());
-                    Double totalAverage = evalAverageResult.getTotalAverage();
-                    grid.setTeacherLastEvalAverageResult(totalAverage.toString());
+                    String totalAverage =df.format(evalAverageResult.getTotalAverage());
+                    grid.setTeacherLastEvalAverageResult(totalAverage);
                 }
             });
         }

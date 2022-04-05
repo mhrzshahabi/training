@@ -263,12 +263,14 @@
                 name: "teacherClassCount",
                 title: "<spring:message code='teacher.class.count'/>",
                 align: "center",
+                canFilter: false,
 
             } ,
             {
                 name: "teacherLastEvalAverageResult",
                 title: "<spring:message code='teacher.lastEval.averageResult'/>",
                 align: "center",
+                canFilter:false,
 
             }
 
@@ -286,6 +288,22 @@
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
+    //------------------------------------tabSet------------------------------------------------------------------------
+    var TabSet_teachingSubject = isc.TabSet.create({
+        enabled: false,
+        tabBarPosition: "top",
+        tabs: [
+
+            {
+                ID: "teachingSubjectTab",
+                name: "teachingSubjectTab",
+                title: "<spring:message code="teachingSubjects"/>",
+            }
+        ],
+        tabSelected: function (tabNum, tabPane, ID, tab, name) {
+        }
+    });
+
     //----------------------------------------------ToolStrips and Layout-Grid------------------------------------------
     var ToolStripButton_Refresh_JspSatisfaction = isc.ToolStripButtonRefresh.create({
         click: function () {
@@ -319,11 +337,18 @@
         width: "100%",
         members: [ToolStrip_Actions_JspSatisfaction]
     });
+    let HLayout_Tab_teachingSubject = isc.HLayout.create({
+        minWidth: "100%",
+        width: "100%",
+        height: "39%",
+        members: [TabSet_teachingSubject]
+    });
 
     var VLayout_Body_Teacher_JspSatisfaction = isc.TrVLayout.create({
         members: [
             HLayout_Actions_Satisfaction,
-            HLayout_Grid_Teacher_JspSatisfaction
+            HLayout_Grid_Teacher_JspSatisfaction,
+            HLayout_Tab_teachingSubject
         ]
     });
 
