@@ -377,7 +377,7 @@ for (int m=0 ; m<subLists.size();m++){
     for (int z=0 ; z<subV2.size();z++) {
         ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
 
-        chartData.add(new ChartData(info.getCourseTitleFa() + "/" + info.getTclassCode(), z+1 + "" ,
+        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), z+1 + "" ,
                 Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
                 Double.parseDouble(minFerGrade.getValue())));
 
@@ -398,8 +398,7 @@ for (int m=0 ; m<subLists.size();m++){
                    }else {
                        for (int z=0 ; z<list.size();z++) {
                            ViewEvaluationStaticalReportDTO.Info info=list.get(z);
-//                           chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
-                           chartData.add(new ChartData(info.getCourseTitleFa() + "/" + info.getTclassCode(), index + "" ,
+                           chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
                                    Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
                                    Double.parseDouble(minFerGrade.getValue())));
 
