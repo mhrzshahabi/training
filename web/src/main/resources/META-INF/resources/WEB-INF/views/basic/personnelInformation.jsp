@@ -777,6 +777,7 @@
                 click: function () {
                     PersonnelInfoListGrid_PersonnelList.fetchData();
                     PersonnelInfoListGrid_RegisteredPersonnelList.fetchData();
+                    synonmPersonnelInfoListGrid_PersonnelList.fetchData();
 
                     btnRemoveCriteria.disable();
                 }
@@ -796,8 +797,11 @@
                         click: function () {
                             if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel") {
                                 groupFilter("فیلتر گروهی", personnelUrl + "/checkPersonnelNos",checkPersonnelNosResponse, true, true, 0,false);
-                            } else {
+                            } else if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_RegisteredPersonnel") {
                                 groupFilter("فیلتر گروهی", personnelRegUrl + "/checkPersonnelNos", checkRegisterPersonnelNosResponse, true, true, 0,false);
+                            }else if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_synonym_Personnel") {
+                                groupFilter("فیلتر گروهی", personnelUrl + "/checkPersonnelNos", checkPersonnelNosResponse, true, true, 0,false);
+
                             }
 
                         }
@@ -960,7 +964,12 @@
                                     {fieldName: "personnelNo2", operator: "inSet", value:  students}
                                 ]
                             };
-                            PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
+                            if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_Personnel"){
+                                PersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
+                            } else {
+                                synonmPersonnelInfoListGrid_PersonnelList.fetchData(advancedCriteriaPersonnelInformation);
+                            }
+
                             ClassStudentWin_student_GroupInsert.close();
                             btnRemoveCriteria.enable();
 
