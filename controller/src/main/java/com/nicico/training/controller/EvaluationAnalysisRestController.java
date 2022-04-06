@@ -398,7 +398,8 @@ for (int m=0 ; m<subLists.size();m++){
                    }else {
                        for (int z=0 ; z<list.size();z++) {
                            ViewEvaluationStaticalReportDTO.Info info=list.get(z);
-                           chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
+//                           chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
+                           chartData.add(new ChartData("زانی" + "/" + info.getTclassCode(), index + "" ,
                                    Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
                                    Double.parseDouble(minFerGrade.getValue())));
 
