@@ -27,7 +27,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -42,26 +41,25 @@ public class EvaluationAnalysisRestController {
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
     private final ICategoryService categoryService;
     private final IParameterService parameterService;
-    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
     public void printReactionEvaluation(HttpServletResponse response,
-                                @RequestParam(value = "code") String code, @RequestParam(value = "titleClass") String titleClass,
-                                @RequestParam(value = "term") String term, @RequestParam(value = "studentCount") String studentCount,
-                                @RequestParam(value = "classStatus") String classStatus, @RequestParam(value = "teacher") String teacher,
-                                @RequestParam(value = "numberOfExportedReactionEvaluationForms") String numberOfExportedReactionEvaluationForms,
-                                @RequestParam(value = "numberOfFilledReactionEvaluationForms") String numberOfFilledReactionEvaluationForms,
-                                @RequestParam(value = "numberOfInCompletedReactionEvaluationForms") String numberOfInCompletedReactionEvaluationForms,
-                                @RequestParam(value = "percenetOfFilledReactionEvaluationForms") String percenetOfFilledReactionEvaluationForms,
-                                @RequestParam(value = "FERGrade") String FERGrade, @RequestParam(value = "FETGrade") String FETGrade,
-                                @RequestParam(value = "FECRGrade") String FECRGrade, @RequestParam(value = "FERPass") String FERPass,
-                                @RequestParam(value = "FETPass") String FETPass, @RequestParam(value = "FECRPass") String FECRPass,
-                                @RequestParam(value = "minScore_ER") String minScore_ER, @RequestParam(value = "minScore_ET") String minScore_ET,
-                                @RequestParam(value = "differFER") String differFER, @RequestParam(value = "differFET") String differFET,
-                                @RequestParam(value = "teacherGradeToClass") String teacherGradeToClass, @RequestParam(value = "studentsGradeToTeacher") String studentsGradeToTeacher,
-                                @RequestParam(value = "studentsGradeToFacility") String studentsGradeToFacility, @RequestParam(value = "studentsGradeToGoals") String studentsGradeToGoals,
-                                @RequestParam(value = "trainingGradeToTeacher") String trainingGradeToTeacher) throws Exception {
+                                        @RequestParam(value = "code") String code, @RequestParam(value = "titleClass") String titleClass,
+                                        @RequestParam(value = "term") String term, @RequestParam(value = "studentCount") String studentCount,
+                                        @RequestParam(value = "classStatus") String classStatus, @RequestParam(value = "teacher") String teacher,
+                                        @RequestParam(value = "numberOfExportedReactionEvaluationForms") String numberOfExportedReactionEvaluationForms,
+                                        @RequestParam(value = "numberOfFilledReactionEvaluationForms") String numberOfFilledReactionEvaluationForms,
+                                        @RequestParam(value = "numberOfInCompletedReactionEvaluationForms") String numberOfInCompletedReactionEvaluationForms,
+                                        @RequestParam(value = "percenetOfFilledReactionEvaluationForms") String percenetOfFilledReactionEvaluationForms,
+                                        @RequestParam(value = "FERGrade") String FERGrade, @RequestParam(value = "FETGrade") String FETGrade,
+                                        @RequestParam(value = "FECRGrade") String FECRGrade, @RequestParam(value = "FERPass") String FERPass,
+                                        @RequestParam(value = "FETPass") String FETPass, @RequestParam(value = "FECRPass") String FECRPass,
+                                        @RequestParam(value = "minScore_ER") String minScore_ER, @RequestParam(value = "minScore_ET") String minScore_ET,
+                                        @RequestParam(value = "differFER") String differFER, @RequestParam(value = "differFET") String differFET,
+                                        @RequestParam(value = "teacherGradeToClass") String teacherGradeToClass, @RequestParam(value = "studentsGradeToTeacher") String studentsGradeToTeacher,
+                                        @RequestParam(value = "studentsGradeToFacility") String studentsGradeToFacility, @RequestParam(value = "studentsGradeToGoals") String studentsGradeToGoals,
+                                        @RequestParam(value = "trainingGradeToTeacher") String trainingGradeToTeacher) throws Exception {
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
@@ -364,55 +362,24 @@ public class EvaluationAnalysisRestController {
 
         int catCount = 1;
         for (CategoryDTO.Info category : categoryList) {
-               List<ViewEvaluationStaticalReportDTO.Info> list =  searchRs.getList().stream().filter(p->p.getCourseCategory().equals(category.getId())).collect(Collectors.toList());
-               if(list != null && list.size() != 0){
-                   List<ChartData> chartData = new ArrayList<>();
-                   int index = 1;
-                   if (list.size()>10){
-                     int  totalPage = (list.size() / 10)+1;
-                       List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
-for (int m=0 ; m<subLists.size();m++){
-    List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
+            List<ViewEvaluationStaticalReportDTO.Info> list =  searchRs.getList().stream().filter(p->p.getCourseCategory().equals(category.getId())).collect(Collectors.toList());
+            if(list != null && list.size() != 0){
+                List<ChartData> chartData = new ArrayList<>();
+                int index = 1;
+                for (ViewEvaluationStaticalReportDTO.Info info : list) {
+                    chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
+                            Double.parseDouble(info.getEvaluationReactionGrade()), catCount + ". واحد " + category.getTitleFa(),
+                            Double.parseDouble(minFerGrade.getValue())));
 
-    for (int z=0 ; z<subV2.size();z++) {
-        ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
-
-        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), z+1 + "" ,
-                Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
-                Double.parseDouble(minFerGrade.getValue())));
-
-        if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-            TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
-            tableData.add(tableData1);
-        }
-    }
-    allchartData.add(chartData);
-    chartData = new ArrayList<>();
-                       catCount++;
-
-}
-
-
-
-
-                   }else {
-                       for (int z=0 ; z<list.size();z++) {
-                           ViewEvaluationStaticalReportDTO.Info info=list.get(z);
-                           chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
-                                   Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
-                                   Double.parseDouble(minFerGrade.getValue())));
-
-                           index++;
-                           if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-                               TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
-                               tableData.add(tableData1);
-                           }
-                       }
-                       allchartData.add(chartData);
-                       catCount++;
-                   }
-
-               }
+                    index++;
+                    if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
+                        TableData tableData1 = new TableData(info.getEvaluationReactionGrade(),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
+                        tableData.add(tableData1);
+                    }
+                }
+                allchartData.add(chartData);
+                catCount++;
+            }
         }
 
         for (TableData tableDatum : tableData) {
@@ -426,7 +393,7 @@ for (int m=0 ; m<subLists.size();m++){
             if(key.equals("title"))
                 params.put("title", reportComments.getString(key.toString()));
             else if(key.equals("description"))
-                    params.put("description",reportComments.getString(key.toString()));
+                params.put("description",reportComments.getString(key.toString()));
             iterator.remove();
         }
 
@@ -502,7 +469,7 @@ for (int m=0 ; m<subLists.size();m++){
         public void setyCoordinate(Double yCoordinate) {
             this.yCoordinate = yCoordinate;
         }
-        }
+    }
 
     public static class NotPassedChartData{
         private String seriesNP;
@@ -662,15 +629,5 @@ for (int m=0 ; m<subLists.size();m++){
         }
         return new ResponseEntity<>(tableData,HttpStatus.OK);
     }
-    public List<List<ViewEvaluationStaticalReportDTO.Info>> GetSubList(List<ViewEvaluationStaticalReportDTO.Info> list, final int splitCount) {
-        List<List<ViewEvaluationStaticalReportDTO.Info>> parts = new ArrayList<>(splitCount);
-        for (int i = 0; i < splitCount; ++i) {
-            parts.add(new ArrayList<>());
-        }
-        final int N = list.size();
-        for (int i = 0; i < N; ++i) {
-            parts.get(i % splitCount).add(list.get(i));
-        }
-        return parts;
-    }
-    }
+
+}
