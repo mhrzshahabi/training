@@ -371,15 +371,15 @@ public class EvaluationAnalysisRestController {
                 if (list.size()>10){
                     int  totalPage = (list.size() / 10)+1;
                     List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
-                    int size=subLists.size();
-                    for (int m=0 ; m<size;m++){
-                        List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
+                    for (List<ViewEvaluationStaticalReportDTO.Info> subV2 : subLists) {
+//                    for (int m=0 ; m<subLists.size();m++){
+//                        List<ViewEvaluationStaticalReportDTO.Info> subV2=subs;
 
                         for (int z=0 ; z<subV2.size();z++) {
                             ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
 
                             chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), z+1 + "" ,
-                                    Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
+                                    Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(0+1)+" ) ",
                                     Double.parseDouble(minFerGrade.getValue())));
 
                             if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
@@ -392,6 +392,7 @@ public class EvaluationAnalysisRestController {
                         catCount++;
 
                     }
+
 
 
 
