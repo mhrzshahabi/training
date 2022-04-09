@@ -367,19 +367,43 @@ public class EvaluationAnalysisRestController {
             if(list != null && list.size() != 0){
                 List<ChartData> chartData = new ArrayList<>();
                 int index = 1;
-                for (ViewEvaluationStaticalReportDTO.Info info : list) {
-                    chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
-                            Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
-                            Double.parseDouble(minFerGrade.getValue())));
+                int  totalPage = (list.size() / 10)+1;
+                List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
+                for (int m=0 ; m<subLists.size();m++){
+                    List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
 
-                    index++;
-                    if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-                        TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
-                        tableData.add(tableData1);
+                    for (int z=0 ; z<subV2.size();z++) {
+                        ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
+
+                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), z+1 + "" ,
+                                Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
+                                Double.parseDouble(minFerGrade.getValue())));
+
+                        if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
+                            TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
+                            tableData.add(tableData1);
+                        }
                     }
+                    allchartData.add(chartData);
+                    chartData = new ArrayList<>();
+                    catCount++;
+
                 }
-                allchartData.add(chartData);
-                catCount++;
+
+
+//                for (ViewEvaluationStaticalReportDTO.Info info : list) {
+//                    chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
+//                            Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
+//                            Double.parseDouble(minFerGrade.getValue())));
+//
+//                    index++;
+//                    if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
+//                        TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
+//                        tableData.add(tableData1);
+//                    }
+//                }
+//                allchartData.add(chartData);
+//                catCount++;
             }
         }
 
@@ -630,5 +654,15 @@ public class EvaluationAnalysisRestController {
         }
         return new ResponseEntity<>(tableData,HttpStatus.OK);
     }
-
+    public List<List<ViewEvaluationStaticalReportDTO.Info>> GetSubList(List<ViewEvaluationStaticalReportDTO.Info> list, final int splitCount) {
+        List<List<ViewEvaluationStaticalReportDTO.Info>> parts = new ArrayList<>(splitCount);
+        for (int i = 0; i < splitCount; ++i) {
+            parts.add(new ArrayList<>());
+        }
+        final int N = list.size();
+        for (int i = 0; i < N; ++i) {
+            parts.get(i % splitCount).add(list.get(i));
+        }
+        return parts;
+    }
 }
