@@ -377,7 +377,7 @@ public class EvaluationAnalysisRestController {
                         for (int z=0 ; z<subV2.size();z++) {
                             ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
                             System.out.println("zaza"+info.getCourseTitleFa());
-                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder("زازا") + "/" + info.getTclassCode(), z+1 + "" ,
+                            chartData.add(new ChartData("زازا" , z+1 + "" ,
 //                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), z+1 + "" ,
                                     Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
                                     Double.parseDouble(minFerGrade.getValue())));
