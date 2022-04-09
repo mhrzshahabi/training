@@ -372,9 +372,7 @@ public class EvaluationAnalysisRestController {
                     int  totalPage = (list.size() / 10)+1;
                     List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
 
-//                    for (int m=0 ; m<subLists.size()-1;m++){
-                        int m=0;
-                        while (m<subLists.size()-1){
+                    for (int m=0 ; m<subLists.size()-1;m++){
                         List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
 
                         for (int z=0 ; z<subV2.size();z++) {
@@ -392,7 +390,6 @@ public class EvaluationAnalysisRestController {
                         allchartData.add(chartData);
                         chartData = new ArrayList<>();
                         catCount++;
-                        m++;
 
                     }
 
