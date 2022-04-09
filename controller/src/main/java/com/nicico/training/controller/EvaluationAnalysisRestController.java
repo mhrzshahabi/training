@@ -27,6 +27,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,7 @@ public class EvaluationAnalysisRestController {
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
     private final ICategoryService categoryService;
     private final IParameterService parameterService;
-
+    private static final DecimalFormat df = new DecimalFormat("0.00");
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
     public void printReactionEvaluation(HttpServletResponse response,
@@ -368,12 +369,12 @@ public class EvaluationAnalysisRestController {
                 int index = 1;
                 for (ViewEvaluationStaticalReportDTO.Info info : list) {
                     chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
-                            Double.parseDouble(info.getEvaluationReactionGrade()), catCount + ". واحد " + category.getTitleFa(),
+                            Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
                             Double.parseDouble(minFerGrade.getValue())));
 
                     index++;
                     if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-                        TableData tableData1 = new TableData(info.getEvaluationReactionGrade(),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
+                        TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
                         tableData.add(tableData1);
                     }
                 }
