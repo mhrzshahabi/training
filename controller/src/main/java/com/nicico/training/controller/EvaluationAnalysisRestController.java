@@ -387,7 +387,7 @@ public class EvaluationAnalysisRestController {
                             }
                         }
                         allchartData.add(chartData);
-                        chartData = new ArrayList<>();
+//                        chartData = new ArrayList<>();
                         catCount++;
 
                     }
