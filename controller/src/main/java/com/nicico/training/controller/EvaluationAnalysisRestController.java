@@ -43,6 +43,7 @@ public class EvaluationAnalysisRestController {
     private final ICategoryService categoryService;
     private final IParameterService parameterService;
     private static final DecimalFormat df = new DecimalFormat("0.00");
+
     @Loggable
     @PostMapping(value = {"/printReactionEvaluation"})
     public void printReactionEvaluation(HttpServletResponse response,
@@ -368,26 +369,9 @@ public class EvaluationAnalysisRestController {
                 List<ChartData> chartData = new ArrayList<>();
                 int index = 1;
                 if (list.size()>10){
-//                    for (ViewEvaluationStaticalReportDTO.Info info : list) {
-//                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
-//                                Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
-//                                Double.parseDouble(minFerGrade.getValue())));
-//
-//                        index++;
-//                        if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-//                            TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
-//                            tableData.add(tableData1);
-//                        }
-//                    }
-//                    allchartData.add(chartData);
-//                    catCount++;
-
-/////////////////////////////////////////////////////
-
-
                     int  totalPage = (list.size() / 10)+1;
                     List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
-                    for (int m=0 ; m<subLists.size();m++){
+                    for (int m=0 ; m<1;m++){
                         List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
 
                         for (int z=0 ; z<subV2.size();z++) {
@@ -408,6 +392,24 @@ public class EvaluationAnalysisRestController {
 
                     }
 
+
+
+
+                }else {
+                    for (int z=0 ; z<list.size();z++) {
+                        ViewEvaluationStaticalReportDTO.Info info=list.get(z);
+                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "" ,
+                                Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
+                                Double.parseDouble(minFerGrade.getValue())));
+
+                        index++;
+                        if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
+                            TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
+                            tableData.add(tableData1);
+                        }
+                    }
+                    allchartData.add(chartData);
+                    catCount++;
                 }
 
             }
