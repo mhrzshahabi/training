@@ -386,4 +386,42 @@ public class CourseDTO implements Serializable {
     public static class WithOutClassSpecRs {
         private SpecRs response;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("InfoForAudit")
+    public static class InfoForAudit extends CourseDTO {
+        private String createdBy;
+        private Date createdDate;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
+        private ETechnicalType eTechnicalType;
+        private Boolean hasGoal;
+        private Boolean hasSkill;
+        private Long revType;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("SpecAuditRs")
+    public static class SpecAuditRs {
+        private List<CourseDTO.InfoForAudit> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("CourseAuditSpecRs")
+    public static class CourseAuditSpecRs {
+        private SpecAuditRs response;
+    }
 }

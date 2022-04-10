@@ -13,8 +13,10 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.iservice.ICourseAuditService;
 import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.model.Course;
+import com.nicico.training.model.CourseAudit;
 import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
@@ -61,6 +63,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     private final IWorkGroupService workGroupService;
     private final CourseBeanMapper beanMapper;
     private final ISkillService skillService;
+    private final ICourseAuditService iCourseAuditService;
+    private final CourseBeanMapper courseBeanMapper;
 
     // ---------------------------------
     @Loggable
@@ -756,5 +760,29 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         iCourseService.updateDurationByCourseCode(code, theoryDuration);
         response.setStatus(200);
         return response;
+    }
+
+    /**
+     * returns audit infos for a course by course ID
+     * @param courseId
+     * @return
+     */
+    @Loggable
+    @GetMapping(value = "/audit/{courseId}")
+    public ResponseEntity<ISC<CourseDTO.InfoForAudit>> getCourseAuditData(@PathVariable Long courseId) {
+        try {
+            List<CourseAudit> courseAudits = iCourseAuditService.changeList(courseId);
+            List<CourseDTO.InfoForAudit> dtos = courseBeanMapper.toAuditDtoList(courseAudits);
+
+            SearchDTO.SearchRs<CourseDTO.InfoForAudit> searchRs = new SearchDTO.SearchRs<>();
+            searchRs.setList(dtos);
+            searchRs.setTotalCount((long) courseAudits.size());
+
+            ISC<CourseDTO.InfoForAudit> auditISC = ISC.convertToIscRs(searchRs, 0);
+            return new ResponseEntity<>(auditISC, HttpStatus.OK);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
+        }
     }
 }

@@ -539,4 +539,9 @@ public class MainFormController {
         return "evaluation/requests";
     }
 
+    @RequestMapping("/courseHistoryReport")
+    public String CourseHistoryReport() {
+        return "report/courseHistoryReport";
+    }
+
 }
