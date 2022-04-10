@@ -69,6 +69,7 @@ public class Course extends Auditable {
     private Category category;
 
     @Column(name = "category_id", insertable = false, updatable = false)
+    @NotAudited
     private Long categoryId;
 
     @ManyToOne
@@ -77,6 +78,7 @@ public class Course extends Auditable {
     private Subcategory subCategory;
 
     @Column(name = "subcategory_id", insertable = false, updatable = false)
+    @NotAudited
     private Long subCategoryId;
 
     @OneToMany(mappedBy = "course")
@@ -106,12 +108,15 @@ public class Course extends Auditable {
     private List<Course> preCourseList;
 
     @Column(name = "e_run_type")
+    @NotAudited
     private ERunType eRunType;
 
     @Column(name = "e_level_type")
+    @NotAudited
     private ELevelType eLevelType;
 
     @Column(name = "e_theo_type")
+    @NotAudited
     private ETheoType eTheoType;
 
     @Column(name = "e_technical_type")

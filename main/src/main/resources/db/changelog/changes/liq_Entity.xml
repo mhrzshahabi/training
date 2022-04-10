@@ -3467,13 +3467,9 @@
 
             <column name="c_acceptance_limit" type="VARCHAR2(255 CHAR)"/>
             <column name="c_behavioral_level" type="VARCHAR2(255 CHAR)"/>
-            <column name="category_id" type="NUMBER(19, 0)"/>
             <column name="c_code" type="VARCHAR2(255 CHAR)"/>
             <column name="c_description" type="VARCHAR2(255 CHAR)"/>
-            <column name="e_level_type" type="NUMBER(10, 0)"/>
-            <column name="e_run_type" type="NUMBER(10, 0)"/>
             <column name="e_technical_type" type="NUMBER(10, 0)"/>
-            <column name="e_theo_type" type="NUMBER(10, 0)"/>
             <column name="c_equal_course" type="VARCHAR2(255 CHAR)"/>
             <column name="c_evaluation" type="VARCHAR2(255 CHAR)"/>
             <column name="b_has_goal" type="NUMBER(1, 0)"/>
@@ -3485,7 +3481,6 @@
             <column name="c_pre_course" type="VARCHAR2(255 CHAR)"/>
             <column name="scoring_method" type="VARCHAR2(255 CHAR)"/>
             <column name="start_evaluation" type="NUMBER(10, 0)"/>
-            <column name="subcategory_id" type="NUMBER(19, 0)"/>
             <column name="n_theory_duration" type="FLOAT"/>
             <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
             <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>

@@ -57,21 +57,6 @@ public class CourseAudit implements Serializable {
     @Column(name = "c_behavioral_level")
     private String behavioralLevel;
 
-    @Column(name = "category_id")
-    private Long categoryId;
-
-    @Column(name = "subcategory_id")
-    private Long subCategoryId;
-
-    @Column(name = "e_run_type")
-    private ERunType eRunType;
-
-    @Column(name = "e_level_type")
-    private ELevelType eLevelType;
-
-    @Column(name = "e_theo_type")
-    private ETheoType eTheoType;
-
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
 
