@@ -14,6 +14,7 @@ import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
 import com.nicico.training.model.TClassAudit;
+import com.nicico.training.model.Tclass;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
@@ -38,12 +39,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import response.BaseResponse;
+import response.evaluation.dto.EvalAverageResult;
 import response.tclass.TclassCreateResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -72,6 +75,7 @@ public class TclassRestController {
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final TclassAuditMapper tclassAuditMapper;
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -608,13 +612,32 @@ public class TclassRestController {
 
         SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = tClassService.searchByTeachingHistory(request, teacherId);
 
+        if(response.getList()!= null && response.getList().size()>0){
+            response.getList().stream().forEach(teachingHistory -> {
+
+                EvalAverageResult evalAverageResult =tClassService .getEvaluationAverageResultToTeacher(teachingHistory.getId());
+                    String totalAverage =df.format(evalAverageResult.getTotalAverage());
+                    teachingHistory.setEvaluationGrade(Double.valueOf(totalAverage));
+                if(totalAverage.equals("0.00") )
+                    teachingHistory.setTeacherEvalGrade("ندارد");
+
+                else
+                    teachingHistory.setTeacherEvalGrade(totalAverage);
+
+
+
+            });
+
+        }
+
         final TclassDTO.TeachingHistorySpecRs specResponse = new TclassDTO.TeachingHistorySpecRs();
         final TclassDTO.TclassTeachingHistorySpecRs specRs = new TclassDTO.TclassTeachingHistorySpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
-
+        
+        
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);

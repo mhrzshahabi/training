@@ -25,6 +25,7 @@
     let oLoadAttachments_Teacher = null;
     var vm = isc.ValuesManager.create({});
 
+
     //----------------------------------------------------Rest Data Sources---------------------------------------------
     var RestDataSource_Teacher_JspSatisfaction = isc.TrDS.create({
         fields: [
@@ -275,6 +276,9 @@
             }
 
         ],
+        selectionUpdated: function (record) {
+           loadTeachingSubject();
+        },
         filterEditorSubmit: function () {
             ListGrid_Teacher_JspSatisfaction.invalidateCache();
         },
@@ -295,12 +299,13 @@
         tabs: [
 
             {
-                ID: "teachingSubjectTab",
-                name: "teachingSubjectTab",
-                title: "<spring:message code="teachingSubjects"/>",
-            }
+                ID: "internalTeachingHistory",
+                title: "سوابق تدریس ",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/internalTeachingSubject-tab"})
+            },
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
+
         }
     });
 
@@ -355,8 +360,19 @@
 
     //-------------------------------------------------Functions--------------------------------------------------------
     function ListGrid_satisfaction_refresh() {
-        ListGrid_Teacher_JspTeacher.invalidateCache();
-        ListGrid_Teacher_JspTeacher.filterByEditor();
+        ListGrid_Teacher_JspSatisfaction.invalidateCache();
+        ListGrid_Teacher_JspSatisfaction.filterByEditor();
         editTeacherMode = false;
     }
+   function loadTeachingSubject(){
+       let record =  ListGrid_Teacher_JspSatisfaction.getSelectedRecord();
+       if (record === null) {
+           TabSet_teachingSubject.disable();
+           return;
+       }else {
+           loadPage_InternalTeachingSubject(record.id);
+       }
+       TabSet_teachingSubject.enable();
+   }
+
     // </script>

@@ -33,6 +33,11 @@ function initialButtons() {
             autoFit: true,
             icon: "[SKIN]/actions/excel.png",
         });
+        isc.ClassFactory.defineClass("ToolStripButtonChart", "Button").addProperties({
+            baseStyle: "toolStripButton",
+            autoFit: true,
+            icon: "[SKIN]/actions/chart.png",
+        });
         isc.ClassFactory.defineClass("IButtonClose", "Button").addProperties({baseStyle: "toolStripButton"});
     }
 }

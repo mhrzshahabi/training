@@ -8,7 +8,8 @@ isc.loadSkin = function (theWindow) {
             remove: 'حذف',
             edit: 'ویرایش',
             refresh: 'بازخوانی اطلاعات',
-            excel: 'ارسال به Excel'
+            excel: 'ارسال به Excel',
+            chart: 'نمایش نمودار رضایت فراگیر'
         }
         isc.Page.setSkinDir("[ISOMORPHIC]/skins/Nicico/");
         var cssLoaded = isc.Page.loadStyleSheet("[SKIN]/skin_styles.css", theWindow, "isc.FontLoader.loadCustomFonts()");
@@ -221,6 +222,20 @@ isc.loadSkin = function (theWindow) {
             baseStyle: "toolStripButtonExcel",
             icon: "[SKIN]/actions/excel.png",
             title: actions_btn.excel,
+            autoFit: true,
+            iconSize: 15,
+            height: 17,
+            labelVPad: 0,
+            showTitle: false,
+            showRollOver: true,
+            showDown: true,
+            showDownIcon: true,
+            showSelectedIcon: true,
+        });
+        isc.ClassFactory.defineClass("ToolStripButtonChart", "Button").addProperties({
+            baseStyle: "toolStripButtonChart",
+            icon: "[SKIN]/actions/chart.png",
+            title: actions_btn.chart,
             autoFit: true,
             iconSize: 15,
             height: 17,

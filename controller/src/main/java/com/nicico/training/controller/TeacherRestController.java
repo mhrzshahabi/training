@@ -336,6 +336,9 @@ public class TeacherRestController {
                     Tclass lastClassByTeacher = sortedClasses.get(0);
                     EvalAverageResult evalAverageResult = tclassService.getEvaluationAverageResultToTeacher(lastClassByTeacher.getId());
                     String totalAverage =df.format(evalAverageResult.getTotalAverage());
+                    if(totalAverage.equals("0.00") )
+                        grid.setTeacherLastEvalAverageResult("ندارد");
+                    else
                     grid.setTeacherLastEvalAverageResult(totalAverage);
                 }
             });
