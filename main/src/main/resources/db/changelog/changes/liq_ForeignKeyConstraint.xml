@@ -1330,4 +1330,10 @@
         <addForeignKeyConstraint baseColumnNames="F_TYPE_ID" baseTableName="TBL_TEACHER_SPECIAL_SKILL" constraintName="FKTypeInTeacherSpecialSkill" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
         <addForeignKeyConstraint baseColumnNames="F_LEVEL_ID" baseTableName="TBL_TEACHER_SPECIAL_SKILL" constraintName="FKLevelInTeacherSpecialSkill" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="nick (generated)" id="1638772362566-786">
+        <addForeignKeyConstraint baseColumnNames="REV" baseTableName="TBL_COURSE_AUD"
+                                 constraintName="FK_TBL_COURSE_AUD_REV" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
+                                 validate="true"/>
+    </changeSet>
 </databaseChangeLog>
