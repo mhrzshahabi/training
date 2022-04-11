@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="47a672ad-fd07-4af7-bba5-ee91803eb8a2">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+    <subDataset name="Dataset" uuid="16a05337-7570-4f5b-9dde-3b72bafb7c5b">
+        <property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+        <queryString>
+            <![CDATA[]]>
+        </queryString>
+    </subDataset>
+    <parameter name="LoggedInUser" class="com.jaspersoft.jasperserver.api.metadata.user.domain.client.UserImpl" isForPrompting="false">
+        <parameterDescription><![CDATA[Not usable in query input control, but is used as parameter to report]]></parameterDescription>
+        <defaultValueExpression><![CDATA[new com.jaspersoft.jasperserver.api.metadata.user.domain.client.UserImpl()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUsername" class="java.lang.String" isForPrompting="false">
+        <parameterDescription><![CDATA[Of logged in user]]></parameterDescription>
+        <defaultValueExpression><![CDATA["joeuser"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserFullName" class="java.lang.String" isForPrompting="false">
+        <parameterDescription><![CDATA[Of logged in user]]></parameterDescription>
+        <defaultValueExpression><![CDATA["Joe Smith"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserEmailAddress" class="java.lang.String" isForPrompting="false">
+        <parameterDescription><![CDATA[Of logged in user]]></parameterDescription>
+        <defaultValueExpression><![CDATA["joe@some.email"]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserEnabled" class="java.lang.Boolean" isForPrompting="false">
+        <parameterDescription><![CDATA[Is logged in user enabled?]]></parameterDescription>
+        <defaultValueExpression><![CDATA[Boolean.TRUE]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserExternallyDefined" class="java.lang.Boolean" isForPrompting="false">
+        <parameterDescription><![CDATA[Is logged in user externally defined? ie. authenticated externally]]></parameterDescription>
+        <defaultValueExpression><![CDATA[Boolean.FALSE]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserTenantId" class="java.lang.String" isForPrompting="false">
+        <parameterDescription><![CDATA[Of logged in user. Only relevant in Pro/Enterprise.]]></parameterDescription>
+        <defaultValueExpression><![CDATA[]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserRoles" class="java.util.Collection" nestedType="java.lang.String" isForPrompting="false">
+        <parameterDescription><![CDATA[Current set of roles of logged in user. Useful for $X parameter]]></parameterDescription>
+        <defaultValueExpression><![CDATA[new ArrayList()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserAttributes" class="java.util.Map" nestedType="java.lang.String" isForPrompting="false">
+        <parameterDescription><![CDATA[Not usable in query input control, but is used as parameter to report. Empty map if no attributes]]></parameterDescription>
+        <defaultValueExpression><![CDATA[new HashMap()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserAttributeNames" class="java.util.Collection" nestedType="java.lang.String" isForPrompting="false">
+        <parameterDescription><![CDATA[User profile attribute names. Useful for $X parameters. Empty collection if no attributes]]></parameterDescription>
+        <defaultValueExpression><![CDATA[new ArrayList()]]></defaultValueExpression>
+    </parameter>
+    <parameter name="LoggedInUserAttributeValues" class="java.util.List">
+        <parameterDescription><![CDATA[]]></parameterDescription>
+    </parameter>
+    <queryString>
+        <![CDATA[]]>
+    </queryString>
+    <field name="xValue" class="java.lang.String"/>
+    <field name="yValue" class="java.lang.String"/>
+    <field name="StudentSaticfaction" class="java.lang.String"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="79" splitType="Stretch"/>
+    </title>
+    <pageHeader>
+        <band height="35" splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band height="400" splitType="Stretch">
+            <xyLineChart>
+                <chart evaluationTime="Report">
+                    <reportElement x="-20" y="-120" width="590" height="514" uuid="6cb28e29-ed34-4688-9578-360510bbfc22"/>
+                    <chartTitle/>
+                    <chartSubtitle/>
+                    <chartLegend/>
+                </chart>
+                <xyDataset>
+                    <dataset resetType="Report">
+                        <datasetRun subDataset="Dataset" uuid="02bd1d29-4ad2-43f6-a343-09c1a74676b5">
+                            <dataSourceExpression><![CDATA[net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{CHART_DATA})]]></dataSourceExpression>
+                        </datasetRun>
+                    </dataset>
+                    <xySeries>
+                        <seriesExpression><![CDATA["StudenhtStatisfaction"]]></seriesExpression>
+                        <xValueExpression><![CDATA[$F{xValue}]]></xValueExpression>
+                        <yValueExpression><![CDATA[$F{yValue}]]></yValueExpression>
+                    </xySeries>
+                </xyDataset>
+                <linePlot>
+                    <plot/>
+                    <categoryAxisFormat>
+                        <axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+                    </categoryAxisFormat>
+                    <valueAxisFormat>
+                        <axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+                    </valueAxisFormat>
+                </linePlot>
+            </xyLineChart>
+        </band>
+    </columnHeader>
+    <columnFooter>
+        <band height="45" splitType="Stretch"/>
+    </columnFooter>
+    <pageFooter>
+        <band height="54" splitType="Stretch"/>
+    </pageFooter>
+    <summary>
+        <band height="42" splitType="Stretch"/>
+    </summary>
+</jasperReport>

@@ -45,6 +45,8 @@ public class TeacherDTO {
         private SubcategoryDTO.SubCategoryInfoTuple majorSubCategory;
         private Integer version;
         private List<Long> roles;
+        private String teacherClassCount;
+        private String teacherLastEvalAverageResult;
 
         public String getFullName() {
             return personality.getFirstNameFa() + " " + personality.getLastNameFa();
@@ -107,6 +109,9 @@ public class TeacherDTO {
         private Set<SubcategoryDTO.Info> subCategories;
         private Integer version;
         private String lastClass;
+        private String teacherClassCount;
+        private String teacherLastEvalAverageResult;
+
 
         public String getFullName() {
             return personality.getFirstNameFa() + " " + personality.getLastNameFa();
