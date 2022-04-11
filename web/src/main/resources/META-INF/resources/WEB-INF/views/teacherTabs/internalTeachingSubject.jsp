@@ -118,7 +118,7 @@
                     average = total / averageCount;
                     averageEvalGradeLabel.setContents("میانگین نمره فراگیران به استاد : " + (Math.round(average * 100) / 100).toFixed(2));
                 }else{
-                    averageEvalGradeLabel.setContents("میانگین نمره فراگیران به استاد : - ");
+                    averageEvalGradeLabel.setContents("میانگین نمره فراگیران به استاد : ثبت نشده ");
                 }
 
             }
