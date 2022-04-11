@@ -20,6 +20,7 @@ import com.nicico.training.repository.MessageDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -74,5 +75,11 @@ public class MessageService implements IMessageService {
         }
 
         return result;
+    }
+
+    @Override
+    @Transactional
+    public void delete(Long id) {
+        messageDAO.deleteById(id);
     }
 }

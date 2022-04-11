@@ -371,7 +371,7 @@ public class EvaluationAnalysisRestController {
                 if (list.size()>10){
                     int  totalPage = (list.size() / 10)+1;
                     List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
-
+//zaza
                     for (int m=0 ; m<subLists.size()-1;m++){
                         List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
 
@@ -440,8 +440,6 @@ public class EvaluationAnalysisRestController {
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(tableData) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-        //to add pie chart change file to reactionEvaluationReport.jasper
-        //zaza
         reportUtil.export("/reports/reactionEvaluationReport.jasper", params, jsonDataSource, response);
     }
 

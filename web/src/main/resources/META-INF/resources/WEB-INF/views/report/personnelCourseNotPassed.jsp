@@ -426,7 +426,143 @@
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
+            },{
+                name: "courseFilter",
+                title: "فیلتر دوره",
+                valueField: "value",
+                displayField: "value",
+                valueMap: ["تاکنون در هیچ دوره ای شرکت نداشته اند", "دوره های نگذرانده بر اساس نیازسنجی شغلی داشته باشد", "از تاریخ:------ تا تاریخ:------- در هیچ دوره ای شرکت نداشته است" ],
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").setValue("")
+                            DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").setValue("")
+                            DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").setDisabled(true);
+                            DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").setDisabled(true);
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
+                changed: function (form, item, value) {
+                    if (value!==undefined && value==="از تاریخ:------ تا تاریخ:------- در هیچ دوره ای شرکت نداشته است"){
+                        DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").setDisabled(false);
+                        DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").setDisabled(false);
+                      }else {
+                        DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").setValue("")
+                        DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").setValue("")
+                          DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").setDisabled(true);
+                        DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").setDisabled(true);
+                    }
+                }
+            },{
+
+                name: "startDate",
+                disabled:true,
+                // height: 35,
+                //   titleColSpan: 1,
+                //   colSpan: 2,
+                titleAlign:"center",
+                title: "از تاریخ",
+                ID: "startDate_jspReport_not_pass",
+                type: 'text',
+                required: false,
+                hint: "YYYY/MM/DD",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                // focus: function () {
+                //     displayDatePicker('startDate_jspReport', this, 'ymd', '/');
+                // },
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('startDate_jspReport_not_pass', this, 'ymd', '/');
+                    }
+                }],
+
+
+                blur: function () {
+                    var dateCheck;
+                    dateCheck = checkDate(DynamicForm_Report.getValue("startDate"));
+                    if (dateCheck == false)
+                        DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    endDateCheckReport = false;
+                    if (dateCheck == true)
+                        DynamicForm_Report.clearFieldErrors("startDate", true);
+                    endDateCheckReport = true;
+                    var endDate = DynamicForm_Report.getValue("endDate");
+                    var startDate = DynamicForm_Report.getValue("startDate");
+                    if (endDate != undefined && startDate > endDate) {
+                        DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                        DynamicForm_Report.getItem("endDate").setValue("");
+                        endDateCheckReport = false;
+                    }
+                }
             },
+
+            {
+                name: "endDate",
+                // height: 35,
+                // titleColSpan: 1,
+                title: "تا تاریخ",
+                disabled:true,
+                titleAlign:"center",
+                ID: "endDate_jspReport_not_pass",
+                required: false,
+                hint: "YYYY/MM/DD",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                textAlign: "center",
+                // colSpan: 2,
+                // focus: function () {
+                //     displayDatePicker('endDate_jspReport', this, 'ymd', '/');
+                // },
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate_jspReport_not_pass', this, 'ymd', '/');
+
+                    }
+                }],
+                blur: function () {
+
+                    var dateCheck;
+                    dateCheck = checkDate(DynamicForm_Report.getValue("endDate"));
+                    var endDate = DynamicForm_Report.getValue("endDate");
+                    var startDate = DynamicForm_Report.getValue("startDate");
+                    if (dateCheck == false) {
+                        DynamicForm_Report.clearFieldErrors("endDate", true);
+                        DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDateCheckReport = false;
+                    }
+                    if (dateCheck == true) {
+                        if (startDate == undefined)
+                            DynamicForm_Report.clearFieldErrors("endDate", true);
+                        DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDateCheckReport = false;
+                        if (startDate != undefined && startDate > endDate) {
+                            DynamicForm_Report.clearFieldErrors("endDate", true);
+                            DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                            endDateCheckReport = false;
+                        }
+                        if (startDate != undefined && startDate < endDate) {
+                            DynamicForm_Report.clearFieldErrors("endDate", true);
+                            DynamicForm_Report.clearFieldErrors("startDate", true);
+                            endDateCheckReport = true;
+                        }
+                    }
+                }
+
+            }
         ],
     });
 
@@ -713,6 +849,12 @@
             if(DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getValuesAsAdvancedCriteria()==null) {
                 createDialog("info","فیلتری انتخاب نشده است.");
                 return;
+            }else {
+                if (DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()!==undefined &&  DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getValuesAsAdvancedCriteria().criteria.size()===1){
+                    createDialog("info","در صورت فیلتر دوره فیلتر دیگری نیز انتخاب کنید");
+                    return;
+                }
+
             }
             DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.validate();
             if (DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.hasErrors())
@@ -784,6 +926,30 @@
                     else if (data_values.criteria[i].fieldName == "courseCategory") {
                         data_values.criteria[i].fieldName = "categoryId";
                         data_values.criteria[i].operator = "inSet";
+                    }
+                    else if (data_values.criteria[i].fieldName == "courseFilter") {
+                        if (DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()!==undefined
+                        && DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()==="تاکنون در هیچ دوره ای شرکت نداشته اند"
+                        ){
+                            data_values.criteria[i].fieldName = "isStudent";
+                            data_values.criteria[i].operator = "equals";
+                            data_values.criteria[i].value = false;
+                        }
+                        if (DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()!==undefined
+                            && DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()==="دوره های نگذرانده بر اساس نیازسنجی شغلی داشته باشد"
+                        ){
+                            data_values.criteria[i].fieldName = "hasNa";
+                            data_values.criteria[i].operator = "equals";
+                            data_values.criteria[i].value = true;
+                        }
+                        if (DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()!==undefined
+                            && DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()==="از تاریخ:------ تا تاریخ:------- در هیچ دوره ای شرکت نداشته است"
+                        ){
+                            data_values.criteria[i].fieldName = "isStudent";
+                            data_values.criteria[i].operator = "equals";
+                            data_values.criteria[i].value = false;
+                        }
+
                     }
                 }
 

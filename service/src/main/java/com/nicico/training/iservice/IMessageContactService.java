@@ -18,4 +18,6 @@ public interface IMessageContactService {
     List<MessageContactDTO.AllMessagesForSend> getAllMessageContactForSend();
 
     MessageContactDTO.Info create(MessageContactDTO.Create model);
+
+    void delete(Long id);
 }
