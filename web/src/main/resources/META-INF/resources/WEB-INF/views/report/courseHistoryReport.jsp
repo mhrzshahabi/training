@@ -3,8 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 
-//
-<script>
+// <script>
     //----------------------------------------------------Variables-----------------------------------------------------
     let record = ListGrid_Course.getSelectedRecord();
 
