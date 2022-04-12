@@ -95,12 +95,34 @@
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: false,
+        autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
+        dataArrived: function () {
+            this.Super("dataArrived", arguments);
+            let localData = this.data.localData;
+
+            let total = 0;
+            let average = 0;
+            let averageCount = 0;
+            if (localData.length) {
+                for (let i = 0; i < localData.length; i++) {
+                    total += localData[i].evaluationGrade;
+                    if (localData[i].evaluationGrade !== 0)
+                        averageCount += 1
+                }
+                if (averageCount !== 0) {
+                    average = total / averageCount;
+                    averageEvalGradeLabel.setContents("میانگین نمره فراگیران به استاد : " + (Math.round(average * 100) / 100).toFixed(2));
+                }else{
+                    averageEvalGradeLabel.setContents("میانگین نمره فراگیران به استاد : ثبت نشده ");
+                }
+
+            }
+        },
     });
 
     VLayout_Body_JspInternalTeachingSubject = isc.TrVLayout.create({
@@ -128,27 +150,11 @@
 
 
     function loadPage_InternalTeachingSubject(id) {
+
         teacherIdInternalTeachingSubject = id;
         RestDataSource_JspInternalTeachingSubject.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingSubject;
-        ListGrid_JspInternalTeachingSubject.fetchData(null, function (dsResponse, data, dsRequest) {
-            averageEvalGradeLabel.setContents(  "میانگین نمره فراگیران به استاد : " + "-");
-            let total=0;
-            let average=0;
-            let averageCount=0;
-            let response = JSON.parse(dsResponse.httpResponseText).response.data;
-            if (response.length) {
-               for (var i=0;i<response.length;i++){
-                   total += response[i].evaluationGrade;
-                  if(response[i].evaluationGrade!==0)
-                    averageCount += 1
-                }
-               if(averageCount!==0)
-                average=total / averageCount;
-                averageEvalGradeLabel.setContents("میانگین نمره فراگیران به استاد : " + (Math.round(average * 100) / 100).toFixed(2));
 
-            }
-        });
-        ListGrid_InternalTeachingSubject_refresh();
+         ListGrid_InternalTeachingSubject_refresh();
     }
 
     function clear_InternalTeachingSubject() {
