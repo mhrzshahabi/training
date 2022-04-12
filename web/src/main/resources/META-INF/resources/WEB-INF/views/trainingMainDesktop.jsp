@@ -1284,6 +1284,7 @@
     const viewPostGradeGroupUrl = rootUrl + "/view-post-grade-group";
     const viewTrainingPostUrl = rootUrl + "/view-training-post";
     const viewCoursesEvaluationReportUrl = rootUrl + "/view_courses_evaluation_report";
+    const viewCoursesEvaluationStatisticalReportUrl = rootUrl + "/view_courses_evaluation_statistical_report";
     const viewReactionEvaluationFormulaReportUrl = rootUrl + "/view_reaction_evaluation_formula_report";
     const viewReactionEvaluationCommentUrl = rootUrl + "/evaluation/comments";
     const viewClassCostReportUrl = rootUrl + "/view-class-cost";

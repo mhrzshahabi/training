@@ -2179,4 +2179,59 @@ public class TclassService implements ITclassService {
         tclassDAO.updateReleaseDate(classIds, date);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Map<String, Object> getEvaluationStatisticalReport(Long classId) {
+
+        boolean hasReactionEval = false;
+        boolean hasLearningEval = false;
+        boolean hasBehavioralEval = false;
+        boolean effective = false;
+        boolean inEffective = false;
+        Map<String, Object> result = new HashMap<>();
+
+        Tclass tclass = getTClass(classId);
+        Set<ClassStudent> classStudents = tclass.getClassStudents();
+
+        Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+        if (reactionEvaluationResult.get("answeredStudentsNum") != 0.0)
+            hasReactionEval = true;
+
+        for (ClassStudent classStudent : classStudents) {
+            List<Evaluation> evaluations = evaluationDAO.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeIdAndEvaluatedIdAndEvaluatedTypeIdAndStatus(
+                    classId,
+                    156L,
+                    230L,
+                    classStudent.getId(),
+                    188L,
+                    true);
+            if (evaluations.size() != 0) {
+                hasBehavioralEval = true;
+                break;
+            }
+        }
+
+        for (ClassStudent classStudent : classStudents) {
+            if (classStudent.getPreTestScore() != null) {
+                hasLearningEval = true;
+                break;
+            }
+        }
+
+        List<EvaluationAnalysis> evaluationAnalysisList = evaluationAnalysisDAO.findAllBytClassId(classId);
+        if (evaluationAnalysisList.size() != 0 && evaluationAnalysisList.get(0).getEffectivenessPass() != null && evaluationAnalysisList.get(0).getEffectivenessPass().equals(true))
+            effective = true;
+        else
+            inEffective = true;
+
+        result.put("hasReactionEval", hasReactionEval);
+        result.put("hasLearningEval", hasLearningEval);
+        result.put("hasBehavioralEval", hasBehavioralEval);
+        result.put("effective", effective);
+        result.put("inEffective", inEffective);
+        result.put("hasResultEval", false);
+
+        return result;
+    }
+
 }

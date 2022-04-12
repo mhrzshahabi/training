@@ -21,16 +21,8 @@
     //---------------------------------------------------- REST DataSources--------------------------------------------------------//
 
     RestDataSource_CESR = isc.TrDS.create({
-        fields: [
-            {name: "totalClasses"},
-            {name: "numberOfReaction"},
-            {name: "numberOfLearning"},
-            {name: "numberOfBehavioral"},
-            {name: "numberOfResult"},
-            {name: "numberOfEffective"},
-            {name: "numberOfNonEffective"}
-        ],
-        fetchDataURL: needsAssessmentsPerformedUrl + "/iscList?_endRow=10000"
+        fields: [],
+        fetchDataURL: viewCoursesEvaluationStatisticalReportUrl + "/iscList?_endRow=10000"
     });
     RestDataSource_Class_CESR = isc.TrDS.create({
         fields: [
@@ -78,7 +70,6 @@
 
     ToolStripButton_Excel_CESR = isc.ToolStripButtonExcel.create({
         click: function () {
-            makeExcelOutput();
         }
     });
     ToolStripButton_Refresh_CESR = isc.ToolStripButtonRefresh.create({
@@ -96,8 +87,8 @@
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Refresh_CESR,
-                        ToolStripButton_Excel_CESR
+                        // ToolStripButton_Refresh_CESR,
+                        // ToolStripButton_Excel_CESR
                     ]
                 })
             ]
@@ -232,15 +223,15 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
-                    if(value == undefined || value ==null){
+                    if(value === undefined || value == null) {
                         form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
                         form.clearFieldErrors("startDate1", true);
                         startDateCheck_Order_RER = true;
                         startDate1Check_RER = true;
                         return;
                     }
-                    var dateCheck;
-                    var endDate = form.getValue("startDate2");
+                    let dateCheck;
+                    let endDate = form.getValue("startDate2");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
                         startDate1Check_RER = false;
@@ -272,26 +263,26 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_CESR', this, 'ymd', '/');
+                        displayDatePicker('startDate2_CESR', this, 'ymd', '/', 'right');
                     }
                 }],
                 editorExit: function (form, item, value) {
-                    if(value == undefined || value ==null){
+                    if(value === undefined || value === null) {
                         form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
                         form.clearFieldErrors("startDate2", true);
                         startDateCheck_Order_RER = true;
                         startDate2Check_RER = true;
                         return;
                     }
-                    var dateCheck;
+                    let dateCheck;
                     dateCheck = checkDate(value);
-                    var startDate = form.getValue("startDate1");
+                    let startDate = form.getValue("startDate1");
                     if (dateCheck === false) {
                         startDate2Check_RER = false;
                         startDateCheck_Order_RER = true;
                         form.clearFieldErrors("startDate2", true);
                         form.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
-                    } else if (startDate != undefined && value < startDate) {
+                    } else if (startDate !== undefined && value < startDate) {
                         form.clearFieldErrors("startDate2", true);
                         form.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
                         startDate2Check_RER = true;
@@ -320,7 +311,7 @@
                 },
                 changed: function () {
                     isCriteriaCategoriesChanged_CESR = true;
-                    var subCategoryField = DynamicForm_CESR.getField("courseSubCategory");
+                    let subCategoryField = DynamicForm_CESR.getField("courseSubCategory");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -360,7 +351,7 @@
                 focus: function () {
                     if (isCriteriaCategoriesChanged_CESR) {
                         isCriteriaCategoriesChanged_CESR = false;
-                        var ids = DynamicForm_CESR.getField("courseCategory").getValue();
+                        let ids = DynamicForm_CESR.getField("courseCategory").getValue();
                         if (ids === []) {
                             RestDataSource_SubCategory_CESR.implicitCriteria = null;
                         } else {
@@ -375,15 +366,15 @@
                 }
             },
             {
-                name: "tclassYear",
+                name: "classYear",
                 title: "سال کاری",
                 type: "SelectItem",
-                required: true,
                 optionDataSource: RestDataSource_Year_CESR,
                 valueField: "year",
                 displayField: "year",
                 filterFields: ["year"],
                 filterLocally: true,
+                allowEmptyValue: true,
                 changed: function (form, item, value) {
 
                     form.getField("termId").clearValue();
@@ -419,12 +410,12 @@
                                     icon: "[SKIN]/actions/approve.png",
                                     title: "انتخاب همه",
                                     click: function () {
-                                        var item = DynamicForm_CESR.getField("termId"),
+                                        let item = DynamicForm_CESR.getField("termId"),
                                             fullData = item.pickList.data,
                                             cache = fullData.localData,
                                             values = [];
 
-                                        for (var i = 0; i < cache.length; i++) {
+                                        for (let i = 0; i < cache.length; i++) {
                                             values[i] = cache[i].id;
                                         }
                                         item.setValue(values);
@@ -436,7 +427,7 @@
                                     icon: "[SKIN]/actions/close.png",
                                     title: "حذف همه",
                                     click: function () {
-                                        var item = DynamicForm_CESR.getField("termId");
+                                        let item = DynamicForm_CESR.getField("termId");
                                         item.setValue([]);
                                         item.pickList.hide();
                                     }
@@ -472,66 +463,11 @@
         title: "نمایش گزارش",
         width: 300,
         click: function () {
-
             DynamicForm_CESR.validate();
             if (DynamicForm_CESR.hasErrors())
                 return;
+            ListGrid_CESR.setData([]);
             Reporting_CESR();
-
-            // complex = [];
-            // assistance = [];
-            // affairs = [];
-            // section = [];
-            // unit = [];
-            //
-            // if (organSegmentFilter_CESR.getCriteria() !== undefined) {
-            //
-            //     reportCriteria_CESR = organSegmentFilter_CESR.getCriteria();
-            //     DynamicForm_CESR.validate();
-            //     if (DynamicForm_CESR.hasErrors())
-            //         return;
-            //
-            //     for (let i = 0; i < reportCriteria_CESR.criteria.size(); i++) {
-            //
-            //         if (reportCriteria_CESR.criteria[i].fieldName === "complexTitle") {
-            //             reportCriteria_CESR.criteria[i].fieldName = "mojtameTitle";
-            //             reportCriteria_CESR.criteria[i].operator = "inSet";
-            //             complex.add(reportCriteria_CESR.criteria[i].value);
-            //         } else if (reportCriteria_CESR.criteria[i].fieldName === "assistant") {
-            //             reportCriteria_CESR.criteria[i].fieldName = "assistance";
-            //             reportCriteria_CESR.criteria[i].operator = "inSet";
-            //             assistance.add(reportCriteria_CESR.criteria[i].value);
-            //         } else if (reportCriteria_CESR.criteria[i].fieldName === "affairs") {
-            //             reportCriteria_CESR.criteria[i].fieldName = "affairs";
-            //             reportCriteria_CESR.criteria[i].operator = "inSet";
-            //             affairs.add(reportCriteria_CESR.criteria[i].value);
-            //         } else if (reportCriteria_CESR.criteria[i].fieldName === "section") {
-            //             reportCriteria_CESR.criteria[i].fieldName = "section";
-            //             reportCriteria_CESR.criteria[i].operator = "inSet";
-            //             section.add(reportCriteria_CESR.criteria[i].value);
-            //         } else if (reportCriteria_CESR.criteria[i].fieldName === "unit") {
-            //             reportCriteria_CESR.criteria[i].fieldName = "unit";
-            //             reportCriteria_CESR.criteria[i].operator = "inSet";
-            //             unit.add(reportCriteria_CESR.criteria[i].value);
-            //         }
-            //     }
-            //
-            //     data_values = DynamicForm_CESR.getValuesAsAdvancedCriteria();
-            //     ListGrid_CESR.invalidateCache();
-            //     ListGrid_CESR.fetchData(reportCriteria_CESR);
-            //
-            // } else {
-            //
-            //     reportCriteria_CESR = {
-            //         "operator": "and",
-            //         "_constructor": "AdvancedCriteria",
-            //         "criteria": []
-            //     };
-            //     data_values = DynamicForm_CESR.getValuesAsAdvancedCriteria();
-            //     ListGrid_CESR.invalidateCache();
-            //     ListGrid_CESR.fetchData(reportCriteria_CESR);
-            // }
-
         }
     });
     IButton_Clear_CESR = isc.IButtonSave.create({
@@ -563,7 +499,6 @@
         filterOnKeypress: false,
         showFilterEditor: false,
         gridComponents: ["filterEditor", "header", "body"],
-        dataSource: RestDataSource_CESR,
         fields: [
             {name: "totalClasses", title: "تعداد کل کلاسها"},
             {name: "numberOfReaction", title: "تعداد کلاس واکنشی"},
@@ -571,7 +506,7 @@
             {name: "numberOfBehavioral", title: "تعداد کلاس رفتاری"},
             {name: "numberOfResult", title: "تعداد کلاس نتایج"},
             {name: "numberOfEffective", title: "تعداد کلاس اثربخش"},
-            {name: "numberOfNonEffective", title: "تعداد کلاس غیر اثربخش"}
+            {name: "numberOfInEffective", title: "تعداد کلاس غیر اثربخش"}
         ]
     });
 
@@ -590,49 +525,51 @@
 
     //---------------------------------------------------- Functions --------------------------------------------------------------//
 
-    function gregorianDate(date) {
-        let dates = date.split("/");
-        return JalaliDate.jalaliToGregorian(dates[0],dates[1],dates[2]).join("-");
-    }
-
     function Reporting_CESR() {
 
         data_values_CESR = null;
         data_values_CESR = DynamicForm_CESR.getValuesAsAdvancedCriteria();
-        // let removedObjects = [];
-        for (let i = 0; i < data_values_CESR.criteria.size(); i++) {
 
-            if (data_values_CESR.criteria[i].fieldName === "tclassCode") {
-                let codesString = data_values_CESR.criteria[i].value;
-                let codesArray;
-                codesArray = codesString.split(",");
-                for (let j = 0; j < codesArray.length; j++) {
-                    if (codesArray[j] === "" || codesArray[j] === " ") {
-                        codesArray.remove(codesArray[j]);
+        if (data_values_CESR != null) {
+            for (let i = 0; i < data_values_CESR.criteria.size(); i++) {
+
+                if (data_values_CESR.criteria[i].fieldName === "tclassCode") {
+                    data_values_CESR.criteria[i].fieldName = "classCode";
+                    let codesString = data_values_CESR.criteria[i].value;
+                    let codesArray;
+                    codesArray = codesString.split(",");
+                    for (let j = 0; j < codesArray.length; j++) {
+                        if (codesArray[j] === "" || codesArray[j] === " ") {
+                            codesArray.remove(codesArray[j]);
+                        }
                     }
+                    data_values_CESR.criteria[i].operator = "equals";
+                    data_values_CESR.criteria[i].value = codesArray;
                 }
-                data_values_CESR.criteria[i].operator = "equals";
-                data_values_CESR.criteria[i].value = codesArray;
+                else if (data_values_CESR.criteria[i].fieldName === "startDate1") {
+                    data_values_CESR.criteria[i].fieldName = "classStartDate";
+                    data_values_CESR.criteria[i].operator = "greaterThan";
+                }
+                else if (data_values_CESR.criteria[i].fieldName === "startDate2") {
+                    data_values_CESR.criteria[i].fieldName = "classStartDate";
+                    data_values_CESR.criteria[i].operator = "lessThan";
+                }
+                else if(data_values_CESR.criteria[i].fieldName === "courseCategory") {
+                    data_values_CESR.criteria[i].fieldName = "categoryId";
+                    data_values_CESR.criteria[i].operator = "equals";
+                }
+                else if(data_values_CESR.criteria[i].fieldName === "courseSubCategory"){
+                    data_values_CESR.criteria[i].fieldName = "subCategoryId";
+                    data_values_CESR.criteria[i].operator = "equals";
+                }
             }
-            else if (data_values_CESR.criteria[i].fieldName === "startDate1") {
-                data_values_CESR.criteria[i].fieldName = "tclassStartDate";
-                data_values_CESR.criteria[i].operator = "greaterThan";
-            }
-            else if (data_values_CESR.criteria[i].fieldName === "startDate2") {
-                data_values_CESR.criteria[i].fieldName = "tclassStartDate";
-                data_values_CESR.criteria[i].operator = "lessThan";
-            }
-            else if(data_values_CESR.criteria[i].fieldName === "courseCategory") {
-                data_values_CESR.criteria[i].operator = "inSet";
-            }
-            else if(data_values_CESR.criteria[i].fieldName === "courseSubCategory"){
-                data_values_CESR.criteria[i].operator = "inSet";
-            }
-            // else if(data_values_CESR.criteria[i].fieldName === "tclassTeachingType" && data_values_CESR.criteria[i].value === "همه"){
-            //     removedObjects.add(data_values_CESR.criteria[i]);
-            // }
+        } else {
+            data_values_CESR = {
+                operator: "and",
+                _constructor: "AdvancedCriteria",
+                criteria: []
+            };
         }
-        // data_values_CESR.criteria.removeList(removedObjects);
 
         if (organSegmentFilter_CESR.getCriteria() !== undefined) {
 
@@ -641,46 +578,38 @@
 
                 if (reportCriteria_CESR.criteria[i].fieldName === "complexTitle") {
 
-                    reportCriteria_CESR.criteria[i].fieldName = "plannerComplex";
-                    reportCriteria_CESR.criteria[i].operator = "inSet";
+                    reportCriteria_CESR.criteria[i].fieldName = "studentComplex";
+                    reportCriteria_CESR.criteria[i].operator = "iContains";
                     data_values_CESR.criteria.add(reportCriteria_CESR.criteria[i]);
 
                 } else if (reportCriteria_CESR.criteria[i].fieldName === "assistant") {
 
-                    reportCriteria_CESR.criteria[i].fieldName = "plannerAssistant";
-                    reportCriteria_CESR.criteria[i].operator = "inSet";
+                    reportCriteria_CESR.criteria[i].fieldName = "studentAssistant";
+                    reportCriteria_CESR.criteria[i].operator = "iContains";
                     data_values_CESR.criteria.add(reportCriteria_CESR.criteria[i]);
 
                 } else if (reportCriteria_CESR.criteria[i].fieldName === "affairs") {
 
-                    reportCriteria_CESR.criteria[i].fieldName = "plannerAffairs";
-                    reportCriteria_CESR.criteria[i].operator = "inSet";
+                    reportCriteria_CESR.criteria[i].fieldName = "studentAffairs";
+                    reportCriteria_CESR.criteria[i].operator = "iContains";
                     data_values_CESR.criteria.add(reportCriteria_CESR.criteria[i]);
 
-                } else if (reportCriteria_CESR.criteria[i].fieldName === "section") {
-
-                    reportCriteria_CESR.criteria[i].fieldName = "plannerSection";
-                    reportCriteria_CESR.criteria[i].operator = "inSet";
-                    data_values_CESR.criteria.add(reportCriteria_CESR.criteria[i]);
-
-                } else if (reportCriteria_CESR.criteria[i].fieldName === "unit") {
-
-                    reportCriteria_CESR.criteria[i].fieldName = "plannerUnit";
-                    reportCriteria_CESR.criteria[i].operator = "inSet";
-                    data_values_CESR.criteria.add(reportCriteria_CESR.criteria[i]);
                 }
             }
         }
-        ListGrid_CESR.invalidateCache();
-        ListGrid_CESR.fetchData(data_values_CESR);
-    }
 
-    function makeExcelOutput() {
-
-        if (ListGrid_CESR.getOriginalData().localData === undefined)
-            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
-        else
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_CESR, needsAssessmentsPerformedUrl + "/iscList?_endRow=10000", 0, null, '',"گزارش نیازسنجی های انجام شده"  , reportCriteria_CESR, null);
+        if (data_values_CESR.criteria.length === 0) {
+            createDialog("info", "فیلتری انتخاب نشده است");
+        } else {
+            wait.show();
+            RestDataSource_CESR.fetchData(data_values_CESR, function (dsResponse, data, dsRequest) {
+                wait.close();
+                if (data.length)
+                    ListGrid_CESR.setData(data);
+                else
+                    ListGrid_CESR.setData([]);
+            });
+        }
     }
 
     //</script>
