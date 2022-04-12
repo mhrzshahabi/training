@@ -35,6 +35,11 @@
             {name: "courseTitleFa", title: "<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: personnelCourseNotPassedReportUrl
+        // transformResponse: function (dsResponse, dsRequest, data) {
+        //     debugger
+        //     // ListGrid_JspCoursesNotPassedPersonnel
+        //     return this.Super("transformResponse", arguments);
+        // }
     });
 
     PersonnelDS_PTSR_DF = isc.TrDS.create({
@@ -490,17 +495,17 @@
 
 
                 blur: function () {
-                    var dateCheck;
+                    let dateCheck;
                     dateCheck = checkDate(DynamicForm_Report.getValue("startDate"));
                     if (dateCheck == false)
                         DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                    endDateCheckReport = false;
-                    if (dateCheck == true)
+                    let endDateCheckReport = false;
+                    if (dateCheck === true)
                         DynamicForm_Report.clearFieldErrors("startDate", true);
                     endDateCheckReport = true;
-                    var endDate = DynamicForm_Report.getValue("endDate");
-                    var startDate = DynamicForm_Report.getValue("startDate");
-                    if (endDate != undefined && startDate > endDate) {
+                    let endDate = DynamicForm_Report.getValue("endDate");
+                    let startDate = DynamicForm_Report.getValue("startDate");
+                    if (endDate !== undefined && startDate > endDate) {
                         DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                         DynamicForm_Report.getItem("endDate").setValue("");
                         endDateCheckReport = false;
@@ -535,26 +540,26 @@
                 }],
                 blur: function () {
 
-                    var dateCheck;
+                    let dateCheck;
                     dateCheck = checkDate(DynamicForm_Report.getValue("endDate"));
-                    var endDate = DynamicForm_Report.getValue("endDate");
-                    var startDate = DynamicForm_Report.getValue("startDate");
-                    if (dateCheck == false) {
+                    let endDate = DynamicForm_Report.getValue("endDate");
+                    let startDate = DynamicForm_Report.getValue("startDate");
+                    if (dateCheck === false) {
                         DynamicForm_Report.clearFieldErrors("endDate", true);
                         DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                         endDateCheckReport = false;
                     }
-                    if (dateCheck == true) {
-                        if (startDate == undefined)
+                    if (dateCheck === true) {
+                        if (startDate === undefined)
                             DynamicForm_Report.clearFieldErrors("endDate", true);
                         DynamicForm_Report.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                         endDateCheckReport = false;
-                        if (startDate != undefined && startDate > endDate) {
+                        if (startDate !== undefined && startDate > endDate) {
                             DynamicForm_Report.clearFieldErrors("endDate", true);
                             DynamicForm_Report.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                             endDateCheckReport = false;
                         }
-                        if (startDate != undefined && startDate < endDate) {
+                        if (startDate !== undefined && startDate < endDate) {
                             DynamicForm_Report.clearFieldErrors("endDate", true);
                             DynamicForm_Report.clearFieldErrors("startDate", true);
                             endDateCheckReport = true;
@@ -562,7 +567,7 @@
                     }
                 }
 
-            }
+            },
         ],
     });
 
@@ -945,9 +950,26 @@
                         if (DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()!==undefined
                             && DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("courseFilter").getValue()==="از تاریخ:------ تا تاریخ:------- در هیچ دوره ای شرکت نداشته است"
                         ){
-                            data_values.criteria[i].fieldName = "isStudent";
+                            if (DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").getValue()===undefined ||
+                                DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").getValue()===null ||
+                                DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").getValue()===undefined ||
+                                DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").getValue()===null){
+                                createDialog("info","بازه ی تاریخ را مشخص کنید");
+                                return;
+                            }
+                            if(DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").getValue() < DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").getValue()) {
+                                createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
+                                return;
+                            }
+
+                            data_values.criteria[i].fieldName = "startDate";
                             data_values.criteria[i].operator = "equals";
-                            data_values.criteria[i].value = false;
+                            data_values.criteria[i].value = DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("startDate").getValue();
+
+                            data_values.criteria[i].fieldName = "endDate";
+                            data_values.criteria[i].operator = "equals";
+                            data_values.criteria[i].value = DynamicForm_CriteriaForm_JspCoursesNotPassedPersonnel.getField("endDate").getValue();
+
                         }
 
                     }

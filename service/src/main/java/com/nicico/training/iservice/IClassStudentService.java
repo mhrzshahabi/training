@@ -60,4 +60,6 @@ public interface IClassStudentService {
     List<Long> findEvaluationStudentInClass(Long studentId, Long classId);
 
     Optional<ClassStudent> findById(Long classStudentId);
+
+    List<String> getStudentBetWeenRangeTime(String startDate, String endDate);
 }

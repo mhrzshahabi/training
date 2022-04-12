@@ -514,6 +514,11 @@ public class ClassStudentService implements IClassStudentService {
         return classStudentDAO.findById(classStudentId);
     }
 
+    @Override
+    public List<String> getStudentBetWeenRangeTime(String startDate, String endDate) {
+        return classStudentDAO.getStudentBetWeenRangeTime(startDate,endDate);
+    }
+
 
     public Long getStudentId(Long classId, String nationalCode) {
         List<Long> studentIds = classStudentDAO.getClassStudentIdByClassCodeAndNationalCode(classId, nationalCode);

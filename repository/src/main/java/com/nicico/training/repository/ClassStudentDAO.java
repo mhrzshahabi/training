@@ -338,4 +338,14 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "WHERE tbl_student.national_code = :nationalCode \n" +
             "ORDER BY classid desc",nativeQuery = true)
     List<Object> findAllCountClassByStudent(String nationalCode);
+
+    @Query(value = "SELECT DISTINCT\n" +
+            "    tbl_student.national_code\n" +
+            "FROM\n" +
+            "         tbl_class_student\n" +
+            "    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id\n" +
+            "    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
+            "    WHERE tbl_class.c_start_date >= :startDate \n" +
+            "    and tbl_class.c_end_date <= :endDate", nativeQuery = true)
+    List<String> getStudentBetWeenRangeTime(String startDate, String endDate);
 }
