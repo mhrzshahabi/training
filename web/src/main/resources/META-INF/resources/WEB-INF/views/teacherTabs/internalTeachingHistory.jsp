@@ -65,6 +65,7 @@
                 title: "نمره ارزیابی فراگیران به مدرس",
                 canFilter: false
             }
+
         ],
         align: "center",
         filterOnKeypress: true,

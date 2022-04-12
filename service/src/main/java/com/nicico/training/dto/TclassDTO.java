@@ -308,6 +308,11 @@ public class TclassDTO {
         private Double evaluationGrade;
         private CourseDTO.CourseClassReport course;
         private String code;
+        private InstituteDTO.InstituteInfoTuple organizer;
+        private String teacherEvalGrade;
+
+
+
     }
 
     @Getter
@@ -329,6 +334,7 @@ public class TclassDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+
     }
 
     @Getter

@@ -13,11 +13,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.TclassDAO;
-import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.repository.ViewTeacherReportDAO;
-import com.nicico.training.service.TeacherService;
-import com.nicico.training.service.ViewTeacherReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -25,13 +20,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.evaluation.dto.EvalAverageResult;
+
 import javax.imageio.ImageIO;
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +35,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.math.BigDecimal;
 import java.nio.charset.Charset;
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,7 +67,7 @@ public class TeacherRestController {
     protected EntityManager entityManager;
     private final IViewTeacherReportService iViewTeacherReportService;
     private final ITeacherRoleService iTeacherRoleService;
-
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -244,6 +241,7 @@ public class TeacherRestController {
 
         specRs.setResponse(specResponse);
 
+
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
@@ -286,6 +284,65 @@ public class TeacherRestController {
         }
 
         SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
+
+        final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
+        final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+    @Loggable
+    @GetMapping(value = "/spec-list-satisfaction")
+    //@PreAuthorize("hasAuthority('Teacher_R')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRsGrid> gridListSatisfaction(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                                 @RequestParam(value = "id", required = false) Long id,
+                                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException, NoSuchFieldException, IllegalAccessException {
+
+        SearchDTO.SearchRq request = setSearchCriteriaNotInBlackList(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        for (SearchDTO.CriteriaRq o : request.getCriteria().getCriteria()) {
+            if(o.getFieldName().equalsIgnoreCase("categories"))
+                o.setValue(Long.parseLong(o.getValue().get(0)+""));
+            if(o.getFieldName().equalsIgnoreCase("subCategories"))
+                o.setValue(Long.parseLong(o.getValue().get(0)+""));
+            if(o.getFieldName().equalsIgnoreCase("personnelStatus")) {
+                if (o.getValue().get(0).equals("false")){
+                    o.setValue(0);
+                } else if (o.getValue().get(0).equals("true")){
+                    o.setValue(1);
+                }
+            }
+
+        }
+
+        SearchDTO.SearchRs<TeacherDTO.Grid> response = teacherService.deepSearchGrid(request);
+        if(response.getList()!= null && response.getList().size()>0){
+            response.getList().stream().forEach(grid -> {
+                Long teacherId=  grid.getId();
+                List<Tclass> teacherClasses= tclassService.getTeacherClasses(teacherId);
+                if(teacherClasses!=null && teacherClasses.size()>0) {
+                    Long teacherClassesNumber = teacherClasses.stream().count();
+                    grid.setTeacherClassCount(teacherClassesNumber.toString());
+                    List<Tclass> sortedClasses = teacherClasses.stream().sorted(Comparator.comparing(Tclass::getId).reversed()).collect(Collectors.toList());
+                    Tclass lastClassByTeacher = sortedClasses.get(0);
+                    EvalAverageResult evalAverageResult = tclassService.getEvaluationAverageResultToTeacher(lastClassByTeacher.getId());
+                    String totalAverage =df.format(evalAverageResult.getTotalAverage());
+                    if(totalAverage.equals("0.00") )
+                        grid.setTeacherLastEvalAverageResult("ندارد");
+                    else
+                    grid.setTeacherLastEvalAverageResult(totalAverage);
+                }
+            });
+        }
 
         final TeacherDTO.SpecRsGrid specResponse = new TeacherDTO.SpecRsGrid();
         final TeacherDTO.TeacherSpecRsGrid specRs = new TeacherDTO.TeacherSpecRsGrid();

@@ -664,6 +664,93 @@
     color: #374b71;
     font-weight: bold;
 }
+/* tool strip button */
+.toolStripButtonChart,
+.toolStripButtonChartOver,
+.toolStripButtonChartFocused,
+.toolStripButtonChartFocusedOver,
+.toolStripButtonChartDown,
+.toolStripButtonChartFocusedDown,
+.toolStripButtonChartSelected,
+.toolStripButtonChartSelectedFocused,
+.toolStripButtonChartSelectedDown,
+.toolStripButtonChartSelectedFocusedDown,
+.toolStripButtonChartSelectedOver,
+.toolStripButtonChartSelectedFocusedOver,
+.toolStripButtonChartDisabled,
+.toolStripButtonChartSelectedDisabled,
+.toolStripButtonChartOpened,
+.toolStripButtonChartOverOpened,
+.toolStripButtonChartDownOpened,
+.toolStripButtonChartFocusedOpened,
+.toolStripButtonChartFocusedDownOpened,
+.toolStripButtonChartFocusedOverOpened,
+.toolStripButtonChartSelectedOpened,
+.toolStripButtonChartSelectedDownOpened,
+.toolStripButtonChartSelectedOverOpened {
+    border: 1px solid transparent;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    color: #000000;
+    font-size: 11px;
+    padding: 3px 4px 3px 4px;
+    border-radius: 3px;
+    background-color: rgba(60, 126, 186, 0.55);
+    border: solid 1px #374b71;
+}
+
+.toolStripButtonChart:hover,
+.toolStripButtonChartOver:hover,
+.toolStripButtonChartFocused:hover,
+.toolStripButtonChartFocusedOver:hover,
+.toolStripButtonChartDown:hover,
+.toolStripButtonChartFocusedDown:hover,
+.toolStripButtonChartSelected:hover,
+.toolStripButtonChartSelectedFocused:hover,
+.toolStripButtonChartSelectedDown:hover,
+.toolStripButtonChartSelectedFocusedDown:hover,
+.toolStripButtonChartSelectedOver:hover,
+.toolStripButtonChartSelectedFocusedOver:hover,
+.toolStripButtonChartDisabled:hover,
+.toolStripButtonChartSelectedDisabled:hover,
+.toolStripButtonChartOpened:hover,
+.toolStripButtonChartOverOpened:hover,
+.toolStripButtonChartDownOpened:hover,
+.toolStripButtonChartFocusedOpened:hover,
+.toolStripButtonChartFocusedDownOpened:hover,
+.toolStripButtonChartFocusedOverOpened:hover,
+.toolStripButtonChartSelectedOpened:hover,
+.toolStripButtonChartSelectedDownOpened:hover,
+.toolStripButtonChartSelectedOverOpened:hover {
+    box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+.toolStripButtonChart td,
+.toolStripButtonChartOver td,
+.toolStripButtonChartFocused td,
+.toolStripButtonChartFocusedOver td,
+.toolStripButtonChartDown td,
+.toolStripButtonChartFocusedDown td,
+.toolStripButtonChartSelected td,
+.toolStripButtonChartSelectedFocused td,
+.toolStripButtonChartSelectedDown td,
+.toolStripButtonChartSelectedFocusedDown td,
+.toolStripButtonChartSelectedOver td,
+.toolStripButtonChartSelectedFocusedOver td,
+.toolStripButtonChartDisabled td,
+.toolStripButtonChartSelectedDisabled td,
+.toolStripButtonChartOpened td,
+.toolStripButtonChartOverOpened td,
+.toolStripButtonChartDownOpened td,
+.toolStripButtonChartFocusedOpened td,
+.toolStripButtonChartFocusedDownOpened td,
+.toolStripButtonChartFocusedOverOpened td,
+.toolStripButtonChartSelectedOpened td,
+.toolStripButtonChartSelectedDownOpened td,
+.toolStripButtonChartSelectedOverOpened td {
+    color: #374b71;
+    font-weight: bold;
+}
 
 /* tool strip button */
 .toolStripButtonRemove,

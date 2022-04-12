@@ -2645,8 +2645,18 @@
                                     createTab(this.title, "<spring:url value="web/evaluationAnsweredQuestionsReport"/>");
                                 }
                             },
+
+
                             </sec:authorize>
                             <%--                            </sec:authorize>--%>
+                            {
+                                title: "<spring:message code="students.satisfaction.of.teachers.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/studentsSatisfactionOfTeachersReport"/>");
+                                }
+
+                            },
+
                         ]
                 },
                 {isSeparator: true},

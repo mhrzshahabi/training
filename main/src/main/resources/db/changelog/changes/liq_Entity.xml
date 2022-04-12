@@ -3448,4 +3448,45 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="nick (generated)" id="1638772362566-785">
+        <createTable tableName="TBL_COURSE_AUD">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_COURSE_AUDPK"/>
+            </column>
+            <column name="REV" type="NUMBER(10, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_COURSE_AUDPK"/>
+            </column>
+            <column name="REVTYPE" type="NUMBER(3, 0)"/>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_created_date" type="TIMESTAMP"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="e_enabled" type="number(19, 0)"/>
+            <column name="e_deleted" type="number(19, 0)"/>
+            <column name="n_version" type="NUMBER(10, 0)"/>
+
+            <column name="c_acceptance_limit" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_behavioral_level" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_technical_type" type="NUMBER(10, 0)"/>
+            <column name="c_equal_course" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_evaluation" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_has_goal" type="NUMBER(1, 0)"/>
+            <column name="n_has_skill" type="NUMBER(1, 0)"/>
+            <column name="n_min_teacher_degree" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_min_teacher_eval_score" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_min_teacher_exp_years" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_need_text" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_pre_course" type="VARCHAR2(255 CHAR)"/>
+            <column name="scoring_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="start_evaluation" type="NUMBER(10, 0)"/>
+            <column name="n_theory_duration" type="FLOAT"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_workflow_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_workflow_status_code" type="NUMBER(10, 0)"/>
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>
