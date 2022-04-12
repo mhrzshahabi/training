@@ -33,6 +33,7 @@
             {name: "courseId", hidden: true},
             {name: "courseCode", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title: "<spring:message code='course.title'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "courseTheoType", title: "<spring:message code='course_etheoType'/>", filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: personnelCourseNotPassedReportUrl
         // transformResponse: function (dsResponse, dsRequest, data) {
@@ -1016,3 +1017,5 @@
     });
     //----------------------------------------------------End-----------------------------------------------------------
     Window_JspCoursesNotPassedPersonnel.hide();
+
+    // </script>
