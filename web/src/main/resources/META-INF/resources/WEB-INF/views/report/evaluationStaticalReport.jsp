@@ -11,6 +11,7 @@
     var endDate1Check_JspEvaluationStaticalReport = true;
     var endDate2Check_JspEvaluationStaticalReport = true;
     var endDateCheck_Order_JspEvaluationStaticalReport = true;
+    let waiting;
 
     var data_values = null;
 
@@ -381,7 +382,7 @@
             // },
             {
                 name: "instituteId",
-                title: "محل برگزاری",
+                title: "برگزارکننده",
                 editorType: "TrComboAutoRefresh",
                 optionDataSource: RestDataSource_Institute_JspEvaluationStaticalReport,
                 displayField: "titleFa",
@@ -1065,6 +1066,7 @@
                 }
                 return;
             }
+            waiting = createDialog("wait");
             data_values = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getValues();
             isc.RPCManager.sendRequest(TrDSRequest(viewEvaluationStaticalReportUrl + "/staticalResult" ,"POST", JSON.stringify(data_values), "callback: fill_statical_result(rpcResponse)"));
         }
@@ -1143,6 +1145,7 @@
             ListGrid_StaticalResult_JspEvaluationStaticalReport.invalidateCache();
             ListGrid_StaticalResult_JspEvaluationStaticalReport.fetchData();
             Window_StaticalResult_JspEvaluationStaticalReport.show();
+            waiting.close();
         }
     }
 
