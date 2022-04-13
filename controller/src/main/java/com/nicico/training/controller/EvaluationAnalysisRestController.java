@@ -372,7 +372,7 @@ public class EvaluationAnalysisRestController {
                     int  totalPage = (list.size() / 10)+1;
                     List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
 
-                    for (int m=0 ; m<subLists.size()-2;m++){
+                    for (int m=0 ; m<subLists.size();m++){
                         List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
 
                         for (int z=0 ; z<subV2.size();z++) {
@@ -439,7 +439,7 @@ public class EvaluationAnalysisRestController {
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(tableData) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-
+//zaza
         reportUtil.export("/reports/reactionEvaluationReport.jasper", params, jsonDataSource, response);
     }
 
