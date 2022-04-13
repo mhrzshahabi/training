@@ -491,7 +491,10 @@ public class MainFormController {
     public String evaluationAnsweredQuestionsReport() {
         return "report/evaluationAnsweredQuestionsReport";
     }
-
+    @RequestMapping("/coursesEvaluationStatisticalReport")
+    public String showCoursesEvaluationStatisticalReport() {
+        return "report/coursesEvaluationStatisticalReport";
+    }
     @RequestMapping("/reactionEvaluationFormulaReport")
     public String reactionEvaluationFormulaReport() {
         return "report/reactionEvaluationFormulaReport";
@@ -541,6 +544,11 @@ public class MainFormController {
     @RequestMapping("/request")
     public String showRequestsForm() {
         return "evaluation/requests";
+    }
+
+    @RequestMapping("/courseHistoryReport")
+    public String CourseHistoryReport() {
+        return "report/courseHistoryReport";
     }
 
 }

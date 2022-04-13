@@ -11,6 +11,7 @@
     var endDate1Check_JspEvaluationStaticalReport = true;
     var endDate2Check_JspEvaluationStaticalReport = true;
     var endDateCheck_Order_JspEvaluationStaticalReport = true;
+    let waiting;
 
     var data_values = null;
 
@@ -99,8 +100,10 @@
             {name: "courseTitleFa"},
             {name: "tclassStudentsCount"},
             {name: "evaluationReactionStatus"},
+            {name: "evaluationReactionGrade"},
             {name: "evaluationReactionPass"},
             {name: "evaluationLearningStatus"},
+            {name: "evaluationLearningGrade"},
             {name: "evaluationLearningPass"},
             {name: "evaluationBehavioralStatus"},
             {name: "evaluationBehavioralPass"},
@@ -211,6 +214,7 @@
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
+            {name: "evaluationReactionGrade", title: "نمره ارزیابی واکنشی"},
             {name: "evaluationReactionPass", title: "وضعیت ارزیابی واکنشی",valueMap: {true: "تائید شده", false: "تائید نشده"},
                 filterEditorProperties:{
                     pickListProperties: {
@@ -223,6 +227,7 @@
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
+            {name: "evaluationLearningGrade", title: "نمره ارزیابی یادگیری"},
             {name: "evaluationLearningPass", title: "وضعیت ارزیابی یادگیری" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
                 filterEditorProperties:{
                     pickListProperties: {
@@ -381,7 +386,7 @@
             // },
             {
                 name: "instituteId",
-                title: "محل برگزاری",
+                title: "برگزارکننده",
                 editorType: "TrComboAutoRefresh",
                 optionDataSource: RestDataSource_Institute_JspEvaluationStaticalReport,
                 displayField: "titleFa",
@@ -1065,6 +1070,7 @@
                 }
                 return;
             }
+            waiting = createDialog("wait");
             data_values = DynamicForm_CriteriaForm_JspEvaluationStaticalReport.getValues();
             isc.RPCManager.sendRequest(TrDSRequest(viewEvaluationStaticalReportUrl + "/staticalResult" ,"POST", JSON.stringify(data_values), "callback: fill_statical_result(rpcResponse)"));
         }
@@ -1143,6 +1149,7 @@
             ListGrid_StaticalResult_JspEvaluationStaticalReport.invalidateCache();
             ListGrid_StaticalResult_JspEvaluationStaticalReport.fetchData();
             Window_StaticalResult_JspEvaluationStaticalReport.show();
+            waiting.close();
         }
     }
 
@@ -1319,3 +1326,5 @@
     //----------------------------------------------------End-----------------------------------------------------------
     Window_ListResult_JspEvaluationStaticalReport.hide();
     Window_StaticalResult_JspEvaluationStaticalReport.hide();
+
+    // </script>

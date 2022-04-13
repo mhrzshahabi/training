@@ -267,8 +267,24 @@
                 click: function () {
                     window.open("course/testCourse/" + ListGrid_Course.getSelectedRecord().id + "/pdf/<%=accessToken%>");
                 }
-            }
+            },
             </sec:authorize>
+            {
+                isSeparator: true
+            },
+            {
+                title: "<spring:message code="course.history"/>",
+                click: function () {
+                    let record = JSON.parse(JSON.stringify(ListGrid_Course.getSelectedRecord()));
+                    if (record === null || record.id === null) {
+                        createDialog("info", "<spring:message code="msg.no.records.selected"/>");
+                    } else {
+                        if (mainTabSet.getTab("تغییرات دوره") != null)
+                            mainTabSet.removeTab("تغییرات دوره");
+                        createTab(this.title, "<spring:url value="web/courseHistoryReport"/>");
+                    }
+                }
+            }
         ]
     });
     var ListGrid_Course = isc.TrLG.create({

@@ -229,7 +229,7 @@
             {
                 name: "startDate",
                 title: "بازه کلاس: شروع از",
-                ID: "startDate_jspCER",
+                ID: "startDate_jspREFR",
                 colSpan: 1,
                 titleColSpan: 1,
                 required: true,
@@ -240,7 +240,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_jspCER', this, 'ymd', '/');
+                        displayDatePicker('startDate_jspREFR', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",
@@ -263,7 +263,7 @@
             {
                 name: "endDate",
                 title: "بازه کلاس: پایان تا",
-                ID: "endDate_jspCER",
+                ID: "endDate_jspREFR",
                 colSpan: 1,
                 titleColSpan: 1,
                 type: 'text',
@@ -275,7 +275,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_jspCER', this, 'ymd', '/');
+                        displayDatePicker('endDate_jspREFR', this, 'ymd', '/');
                     }
                 }],
                 textAlign: "center",

@@ -191,6 +191,15 @@
         fetchDataURL: subCategoryUrl + "iscList"
     });
 
+    RestDataSource_QuestionTarget_PreTest = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/questionTarget"
+    });
+
     //----------------------------------------- ListGrids --------------------------------------------------------------
     var ListGrid_PreTest = isc.TrLG.create({
         width: "100%",
@@ -646,6 +655,16 @@
                         }
                     },
                     {
+                        name: "questionTargets",
+                        title: "هدف سوال",
+                        optionDataSource: RestDataSource_QuestionTarget_PreTest,
+                        filterOperator: "iContains",
+                        filterOnKeypress: true,
+                        valueField: "id",
+                        displayField: "title",
+                        autoFitWidth: true
+                    },
+                    {
                         name: "teacher.fullNameFa",
                         title: "<spring:message code="teacher"/>",
                         filterOperator: "iContains", autoFitWidth: true
@@ -789,6 +808,18 @@
                             pickListFields: [
                                 {name: "title"}
                             ]
+                        }
+                    },
+                    {
+                        name: "questionBank.questionTargets",
+                        title: "هدف سوال",
+                        optionDataSource: RestDataSource_QuestionTarget_PreTest,
+                        valueField: "id",
+                        displayField: "title",
+                        autoFitWidth: true,
+                        canFilter: false,
+                        sortNormalizer(record) {
+                            return record.questionBank.questionTargets
                         }
                     },
                     {

@@ -27,7 +27,7 @@ import java.util.Map;
 
 public interface ITclassService {
 
-     List<Tclass> getTeacherClasses(Long teacherId);
+    List<Tclass> getTeacherClasses(Long teacherId);
 
     TclassDTO.Info get(Long id);
 
@@ -116,28 +116,31 @@ public interface ITclassService {
     void updateCostInfo(Long id, TclassDTO.Update request);
 
     @Transactional
-    Map<String,Object> calculateEffectivenessEvaluation(String reactionGrade_s, String learningGrade_s, String behavioralGrade_s, String classEvaluation);
+    Map<String, Object> calculateEffectivenessEvaluation(String reactionGrade_s, String learningGrade_s, String behavioralGrade_s, String classEvaluation);
 
     @Transactional
-    Map<Long,Integer> checkClassesForSendMessage(List<Long> classIds);
+    Map<Long, Integer> checkClassesForSendMessage(List<Long> classIds);
 
     @Transactional
-    void changeOnlineEvalTeacherStatus(Long classId , boolean state);
+    void changeOnlineEvalTeacherStatus(Long classId, boolean state);
 
     @Transactional
-    void changeOnlineEvalStudentStatus(Long classId ,boolean state);
-    @Transactional
-    void changeOnlineExecutionEvalStudentStatus(Long classId ,boolean state);
+    void changeOnlineEvalStudentStatus(Long classId, boolean state);
 
     @Transactional
-    BaseResponse changeClassStatus(Long classId , String statem, String reason);
+    void changeOnlineExecutionEvalStudentStatus(Long classId, boolean state);
+
+    @Transactional
+    BaseResponse changeClassStatus(Long classId, String statem, String reason);
 
 
-    EvaluationAnswerObject classTeacherEvaluations( TeacherEvaluationAnswerDto dto);
+    EvaluationAnswerObject classTeacherEvaluations(TeacherEvaluationAnswerDto dto);
+
     EvaluationAnswerObject classStudentEvaluations(StudentEvaluationAnswerDto dto);
 
     Boolean hasAccessToChangeClassStatus(String groupIds);
-    Map<String,Boolean> hasAccessToGroups(String groupIds);
+
+    Map<String, Boolean> hasAccessToGroups(String groupIds);
 
     String getClassDefaultYear();
 
@@ -155,7 +158,8 @@ public interface ITclassService {
 
     ElsSessionResponse getClassSessionsByCode(String classCode);
 
-     List<TClassAudit> getAuditData(long classId);
+    List<TClassAudit> getAuditData(long classId);
+
     TclassDTO.TClassScoreEval getTClassDataForScoresInEval(String classCode);
 
     EvalAverageResult getEvaluationAverageResultToTeacher(Long classId);
@@ -165,7 +169,8 @@ public interface ITclassService {
     List<TclassDTO.TClassCurrentTerm> getAllTeacherByCurrentTerm(Long termId) throws NoSuchFieldException, IllegalAccessException;
 
     List<Tclass> getClassesViaTypeAndStatus(ClassStatusDTO status, ClassTypeDTO type);
-   ClassBaseResponse getClassViaTypeAndStatusAndTermInfo(ClassStatusDTO status, ClassTypeDTO type, String year, String term,int page, int size);
+
+    ClassBaseResponse getClassViaTypeAndStatusAndTermInfo(ClassStatusDTO status, ClassTypeDTO type, String year, String term, int page, int size);
 
     ElsClassDetailResponse getClassDetail(String classCode);
 
@@ -181,7 +186,7 @@ public interface ITclassService {
 
     TclassDto update(Long id, TclassDTO.Update request, List<Long> cancelClassesIds);
 
-    BaseResponse delete(Long id) throws IOException ;
+    BaseResponse delete(Long id) throws IOException;
 
     boolean compareTodayDate(Long classId);
 
@@ -196,4 +201,6 @@ public interface ITclassService {
     Integer getTrainingReactionStatus(Long classId);
 
     void updateReleaseDate(List<Long> classIds, String date);
+
+    Map<String, Object> getEvaluationStatisticalReport(Long classId);
 }
