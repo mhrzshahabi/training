@@ -99,8 +99,10 @@
             {name: "courseTitleFa"},
             {name: "tclassStudentsCount"},
             {name: "evaluationReactionStatus"},
+            {name: "evaluationReactionGrade"},
             {name: "evaluationReactionPass"},
             {name: "evaluationLearningStatus"},
+            {name: "evaluationLearningGrade"},
             {name: "evaluationLearningPass"},
             {name: "evaluationBehavioralStatus"},
             {name: "evaluationBehavioralPass"},
@@ -211,6 +213,7 @@
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
+            {name: "evaluationReactionGrade", title: "نمره ارزیابی واکنشی"},
             {name: "evaluationReactionPass", title: "وضعیت ارزیابی واکنشی",valueMap: {true: "تائید شده", false: "تائید نشده"},
                 filterEditorProperties:{
                     pickListProperties: {
@@ -223,6 +226,7 @@
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
+            {name: "evaluationLearningGrade", title: "نمره ارزیابی یادگیری"},
             {name: "evaluationLearningPass", title: "وضعیت ارزیابی یادگیری" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
                 filterEditorProperties:{
                     pickListProperties: {
@@ -1319,3 +1323,5 @@
     //----------------------------------------------------End-----------------------------------------------------------
     Window_ListResult_JspEvaluationStaticalReport.hide();
     Window_StaticalResult_JspEvaluationStaticalReport.hide();
+
+    // </script>
