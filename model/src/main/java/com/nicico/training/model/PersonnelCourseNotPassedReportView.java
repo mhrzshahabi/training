@@ -103,11 +103,15 @@ public class PersonnelCourseNotPassedReportView implements Serializable {
     @Column(name = "course_title_fa")
     private String courseTitleFa;
 
+    @Column(name = "course_theo_type")
+    private String courseTheoType;
+
     @Column(name = "category_id")
     private Long categoryId;
 
     @Column(name = "is_student")
     private Boolean isStudent;
+
     @Column(name = "has_na")
     private Boolean hasNa;
 }

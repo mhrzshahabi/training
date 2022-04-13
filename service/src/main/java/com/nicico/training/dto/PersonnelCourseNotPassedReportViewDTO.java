@@ -35,6 +35,7 @@ public class PersonnelCourseNotPassedReportViewDTO {
         private Long courseId;
         private String courseCode;
         private String courseTitleFa;
+        private String courseTheoType;
         private Long categoryId;
         private Long isStudent;
         private Long hasNa;
