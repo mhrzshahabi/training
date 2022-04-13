@@ -2,6 +2,8 @@ package com.nicico.training.mapper.course;
 
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.model.Course;
+import com.nicico.training.model.CourseAudit;
+import com.nicico.training.model.compositeKey.AuditCourseId;
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETechnicalType;
@@ -87,5 +89,15 @@ public interface CourseBeanMapper {
             }
         }
         return type;
+    }
+
+    //    @Mapping(target = "id", source = "id" , qualifiedByName = "getCourseIdFromAudit")
+    CourseDTO.InfoForAudit toAuditDto(CourseAudit courseAudit);
+
+    List<CourseDTO.InfoForAudit> toAuditDtoList(List<CourseAudit> courseAudits);
+
+    @Named("getCourseIdFromAudit")
+    default Long getCourseIdFromAudit(AuditCourseId auditCourseId) {
+        return auditCourseId.getId();
     }
 }
