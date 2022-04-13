@@ -371,8 +371,8 @@ public class EvaluationAnalysisRestController {
                 if (list.size()>10){
                     int  totalPage = (list.size() / 10)+1;
                     List<List<ViewEvaluationStaticalReportDTO.Info>> subLists=  GetSubList(list,totalPage);
-//zaza
-                    for (int m=0 ; m<subLists.size()-1;m++){
+
+                    for (int m=0 ; m<subLists.size()-2;m++){
                         List<ViewEvaluationStaticalReportDTO.Info> subV2=subLists.get(m);
 
                         for (int z=0 ; z<subV2.size();z++) {

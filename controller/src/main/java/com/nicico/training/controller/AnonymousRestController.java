@@ -13,7 +13,7 @@ import java.util.*;
 
 
 @RestController
-@RequestMapping("/anonymous/api")
+@RequestMapping("/anonym/api")
 @RequiredArgsConstructor
 public class AnonymousRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
@@ -27,8 +27,8 @@ public class AnonymousRestController {
     }
 
     @PostMapping("/remove-un-complete-na")
-    public void removeUnCompleteNa(@RequestBody String code) {
-        needsAssessmentTempService.removeUnCompleteNa(code);
+    public void removeUnCompleteNa(@RequestParam String code,@RequestParam(value = "status", required = false)  String status) {
+        needsAssessmentTempService.removeUnCompleteNa(code,status);
     }
 
     @GetMapping("/get-reapeatly")

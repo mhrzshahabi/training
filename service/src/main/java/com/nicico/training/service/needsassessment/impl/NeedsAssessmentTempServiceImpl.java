@@ -28,8 +28,8 @@ public class NeedsAssessmentTempServiceImpl implements NeedsAssessmentTempServic
     }
 
     @Override
-    public void removeUnCompleteNa(String code) {
-        List<NeedsAssessmentTemp> list= repo.findAllByObjectCodeAndMainWorkflowStatus(code,null);
+    public void removeUnCompleteNa(String code,String status) {
+        List<NeedsAssessmentTemp> list= repo.findAllByObjectCodeAndMainWorkflowStatus(code,status);
         repo.deleteAll(list);
     }
 

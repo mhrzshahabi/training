@@ -4,14 +4,17 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.ClassStudent;
+import com.nicico.training.model.Personnel;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassStudentDAO;
+import com.nicico.training.repository.PersonnelDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -31,6 +34,7 @@ import java.util.function.Function;
 
 import static com.nicico.training.utility.persianDate.MyUtils.*;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
+import static com.nicico.training.utility.persianDate.PersianDate.ofEpochDay;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +52,7 @@ public class ClassStudentService implements IClassStudentService {
     private final ITeacherService iTeacherService;
     private final ITestQuestionService testQuestionService;
     private final ParameterValueService parameterValueService;
-
+    private final PersonnelDAO personnelDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -127,7 +131,7 @@ public class ClassStudentService implements IClassStudentService {
             classStudent.setStudent(student);
             classStudentDAO.saveAndFlush(classStudent);
         }
-        String nameList = new String();
+        String nameList = "";
         if (invalStudents.size() > 0) {
             for (String name : invalStudents) {
                 nameList += name + " , ";
@@ -179,7 +183,7 @@ public class ClassStudentService implements IClassStudentService {
     @Transactional
     @Override
     public int setStudentFormIssuance(Map<String, String> formIssuance) {
-        Long classId = Long.parseLong(formIssuance.get("idClassStudent").toString());
+        Long classId = Long.parseLong(formIssuance.get("idClassStudent"));
         if (formIssuance.get("evaluationAudienceType") != null)
             classStudentDAO.setStudentFormIssuanceAudienceType(classId, Long.parseLong(formIssuance.get("evaluationAudienceType")));
         if (formIssuance.get("evaluationAudienceId") != null)
@@ -515,8 +519,15 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
-    public List<String> getStudentBetWeenRangeTime(String startDate, String endDate) {
-        return classStudentDAO.getStudentBetWeenRangeTime(startDate,endDate);
+    public List<String> getStudentBetWeenRangeTime(String startDate, String endDate,String personnelNos) {
+        List<String>nationalCodes=new ArrayList<>();
+        String[] pesonnels = personnelNos.split(",");
+        for (String personnelCod:pesonnels){
+
+            Optional<Personnel> personnelOptional =   personnelDAO.findFirstByPersonnelNo(personnelCod.trim());
+            personnelOptional.ifPresent(personnel -> nationalCodes.add(personnel.getNationalCode()));
+        }
+        return classStudentDAO.getStudentBetWeenRangeTime(startDate,endDate,nationalCodes);
     }
 
 
@@ -579,11 +590,8 @@ public class ClassStudentService implements IClassStudentService {
                 lastDigit = 11 - (divideRemaining);
             }
 
-            if (Character.getNumericValue(melliCode.charAt(9)) == lastDigit) {
-                return true;
-            } else {
-                return false; // Invalid MelliCode
-            }
+            // Invalid MelliCode
+            return Character.getNumericValue(melliCode.charAt(9)) == lastDigit;
         }
     }
 }

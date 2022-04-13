@@ -346,6 +346,6 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "    INNER JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id\n" +
             "    INNER JOIN tbl_class ON tbl_class_student.class_id = tbl_class.id\n" +
             "    WHERE tbl_class.c_start_date >= :startDate \n" +
-            "    and tbl_class.c_end_date <= :endDate", nativeQuery = true)
-    List<String> getStudentBetWeenRangeTime(String startDate, String endDate);
+            "    and tbl_class.c_end_date <= :endDate and tbl_student.national_code IN (:ids) ", nativeQuery = true)
+    List<String> getStudentBetWeenRangeTime(String startDate, String endDate,List<String> ids);
 }

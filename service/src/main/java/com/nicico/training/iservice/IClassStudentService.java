@@ -61,5 +61,5 @@ public interface IClassStudentService {
 
     Optional<ClassStudent> findById(Long classStudentId);
 
-    List<String> getStudentBetWeenRangeTime(String startDate, String endDate);
+    List<String> getStudentBetWeenRangeTime(String startDate, String endDate,String personnelNos);
 }
