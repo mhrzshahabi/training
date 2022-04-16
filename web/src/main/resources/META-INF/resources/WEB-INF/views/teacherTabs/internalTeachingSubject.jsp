@@ -12,6 +12,12 @@
         width: "100%",
         height: "100%"
     });
+    var chartData_teachingSubject = [
+        {title: "<spring:message code='class'/>" , type: 0, duration: 0},
+        {title: "<spring:message code='students.average.grade'/>",  type: 0, duration: 0}
+
+    ];
+
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -124,6 +130,35 @@
             }
         },
     });
+    //----------------------------------------------------------------------------Toolscrip--------------------------------------------------------------------
+    ToolStripButton_ShowChart_TeachingSubject = isc.ToolStripButtonChart.create({
+        click: function () {
+            let localData = ListGrid_JspInternalTeachingSubject.data.localData;
+            if(localData!==null)
+            showChart_teachingSubject(localData);
+        }
+    });
+    Chart_teachingSubject = isc.FacetChart.create({
+        valueProperty: "duration",
+        showTitle: false,
+        filled: true,
+        stacked: false,
+    });
+
+    Window_Chart_teachingSubject = isc.Window.create({
+        placement: "fillScreen",
+        title: "",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 720,
+        minHeight: 540,
+        items: [isc.TrVLayout.create({
+            members: [Chart_teachingSubject]
+        })]
+    });
+
 
     VLayout_Body_JspInternalTeachingSubject = isc.TrVLayout.create({
         members: [
@@ -131,18 +166,13 @@
                 width: "100%",
                 height: "1%",
                 margin: 10,
-                members: [ isc.ToolStripButtonChart.create({
-                    click: function () {
-                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspInternalTeachingSubject, classUrl + "listByteacherID/" + teacherIdInternalTeachingSubject, 0,null, '', "استاد - اطلاعات پايه - سوابق تدریس در این مرکز", ListGrid_JspInternalTeachingSubject.getCriteria(), null)
-                    }
-                }),averageEvalGradeLabel
-                ]
+                members: [ToolStripButton_ShowChart_TeachingSubject,averageEvalGradeLabel]
             }),
             ListGrid_JspInternalTeachingSubject
         ],
 
     });
-
+    //--------------------------------------------------------------function-------------------------------------------------------------------------------------
     function ListGrid_InternalTeachingSubject_refresh() {
         ListGrid_JspInternalTeachingSubject.invalidateCache();
         ListGrid_JspInternalTeachingSubject.filterByEditor();
@@ -160,6 +190,29 @@
     function clear_InternalTeachingSubject() {
         ListGrid_JspInternalTeachingSubject.clear();
     }
+    function showChart_teachingSubject (data,avrage) {
+
+        let criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/tclass/chartPrint/pdf"/>",
+            target: "_Blank",
+            canSubmit: true,
+            fields:[
+                {name: "list", type: "hidden"},
+            ]
+        });
+
+
+
+          criteriaForm.setValue("list", JSON.stringify(data));
+          criteriaForm.show();
+          criteriaForm.submitForm();
+
+
+
+
+    }
+
 
 
     //</script>

@@ -1,27 +1,51 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.reflect.TypeToken;
+import com.google.gson.Gson;
+import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.model.Coordinate;
+import com.nicico.training.utility.PersianCharachtersUnicode;
 import lombok.RequiredArgsConstructor;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import net.sf.jasperreports.engine.util.JRLoader;
 import org.activiti.engine.impl.util.json.JSONObject;
+import org.codehaus.jackson.annotate.JsonMethod;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.lang.reflect.Type;
+import java.nio.charset.Charset;
+import java.sql.SQLException;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/tclass")
 public class ClassFormController {
     private final OAuth2AuthorizedClientService authorizedClientService;
+    private final ReportUtil reportUtil;
+    private final ObjectMapper objectMapper;
+
 
     @RequestMapping("/show-form")
     public String showForm() {
@@ -180,5 +204,40 @@ public class ClassFormController {
             default:
                 return null;
         }
+    }
+
+    @PostMapping(value = {"/chartPrint/{type}"})
+    public void chartPrint(HttpServletResponse response, @PathVariable String type, @RequestParam(value = "list") String list) throws SQLException, IOException, JRException {
+
+        Gson gson = new Gson();
+        Type resultType = new TypeToken<List<TclassDTO.TeachingHistory>>() {
+        }.getType();
+        List<TclassDTO.TeachingHistory> allData = gson.fromJson(list, resultType);
+
+        List<Coordinate> xyData = new ArrayList<>();
+        final Integer[] count = {1};
+        String seriesName=PersianCharachtersUnicode.bidiReorder(" نمودار رضایت فراگیر از استاد");
+        allData.forEach(item -> {
+            if(item.getEvaluationGrade()>0.0) {
+                xyData.add(new Coordinate(count[0], item.getEvaluationGrade(), seriesName));
+                ++count[0];
+            }
+        });
+
+        Map<String, Object> parameters = new HashMap<>();
+      parameters.put("CHART_DATA",xyData);
+
+       xyData.stream().forEach(xy->{
+           parameters.put("horizontal",xy.getHorizontal());
+           parameters.put("vertical",xy.getVertical());
+           parameters.put("seriesName",xy.getSeriesName());
+       });
+
+        parameters.put(ConstantVARs.REPORT_TYPE, type);
+
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(xyData) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/satisfactionChart.jasper", parameters,jsonDataSource, response);
     }
 }
