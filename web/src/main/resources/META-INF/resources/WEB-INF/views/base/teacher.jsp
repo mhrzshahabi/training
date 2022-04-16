@@ -238,27 +238,33 @@
         ]
     });
     let IButtonSave_CurrentTermTeacherExcel_JspTeacher = isc.IButtonSave.create({
-        title: "دریاقت اکسل",
+        title: "دریافت اکسل",
         width: 150,
         click: function () {
-
             let termId = DynamicForm_Term_Filter_JspTeacher.getValue("termFilter");
-            let downloadForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "/training/reportsToExcel/currentTermTeacher",
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "termId", type: "hidden"},
-                    ]
-            });
 
-            downloadForm.setValue("termId", termId);
-            downloadForm.show();
-            downloadForm.submitForm();
+            if (termId!==undefined && termId !== null){
+                let downloadForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/training/reportsToExcel/currentTermTeacher",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "termId", type: "hidden"},
+                        ]
+                });
 
-            Window_Term_Filter_JspTeacher.close();
+                downloadForm.setValue("termId", termId);
+                downloadForm.show();
+                downloadForm.submitForm();
+
+                Window_Term_Filter_JspTeacher.close();
+            }else {
+                createDialog("info", "فیلد ترم انتخاب نشده است .", "<spring:message code="error"/>");
+
+            }
+
         }
     });
     let Window_Term_Filter_JspTeacher= isc.Window.create({

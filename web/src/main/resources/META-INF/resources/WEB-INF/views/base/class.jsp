@@ -2698,10 +2698,12 @@
                     [],
                 operator: "and"
             };
-            for (let i = 0; i < criteria.criteria.length; i++)
-            {
-                if (criteria.criteria[i].fieldName!==undefined)
-                    newCriteria.criteria.add(criteria.criteria[i])
+            if (criteria.criteria!==undefined){
+                for (let i = 0; i < criteria.criteria.length; i++)
+                {
+                    if (criteria.criteria[i].fieldName!==undefined)
+                        newCriteria.criteria.add(criteria.criteria[i])
+                }
             }
             ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "spec-list", 0, null, '', "اجرا - کلاس", newCriteria, null);
         }

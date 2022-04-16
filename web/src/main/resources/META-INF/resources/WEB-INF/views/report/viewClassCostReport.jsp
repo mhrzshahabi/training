@@ -267,78 +267,82 @@
     //------------------------------------------------- Functions ------------------------------------------------------
     //
     function makeExcelCost() {
-
         if (ListGrid_Cost_REFR.getOriginalData().localData === undefined)
-            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
-        else {
-            let records = ListGrid_Cost_REFR.data.localData.toArray();
-            excelData = [];
-            excelData.add({
-                classCode: "کد کلاس",
-                classTitle: "عنوان کلاس",
-                teacher: "استاد ",
-                teacherNationalCode: "کد ملی استاد",
-                isPersonnel: "نوع استاد",
-                startDate: "تاریخ شروع",
-                endDate: "تاریخ پایان",
-                acceptanceLimit: "حد قبولی کلاس",
-                courseCode: "کد دوره",
-                courseTitle: "عنوان دوره",
-                complex: "مجتمع",
-                moavenat: "معاونت",
-                omor: "امور",
-                totalStudent: "تعداد دانشجویان کلاس",
-                studentCost: "هزینه هر دانشجو",
-                currency: "واحد",
-                cost: "هزینه کلی",
-            });
+            createDialog("info", "ابتدا نمایش گزارش را انتخاب کنید");
+        else
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Cost_REFR, viewClassCostReportUrl + "/iscList", 0, null, '',"گزارش هزینه کلاس ها"  , reportCriteria_Cost_REFR, null);
 
-            if(records) {
-                for (let j = 0; j < records.length; j++) {
-                    excelData.add({
-                        rowNum: j+1,
-                        classCode: records[j].classCode,
-                        classTitle: records[j].classTitle,
-                        teacher: records[j].teacher,
-                        teacherNationalCode: records[j].teacherNationalCode,
-                        isPersonnel: records[j].isPersonnel,
-                        startDate: records[j].startDate,
-                        endDate: records[j].endDate,
-                        acceptanceLimit: records[j].acceptanceLimit,
-                        courseCode: records[j].courseCode,
-                        courseTitle: records[j].courseTitle,
-                        complex: records[j].complex,
-                        moavenat: records[j].moavenat,
-                        omor: records[j].omor,
-                        totalStudent: records[j].totalStudent,
-                        studentCost: records[j].studentCost,
-                        currency: records[j].currency,
-                        cost: records[j].cost
-                    });
-
-                }
-            }
-            let fields = [
-                {name: "id"},
-                {name: "classCode"},
-                {name: "classTitle"},
-                {name: "teacher"},
-                {name: "teacherNationalCode"},
-                {name: "isPersonnel"},
-                {name: "startDate"},
-                {name: "endDate"},
-                {name: "acceptanceLimit"},
-                {name: "courseCode"},
-                {name: "courseTitle"},
-                {name: "complex"},
-                {name: "moavenat"},
-                {name: "omor"},
-                {name: "totalStudent"},
-                {name: "studentCost"},
-                {name: "currency"},
-                {name: "cost"}
-            ];
-            ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش هزینه کلاس ها ", null);
-        }
+        // if (ListGrid_Cost_REFR.getOriginalData().localData === undefined)
+        //     createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        // else {
+        //     let records = ListGrid_Cost_REFR.data.localData.toArray();
+        //     excelData = [];
+        //     excelData.add({
+        //         classCode: "کد کلاس",
+        //         classTitle: "عنوان کلاس",
+        //         teacher: "استاد ",
+        //         teacherNationalCode: "کد ملی استاد",
+        //         isPersonnel: "نوع استاد",
+        //         startDate: "تاریخ شروع",
+        //         endDate: "تاریخ پایان",
+        //         acceptanceLimit: "حد قبولی کلاس",
+        //         courseCode: "کد دوره",
+        //         courseTitle: "عنوان دوره",
+        //         complex: "مجتمع",
+        //         moavenat: "معاونت",
+        //         omor: "امور",
+        //         totalStudent: "تعداد دانشجویان کلاس",
+        //         studentCost: "هزینه هر دانشجو",
+        //         currency: "واحد",
+        //         cost: "هزینه کلی",
+        //     });
+        //
+        //     if(records) {
+        //         for (let j = 0; j < records.length; j++) {
+        //             excelData.add({
+        //                 rowNum: j+1,
+        //                 classCode: records[j].classCode,
+        //                 classTitle: records[j].classTitle,
+        //                 teacher: records[j].teacher,
+        //                 teacherNationalCode: records[j].teacherNationalCode,
+        //                 isPersonnel: records[j].isPersonnel,
+        //                 startDate: records[j].startDate,
+        //                 endDate: records[j].endDate,
+        //                 acceptanceLimit: records[j].acceptanceLimit,
+        //                 courseCode: records[j].courseCode,
+        //                 courseTitle: records[j].courseTitle,
+        //                 complex: records[j].complex,
+        //                 moavenat: records[j].moavenat,
+        //                 omor: records[j].omor,
+        //                 totalStudent: records[j].totalStudent,
+        //                 studentCost: records[j].studentCost,
+        //                 currency: records[j].currency,
+        //                 cost: records[j].cost
+        //             });
+        //
+        //         }
+        //     }
+        //     let fields = [
+        //         {name: "id"},
+        //         {name: "classCode"},
+        //         {name: "classTitle"},
+        //         {name: "teacher"},
+        //         {name: "teacherNationalCode"},
+        //         {name: "isPersonnel"},
+        //         {name: "startDate"},
+        //         {name: "endDate"},
+        //         {name: "acceptanceLimit"},
+        //         {name: "courseCode"},
+        //         {name: "courseTitle"},
+        //         {name: "complex"},
+        //         {name: "moavenat"},
+        //         {name: "omor"},
+        //         {name: "totalStudent"},
+        //         {name: "studentCost"},
+        //         {name: "currency"},
+        //         {name: "cost"}
+        //     ];
+        //     ExportToFile.exportToExcelFromClient(fields, excelData, "", "گزارش هزینه کلاس ها ", null);
+        // }
     }
     // </script>
