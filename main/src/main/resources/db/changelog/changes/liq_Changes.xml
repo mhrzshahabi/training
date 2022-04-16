@@ -3711,13 +3711,11 @@ WHERE
         </addColumn>
     </changeSet>
 
-
     <changeSet author="namdari" id="1647154846000-01">
         <addColumn tableName="tbl_class_student">
             <column name="evaluation_status_execution" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
-
 
     <changeSet author="namdari" id="1647154846000-02">
         <addColumn tableName="tbl_class">
@@ -3730,4 +3728,28 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-055">
+        <addColumn tableName="TBL_TEACHER">
+            <column name="C_EMP_CODE" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-056">
+        <sql>
+            <![CDATA[
+            UPDATE tbl_teacher
+            SET
+                c_emp_code = (
+                    SELECT
+                        emp_no
+                    FROM
+                        tbl_personnel
+                    WHERE
+                        tbl_personnel.national_code = tbl_teacher.c_teacher_code
+                      AND tbl_personnel.deleted = 0
+                      AND tbl_teacher.b_personnel = 1
+                );
+            ]]>
+        </sql>
+    </changeSet>
 </databaseChangeLog>

@@ -32,6 +32,7 @@
             {name: "personality.id"},
             {name: "teacherCode"},
             {name: "personnelCode"},
+            {name: "personnelCode2"},
             {name: "personality.firstNameFa"},
             {name: "personality.lastNameFa"},
             {name: "personality.educationLevel.titleFa"},
@@ -343,7 +344,12 @@
             },
             {
                 name: "personnelCode",
-                title: "<spring:message code='personnel.code.six.digit'/>",
+                title: "<spring:message code='personnel.no'/>",
+                align: "center",
+            },
+            {
+                name: "personnelCode2",
+                title: "<spring:message code='personnel.no.6.digits'/>",
                 align: "center",
             },
             {
@@ -991,9 +997,11 @@
                 "callback: teacher_save_edit_result(rpcResponse)"));
         }
 
-        if (teacherMethod.localeCompare("POST") === 0)
+        if (teacherMethod.localeCompare("POST") === 0) {
+            data.personnelCode2 = personnelCode2;
             isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
                 "callback: teacher_save_add_result(rpcResponse)"));
+        }
     }
 
     function Teacher_Save_Close_Button_Click_JspTeacher() {
@@ -1026,6 +1034,9 @@
 
         if (teacherMethod.localeCompare("PUT") === 0) {
             teacherSaveUrl += selectedRecordID;
+        }
+        if (teacherMethod.localeCompare("POST") === 0) {
+            data.personnelCode2 = personnelCode2;
         }
         teacherWait = createDialog("wait");
         isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
