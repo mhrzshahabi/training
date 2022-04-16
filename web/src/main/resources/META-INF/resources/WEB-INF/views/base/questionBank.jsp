@@ -133,6 +133,11 @@
                 filterOperator: "iContains", autoFitWidth: true
             },
             {
+                name: "teacher.personality.lastNameFa",
+                title: "<spring:message code="teacher"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
                 name: "tclass.course.titleFa",
                 title: "<spring:message code="class"/>",
                 filterOperator: "iContains", autoFitWidth: true
@@ -452,7 +457,20 @@
                     return record.subCategory?.titleFa;
                 }
             },
-            {name: "teacher.fullNameFa",canFilter: false,canSort: false},
+            {
+                name: "teacher.fullNameFa",
+                title: "<spring:message code='teacher'/>",
+                displayField: "teacher.personality.lastNameFa",
+                displayValueFromRecord: false,
+                type: "TextItem",
+                sortNormalizer(record) {
+                    return record.teacher.personality.lastNameFa;
+                },
+
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+            },
             {name: "course.titleFa",sortNormalizer: function (record) {let tmp=record.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {name: "tclass.course.titleFa",sortNormalizer: function (record) {let tmp=record.tclass?.course?.titleFa; tmp=(typeof(tmp)=="undefined")?"":tmp; return tmp; }},
             {name: "tclass.code",sortNormalizer: function (record) { return record.tclass?.code; }},
@@ -507,7 +525,10 @@
                 name: "createdDate",
                 width: "10%",
                 align: "center",
-                canFilter: false,
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]"
+                },
                 formatCellValue: function (value) {
                     if (value) {
                         let date = new Date (value);
