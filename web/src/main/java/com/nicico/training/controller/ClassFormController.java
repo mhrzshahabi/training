@@ -218,19 +218,12 @@ public class ClassFormController {
         final Integer[] count = {1};
         String seriesName=PersianCharachtersUnicode.bidiReorder(" نمودار رضایت فراگیر از استاد");
         allData.forEach(item -> {
-            xyData.add(new Coordinate(count[0], item.getEvaluationGrade(), seriesName));
-            ++count[0];
+            if(item.getEvaluationGrade()>0.0) {
+                xyData.add(new Coordinate(count[0], item.getEvaluationGrade(), seriesName));
+                ++count[0];
+            }
         });
-//        double[] d = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-//        List<Coordinate> xyData = new ArrayList<>();
-//        int year = 2000;
-//        for (int j = 0; j < d.length; j++) {
-//            xyData.add(new Coordinate(year, d[j], "xy chart"));
-//            year++;
-//        }
-//        InputStream inputStream = getClass().getResourceAsStream("/reports/satisfactionChart.jasper");
 
-//        JasperReport jasperReport = (JasperReport) JRLoader.loadObject(inputStream);
         Map<String, Object> parameters = new HashMap<>();
       parameters.put("CHART_DATA",xyData);
 
@@ -238,19 +231,11 @@ public class ClassFormController {
            parameters.put("horizontal",xy.getHorizontal());
            parameters.put("vertical",xy.getVertical());
            parameters.put("seriesName",xy.getSeriesName());
-
-
        });
-//        JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, new JREmptyDataSource());
-//        File output = new File("main/src/main/resources/reports/demo_report.pdf");
-//        output.createNewFile();
-//        OutputStream outputStream = new FileOutputStream(output,false);
-//        JasperExportManager.exportReportToPdfStream(jasperPrint, outputStream);
-//        outputStream.close();
-//        String type = "pdf";
+
         parameters.put(ConstantVARs.REPORT_TYPE, type);
-//        objectMapper.setVisibility(PropertyAccessor.FIELD, JsonAutoDetect.Visibility.ANY);
-//
+
+
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(xyData) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         reportUtil.export("/reports/satisfactionChart.jasper", parameters,jsonDataSource, response);

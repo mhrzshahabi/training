@@ -134,6 +134,7 @@
     ToolStripButton_ShowChart_TeachingSubject = isc.ToolStripButtonChart.create({
         click: function () {
             let localData = ListGrid_JspInternalTeachingSubject.data.localData;
+            if(localData!==null)
             showChart_teachingSubject(localData);
         }
     });
@@ -189,7 +190,7 @@
     function clear_InternalTeachingSubject() {
         ListGrid_JspInternalTeachingSubject.clear();
     }
-    function showChart_teachingSubject (data) {
+    function showChart_teachingSubject (data,avrage) {
 
         let criteriaForm = isc.DynamicForm.create({
             method: "POST",
@@ -200,22 +201,16 @@
                 {name: "list", type: "hidden"},
             ]
         });
-        debugger;
-        criteriaForm.setValue("list", JSON.stringify(data));
-        criteriaForm.show();
-        criteriaForm.submitForm();
 
 
 
-        <%--let facets;--%>
-        <%--facets = [--%>
-        <%--    {id: "title", title: "<spring:message code='priority'/>"},--%>
-        <%--    {id: "type", title: "<spring:message code='status'/>"}];--%>
+          criteriaForm.setValue("list", JSON.stringify(data));
+          criteriaForm.show();
+          criteriaForm.submitForm();
 
-        <%--Chart_NABOP.setFacets(facets);--%>
-        <%--Chart_teachingSubject.setData(chartData_teachingSubject);--%>
-        <%--Chart_teachingSubject.setChartType("Line");--%>
-        <%--Window_Chart_teachingSubject.show();--%>
+
+
+
     }
 
 
