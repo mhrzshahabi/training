@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.19.0.final using JasperReports Library version 6.19.0-646c68931cebf1a58bc65c4359d1f0ca223c5e94  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_5" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d0bd77d5-a46d-46f2-bfee-c444d3d8f3d3">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<subDataset name="Dataset" uuid="c441db47-98fa-4b28-bd7e-8202e4827ac1">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="horizontal" class="java.lang.Integer"/>
+		<field name="vertical" class="java.lang.Double"/>
+		<field name="seriesName" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="CHART_DATA" class="java.util.List"/>
+	<queryString language="SQL">
+		<![CDATA[]]>
+	</queryString>
+	<field name="horizontal" class="java.lang.Integer"/>
+	<field name="vertical" class="java.lang.Double"/>
+	<field name="seriesName" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="343" splitType="Stretch">
+			<xyLineChart>
+				<chart evaluationTime="Report">
+					<reportElement x="50" y="-95" width="445" height="438" uuid="97700e5b-526b-4e1d-85f6-8c71ddfb68e4"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<xyDataset>
+					<dataset resetType="Report">
+						<datasetRun subDataset="Dataset" uuid="07cefa5a-ec66-4c00-a542-e895c5f913a3">
+							<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{CHART_DATA})]]></dataSourceExpression>
+						</datasetRun>
+					</dataset>
+					<xySeries autoSort="true">
+						<seriesExpression><![CDATA[$F{seriesName}]]></seriesExpression>
+						<xValueExpression><![CDATA[$F{horizontal}]]></xValueExpression>
+						<yValueExpression><![CDATA[$F{vertical}]]></yValueExpression>
+					</xySeries>
+				</xyDataset>
+				<linePlot>
+					<plot/>
+					<categoryAxisFormat>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+					</valueAxisFormat>
+				</linePlot>
+			</xyLineChart>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="217" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

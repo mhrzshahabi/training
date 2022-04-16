@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lowagie.text.pdf.codec.Base64;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.grid.TotalResponse;
@@ -13,13 +14,14 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
-import com.nicico.training.model.TClassAudit;
-import com.nicico.training.model.Tclass;
+import com.nicico.training.model.*;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.util.JRLoader;
+import org.modelmapper.TypeToken;
+import org.springframework.core.io.ClassPathResource;
 import request.exam.ElsExamRequest;
 import com.nicico.training.mapper.evaluation.EvaluationBeanMapper;
 import com.nicico.training.dto.*;
-import com.nicico.training.model.Institute;
-import com.nicico.training.model.Personnel;
 import com.nicico.training.repository.InstituteDAO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.StudentDAO;
@@ -43,9 +45,10 @@ import response.evaluation.dto.EvalAverageResult;
 import response.tclass.TclassCreateResponse;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.util.*;
@@ -611,7 +614,7 @@ public class TclassRestController {
         }
 
         SearchDTO.SearchRs<TclassDTO.TeachingHistory> response = tClassService.searchByTeachingHistory(request, teacherId);
-
+        List<TclassDTO.TeachingHistory> finalList=new ArrayList<>();
         if(response.getList()!= null && response.getList().size()>0){
             response.getList().stream().forEach(teachingHistory -> {
 
@@ -627,12 +630,12 @@ public class TclassRestController {
 
 
             });
-
+            finalList=response.getList().stream().sorted(Comparator.comparing(TclassDTO.TeachingHistory::getId).reversed()).collect(Collectors.toList());
         }
 
         final TclassDTO.TeachingHistorySpecRs specResponse = new TclassDTO.TeachingHistorySpecRs();
         final TclassDTO.TclassTeachingHistorySpecRs specRs = new TclassDTO.TclassTeachingHistorySpecRs();
-        specResponse.setData(response.getList())
+        specResponse.setData(finalList)
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getList().size())
                 .setTotalRows(response.getTotalCount().intValue());
