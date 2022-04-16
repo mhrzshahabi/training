@@ -70,6 +70,7 @@ public class TeacherDTO {
     public static class TeacherInformation {
         private PersonalInfoDTO.contractInfo personality;
         private String personnelCode;
+        private String personnelCode2;
 
         public String getFullName() {
 
@@ -101,6 +102,7 @@ public class TeacherDTO {
         private Long id;
         private String teacherCode;
         private String personnelCode;
+        private String personnelCode2;
         private PersonalInfoDTO.Grid personality;
         private Long personalityId;
         private Boolean personnelStatus;
@@ -137,6 +139,7 @@ public class TeacherDTO {
         private Long id;
         private String teacherCode;
         private String personnelCode;
+        private String personnelCode2;
         private PersonalInfoDTO.Report personality;
         private Boolean personnelStatus;
         private String numberOfCourses;
@@ -200,6 +203,7 @@ public class TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
         private List<CategoryDTO.Info> categories;
         private List<SubcategoryDTO.Info> subCategories;
+        private String personnelCode2;
     }
 
     @Getter

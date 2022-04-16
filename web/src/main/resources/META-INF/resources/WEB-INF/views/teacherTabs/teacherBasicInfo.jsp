@@ -6,6 +6,7 @@
 
     var hasTeacherCategoriesChanged = false;
     var hasTeacherMajorCategoryChanged = false;
+    var personnelCode2 = null;
     //----------------------------------------------------Rest Data Source----------------------------------------------
     var RestDataSource_Category_Evaluation_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
@@ -219,6 +220,7 @@
                     if (DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != null &&
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord() != undefined &&
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode != undefined) {
+                        personnelCode2 = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo2;
                         DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", null);
                         let nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().nationalCode;
                         fillPersonalInfoFields(nationalCodeTemp, true, DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").getSelectedRecord().personnelNo);
