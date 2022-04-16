@@ -115,6 +115,7 @@
             let average = 0;
             let averageCount = 0;
             if (localData.length) {
+                ToolStripButton_ShowChart_TeachingSubject.setEnabled(true);
                 for (let i = 0; i < localData.length; i++) {
                     total += localData[i].evaluationGrade;
                     if (localData[i].evaluationGrade !== 0)
@@ -132,9 +133,9 @@
     });
     //----------------------------------------------------------------------------Toolscrip--------------------------------------------------------------------
     ToolStripButton_ShowChart_TeachingSubject = isc.ToolStripButtonChart.create({
+        enabled: false,
         click: function () {
             let localData = ListGrid_JspInternalTeachingSubject.data.localData;
-            if(localData!==null)
             showChart_teachingSubject(localData);
         }
     });
