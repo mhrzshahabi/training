@@ -37,6 +37,7 @@ import java.lang.reflect.Type;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -213,11 +214,11 @@ public class ClassFormController {
         Type resultType = new TypeToken<List<TclassDTO.TeachingHistory>>() {
         }.getType();
         List<TclassDTO.TeachingHistory> allData = gson.fromJson(list, resultType);
-
+      List<TclassDTO.TeachingHistory> finalData=  allData.stream().sorted(Comparator.comparing(TclassDTO.TeachingHistory::getId)).collect(Collectors.toList());
         List<Coordinate> xyData = new ArrayList<>();
         final Integer[] count = {1};
         String seriesName=PersianCharachtersUnicode.bidiReorder(" نمودار رضایت فراگیر از استاد");
-        allData.forEach(item -> {
+        finalData.forEach(item -> {
             if(item.getEvaluationGrade()>0.0) {
                 xyData.add(new Coordinate(count[0], item.getEvaluationGrade(), seriesName));
                 ++count[0];
