@@ -2076,7 +2076,6 @@
         click: function () {
             Window_Class_JspClass.close();
             DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
-            DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
         }
     });
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
@@ -2196,7 +2195,6 @@
                 }
             }));
             DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
-            DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
         }
     });
     //*****generate sessions callback*****
@@ -2238,8 +2236,6 @@
         closeClick: function () {
             this.Super("closeClick", arguments);
             DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
-            DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
-
         },
         items: [
             isc.TrVLayout.create({
@@ -3199,7 +3195,6 @@
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
                         DynamicForm_Class_JspClass.getItem("assistantId").disable();
                         DynamicForm_Class_JspClass.getItem("affairsId").disable();
-                        DynamicForm_Class_JspClass.getItem("holdingClassTypeId").disable();
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").setOptionDataSource(null);
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").setValueMap(null);
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").clearErrors();
@@ -3294,8 +3289,6 @@
                     } else {
                         classMethod = "POST";
                         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
-                        DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
-
                         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
 
                         DynamicForm_Class_JspClass.getItem("complexId").enable();
@@ -3397,7 +3390,6 @@
     }
     function ListGrid_Class_add() {
         DynamicForm_Class_JspClass.getItem("targetPopulationTypeId").enable();
-        DynamicForm_Class_JspClass.getItem("holdingClassTypeId").enable();
         DynamicForm_Class_JspClass.getItem("teachingMethodId").disable();
         DynamicForm_Class_JspClass.getItem("complexId").enable();
         DynamicForm_Class_JspClass.getItem("assistantId").disable();
@@ -4995,3 +4987,5 @@
         mainCriteria.criteria.add(mainTermCriteria);
         return mainCriteria;
     }
+
+    // </script>
