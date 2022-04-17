@@ -3,6 +3,7 @@ package com.nicico.training.mapper.teacher;
 import com.ibm.icu.text.SimpleDateFormat;
 import com.ibm.icu.util.TimeZone;
 import com.ibm.icu.util.ULocale;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ElsTeacherCertification;
 import com.nicico.training.dto.ElsTeacherCertificationDate;
 import com.nicico.training.iservice.ICategoryService;
@@ -13,8 +14,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.DateFormat;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
@@ -63,8 +66,8 @@ public abstract class TeacherCertificationMapper {
                    teacherCertification.setSubCategories(subcategories);
 
         }
-        Date date=new Date(elsTeacherCertification.getCourseDate());
-        String persianDate=convertToPersianDate(date);
+
+        String persianDate=convertToPersianDate(elsTeacherCertification.getCourseDate());
         teacherCertification.setStartDate(persianDate);
         teacherCertification.setCertificationStatus(elsTeacherCertification.getCertificationStatus());
 
@@ -79,17 +82,26 @@ public abstract class TeacherCertificationMapper {
 
     }
 
-    private String convertToPersianDate(Date _date) {
 
-            Long date = _date.getTime();
-            ULocale PERSIAN_LOCALE = new ULocale("fa_IR");
-            ZoneId IRAN_ZONE_ID = ZoneId.of("Asia/Tehran");
+    private String convertToPersianDate(Long courseLongDate) {
 
-            SimpleDateFormat df = new SimpleDateFormat("yyyy/MM/dd", PERSIAN_LOCALE );
-            df.setTimeZone(TimeZone.getTimeZone("GMT+3:30"));
-            return df.format(date);
+        if (courseLongDate != null && courseLongDate != 0) {
+            long time = courseLongDate;
+            Date date = new Date(time);
+            java.util.Calendar calendar = java.util.Calendar.getInstance();
+            calendar.setTime(date);
+            calendar.add(java.util.Calendar.HOUR_OF_DAY, 4);
+            calendar.add(Calendar.MINUTE, 30);
+            date = calendar.getTime();
+            DateFormat dateFormat = new java.text.SimpleDateFormat("yyyy-MM-dd");
+            String pDate = DateUtil.convertMiToKh(dateFormat.format(date));
+            return pDate;
+        } else {
+            return null;
+        }
 
     }
+
 
 
 
