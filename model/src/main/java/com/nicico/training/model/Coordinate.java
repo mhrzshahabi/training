@@ -7,11 +7,21 @@ public class Coordinate {
     private Integer horizontal;
     private Double vertical;
     private String seriesName;
+    private String courseName;
 
-    public Coordinate(Integer horizontal, Double vertical, String seriesName) {
+    public Coordinate(Integer horizontal, Double vertical, String seriesName,String courseName) {
         this.horizontal = horizontal;
         this.vertical = vertical;
         this.seriesName = seriesName;
+        this.courseName=courseName;
+    }
+
+    public String getCourseName() {
+        return courseName;
+    }
+
+    public void setCourseName(String courseName) {
+        this.courseName = courseName;
     }
 
     public Coordinate() {

@@ -265,6 +265,7 @@
                 title: "<spring:message code='teacher.class.count'/>",
                 align: "center",
                 canFilter: false,
+                canSort: false
 
             } ,
             {
@@ -272,6 +273,7 @@
                 title: "<spring:message code='teacher.lastEval.averageResult'/>",
                 align: "center",
                 canFilter:false,
+                canSort:false
 
             }
 
