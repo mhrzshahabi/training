@@ -67,7 +67,9 @@ public class TeacherCertificateService implements ITeacherCertificationService {
            dto.setId(saved.getId());
            dto.setCourseTitle(saved.getCourseTitle());
            dto.setCertificationStatus(elsTeacherCertification.getCertificationStatus());
-           dto.setCourseDate(elsTeacherCertification.getCourseDate());
+
+         Long milisec= getPublicationDate(saved.getStartDate());
+           dto.setCourseDate(milisec);
            dto.setCompanyName(saved.getCompanyName());
 
 
