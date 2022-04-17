@@ -84,7 +84,9 @@
             {
                 name: "teacherEvalGrade",
                 title: "نمره ارزیابی فراگیران به مدرس",
-                canFilter: false
+                canFilter: false,
+
+
             },
             {
                 name: "evaluationGrade",
@@ -132,8 +134,9 @@
         },
     });
     //----------------------------------------------------------------------------Toolscrip--------------------------------------------------------------------
-    ToolStripButton_ShowChart_TeachingSubject = isc.ToolStripButtonChart.create({
+    ToolStripButton_ShowChart_TeachingSubject = isc.ToolStripButton.create({
         enabled: false,
+        title:"نمایش نمودار رضایت فراگیر",
         click: function () {
             let localData = ListGrid_JspInternalTeachingSubject.data.localData;
             showChart_teachingSubject(localData);

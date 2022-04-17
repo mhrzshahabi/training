@@ -217,14 +217,23 @@ public class ClassFormController {
       List<TclassDTO.TeachingHistory> finalData=  allData.stream().sorted(Comparator.comparing(TclassDTO.TeachingHistory::getId)).collect(Collectors.toList());
         List<Coordinate> xyData = new ArrayList<>();
         final Integer[] count = {1};
-        String seriesName=PersianCharachtersUnicode.bidiReorder(" نمودار رضایت فراگیر از استاد");
+
+
         finalData.forEach(item -> {
             if(item.getEvaluationGrade()>0.0) {
-                xyData.add(new Coordinate(count[0], item.getEvaluationGrade(), seriesName));
+                xyData.add(new Coordinate(count[0], item.getEvaluationGrade(),"" ,item.getEndDate()));
                 ++count[0];
             }
         });
 
+        final String[] addition = {""};
+        xyData.stream().forEach(xy->{
+         addition[0] +=  xy.getHorizontal()+"->"+xy.getCourseName()+" ";
+        });
+
+       xyData.stream().forEach(xy->{
+           xy.setSeriesName(addition[0]);
+       });
         Map<String, Object> parameters = new HashMap<>();
       parameters.put("CHART_DATA",xyData);
 
