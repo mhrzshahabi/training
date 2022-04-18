@@ -55,6 +55,16 @@ public class StudentService implements IStudentService {
         return modelMapper.map(student, StudentDTO.Info.class);
     }
 
+    @Override
+    public StudentDTO.ClassStudentInfo getLastStudentByNationalCode(String nationalCode) {
+        Optional<Student> optionalStudent=studentDAO.findFirstByNationalCodeOrderByIdDesc(nationalCode);
+        if (optionalStudent.isPresent()){
+            final Student student = optionalStudent.get();
+            return modelMapper.map(student, StudentDTO.ClassStudentInfo.class);
+        }else
+            return null;
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Student getStudent(Long id) {

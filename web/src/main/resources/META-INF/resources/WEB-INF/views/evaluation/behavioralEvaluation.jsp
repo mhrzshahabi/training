@@ -256,11 +256,17 @@
                 ListGrid_student_BE.invalidateCache();
             },
             getCellCSSText: function (record, rowNum, colNum) {
-                // if (!ListGrid_student_BE.getFieldByName("evaluationStatusBehavior").hidden && record.evaluationStatusBehavior === 1)
-                //     return "background-color : #d8e4bc";
-                //
-                // if (!ListGrid_student_BE.getFieldByName("evaluationStatusBehavior").hidden && (record.evaluationStatusBehavior === 3 || record.evaluationStatusBehavior === 2))
-                //     return "background-color : #b7dee8";
+                if ( (record.numberOfSendedBehavioralForms  ===  record.numberOfRegisteredBehavioralForms ) &&  record.numberOfSendedBehavioralForms === 0)
+                    return "background-color : #fffff";
+
+
+                if ( (record.numberOfSendedBehavioralForms  !==  record.numberOfRegisteredBehavioralForms ) &&  record.numberOfSendedBehavioralForms!== 0)
+                    return "background-color : #d8e4bc";
+
+
+                if ( (record.numberOfSendedBehavioralForms  ===  record.numberOfRegisteredBehavioralForms ) &&  record.numberOfSendedBehavioralForms!== 0)
+                    return "background-color : #b7dee8";
+
                 if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber")
                     return  ";color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
             },
@@ -346,8 +352,35 @@
                 ListGrid_student_BE.invalidateCache();
             }
         });
-        
-        var ToolStripButton_Excel_BE = isc.ToolStripButtonExcel.create({
+
+    let help = isc.RibbonGroup.create({
+        ID: "fileGroup_RE",
+        title: "راهنمای رنگ بندی لیست",
+        numRows: 1,
+        colWidths: [40, "*"],
+        height: "10px",
+        titleAlign: "center",
+        titleStyle: "gridHint",
+        controls: [
+            isc.IconButton.create(isc.addProperties({
+                title: "صادر نشده",
+                baseStyle: "gridHint",
+                backgroundColor: '#fffff'
+            })),
+            isc.IconButton.create(isc.addProperties({
+                title: "صادر شده",
+                baseStyle: "gridHint",
+                backgroundColor: '#d8e4bc'
+            })),
+            isc.IconButton.create(isc.addProperties({
+                title: "تکمیل شده",
+                baseStyle: "gridHint",
+                backgroundColor: '#b7dee8'
+            }))
+        ]
+    });
+
+    var ToolStripButton_Excel_BE = isc.ToolStripButtonExcel.create({
         click: function () {
             ExportToFile.downloadExcelRestUrl(null, ListGrid_student_BE, tclassStudentUrl, 0,
                 null, '', "لیست فراگیران", ListGrid_student_BE.data.getCriteria(), null);
@@ -366,17 +399,12 @@
             width: "100%",
             membersMargin: 10,
             members: [
-                // isc.VLayout.create({
-                //     members: [
-                //         ToolStripButton_FormIssuanceForAll_BE,
-                //         isc.LayoutSpacer.create({height: "22"})
-                //     ]
-                // }),
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
+                        help,
                         <sec:authorize access="hasAuthority('Evaluation_Behavior_Actions')">
                         ToolStripButton_Excel_BE,
                         ToolStripButton_Print_BE,
@@ -497,12 +525,12 @@
                                 EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                                 EvaluationListGrid_PeronalLIst_BE.invalidateCache();
                                 EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    if(resp.data.size() == 0){
-                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    }
+                                    // if(resp.data.size() == 0){
+                                    //     EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                    //     EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                    //     EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                    //     EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    // }
                                 });
                             }
                             else if(value == 189){
@@ -510,12 +538,12 @@
                                 EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                                 EvaluationListGrid_PeronalLIst_BE.invalidateCache();
                                 EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    if(resp.data.size() == 0){
-                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    }
+                                    // if(resp.data.size() == 0){
+                                    //     EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                    //     EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                    //     EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                    //     EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    // }
                                 });
                             }
                             else if(value == 454){
@@ -523,20 +551,20 @@
                                 EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                                 EvaluationListGrid_PeronalLIst_BE.invalidateCache();
                                 EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    if(resp.data.size() == 0){
-                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    }
+                                    // if(resp.data.size() == 0){
+                                    //     EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                    //     EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                    //     EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                    //     EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    // }
                                 });
                             }
-                            else if(value == 188){
+                            else if(value === 188){
                                 EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getStudent/" + record.student.nationalCode;
                                 EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                                 EvaluationListGrid_PeronalLIst_BE.invalidateCache();
                                 EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    if(resp.data.size() == 0){
+                                    if(resp.data.size() === 0){
                                         EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
                                         EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                                         EvaluationListGrid_PeronalLIst_BE.fetchData();
@@ -639,12 +667,12 @@
             EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
             EvaluationListGrid_PeronalLIst_BE.invalidateCache();
             EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                if(resp.data.size() == 0){
-                    EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                    EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                    EvaluationListGrid_PeronalLIst_BE.fetchData();
-                    EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                }
+                // if(resp.data.size() == 0){
+                //     EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                //     EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                //     EvaluationListGrid_PeronalLIst_BE.fetchData();
+                //     EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                // }
             });
         }
 
@@ -1284,6 +1312,7 @@
                                         evaluatorTypeId, evaluatedId, evaluatedTypeId, questionnarieTypeId,
                                         evaluationLevel,questionnaireId){
 
+
             let data = {};
             data.classId = classRecord_BE.id;
             data.status = false;
@@ -1308,24 +1337,28 @@
             obj.evaluatedTypeId = evaluatedTypeId;
             obj.questionnaireTypeId = questionnarieTypeId;
             obj.evaluationLevelId = evaluationLevel;
-
+            evalWait_BE = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getEvaluationForm", "POST", JSON.stringify(obj), function (resp) {
                 if(resp.httpResponseCode == 406){
                     isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl, "POST", JSON.stringify(data), function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                             const msg = createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                            evalWait_BE.close();
                             setTimeout(() => {
                                 msg.close();
                             }, 3000);
                                 ListGrid_student_BE.invalidateCache();
                         }
                         else {
+                            evalWait_BE.close();
                             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                         }
                     }));
                 }
-                else
+                else{
+                    evalWait_BE.close();
                     createDialog("info", "فرم ارزیابی رفتاری قبلا برای این فرد صادر شده است");
+                }
             }));
         }
 

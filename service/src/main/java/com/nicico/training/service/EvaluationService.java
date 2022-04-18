@@ -913,13 +913,13 @@ public class EvaluationService implements IEvaluationService {
                         Optional<DynamicQuestion> dById = dynamicQuestionDAO.findById(re.getEvaluationQuestionId());
                         if (dById.isPresent()) {
                             DynamicQuestion dynamicQuestion = dById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                            if (dynamicQuestion.getGoalId() != null) {
+                            if (dynamicQuestion.getGoalId() != null && indicesGrade.get("g" + dynamicQuestion.getGoalId())!=null) {
                                 double oldVal = indicesGrade.get("g" + dynamicQuestion.getGoalId());
                                 indicesGrade.replace("g" + dynamicQuestion.getGoalId(), oldVal + (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight());
                                 int indexOldVal = indicesTotalWeight.get("g" + dynamicQuestion.getGoalId());
                                 indicesTotalWeight.replace("g" + dynamicQuestion.getGoalId(), indexOldVal + 1);
                             }
-                            if (dynamicQuestion.getSkillId() != null) {
+                            if (dynamicQuestion.getSkillId() != null && indicesGrade.get("s" + dynamicQuestion.getSkillId())!=null) {
                                 double oldVal = indicesGrade.get("s" + dynamicQuestion.getSkillId());
                                 indicesGrade.replace("s" + dynamicQuestion.getSkillId(), oldVal + (Double.parseDouble(parameterValueDAO.findFirstById(re.getAnswerId()).getValue())) * re.getWeight());
                                 int indexOldVal = indicesTotalWeight.get("s" + dynamicQuestion.getSkillId());

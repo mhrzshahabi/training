@@ -18,6 +18,8 @@ public interface IStudentService {
 
     StudentDTO.Info get(Long id);
 
+    StudentDTO.ClassStudentInfo getLastStudentByNationalCode(String nationalCode);
+
     Student getStudent(Long id);
 
     Student getStudentByPersonnelNo(String personnelNo);

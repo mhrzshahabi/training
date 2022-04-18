@@ -181,4 +181,8 @@ public interface StudentDAO extends JpaRepository<Student, Long>, JpaSpecificati
             "         INNER JOIN TBL_CLASS TC ON TCS.CLASS_ID = TC.ID " +
             "WHERE TC.C_CODE = :classCode ", nativeQuery = true)
     List<Student> getAllStudentsOfClassByClassCode(@Param("classCode") String classCode);
+
+
+    Optional<Student> findFirstByNationalCodeOrderByIdDesc(String nationalCode);
+
 }

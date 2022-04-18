@@ -13,14 +13,8 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PersonnelRegisteredDTO;
-import com.nicico.training.dto.PostDTO;
-import com.nicico.training.dto.ViewActivePersonnelDTO;
-import com.nicico.training.iservice.ICourseService;
-import com.nicico.training.iservice.IPersonnelRegisteredService;
-import com.nicico.training.iservice.IPostService;
-import com.nicico.training.iservice.IViewActivePersonnelService;
+import com.nicico.training.dto.*;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.Personnel;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.ViewActivePersonnel;
@@ -62,6 +56,7 @@ public class ViewActivePersonnelRestController {
     final ReportUtil reportUtil;
     private final MessageSource messageSource;
     private final IViewActivePersonnelService iViewActivePersonnelService;
+    private final IStudentService iStudentService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final ModelMapper modelMapper;
     private final IPostService postService;
@@ -309,19 +304,16 @@ public class ViewActivePersonnelRestController {
     }
 
     @GetMapping(value = "getStudent/{studentNationalCode}")
-    public ResponseEntity<ISC<ViewActivePersonnelDTO.Info>> getStudent(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String studentNationalCode) throws IOException {
-        ViewActivePersonnel[] tempResult = iViewActivePersonnelService.findByNationalCode(studentNationalCode);
-        SearchDTO.SearchRs<ViewActivePersonnelDTO.Info> searchRs = new SearchDTO.SearchRs<>();
+    public ResponseEntity<ISC<StudentDTO.ClassStudentInfo>> getStudent(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String studentNationalCode) throws IOException {
+        StudentDTO.ClassStudentInfo tempResult = iStudentService.getLastStudentByNationalCode(studentNationalCode);
+        SearchDTO.SearchRs<StudentDTO.ClassStudentInfo> searchRs = new SearchDTO.SearchRs<>();
         searchRs.setList(new ArrayList<>());
         searchRs.setTotalCount((long) 0);
-        if (tempResult != null && tempResult.length != 0) {
-            ViewActivePersonnelDTO.Info result = modelMapper.map(tempResult[0], ViewActivePersonnelDTO.Info.class);
-            searchRs.getList().add(result);
+        if (tempResult != null) {
+            searchRs.getList().add(tempResult);
             searchRs.setTotalCount((long) 1);
-            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
         }
-        else
-            return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
     }
 
 }
