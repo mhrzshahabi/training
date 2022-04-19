@@ -7,6 +7,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ForeignLangKnowledgeDTO;
 import com.nicico.training.iservice.IForeignLangKnowledgeService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.mapper.ForeignLanguage.ForeignLanguageBeenMapper;
 import com.nicico.training.model.ForeignLangKnowledge;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.ForeignLangKnowledgeDAO;
@@ -17,10 +18,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +28,7 @@ public class ForeignLangKnowledgeService implements IForeignLangKnowledgeService
     private final ModelMapper modelMapper;
     private final ForeignLangKnowledgeDAO foreignLangKnowledgeDAO;
     private final ITeacherService teacherService;
+    private final ForeignLanguageBeenMapper foreignLanguageBeenMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -121,6 +121,14 @@ public class ForeignLangKnowledgeService implements IForeignLangKnowledgeService
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
+    }
+    @Transactional
+    @Override
+    public List<ForeignLangKnowledgeDTO.Resume> getListByTeacherId(String nationalCode) {
+        Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
+      List<ForeignLangKnowledge>  foreignLangKnowledgeList= foreignLangKnowledgeDAO.findAllByTeacherId(teacherId);
+      List<ForeignLangKnowledgeDTO.Resume> dtos=foreignLanguageBeenMapper.toDTOs(foreignLangKnowledgeList.stream().sorted(Comparator.comparing(ForeignLangKnowledge::getId)).collect(Collectors.toList()));
+       return dtos;
     }
 
 

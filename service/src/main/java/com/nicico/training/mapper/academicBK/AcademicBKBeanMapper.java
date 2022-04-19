@@ -60,6 +60,8 @@ public abstract class AcademicBKBeanMapper {
     @Mapping(source = "educationMajorId", target = "educationMajor", qualifiedByName = "toEducationMajor")
     @Mapping(source = "educationOrientationId", target = "educationOrientation", qualifiedByName = "toEducationOrientation")
     @Mapping(source = "universityId", target = "university", qualifiedByName = "toUniversity")
+    @Mapping(source = "duration", target = "duration")
+    @Mapping(source = "academicGrade", target = "academicGrade")
     public abstract ElsAcademicBKFindAllRespDto academicBKToElsAcademicBKRes (AcademicBK academicBK);
 
     public abstract List<ElsAcademicBKFindAllRespDto> academicBKToElsAcademicBKFindAllRes(List<AcademicBK> academicBKList);

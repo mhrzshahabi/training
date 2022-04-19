@@ -26,8 +26,10 @@ import response.BaseResponse;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -188,7 +190,7 @@ public class PublicationService implements IPublicationService {
             return null;
         } else {
             List<Publication> publications = publicationDAO.findAllByTeacherIdOrderByIdDesc(teacherId);
-            List<ElsPublicationDTO.Resume> resumeList = teacherPublicationBeanMapper.toElsPublicationResumeDTOList(publications);
+            List<ElsPublicationDTO.Resume> resumeList = teacherPublicationBeanMapper.toElsPublicationResumeDTOList(publications.stream().sorted(Comparator.comparing(Publication::getId)).collect(Collectors.toList()));
             return resumeList;
         }
     }

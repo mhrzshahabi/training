@@ -82,4 +82,19 @@ public class ForeignLangKnowledgeDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class Resume {
+       private String title;
+       private  String level;
+       private String instituteName;
+       private String duration;
+       private String from;
+       private String to;
+    }
+
 }

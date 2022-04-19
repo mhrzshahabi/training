@@ -38,5 +38,7 @@ public class ElsEmploymentHistoryFindAllRespDto extends BaseResponse {
         private String collaborationType;
         private String collaborationDurationInMonth;
         private String collaborationDurationInYear;
+        private String from;
+        private String to;
     }
 }

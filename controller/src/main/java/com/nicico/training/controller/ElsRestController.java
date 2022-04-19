@@ -168,6 +168,7 @@ public class ElsRestController {
     private final TeacherPresentableCourseMapper teacherPresentableCourseMapper;
     private final ITeacherSpecialSkillService iTeacherSpecialSkillService;
     private final IPublicationService iPublicationService;
+    private final ForeignLangKnowledgeService foreignLangKnowledgeService;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -2700,13 +2701,14 @@ public class ElsRestController {
     @GetMapping("/teacher/pdfRequirementItems/{nationalCode}")
     public RequirementItemsResumeDTO getPdfRequirementItems(HttpServletRequest header, @PathVariable String nationalCode) {
         RequirementItemsResumeDTO response = new RequirementItemsResumeDTO();
-        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             ElsTeacherInfoDto.Resume infoDTO = teacherService.getTeacherResumeByNationalCode(nationalCode);
             List<ElsAcademicBKFindAllRespDto> academicBKDTOs = iAcademicBKService.findAcademicBKsByTeacherNationalCode(nationalCode);
             List<ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume> teachingHistoryRespDTOs = iTeachingHistoryService.findTeachingHistoriesResumeByNationalCode(nationalCode);
             List<ElsPublicationDTO.Resume> publicationDTOS = iPublicationService.findTeacherPublicationsResumeListByNationalCode(nationalCode);
             List<ElsEmploymentHistoryFindAllRespDto.Resume> executiveHistoryRespDTOs = iEmploymentHistoryService.findEmploymentHistoryResumeListByNationalCode(nationalCode);
             List<ElsTeacherCertificationDate> passedCourseRespDTOs = teacherCertificationService.findTeacherCertificationList(nationalCode);
+            List<ForeignLangKnowledgeDTO.Resume> foreignLanguageDTOs= foreignLangKnowledgeService.getListByTeacherId(nationalCode);
             List<ElsSuggestedCourse> suggestedCourseDTOs = teacherSuggestedService.findAllTeacherSuggestedDtoList(nationalCode);
             List<TeacherSpecialSkillDTO.Resume> specialSkillsInfos = iTeacherSpecialSkillService.findTeacherSpecialSkillsByNationalCode(nationalCode);
             List<ElsPresentableResponse> presentableCourseDTOS = teacherPresentableCourseService.getAllByNationalCode(nationalCode);
@@ -2719,11 +2721,12 @@ public class ElsRestController {
             response.setSuggestedCourseDTOs(suggestedCourseDTOs);
             response.setSpecialSkillsInfos(specialSkillsInfos);
             response.setPresentableCourseDTOS(presentableCourseDTOS);
+            response.setForeignLangKnowledgeDTOS(foreignLanguageDTOs);
             response.setStatus(HttpStatus.OK.value());
-        } else {
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.setMessage("دسترسی موردنظر یافت نشد");
-        }
+//        } else {
+//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+//            response.setMessage("دسترسی موردنظر یافت نشد");
+//        }
         return response;
     }
 

@@ -34,5 +34,19 @@ public class ElsTeacherInfoDto extends BaseResponse {
         private String teachingBackgroundInYear;
         private String iban;
         private String email;
+        private String firstNameFa;
+        private String lastNameFa;
+        private String personnelCode;
+        private String nationalCode;
+        private String gender;
+        private String birthLocation;
+        private String birthCertificate;
+        private String birthCertificateLocation;
+        private String militaryStatus;
+        private String homeAddress;
+        private String homePostalCode;
+        private String workAddress;
+        private String workPostalCode;
+        private String mobile;
     }
 }
