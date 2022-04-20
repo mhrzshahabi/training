@@ -40,8 +40,10 @@ public abstract class TeacherCertificationMapper {
            dto.setCompanyName(teacherCertification.getCompanyName());
            dto.setId(teacherCertification.getId());
            dto.setCertificationStatus(teacherCertification.getCertificationStatus());
-
+           dto.setCourseEndDate(teacherCertification.getEndDate());
            dto.setCourseDate(teacherCertification.getStartDate());
+           if(teacherCertification.getDuration()!=null)
+           dto.setDuration(teacherCertification.getDuration().toString());
            list.add(dto);
        });
        return list;

@@ -142,7 +142,7 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
     public List<ElsEmploymentHistoryFindAllRespDto.Resume> findEmploymentHistoryResumeListByNationalCode(String nationalCode) {
         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
         List<EmploymentHistory> employmentHistoryList = employmentHistoryDAO.findAllByTeacherId(teacherId);
-        return employmentHistoryBeanMapper.empHistoryResumeListToElsFindRespList(employmentHistoryList);
+        return employmentHistoryBeanMapper.empHistoryResumeListToElsFindRespList(employmentHistoryList.stream().sorted(Comparator.comparing(EmploymentHistory::getId)).collect(Collectors.toList()));
     }
 
     private EmploymentHistoryDTO.Info save(EmploymentHistory employmentHistory) {

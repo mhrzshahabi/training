@@ -101,7 +101,7 @@ public class TeachingHistoryService implements ITeachingHistoryService {
     public List<ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume> findTeachingHistoriesResumeByNationalCode(String nationalCode) {
         Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
         List<TeachingHistory> teachingHistoryList = teachingHistoryDAO.findAllByTeacherId(teacherId);
-        return teachingHistoryBeanMapper.teachHistoryListToElsResumeRespList(teachingHistoryList);
+        return teachingHistoryBeanMapper.teachHistoryListToElsResumeRespList(teachingHistoryList.stream().sorted(Comparator.comparing(TeachingHistory::getDuration).reversed()).collect(Collectors.toList()));
     }
 
     @Transactional(readOnly = true)

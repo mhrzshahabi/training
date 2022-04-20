@@ -168,6 +168,7 @@ public class ElsRestController {
     private final TeacherPresentableCourseMapper teacherPresentableCourseMapper;
     private final ITeacherSpecialSkillService iTeacherSpecialSkillService;
     private final IPublicationService iPublicationService;
+    private final ForeignLangKnowledgeService foreignLangKnowledgeService;
 
 
     @Value("${nicico.elsSmsUrl}")
@@ -2707,6 +2708,7 @@ public class ElsRestController {
             List<ElsPublicationDTO.Resume> publicationDTOS = iPublicationService.findTeacherPublicationsResumeListByNationalCode(nationalCode);
             List<ElsEmploymentHistoryFindAllRespDto.Resume> executiveHistoryRespDTOs = iEmploymentHistoryService.findEmploymentHistoryResumeListByNationalCode(nationalCode);
             List<ElsTeacherCertificationDate> passedCourseRespDTOs = teacherCertificationService.findTeacherCertificationList(nationalCode);
+            List<ForeignLangKnowledgeDTO.Resume> foreignLanguageDTOs= foreignLangKnowledgeService.getListByTeacherId(nationalCode);
             List<ElsSuggestedCourse> suggestedCourseDTOs = teacherSuggestedService.findAllTeacherSuggestedDtoList(nationalCode);
             List<TeacherSpecialSkillDTO.Resume> specialSkillsInfos = iTeacherSpecialSkillService.findTeacherSpecialSkillsByNationalCode(nationalCode);
             List<ElsPresentableResponse> presentableCourseDTOS = teacherPresentableCourseService.getAllByNationalCode(nationalCode);
@@ -2719,6 +2721,7 @@ public class ElsRestController {
             response.setSuggestedCourseDTOs(suggestedCourseDTOs);
             response.setSpecialSkillsInfos(specialSkillsInfos);
             response.setPresentableCourseDTOS(presentableCourseDTOS);
+            response.setForeignLangKnowledgeDTOS(foreignLanguageDTOs);
             response.setStatus(HttpStatus.OK.value());
         } else {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());

@@ -44,6 +44,8 @@ public class ElsTeachingHistoryFindAllRespDto extends BaseResponse {
         private String durationInHour;
         private String stdLevel;
         private String eduLevel;
+        private String from;
+        private String to;
     }
 
 }

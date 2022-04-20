@@ -97,7 +97,7 @@ public abstract class TeacherPublicationBeanMapper {
         }
         return subCategoryInfoList;
     }
-
+  @Mapping(source="publicationSubjectType.titleFa",target = "publicationSubjectType")
     public abstract ElsPublicationDTO.Resume toElsPublicationResumeDTO(Publication publications);
 
     public abstract List<ElsPublicationDTO.Resume> toElsPublicationResumeDTOList(List<Publication> publications);

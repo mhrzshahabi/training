@@ -24,4 +24,6 @@ public class ElsAcademicBKFindAllRespDto extends BaseResponse {
     private Long universityId;
     private ElsUniversityDto university;
     private String date;
+    private String academicGrade;
+    private String duration;
 }

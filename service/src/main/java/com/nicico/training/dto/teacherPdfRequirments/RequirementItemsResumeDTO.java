@@ -1,9 +1,6 @@
 package com.nicico.training.dto.teacherPdfRequirments;
 
-import com.nicico.training.dto.ElsPresentableResponse;
-import com.nicico.training.dto.ElsSuggestedCourse;
-import com.nicico.training.dto.ElsTeacherCertificationDate;
-import com.nicico.training.dto.ElsTeacherInfoDto;
+import com.nicico.training.dto.*;
 import com.nicico.training.dto.teacherPublications.ElsPublicationDTO;
 import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillDTO;
 import lombok.Getter;
@@ -26,5 +23,6 @@ public class RequirementItemsResumeDTO extends BaseResponse {
     private List<ElsSuggestedCourse> suggestedCourseDTOs;
     private List<TeacherSpecialSkillDTO.Resume> specialSkillsInfos;
     private List<ElsPresentableResponse> presentableCourseDTOS;
+    private List<ForeignLangKnowledgeDTO.Resume> foreignLangKnowledgeDTOS;
 
 }

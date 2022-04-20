@@ -157,5 +157,6 @@ public class ElsPublicationDTO {
         private String publicationLocation;
         private String publisher;
         private String publicationNumber;
+        private String publicationSubjectType;
     }
 }

@@ -145,6 +145,8 @@ public abstract class TeachingHistoryBeanMapper {
     @Mapping(source = "educationLevelId", target = "eduLevel", qualifiedByName = "toEducationLevelُTitle")
     @Mapping(source = "studentsLevelId", target = "stdLevel", qualifiedByName = "toStudentsLevelTitle")
     @Mapping(source = "duration", target = "durationInHour", qualifiedByName = "toDurationInHour")
+    @Mapping(source = "startDate", target = "from")
+    @Mapping(source = "endDate", target = "to")
     public abstract ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume teachHistoryListToElsResumeResp(TeachingHistory teachingHistory);
 
     public abstract List<ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume> teachHistoryListToElsResumeRespList(List<TeachingHistory> teachingHistoryList);

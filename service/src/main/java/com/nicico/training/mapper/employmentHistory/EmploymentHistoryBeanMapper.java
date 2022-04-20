@@ -142,7 +142,11 @@ public abstract class EmploymentHistoryBeanMapper {
     @Mapping(source = "collaborationTypeId", target = "collaborationType", qualifiedByName = "toCollaborationTypeTitle")
     @Mapping(source = "collaborationDuration", target = "collaborationDurationInMonth", qualifiedByName = "getCollaborationDurationInMonth")
     @Mapping(source = "collaborationDuration", target = "collaborationDurationInYear", qualifiedByName = "getCollaborationDurationInYear")
+    @Mapping(source = "startDate", target = "from")
+    @Mapping(source = "endDate", target = "to")
     public abstract ElsEmploymentHistoryFindAllRespDto.Resume empHistoryResumeToElsFindResp(EmploymentHistory employmentHistory);
+
+
 
     public abstract List<ElsEmploymentHistoryFindAllRespDto.Resume> empHistoryResumeListToElsFindRespList(List<EmploymentHistory> employmentHistoryList);
 

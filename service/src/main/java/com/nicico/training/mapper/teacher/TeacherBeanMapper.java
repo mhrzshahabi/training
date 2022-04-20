@@ -92,13 +92,28 @@ public interface TeacherBeanMapper {
 
     @Mappings({
             @Mapping(target = "fatherName", source = "personality.fatherName"),
+            @Mapping(target = "firstNameFa", source = "personality.firstNameFa"),
+            @Mapping(target = "lastNameFa", source = "personality.lastNameFa"),
+            @Mapping(target = "personnelCode", source = "personnelCode"),
+            @Mapping(target = "birthLocation", source = "personality.birthLocation"),
+            @Mapping(target = "birthCertificate", source = "personality.birthCertificate"),
+            @Mapping(target = "birthCertificateLocation", source = "personality.birthCertificateLocation"),
+            @Mapping(target = "militaryStatus", source = "personality.military.titleFa"),
+            @Mapping(target = "homeAddress", source = "personality.contactInfo.homeAddress.restAddr"),
+            @Mapping(target = "homePostalCode", source = "personality.contactInfo.homeAddress.postalCode"),
+            @Mapping(target = "workAddress", source = "personality.contactInfo.workAddress.restAddr"),
+            @Mapping(target = "workPostalCode", source = "personality.contactInfo.workAddress.postalCode"),
+            @Mapping(target = "mobile", source = "personality.contactInfo.mobile"),
             @Mapping(target = "birthDate", source = "personality.birthDate"),
             @Mapping(target = "teachingBackgroundInMonth", source = "teachingBackground", qualifiedByName = "getBackgroundInMonth"),
             @Mapping(target = "teachingBackgroundInYear", source = "teachingBackground", qualifiedByName = "getBackgroundInYear"),
             @Mapping(target = "iban", source = "iban"),
             @Mapping(target = "email", source = "personality.contactInfo.email"),
+            @Mapping(target = "nationalCode", source = "personality.nationalCode"),
+            @Mapping(target = "gender", source = "personality.gender.titleFa")
     })
     ElsTeacherInfoDto.Resume toElsTeacherResumeDto(Teacher teacher);
+
 
 
     @Named("getBackgroundInMonth")
@@ -119,5 +134,6 @@ public interface TeacherBeanMapper {
             return null;
         }
     }
+
 
 }

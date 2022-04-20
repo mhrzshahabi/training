@@ -4,6 +4,8 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ForeignLangKnowledgeDTO;
 import com.nicico.training.model.ForeignLangKnowledge;
 
+import java.util.List;
+
 public interface IForeignLangKnowledgeService {
 
     ForeignLangKnowledgeDTO.Info get(Long id);
@@ -17,5 +19,7 @@ public interface IForeignLangKnowledgeService {
     void addForeignLangKnowledge(ForeignLangKnowledgeDTO.Create request, Long teacherId);
 
     void deleteForeignLangKnowledge(Long teacherId, Long foreignLangKnowledgeId);
+
+    List<ForeignLangKnowledgeDTO.Resume> getListByTeacherId(String nationalCode);
 
 }
