@@ -2701,7 +2701,7 @@ public class ElsRestController {
     @GetMapping("/teacher/pdfRequirementItems/{nationalCode}")
     public RequirementItemsResumeDTO getPdfRequirementItems(HttpServletRequest header, @PathVariable String nationalCode) {
         RequirementItemsResumeDTO response = new RequirementItemsResumeDTO();
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             ElsTeacherInfoDto.Resume infoDTO = teacherService.getTeacherResumeByNationalCode(nationalCode);
             List<ElsAcademicBKFindAllRespDto> academicBKDTOs = iAcademicBKService.findAcademicBKsByTeacherNationalCode(nationalCode);
             List<ElsTeachingHistoryFindAllRespDto.TeachingHistoryResume> teachingHistoryRespDTOs = iTeachingHistoryService.findTeachingHistoriesResumeByNationalCode(nationalCode);
@@ -2723,10 +2723,10 @@ public class ElsRestController {
             response.setPresentableCourseDTOS(presentableCourseDTOS);
             response.setForeignLangKnowledgeDTOS(foreignLanguageDTOs);
             response.setStatus(HttpStatus.OK.value());
-//        } else {
-//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//            response.setMessage("دسترسی موردنظر یافت نشد");
-//        }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("دسترسی موردنظر یافت نشد");
+        }
         return response;
     }
 
