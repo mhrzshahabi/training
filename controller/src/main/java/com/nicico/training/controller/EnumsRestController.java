@@ -1,11 +1,5 @@
 package com.nicico.training.controller;
 
-/*
-AUTHOR: ghazanfari_f
-DATE: 6/10/2019
-TIME: 10:40 AM
-*/
-
 import com.nicico.training.dto.enums.*;
 import com.nicico.training.model.enums.ETechnicalType;
 import lombok.RequiredArgsConstructor;
@@ -140,6 +134,11 @@ public class EnumsRestController {
     @GetMapping("eQuestionLevel/spec-list")
     public ResponseEntity<EQuestionLevelDTO.EQuestionLevelSpecRs> getEQuestionLevel() {
         return new ResponseEntity<>(new EQuestionLevelDTO.EQuestionLevelSpecRs(), HttpStatus.OK);
+    }
+
+    @GetMapping("serviceType/spec-list")
+    public ResponseEntity<EServiceTypeDTO.EServiceTypeSpecRs> getEServiceType() {
+        return new ResponseEntity<>(new EServiceTypeDTO.EServiceTypeSpecRs(), HttpStatus.OK);
     }
 
 }

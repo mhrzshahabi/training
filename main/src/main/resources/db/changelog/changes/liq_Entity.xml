@@ -3489,4 +3489,88 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-057">
+        <createTable tableName="tbl_agreement">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_agreementPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="f_first_party_institute_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_second_party_teacher_id" type="NUMBER(19, 0)"/>
+            <column name="f_second_party_institute_id" type="NUMBER(19, 0)"/>
+            <column name="e_service_type" type="NUMBER(10, 0)"/>
+            <column name="f_currency_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_final_cost" type="NUMBER(19, 0)"/>
+            <column name="c_subject" type="VARCHAR2(150 CHAR)"/>
+            <column name="b_teacher_evaluation" type="NUMBER(1, 0)"/>
+            <column name="n_max_payment_hours" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-058">
+        <createTable tableName="tbl_agreement_class_cost">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_agreement_class_costPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="n_teaching_cost_per_hour" type="NUMBER(19, 0)"/>
+            <column name="f_class_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_agreement_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 </databaseChangeLog>

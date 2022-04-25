@@ -208,6 +208,15 @@
       "title": "منوی کارپوشه - پرتال دانشجو"
     },
 
+    {
+      "code": "Menu_Finance",
+      "title": "منوی مالی"
+    },
+    {
+      "code": "Menu_Finance_Agreement",
+      "title": "منوی مالی - تفاهم نامه"
+    },
+
 
     {
       "code": "Menu_Report",
@@ -826,7 +835,12 @@
     {"code": "Requests_U","title": "پاسخ دهی درخواست ها"},
     {"code": "Requests_P","title": "چاپ درخواست ها"},
     {"code": "Requests_History","title": "تاریخچه درخواست ها"},
-    {"code": "Requests_Files","title": "فایل های درخواست ها"}
+    {"code": "Requests_Files","title": "فایل های درخواست ها"},
+
+    {"code": "Agreement_C", "title": "ایجاد تفاهم نامه"},
+    {"code": "Agreement_R", "title": "مشاهده تفاهم نامه"},
+    {"code": "Agreement_U", "title": "ویرایش تفاهم نامه"},
+    {"code": "Agreement_D", "title": "حذف تفاهم نامه"}
 
   ]
 }

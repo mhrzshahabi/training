@@ -203,4 +203,6 @@ public interface ITclassService {
     void updateReleaseDate(List<Long> classIds, String date);
 
     Map<String, Object> getEvaluationStatisticalReport(Long classId);
+
+    TclassDTO.TClassForAgreement getTClassDataForAgreement(Long classId);
 }

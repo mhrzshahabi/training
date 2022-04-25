@@ -1314,6 +1314,8 @@
     const loginLogUrl = rootUrl + "/log";
     const helpFilesUrl = rootUrl + "/help-files";
     const fileLabelUrl = rootUrl + "/file-label";
+    const agreementUrl = rootUrl + "/agreement";
+    const agreementClassCostUrl = rootUrl + "/agreement-class-cost";
     const competenceRequestUrl = rootUrl + "/competence-request";
     const RequestItemWithDiff = rootUrl + "/request-item/list";
     const requestItemUrl = rootUrl + "/request-item";
@@ -2284,6 +2286,24 @@
     });
     </sec:authorize>
 
+    <sec:authorize access="hasAuthority('Menu_Finance')">
+    financeTSMB = isc.ToolStripMenuButton.create({
+        title: "<spring:message code="finance"/>",
+        menu: isc.Menu.create({
+            placement: "none",
+            data: [
+                <sec:authorize access="hasAuthority('Menu_Finance_Agreement')">
+                {
+                    title: "<spring:message code="agreement"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/agreement"/>");
+                    }
+                },
+                </sec:authorize>
+            ]
+        })
+    });
+    </sec:authorize>
 
     <sec:authorize access="hasAuthority('Menu_Report')">
     reportTSMB = isc.ToolStripMenuButton.create({
@@ -3036,6 +3056,10 @@
 
             <sec:authorize access="hasAuthority('Menu_Cartable')">
             cartableTSMB,
+            </sec:authorize>
+
+            <sec:authorize access="hasAuthority('Menu_Finance')">
+            financeTSMB,
             </sec:authorize>
 
             <sec:authorize access="hasAuthority('Menu_Report')">

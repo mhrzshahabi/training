@@ -551,4 +551,9 @@ public class MainFormController {
         return "report/courseHistoryReport";
     }
 
+    @RequestMapping("/agreement")
+    public String showAgreementForm() {
+        return "finance/agreement";
+    }
+
 }

@@ -1336,4 +1336,15 @@
                                  initiallyDeferred="false" referencedColumnNames="REV" referencedTableName="REVINFO"
                                  validate="true"/>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-061">
+        <addForeignKeyConstraint baseColumnNames="f_first_party_institute_id" baseTableName="tbl_agreement" constraintName="FK_institute_first_party_in_agreement" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_second_party_teacher_id" baseTableName="tbl_agreement" constraintName="FK_teacher_second_party_in_agreement" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_second_party_institute_id" baseTableName="tbl_agreement" constraintName="FK_institute_second_party_in_agreement" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_currency_id" baseTableName="tbl_agreement" constraintName="FK_parameter_value_currency_in_agreement" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="MShahabi" id="1799887766557-062">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_agreement_class_cost" constraintName="FK_class_in_agreement_class_cost" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_agreement_id" baseTableName="tbl_agreement_class_cost" constraintName="FK_agreement_in_agreement_class_cost" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_agreement" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

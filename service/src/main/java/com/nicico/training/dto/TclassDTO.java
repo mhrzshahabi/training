@@ -903,4 +903,14 @@ public class TclassDTO {
     public static class TClassAuditEvalSpecRs {
         private SpecAuditEvalRs response;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TClassForAgreement")
+    public static class TClassForAgreement {
+        private Long id;
+        private String code;
+        private String titleClass;
+    }
 }

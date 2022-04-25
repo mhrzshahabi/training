@@ -2234,4 +2234,10 @@ public class TclassService implements ITclassService {
         return result;
     }
 
+    @Override
+    public TclassDTO.TClassForAgreement getTClassDataForAgreement(Long classId) {
+        Tclass tclass = getTClass(classId);
+        return modelMapper.map(tclass, TclassDTO.TClassForAgreement.class);
+    }
+
 }
