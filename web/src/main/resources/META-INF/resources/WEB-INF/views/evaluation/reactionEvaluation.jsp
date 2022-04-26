@@ -3552,10 +3552,10 @@
         } else if (MSG_userType == "classTeacher") {
             data.classTeacher = MSG_msgContent.users;
             data.classID = MSG_classID;
-        } /*else if (MSG_userType == "classStudentHaventEvaluation") {
+        }  else if (MSG_userType == "behavioral") {
             data.classStudentHaventEvaluation = MSG_msgContent.users;
             data.classID = MSG_classID;
-        }*/
+        }
 
         let wait = createDialog("wait");
 

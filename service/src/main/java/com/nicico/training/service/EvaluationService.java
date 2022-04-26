@@ -486,6 +486,21 @@ public class EvaluationService implements IEvaluationService {
         return viewActivePersonnelDAO.findPersonnelByPersonnelNo(String.valueOf(personnelId));
     }
 
+    @Override
+    @Transactional
+    public boolean changeStatus(List<Evaluation> list) {
+        try {
+            for (Evaluation evaluation : list) {
+                evaluation.setBehavioralToOnlineStatus(true);
+            }
+            evaluationDAO.saveAll(list);
+            return true;
+        }catch (Exception e){
+            return false;
+        }
+
+    }
+
     //----------------------------------------------- evaluation updating ----------------------------------------------
     public void updateTclassInfo(Long classID, Integer reactionTrainingStatus, Integer reactionTeacherStatus) {
         Optional<Tclass> byId = tclassDAO.findById(classID);

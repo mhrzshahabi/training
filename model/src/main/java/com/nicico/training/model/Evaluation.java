@@ -89,4 +89,7 @@ public class Evaluation extends Auditable {
 
     @Column(name = "f_questionnaire_id")
     private Long questionnaireId;
+
+    @Column(name = "b_behavioral_to_online_status")
+    private Boolean behavioralToOnlineStatus;
 }

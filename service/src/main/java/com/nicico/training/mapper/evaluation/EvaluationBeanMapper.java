@@ -214,18 +214,22 @@ public abstract class EvaluationBeanMapper {
             dto.setId(evaluation.getId());
             Questionnaire questionnaire = questionnaireService.get(evaluation.getQuestionnaireId());
             dto.setTitle(questionnaire.getTitle());
+            if (evaluation.getEvaluationLevelId().equals(156L)) {
+                Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatedId());
+                classStudent.ifPresent(student -> dto.setTitle(questionnaire.getTitle() + "(" + student.getStudent().getFirstName() + " " + student.getStudent().getLastName() + ")"));
+            }
             dto.setQuestionnaireId(evaluation.getQuestionnaireId());
             if (evaluation.getEvaluatorTypeId() == 187L) {
                 Optional<Teacher> teacher = teacherDAO.findById(evaluation.getEvaluatorId());
-                if (teacher.isPresent() ){
-                 Optional<PersonalInfo> personalInfo=  personalInfoDAO.findById(teacher.get().getPersonalityId());
+                if (teacher.isPresent()) {
+                    Optional<PersonalInfo> personalInfo = personalInfoDAO.findById(teacher.get().getPersonalityId());
                     personalInfo.ifPresent(info -> dto.setEvaluated(info.getFirstNameFa() + " " + info.getLastNameFa()));
 
                 }
             } else if (evaluation.getEvaluatorTypeId() == 188L) {
                 Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
-                if (classStudent.isPresent() && classStudent.get().getStudent() !=null)
-                    dto.setEvaluated(classStudent.get().getStudent().getFirstName() + " "+ classStudent.get().getStudent().getLastName());
+                if (classStudent.isPresent() && classStudent.get().getStudent() != null)
+                    dto.setEvaluated(classStudent.get().getStudent().getFirstName() + " " + classStudent.get().getStudent().getLastName());
             } else {
                 Optional<ViewActivePersonnel> activePersonnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId());
                 activePersonnel.ifPresent(viewActivePersonnel -> dto.setEvaluated(viewActivePersonnel.getFirstName() + " " + viewActivePersonnel.getLastName()));
@@ -327,7 +331,7 @@ public abstract class EvaluationBeanMapper {
 
         int time = Math.toIntExact(object.getExamItem().getDuration());
 
-       int timeQues = 0;
+        int timeQues = 0;
 //        if (object.getQuestions() != null && object.getQuestions().size() > 0)
 //            timeQues = (time * 60) / object.getQuestions().size();
 
@@ -368,7 +372,8 @@ public abstract class EvaluationBeanMapper {
             elsExamRequestResponse.setStatus(200);
         return elsExamRequestResponse;
     }
-    public ElsExamRequestResponse toGetExamRequest2(Tclass tClass, PersonalInfo teacherInfo, TestQuestion exam , List<ClassStudent> classStudents) {
+
+    public ElsExamRequestResponse toGetExamRequest2(Tclass tClass, PersonalInfo teacherInfo, TestQuestion exam, List<ClassStudent> classStudents) {
         ElsExamRequest request = new ElsExamRequest();
         ElsExamRequestResponse elsExamRequestResponse = new ElsExamRequestResponse();
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
@@ -376,7 +381,7 @@ public abstract class EvaluationBeanMapper {
         int time = Math.toIntExact(exam.getDuration());
 
         int timeQues = 0;
-        List<QuestionBankTestQuestion>  QuestionBankTestQuestionList= questionBankTestQuestionDAO.findAllByTestQuestionId(exam.getId());
+        List<QuestionBankTestQuestion> QuestionBankTestQuestionList = questionBankTestQuestionDAO.findAllByTestQuestionId(exam.getId());
         if (QuestionBankTestQuestionList != null && QuestionBankTestQuestionList.size() > 0)
             timeQues = (time * 60) / QuestionBankTestQuestionList.size();
 
@@ -461,13 +466,13 @@ public abstract class EvaluationBeanMapper {
         return elsExamRequestResponse;
     }
 
-    public ElsExamRequestResponse toGetPreExamRequest2(Tclass tClass, PersonalInfo teacherInfo, TestQuestion exam , List<ClassStudent> classStudents) {
+    public ElsExamRequestResponse toGetPreExamRequest2(Tclass tClass, PersonalInfo teacherInfo, TestQuestion exam, List<ClassStudent> classStudents) {
 
         ElsExamRequest request = new ElsExamRequest();
         ElsExamRequestResponse elsExamRequestResponse = new ElsExamRequestResponse();
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
 
-        List<QuestionBankTestQuestion>  QuestionBankTestQuestionList= questionBankTestQuestionDAO.findAllByTestQuestionId(exam.getId());
+        List<QuestionBankTestQuestion> QuestionBankTestQuestionList = questionBankTestQuestionDAO.findAllByTestQuestionId(exam.getId());
 
         ExamCreateDTO exam2 = getPreExamData2(exam, tClass, QuestionBankTestQuestionList.size());
         ImportedCourseCategory courseCategory = getCourseCategoryData2(exam);
@@ -544,20 +549,20 @@ public abstract class EvaluationBeanMapper {
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
         Boolean findDuplicate = false;
-        int examTime = Math.toIntExact(object.getExamItem().getDuration()!=null? object.getExamItem().getDuration() : 0);
+        int examTime = Math.toIntExact(object.getExamItem().getDuration() != null ? object.getExamItem().getDuration() : 0);
         if (object.getQuestions().size() > 0) {
 //            Double questionScore = (double) (20 / object.getQuestions().size());
-             long totalQuestionsTime=0;
-             int questionsSize=0;
+            long totalQuestionsTime = 0;
+            int questionsSize = 0;
             if (object.getQuestionData() != null) {
                 totalQuestionsTime += object.getQuestionData().stream().mapToLong(questionScore -> {
-                    String time=questionScore.getTime();
-                    if(time==null)
+                    String time = questionScore.getTime();
+                    if (time == null)
                         return 0;
                     else
                         return Long.parseLong(questionScore.getTime());
                 }).sum();
-               questionsSize =object.getQuestions().size();
+                questionsSize = object.getQuestions().size();
             }
             for (QuestionData questionData : object.getQuestions()) {
 
@@ -646,26 +651,26 @@ public abstract class EvaluationBeanMapper {
                 if (object.getQuestionData() != null) {
 
 
-                       QuestionScores questionScore = object.getQuestionData().stream()
-                               .filter(x -> x.getId().equals(question.getId()))
-                               .findFirst()
-                               .get();
+                    QuestionScores questionScore = object.getQuestionData().stream()
+                            .filter(x -> x.getId().equals(question.getId()))
+                            .findFirst()
+                            .get();
 
-                       questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
-                    Integer t=0;
-                       if(questionScore.getTime()==null) {
-                            t=0;
-                       }else{
-                           t  = Integer.valueOf(questionScore.getTime());
-                       }
+                    questionProtocol.setMark(Double.valueOf(questionScore.getScore()));
+                    Integer t = 0;
+                    if (questionScore.getTime() == null) {
+                        t = 0;
+                    } else {
+                        t = Integer.valueOf(questionScore.getTime());
+                    }
 
-                        if(totalQuestionsTime!=0) {
+                    if (totalQuestionsTime != 0) {
 
-                       questionProtocol.setTime(t*60);
-                   }else{
-                       questionProtocol.setTime(  (examTime * 60) / questionsSize);
+                        questionProtocol.setTime(t * 60);
+                    } else {
+                        questionProtocol.setTime((examTime * 60) / questionsSize);
 
-                   }
+                    }
 
 
                 }
@@ -681,7 +686,8 @@ public abstract class EvaluationBeanMapper {
         return examQuestionsObject;
         /*return questionProtocols;*/
     }
-    private ExamQuestionsObject getQuestions2(TestQuestion exam, Integer timeQues,List<QuestionBankTestQuestion> questionBankTestQuestions) {
+
+    private ExamQuestionsObject getQuestions2(TestQuestion exam, Integer timeQues, List<QuestionBankTestQuestion> questionBankTestQuestions) {
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
         Boolean findDuplicate = false;
@@ -689,7 +695,7 @@ public abstract class EvaluationBeanMapper {
         if (questionBankTestQuestions.size() > 0) {
 
             List<QuestionProtocol> questionProtocolList = iQuestionProtocolService.findAllByExamId(exam.getId());
-            Map<Long, QuestionProtocol> protocolsMap =convertProtocolListToMap(questionProtocolList);
+            Map<Long, QuestionProtocol> protocolsMap = convertProtocolListToMap(questionProtocolList);
 
             for (QuestionBankTestQuestion questionData : questionBankTestQuestions) {
 
@@ -869,6 +875,7 @@ public abstract class EvaluationBeanMapper {
 
         return courseProtocol;
     }
+
     private CourseProtocolImportDTO getCourseProtocolData2(TestQuestion exam) {
         CourseProtocolImportDTO courseProtocol = new CourseProtocolImportDTO();
         if (null != exam.getTclass().getMaxCapacity())
@@ -965,6 +972,7 @@ public abstract class EvaluationBeanMapper {
 
         return exam;
     }
+
     private ExamCreateDTO getExamData2(TestQuestion exam, Tclass tClass, int examQuestionSize) {
         int time = Math.toIntExact(exam.getDuration());
 
@@ -1043,6 +1051,7 @@ public abstract class EvaluationBeanMapper {
         exam.setStatus(ExamStatus.ACTIVE);
         return exam;
     }
+
     private ExamCreateDTO getPreExamData2(TestQuestion exam, Tclass tClass, int examQuestionsSize) {
 
         ExamCreateDTO examDto = new ExamCreateDTO();
@@ -1374,6 +1383,7 @@ public abstract class EvaluationBeanMapper {
 
         return programs;
     }
+
     private List<ImportedCourseProgram> getPrograms2(Tclass tclass) {
         List<ImportedCourseProgram> programs = new ArrayList<>();
         ////////////////////////////////////
@@ -1957,7 +1967,7 @@ public abstract class EvaluationBeanMapper {
     }
 
     public BaseResponse checkValidScores(List<ExamResult> examResult) {
-        BaseResponse response=new BaseResponse();
+        BaseResponse response = new BaseResponse();
         for (ExamResult data : examResult) {
             try {
                 double descriptiveResult = 0D;
@@ -1966,8 +1976,8 @@ public abstract class EvaluationBeanMapper {
                     String englishDescriptiveResult = new BigDecimal(data.getDescriptiveResult()).toString();
                     descriptiveResult = Double.parseDouble(englishDescriptiveResult);
                     String[] splitter = Double.toString(descriptiveResult).split("\\.");
-                    int dec=splitter[1].length();
-                    if (dec>2){
+                    int dec = splitter[1].length();
+                    if (dec > 2) {
                         response.setMessage("نمره اعشاری نمره ی تشریحی تا دو رقم باید باشد");
                         response.setStatus(406);
                         return response;
@@ -1980,15 +1990,15 @@ public abstract class EvaluationBeanMapper {
                     String englishFinalResult = new BigDecimal(data.getFinalResult()).toString();
                     finalResult = Double.parseDouble(englishFinalResult);
                     String[] splitter = Double.toString(finalResult).split("\\.");
-                    int dec=splitter[1].length();
-                    if (dec>2){
+                    int dec = splitter[1].length();
+                    if (dec > 2) {
                         response.setMessage("نمره اعشاری نمره ی نهایی تا دو رقم باید باشد");
                         response.setStatus(406);
                         return response;
 
                     }
                 }
-                if (finalResult < descriptiveResult && (data.getFinalResult() != null && !data.getFinalResult().equals("-"))){
+                if (finalResult < descriptiveResult && (data.getFinalResult() != null && !data.getFinalResult().equals("-"))) {
                     response.setMessage("مقدار های وارد شده صحیح نمی باشد");
                     response.setStatus(406);
                     return response;
@@ -1998,7 +2008,8 @@ public abstract class EvaluationBeanMapper {
             } catch (NumberFormatException e) {
                 response.setMessage("مقدار های وارد شده صحیح نمی باشد");
                 response.setStatus(406);
-                return response;            }
+                return response;
+            }
         }
         response.setStatus(200);
         return response;

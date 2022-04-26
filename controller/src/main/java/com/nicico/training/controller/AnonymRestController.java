@@ -15,7 +15,7 @@ import java.util.*;
 @RestController
 @RequestMapping("/anonym/api")
 @RequiredArgsConstructor
-public class AnonymousRestController {
+public class AnonymRestController {
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final NeedsAssessmentTempService needsAssessmentTempService;
     private final ITrainingPostService iTrainingPostService;

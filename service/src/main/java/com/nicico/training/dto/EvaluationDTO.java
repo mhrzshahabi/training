@@ -118,7 +118,10 @@ public class EvaluationDTO implements Serializable {
     public static class BehavioralForms {
         private Long evaluatorTypeId;
         private String evaluatorName;
+        private String nationalCode;
+        private String phone;
         private Boolean status;
+        private Boolean behavioralToOnlineStatus;
         private Long id;
         private Long evaluatorId;
         private String returnDate;

@@ -3752,4 +3752,10 @@ WHERE
             ]]>
         </sql>
     </changeSet>
+
+    <changeSet author="namdari (generated)" id="1650866165-01">
+        <addColumn tableName="tbl_evaluation">
+            <column name="b_behavioral_to_online_status" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

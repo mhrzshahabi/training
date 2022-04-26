@@ -541,12 +541,18 @@ public class EvaluationRestController {
                 ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatorId());
                 behavioralForms.setEvaluatorId(classStudent.getId());
                 behavioralForms.setEvaluatorName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+                behavioralForms.setNationalCode(classStudent.getStudent().getNationalCode());
+                if (classStudent.getStudent().getContactInfo()!=null && classStudent.getStudent().getContactInfo().getMobile()!=null)
+                behavioralForms.setPhone(classStudent.getStudent().getContactInfo().getMobile());
             } else {
                 ViewActivePersonnel personnel = evaluationService.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 behavioralForms.setEvaluatorId(personnel.getId());
+                behavioralForms.setNationalCode(personnel.getNationalCode());
+                behavioralForms.setPhone(personnel.getMobile());
                 behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
             }
             behavioralForms.setId(evaluation.getId());
+            behavioralForms.setBehavioralToOnlineStatus(evaluation.getBehavioralToOnlineStatus());
             behavioralForms.setReturnDate(evaluation.getReturnDate());
             final Optional<ParameterValue> optionalParameterValue = iParameterValueService.findById(evaluation.getEvaluatorTypeId());
             if (optionalParameterValue.isPresent()) {
@@ -559,6 +565,14 @@ public class EvaluationRestController {
         searchRs.setList(finalList);
         searchRs.setTotalCount(Long.parseLong(finalList.size() + ""));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/changeBehavioralStatus/{stdId}/{classId}")
+    @Transactional
+    public ResponseEntity<Boolean> changeBehavioralStatus(HttpServletRequest iscRq, @PathVariable Long stdId, @PathVariable Long classId) throws IOException {
+        List<Evaluation> list = evaluationService.findByClassIdAndEvaluatedIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, stdId, 156L, 230L);
+       boolean changeStatus=evaluationService.changeStatus(list);
+        return new ResponseEntity<>(changeStatus, HttpStatus.OK);
     }
 
     @Loggable

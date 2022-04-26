@@ -79,15 +79,17 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
     Evaluation findFirstByQuestionnaireId(Long QuestionnaireId);
 
 
-    @Query(value = "SELECT\n" +
-            "    *\n" +
-            "\n" +
-            "FROM\n" +
-            "         tbl_evaluation\n" +
-            "WHERE\n" +
-            "       tbl_evaluation.b_status = 0\n" +
-            "       and\n" +
-            "       tbl_evaluation.f_evaluation_level_id=156", nativeQuery = true)
+    @Query(value = "SELECt\n" +
+            "             *\n" +
+            "         \n" +
+            "            FROM\n" +
+            "                     tbl_evaluation\n" +
+            "            WHERE\n" +
+            "                 tbl_evaluation.b_status = 0\n" +
+            "                 and\n" +
+            "                  tbl_evaluation.f_evaluation_level_id=156\n" +
+            "                  and \n" +
+            "                  b_behavioral_to_online_status = 1 ", nativeQuery = true)
     List<Evaluation> getBehavioralEvaluations();
 
     @Query(value = "SELECT\n" +

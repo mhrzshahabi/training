@@ -264,7 +264,8 @@
                     return "background-color : #d8e4bc";
 
 
-                if ( (record.numberOfSendedBehavioralForms  ===  record.numberOfRegisteredBehavioralForms ) &&  record.numberOfSendedBehavioralForms!== 0)
+                if ( (record.numberOfSendedBehavioralForms  ===  record.numberOfRegisteredBehavioralForms ) &&  record.numberOfSendedBehavioralForms!== 0
+                     && record.numberOfSendedBehavioralForms!== undefined)
                     return "background-color : #b7dee8";
 
                 if (this.getFieldName(colNum) == "student.contactInfo.smSMobileNumber")
@@ -353,6 +354,26 @@
             }
         });
 
+    let message = isc.RibbonGroup.create({
+        ID: "message_RE",
+        title: "توجه : ",
+        numRows: 1,
+        backgroundColor: '#ffa7a7',
+        colWidths: [40, "*"],
+        height: "10px",
+        titleAlign: "center",
+        titleStyle: "gridHint",
+        controls: [
+            isc.IconButton.create(isc.addProperties({
+                title: "در صورتی که برای یک فراگیر یکی از موارد ارسال میشود برای همه ی فراگیران نیز باید صادر شود",
+                baseStyle: "gridHint",
+                backgroundColor: '#ffa7a7'
+
+            }))
+        ]
+    });
+
+
     let help = isc.RibbonGroup.create({
         ID: "fileGroup_RE",
         title: "راهنمای رنگ بندی لیست",
@@ -404,6 +425,7 @@
                     align: "left",
                     border: '0px',
                     members: [
+                        message,
                         help,
                         <sec:authorize access="hasAuthority('Evaluation_Behavior_Actions')">
                         ToolStripButton_Excel_BE,
@@ -525,12 +547,12 @@
                                 EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                                 EvaluationListGrid_PeronalLIst_BE.invalidateCache();
                                 EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    // if(resp.data.size() == 0){
-                                    //     EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                    //     EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                    //     EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                    //     EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    // }
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
                                 });
                             }
                             else if(value == 189){
@@ -538,12 +560,12 @@
                                 EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                                 EvaluationListGrid_PeronalLIst_BE.invalidateCache();
                                 EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    // if(resp.data.size() == 0){
-                                    //     EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                    //     EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                    //     EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                    //     EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    // }
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
                                 });
                             }
                             else if(value == 454){
@@ -551,12 +573,12 @@
                                 EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
                                 EvaluationListGrid_PeronalLIst_BE.invalidateCache();
                                 EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                                    // if(resp.data.size() == 0){
-                                    //     EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                                    //     EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                                    //     EvaluationListGrid_PeronalLIst_BE.fetchData();
-                                    //     EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                                    // }
+                                    if(resp.data.size() == 0){
+                                        EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                                        EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                                        EvaluationListGrid_PeronalLIst_BE.fetchData();
+                                        EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                                    }
                                 });
                             }
                             else if(value === 188){
@@ -667,12 +689,12 @@
             EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/getParentEmployee/" + record.student.nationalCode;
             EvaluationListGrid_PeronalLIst_BE.invalidateCache();
             EvaluationListGrid_PeronalLIst_BE.fetchData(null,(resp)=>{
-                // if(resp.data.size() == 0){
-                //     EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
-                //     EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
-                //     EvaluationListGrid_PeronalLIst_BE.fetchData();
-                //     EvaluationListGrid_PeronalLIst_BE.invalidateCache();
-                // }
+                if(resp.data.size() == 0){
+                    EvaluationDS_PersonList_BE.fetchDataURL =  viewActivePersonnelUrl + "/iscList";
+                    EvaluationListGrid_PeronalLIst_BE.dataSource = EvaluationDS_PersonList_BE;
+                    EvaluationListGrid_PeronalLIst_BE.fetchData();
+                    EvaluationListGrid_PeronalLIst_BE.invalidateCache();
+                }
             });
         }
 
@@ -769,6 +791,8 @@
                 fields: [
                     {name: "evaluatorTypeId"},
                     {name: "evaluatorName"},
+                    {name: "nationalCode"},
+                    {name: "phone"},
                     {name: "status"},
                     {name: "id", primaryKey: true},
                     {name: "evaluatorId"},
@@ -776,7 +800,27 @@
                     {name: "evaluatorTypeTitle"},
                     {name: "status"}
                 ],
-                fetchDataURL : evaluationUrl + "/getBehavioralForms/" + StdRecord.id + "/" + classRecord_BE.id
+                fetchDataURL : evaluationUrl + "/getBehavioralForms/" + StdRecord.id + "/" + classRecord_BE.id,
+                transformResponse: function (dsResponse, dsRequest, data) {
+                    let records = dsResponse.data;
+
+                    behavioral_buttons.members.get(1).setDisabled(true);
+                    if(records) {
+                        for (let j = 0; j < records.length; j++) {
+                            if (records[j].behavioralToOnlineStatus === undefined){
+                                behavioral_buttons.members.get(1).setDisabled(false);
+                                break;
+                            }
+                            if ( records[j].behavioralToOnlineStatus !== undefined &&
+                                records[j].behavioralToOnlineStatus === false){
+                                behavioral_buttons.members.get(1).setDisabled(false);
+                                break;
+                            }
+                        }
+                    }
+                    return this.Super("transformResponse", arguments);
+                }
+
             });
             let Listgrid_BehavioralRegisteration_JSPEvaluation = isc.TrLG.create({
                 width: "100%",
@@ -791,7 +835,7 @@
                     {
                         name: "evaluatorTypeId",
                         title: "نوع مخاطب",
-                        width: "40%",
+                        width: "30%",
                         type: "SelectItem",
                         optionDataSource: AudienceTypeDS_BE,
                         filterEditorProperties:{
@@ -807,7 +851,18 @@
                         name: "evaluatorName",
                         title: "نام مخاطب",
                         canFilter: false,
-                        width: "40%"
+                        width: "30%"
+                    },
+                    {
+                        name: "nationalCode",
+                        title: "کد ملی",
+                        canFilter: false,
+                        width: "20%"
+                    },{
+                        name: "phone",
+                        title: "موبایل",
+                        canFilter: false,
+                        width: "20%"
                     },
                     {
                         name: "status",
@@ -819,6 +874,7 @@
                         }
                     },
                     {name: "evaluatorId",hidden: true},
+                    {name: "behavioralToOnlineStatus",hidden: true},
                     {name: "status", hidden: true},
                     {name: "id", hidden: true},
                     {name: "returnDate", hidden: true},
@@ -826,6 +882,8 @@
                     {name: "editForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
                     {name: "removeForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
                     {name: "printForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
+                    // {name: "smsForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
+                    // {name: "onlineForm",title: " ", align: "center",canSort:false,canFilter:false, width: "10%"},
                 ],
                 getCellCSSText: function (record, rowNum, colNum) {
                     if (!record.status)
@@ -888,6 +946,7 @@
                                     buttonClick: function (button, index) {
                                         this.close();
                                         if (index === 0) {
+                                            evalWait_BE = createDialog("wait");
                                             let data = {};
                                             data.classId = classRecord_BE.id;
                                             data.evaluatorId = record.evaluatorId;
@@ -906,7 +965,9 @@
                                                     setTimeout(() => {
                                                         msg.close();
                                                     }, 3000);
+                                                    evalWait_BE.close();
                                                 } else {
+                                                    evalWait_BE.close();
                                                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                                                 }
                                             }))
@@ -945,6 +1006,54 @@
                         return recordCanvas;
                         </sec:authorize>
                     }
+                    else if (fieldName == "smsForm") {
+                        let recordCanvas = isc.HLayout.create({
+                            height: "100%",
+                            width: "100%",
+                            layoutMargin: 5,
+                            membersMargin: 10,
+                            align: "center"
+                        });
+                        let editIcon = isc.IButton.create({
+                            showDown: false,
+                            showRollOver: false,
+                            layoutAlign: "center",
+                             prompt: "ارسال sms",
+                            height: "35",
+                            width: "80",
+                            margin: 5,
+                            title: "ارسال sms",
+                            grid: this,
+                            click: function () {
+                            }
+                        });
+                        recordCanvas.addMember(editIcon);
+                        return recordCanvas;
+                    }
+                    else if (fieldName == "onlineForm") {
+                        let recordCanvas = isc.HLayout.create({
+                            height: "100%",
+                            width: "100%",
+                            layoutMargin: 5,
+                            membersMargin: 10,
+                            align: "center"
+                        });
+                        let editIcon = isc.IButton.create({
+                            showDown: false,
+                            showRollOver: false,
+                            layoutAlign: "center",
+                            prompt: "ارسال به سیستم آنلاین",
+                            height: "35",
+                            width: "140",
+                            margin: 5,
+                            title: "ارسال به سیستم آنلاین",
+                            grid: this,
+                            click: function () {
+                            }
+                        });
+                        recordCanvas.addMember(editIcon);
+                        return recordCanvas;
+                    }
                     else
                         return null;
                 },
@@ -961,6 +1070,7 @@
             });
             let Window_BehavioralRegisteration_JSPEvaluation = isc.Window.create({
                 placement: "fillScreen",
+                ID: "Window_BehavioralRegisteration",
                 title: "لیست فرم های ارزیابی تغییر رفتار فراگیر " + StdRecord.student.firstName + " " + StdRecord.student.lastName,
                 canDragReposition: true,
                 align: "center",
@@ -968,7 +1078,27 @@
                 border: "1px solid gray",
                 items: [isc.TrVLayout.create({
                     members: [
-                        Listgrid_BehavioralRegisteration_JSPEvaluation
+                        Listgrid_BehavioralRegisteration_JSPEvaluation,
+                        isc.TrHLayoutButtons.create({
+                            ID: "behavioral_buttons",
+                            members: [
+                                isc.IButton.create({
+                                     layoutAlign: "center",
+                                     title: " فرم ارسال پیام کوتاه",
+                                    click: function () {
+                                     callSms(StdRecord)
+                                    }
+                                }),
+                                 isc.IButton.create({
+                                     ID: "sendToEls_Beh",
+                                     name: "sendToEls_Beh",
+                                     layoutAlign: "center",
+                                     title: "ارسال به آزمون آنلاین",
+                                    click: function () {
+                                        callToOnline(StdRecord)
+                                    }
+                                })]
+                        })
                     ]
                 })]
             });
@@ -1372,6 +1502,134 @@
                 return 199;
         }
     }
+        function callSms(StdRecord) {
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralForms/" + StdRecord.id + "/" + classRecord_BE.id, "GET", null, function (resp) {
+                if (generalGetResp(resp)) {
+                    if (resp.httpResponseCode == 200) {
+
+                        isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/iscList/481?operator=and&_constructor=AdvancedCriteria&criteria={\"fieldName\":\"code\",\"operator\":\"equals\",\"value\":\"MCS1\",\"_constructor\":\"AdvancedCriteria\"}&_startRow=0&_endRow=75&_sortBy=title", "GET", null, function (resp2) {
+                            wait.close();
+                            if (generalGetResp(resp)) {
+                                if (resp.httpResponseCode == 200) {
+
+                                    let id = [];
+                                    JSON.parse(resp.data).response.data.filter(p => p.phone ).forEach(p => id.push(p.id));
+
+                                    if (JSON.parse(resp.data).response.data.filter(p => (p.phone)).length == 0) {
+
+                                        createDialog("warning", "فراگیری که شماره موبایل داشته باشد وجود ندارد", "<spring:message code="error"/>");
+                                        return;
+                                    }
+
+                                    MSG_sendTypesItems = [];
+                                    MSG_msgContent.type = [];
+                                    MSG_sendTypesItems.push('MSG_messageType_sms');
+                                    MSG_msgContent.type = MSG_sendTypesItems;
+
+                                    sendMessageFunc = sendMessage_evaluation;
+                                    RestDataSource_student_DE.fetchDataURL = evaluationUrl + "/getBehavioralForms/" + StdRecord.id + "/" + classRecord_BE.id;
+                                    MSG_selectUsersForm.getItem("multipleSelect").optionDataSource = RestDataSource_student_DE;
+
+                                    MSG_selectUsersForm.getItem("multipleSelect").pickListFields = [
+
+                                        {
+                                            name: "evaluatorName",
+                                            title: "نام و نام خانوادگی",
+                                            autoFitWidth: false,
+                                            align: "center"
+                                        },
+                                        {
+                                            name: "nationalCode",
+                                            title: "کد ملی",
+                                            autoFitWidth: false,
+                                            align: "center"
+                                        },
+                                        {
+                                            name: "phone",
+                                            title: "شماره موبایل",
+                                            autoFitWidth: false,
+                                            align: "center"
+                                        },
+
+                                    ];
+                                    MSG_selectUsersForm.getItem("multipleSelect").displayField = "evaluatorName";
+                                    MSG_selectUsersForm.getItem("multipleSelect").valueField = "id";
+                                    MSG_selectUsersForm.getItem("multipleSelect").dataArrived = function (startRow, endRow) {
+                                        let ids = MSG_selectUsersForm.getItem("multipleSelect").pickList.data.getAllCachedRows().filter(p => !p.phone ).map(function (item) {
+                                            return item.id;
+                                        });
+
+                                        let findRows = MSG_selectUsersForm.getItem("multipleSelect").pickList.findAll({
+                                            _constructor: "AdvancedCriteria",
+                                            operator: "and",
+                                            criteria: [{fieldName: "id", operator: "inSet", value: ids}]
+                                        });
+
+                                        findRows.setProperty("enabled", false);
+
+                                        MSG_selectUsersForm.getItem("multipleSelect").setValue(id);
+                                    }
+                                    MSG_selectUsersForm.getItem("multipleSelect").fetchData();
+
+                                    linkFormMLanding.getItem('link').setValue('');
+
+                                    if (JSON.parse(resp.data).response.data.filter(p => !p.phone ).length != 0) {
+                                        ErrorMsg.setContents('برای ' + JSON.parse(resp.data).response.data.filter(p => !p.phone).length + ' فراگیر، شماره موبایل تعریف نشده است.');
+                                    } else if (JSON.parse(resp.data).response.data.filter(p => p.phone).length == 0) {
+                                        ErrorMsg.setContents('هیچ مخاطبی انتخاب نشده است');
+                                    } else {
+                                        ErrorMsg.setContents('');
+                                    }
+                                    MSG_userType = "behavioral";
+
+                                    MSG_repeatOptions.getItem('maxRepeat').setValue(0);
+                                    MSG_repeatOptions.getItem('timeBMessages').setValue(1);
+                                    linkFormMLanding.getItem('link').setValue('');
+                                    linkFormMLanding.getItem('link').setRequired(false);
+                                    linkFormMLanding.getItem('link').enable();
+                                    MSG_Window_MSG_Main.show();
+                                    RestDataSource_Messages_DE.fetchDataURL =  parameterValueUrl + "/messages/evaluation/behavioral";
+                                    MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_DE;
+                                    MSG_main_layout.members[0].getField("messageType").fetchData();
+
+
+
+
+                                } else {
+                                    createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                                }
+                            }
+                        }));
+
+                    } else {
+                        wait.close();
+                        createDialog("warning", "<spring:message code="exception.server.connection"/>", "<spring:message code="error"/>");
+                    }
+                } else {
+                    wait.close();
+                }
+            }));
+        }
+        function callToOnline(StdRecord) {
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/changeBehavioralStatus/" + StdRecord.id + "/" + classRecord_BE.id, "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200){
+                    if (resp.data === "true"){
+                        behavioral_buttons.members.get(1).setDisabled(true);
+                    }else {
+                        behavioral_buttons.members.get(1).setDisabled(false);
+                        createDialog("warning", "ارسال به آزمون آنلاین انجام نشد", "<spring:message code="error"/>");
+                    }
+
+                    wait.close();
+                }else {
+                    behavioral_buttons.members.get(1).setDisabled(false);
+                    createDialog("warning", "ارسال به آزمون آنلاین انجام نشد", "<spring:message code="error"/>");
+                    wait.close();
+                }
+
+            }));
+        }
 
     // </script>
 

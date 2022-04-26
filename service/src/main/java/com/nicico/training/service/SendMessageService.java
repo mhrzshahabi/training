@@ -14,6 +14,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISendMessageService;
+import com.nicico.training.iservice.IViewActivePersonnelService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import com.nicico.training.service.sms.SmsFeignClient;
@@ -55,6 +56,8 @@ public class SendMessageService implements ISendMessageService {
     private final MessageContactLogDAO messageContactLogDAO;
     private final ModelMapper modelMapper;
     private final ClassStudentService classStudentService;
+    private final EvaluationService evaluationService;
+    private final IViewActivePersonnelService iViewActivePersonnelService;
     private final TeacherService teacherService;
     private final TclassService tclassService;
     private final ParameterService parameterService;
@@ -63,6 +66,7 @@ public class SendMessageService implements ISendMessageService {
     private final SmsFeignClient smsFeignClient;
     @Value("${nicico.elsSmsUrl}")
     private String elsSmsUrl;
+
     @Override
     public List<String> syncEnqueue(String pid, Map<String, String> paramValMap, List<String> recipients) {
         JSONObject json = new JSONObject();
@@ -223,8 +227,11 @@ public class SendMessageService implements ISendMessageService {
         List<String> mobiles = new ArrayList<>();
         List<String> fullName = new ArrayList<>();
         List<String> prefixFullName = new ArrayList<>();
+        List<String> nationalCode = new ArrayList<>();
         Long classId = null;
         String courseName = "";
+        String genderTo = "";
+        String fullNameTo = "";
         String courseStartDate = "";
         String courseEndDate = "";
         String institute = "";
@@ -243,8 +250,8 @@ public class SendMessageService implements ISendMessageService {
         maxRepeat = Integer.parseInt(jsonNode.get("maxRepeat").asText(""));
         timeBMessages = Integer.parseInt(jsonNode.get("timeBMessages").asText(""));
         link = jsonNode.get("link").asText("ثبت نشده");
-        if (link==null || link.length()==0)
-            link="ثبت نشده";
+        if (link == null || link.length() == 0)
+            link = "ثبت نشده";
         TclassDTO.Info tclassDTO = null;
         if (jsonNode.has("classID")) {
             classId = jsonNode.get("classID").asLong();
@@ -310,6 +317,15 @@ public class SendMessageService implements ISendMessageService {
                     ids.add(objNode.asLong());
                 }
             }
+        } else if (jsonNode.has("classStudentHaventEvaluation")) { //ارزیابی رفتاری
+            jsonNode = jsonNode.get("classStudentHaventEvaluation");
+            type = "behavioral";
+
+            if (jsonNode.isArray()) {
+                for (final JsonNode objNode : jsonNode) {
+                    ids.add(objNode.asLong());
+                }
+            }
         }
 
 
@@ -355,6 +371,53 @@ public class SendMessageService implements ISendMessageService {
                 );
                 break;
             }
+            case "behavioral": {
+                SearchDTO.SearchRs<EvaluationDTO.Info> searchRs = evaluationService.search(searchRq);
+
+        if(searchRs.getList().size()>0){
+            EvaluationDTO.Info evaluationDTO = modelMapper.map(searchRs.getList().get(0), EvaluationDTO.Info.class);
+            tclassDTO=  tclassService.get(evaluationDTO.getClassId());
+            courseName = tclassDTO.getCourse().getTitleFa();
+            courseStartDate = tclassDTO.getStartDate();
+            courseEndDate = tclassDTO.getEndDate();
+            Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluationDTO.getEvaluatedId());
+if (classStudent.isPresent()){
+    fullNameTo=classStudent.get().getStudent().getFirstName()+" "+classStudent.get().getStudent().getLastName();
+    genderTo=classStudent.get().getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getStudent().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم"));
+ }else {
+    genderTo="جناب آقای/سرکار خانم";
+    fullNameTo="ثبت نشده";
+}
+
+
+
+        }
+
+                searchRs.getList().forEach(p -> {
+                            EvaluationDTO.Info info = modelMapper.map(p, EvaluationDTO.Info.class);
+                            if (info.getEvaluatorTypeId() == 188L) {
+                                Optional<ClassStudent> classStudent = classStudentDAO.findById(info.getEvaluatorId());
+                                if (classStudent.isPresent() && classStudent.get().getStudent() !=null){
+                                    mobiles.add(classStudent.get().getStudent().getContactInfo().getMobile());
+                                    nationalCode.add(classStudent.get().getStudent().getNationalCode());
+                            fullName.add(classStudent.get().getStudent().getFirstName()+" "+classStudent.get().getStudent().getLastName());
+                            prefixFullName.add(classStudent.get().getStudent().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getStudent().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getStudent().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
+                                }
+                             }else {
+                                Optional<ViewActivePersonnel> classStudent = iViewActivePersonnelService.findById(info.getEvaluatorId());
+                                if (classStudent.isPresent() ){
+                                    mobiles.add(classStudent.get().getMobile());
+                                    nationalCode.add(classStudent.get().getNationalCode());
+                                    fullName.add(classStudent.get().getFirstName()+" "+classStudent.get().getLastName());
+                                    prefixFullName.add(classStudent.get().getGender() == null ? "جناب آقای/سرکار خانم" : (classStudent.get().getGender().equals("مرد") ? "جناب آقای" : (classStudent.get().getGender().equals("زن") ? "سرکار خانم" : "جناب آقای/سرکار خانم")));
+                                }
+                            }
+
+
+                        }
+                );
+                break;
+            }
         }
 
         MessageDTO.Create oMessageModel = new MessageDTO.Create();
@@ -392,26 +455,38 @@ public class SendMessageService implements ISendMessageService {
                     messageContact.setObjectType("Teacher");
                     tmpLink = link;
                     break;
+                    case "behavioral":
+                    messageContact.setObjectType("behavioral");
+                    tmpLink = link;
+                    break;
             }
 
             messageContact.setObjectMobile(mobiles.get(i));
 
             List<MessageParameterDTO.Create> parameters = new ArrayList<>();
-            parameters.add(new MessageParameterDTO.Create("mrms", prefixFullName.get(i)));
-            parameters.add(new MessageParameterDTO.Create("prefix-full_name", prefixFullName.get(i)));
-            parameters.add(new MessageParameterDTO.Create("username", fullName.get(i)));
-            parameters.add(new MessageParameterDTO.Create("full-name", fullName.get(i)));
-            parameters.add(new MessageParameterDTO.Create("classname", courseName));
-            parameters.add(new MessageParameterDTO.Create("course-name", courseName));
-            parameters.add(new MessageParameterDTO.Create("personnel-address", elsSmsUrl));
-            parameters.add(new MessageParameterDTO.Create("institute", institute));
+
 
             switch (type) {
                 case "classStudent":
                 case "classTeacher":
-                    parameters.add(new MessageParameterDTO.Create("url",elsSmsUrl ));
+                    parameters.add(new MessageParameterDTO.Create("mrms", prefixFullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("prefix-full_name", prefixFullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("username", fullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("full-name", fullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("classname", courseName));
+                    parameters.add(new MessageParameterDTO.Create("course-name", courseName));
+                    parameters.add(new MessageParameterDTO.Create("personnel-address", elsSmsUrl));
+                    parameters.add(new MessageParameterDTO.Create("institute", institute));
+                    parameters.add(new MessageParameterDTO.Create("url", elsSmsUrl));
                     break;
                 case "classStudentRegistered":
+                    parameters.add(new MessageParameterDTO.Create("mrms", prefixFullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("prefix-full_name", prefixFullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("username", fullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("full-name", fullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("classname", courseName));
+                    parameters.add(new MessageParameterDTO.Create("course-name", courseName));
+                    parameters.add(new MessageParameterDTO.Create("personnel-address", elsSmsUrl));
                     parameters.add(new MessageParameterDTO.Create("url", elsSmsUrl));
                     parameters.add(new MessageParameterDTO.Create("institute", institute));
                     parameters.add(new MessageParameterDTO.Create("duration", duration));
@@ -422,6 +497,14 @@ public class SendMessageService implements ISendMessageService {
                     parameters.add(new MessageParameterDTO.Create("uurl", tmpLink));
                     break;
                 case "classTeacher2":
+                    parameters.add(new MessageParameterDTO.Create("mrms", prefixFullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("prefix-full_name", prefixFullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("username", fullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("full-name", fullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("classname", courseName));
+                    parameters.add(new MessageParameterDTO.Create("course-name", courseName));
+                    parameters.add(new MessageParameterDTO.Create("personnel-address", elsSmsUrl));
+                    parameters.add(new MessageParameterDTO.Create("institute", institute));
                     parameters.add(new MessageParameterDTO.Create("url", elsSmsUrl));
                     parameters.add(new MessageParameterDTO.Create("duration", duration));
                     parameters.add(new MessageParameterDTO.Create("startdate", courseStartDate));
@@ -429,6 +512,17 @@ public class SendMessageService implements ISendMessageService {
                     parameters.add(new MessageParameterDTO.Create("department", department));
                     parameters.add(new MessageParameterDTO.Create("unit", unit));
                     parameters.add(new MessageParameterDTO.Create("uurl", tmpLink));
+                    break;
+                    case "behavioral":
+                    parameters.add(new MessageParameterDTO.Create("Kodmeli",nationalCode.get(i) ));
+                    parameters.add(new MessageParameterDTO.Create("url", elsSmsUrl));
+                    parameters.add(new MessageParameterDTO.Create("GensiatM", fullName.get(i)));
+                    parameters.add(new MessageParameterDTO.Create("GensiatF", genderTo));
+                    parameters.add(new MessageParameterDTO.Create("NameM",prefixFullName.get(i) ));
+                    parameters.add(new MessageParameterDTO.Create("NameF", fullNameTo));
+                    parameters.add(new MessageParameterDTO.Create("Dore",courseName ));
+                    parameters.add(new MessageParameterDTO.Create("Tarikh1",courseStartDate ));
+                    parameters.add(new MessageParameterDTO.Create("Tarikh2", courseEndDate));
                     break;
             }
 
@@ -479,7 +573,7 @@ public class SendMessageService implements ISendMessageService {
 
         if (maxRepeat > 0) {
 
-            if (type.equals("classStudent")) {
+            if (type.equals("classStudent") || type.equals("behavioral")) {
                 oMessageModel.setPId(parameterValue.getValue());
                 oMessageModel.setContextText(parameterValue.getDescription());
                 oMessageModel.setContextHtml(" ");

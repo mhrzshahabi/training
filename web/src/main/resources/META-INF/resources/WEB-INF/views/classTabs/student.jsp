@@ -3355,10 +3355,10 @@
         } else if (MSG_userType == "classTeacher2") {
             data.classTeacher2 = MSG_msgContent.users;
             data.classID = MSG_classID;
-        } /*else if (MSG_userType == "classStudentHaventEvaluation") {
+        } else if (MSG_userType == "behavioral") {
             data.classStudentHaventEvaluation = MSG_msgContent.users;
             data.classID = MSG_classID;
-        }*/
+        }
 
 
 

@@ -86,4 +86,6 @@ public interface IEvaluationService {
     Optional<ViewActivePersonnel> findById(Long evaluatorId);
 
     ViewActivePersonnel findPersonnelByPersonnelNo(String personnelId);
+
+    boolean changeStatus(List<Evaluation> list);
 }

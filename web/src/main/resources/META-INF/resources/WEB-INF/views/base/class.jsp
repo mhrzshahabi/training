@@ -2613,7 +2613,7 @@
                 width: "300",
                 height: 30,
                 optionDataSource: RestDataSource_Department_Filter,
-                autoFetchData: false,
+                autoFetchData: true,
                 displayField: "title",
                 valueField: "id",
                 textAlign: "center",
@@ -2625,6 +2625,17 @@
                         autoFitWidth: true
                     }
                 ],
+                dataArrived: function (startRow, endRow, data) {
+
+                    for (let i = 0; i < data.allRows.size(); i++) {
+                        if (data.allRows[i].title !== undefined && data.allRows[i].title.contains("سرچشمه")) {
+                            DynamicForm_Term_Filter.getField("departmentFilter").setValue(data.allRows[i].title);
+                            load_classes_by_department(data.allRows[i].id);
+                            break;
+                        }
+                    }
+
+                },
                 changed: function (form, item, value) {
                     load_classes_by_department(value);
                 },
