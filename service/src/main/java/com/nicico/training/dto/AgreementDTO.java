@@ -1,0 +1,80 @@
+package com.nicico.training.dto;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.enums.EServiceType;
+import io.swagger.annotations.ApiModel;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
+import java.io.Serializable;
+import java.util.List;
+
+@Getter
+@Setter
+@Accessors(chain = true)
+public class AgreementDTO implements Serializable {
+
+    private Long firstPartyId;
+    private Long secondPartyTeacherId;
+    private Long secondPartyInstituteId;
+    private Long currencyId;
+    private Long finalCost;
+    private String subject;
+    private Boolean teacherEvaluation;
+    private Long maxPaymentHours;
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Agreement - Info")
+    public static class Info extends AgreementDTO {
+        private Long id;
+        private InstituteDTO.Info firstParty;
+        private TeacherDTO.Info secondPartyTeacher;
+        private InstituteDTO.Info secondPartyInstitute;
+        private ParameterValueDTO.MinInfo currency;
+        private EServiceType serviceType;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Agreement - Create")
+    public static class Create extends AgreementDTO {
+        private Long serviceTypeId;
+        private List<AgreementClassCostDTO.Create> classCostList;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Agreement - Update")
+    public static class Update extends AgreementDTO{
+        private Long id;
+        private Long serviceTypeId;
+        private List<AgreementClassCostDTO.Create> classCostList;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("AgreementSpecRs")
+    public static class CourseSpecRs {
+        private AgreementDTO.SpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRs<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+}
