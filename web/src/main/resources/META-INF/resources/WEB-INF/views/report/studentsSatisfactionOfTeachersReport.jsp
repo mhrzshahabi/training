@@ -164,7 +164,9 @@
                 align: "center",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                filterOperator: "iContains"
+
             },
             {
                 name: "personality.firstNameFa",
@@ -172,7 +174,8 @@
                 align: "center",
                 sortNormalizer: function (record) {
                     return record.personality.firstNameFa;
-                }
+                },
+                filterOperator: "iContains"
             },
             {
                 name: "personality.lastNameFa",
@@ -180,17 +183,20 @@
                 align: "center",
                 sortNormalizer: function (record) {
                     return record.personality.lastNameFa;
-                }
+                },
+                filterOperator: "iContains"
             },
             {
                 name: "personnelCode",
                 title: "<spring:message code='personnel.no'/>",
                 align: "center",
+                filterOperator: "iContains"
             },
             {
                 name: "personnelCode2",
                 title: "<spring:message code='personnel.no.6.digits'/>",
                 align: "center",
+                filterOperator: "iContains"
             },
             {
                 name: "categories",
@@ -216,7 +222,8 @@
                     pickListFields: [
                         {name: "titleFa"}
                     ]
-                }
+                },
+                filterOperator: "equals"
             },
 
 
@@ -224,7 +231,7 @@
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
-                filterOperator: "equals",
+                filterOperator: "iContains",
                 sortNormalizer: function (record) {
                     return record.personality.educationMajor.titleFa;
                 }
@@ -234,6 +241,7 @@
                 title: "<spring:message code='mobile.connection'/>",
                 align: "center",
                 type: "phoneNumber",
+                filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 },
@@ -249,6 +257,7 @@
                 filterOnKeypress: false,
                 canFilter: false,
                 canSort: false,
+                filterOperator: "iContains"
             },
             {
                 name: "personnelStatus",
@@ -273,6 +282,7 @@
                 canFilter: false,
                 canSort: false
 
+
             } ,
             {
                 name: "teacherLastEvalAverageResult",
@@ -290,7 +300,7 @@
         filterEditorSubmit: function () {
             ListGrid_Teacher_JspSatisfaction.invalidateCache();
         },
-        filterOperator: "iContains",
+
         filterOnKeypress: false,
         autoFetchData: true,
         allowAdvancedCriteria: true,

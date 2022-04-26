@@ -322,6 +322,7 @@
                 name: "teacherCode",
                 title: "<spring:message code='teacher.code'/>",
                 align: "center",
+                filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
@@ -330,6 +331,7 @@
                 name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
                 align: "center",
+                filterOperator: "iContains",
                 sortNormalizer: function (record) {
                     return record.personality.firstNameFa;
                 }
@@ -338,6 +340,7 @@
                 name: "personality.lastNameFa",
                 title: "<spring:message code='lastName'/>",
                 align: "center",
+                filterOperator: "iContains",
                 sortNormalizer: function (record) {
                     return record.personality.lastNameFa;
                 }
@@ -346,11 +349,13 @@
                 name: "personnelCode",
                 title: "<spring:message code='personnel.no'/>",
                 align: "center",
+                filterOperator: "iContains",
             },
             {
                 name: "personnelCode2",
                 title: "<spring:message code='personnel.no.6.digits'/>",
                 align: "center",
+                filterOperator: "iContains",
             },
             {
                 name: "categories",
@@ -361,6 +366,7 @@
                 displayField: "titleFa",
                 filterOnKeypress: true,
                 canSort: false,
+                filterOperator: "equals",
                 filterEditorProperties:{
                     optionDataSource: RestDataSource_Category_JspTeacher,
                     valueField: "id",
@@ -387,6 +393,7 @@
                 displayField: "titleFa",
                 canSort: false,
                 filterOnKeypress: true,
+                filterOperator: "equals",
                 filterEditorProperties:{
                     optionDataSource: RestDataSource_SubCategory_JspTeacher,
                     valueField: "id",
@@ -408,7 +415,7 @@
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
-                filterOperator: "equals",
+                filterOperator: "iContains",
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
                 }
@@ -417,7 +424,7 @@
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
-                filterOperator: "equals",
+                filterOperator: "iContains",
                 sortNormalizer: function (record) {
                     return record.personality.educationMajor.titleFa;
                 }
@@ -427,6 +434,7 @@
                 title: "<spring:message code='mobile.connection'/>",
                 align: "center",
                 type: "phoneNumber",
+                filterOperator: "iContains",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 },
@@ -468,7 +476,7 @@
         filterEditorSubmit: function () {
             ListGrid_Teacher_JspTeacher.invalidateCache();
         },
-        filterOperator: "iContains",
+
         filterOnKeypress: false,
         autoFetchData: true,
         allowAdvancedCriteria: true,
