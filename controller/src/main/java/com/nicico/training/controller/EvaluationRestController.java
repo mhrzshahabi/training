@@ -1014,4 +1014,46 @@ public class EvaluationRestController {
             return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
         }
     }
+
+
+    @GetMapping(value = "/getBehavioralInClass/{classId}")
+    @Transactional
+    public ResponseEntity<ISC<EvaluationDTO.BehavioralAnalysist>> getBehavioralInClass(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        SearchDTO.SearchRs<EvaluationDTO.BehavioralAnalysist> searchRs = new SearchDTO.SearchRs<>();
+        List<Evaluation> list = evaluationService.findByClassIdAndEvaluationLevelIdAndQuestionnaireTypeId(classId, 156L, 230L);
+        List<EvaluationDTO.BehavioralAnalysist> finalList = new ArrayList<>();
+        for (Evaluation evaluation : list) {
+            EvaluationDTO.BehavioralAnalysist behavioralForms = new EvaluationDTO.BehavioralAnalysist();
+            behavioralForms.setEvaluatorTypeId(evaluation.getEvaluatorTypeId());
+            behavioralForms.setStatus(evaluation.getStatus());
+            if (evaluation.getEvaluatorTypeId() == 188) {
+                ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatorId());
+                behavioralForms.setEvaluatorId(classStudent.getId());
+                behavioralForms.setEvaluatorName(classStudent.getStudent().getFirstName() + " " + classStudent.getStudent().getLastName());
+                behavioralForms.setNationalCode(classStudent.getStudent().getNationalCode());
+
+            } else {
+                ViewActivePersonnel personnel = evaluationService.findById(evaluation.getEvaluatorId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                behavioralForms.setEvaluatorId(personnel.getId());
+                behavioralForms.setNationalCode(personnel.getNationalCode());
+                behavioralForms.setEvaluatorName(personnel.getFirstName() + " " + personnel.getLastName());
+            }
+            ClassStudent classStudent = classStudentService.getClassStudent(evaluation.getEvaluatedId());
+
+            behavioralForms.setId(evaluation.getId());
+            behavioralForms.setEvaluatedId(evaluation.getEvaluatedId());
+            behavioralForms.setEvaluatedName(classStudent.getStudent().getFirstName()+" "+classStudent.getStudent().getLastName());
+            final Optional<ParameterValue> optionalParameterValue = iParameterValueService.findById(evaluation.getEvaluatorTypeId());
+            if (optionalParameterValue.isPresent()) {
+                final ParameterValue parameterValue = optionalParameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+                behavioralForms.setEvaluatorTypeTitle(parameterValue.getTitle());
+            }
+            behavioralForms.setStatus(evaluation.getStatus());
+            finalList.add(behavioralForms);
+        }
+        searchRs.setList(finalList);
+        searchRs.setTotalCount(Long.parseLong(finalList.size() + ""));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+    }
+
 }

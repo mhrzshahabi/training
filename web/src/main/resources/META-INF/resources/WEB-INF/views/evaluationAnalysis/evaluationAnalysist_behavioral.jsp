@@ -62,6 +62,73 @@
         title: "تحلیل ارزیابی رفتاری کلاس براساس نوع ارزیابی کننده",
     });
 
+    var RestDataSource_evaluation_behavioral_analysist = isc.TrDS.create({
+        fields: [
+            {name: "id"},
+            {name: "evaluatorName"},
+            {name: "evaluatedName"},
+            {name: "evaluatedId"},
+            {name: "nationalCode"},
+            {name: "evaluatorTypeTitle"},
+            {name: "behavioralToOnlineStatus"},
+            {name: "status",
+                valueMap:{
+                    "true": "ثبت شده",
+                    "false" : "ثبت نشده"
+                }},
+
+        ],
+        fetchDataURL: evaluationUrl + "/getBehavioralInClass/"+behavioralEvaluationClassId,
+    });
+
+    var ListGrid_evaluation_behavioral_analysist = isc.TrLG.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_evaluation_behavioral_analysist,
+        canAddFormulaFields: false,
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        initialSort: [
+            {property: "evaluatedId", direction: "descending", primarySort: true}
+        ],
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "evaluatedId", title: "evaluatedId",  canEdit: false, hidden: true},
+            {
+                name: "evaluatedName",
+                title: "ارزیابی شونده",
+                align: "center",
+                canFilter: false,
+            },
+            {
+                name: "evaluatorName",
+                title: "ارزیابی کننده",
+                align: "center",
+                canFilter: false,
+            },{
+                name: "nationalCode",
+                title: "کد ملی ارزیابی کننده",
+                align: "center",
+                canFilter: false,
+            },{
+                name: "evaluatorTypeTitle",
+                title: "نوع ارزیابی کننده",
+                align: "center",
+                canFilter: false,
+            },{
+                name: "status",
+                title: "وضعیت ارزیابی",
+                align: "center",canFilter: false,
+            },
+
+        ],
+    });
+
     var IButton_Print_LearningBehavioral_Evaluation_Analysis = isc.IButton.create({
         align: "center",
         width: "300",
@@ -98,6 +165,18 @@
             Window_Report_Evaluation_Analysis.show();
         }
     });
+    var IButton_show_ListGrid = isc.IButton.create({
+        align: "center",
+        width: "300",
+        height: "30",
+        margin: 2,
+        title: "نمایش  تحلیل  رفتاری کلاس",
+        click: function () {
+            RestDataSource_evaluation_behavioral_analysist.fetchDataURL = evaluationUrl + "/getBehavioralInClass/"+behavioralEvaluationClassId;
+            ListGrid_evaluation_behavioral_analysist.invalidateCache();
+            ListGrid_evaluation_behavioral_analysist.fetchData();
+        }
+    });
 
     var BehavioralEvaluationChartLayout = isc.HLayout.create({
         defaultLayoutAlign: "top",
@@ -114,8 +193,10 @@
         vAlign: "top",
         overflow: "scroll",
         members: [
-            BehavioralEvaluationChartLayout,
-            IButton_Print_LearningBehavioral_Evaluation_Analysis
+            // BehavioralEvaluationChartLayout,
+            ListGrid_evaluation_behavioral_analysist,
+            IButton_Print_LearningBehavioral_Evaluation_Analysis,
+            IButton_show_ListGrid,
         ]
     });
 

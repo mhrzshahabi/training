@@ -27,7 +27,7 @@
             implicitCriteria: {
                 _constructor:"AdvancedCriteria",
                 operator:"and",
-                criteria:[{ fieldName: "code", operator: "inSet", value: ["21","32","42","4"]}]
+                criteria:[{ fieldName: "code", operator: "inSet", value: ["21","32","42","4","66"]}]
             }
         });
 
@@ -626,9 +626,12 @@
                                     Select_Questionnarie_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 189, record.id, 188, 230, 156);
                                 else if(evaluation_Audience_Type.getValue("audiencePost") == 454)
                                     Select_Questionnarie_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 454, record.id, 188, 230, 156);
+                                else if(evaluation_Audience_Type.getValue("audiencePost") == 814)
+                                    Select_Questionnarie_BE(null,null, EvaluationListGrid_PeronalLIst_BE.getSelectedRecord().id, 814, record.id, 188, 230, 156);
                             } else if(evaluation_Audience_Type.getValue("audiencePost") === null || evaluation_Audience_Type.getValue("audiencePost") === undefined){
                                 createDialog('info', "<spring:message code="select.audience.post.ask"/>", "<spring:message code="global.message"/>");
                             } else {
+                                zaza
                                 isc.Dialog.create({
                                     message: "<spring:message code="select.audience.ask"/>",
                                     icon: "[SKIN]ask.png",
