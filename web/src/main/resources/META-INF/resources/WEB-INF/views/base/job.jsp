@@ -32,6 +32,16 @@
                     click: function () {
                         refresh_Job();
                     }
+                },
+                </sec:authorize>
+                {isSeparator: true},
+                 <sec:authorize access="hasAuthority('remove.uncertainty.needAssessment.changes')">
+                {
+                    title: "<spring:message code="remove.uncertainty.needAssessment.changes"/>",
+                    click: function () {
+                       receive_job_response();
+
+                    }
                 }
                 </sec:authorize>
             ]
@@ -572,6 +582,75 @@
                 {name: "skill.course.titleFa"}
             ],
         });
+        Delete_Button_response_job = isc.Button.create({
+            title: "حذف نیازسنجی فعلی"  ,
+            top: 260,
+            layoutMargin: 5,
+            membersMargin: 5,
+            click: function () {
+               delete_uncertainly_assessment_job();
+            }
+        });
+        Cancel_Button_Response_job = isc.IButtonCancel.create({
+            layoutMargin: 5,
+            membersMargin: 5,
+            width: 120,
+            click: function () {
+                Window_delete_uncertainly_needAssessment_job.close();
+            }
+        });
+        HLayout_IButtons_Uncertainly_needAssessment_job = isc.HLayout.create({
+            layoutMargin: 5,
+            membersMargin: 15,
+            width: "100%",
+            height: "100%",
+            align: "center",
+            members: [
+                Delete_Button_response_job,
+
+                Cancel_Button_Response_job,
+
+            ]
+        });
+
+        DynamicForm_Uncertainly_needAssessment_job= isc.DynamicForm.create({
+            width: 600,
+            height: 100,
+            numCols: 2,
+            fields: [
+                {
+                    name: "createdBy",
+                    title: "ایجاد کننده :",
+                    canEdit: false,
+                    hidden: false
+                },
+                {
+                    name: "mainWorkStatus",
+                    title: "وضعیت نیازسنجی :",
+                    canEdit: false
+                },
+
+            ]
+
+        });
+        Window_delete_uncertainly_needAssessment_job = isc.Window.create({
+            title: "حذف تغییرات نیازسنجی بلا تکلیف",
+            width: 600,
+            autoSize: true,
+            autoCenter: true,
+            isModal: true,
+            showModalMask: true,
+            align: "center",
+            autoDraw: false,
+            dismissOnEscape: true,
+            items: [
+
+                DynamicForm_Uncertainly_needAssessment_job,
+                HLayout_IButtons_Uncertainly_needAssessment_job,
+
+            ]
+
+        });
 
         //////////////////////////////////////////////////////////posts/////////////////////////////////////////////////////
         PostDS_Job = isc.TrDS.create({
@@ -834,6 +913,42 @@
             personnelJob_Job = null;
             postJob_Job = null;
         }
+        function receive_job_response(){
+            let record=  JobLG_job.getSelectedRecord();
+            DynamicForm_Uncertainly_needAssessment_job.clearValues();
+                    wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/getNeedAssessmentTempByCode?code=" + record.code, "GET", null, function (resp) {
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        let detail = JSON.parse(resp.httpResponseText);
+                        DynamicForm_Uncertainly_needAssessment_job.setValues(detail);
+                        Window_delete_uncertainly_needAssessment_job.show();
+                    } else {
+                        createDialog("info", "پاسخ مناسب دریافت نشد")
+                    }
+                }));
+
+
+
+        }
+     function delete_uncertainly_assessment_job(){
+
+         let record=  JobLG_job.getSelectedRecord();
+         DynamicForm_Uncertainly_needAssessment_job.clearValues();
+         wait.show();
+         isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/removeConfirmation?code=" + record.code, "GET", null, function (resp) {
+             wait.close();
+             if (resp.httpResponseCode === 201 || resp.httpResponseCode===200)   {
+
+                 Window_delete_uncertainly_needAssessment_job.close();
+                 createDialog("info","عملیات حذف موفقیت آمیز بود")
+             } else {
+                 createDialog("info", "<spring:message code="delete.was.not.successful"/>", "<spring:message code="error"/>");
+             }
+         }));
+     }
+
+
     }
     // </script>
 

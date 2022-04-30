@@ -6,7 +6,7 @@ import com.nicico.training.dto.NeedsAssessmentDTO;
 
 import java.util.List;
 
-public interface INeedsAssessmentTempService {
+public interface   INeedsAssessmentTempService {
     void verify(String objectType, Long objectId);
 
     Boolean rollback(String objectType, Long objectId);

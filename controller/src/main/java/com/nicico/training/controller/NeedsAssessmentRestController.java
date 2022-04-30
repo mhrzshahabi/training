@@ -11,12 +11,11 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.CriteriaUtil;
+import com.nicico.training.dto.NeedAssessmentTempDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.iservice.INeedsAssessmentService;
 import com.nicico.training.iservice.INeedsAssessmentTempService;
 import com.nicico.training.mapper.needsassessment.NeedsAssessmentBeanMapper;
-import com.nicico.training.service.NeedsAssessmentService;
-import com.nicico.training.service.NeedsAssessmentTempService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -232,6 +231,24 @@ public class NeedsAssessmentRestController {
         }.getType());
         Long savedId = iNeedsAssessmentTempService.createOrUpdateListForNewSkill(createList,rq.getSkillId());
         return new ResponseEntity<>(savedId, HttpStatus.OK);
+    }
+    @Loggable
+    @GetMapping("/getNeedAssessmentTempByCode")
+    public ResponseEntity<NeedAssessmentTempDTO> getNeedAssessmentByCode(@RequestParam String code){
+      NeedAssessmentTempDTO dto= tempService.getAllNeedAssessmentTemp(code);
+       return new ResponseEntity<>(dto,HttpStatus.OK);
+    }
+    @Loggable
+    @GetMapping("/removeConfirmation")
+    public ResponseEntity<Boolean> getNeedAssessmentRemoveConfirmation(@RequestParam String code) {
+
+        boolean b = tempService.removeUnCompleteNaByCode(code);
+
+          if(b)
+        return new ResponseEntity<>(b, HttpStatus.OK);
+          else
+        return new ResponseEntity<>(b,HttpStatus.BAD_REQUEST);
+
     }
 
 }

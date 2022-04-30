@@ -245,8 +245,20 @@
                         Window_Add_Post_to_PostGroup.show();
                     }
                 }
-            }
+            },
             </sec:authorize>
+            {isSeparator: true},
+            <sec:authorize access="hasAuthority('remove.uncertainty.needAssessment.changes')">
+            {
+                title: "<spring:message code="remove.uncertainty.needAssessment.changes"/>",
+                click: function () {
+                    receive_postGroup_response();
+
+                }
+            },
+            </sec:authorize>
+
+
         ]
     });
     var ListGrid_Post_Group_Jsp = isc.TrLG.create({
@@ -838,6 +850,7 @@
         ]
     });
 
+
     var RestDataSource_Post_Group_TrainingPosts_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -1309,6 +1322,75 @@
                 },filterOnKeypress: true,
             },
         ]
+    });
+    Delete_Button_response_postGroup= isc.Button.create({
+        title: "حذف نیازسنجی فعلی"  ,
+        top: 260,
+        layoutMargin: 5,
+        membersMargin: 5,
+        click: function () {
+            delete_uncertainly_assessment_postGroup();
+        }
+    });
+    Cancel_Button_Response_postGroup= isc.IButtonCancel.create({
+        layoutMargin: 5,
+        membersMargin: 5,
+        width: 120,
+        click: function () {
+            Window_delete_uncertainly_needAssessment_postGroup.close();
+        }
+    });
+    HLayout_IButtons_Uncertainly_needAssessment_postGroup = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            Delete_Button_response_postGroup,
+
+            Cancel_Button_Response_postGroup,
+
+        ]
+    });
+
+    DynamicForm_Uncertainly_needAssessment_postGroup= isc.DynamicForm.create({
+        width: 600,
+        height: 100,
+        numCols: 2,
+        fields: [
+            {
+                name: "createdBy",
+                title: "ایجاد کننده :",
+                canEdit: false,
+                hidden: false
+            },
+            {
+                name: "mainWorkStatus",
+                title: "وضعیت نیازسنجی :",
+                canEdit: false
+            },
+
+        ]
+
+    });
+    Window_delete_uncertainly_needAssessment_postGroup = isc.Window.create({
+        title: "حذف تغییرات نیازسنجی بلا تکلیف",
+        width: 600,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+
+            DynamicForm_Uncertainly_needAssessment_postGroup,
+            HLayout_IButtons_Uncertainly_needAssessment_postGroup,
+
+        ]
+
     });
 
 
@@ -2198,5 +2280,40 @@
         window_unGroupedPosts_PostGroup.setTitle(title);
         window_unGroupedPosts_PostGroup.show();
     }
+    function receive_postGroup_response(){
+        let record= ListGrid_Post_Group_Jsp.getSelectedRecord();
+        DynamicForm_Uncertainly_needAssessment_postGroup.clearValues();
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/getNeedAssessmentTempByCode?code=" + record.code, "GET", null, function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let detail = JSON.parse(resp.httpResponseText);
+                DynamicForm_Uncertainly_needAssessment_postGroup.setValues(detail);
+                Window_delete_uncertainly_needAssessment_postGroup.show();
+            } else {
+                createDialog("info", "پاسخ مناسب دریافت نشد")
+            }
+        }));
+
+
+
+    }
+    function delete_uncertainly_assessment_postGroup(){
+
+        let record=  ListGrid_Post_Group_Jsp.getSelectedRecord();
+        DynamicForm_Uncertainly_needAssessment_postGroup.clearValues();
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/removeConfirmation?code=" + record.code, "GET", null, function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 201 || resp.httpResponseCode===200)   {
+
+                Window_delete_uncertainly_needAssessment_postGroup.close();
+                createDialog("info","عملیات حذف موفقیت آمیز بود")
+            } else {
+                createDialog("info", "<spring:message code="delete.was.not.successful"/>", "<spring:message code="error"/>");
+            }
+        }));
+    }
+
 
     // </script>
