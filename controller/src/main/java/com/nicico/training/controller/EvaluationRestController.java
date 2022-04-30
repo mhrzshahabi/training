@@ -1048,6 +1048,11 @@ public class EvaluationRestController {
                 final ParameterValue parameterValue = optionalParameterValue.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
                 behavioralForms.setEvaluatorTypeTitle(parameterValue.getTitle());
             }
+            if (!evaluation.getStatus())
+                behavioralForms.setEvaluationRate("هیچ فرمی ثبت نشده");
+            else
+                behavioralForms.setEvaluationRate(evaluationService.getEvaluationFormGrade(evaluation).toString());
+
             behavioralForms.setStatus(evaluation.getStatus());
             finalList.add(behavioralForms);
         }

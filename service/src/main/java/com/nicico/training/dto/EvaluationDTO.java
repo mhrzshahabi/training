@@ -138,6 +138,7 @@ public class EvaluationDTO implements Serializable {
         private Long evaluatedId;
         private String nationalCode;
         private Boolean status;
+        private String evaluationRate;
         private Long id;
         private Long evaluatorId;
         private String evaluatorTypeTitle;

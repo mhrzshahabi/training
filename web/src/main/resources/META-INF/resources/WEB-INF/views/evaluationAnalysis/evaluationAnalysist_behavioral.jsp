@@ -76,6 +76,8 @@
                     "true": "ثبت شده",
                     "false" : "ثبت نشده"
                 }},
+            {name: "evaluationRate",
+               },
 
         ],
         fetchDataURL: evaluationUrl + "/getBehavioralInClass/"+behavioralEvaluationClassId,
@@ -123,6 +125,10 @@
             },{
                 name: "status",
                 title: "وضعیت ارزیابی",
+                align: "center",canFilter: false,
+            },{
+                name: "evaluationRate",
+                title: "نمره ارزیابی",
                 align: "center",canFilter: false,
             },
 
