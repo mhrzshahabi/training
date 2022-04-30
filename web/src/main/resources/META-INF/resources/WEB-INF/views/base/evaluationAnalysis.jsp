@@ -514,6 +514,9 @@
 
     function fill_behavioral_evaluation_result(record) {
         behavioralEvaluationClassId = record.id;
+        RestDataSource_evaluation_behavioral_analysist.fetchDataURL = evaluationUrl + "/getBehavioralInClass/"+behavioralEvaluationClassId;
+        ListGrid_evaluation_behavioral_analysist.invalidateCache();
+        ListGrid_evaluation_behavioral_analysist.fetchData();
         isc.RPCManager.sendRequest(TrDSRequest(evaluationUrl + "/getBehavioralEvaluationResult/" + record.id , "GET", null,
             "callback: fill_behavioral_evaluation_result_resp(rpcResponse)"));
     }
