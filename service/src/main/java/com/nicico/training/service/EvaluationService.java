@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.text.DecimalFormat;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class EvaluationService implements IEvaluationService {
     private final ClassEvaluationGoalsDAO classEvaluationGoalsDAO;
     private final EvaluationAnswerDAO evaluationAnswerDAO;
     private final EvaluationQuestionDAO evaluationQuestionDAO;
+    private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Transactional(readOnly = true)
     @Override
@@ -800,7 +802,7 @@ public class EvaluationService implements IEvaluationService {
         if (index != 0)
             result = result / index;
 
-        return result;
+        return Double.valueOf(df.format(result));
     }
 
     @Override
