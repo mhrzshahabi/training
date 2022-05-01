@@ -30,7 +30,7 @@
     });
 
     //---------------------------------------------------Request Window-------------------------------------------------
-    Save_Button_Add_Response = isc.IButtonSave.create({
+    Save_Button_Add_Response = isc.ButtonSave.create({
         top: 260,
         layoutMargin: 5,
         membersMargin: 5,

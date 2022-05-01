@@ -1,5 +1,6 @@
 package com.nicico.training.service.needsassessment;
 
+import com.nicico.training.dto.NeedAssessmentTempDTO;
 import com.nicico.training.model.NeedsAssessmentTemp;
 
 public interface NeedsAssessmentTempService {
@@ -7,4 +8,6 @@ public interface NeedsAssessmentTempService {
     NeedsAssessmentTemp get(long id);
 
     void removeUnCompleteNa(String code,String status);
+    boolean removeUnCompleteNaByCode(String code);
+    NeedAssessmentTempDTO getAllNeedAssessmentTemp(String code);
 }
