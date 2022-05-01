@@ -1215,4 +1215,21 @@ public class TeacherRestController {
         return ResponseEntity.ok(tclassService.getAllTeacherByCurrentTerm(termId));
     }
 
+    @Loggable
+    @GetMapping(value = "/spec-list-agreement")
+    public ResponseEntity<ISC<TeacherDTO.ForAgreementInfo>> forAgreementList(HttpServletRequest iscRq) throws IOException {
+
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<TeacherDTO.ForAgreementInfo> result = teacherService.forAgreementInfoSearch(searchRq);
+
+        ISC.Response<TeacherDTO.ForAgreementInfo> response = new ISC.Response<>();
+        response.setData(result.getList())
+                .setStartRow(0)
+                .setEndRow(result.getList().size())
+                .setTotalRows(result.getTotalCount().intValue());
+        ISC<TeacherDTO.ForAgreementInfo> infoISC = new ISC<>(response);
+
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
+
 }

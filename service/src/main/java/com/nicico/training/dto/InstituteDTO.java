@@ -40,6 +40,7 @@ public class InstituteDTO {
     private Long licenseTypeId;
     private Long companyTypeId;
 
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -149,4 +150,20 @@ public class InstituteDTO {
         private String titleFa;
         private List<TrainingPlaceDTO.TrainingPlaceTitle> trainingPlaceSet;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ForAgreementInfo")
+    public static class ForAgreementInfo {
+        private Long id;
+        private String titleFa;
+        private Long instituteId;
+        private String economicalId;
+        private ContactInfoDTO.InstituteContactInfo contactInfo;
+        private PersonalInfoDTO.CompanyManager manager;
+        private Set<AccountInfoDTO.ShabaInfo> accountInfoSet;
+        private boolean valid;
+    }
+
 }

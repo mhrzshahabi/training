@@ -1,7 +1,4 @@
 package com.nicico.training.iservice;
-/* com.nicico.training.iservice
-@Author:roya
-*/
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
@@ -35,6 +32,8 @@ public interface IInstituteService {
     void delete(InstituteDTO.Delete request);
 
     SearchDTO.SearchRs<InstituteDTO.Info> search(SearchDTO.SearchRq request);
+
+    SearchDTO.SearchRs<InstituteDTO.ForAgreementInfo> forAgreementInfoSearch(SearchDTO.SearchRq request);
 
     List<EquipmentDTO.Info> getEquipments(Long instituteId);
 

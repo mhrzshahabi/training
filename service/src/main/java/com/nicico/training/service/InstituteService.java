@@ -314,6 +314,30 @@ public class InstituteService implements IInstituteService {
         return infoSearchRs;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<InstituteDTO.ForAgreementInfo> forAgreementInfoSearch(SearchDTO.SearchRq request) {
+        SearchDTO.SearchRs<InstituteDTO.ForAgreementInfo> infoSearchRs = SearchUtil.search(instituteDAO, request, institute -> modelMapper.map(institute, InstituteDTO.ForAgreementInfo.class));
+        for (InstituteDTO.ForAgreementInfo agreementInfo : infoSearchRs.getList()) {
+            if (agreementInfo.getTitleFa() == null) {
+                agreementInfo.setValid(false);
+            } else if (agreementInfo.getInstituteId() == null) {
+                agreementInfo.setValid(false);
+            } else if (agreementInfo.getEconomicalId() == null) {
+                agreementInfo.setValid(false);
+            } else if (agreementInfo.getContactInfo() == null || agreementInfo.getContactInfo().getWorkAddress() == null || agreementInfo.getContactInfo().getWorkAddress().getRestAddr() == null ||
+                    agreementInfo.getContactInfo().getWorkAddress().getPhone() == null || agreementInfo.getContactInfo().getWorkAddress().getFax() == null) {
+                agreementInfo.setValid(false);
+            } else if (agreementInfo.getManager() == null || agreementInfo.getManager().getFirstNameFa() == null || agreementInfo.getManager().getLastNameFa() == null ||
+                    agreementInfo.getManager().getContactInfo().getMobile() == null) {
+                agreementInfo.setValid(false);
+            } else if (agreementInfo.getAccountInfoSet() == null || agreementInfo.getAccountInfoSet().size() == 0) {
+                agreementInfo.setValid(false);
+            } else agreementInfo.setValid(true);
+        }
+        return infoSearchRs;
+    }
+
     @Transactional
     @Override
     public TotalResponse<InstituteDTO.Info> search(NICICOCriteria request) {

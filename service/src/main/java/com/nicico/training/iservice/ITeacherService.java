@@ -75,4 +75,6 @@ public interface ITeacherService {
     BaseResponse saveElsTeacherGeneralInfo(Teacher teacher, TeacherGeneralInfoDTO teacherGeneralInfoDTO);
 
     ElsTeacherInfoDto.Resume getTeacherResumeByNationalCode(String nationalCode);
+
+    SearchDTO.SearchRs<TeacherDTO.ForAgreementInfo> forAgreementInfoSearch(SearchDTO.SearchRq request);
 }

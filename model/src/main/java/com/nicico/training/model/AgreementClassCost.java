@@ -24,7 +24,7 @@ public class AgreementClassCost extends Auditable {
     @Column(name = "n_teaching_cost_per_hour")
     private Long teachingCostPerHour;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_class_id", nullable = false, insertable = false, updatable = false)
     private Tclass tClass;
 

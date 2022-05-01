@@ -1014,4 +1014,19 @@ public class TeacherService implements ITeacherService {
     public List<Map<String, Object>> findAllByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber) {
         return teacherDAO.findAllByNationalCodeAndMobileNumber(mobileNumber,nationalCode);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TeacherDTO.ForAgreementInfo> forAgreementInfoSearch(SearchDTO.SearchRq request) {
+
+        SearchDTO.SearchRs<TeacherDTO.ForAgreementInfo> infoSearchRs = SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher, TeacherDTO.ForAgreementInfo.class));
+        for (TeacherDTO.ForAgreementInfo agreementInfo : infoSearchRs.getList()) {
+            if (agreementInfo.getPersonality() == null || agreementInfo.getPersonality().getFirstNameFa() == null || agreementInfo.getPersonality().getLastNameFa() == null ||
+                    agreementInfo.getPersonality().getNationalCode() == null || agreementInfo.getPersonality().getContactInfo() == null || agreementInfo.getPersonality().getContactInfo().getMobile() == null ||
+                    agreementInfo.getPersonality().getContactInfo().getHomeAddress() == null || agreementInfo.getPersonality().getAccountInfo() == null || agreementInfo.getPersonality().getAccountInfo().getShabaNumber() == null) {
+                agreementInfo.setValid(false);
+            } else agreementInfo.setValid(true);
+        }
+        return infoSearchRs;
+    }
 }
