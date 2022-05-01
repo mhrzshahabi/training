@@ -757,7 +757,7 @@
                 DynamicForm_Uncertainly_needAssessment_postGrade.setValues(detail);
                 Window_delete_uncertainly_needAssessment_postGrade.show();
             } else {
-                createDialog("info", "پاسخ مناسب دریافت نشد")
+                createDialog("info", "<spring:message code="this.code.doesnt.have.needAssessment"/>", "<spring:message code="error"/>");
             }
         }));
 

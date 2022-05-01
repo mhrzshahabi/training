@@ -1724,8 +1724,8 @@
               let detail = JSON.parse(resp.httpResponseText);
               DynamicForm_Uncertainly_needAssessment_jobGroup.setValues(detail);
               Window_delete_uncertainly_needAssessment_jobGroup.show();
-          } else {
-              createDialog("info", "پاسخ مناسب دریافت نشد")
+          }  else {
+              createDialog("info", "<spring:message code="this.code.doesnt.have.needAssessment"/>", "<spring:message code="error"/>");
           }
       }));
 

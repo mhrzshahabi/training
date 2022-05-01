@@ -236,7 +236,11 @@ public class NeedsAssessmentRestController {
     @GetMapping("/getNeedAssessmentTempByCode")
     public ResponseEntity<NeedAssessmentTempDTO> getNeedAssessmentByCode(@RequestParam String code){
       NeedAssessmentTempDTO dto= tempService.getAllNeedAssessmentTemp(code);
+       if(!dto.getCreatedBy().equals(null))
        return new ResponseEntity<>(dto,HttpStatus.OK);
+       else
+           return new ResponseEntity<>(dto,HttpStatus.NOT_FOUND);
+
     }
     @Loggable
     @GetMapping("/removeConfirmation")

@@ -924,7 +924,7 @@
                         DynamicForm_Uncertainly_needAssessment_job.setValues(detail);
                         Window_delete_uncertainly_needAssessment_job.show();
                     } else {
-                        createDialog("info", "پاسخ مناسب دریافت نشد")
+                        createDialog("info", "<spring:message code="this.code.doesnt.have.needAssessment"/>", "<spring:message code="error"/>");
                     }
                 }));
 
@@ -942,7 +942,7 @@
 
                  Window_delete_uncertainly_needAssessment_job.close();
                  createDialog("info","عملیات حذف موفقیت آمیز بود")
-             } else {
+             } else  {
                  createDialog("info", "<spring:message code="delete.was.not.successful"/>", "<spring:message code="error"/>");
              }
          }));
