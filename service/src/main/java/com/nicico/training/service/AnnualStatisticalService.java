@@ -44,7 +44,7 @@ public class AnnualStatisticalService implements IAnnualStatisticalReport {
             institute = new ArrayList<>();
             institute.add(-1L);
         }
-        if(StringUtils.hasText(hozeh) || !hozeh.contains("شهربابک"))
+        if(hozeh == null ||  StringUtils.hasText(hozeh) || !hozeh.contains("شهربابک"))
         {
             List<AnnualStatisticalReport> AnnualList = annualStatisticalReportDAO.AnnualStatistical(termId,termNull,year,yearNull,
                     hozeh, institute,instituteNull, moavenat, omor, vahed, null, categoryId,categoryNull, startDate, enddate, startDate2, enddate2);
