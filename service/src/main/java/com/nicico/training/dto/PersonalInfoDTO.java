@@ -226,4 +226,16 @@ public class PersonalInfoDTO {
         private String firstNameFa;
         private String lastNameFa;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ForAgreementInfo")
+    public static class ForAgreementInfo {
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+        private ContactInfoDTO.ForTeacherAgreementInfo contactInfo;
+        private AccountInfoDTO.ShabaInfo accountInfo;
+    }
 }

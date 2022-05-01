@@ -648,4 +648,20 @@ public class InstituteRestController {
         SearchDTO.SearchRs<InstituteDTO.InstituteSessionTuple> searchRs = instituteService.search(searchRq, i -> modelMapper.map(i, InstituteDTO.InstituteSessionTuple.class));
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/spec-list-agreement")
+    public ResponseEntity<ISC<InstituteDTO.ForAgreementInfo>> forAgreementList(HttpServletRequest iscRq) throws IOException {
+
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<InstituteDTO.ForAgreementInfo> result = instituteService.forAgreementInfoSearch(searchRq);
+
+        ISC.Response<InstituteDTO.ForAgreementInfo> response = new ISC.Response<>();
+        response.setData(result.getList())
+                .setStartRow(0)
+                .setEndRow(result.getList().size())
+                .setTotalRows(result.getTotalCount().intValue());
+        ISC<InstituteDTO.ForAgreementInfo> infoISC = new ISC<>(response);
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
 }

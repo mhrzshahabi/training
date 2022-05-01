@@ -69,6 +69,14 @@ public class AccountInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("ShabaInfo")
+    public static class ShabaInfo {
+        private String shabaNumber;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AccountInfoSpecRs")
     public static class AccountInfoSpecRs {

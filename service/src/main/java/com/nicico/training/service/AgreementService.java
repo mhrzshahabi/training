@@ -6,8 +6,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AgreementClassCostDTO;
 import com.nicico.training.dto.AgreementDTO;
 import com.nicico.training.iservice.*;
-import com.nicico.training.model.Agreement;
-import com.nicico.training.model.AgreementClassCost;
+import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.AgreementDAO;
 import lombok.RequiredArgsConstructor;
@@ -56,6 +55,7 @@ public class AgreementService implements IAgreementService {
         Optional<Agreement> agreementOptional = agreementDAO.findById(id);
         Agreement agreement = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         List<AgreementClassCostDTO.Create> classCostCreate = update.getClassCostList();
+
         if (classCostCreate.size() != 0) {
 
             List<AgreementClassCost> costList =  agreementClassCostService.findAllByAgreementId(id);

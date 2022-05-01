@@ -112,5 +112,15 @@ public class AddressDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("MajorInfo")
+    public static class MajorInfo {
+        private String restAddr;
+        private String phone;
+        private String fax;
+    }
 }
 

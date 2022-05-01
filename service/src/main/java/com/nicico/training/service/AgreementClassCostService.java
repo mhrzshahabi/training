@@ -40,8 +40,8 @@ public class AgreementClassCostService implements IAgreementClassCostService {
     @Override
     public AgreementClassCost update(AgreementClassCostDTO.Update update, Long id) {
 
-        Optional<AgreementClassCost> agreementOptional = agreementClassCostDAO.findById(id);
-        AgreementClassCost agreementClassCost = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Optional<AgreementClassCost> agreementClassCostOptional = agreementClassCostDAO.findById(id);
+        AgreementClassCost agreementClassCost = agreementClassCostOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return agreementClassCostDAO.saveAndFlush(agreementClassCost);
     }
 

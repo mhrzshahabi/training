@@ -346,4 +346,16 @@ public class TeacherDTO {
         private String teacherCode;
         private String teacherName;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ForAgreementInfo")
+    public static class ForAgreementInfo {
+        private Long id;
+        private String teacherCode;
+        private PersonalInfoDTO.ForAgreementInfo personality;
+        private boolean valid;
+    }
+
 }

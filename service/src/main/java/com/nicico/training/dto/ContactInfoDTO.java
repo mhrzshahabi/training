@@ -32,6 +32,15 @@ public class ContactInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("InstituteContactInfo")
+    public static class ForTeacherAgreementInfo {
+        private String mobile;
+        private AddressDTO.MajorInfo homeAddress;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("ContactInfo")
     public static class Info extends ContactInfoDTO {
         private Long id;

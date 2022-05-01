@@ -15,6 +15,14 @@
     let agreementMethod = "POST";
     let maxFileSizeUpload = 31457280;
     let isFileAttached = false;
+    let rialId = null;
+
+    //----------------------------------------------------Default Rest--------------------------------------------------
+    isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/get-id?code=Rial", "GET", null, function (resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            rialId = Number(JSON.parse(resp.data));
+        }
+    }));
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     RestDataSource_Agreement = isc.TrDS.create({
@@ -37,35 +45,34 @@
     });
     RestDataSource_Institute_Agreement = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
+            {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "نام موسسه"},
+            {name: "instituteId", title: "شماره ملی"},
+            {name: "economicalId", title: "شماره اقتصادی"},
+            {name: "contactInfo.workAddress.restAddr", title: "آدرس"},
+            {name: "contactInfo.workAddress.phone", title: "تلفن"},
+            {name: "contactInfo.workAddress.fax", title: "فاکس"},
             {name: "manager.firstNameFa", title: "نام مدیر"},
             {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
-            {name: "mobile", title: "موبایل"},
-            {name: "restAddress", title: "آدرس"},
-            {name: "phone", title: "تلفن"}
+            {name: "manager.contactInfo.mobile", title: "موبایل مدیر"},
+            {name: "accountInfoSet", title: "شبا"},
+            {name: "valid", hidden: true}
         ],
-        fetchDataURL: instituteUrl + "spec-list"
+        fetchDataURL: instituteUrl + "spec-list-agreement"
     });
     RestDataSource_Teacher_Agreement = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "personality.id"},
-            {name: "teacherCode"},
-            {name: "personnelCode"},
-            {name: "personality.firstNameFa"},
-            {name: "personality.lastNameFa"},
-            {name: "personality.educationLevel.titleFa"},
-            {name: "personality.educationMajor.titleFa"},
-            {name: "personality.contactInfo.mobile"},
-            {name: "categories"},
-            {name: "subCategories"},
-            {name: "personality.contactInfo.homeAddress.id"},
-            {name: "personality.contactInfo.workAddress.id"},
-            {name: "personality.accountInfo.id"},
-            {name: "personality.educationLevelId"}
+            {name: "teacherCode", title: "کد مدرس", filterOperator: "iContains"},
+            {name: "personality.firstNameFa", title: "نام", filterOperator: "iContains"},
+            {name: "personality.lastNameFa", title: "نام خانوادگی", filterOperator: "iContains"},
+            {name: "personality.nationalCode", title: "کدملی", filterOperator: "iContains"},
+            {name: "personality.contactInfo.mobile", title: "موبایل", filterOperator: "iContains"},
+            {name: "personality.contactInfo.homeAddress.restAddr", title: "آدرس منزل", filterOperator: "iContains"},
+            {name: "personality.accountInfo.shabaNumber", title: "شبا", filterOperator: "iContains"},
+            {name: "valid", hidden: true}
         ],
-        fetchDataURL: teacherUrl + "spec-list"
+        fetchDataURL: teacherUrl + "spec-list-agreement"
     });
     RestDataSource_Service_Type_Agreement = isc.TrDS.create({
         fields: [
@@ -167,6 +174,7 @@
         showRecordComponentsByCell: true,
         fields: [
             {name: "id", hidden: true},
+            {name: "classId", hidden: true},
             {name: "titleClass", title: "عنوان کلاس"},
             {name: "code", title: "کدکلاس"},
             {name: "teachingCostPerHour", title: "هزینه ساعتی تدریس", canEdit: true},
@@ -234,9 +242,14 @@
                 filterFields: ["titleFa"],
                 textMatchStyle: "substring",
                 pickListFields: [
-                    {name: "titleFa", filterOperator: "iContains"},
-                    {name: "manager.firstNameFa", filterOperator: "iContains"},
-                    {name: "manager.lastNameFa", filterOperator: "iContains"}
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "titleFa", title: "نام موسسه", filterOperator: "iContains"},
+                    {name: "instituteId", title: "شماره ملی", filterOperator: "iContains"},
+                    {name: "economicalId", title: "شماره اقتصادی", filterOperator: "iContains"},
+                    {name: "contactInfo.workAddress.phone", title: "تلفن", filterOperator: "iContains"},
+                    {name: "manager.firstNameFa", title: "نام مدیر", filterOperator: "iContains"},
+                    {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", filterOperator: "iContains"},
+                    {name: "valid", hidden: true}
                 ],
                 pickListProperties: {
                     showFilterEditor: false
@@ -244,11 +257,9 @@
                 click: function (form, item) {
                     item.fetchData();
                 },
-                // changed: function (form, item, value) {
-                //     if (form.getValue("instituteId") == null) {
-                //         form.setValue("instituteId", value);
-                //     }
-                // }
+                changed: function (form, item) {
+                    checkInstituteValidation(item);
+                }
             },
             {
                 name: "secondParty",
@@ -288,16 +299,24 @@
                 displayField: "teacherCode",
                 filterFields: ["teacherCode"],
                 pickListFields: [
-                    {name: "personality.firstNameFa", title: "نام", filterOperator: "iContains"},
-                    {name: "personality.lastNameFa", title: "نام خانوادگی", filterOperator: "iContains"},
-                    {name: "teacherCode", title: "کد مدرس", filterOperator: "iContains"},
-                    {name: "personnelCode", title: "کدپرسنلی", filterOperator: "iContains"}
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "teacherCode", title: "کد مدرس"},
+                    {name: "personality.firstNameFa", title: "نام"},
+                    {name: "personality.lastNameFa", title: "نام خانوادگی"},
+                    {name: "personality.nationalCode", title: "کدملی"},
+                    {name: "personality.contactInfo.mobile", title: "موبایل"},
+                    {name: "personality.contactInfo.homeAddress.restAddr", title: "آدرس منزل"},
+                    {name: "personality.accountInfo.shabaNumber", title: "شبا"},
+                    {name: "valid", hidden: true}
                 ],
                 pickListProperties: {
-                    showFilterEditor: false
+                    showFilterEditor: true
                 },
                 click: function (form, item) {
                     item.fetchData();
+                },
+                changed: function (form, item) {
+                    checkTeacherValidation(item);
                 }
             },
             {
@@ -313,15 +332,23 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 pickListFields: [
-                    {name: "titleFa", filterOperator: "iContains", autoFitWidth: true},
-                    {name: "manager.firstNameFa", filterOperator: "iContains", autoFitWidth: true},
-                    {name: "manager.lastNameFa", filterOperator: "iContains", autoFitWidth: true}
+                    {name: "id", primaryKey: true, hidden: true},
+                    {name: "titleFa", title: "نام موسسه", filterOperator: "iContains"},
+                    {name: "instituteId", title: "شماره ملی", filterOperator: "iContains"},
+                    {name: "economicalId", title: "شماره اقتصادی", filterOperator: "iContains"},
+                    {name: "contactInfo.workAddress.phone", title: "تلفن", filterOperator: "iContains"},
+                    {name: "manager.firstNameFa", title: "نام مدیر", filterOperator: "iContains"},
+                    {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", filterOperator: "iContains"},
+                    {name: "valid", hidden: true}
                 ],
                 pickListProperties: {
                     showFilterEditor: false
                 },
                 click: function (form, item) {
                     item.fetchData();
+                },
+                changed: function (form, item) {
+                    checkInstituteValidation(item);
                 }
             },
             {
@@ -371,7 +398,26 @@
                 },
                 click: function (form, item) {
                     item.fetchData();
+                },
+                change: function (form, item, value) {
+                    let finalCost = form.getItem("finalCost").getValue();
+                    if (finalCost != null) {
+                        if (value === rialId) {
+                            let finalCostT = finalCost / 10;
+                            form.getItem("alphabeticFinalCost").show();
+                            form.setValue("alphabeticFinalCost", String(finalCostT).toPersianLetter() + " تومان");
+                        } else
+                            form.getItem("alphabeticFinalCost").hide();
+                    }
                 }
+            },
+            {
+                name: "alphabeticFinalCost",
+                title: "مبلغ نهایی به حروف",
+                required: false,
+                colSpan: 4,
+                type: "staticText",
+                hidden: true
             },
             {
                 name: "subject",
@@ -566,6 +612,7 @@
                 DynamicForm_Agreement.setValue("secondParty", "2");
                 DynamicForm_Agreement.getItem("secondParty").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("secondParty"), "2");
             }
+            DynamicForm_Agreement.getItem("currencyId").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("currencyId"), record.currencyId);
             Window_Agreement.setTitle("ویرایش تفاهم نامه");
             Window_Agreement.show();
         }
@@ -645,16 +692,24 @@
                     displayField: "code",
                     valueField: "code",
                     optionDataSource: RestDataSource_Select_Class,
-                    editorExit: function (form, item) {
-                        this.Super("editorExit", arguments);
-                        let totalRows = item.getSelectedRecords();
-                        if (totalRows === null || totalRows.length === 0)
+                    changed: function (form, item) {
+
+                        let listClassCost_Data = [];
+                        let records = item.getSelectedRecords();
+                        if (records === null || records.length === 0)
                             ListGrid_Class_Teaching_Cost.setData([]);
-                        else
-                            ListGrid_Class_Teaching_Cost.setData(totalRows);
-                        // debugger;
-                        ListGrid_Class_Teaching_Cost.click();
-                    },
+                        else {
+                            for (let i = 0; i < records.length; i++) {
+                                let obj = {
+                                    classId: records[i].id,
+                                    titleClass: records[i].titleClass,
+                                    code: records[i].code
+                                };
+                                listClassCost_Data.add(obj);
+                            }
+                            ListGrid_Class_Teaching_Cost.setData(listClassCost_Data);
+                        }
+                    }
                 }
             ]
         });
@@ -728,12 +783,28 @@
                 break;
             }
             dataObject = {
-                classId: records[i].id,
+                classId: records[i].classId,
                 teachingCostPerHour: records[i].teachingCostPerHour
             };
             agreementClassCost_Data.add(dataObject);
         }
         window.close();
+    }
+    function checkInstituteValidation(item) {
+        let record = item.getSelectedRecord();
+        if (record.valid === false) {
+            item.setValue(null);
+            createDialog("info", "همه اطلاعات موسسه آموزشی انتخابی شامل نام موسسه - شماره ملی - شماره اقتصادی - آدرس - تلفن - فاکس - نام و نام خانوادگی و موبایل مدیر و شبای موسسه باید در فرم مرکز آموزشی تکمیل گردد");
+            return;
+        }
+    }
+    function checkTeacherValidation(item) {
+        let record = item.getSelectedRecord();
+        if (record.valid === false) {
+            item.setValue(null);
+            createDialog("info", "همه اطلاعات مدرس انتخابی شامل نام - نام خانوادگی - کد ملی  - آدرس - موبایل - شبا باید در فرم استاد تکمیل گردد");
+            return;
+        }
     }
     function Help_Files_Upload_Changed() {
         if (document.getElementById('file_JspAttachments').files.length !== 0)

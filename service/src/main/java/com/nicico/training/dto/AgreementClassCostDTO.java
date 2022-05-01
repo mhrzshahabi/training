@@ -49,7 +49,7 @@ public class AgreementClassCostDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AgreementClassCostSpecRs")
-    public static class CourseSpecRs {
+    public static class AgreementClassCostSpecRs {
         private AgreementClassCostDTO.SpecRs response;
     }
 
