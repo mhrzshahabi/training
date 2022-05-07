@@ -15,6 +15,7 @@
     let agreementMethod = "POST";
     let maxFileSizeUpload = 31457280;
     let isFileAttached = false;
+    let isClassAdded = false;
     let rialId = null;
 
     //----------------------------------------------------Default Rest--------------------------------------------------
@@ -46,16 +47,16 @@
     RestDataSource_Institute_Agreement = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "نام موسسه"},
-            {name: "instituteId", title: "شماره ملی"},
-            {name: "economicalId", title: "شماره اقتصادی"},
-            {name: "contactInfo.workAddress.restAddr", title: "آدرس"},
-            {name: "contactInfo.workAddress.phone", title: "تلفن"},
-            {name: "contactInfo.workAddress.fax", title: "فاکس"},
-            {name: "manager.firstNameFa", title: "نام مدیر"},
-            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
-            {name: "manager.contactInfo.mobile", title: "موبایل مدیر"},
-            {name: "accountInfoSet", title: "شبا"},
+            {name: "titleFa", title: "نام موسسه", filterOperator: "iContains"},
+            {name: "instituteId", title: "شماره ملی", filterOperator: "iContains"},
+            {name: "economicalId", title: "شماره اقتصادی", filterOperator: "iContains"},
+            {name: "contactInfo.workAddress.restAddr", title: "آدرس", filterOperator: "iContains"},
+            {name: "contactInfo.workAddress.phone", title: "تلفن", filterOperator: "iContains"},
+            {name: "contactInfo.workAddress.fax", title: "فاکس", filterOperator: "iContains"},
+            {name: "manager.firstNameFa", title: "نام مدیر", filterOperator: "iContains"},
+            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", filterOperator: "iContains"},
+            {name: "manager.contactInfo.mobile", title: "موبایل مدیر", filterOperator: "iContains"},
+            {name: "accountInfoSet", title: "شبا", filterOperator: "iContains"},
             {name: "valid", hidden: true}
         ],
         fetchDataURL: instituteUrl + "spec-list-agreement"
@@ -291,7 +292,7 @@
                     {name: "valid", hidden: true}
                 ],
                 pickListProperties: {
-                    showFilterEditor: false
+                    showFilterEditor: true
                 },
                 click: function (form, item) {
                     item.fetchData();
@@ -381,7 +382,7 @@
                     {name: "valid", hidden: true}
                 ],
                 pickListProperties: {
-                    showFilterEditor: false
+                    showFilterEditor: true
                 },
                 click: function (form, item) {
                     item.fetchData();
@@ -504,6 +505,7 @@
                 return;
             let data = DynamicForm_Agreement.getValues();
 
+
             if (agreementMethod === "POST") {
 
                 if (data.serviceTypeId === 1 && agreementClassCost_Data.length === 0) {
@@ -539,6 +541,11 @@
                 }));
 
             } else if (agreementMethod === "PUT") {
+
+                if (data.serviceTypeId === 1 && isClassAdded === false && agreementClassCost_Data.length === 0) {
+                    createDialog("info", "کلاسی انتخاب نشده است");
+                    return;
+                }
 
                 let update = {
                     id: data.id,
@@ -640,6 +647,7 @@
             });
         } else {
             agreementMethod = "PUT";
+            isClassAdded = true;
             DynamicForm_Agreement.clearValues();
             DynamicForm_Agreement.clearErrors();
             DynamicForm_Agreement.editRecord(record);
@@ -764,6 +772,7 @@
             title: "<spring:message code='close'/>",
             align: "center",
             click: function () {
+                isClassAdded = true;
                 Window_Select_Class.close();
             }
         });
@@ -803,6 +812,7 @@
                     wait.close();
                     let costList = JSON.parse(resp.httpResponseText);
                     ListGrid_Class_Teaching_Cost.setData(costList);
+                    isClassAdded = false;
                     Window_Select_Class.show();
                 } else {
                     wait.close();
