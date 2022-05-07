@@ -22,4 +22,9 @@ public class EvaluationFinalTestFormController {
     public String resendFinalExamForm() {
         return "base/resendFinalExam";
     }
+
+    @RequestMapping("/monitoring-final-exam-form")
+    public String monitoringFinalExamForm() {
+        return "base/monitoringFinalExam";
+    }
 }
