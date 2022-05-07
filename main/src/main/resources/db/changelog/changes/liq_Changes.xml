@@ -3752,4 +3752,13 @@ WHERE
             ]]>
         </sql>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-063">
+        <addColumn tableName="tbl_agreement">
+            <column name="c_file_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_group_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_key" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

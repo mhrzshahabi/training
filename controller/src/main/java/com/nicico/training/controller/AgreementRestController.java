@@ -47,6 +47,17 @@ public class AgreementRestController {
     }
 
     @Loggable
+    @PutMapping("/upload")
+    public ResponseEntity upload(@RequestBody AgreementDTO.Upload upload) {
+        try {
+            agreementService.upload(upload);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<ISC<AgreementDTO.Info>> agreementList(HttpServletRequest iscRq) throws IOException {
 
