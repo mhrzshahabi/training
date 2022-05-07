@@ -3767,4 +3767,40 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet id="1651905051000-1" author="namdari">
+        <sql endDelimiter="/">
+            <![CDATA[
+            CREATE OR REPLACE PROCEDURE PRC_UPDATE_CLASS_STATUS AS
+            BEGIN
+            UPDATE
+                (
+            SELECT
+                *
+            FROM
+                tbl_class u
+                    LEFT JOIN (
+                    SELECT
+                        tbl_class_student.class_id,
+                        COUNT(tbl_class_student.id) AS counts
+                    FROM
+                        tbl_class_student
+                    GROUP BY
+                        tbl_class_student.class_id
+                )         students ON students.class_id = u.id
+
+                ) u
+
+            set
+                u.C_STATUS = '2'
+            where (  1=1
+              and  to_date(u.C_START_DATE,'yyyy/mm/dd','nls_calendar=persian') >=  TO_DATE('1401/01/01', 'yyyy/mm/dd','nls_calendar=persian')
+              and TO_DATE(u.C_START_DATE, 'yyyy/mm/dd','nls_calendar=persian') <= TO_DATE( To_char(sysdate,'yyyy/mm/dd','nls_calendar=persian'), 'yyyy/mm/dd','nls_calendar=persian')
+              and u.C_STATUS =  '1'
+              and u.counts > 0 );
+            END PRC_UPDATE_CLASS_STATUS;
+            ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
