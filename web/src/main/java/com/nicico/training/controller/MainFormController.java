@@ -552,7 +552,9 @@ public class MainFormController {
     }
 
     @RequestMapping("/agreement")
-    public String showAgreementForm() {
+    public String showAgreementForm(HttpServletRequest request) {
+        request.setAttribute("groupId", groupId);
+        request.setAttribute("minioUrl", minioUrl);
         return "finance/agreement";
     }
 

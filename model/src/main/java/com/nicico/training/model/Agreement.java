@@ -62,4 +62,13 @@ public class Agreement extends Auditable {
 
     @Column(name = "n_max_payment_hours")
     private Long maxPaymentHours;
+
+    @Column(name = "c_file_name")
+    private String fileName;
+
+    @Column(name = "c_group_id")
+    private String group_id;
+
+    @Column(name = "c_key")
+    private String key;
 }

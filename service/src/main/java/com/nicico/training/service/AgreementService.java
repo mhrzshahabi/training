@@ -74,6 +74,18 @@ public class AgreementService implements IAgreementService {
         return agreementDAO.saveAndFlush(updating);
     }
 
+    @Transactional
+    @Override
+    public Agreement upload(AgreementDTO.Upload upload) {
+
+        Optional<Agreement> agreementOptional = agreementDAO.findById(upload.getId());
+        Agreement agreement = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        agreement.setFileName(upload.getFileName());
+        agreement.setGroup_id(upload.getGroup_id());
+        agreement.setKey(upload.getKey());
+        return agreementDAO.saveAndFlush(agreement);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<AgreementDTO.Info> search(SearchDTO.SearchRq request) {
@@ -90,8 +102,5 @@ public class AgreementService implements IAgreementService {
         });
         agreementDAO.deleteById(id);
     }
-
-    @Override
-    public List<Agreement> findAll() { return agreementDAO.findAll(); }
 
 }

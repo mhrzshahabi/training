@@ -153,6 +153,8 @@
         initialSort: [
             {property: "id", direction: "descending"}
         ],
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
         fields: [
             {name: "id", hidden: true},
             {name: "firstParty.titleFa"},
@@ -163,8 +165,45 @@
             {name: "currency.title"},
             {name: "subject"},
             {name: "teacherEvaluation"},
-            {name: "maxPaymentHours"}
-        ]
+            {name: "maxPaymentHours"},
+            {
+                name: "upload",
+                align: "center",
+                showTitle: false,
+                canFilter: false
+            },
+            {
+                name: "download",
+                align: "center",
+                showTitle: false,
+                canFilter: false
+            }
+        ],
+        createRecordComponent: function (record, colNum) {
+
+            let fieldName = this.getFieldName(colNum);
+            if (fieldName === "upload") {
+                return isc.IButton.create({
+                    layoutAlign: "center",
+                    title: "آپلود فایل امضا شده",
+                    width: "145",
+                    margin: 3,
+                    click: function () {
+                        showUploadSignedFileWindow(record.id);
+                    }
+                });
+            } else if (fieldName === "download") {
+                return isc.IButton.create({
+                    layoutAlign: "center",
+                    title: "دانلود فایل امضا شده",
+                    width: "145",
+                    margin: 3,
+                    click: function () {
+                        downloadSignedFile(record)
+                    }
+                });
+            } else return null;
+        }
     });
     ListGrid_Class_Teaching_Cost = isc.ListGrid.create({
         width: "100%",
@@ -581,7 +620,6 @@
     function Agreement_Add() {
 
         agreementMethod = "POST";
-        isFileAttached = false;
         DynamicForm_Agreement.clearValues();
         DynamicForm_Agreement.clearErrors();
         Window_Agreement.setTitle("ایجاد تفاهم نامه");
@@ -612,6 +650,7 @@
                 DynamicForm_Agreement.setValue("secondParty", "2");
                 DynamicForm_Agreement.getItem("secondParty").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("secondParty"), "2");
             }
+            DynamicForm_Agreement.setValue("serviceTypeId", record.serviceType.id);
             DynamicForm_Agreement.getItem("currencyId").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("currencyId"), record.currencyId);
             Window_Agreement.setTitle("ویرایش تفاهم نامه");
             Window_Agreement.show();
@@ -806,7 +845,170 @@
             return;
         }
     }
-    function Help_Files_Upload_Changed() {
+
+    function showUploadSignedFileWindow(recordId) {
+
+        let DynamicForm_Upload_File = isc.DynamicForm.create({
+            width: "100%",
+            height: 50,
+            align: "center",
+            canSubmit: true,
+            showInlineErrors: true,
+            showErrorText: false,
+            numCols: 2,
+            titleAlign: "left",
+            requiredMessage: "<spring:message code='msg.field.is.required'/>",
+            margin: 2,
+            newPadding: 5,
+            fields: [
+                // {name: "id", hidden: true},
+                {
+                    name: "fileName",
+                    title: "<spring:message code="file.name"/>",
+                    required: true
+                },
+                {name: "group_id", hidden: true},
+                {name: "key", hidden: true},
+            ]
+        });
+        let Button_Upload_File = isc.HTMLFlow.create({
+            align: "center",
+            contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form_file_JspAttachments\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file_JspAttachments\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i><spring:message code='file.upload'/></label><input id=\"file_JspAttachments\" type=\"file\" name=\"file[]\" name=\"file\" onchange=(function(){Agreement_Upload_Changed()})() /></form>"
+        });
+        let Label_Upload_File = isc.Label.create({
+            height: "100%",
+            align: "center",
+            contents: "<spring:message code='file.size.hint'/>"
+        });
+        let Button_Save_Upload_File = isc.IButtonSave.create({
+            title: "<spring:message code='save'/>",
+            align: "center",
+            click: function () {
+
+                DynamicForm_Upload_File.validate();
+                if (DynamicForm_Upload_File.hasErrors())
+                    return;
+                let data = DynamicForm_Upload_File.getValues();
+
+                if (!isFileAttached) {
+                    createDialog("info", "فایلی آپلود نشده است");
+                    return;
+                }
+                if (document.getElementById('file_JspAttachments').files[0].size > this.maxFileSizeUpload) {
+                    createDialog("info", "<spring:message code='file.size.hint'/>");
+                    return;
+                }
+                let file = document.getElementById('file_JspAttachments').files[0];
+                let formData = new FormData();
+                formData.append("file", file);
+
+                let request = new XMLHttpRequest();
+                request.open("Post", '${minioUrl}' + "/" + '${groupId}', true);
+                request.setRequestHeader("contentType", "application/json; charset=utf-8");
+                request.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+                request.send(formData);
+                request.onreadystatechange = function () {
+
+                    if (request.readyState === XMLHttpRequest.DONE) {
+                        if (request.status === 200 || request.status === 201) {
+                            let key = JSON.parse(request.response).key;
+                            let upload = {
+                                id: recordId,
+                                fileName: data.fileName,
+                                group_id: '${groupId}',
+                                key: key
+                            };
+
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(agreementUrl + "/upload", "PUT", JSON.stringify(upload), function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    wait.close();
+                                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                    Window_Upload_File.close();
+                                    ListGrid_Agreement.invalidateCache();
+                                } else {
+                                    wait.close();
+                                    createDialog("info", "خطایی رخ داده است");
+                                    Window_Upload_File.close();
+                                }
+                            }));
+                        } else {
+                            createDialog("info", "<spring:message code="upload.failed"/>");
+                        }
+                    }
+                };
+
+            }
+        });
+        let Button_Exit_Upload_File = isc.IButtonCancel.create({
+            title: "<spring:message code='cancel'/>",
+            align: "center",
+            click: function () {
+                Window_Upload_File.close();
+            }
+        });
+        let HLayOut_SaveOrExit_Upload_File = isc.HLayout.create({
+            layoutMargin: 5,
+            showEdges: false,
+            edgeImage: "",
+            width: "100%",
+            height: 50,
+            alignLayout: "center",
+            align: "center",
+            membersMargin: 10,
+            members: [Button_Save_Upload_File, Button_Exit_Upload_File]
+        });
+        let Window_Upload_File = isc.Window.create({
+            title: "<spring:message code='help.files'/>",
+            width: 500,
+            height: 100,
+            showModalMask: true,
+            align: "center",
+            autoDraw: false,
+            dismissOnEscape: false,
+            border: "1px solid gray",
+            items: [isc.VLayout.create({
+                width: "100%",
+                height: "100%",
+                members: [
+                    DynamicForm_Upload_File,
+                    Button_Upload_File,
+                    Label_Upload_File,
+                    HLayOut_SaveOrExit_Upload_File
+                ]
+            })]
+        });
+
+        isFileAttached = false;
+        DynamicForm_Upload_File.clearValues();
+        DynamicForm_Upload_File.clearErrors();
+        Button_Upload_File.show();
+        Label_Upload_File.show();
+        Window_Upload_File.setTitle("آپلود فایل امضا شده");
+        Window_Upload_File.show();
+    }
+    function downloadSignedFile(record) {
+
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else if (record.fileName == null || record.key == null || record.group_id == null) {
+            createDialog("info", "فایلی آپلود نشده است");
+        } else {
+            let downloadForm = isc.DynamicForm.create({
+                method: "GET",
+                action: "minIo/downloadFile/" + record.group_id + "/" + record.key + "/" + record.fileName,
+                target: "_Blank",
+                canSubmit: true,
+                fields: [
+                    {name: "token", type: "hidden"}
+                ]
+            });
+            downloadForm.setValue("token", "<%=accessToken%>");
+            downloadForm.show();
+            downloadForm.submitForm();
+        }
+    }
+    function Agreement_Upload_Changed() {
         if (document.getElementById('file_JspAttachments').files.length !== 0)
             isFileAttached = true;
     }
