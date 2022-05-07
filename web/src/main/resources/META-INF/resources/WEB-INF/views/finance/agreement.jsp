@@ -864,7 +864,7 @@
 
         let DynamicForm_Upload_File = isc.DynamicForm.create({
             width: "100%",
-            height: 50,
+            height: 0,
             align: "center",
             canSubmit: true,
             showInlineErrors: true,
@@ -875,12 +875,6 @@
             margin: 2,
             newPadding: 5,
             fields: [
-                // {name: "id", hidden: true},
-                {
-                    name: "fileName",
-                    title: "<spring:message code="file.name"/>",
-                    required: true
-                },
                 {name: "group_id", hidden: true},
                 {name: "key", hidden: true},
             ]
@@ -898,11 +892,6 @@
             title: "<spring:message code='save'/>",
             align: "center",
             click: function () {
-
-                DynamicForm_Upload_File.validate();
-                if (DynamicForm_Upload_File.hasErrors())
-                    return;
-                let data = DynamicForm_Upload_File.getValues();
 
                 if (!isFileAttached) {
                     createDialog("info", "فایلی آپلود نشده است");
@@ -928,7 +917,7 @@
                             let key = JSON.parse(request.response).key;
                             let upload = {
                                 id: recordId,
-                                fileName: data.fileName,
+                                fileName: file.name,
                                 group_id: '${groupId}',
                                 key: key
                             };
@@ -975,7 +964,7 @@
         let Window_Upload_File = isc.Window.create({
             title: "<spring:message code='help.files'/>",
             width: 500,
-            height: 100,
+            height: 50,
             showModalMask: true,
             align: "center",
             autoDraw: false,
@@ -1010,7 +999,7 @@
         } else {
             let downloadForm = isc.DynamicForm.create({
                 method: "GET",
-                action: "minIo/downloadFile/" + record.group_id + "/" + record.key + "/" + record.fileName,
+                action: "minIo/downloadFile-by-key/" + record.group_id + "/" + record.key,
                 target: "_Blank",
                 canSubmit: true,
                 fields: [
