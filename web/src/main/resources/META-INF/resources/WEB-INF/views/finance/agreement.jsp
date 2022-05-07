@@ -16,6 +16,7 @@
     let maxFileSizeUpload = 31457280;
     let isFileAttached = false;
     let isClassAdded = false;
+    let costListChanged = false;
     let rialId = null;
 
     //----------------------------------------------------Default Rest--------------------------------------------------
@@ -558,6 +559,7 @@
                     subject: data.subject,
                     teacherEvaluation: data.teacherEvaluation,
                     maxPaymentHours: data.maxPaymentHours,
+                    changed: costListChanged,
                     classCostList: agreementClassCost_Data
                 };
 
@@ -804,6 +806,7 @@
             ]
         });
 
+        ListGrid_Class_Teaching_Cost.setData([]);
         if (agreementMethod === "PUT") {
             let recordId = ListGrid_Agreement.getSelectedRecord().id;
             wait.show();
@@ -837,6 +840,7 @@
             };
             agreementClassCost_Data.add(dataObject);
         }
+        costListChanged = true;
         window.close();
     }
     function checkInstituteValidation(item) {

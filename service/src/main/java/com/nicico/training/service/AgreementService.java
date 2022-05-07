@@ -56,16 +56,20 @@ public class AgreementService implements IAgreementService {
         Agreement agreement = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         List<AgreementClassCostDTO.Create> classCostCreate = update.getClassCostList();
 
-        if (classCostCreate.size() != 0) {
+        List<AgreementClassCost> costList =  agreementClassCostService.findAllByAgreementId(id);
 
-            List<AgreementClassCost> costList =  agreementClassCostService.findAllByAgreementId(id);
+        if (update.isChanged()) {
+
             costList.forEach(item -> {
                 agreementClassCostService.delete(item.getId());
             });
-            classCostCreate.forEach(item -> {
-                item.setAgreementId(agreement.getId());
-                agreementClassCostService.create(item);
-            });
+            if (classCostCreate.size() != 0) {
+
+                classCostCreate.forEach(item -> {
+                    item.setAgreementId(agreement.getId());
+                    agreementClassCostService.create(item);
+                });
+            }
         }
 
         Agreement updating = new Agreement();
