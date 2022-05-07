@@ -54,8 +54,9 @@ public class AgreementDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Agreement - Update")
-    public static class Update extends AgreementDTO{
+    public static class Update extends AgreementDTO {
         private Long id;
+        private boolean changed;
         private Long serviceTypeId;
         private List<AgreementClassCostDTO.Create> classCostList;
     }
