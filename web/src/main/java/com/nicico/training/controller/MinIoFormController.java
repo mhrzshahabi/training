@@ -35,4 +35,19 @@ public class MinIoFormController {
         return restTemplate.exchange(restApiUrl + "/api/minIo/downloadFile/" + groupId + "/" + key + "/" + fileName, HttpMethod.GET, entity, byte[].class);
     }
 
+    @GetMapping(value = {"/downloadFile-by-key/{groupId}/{key}"})
+    public ResponseEntity<byte[]> downloadFileByKey(HttpServletRequest request, @PathVariable String groupId, @PathVariable String key) {
+        String token = request.getParameter("token");
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        RestTemplate restTemplate = new RestTemplate();
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+        return restTemplate.exchange(restApiUrl + "/api/minIo/downloadFile-by-key/" + groupId + "/" + key, HttpMethod.GET, entity, byte[].class);
+    }
+
 }

@@ -29,4 +29,18 @@ public class MinIoRestController {
             return null;
         }
     }
+
+    @GetMapping("/downloadFile-by-key/{groupId}/{key}")
+    public ResponseEntity<ByteArrayResource> downloadFileByKey(HttpServletRequest request, @PathVariable String groupId, @PathVariable String key) {
+
+        ByteArrayResource file = client.downloadFile(request.getHeader("Authorization"), "Training", groupId, key);
+        try {
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getFilename() + "\"")
+                    .body(file);
+        } catch ( Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
