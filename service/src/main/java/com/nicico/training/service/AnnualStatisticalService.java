@@ -22,15 +22,20 @@ public class AnnualStatisticalService implements IAnnualStatisticalReport {
 
     @Transactional(readOnly = true)
     @Override
-    public List<AnnualStatisticalReportDTO.Info> list(List<Long> termId, List<String> year, String hozeh, List<Long> institute, String moavenat, String omor, String vahed, String ghesmat, List<Long> categoryId, String startDate, String enddate, String startDate2, String enddate2) {
+    public List<AnnualStatisticalReportDTO.Info> list(List<Long> termId, List<String> year, String hozeh, List<Long> institute, String moavenat, String omor, String vahed, String ghesmat, List<Long> categoryId, String startDate, String enddate, String startDate2, String enddate2,List<Long> classStatusIds) {
 
         int instituteNull =  (institute == null) ? 1 : 0;
         int yearNull = (year == null) ? 1 : 0;
+        int statusNull = (classStatusIds == null) ? 1 : 0;
         int termNull = (termId == null) ? 1 : 0;
         int categoryNull = (categoryId== null) ? 1 : 0;
         if (termId == null) {
             termId = new ArrayList<>();
             termId.add(-1L);
+        }
+        if (classStatusIds == null) {
+            classStatusIds = new ArrayList<>();
+            classStatusIds.add(-1L);
         }
         if (year == null) {
             year = new ArrayList<>();
@@ -47,13 +52,13 @@ public class AnnualStatisticalService implements IAnnualStatisticalReport {
         if(hozeh == null ||  StringUtils.hasText(hozeh) || !hozeh.contains("شهربابک"))
         {
             List<AnnualStatisticalReport> AnnualList = annualStatisticalReportDAO.AnnualStatistical(termId,termNull,year,yearNull,
-                    hozeh, institute,instituteNull, moavenat, omor, vahed, null, categoryId,categoryNull, startDate, enddate, startDate2, enddate2);
+                    hozeh, institute,instituteNull, moavenat, omor, vahed, null, categoryId,categoryNull, startDate, enddate, startDate2, enddate2,statusNull,classStatusIds);
             return mapper.map(AnnualList, new TypeToken<List<AnnualStatisticalReportDTO.Info>>() {
             }.getType());
         }
         else {
             List<AnnualStatisticalReport> AnnualList1 = annualStatisticalReportDAO.AnnualStatisticalReportShahrBabak(termId, termNull, year, yearNull,
-                    hozeh, institute, instituteNull, moavenat, omor, vahed, null, startDate, enddate, startDate2, enddate2);
+                    hozeh, institute, instituteNull, moavenat, omor, vahed, null, startDate, enddate, startDate2, enddate2,statusNull,classStatusIds);
             return mapper.map(AnnualList1, new TypeToken<List<AnnualStatisticalReportDTO.Info>>() {
             }.getType());
         }

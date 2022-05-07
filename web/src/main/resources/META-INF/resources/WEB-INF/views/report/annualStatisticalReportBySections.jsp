@@ -195,10 +195,11 @@
             width: "100%",
             members: [
                 isc.Label.create({
+                    ID: "gridComponents_contents",
                     padding: 5,
                     width: "100%",
                     align: "center",
-                    contents: "<b style='font-size: 16px;'>گزارش شامل کلاسهای پایان یافته و لغو شده است</b>"
+                    // contents: "<b style='font-size: 16px;'>گزارش شامل کلاسهای پایان یافته و لغو شده است</b>"
                 }),]
         }),ToolStrip_Actions,"filterEditor", "header", "body"],
 
@@ -543,6 +544,45 @@
                         }
                     }
                 ],
+            },
+
+            {
+                name: "classStatus",
+                title: "وضعیت کلاس",
+                type: "SelectItem",
+                operator: "inSet",
+                required: true,
+                multiple: true,
+                valueMap: {
+                    1: "برنامه ريزی",
+                    2: "در حال اجرا",
+                    3: "پایان یافته",
+                    4: "لغو شده",
+                    5: "اختتام"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                endRow:false,
+                startRow:true,
+                width:430,
+                colSpan:4,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
+                filterFields: [""]
             },
 
             {
