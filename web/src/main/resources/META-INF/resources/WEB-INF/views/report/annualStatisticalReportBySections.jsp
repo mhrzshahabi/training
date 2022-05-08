@@ -37,8 +37,12 @@
             {name: "institute_id",hidden:true},
             {name: "institute_title_fa"},
             {name: "category_id"},
+            {name: "barnamerizi_class_count"},
+            {name: "ejra_class_count"},
             {name: "finished_class_count"},
+            {name: "student_count_ghabool"},
             {name: "canceled_class_count"},
+            {name: "ekhtetam_class_count"},
             {name: "sum_of_duration"},
             {name: "student_count"},
             {name: "sum_of_student_hour"},
@@ -180,10 +184,14 @@
                 },
                 autoFitWidth:true
             },
-            {name: "finished_class_count",  title:"تعداد کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "barnamerizi_class_count",  title:"تعداد کلاس برنامه ریزی", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "finished_class_count",  title:"تعداد کلاس پایان یافته", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "ejra_class_count",  title:"تعداد کلاس در حال اجرا", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "canceled_class_count",  title:"تعداد کلاس لغو شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "ekhtetam_class_count",  title:"تعداد کلاس اختتام", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sum_of_duration",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "student_count",  title:"تعداد فراگیر", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "student_count",  title:"تعداد کل فراگیر", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "student_count_ghabool",  title:"تعداد فراگیر قبول شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
             {name: "sum_of_student_hour",  title:"جمع نفر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
@@ -195,10 +203,11 @@
             width: "100%",
             members: [
                 isc.Label.create({
+                    ID: "gridComponents_contents",
                     padding: 5,
                     width: "100%",
                     align: "center",
-                    contents: "<b style='font-size: 16px;'>گزارش شامل کلاسهای پایان یافته و لغو شده است</b>"
+                    // contents: "<b style='font-size: 16px;'>گزارش شامل کلاسهای پایان یافته و لغو شده است</b>"
                 }),]
         }),ToolStrip_Actions,"filterEditor", "header", "body"],
 
@@ -546,6 +555,45 @@
             },
 
             {
+                name: "classStatus",
+                title: "وضعیت کلاس",
+                type: "SelectItem",
+                operator: "inSet",
+                required: true,
+                multiple: true,
+                valueMap: {
+                    1: "برنامه ريزی",
+                    2: "در حال اجرا",
+                    3: "پایان یافته",
+                    4: "لغو شده",
+                    5: "اختتام"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                endRow:false,
+                startRow:true,
+                width:430,
+                colSpan:4,
+                icons:[
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click : function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            form.setValue(null);
+                        }
+                    }
+                ],
+                filterFields: [""]
+            },
+
+            {
                 name: "institute",
                 ID: "institute",
                 //  emptyDisplayValue: "همه",
@@ -860,3 +908,5 @@
         RestDataSource_Term_Filter_annualStatistical.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
         DynamicForm_Report_annualStatisticalReportBySection.getItem("termFilters").fetchData();
     }
+
+    // </script>

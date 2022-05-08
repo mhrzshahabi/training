@@ -26,6 +26,10 @@ public class AnnualStatisticalReportDTO implements Serializable {
     private Long sum_of_duration;
     private Long student_count;
     private Long sum_of_student_hour;
+    private Long barnamerizi_class_count;
+    private Long ejra_class_count;
+    private Long ekhtetam_class_count;
+    private Long student_count_ghabool;
 
     @Getter
     @Setter
