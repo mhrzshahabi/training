@@ -131,6 +131,10 @@ public class ClassFormController {
     public String showStudentsForm() {
         return "classTabs/student";
     }
+    @RequestMapping("/calenderClasses")
+    public String showCalenderClassesForm() {
+        return "classTabs/calenderClasses";
+    }
 
     @RequestMapping("/scores-tab")
     public String scoresTab() {

@@ -344,4 +344,7 @@
     <changeSet author="MShahabi" id="1799887766557-060">
         <createSequence sequenceName="seq_agreement_class_cost_id"/>
     </changeSet>
+    <changeSet id="2799887766557-19" author="ZPakdaman">
+        <createSequence sequenceName="seq_educational_calender_id"/>
+    </changeSet>
 </databaseChangeLog>

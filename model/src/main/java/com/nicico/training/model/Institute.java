@@ -6,6 +6,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -133,4 +134,7 @@ public class Institute extends Auditable {
 
     @Column(name = "l_parameter_value")
     private Long licenseTypeId;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "institute")
+    private List<EducationalCalender> educationalCalenders;
 }

@@ -3758,4 +3758,13 @@ WHERE
             <column name="b_behavioral_to_online_status" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet id="2799887766557-19" author="ZPakdaman">
+        <addColumn tableName="tbl_class">
+            <column name="educational_calender_id" type="NUMBER(19, 0)"></column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="2799887766557-20" author="ZPakdaman">
+        <dropColumn columnName="e_title_en" tableName="tbl_educational_calender"/>
+
+    </changeSet>
 </databaseChangeLog>
