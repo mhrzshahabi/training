@@ -42,4 +42,10 @@ public class AnnualStatisticalReport {
 
     @Column(name = "sum_of_student_hour")
     private Long sum_of_student_hour;
+
+     private Long barnamerizi_class_count;
+     private Long ejra_class_count;
+     private Long ekhtetam_class_count;
+     private Long student_count_ghabool;
+
 }

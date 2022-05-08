@@ -37,8 +37,12 @@
             {name: "institute_id",hidden:true},
             {name: "institute_title_fa"},
             {name: "category_id"},
+            {name: "barnamerizi_class_count"},
+            {name: "ejra_class_count"},
             {name: "finished_class_count"},
+            {name: "student_count_ghabool"},
             {name: "canceled_class_count"},
+            {name: "ekhtetam_class_count"},
             {name: "sum_of_duration"},
             {name: "student_count"},
             {name: "sum_of_student_hour"},
@@ -180,10 +184,14 @@
                 },
                 autoFitWidth:true
             },
-            {name: "finished_class_count",  title:"تعداد کلاس", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "barnamerizi_class_count",  title:"تعداد کلاس برنامه ریزی", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "finished_class_count",  title:"تعداد کلاس پایان یافته", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "ejra_class_count",  title:"تعداد کلاس در حال اجرا", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "canceled_class_count",  title:"تعداد کلاس لغو شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "ekhtetam_class_count",  title:"تعداد کلاس اختتام", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sum_of_duration",  title:"ساعت آموزشی ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
-            {name: "student_count",  title:"تعداد فراگیر", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "student_count",  title:"تعداد کل فراگیر", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "student_count_ghabool",  title:"تعداد فراگیر قبول شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
             {name: "sum_of_student_hour",  title:"جمع نفر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
@@ -900,3 +908,5 @@
         RestDataSource_Term_Filter_annualStatistical.fetchDataURL = termUrl + "spec-list?operator=or&_constructor=AdvancedCriteria&criteria=" + criteria;
         DynamicForm_Report_annualStatisticalReportBySection.getItem("termFilters").fetchData();
     }
+
+    // </script>
