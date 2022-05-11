@@ -48,4 +48,16 @@ public class AnnualStatisticalReport {
      private Long ekhtetam_class_count;
      private Long student_count_ghabool;
 
+    private Long sum_of_omomi;
+    private Long sum_of_takhasosi;
+    private Double sarane_omomi;
+    private Double sarane_takhasosi;
+    private Long class_count;
+    private Double darsad_ostad_dakheli;
+    private Long ostad_count_dakheli;
+    private Long student_contractor_personal;
+    private Long student_personal;
+    private Long student_sayer;
+
+
 }
