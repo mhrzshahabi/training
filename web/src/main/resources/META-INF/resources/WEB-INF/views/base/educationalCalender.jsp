@@ -280,8 +280,13 @@ Menu_ListGrid_educational_Calender = isc.Menu.create({
      rowDoubleClick: function () {
          show_EducationalCalender_EditForm();
      },
-     selectionChanged: function (record) {
+     selectionUpdated: function (record) {
+         loadCalenderClasses(record);
      },
+     filterEditorSubmit: function () {
+         ListGrid_Educational_Calender.invalidateCache();
+     },
+
      click: function () {
      },
      dataArrived: function (startRow, endRow) {
@@ -477,6 +482,16 @@ function save_EducationalCalender() {
 
         }));
     }
+}
+function loadCalenderClasses(){
+    let record =  ListGrid_Educational_Calender.getSelectedRecord();
+    if (record === null) {
+        TabSet_Class_EducationalCalender.disable();
+        return;
+    }else {
+        // loadPage_InternalTeachingSubject(record.id);
+    }
+    TabSet_Class_EducationalCalender.enable();
 }
 
 
