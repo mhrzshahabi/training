@@ -13,14 +13,13 @@ import response.evaluation.EvalListResponse;
 import response.evaluation.PdfResponse;
 import response.evaluation.dto.EvaluationDoneOnlineDto;
 import response.exam.DoneOnlineExamDto;
+import response.exam.ElsExamMonitoringRespDto;
 import response.exam.ExamListResponse;
 import response.exam.ResendExamTimes;
 
 import java.util.List;
 
-
-
-@FeignClient(value = "elsClient", url ="${nicico.elsUrl}")
+@FeignClient(value = "elsClient", url = "${nicico.elsUrl}")
 public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/evaluation")
     BaseResponse sendEvaluation(@RequestBody ElsEvalRequest request);
@@ -61,13 +60,16 @@ public interface ElsClient {
     @RequestMapping(method = RequestMethod.POST, value = "/importCourse")
     BaseResponse sendClass(@RequestBody ElsExamRequest request);
 
-    @DeleteMapping( value = "/evaluations/remove/{sourceId}/{nationalCode}")
-    BaseResponse deleteEvaluationForOnePerson(@PathVariable Long sourceId,@PathVariable String nationalCode);
+    @DeleteMapping(value = "/evaluations/remove/{sourceId}/{nationalCode}")
+    BaseResponse deleteEvaluationForOnePerson(@PathVariable Long sourceId, @PathVariable String nationalCode);
 
     @DeleteMapping(value = "/evaluations/remove")
     BaseResponse deleteEvaluationForOneClass(@RequestBody List<Long> sourceIds);
 
     @GetMapping(value = "/messages/findAll")
     ResponseEntity<List<MessagesAttDTO>> findAllMessagesBySessionId(@RequestParam("sessionId") Long sessionId);
+
+    @GetMapping(value = "/profilesInExam")
+    ElsExamMonitoringRespDto getExamMonitoring(@RequestParam String examCode);
 
 }

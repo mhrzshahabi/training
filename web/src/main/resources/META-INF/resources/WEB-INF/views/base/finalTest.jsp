@@ -1701,8 +1701,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                     break;
                 }
                 case "monitoringFinalTest": {
-                    if (typeof loadPage_monitoring !== "undefined")
-                        loadPage_monitoring();
+                    loadPageMonitoring();
                     break;
                 }
             }
@@ -2083,11 +2082,6 @@ let inValidStudents = [];
                     checkAllowToAddQuestion(FinalTestLG_finalTest.getSelectedRecord());
                     break;
                 }
-            case "monitoringFinalTest": {
-                if (typeof loadPage_monitoring !== "undefined")
-                    loadPage_monitoring();
-                break;
-            }
         }
     }
 

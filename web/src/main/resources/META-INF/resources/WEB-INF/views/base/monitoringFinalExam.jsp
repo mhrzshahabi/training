@@ -3,393 +3,252 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
+<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
+
 // <script>
 
-    //----------------------------------------------------Rest DataSource-----------------------------------------------
-    RestDataSource_Monitoring = isc.TrDS.create({
+    //--------------------------------------------------- Rest DataSource ----------------------------------------------
+    RestDataSource_Not_Started_Test_Monitoring = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "student.id", hidden: true},
             {
-                name: "student.firstName",
+                name: "firstName",
                 title: "<spring:message code="firstName"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {
-                name: "student.lastName",
+                name: "lastName",
                 title: "<spring:message code="lastName"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {
-                name: "student.nationalCode",
+                name: "nationalCode",
                 title: "<spring:message code="national.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
             },
             {
-                name: "applicantCompanyName",
-                title: "<spring:message code="company.applicant"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "student.companyName",
-                title: "<spring:message code="company.name"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "student.personnelNo",
-                title: "<spring:message code="personnel.no"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "student.personnelNo2",
-                title: "<spring:message code="personnel.no.6.digits"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "student.postTitle",
-                title: "<spring:message code="post"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {
-                name: "student.ccpArea",
-                title: "<spring:message code="reward.cost.center.area"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "student.ccpAssistant",
-                title: "<spring:message code="reward.cost.center.assistant"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "student.ccpAffairs",
-                title: "<spring:message code="reward.cost.center.affairs"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "student.ccpSection",
-                title: "<spring:message code="reward.cost.center.section"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "student.ccpUnit",
-                title: "<spring:message code="reward.cost.center.unit"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "student.fatherName",
-                title: "<spring:message code="father.name"/>",
-                filterOperator: "iContains"
-            },
-            {name: "student.contactInfo.mobile", title: "<spring:message code="mobile"/>", filterOperator: "iContains"},
-            {
-                name: "student.birthCertificateNo",
-                title: "<spring:message code="birth.certificate.no"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "student.gender",
-                title: "<spring:message code="gender"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.gender;
-                }
-            },
-            {
-                name: "hasWarning",
-                title: " ",
-                width: 40,
-                type: "image",
-                imageURLPrefix: "",
-                imageURLSuffix: ".png",
-                canEdit: false
-            },
-            {name: "warning", autoFitWidth: true}
-
-        ],
-
-        fetchDataURL: tclassStudentUrl + "/students-iscList/"
+                name: "hasExamResult",
+                title: "سابقه شرکت در آزمون آنلاین",
+                valueMap: {"true" : "بله", "false" : "خیر"}
+            }
+        ]
     });
-
-    //----------------------------------------------------Main  -----------------------------------------------------------------------
-
-    DynamicForm_Monitoring = isc.DynamicForm.create({
-        numCols: 7,
-        padding: 10,
-        titleAlign: "left",
-        colWidths: [70, 200, 70, 100, 100, 200, 100],
+    RestDataSource_Performing_Test_Monitoring = isc.TrDS.create({
         fields: [
             {
-                name: "startDate",
-                ID: "date_resendFinalTest",
-                title: "<spring:message code='test.question.date'/>",
-                required: true,
-                textAlign: "center",
-                width: "*",
-                defaultValue: todayDate,
-                keyPressFilter: "[0-9/]",
-                length: 10,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                    }
-                }],
-                changed: function (form, item, value) {
-                    if (value == null || value === "" || checkDate(value))
-                        item.clearErrors();
-                    else
-                        item.setErrors("<spring:message code='msg.correct.date'/>");
-                }
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
             },
             {
-                name: "time",
-                title: "<spring:message code="test.question.time"/>",
-                required: true,
-                requiredMessage: "<spring:message code="msg.field.is.required"/>",
-                hint: "--:--",
-                defaultValue: "08:00",
-                keyPressFilter: "[0-9:]",
-                showHintInField: true,
-                textAlign: "center",
-                validateOnChange: true,
-                validators: [{
-                    type: "isString",
-                    validateOnExit: true,
-                    type: "lengthRange",
-                    min: 5,
-                    max: 5,
-                    stopOnError: true,
-                    errorMessage: "زمان مجاز بصورت 08:30 است"
-                },
-                    {
-                        type: "regexp",
-                        expression: "^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$",
-                        validateOnChange: true,
-                        errorMessage: "ساعت 23-0 و دقیقه 59-0"
-                    }
-                ],
-                length: 5,
-                editorExit: function () {
-                    DynamicForm_Monitoring.setValue("time", arrangeDate(DynamicForm_Monitoring.getValue("time")));
-                    let val = DynamicForm_Monitoring.getValue("time");
-                    if (val === null || val === '' || typeof (val) === 'undefined' || !val.match(/^(([0-1][0-9]|2[0-3]):([0-5][0-9]))$/)) {
-                        DynamicForm_Monitoring.addFieldErrors("time", "<spring:message code="session.hour.invalid"/>", true);
-                    } else {
-                        DynamicForm_Monitoring.clearFieldErrors("time", true);
-                    }
-                }
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
             },
             {
-                name: "duration",
-                title: "<spring:message code='test.question.duration'/>",
-                textAlign: "center",
-                type: "IntegerItem",
-                hidden:true,
-                keyPressFilter: "[0-9]",
-                hint: "<spring:message code='test.question.duration.hint'/>",
-                showHintInField: true,
-                length: 3
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
             },
-            <sec:authorize access="hasAuthority('FinalTest_Send')">
             {
-                name: "sendBtn",
-                ID: "resendBtnJspFinalExam",
-                title: "<spring:message code="resend.final.test"/>",
-                type: "ButtonItem",
-                startRow: false,
-                endRow: false,
-                click(form, item) {
-                    form.clearErrors();
-                    // resendFinalExam_func();
-                }
+                name: "hasExamResult",
+                title: "سابقه شرکت در آزمون آنلاین",
+                valueMap: {"true" : "بله", "false" : "خیر"}
             }
-            </sec:authorize>
         ]
-
+    });
+    RestDataSource_Finished_Test_Monitoring = isc.TrDS.create({
+        fields: [
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+            },
+            {
+                name: "hasExamResult",
+                title: "سابقه شرکت در آزمون آنلاین",
+                valueMap: {"true" : "بله", "false" : "خیر"}
+            }
+        ]
+    });
+    RestDataSource_Messages_Monitoring = isc.TrDS.create({
+        fields: [
+            {name: "code", title: "<spring:message code='course.code'/>", filterOperator: "equals"},
+            {name: "title", title: "<spring:message code='group.code'/>", filterOperator: "iContains"},
+            {name: "description", title: "<spring:message code='course.title'/>", filterOperator: "iContains"},
+        ]
     });
 
-    ListGrid_Monitoring = isc.TrLG.create({
-        ID: "ListGrid_Monitoring",
-        <sec:authorize access="hasAuthority('FinalTest_R')">
-        dataSource: RestDataSource_Monitoring,
-        </sec:authorize>
+    //----------------------------------------------------- Main Layout ------------------------------------------------
+    DynamicForm_Not_Started_Test_Monitoring = isc.DynamicForm.create({
+        numCols: 7,
+        padding: 10,
+        fields: [
+            {
+                name: "testStatus",
+                title: "<spring:message code="final.test.status"/>",
+                type: "staticText"
+            },
+            {
+                name: "timeToStart",
+                title: "مدت زمان مانده به شروع آزمون:",
+                type: "staticText"
+            },
+            {
+                name: "sendPreparation",
+                title: "ارسال آزمون آمادگی",
+                type: "Button",
+                baseStyle: 'MSG-btn-orange',
+                startRow: false,
+                endRow: false,
+                click: function (form, item) {
+                    sendPreparationTest();
+                }
+            }
+        ]
+    });
+    DynamicForm_Performing_Test_Monitoring = isc.DynamicForm.create({
+        numCols: 7,
+        padding: 10,
+        fields: [
+            {
+                name: "testStatus",
+                title: "<spring:message code="final.test.status"/>",
+                type: "staticText"
+            },
+            {
+                name: "timeToEnd",
+                title: "مدت زمان مانده تا انمام آزمون:",
+                type: "staticText"
+            },
+            {
+                name: "sendMessage",
+                title: "ارسال پیام شرکت در آزمون",
+                type: "Button",
+                baseStyle: 'MSG-btn-orange',
+                icon: '../static/img/msg/mail.svg',
+                startRow: false,
+                endRow: false,
+                click: function (form, item) {
+                    sendMessageForPerformingTest();
+                }
+            }
+        ]
+    });
+    DynamicForm_Finished_Test_Monitoring = isc.DynamicForm.create({
+        numCols: 7,
+        padding: 10,
+        fields: [
+            {
+                name: "testStatus",
+                title: "<spring:message code="final.test.status"/>",
+                type: "staticText"
+            }
+        ]
+    });
+
+    ListGrid_Not_Started_Test_Monitoring = isc.TrLG.create({
+        dataSource: RestDataSource_Not_Started_Test_Monitoring,
         selectionType: "multiple",
         sortField: 1,
         sortDirection: "descending",
+        width: "100%",
         fields: [
             {
-                name: "student.firstName",
-
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.firstName;
-                }
+                name: "firstName"
             },
             {
-                name: "student.lastName",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.lastName;
-                }
+                name: "lastName"
             },
             {
-                name: "student.nationalCode",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                },
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.nationalCode;
-                }
-            },
-            {name: "student.fatherName", hidden: true},
-            {
-                name: "student.personnelNo",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                },
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.personnelNo;
-                }
+                name: "nationalCode"
             },
             {
-                name: "student.personnelNo2",
-                filterEditorProperties: {
-                    keyPressFilter: "[0-9]"
-                },
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.personnelNo2;
-                }
-            },
-            {
-                name: "student.postTitle",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.postTitle;
-                }
-            },
-            {
-                name: "student.contactInfo.mobile",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.contactInfo.mobile;
-                }
-            },
-            {
-                name: "student.birthCertificateNo",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.birthCertificateNo;
-                }
-            },
-            {
-                name: "student.gender",
-                autoFitWidth: true,
-                sortNormalizer: function (record) {
-                    return record.student.gender;
-                }
-            },
-            {
-                name: "extendTime",
-                title: " زمان آزمون مجدد" +
-                    "",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
+                name: "hasExamResult"
+            }
         ],
-        gridComponents: [DynamicForm_Monitoring, "filterEditor", "header", "body"],
-        dataArrived: function () {
-            ListGrid_Monitoring.data.localData.filter(p => p.warning == 'Ok').forEach(p => p.hasWarning = 'checkBlue');
-        },
-        dataChanged: function () {
-            this.Super("dataChanged", arguments);
-            totalRows = this.data.getLength();
-            if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                StudentsCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
-            } else {
-                StudentsCount_student.setContents("&nbsp;");
+        gridComponents: [DynamicForm_Not_Started_Test_Monitoring, "filterEditor", "header", "body"]
+        // dataChanged: function () {},
+        // cellClick: function (record, rowNum, colNum) {}
+    });
+    ListGrid_Performing_Test_Monitoring = isc.TrLG.create({
+        dataSource: RestDataSource_Performing_Test_Monitoring,
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        width: "100%",
+        fields: [
+            {
+                name: "firstName"
+            },
+            {
+                name: "lastName"
+            },
+            {
+                name: "nationalCode"
+            },
+            {
+                name: "hasExamResult"
             }
-        },
-        getCellCSSText: function (record, rowNum, colNum) {
-            let result = "background-color : ";
-            let blackColor = "; color:black";
-            switch (parseInt(record.presenceTypeId)) {
-                case 104:
-                    result += "#FFF9C4" + blackColor;
-                    break;
+        ],
+        gridComponents: [DynamicForm_Performing_Test_Monitoring, "filterEditor", "header", "body"]
+        // getCellCSSText: function (record) {
+        //     if (record.status === "وارد آزمون نشده")
+        //         return "background-color : #e67e7e";
+        //     else
+        //         return "background-color : #d8e4bc";
+        // }
+    });
+    ListGrid_Finished_Test_Monitoring = isc.TrLG.create({
+        dataSource: RestDataSource_Finished_Test_Monitoring,
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        width: "100%",
+        fields: [
+            {
+                name: "firstName"
+            },
+            {
+                name: "lastName"
+            },
+            {
+                name: "nationalCode"
+            },
+            {
+                name: "hasExamResult"
             }
-            if (this.getFieldName(colNum) == "student.personnelNo") {
-                result += ";color: #0066cc !important;text-decoration: underline !important;cursor: pointer !important;"
-            }
-            return result;
-        },
-        cellClick: function (record, rowNum, colNum) {
-            if (colNum === 6) {
-                selectedRecord_addStudent_class = {
-                    firstName: record.student.firstName,
-                    lastName: record.student.lastName,
-                    postTitle: record.student.postTitle,
-                    ccpArea: record.student.ccpArea,
-                    ccpAffairs: record.student.ccpAffairs,
-                    personnelNo: record.student.personnelNo,
-                    nationalCode: record.student.nationalCode,
-                    postCode: record.student.postCode
-                };
-
-                let window_class_Information = isc.Window.create({
-                    title: "<spring:message code="personnel.information"/>",
-                    width: "70%",
-                    minWidth: 500,
-                    autoSize: false,
-                    height: "50%",
-                    closeClick: deleteCachedValue,
-                    items: [isc.VLayout.create({
-                        width: "100%",
-                        height: "100%",
-                        //members: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/test/"})]
-                    })]
-                });
-
-                if (!loadjs.isDefined('personnel-information-details')) {
-                    loadjs('<spring:url value='web/personnel-information-details/' />', 'personnel-information-details');
-                }
-
-                loadjs.ready('personnel-information-details', function () {
-                    let oPersonnelInformationDetails = new loadPersonnelInformationDetails();
-                    window_class_Information.addMember(oPersonnelInformationDetails.PersonnelInfo_Tab);
-
-                });
-                window_class_Information.show();
-            }
-        }
+        ],
+        gridComponents: [DynamicForm_Finished_Test_Monitoring, "filterEditor", "header", "body"]
+        // getCellCSSText: function (record) {
+        //     if (record.status === "آزمون نداده اند")
+        //         return "background-color : #e67e7e";
+        // }
     });
 
     VLayout_Body_Monitoring = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [
-            ListGrid_Monitoring
         ]
     });
 
-    // ---------------------------------Functions--------------------------------
+    //----------------------------------------------------- Functions --------------------------------------------------
 
-    function loadPage_monitoring() {
+    function loadPageMonitoring() {
 
         let record = FinalTestLG_finalTest.getSelectedRecord();
         if (record == null || record.tclass.id == null) {
+
             isc.Dialog.create({
                 message: "<spring:message code='msg.no.records.selected'/>",
                 icon: "[SKIN]ask.png",
@@ -397,16 +256,165 @@
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
-                    // ListGrid_Monitoring.setData([]);
+                    VLayout_Body_Monitoring.setMembers([]);
+                }
+            });
+        } else if (record.onlineFinalExamStatus !== true) {
+
+            isc.Dialog.create({
+                message: "آزمون هنوز به سیستم آزمون آنلاین ارسال نشده است",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code='message'/>",
+                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                    VLayout_Body_Monitoring.setMembers([]);
                 }
             });
         } else {
-            DynamicForm_Monitoring.setValue("duration", record.duration)
-            RestDataSource_Monitoring.fetchDataURL = tclassStudentUrl + "/students-iscList/resend/" + record.tclass.id + "/" + record.id;
-            ListGrid_Monitoring.invalidateCache();
-            ListGrid_Monitoring.fetchData();
-            isc.Label.create({ID: "StudentsCount_student"});
+
+            let testStatus;
+            let currentTime = new Date().toLocaleString('IR',{ hour: 'numeric', minute: 'numeric', hour12: false}).slice(0, 5);
+
+            if (record.date > todayDate) {
+                testStatus = "notStart";
+
+            } else if (record.date === todayDate) {
+
+                if (record.endDate === todayDate) {
+                    // time
+                    if (record.time > currentTime) {
+                        testStatus = "notStart";
+                    } else if (record.time === currentTime) {
+                        testStatus = "performing";
+                    } else if (record.time < currentTime) {
+                        // end tme
+                        if (record.endTime > currentTime) {
+                            testStatus = "performing";
+                        } else if (record.endTime <= currentTime) {
+                            testStatus = "finished";
+                        }
+                    }
+
+                } else if (record.endDate > todayDate) {
+                    // time
+                    if (record.time > currentTime)
+                        testStatus = "notStart";
+                    else if (record.time <= currentTime)
+                        testStatus = "performing";
+                }
+
+            } else if (record.date < todayDate) {
+
+                if (record.endDate < todayDate) {
+                    testStatus = "finished";
+                } else if (record.endDate === todayDate) {
+                    // end time
+                    if (record.endTime <= currentTime) {
+                        testStatus = "finished"
+                    } else {
+                        testStatus = "performing";
+                    }
+
+                } else if (record.endDate > todayDate) {
+                    testStatus = "performing";
+                }
+            }
+
+            let startHour = Number(record.time.slice(0, 2));
+            let startMinute = Number(record.time.slice(3, 5));
+
+            let endHour = Number(record.endTime.slice(0, 2));
+            let endMinute = Number(record.endTime.slice(3, 5));
+
+            let currentHour = Number(currentTime.slice(0, 2));
+            let currentMinute = Number(currentTime.slice(3, 5));
+
+            debugger;
+            if (testStatus === "notStart") {
+
+                let dateNow = JalaliDate.jalaliToGregori(todayDate);
+                dateNow.setHours(currentHour, currentMinute);
+                let dateFuture = JalaliDate.jalaliToGregori(record.date);
+                dateFuture.setHours(startHour, startMinute);
+                let timeToStart = dateTimeDiff(dateFuture, dateNow);
+
+                VLayout_Body_Monitoring.setMembers([]);
+                DynamicForm_Not_Started_Test_Monitoring.setValue("testStatus", "شروع نشده");
+                DynamicForm_Not_Started_Test_Monitoring.setValue("timeToStart", timeToStart);
+                RestDataSource_Not_Started_Test_Monitoring.fetchDataURL = examMonitoringUrl + "/list/" + record.tclass.code;
+                ListGrid_Not_Started_Test_Monitoring.fetchData();
+                VLayout_Body_Monitoring.addMembers(ListGrid_Not_Started_Test_Monitoring);
+
+            } else if (testStatus === "performing") {
+
+                let dateNow = JalaliDate.jalaliToGregori(todayDate);
+                dateNow.setHours(currentHour, currentMinute);
+                let dateFuture = JalaliDate.jalaliToGregori(record.endDate);
+                dateFuture.setHours(endHour, endMinute);
+                let timeToEnd = dateTimeDiff(dateFuture, dateNow);
+
+                VLayout_Body_Monitoring.setMembers([]);
+                DynamicForm_Performing_Test_Monitoring.setValue("testStatus", "درحال برگزاری");
+                DynamicForm_Performing_Test_Monitoring.setValue("timeToEnd", timeToEnd);
+                RestDataSource_Performing_Test_Monitoring.fetchDataURL = examMonitoringUrl + "/list/" + record.tclass.code;
+                ListGrid_Performing_Test_Monitoring.fetchData();
+                VLayout_Body_Monitoring.addMembers(ListGrid_Performing_Test_Monitoring);
+
+            } else if (testStatus === "finished") {
+
+                VLayout_Body_Monitoring.setMembers([]);
+                DynamicForm_Finished_Test_Monitoring.setValue("testStatus", "پایان یافته")
+                RestDataSource_Finished_Test_Monitoring.fetchDataURL = examMonitoringUrl + "/list/" + record.tclass.code;
+                ListGrid_Finished_Test_Monitoring.invalidateCache();
+                ListGrid_Finished_Test_Monitoring.fetchData();
+                VLayout_Body_Monitoring.addMembers(ListGrid_Finished_Test_Monitoring);
+            }
         }
+    }
+
+    function dateTimeDiff(dateFuture, dateNow) {
+
+        let diffInMilliSeconds = Math.abs(dateFuture - dateNow) / 1000;
+
+        const days = Math.floor(diffInMilliSeconds / 86400);
+        diffInMilliSeconds -= days * 86400;
+
+        const hours = Math.floor(diffInMilliSeconds / 3600) % 24;
+        diffInMilliSeconds -= hours * 3600;
+
+        const minutes = Math.floor(diffInMilliSeconds / 60) % 60;
+        diffInMilliSeconds -= minutes * 60;
+
+        let difference = days + " روز " + hours + " ساعت و " + minutes + " دقیقه";
+        return difference;
+    }
+
+    function sendPreparationTest() {
+
+        let records = ListGrid_Not_Started_Test_Monitoring.getSelectedRecords();
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(examMonitoringUrl + "/send-preparation-test", "POST", JSON.stringify(records), function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                wait.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                // Window_Agreement.close();
+                // ListGrid_Agreement.invalidateCache();
+            } else {
+                wait.close();
+                // createDialog("info", "خطایی رخ داده است");
+                // Window_Agreement.close();
+            }
+        }));
+    }
+
+    function sendMessageForPerformingTest() {
+
+        MSG_Window_MSG_Main.show();
+        // RestDataSource_Messages_Monitoring.fetchDataURL =  parameterValueUrl + "/messages/class/student";
+        // MSG_main_layout.members[0].getField("messageType").optionDataSource = RestDataSource_Messages_student;
+        // MSG_main_layout.members[0].getField("messageType").fetchData();
     }
 
 // </script>
