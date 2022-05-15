@@ -1,22 +1,19 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AgreementDTO;
 import com.nicico.training.iservice.IAgreementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -64,42 +61,13 @@ public class AgreementRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<ISC<AgreementDTO.Info>> agreementList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                                @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                                @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                @RequestParam(value = "operator", required = false) String operator,
-                                                                @RequestParam(value = "criteria", required = false) String criteria,
-                                                                @RequestParam(value = "id", required = false) Long id,
-                                                                @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+    public ResponseEntity<ISC<AgreementDTO.Info>> agreementList(HttpServletRequest iscRq,
+                                                                @RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                @RequestParam(value = "_endRow", required = false) Integer endRow) throws IOException {
 
-        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
-
-        SearchDTO.CriteriaRq criteriaRq;
-        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
-            searchRq.setCriteria(criteriaRq);
-        }
-
-        if (StringUtils.isNotEmpty(sortBy)) {
-            searchRq.setSortBy(sortBy);
-        }
-
-        if (id != null) {
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.equals)
-                    .setFieldName("id")
-                    .setValue(id);
-            searchRq.setCriteria(criteriaRq);
-            startRow = 0;
-            endRow = 1;
-        }
-        searchRq.setStartIndex(startRow)
-                .setCount(endRow - startRow);
-
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        searchRq.setStartIndex(startRow);
+        searchRq.setCount(endRow - startRow);
         SearchDTO.SearchRs<AgreementDTO.Info> result = agreementService.search(searchRq);
 
         ISC.Response<AgreementDTO.Info> response = new ISC.Response<>();

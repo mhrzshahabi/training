@@ -159,15 +159,48 @@
         showRecordComponentsByCell: true,
         fields: [
             {name: "id", hidden: true},
-            {name: "firstParty.titleFa"},
-            {name: "secondPartyTeacher.teacherCode"},
-            {name: "secondPartyInstitute.titleFa"},
-            {name: "serviceType.title"},
-            {name: "finalCost"},
-            {name: "currency.title"},
-            {name: "subject"},
-            {name: "teacherEvaluation"},
-            {name: "maxPaymentHours"},
+            {
+                name: "firstParty.titleFa",
+                sortNormalizer: function (record) {
+                    return record.firstParty.titleFa;
+                }
+            },
+            {
+                name: "secondPartyTeacher.teacherCode"
+            },
+            {
+                name: "secondPartyInstitute.titleFa"
+            },
+            {
+                name: "serviceType.title",
+                canFilter: false,
+                sortNormalizer: function (record) {
+                    return record.serviceType.title;
+                }
+            },
+            {
+                name: "finalCost",
+                canFilter: false,
+            },
+            {
+                name: "currency.title",
+                canFilter: false,
+                sortNormalizer: function (record) {
+                    return record.currency.title;
+                }
+            },
+            {
+                name: "subject",
+                canFilter: false,
+            },
+            {
+                name: "teacherEvaluation",
+                canFilter: false,
+            },
+            {
+                name: "maxPaymentHours",
+                canFilter: false,
+            },
             {
                 name: "upload",
                 align: "center",
@@ -181,6 +214,9 @@
                 canFilter: false
             }
         ],
+        filterEditorSubmit: function () {
+            ListGrid_Agreement.invalidateCache();
+        },
         createRecordComponent: function (record, colNum) {
 
             let fieldName = this.getFieldName(colNum);
