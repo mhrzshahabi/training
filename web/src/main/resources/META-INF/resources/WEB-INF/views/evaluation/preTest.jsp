@@ -123,7 +123,7 @@
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
             operator: "and",
-            criteria: [{fieldName: "isPreTestQuestion", operator: "equals", value: true}]
+            criteria: [{fieldName: "testQuestionType", operator: "iContains", value: "PreTest"}]
         }
     });
 

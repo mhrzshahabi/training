@@ -330,7 +330,6 @@
             let currentHour = Number(currentTime.slice(0, 2));
             let currentMinute = Number(currentTime.slice(3, 5));
 
-            debugger;
             if (testStatus === "notStart") {
 
                 let dateNow = JalaliDate.jalaliToGregori(todayDate);

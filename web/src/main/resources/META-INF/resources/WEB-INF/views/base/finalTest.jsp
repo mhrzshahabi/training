@@ -235,17 +235,12 @@
                  autoFitWidth: true
             },
             { name: "onlineExamDeadLineStatus", hidden: true}
-            /*{
-                name: "isPreTestQuestion",
-                title: "<spring:message code="test.question.type"/>",
-                filterOperator: "iContains", autoFitWidth: true
-            },*/
         ],
         fetchDataURL: testQuestionUrl + "/spec-list",
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
             operator: "and",
-            criteria: [{fieldName: "isPreTestQuestion", operator: "equals", value: false}]
+            criteria: [{fieldName: "testQuestionType", operator: "iContains", value: "FinalTest"}]
         },
     });
 
@@ -362,8 +357,6 @@
             { name: "showBtn",canFilter: false, title: "نتایج ", width: "130"},
             { name: "checkDate",canFilter: false, title: "اطلاعات کاربران", width: "145"},
             { name: "onlineExamDeadLineStatus",canFilter: false , hidden: true},
-
-            //{name: "isPreTestQuestion",}
         ],
         autoFetchData: true,
         gridComponents: [FinalTestTS_finalTest, "filterEditor", "header", "body",],

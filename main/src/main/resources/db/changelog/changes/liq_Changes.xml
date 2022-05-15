@@ -4101,4 +4101,31 @@ WHERE
         </sql>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-066">
+        <addColumn tableName="tbl_test_question">
+            <column name="c_test_question_type" type="VARCHAR2(255 CHAR)" defaultValue="type">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-067">
+        <sql>
+            <![CDATA[
+                UPDATE tbl_test_question
+                SET c_test_question_type =
+                        CASE
+                            WHEN b_is_pre_test_question = 1
+                                THEN
+                                'PreTest'
+                            WHEN b_is_pre_test_question = 0
+                                THEN
+                                'FinalTest'
+                            ELSE
+                                'Preparation'
+                            END;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>

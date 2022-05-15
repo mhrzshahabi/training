@@ -651,15 +651,49 @@ public class InstituteRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list-agreement")
-    public ResponseEntity<ISC<InstituteDTO.ForAgreementInfo>> forAgreementList(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<InstituteDTO.ForAgreementInfo>> forAgreementList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                               @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                               @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                                               @RequestParam(value = "criteria", required = false) String criteria,
+                                                                               @RequestParam(value = "id", required = false) Long id,
+                                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            searchRq.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            searchRq.setSortBy(sortBy);
+        }
+
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            searchRq.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        searchRq.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
         SearchDTO.SearchRs<InstituteDTO.ForAgreementInfo> result = instituteService.forAgreementInfoSearch(searchRq);
 
         ISC.Response<InstituteDTO.ForAgreementInfo> response = new ISC.Response<>();
         response.setData(result.getList())
-                .setStartRow(0)
-                .setEndRow(result.getList().size())
+                .setStartRow(startRow)
+                .setEndRow(startRow + result.getList().size())
                 .setTotalRows(result.getTotalCount().intValue());
         ISC<InstituteDTO.ForAgreementInfo> infoISC = new ISC<>(response);
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
