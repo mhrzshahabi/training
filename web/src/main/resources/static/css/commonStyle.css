@@ -913,6 +913,12 @@
 #file_JspAttachments  {
     display: none;
 }
+#file_JspHelps  {
+    display: none;
+}
+#file_JspAgreement  {
+    display: none;
+}
 #file-upload  {
     display: none;
 }

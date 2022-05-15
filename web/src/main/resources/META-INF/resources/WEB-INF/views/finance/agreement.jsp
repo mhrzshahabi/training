@@ -881,7 +881,7 @@
         });
         let Button_Upload_File = isc.HTMLFlow.create({
             align: "center",
-            contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form_file_JspAttachments\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file_JspAttachments\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i><spring:message code='file.upload'/></label><input id=\"file_JspAttachments\" type=\"file\" name=\"file[]\" name=\"file\" onchange=(function(){Agreement_Upload_Changed()})() /></form>"
+            contents: "<form class=\"uploadButton\" method=\"POST\" id=\"form_file_JspAgreement\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file_JspAgreement\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i><spring:message code='file.upload'/></label><input id=\"file_JspAgreement\" type=\"file\" name=\"file[]\" name=\"file\" onchange=(function(){Agreement_Upload_Changed()})() /></form>"
         });
         let Label_Upload_File = isc.Label.create({
             height: "100%",
@@ -897,11 +897,11 @@
                     createDialog("info", "فایلی آپلود نشده است");
                     return;
                 }
-                if (document.getElementById('file_JspAttachments').files[0].size > this.maxFileSizeUpload) {
+                if (document.getElementById('file_JspAgreement').files[0].size > this.maxFileSizeUpload) {
                     createDialog("info", "<spring:message code='file.size.hint'/>");
                     return;
                 }
-                let file = document.getElementById('file_JspAttachments').files[0];
+                let file = document.getElementById('file_JspAgreement').files[0];
                 let formData = new FormData();
                 formData.append("file", file);
 
@@ -1012,7 +1012,7 @@
         }
     }
     function Agreement_Upload_Changed() {
-        if (document.getElementById('file_JspAttachments').files.length !== 0)
+        if (document.getElementById('file_JspAgreement').files.length !== 0)
             isFileAttached = true;
     }
 
