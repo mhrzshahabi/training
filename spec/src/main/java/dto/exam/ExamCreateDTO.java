@@ -24,4 +24,5 @@ public class ExamCreateDTO {
     private ExamStatus status;
     private ExamType type;
     private Long sourceExamId;
+    private String method;
 }
