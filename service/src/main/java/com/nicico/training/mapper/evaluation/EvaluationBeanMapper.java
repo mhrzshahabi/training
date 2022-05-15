@@ -1,7 +1,6 @@
 package com.nicico.training.mapper.evaluation;
 
 
-import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.dto.TclassDTO;
@@ -11,13 +10,11 @@ import com.nicico.training.dto.question.ElsResendExamRequestResponse;
 import com.nicico.training.dto.question.ExamQuestionsObject;
 import com.nicico.training.dto.question.QuestionAttachments;
 import com.nicico.training.iservice.*;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
+import com.nicico.training.service.QuestionBankService;
 import com.nicico.training.service.QuestionnaireService;
 import com.nicico.training.service.TeacherService;
-import org.mapstruct.Named;
-import org.modelmapper.ModelMapper;
-import com.nicico.training.model.*;
-import com.nicico.training.service.QuestionBankService;
 import dto.Question.QuestionData;
 import dto.Question.QuestionScores;
 import dto.evaluuation.EvalCourse;
@@ -28,7 +25,9 @@ import dto.exam.*;
 import org.joda.time.DateTime;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import request.evaluation.ElsEvalRequest;
@@ -41,7 +40,6 @@ import response.exam.ExamQuestionsDto;
 import response.exam.ExamResultDto;
 import response.question.QuestionsDto;
 import response.question.dto.ElsQuestionTargetDto;
-
 
 import java.math.BigDecimal;
 import java.util.*;
@@ -352,9 +350,9 @@ public abstract class EvaluationBeanMapper {
         ////////////////////
         //todo
         exam.setType(getExamType(questionProtocols));
-        if (exam.getType() != ExamType.MULTI_CHOICES)
+        if (exam.getType() != ExamType.MULTI_CHOICES) {
             exam.setResultDate(1638036038L);
-
+        }
 
         request.setExam(exam);
         request.setCategory(courseCategory);
@@ -942,6 +940,7 @@ public abstract class EvaluationBeanMapper {
         exam.setEndDate(endDate.getTime());
         exam.setQuestionCount(object.getQuestions().size());
         exam.setSourceExamId(object.getExamItem().getId());
+        exam.setMethod("FinalTest");
 
         exam.setDuration(time);
 
@@ -1033,6 +1032,7 @@ public abstract class EvaluationBeanMapper {
         exam.setQuestionCount(object.getQuestions().size());
         exam.setSourceExamId(object.getExamItem().getId());
         exam.setDuration(0);
+        exam.setMethod("PreTest");
 
         if (tClass.getScoringMethod().equals("3")) {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));

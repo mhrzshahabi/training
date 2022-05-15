@@ -2,7 +2,7 @@ spring:
   application:
     name: Training
   profiles:
-    active: Development
+    active: Local
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
