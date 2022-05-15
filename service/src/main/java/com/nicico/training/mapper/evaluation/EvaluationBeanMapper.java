@@ -350,9 +350,9 @@ public abstract class EvaluationBeanMapper {
         ////////////////////
         //todo
         exam.setType(getExamType(questionProtocols));
-        if (exam.getType() != ExamType.MULTI_CHOICES) {
+        if (exam.getType() != ExamType.MULTI_CHOICES)
             exam.setResultDate(1638036038L);
-        }
+
 
         request.setExam(exam);
         request.setCategory(courseCategory);
