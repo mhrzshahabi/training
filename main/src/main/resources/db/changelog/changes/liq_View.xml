@@ -13052,4 +13052,207 @@ FROM
         </createView>
     </changeSet>
 
+
+
+    <changeSet author="namdari" id="1652687765000-02">
+        <createView viewName="VIEW_COURSES_EVALUATION_STATISTICAL_REPORT" replaceIfExists="true">
+            <![CDATA[
+               SELECT
+    ROWNUM AS id,
+    n.class_id,
+    n.class_code,
+    n.class_start_date,
+    n.class_end_date,
+    n.total_std,
+    n.course_id,
+    n.course_code,
+    n.course_title_fa,
+    n.class_year,
+    n.term_id,
+    n.category_id,
+    n.category_title_fa,
+    n.sub_category_id,
+    n.sub_category_title_fa,
+    n.teacher_id,
+    n.teacher_national_code,
+    n.teacher_full_name,
+    n.std_complex,
+    n.std_assistant,
+    n.std_affairs,
+    tbl_evaluation_analysis.c_behavioral_grade,
+    tbl_evaluation_analysis.c_reaction_grade,
+    tbl_evaluation_analysis.c_results_grade,
+    tbl_evaluation_analysis.b_effectiveness_pass,
+    pre.mianginpre as miangin_pre
+FROM
+    (
+        SELECT DISTINCT
+            f.class_code,
+            f.class_end_date,
+            f.class_start_date,
+            f.total_std,
+            f.course_code,
+            f.course_title_fa,
+            f.class_year,
+            f.term_id,
+            f.sub_category_title_fa,
+            f.sub_category_id,
+            f.category_id,
+            f.category_title_fa,
+            f.class_id,
+            f.course_id,
+            f.teacher_id,
+            f.teacher_national_code,
+            f.teacher_full_name,
+            LISTAGG(f.student_complex, ' -- ' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+            ORDER BY
+                f.student_complex
+            ) AS std_complex,
+            LISTAGG(f.student_assistant, ' -- ' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+            ORDER BY
+                f.student_assistant
+            ) AS std_assistant,
+            LISTAGG(f.student_affairs, ' -- ' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+            ORDER BY
+                f.student_affairs
+            ) AS std_affairs
+        FROM
+            (
+                SELECT
+                    z.class_code                                                       AS class_code,
+                    z.class_start_date                                                 AS class_start_date,
+                    z.class_end_date                                                   AS class_end_date,
+                    z.course_code                                                      AS course_code,
+                    z.course_titlefa                                                   AS course_title_fa,
+                    substr(z.class_start_date, 1, 4)                                   AS class_year,
+                    z.term_id                                                          AS term_id,
+                    z.category_id                                                      AS category_id,
+                    z.category_titlefa                                                 AS category_title_fa,
+                    z.sub_category_titlefa                                             AS sub_category_title_fa,
+                    z.sub_category_id                                                  AS sub_category_id,
+                    z.class_id                                                         AS class_id,
+                    z.course_id                                                        AS course_id,
+                    z.teacher_id                                                       AS teacher_id,
+                    z.teacher_national_code                                            AS teacher_national_code,
+                    z.teacher_full_name                                                AS teacher_full_name,
+                    concat(concat(tbl_student.first_name, ' '), tbl_student.last_name) AS student,
+                    tbl_student.personnel_no                                           AS student_per_number,
+                    tbl_department.c_mojtame_title                                     AS student_complex,
+                    tbl_department.c_moavenat_title                                    AS student_assistant,
+                    tbl_department.c_omor_title                                        AS student_affairs,
+                    clsstu.total_std                                                   AS total_std
+                FROM
+                         (
+                        SELECT
+                            class_id,
+                            student_id,
+                            total_std
+                        FROM
+                            (
+                                SELECT
+                                    tbl_class_student.class_id,
+                                    tbl_class_student.student_id,
+                                    COUNT(*)
+                                    OVER(PARTITION BY tbl_class_student.class_id) total_std
+                                FROM
+                                    tbl_class_student
+                            )
+                        WHERE
+                            total_std > 0
+                    ) clsstu
+                    INNER JOIN (
+                        SELECT
+                            ROWNUM                                                                                   AS id,
+                            tclass.id                                                                                AS class_id,
+                            tclass.c_code                                                                            AS class_code,
+                            tclass.c_start_date                                                                      AS class_start_date,
+                            tclass.c_end_date                                                                        AS class_end_date,
+                            course.id                                                                                AS course_id,
+                            course.c_code                                                                            AS course_code,
+                            course.c_title_fa                                                                        AS course_titlefa,
+                            term.id                                                                                  AS term_id,
+                            cat.id                                                                                   AS category_id,
+                            cat.c_title_fa                                                                           AS category_titlefa,
+                            sucat.c_title_fa                                                                         AS sub_category_titlefa,
+                            sucat.id                                                                                 AS sub_category_id,
+                            teacher.id                                                                               AS teacher_id,
+                            concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher_full_name,
+                            tbl_personal_info.c_first_name_fa                                                        AS teacher_name,
+                            tbl_personal_info.c_last_name_fa                                                         AS teacher_family,
+                            tbl_personal_info.c_national_code                                                        AS teacher_national_code
+                        FROM
+                                 tbl_class tclass
+                            INNER JOIN tbl_course       course ON tclass.f_course = course.id
+                            INNER JOIN tbl_term         term ON tclass.f_term = term.id
+                            INNER JOIN tbl_category     cat ON cat.id = course.category_id
+                            INNER JOIN tbl_sub_category sucat ON sucat.id = course.subcategory_id
+                            INNER JOIN tbl_teacher      teacher ON tclass.f_teacher = teacher.id
+                            INNER JOIN tbl_personal_info ON teacher.f_personality = tbl_personal_info.id
+                        WHERE
+                            tclass.c_status != '1'
+                    ) z ON clsstu.class_id = z.class_id
+                    LEFT JOIN tbl_student ON clsstu.student_id = tbl_student.id
+                    LEFT JOIN tbl_department ON tbl_student.f_department_id = tbl_department.id
+                ORDER BY
+                    class_code
+            ) f
+        GROUP BY
+            f.class_code,
+            f.class_end_date,
+            f.class_start_date,
+            f.total_std,
+            f.course_code,
+            f.course_title_fa,
+            f.class_year,
+            f.term_id,
+            f.sub_category_title_fa,
+            f.sub_category_id,
+            f.category_id,
+            f.category_title_fa,
+            f.class_id,
+            f.course_id,
+            f.teacher_id,
+            f.teacher_national_code,
+            f.teacher_full_name
+    ) n
+    LEFT JOIN tbl_evaluation_analysis ON n.class_id = tbl_evaluation_analysis.f_tclass
+    LEFT JOIN (
+        SELECT DISTINCT
+            class_id AS classid,
+            total_std
+        FROM
+            (
+                SELECT
+                    tbl_class_student.class_id,
+                    tbl_class_student.student_id,
+                    COUNT(*)
+                    OVER(PARTITION BY tbl_class_student.class_id) total_std
+                FROM
+                    tbl_class_student
+            )
+        WHERE
+            total_std > 0
+    ) clsstu ON n.class_id = clsstu.classid
+    LEFT JOIN (
+        SELECT
+            SUM(pre) AS mianginpre,
+            classid
+        FROM
+            (
+                SELECT
+                    tbl_class_student.pre_test_score AS pre,
+                    tbl_class_student.class_id       AS classid
+                FROM
+                    tbl_class_student
+            )
+        GROUP BY
+            classid
+    ) pre ON n.class_id = pre.classid
+
+
+            ]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>

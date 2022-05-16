@@ -31,8 +31,8 @@ public class ViewCoursesEvaluationStatisticalReportRestController {
     public ResponseEntity<ISC<ViewCoursesEvaluationStatisticalReportDTO.StatisticalData>> iscList(HttpServletRequest iscRq) throws IOException {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ViewCoursesEvaluationStatisticalReportDTO> searchRs = viewCoursesEvaluationStatisticalReportService.search(searchRq);
-        List<ViewCoursesEvaluationStatisticalReportDTO> data = ISC.convertToIscRs(searchRs, searchRq.getStartIndex()).getResponse().getData();
+        SearchDTO.SearchRs<ViewCoursesEvaluationStatisticalReportDTO.Detail> searchRs = viewCoursesEvaluationStatisticalReportService.search(searchRq);
+        List<ViewCoursesEvaluationStatisticalReportDTO.Detail> data = ISC.convertToIscRs(searchRs, searchRq.getStartIndex()).getResponse().getData();
 
         List<ViewCoursesEvaluationStatisticalReportDTO.StatisticalData> list = new ArrayList<>();
         ViewCoursesEvaluationStatisticalReportDTO.StatisticalData statisticalData = new ViewCoursesEvaluationStatisticalReportDTO.StatisticalData();
@@ -45,19 +45,19 @@ public class ViewCoursesEvaluationStatisticalReportRestController {
         statisticalData.setNumberOfInEffective(0);
 
         data.forEach(item -> {
-            Map<String, Object> map = tclassService.getEvaluationStatisticalReport(item.getClassId());
+//            Map<String, Object> map = tclassService.getEvaluationStatisticalReport(item.getClassId());
             statisticalData.setTotalClasses(statisticalData.getTotalClasses()+1);
-            if (map.get("hasReactionEval").equals(true))
+            if (item.getHasReactionEval()!=null && !item.getHasReactionEval().equals("0"))
                 statisticalData.setNumberOfReaction(statisticalData.getNumberOfReaction()+1);
-            if (map.get("hasLearningEval").equals(true))
+            if (item.getHasLearningEval()!=null)
                 statisticalData.setNumberOfLearning(statisticalData.getNumberOfLearning()+1);
-            if (map.get("hasBehavioralEval").equals(true))
+            if (item.getHasBehavioralEval()!=null && !item.getHasBehavioralEval().equals("0"))
                 statisticalData.setNumberOfBehavioral(statisticalData.getNumberOfBehavioral()+1);
-            if (map.get("hasResultEval").equals(true))
+            if (item.getHasResultEval()!=null && !item.getHasResultEval().equals("0"))
                 statisticalData.setNumberOfResult(statisticalData.getNumberOfResult()+1);
-            if (map.get("effective").equals(true))
+            if (item.getEffective()!=null && !item.getEffective().equals("0") )
                 statisticalData.setNumberOfEffective(statisticalData.getNumberOfEffective()+1);
-            if (map.get("inEffective").equals(true))
+            if (item.getEffective()==null || !item.getEffective().equals("1") )
                 statisticalData.setNumberOfInEffective(statisticalData.getNumberOfInEffective()+1);
         });
 
