@@ -630,6 +630,11 @@ public abstract class EvaluationBeanMapper {
                             examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
                         }
                     }
+                    if (options.size() == 0) {
+                        examQuestionsObject.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                        examQuestionsObject.setMessage(String.format("گزینه های سوال «%s» تعیین نشده است.", question.getTitle()));
+                        return examQuestionsObject;
+                    }
                     question.setQuestionOption(options);
                     questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
 
@@ -1726,19 +1731,13 @@ public abstract class EvaluationBeanMapper {
 //
 
     private String convertCorrectAnswer(Integer multipleChoiceAnswer, QuestionBank questionBank) {
-        switch (multipleChoiceAnswer) {
-            case 1:
-                return questionBank.getOption1();
-            case 2:
-                return questionBank.getOption2();
-            case 3:
-                return questionBank.getOption3();
-            case 4:
-                return questionBank.getOption4();
-            default:
-                return null;
-
-        }
+        return switch (multipleChoiceAnswer) {
+            case 1 -> questionBank.getOption1();
+            case 2 -> questionBank.getOption2();
+            case 3 -> questionBank.getOption3();
+            case 4 -> questionBank.getOption4();
+            default -> null;
+        };
     }
 
     private EQuestionType convertQuestionType(String title) {
