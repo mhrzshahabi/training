@@ -330,11 +330,16 @@ public class ElsRestController {
             try {
                 TestQuestion exam = iTestQuestionService.getById(examId);
                 PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(exam.getTclass().getTeacherId()).getPersonalityId());
-                if (exam.isPreTestQuestion()) {
+                if (exam.getTestQuestionType().equalsIgnoreCase("PreTest")) {
                     elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
                 } else {
                     elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
                 }
+//                else if (exam.getTestQuestionType().equalsIgnoreCase("FinalTest")) {
+//                    elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
+//                } else {
+//                    // Preparation Test
+//                }
                 if (elsExamRequestResponse.getStatus() == 200) {
                     ElsExamRequest request = elsExamRequestResponse.getElsExamRequest();
                     elsExamQuestionsResponse.setExam(request.getExam());

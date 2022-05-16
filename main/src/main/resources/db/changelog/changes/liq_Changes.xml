@@ -3767,6 +3767,367 @@ WHERE
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-064">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code)
+            VALUES (l_parameter_id,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'نوع آزمون',
+                    'testQuestionType');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'آزمون پایانی',
+                    'FinalTest');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'پیش تست',
+                    'PreTest');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'آمادگی',
+                    'Preparation');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-065">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+                DECLARE
+                max_code_id NUMBER;
+                BEGIN
+                BEGIN
+                SELECT MAX(n_code_id)
+                INTO max_code_id
+                FROM tbl_question_bank;
+                END;
+                BEGIN
+                INSERT INTO tbl_question_bank (id,
+                                               c_created_by,
+                                               d_created_date,
+                                               e_deleted,
+                                               e_enabled,
+                                               c_last_modified_by,
+                                               d_last_modified_date,
+                                               n_version,
+                                               c_code,
+                                               n_code_id,
+                                               c_question,
+                                               n_lines,
+                                               f_parameter_value_question_type,
+                                               f_parameter_value_question_display_type,
+                                               c_option1,
+                                               c_option2,
+                                               c_option3,
+                                               c_option4,
+                                               n_multiple_choice_answer)
+                VALUES (seq_question_bank_id.NEXTVAL,
+                        'preparation_test',
+                        current_timestamp,
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL,
+                        0,
+                        to_char(max_code_id + 1),
+                        max_code_id + 1,
+                        'طامع، یعنی:',
+                        1,
+                        520,
+                        522,
+                        'آزمند',
+                        'خوش شانس',
+                        'محتاج',
+                        'مطمئن',
+                        1);
+
+                END;
+
+                BEGIN
+                INSERT INTO tbl_question_bank (id,
+                                               c_created_by,
+                                               d_created_date,
+                                               e_deleted,
+                                               e_enabled,
+                                               c_last_modified_by,
+                                               d_last_modified_date,
+                                               n_version,
+                                               c_code,
+                                               n_code_id,
+                                               c_question,
+                                               n_lines,
+                                               f_parameter_value_question_type,
+                                               f_parameter_value_question_display_type,
+                                               c_option1,
+                                               c_option2,
+                                               c_option3,
+                                               c_option4,
+                                               n_multiple_choice_answer)
+                VALUES (seq_question_bank_id.NEXTVAL,
+                        'preparation_test',
+                        current_timestamp,
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL,
+                        0,
+                        to_char(max_code_id + 2),
+                        max_code_id + 2,
+                        'سعادت، یعنی:',
+                        1,
+                        520,
+                        522,
+                        'نیک انجام',
+                        'نیک بختی',
+                        'نیک بینی',
+                        'نیک فرجام',
+                        2);
+
+                END;
+
+                BEGIN
+                INSERT INTO tbl_question_bank (id,
+                                               c_created_by,
+                                               d_created_date,
+                                               e_deleted,
+                                               e_enabled,
+                                               c_last_modified_by,
+                                               d_last_modified_date,
+                                               n_version,
+                                               c_code,
+                                               n_code_id,
+                                               c_question,
+                                               n_lines,
+                                               f_parameter_value_question_type,
+                                               f_parameter_value_question_display_type,
+                                               c_option1,
+                                               c_option2,
+                                               c_option3,
+                                               c_option4,
+                                               n_multiple_choice_answer)
+                VALUES (seq_question_bank_id.NEXTVAL,
+                        'preparation_test',
+                        current_timestamp,
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL,
+                        0,
+                        to_char(max_code_id + 3),
+                        max_code_id + 3,
+                        'کدام ترکیب مناسبت کمتری با سه ترکیب دیگر دارد؟',
+                        1,
+                        520,
+                        522,
+                        'قاضی و مغضوب',
+                        'سائل و مسئول',
+                        'قاصد و مقصود',
+                        'حاصل و محصول',
+                        1);
+
+                END;
+
+                BEGIN
+                INSERT INTO tbl_question_bank (id,
+                                               c_created_by,
+                                               d_created_date,
+                                               e_deleted,
+                                               e_enabled,
+                                               c_last_modified_by,
+                                               d_last_modified_date,
+                                               n_version,
+                                               c_code,
+                                               n_code_id,
+                                               c_question,
+                                               n_lines,
+                                               f_parameter_value_question_type,
+                                               f_parameter_value_question_display_type,
+                                               c_option1,
+                                               c_option2,
+                                               c_option3,
+                                               c_option4,
+                                               n_multiple_choice_answer)
+                VALUES (seq_question_bank_id.NEXTVAL,
+                        'preparation_test',
+                        current_timestamp,
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL,
+                        0,
+                        to_char(max_code_id + 4),
+                        max_code_id + 4,
+                        'کدام یک از کلمات زیر در ردیف سه کلمه «کنف - کتان - نی» قرار دارند؟',
+                        1,
+                        520,
+                        522,
+                        'بوریا',
+                        'پنبه',
+                        'پشم',
+                        'ابریشم',
+                        1);
+
+                END;
+
+                BEGIN
+                INSERT INTO tbl_question_bank (id,
+                                               c_created_by,
+                                               d_created_date,
+                                               e_deleted,
+                                               e_enabled,
+                                               c_last_modified_by,
+                                               d_last_modified_date,
+                                               n_version,
+                                               c_code,
+                                               n_code_id,
+                                               c_question,
+                                               n_lines,
+                                               f_parameter_value_question_type,
+                                               f_parameter_value_question_display_type,
+                                               c_option1,
+                                               c_option2,
+                                               c_option3,
+                                               c_option4,
+                                               n_multiple_choice_answer)
+                VALUES (seq_question_bank_id.NEXTVAL,
+                        'preparation_test',
+                        current_timestamp,
+                        NULL,
+                        NULL,
+                        NULL,
+                        NULL,
+                        0,
+                        to_char(max_code_id + 5),
+                        max_code_id + 5,
+                        'کدام یک از کلمه های زیر در ردیف سه کلمه «فلفل - زردچوبه - هل» قرار دارند؟',
+                        1,
+                        520,
+                        522,
+                        'اسپند',
+                        'کندر',
+                        'دارچین',
+                        'عود',
+                        3);
+
+                END;
+                END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-066">
+        <addColumn tableName="tbl_test_question">
+            <column name="c_test_question_type" type="VARCHAR2(255 CHAR)" defaultValue="type">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-067">
+        <sql>
+            <![CDATA[
+                UPDATE tbl_test_question
+                SET c_test_question_type =
+                        CASE
+                            WHEN b_is_pre_test_question = 1
+                                THEN
+                                'PreTest'
+                            WHEN b_is_pre_test_question = 0
+                                THEN
+                                'FinalTest'
+                            ELSE
+                                'Preparation'
+                            END;
+            ]]>
+        </sql>
+    </changeSet>
+
     <changeSet id="1651905051000-1" author="namdari">
         <sql endDelimiter="/">
             <![CDATA[
@@ -3801,6 +4162,5 @@ WHERE
             ]]>
         </sql>
     </changeSet>
-
 
 </databaseChangeLog>

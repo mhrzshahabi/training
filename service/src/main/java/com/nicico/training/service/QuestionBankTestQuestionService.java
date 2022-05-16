@@ -88,18 +88,20 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
     @Override
     public List<QuestionBankTestQuestionDTO.QuestionBankTestQuestionFinalTest> finalTestList(String type, Long classId) {
 
-        boolean isPreTestQuestion = false;
+        String testQuestionType;
         Locale locale = LocaleContextHolder.getLocale();
 
-        if (type.equals("preTest")) {
-            isPreTestQuestion = true;
+        if (type.equals("PreTest")) {
+            testQuestionType = "true";
         } else if (type.equals("test")) {
-            isPreTestQuestion = false;
+            testQuestionType = "FinalTest";
+        } else if (type.equals("preparation")) {
+            testQuestionType = "Preparation";
         } else {
             throw new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest);
         }
 
-        List<QuestionBankTestQuestion> questionBankTestQuestions = questionBankTestQuestionDAO.findByTypeAndClassId(isPreTestQuestion, classId);
+        List<QuestionBankTestQuestion> questionBankTestQuestions = questionBankTestQuestionDAO.findByTypeAndClassId(testQuestionType, classId);
         questionBankTestQuestions.stream().forEach(item -> {
 
             QuestionBank questionBank = questionBankDAO.findById(item.getQuestionBankId()).orElseThrow(() -> new NotFoundException("QuestionBank Not Found"));
@@ -173,22 +175,24 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
     @Override
     public void addQuestions(String type, Long classId, List<Long> questionIds) {
 
-        boolean isPreTestQuestion = false;
+        String testQuestionType;
 
         if (type.equals("preTest")) {
-            isPreTestQuestion = true;
+            testQuestionType = "PreTest";
         } else if (type.equals("test")) {
-            isPreTestQuestion = false;
+            testQuestionType = "FinalTest";
+        } else if (type.equals("preparation")) {
+            testQuestionType = "Preparation";
         } else {
             throw new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest);
         }
 
-        TestQuestion testQuestion = testQuestionDAO.findTestQuestionByTclassAndPreTestQuestion(classId, isPreTestQuestion);
+        TestQuestion testQuestion = testQuestionDAO.findTestQuestionByTclassAndTestQuestionType(classId, testQuestionType);
 
         if (testQuestion == null) {
 
             testQuestion = new TestQuestion();
-            testQuestion.setPreTestQuestion(isPreTestQuestion);
+            testQuestion.setTestQuestionType(testQuestionType);
             testQuestion.setTclassId(classId);
 
             testQuestionDAO.save(testQuestion);
@@ -209,17 +213,19 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
     @Override
     public void deleteQuestions(String type, Long classId, List<Long> questionIds) {
 
-        boolean isPreTestQuestion = false;
+        String testQuestionType;
 
         if (type.equals("preTest")) {
-            isPreTestQuestion = true;
+            testQuestionType = "PreTest";
         } else if (type.equals("test")) {
-            isPreTestQuestion = false;
+            testQuestionType = "FinalTest";
+        } else if (type.equals("preparation")) {
+            testQuestionType = "Preparation";
         } else {
             throw new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest);
         }
 
-        TestQuestion testQuestion = testQuestionDAO.findTestQuestionByTclassAndPreTestQuestion(classId, isPreTestQuestion);
+        TestQuestion testQuestion = testQuestionDAO.findTestQuestionByTclassAndTestQuestionType(classId, testQuestionType);
 
         if (testQuestion == null) {
 

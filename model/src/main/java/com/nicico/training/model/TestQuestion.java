@@ -25,6 +25,9 @@ public class TestQuestion extends Auditable {
     @Column(name = "b_is_pre_test_question", nullable = false)
     private boolean isPreTestQuestion;
 
+    @Column(name = "c_test_question_type", nullable = false)
+    private String testQuestionType;
+
     @ManyToOne
     @JoinColumn(name = "f_class", insertable = false, updatable = false)
     private Tclass tclass;
