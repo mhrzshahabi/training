@@ -1649,14 +1649,13 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 name: "resendFinalTest",
                 title: "<spring:message code="resend.final.test"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/resend-final-exam-form"})
+            },
+            {
+                ID: "monitoringFinalTest",
+                name: "monitoringFinalTest",
+                title: "<spring:message code="monitoring.final.test"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/monitoring-final-exam-form"})
             }
-            <%--,--%>
-            <%--{--%>
-            <%--    ID: "monitoringFinalTest",--%>
-            <%--    name: "monitoringFinalTest",--%>
-            <%--    title: "<spring:message code="monitoring.final.test"/>",--%>
-            <%--    pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/monitoring-final-exam-form"})--%>
-            <%--}--%>
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
