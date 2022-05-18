@@ -942,9 +942,11 @@
                 formData.append("file", file);
 
                 let request = new XMLHttpRequest();
-                request.open("Post", '${minioUrl}' + "/" + '${groupId}', true);
+                request.open("Post", '${uploadMinioUrl}' + "/" + '${groupId}', true);
                 request.setRequestHeader("contentType", "application/json; charset=utf-8");
                 request.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+                request.setRequestHeader("user-id", "Bearer <%= accessToken %>");
+                request.setRequestHeader("app-id", "Training");
                 request.send(formData);
                 request.onreadystatechange = function () {
 
