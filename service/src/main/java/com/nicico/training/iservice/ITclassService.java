@@ -205,4 +205,8 @@ public interface ITclassService {
     Map<String, Object> getEvaluationStatisticalReport(Long classId);
 
     TclassDTO.TClassForAgreement getTClassDataForAgreement(Long classId);
+
+    List<Tclass> getTclassList ();
+
+    Tclass saveOrUpdate(Tclass tclass);
 }

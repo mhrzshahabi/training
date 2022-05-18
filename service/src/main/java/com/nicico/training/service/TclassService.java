@@ -2240,4 +2240,13 @@ public class TclassService implements ITclassService {
         return modelMapper.map(tclass, TclassDTO.TClassForAgreement.class);
     }
 
+    @Override
+    public List<Tclass> getTclassList() {
+        return tclassDAO.findAll();
+    }
+
+    @Override
+    public Tclass saveOrUpdate(Tclass tclass) {
+        return tclassDAO.save(tclass);
+    }
 }
