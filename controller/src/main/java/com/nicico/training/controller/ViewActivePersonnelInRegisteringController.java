@@ -39,14 +39,18 @@ public class ViewActivePersonnelInRegisteringController {
     @GetMapping
     public ResponseEntity<ISC<ViewActivePersonnelInRegisteringDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
 
+//        criteriaRq.setOperator(EOperator.equals);
+//        criteriaRq.setFieldName("nationalCode");
+//        criteriaRq.setValue(modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode());
+//        searchRq.setCriteria(criteriaRq);
         searchRq.setCriteria(
                 CriteriaUtil.createCriteria(
                         EOperator.equals,
                         "nationalCode",
                         modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode())
         );
-
         searchRq.setSortBy("classId");
 
         SearchDTO.SearchRs<ViewActivePersonnelInRegisteringDTO.Info> searchRs = viewActivePersonnelInRegisteringService.search(searchRq);

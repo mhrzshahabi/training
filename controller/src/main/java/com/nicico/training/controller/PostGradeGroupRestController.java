@@ -90,6 +90,10 @@ public class PostGradeGroupRestController {
         if (postGrades == null || postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
+//        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        criteriaRq.setCriteria(new ArrayList<>());
+//        criteriaRq.setOperator(EOperator.and);
+//        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(
                 CriteriaUtil.addCriteria(new ArrayList<>(), EOperator.and)

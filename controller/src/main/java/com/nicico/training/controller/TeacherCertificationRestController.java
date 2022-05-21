@@ -112,11 +112,14 @@ public class TeacherCertificationRestController {
 
     private List<CategoryDTO.Info> setCats(LinkedHashMap request) {
         SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
-
+//        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.inSet);
+//        criteriaRq.setFieldName("id");
+//        criteriaRq.setValue(request.get("categories"));
+//        categoriesRequest.setCriteria(criteriaRq);
         categoriesRequest.setCriteria(
                 CriteriaUtil.createCriteria(EOperator.inSet, "id", request.get("categories"))
         );
-
         List<CategoryDTO.Info> categories = categoryService.search(categoriesRequest).getList();
         request.remove("categories");
         return categories;
@@ -125,11 +128,14 @@ public class TeacherCertificationRestController {
 
     private List<SubcategoryDTO.Info> setSubCats(LinkedHashMap request) {
         SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
-
+//        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.inSet);
+//        criteriaRq.setFieldName("id");
+//        criteriaRq.setValue(request.get("subCategories"));
+//        subCategoriesRequest.setCriteria(criteriaRq);
         subCategoriesRequest.setCriteria(
                 CriteriaUtil.createCriteria(EOperator.inSet, "id", request.get("subCategories"))
         );
-
         List<SubcategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
         request.remove("subCategories");
         return subCategories;

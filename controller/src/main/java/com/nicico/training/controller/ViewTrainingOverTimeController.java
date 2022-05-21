@@ -66,18 +66,37 @@ public class ViewTrainingOverTimeController {
 
         List<SearchDTO.CriteriaRq> listOfCriteria=new ArrayList<>();
 
+//        SearchDTO.CriteriaRq criteriaRq=null;
+//
+//        criteriaRq=new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.greaterOrEqual);
+//        criteriaRq.setFieldName("date");
+//        criteriaRq.setValue(startDate);
+//
+//        listOfCriteria.add(criteriaRq);
         listOfCriteria.add(
                 createCriteria(EOperator.greaterOrEqual, "date", startDate)
         );
+//        criteriaRq=new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.lessOrEqual);
+//        criteriaRq.setFieldName("date");
+//        criteriaRq.setValue(endDate);
+
 
         listOfCriteria.add(
                 createCriteria(EOperator.lessOrEqual, "date", endDate)
         );
 
+
+
+//        criteriaRq=new SearchDTO.CriteriaRq();
+//        criteriaRq.setCriteria(listOfCriteria);
+//        criteriaRq.setOperator(EOperator.and);
+//
+//        request.setCriteria(criteriaRq);
         request.setCriteria(
                 addCriteria(listOfCriteria, EOperator.and)
         );
-
         SearchDTO.SearchRs result=iTrainingOverTimeReportService.search(request, o -> modelMapper.map(o, ViewTrainingOverTimeReportDTO.Info.class));
 
         final ViewTrainingOverTimeReportDTO.SpecRs specResponse = new ViewTrainingOverTimeReportDTO.SpecRs();

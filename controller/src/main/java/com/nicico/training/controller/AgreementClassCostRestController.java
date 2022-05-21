@@ -53,6 +53,11 @@ public class AgreementClassCostRestController {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
 
+//        criteriaRq.setFieldName("agreementId");
+//        criteriaRq.setOperator(EOperator.equals);
+//        criteriaRq.setValue(agreementId);
+//        searchRq.setCriteria(criteriaRq);
+
         searchRq.setCriteria(
                 createCriteria(EOperator.equals, "agreementId", agreementId)
         );

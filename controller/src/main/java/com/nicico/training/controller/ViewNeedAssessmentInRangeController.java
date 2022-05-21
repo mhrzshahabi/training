@@ -66,9 +66,20 @@ public class ViewNeedAssessmentInRangeController {
             Timestamp firstTime = new Timestamp(parsedDate.getTime());
             Timestamp secondDate = new Timestamp(parsedDate2.getTime());
 
+//            criteriaRq=new SearchDTO.CriteriaRq();
+//            criteriaRq.setOperator(EOperator.greaterOrEqual);
+//            criteriaRq.setFieldName("updateAt");
+//            criteriaRq.setValue(new Date(firstTime.getTime()));
             listOfCriteria.add(
                     createCriteria(EOperator.greaterOrEqual, "updateAt", new Date(firstTime.getTime()))
             );
+
+//            listOfCriteria.add(criteriaRq);
+//
+//            criteriaRq=new SearchDTO.CriteriaRq();
+//            criteriaRq.setOperator(EOperator.lessOrEqual);
+//            criteriaRq.setFieldName("updateAt");
+//            criteriaRq.setValue(new Date(secondDate.getTime()));
 
             listOfCriteria.add(
                     createCriteria(EOperator.lessOrEqual, "updateAt", new Date(secondDate.getTime()))
@@ -77,10 +88,18 @@ public class ViewNeedAssessmentInRangeController {
             // look the origin of excption
         }
 
+
+
+
+//        listOfCriteria.add(criteriaRq);
+//        criteriaRq=new SearchDTO.CriteriaRq();
+//        criteriaRq.setCriteria(listOfCriteria);
+//        criteriaRq.setOperator(EOperator.and);
+//
+//        searchRq.setCriteria(criteriaRq);
         searchRq.setCriteria(
                 addCriteria(listOfCriteria, EOperator.and)
         );
-
         SearchDTO.SearchRs result = iViewNeedAssessmentInRangeTimeService.search(searchRq, o -> modelMapper.map(o, ViewNeedAssessmentInRangeDTO.Info.class));
         final ViewNeedAssessmentInRangeDTO.SpecRs specResponse = new ViewNeedAssessmentInRangeDTO.SpecRs();
         final ViewNeedAssessmentInRangeDTO.TrainingNeedAssessmentDTOSpecRs specRs = new ViewNeedAssessmentInRangeDTO.TrainingNeedAssessmentDTOSpecRs();
