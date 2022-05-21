@@ -3,8 +3,10 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.ViewUnjustifiedAbsenceReportDTO;
 import com.nicico.training.iservice.IViewUnjustifiedAbsenceReportService;
+import com.nicico.training.service.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -38,28 +40,17 @@ public class ViewUnjustifiedAbsenceReportController {
 
         List<SearchDTO.CriteriaRq> listOfCriteria=new ArrayList<>();
 
-        SearchDTO.CriteriaRq criteriaRq=null;
+        listOfCriteria.add(
+                CriteriaUtil.createCriteria(EOperator.greaterOrEqual, "startDate", startDate)
+        );
 
-        criteriaRq=new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.greaterOrEqual);
-        criteriaRq.setFieldName("startDate");
-        criteriaRq.setValue(startDate);
+        listOfCriteria.add(
+                CriteriaUtil.createCriteria(EOperator.lessOrEqual, "endDate", endDate)
+        );
 
-        listOfCriteria.add(criteriaRq);
-
-        criteriaRq=new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.lessOrEqual);
-        criteriaRq.setFieldName("endDate");
-        criteriaRq.setValue(endDate);
-
-        listOfCriteria.add(criteriaRq);
-
-
-        criteriaRq=new SearchDTO.CriteriaRq();
-        criteriaRq.setCriteria(listOfCriteria);
-        criteriaRq.setOperator(EOperator.and);
-
-        request.setCriteria(criteriaRq);
+        request.setCriteria(
+                CriteriaUtil.addCriteria(listOfCriteria, EOperator.and)
+        );
 
         SearchDTO.SearchRs result=iViewUnjustifiedAbsenceReportService.search(request, o -> modelMapper.map(o, ViewUnjustifiedAbsenceReportDTO.Info.class));
 

@@ -4,6 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.AgreementClassCostDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IAgreementClassCostService;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+
+import static com.nicico.training.controller.util.CriteriaUtil.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -49,12 +52,10 @@ public class AgreementClassCostRestController {
     public ResponseEntity<List<AgreementClassCostDTO.Info>> agreementClassCostListByAgreementId(HttpServletRequest iscRq, @PathVariable Long agreementId) throws IOException {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
 
-        criteriaRq.setFieldName("agreementId");
-        criteriaRq.setOperator(EOperator.equals);
-        criteriaRq.setValue(agreementId);
-        searchRq.setCriteria(criteriaRq);
+        searchRq.setCriteria(
+                createCriteria(EOperator.equals, "agreementId", agreementId)
+        );
 
         SearchDTO.SearchRs<AgreementClassCostDTO.Info> result = agreementClassCostService.search(searchRq);
         result.getList().forEach(item -> {

@@ -5,7 +5,11 @@ ghazanfari_f,
 */
 package com.nicico.training.controller.util;
 
+import com.nicico.copper.common.dto.search.EOperator;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import org.springframework.util.MultiValueMap;
+
+import java.util.List;
 
 public class CriteriaUtil {
 
@@ -18,4 +22,18 @@ public class CriteriaUtil {
         }
         return criteria;
     }
+    public static SearchDTO.CriteriaRq addCriteria(List<SearchDTO.CriteriaRq> listOfCriteria, EOperator criteriaOperator) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setCriteria(listOfCriteria);
+        criteriaRq.setOperator(criteriaOperator);
+        return criteriaRq;
+    }
+    public static SearchDTO.CriteriaRq createCriteria(EOperator operator, String fieldName, Object value) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        return criteriaRq;
+    }
+
 }

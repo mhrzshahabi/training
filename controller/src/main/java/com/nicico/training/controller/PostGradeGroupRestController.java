@@ -6,6 +6,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IPostGradeGroupService;
@@ -89,11 +90,10 @@ public class PostGradeGroupRestController {
         if (postGrades == null || postGrades.isEmpty()) {
             return new ResponseEntity(new ISC.Response().setTotalRows(0), HttpStatus.OK);
         }
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setCriteria(new ArrayList<>());
-        criteriaRq.setOperator(EOperator.and);
 
-        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(
+                CriteriaUtil.addCriteria(new ArrayList<>(), EOperator.and)
+        );
         searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.postGrade", postGrades.stream().filter(pg -> pg.getDeleted() == null).map(PostGradeDTO.Info::getId).collect(Collectors.toList()), EOperator.inSet, null));
         searchRq.getCriteria().getCriteria().add(makeNewCriteria("deleted", null, EOperator.isNull, null));
         searchRq.getCriteria().getCriteria().add(makeNewCriteria("trainingPostSet.deleted", null, EOperator.isNull, null));

@@ -4,6 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.ViewUnfinishedClassesReportDTO;
 import com.nicico.training.iservice.IViewUnfinishedClassesReportService;
 import lombok.RequiredArgsConstructor;
@@ -31,12 +32,14 @@ public class ViewUnfinishedClassesReportController {
     @GetMapping
     public ResponseEntity<ISC<ViewUnfinishedClassesReportDTO.Grid>> list(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
 
-        criteriaRq.setOperator(EOperator.equals);
-        criteriaRq.setFieldName("nationalCode");
-        criteriaRq.setValue(modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode());
-        searchRq.setCriteria(criteriaRq);
+        searchRq.setCriteria(
+                CriteriaUtil.createCriteria(
+                        EOperator.equals,
+                        "nationalCode",
+                        modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode())
+        );
+
         searchRq.setSortBy("classId");
 
         SearchDTO.SearchRs<ViewUnfinishedClassesReportDTO.Grid> searchRs = viewUnfinishedClassesReportService.search(searchRq);
