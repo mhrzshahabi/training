@@ -9,6 +9,6 @@ import java.util.List;
 @Getter
 @Setter
 public class ElsClassListV2Dto {
-    private List<ElsClassV2Dto> list;
-    private PaginationDto paginationDto;
+    private List<ElsClassV2Dto> data;
+    private PaginationDto pagination;
 }

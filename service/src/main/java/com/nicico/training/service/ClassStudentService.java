@@ -634,8 +634,8 @@ public class ClassStudentService implements IClassStudentService {
             paginationDto.setLast(0);
         }
         paginationDto.setTotalItems(count);
-        dto.setPaginationDto(paginationDto);
-        dto.setList(result);
+        dto.setPagination(paginationDto);
+        dto.setData(result);
 
         return dto;
     }
@@ -674,8 +674,8 @@ public class ClassStudentService implements IClassStudentService {
             paginationDto.setLast(0);
         }
         paginationDto.setTotalItems(count);
-        dto.setPaginationDto(paginationDto);
-        dto.setList(result);
+        dto.setPagination(paginationDto);
+        dto.setData(result);
 
         return dto;
     }
