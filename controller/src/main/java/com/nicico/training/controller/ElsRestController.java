@@ -82,6 +82,7 @@ import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
 import response.tclass.dto.ElsClassListDto;
+import response.tclass.dto.ElsClassListV2Dto;
 import response.teachingHistory.ElsStudentsLevelDto;
 import response.teachingHistory.ElsTeachingHistoryFindAllRespDto;
 import response.teachingHistory.ElsTeachingHistoryRespDto;
@@ -1603,6 +1604,36 @@ public class ElsRestController {
     }
 
 
+    //get all classes foe a student and teacher
+    @GetMapping("/user-classes/v2/{page}/{size}")
+    public ElsClassListV2Dto getUserClassesV2(HttpServletRequest header
+            , @RequestParam String type
+            , @RequestParam String nationalCode
+            , @PathVariable Integer page, @PathVariable Integer size) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+
+                switch (type) {
+                    case "student" -> {
+                        return classStudentService.getStudentClassesV2(nationalCode, page, size);
+                    }
+                    case "teacher" -> {
+                        return classStudentService.getTeacherClassesV2(nationalCode, page, size);
+                    }
+                    default -> {
+                        log.error("default error" + type);
+                        throw new TrainingException(TrainingException.ErrorType.Unknown);
+                    }
+                }
+            } catch (Exception s) {
+                log.error("Exception error:" + s);
+                throw new TrainingException(TrainingException.ErrorType.Unknown);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
     //get all classes foe a student and teacher
     @GetMapping("/user-classes/{page}/{size}")
     public ElsClassListDto getUserClasses(HttpServletRequest header

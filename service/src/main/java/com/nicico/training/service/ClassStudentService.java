@@ -28,6 +28,8 @@ import response.PaginationDto;
 import response.evaluation.dto.EvalAverageResult;
 import response.tclass.dto.ElsClassDto;
 import response.tclass.dto.ElsClassListDto;
+import response.tclass.dto.ElsClassListV2Dto;
+import response.tclass.dto.ElsClassV2Dto;
 
 import java.util.*;
 import java.util.function.Function;
@@ -593,5 +595,88 @@ public class ClassStudentService implements IClassStudentService {
             // Invalid MelliCode
             return Character.getNumericValue(melliCode.charAt(9)) == lastDigit;
         }
+    }
+
+    @Override
+    public ElsClassListV2Dto getTeacherClassesV2(String nationalCode, Integer page, Integer size) {
+        ElsClassListV2Dto dto = new ElsClassListV2Dto();
+        List<Object> list = classStudentDAO.findAllClassByTeacher(nationalCode, page + 1, size);
+        long count = classStudentDAO.findAllCountClassByTeacher(nationalCode).size();
+        long totalPage = 0;
+        if (count != 0 && size != 0) {
+            totalPage = count / size;
+        }
+
+        List<ElsClassV2Dto> result = new ArrayList<>();
+        for (Object o : list) {
+            ElsClassV2Dto elsClassDto = new ElsClassV2Dto();
+            Object[] arr = (Object[]) o;
+            Long classId = Long.parseLong(arr[1].toString());
+            Tclass tclass = tclassService.getTClass(classId);
+            elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
+            elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
+            elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
+            elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
+            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            result.add(elsClassDto);
+        }
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setCurrent(page);
+        paginationDto.setSize(size);
+        if (totalPage != 0) {
+            paginationDto.setTotal(totalPage + 1);
+            paginationDto.setLast((int) (totalPage));
+        } else {
+            paginationDto.setTotal(0);
+            paginationDto.setLast(0);
+        }
+        paginationDto.setTotalItems(count);
+        dto.setPaginationDto(paginationDto);
+        dto.setList(result);
+
+        return dto;
+    }
+
+    @Override
+    public ElsClassListV2Dto getStudentClassesV2(String nationalCode, Integer page, Integer size) {
+        ElsClassListV2Dto dto = new ElsClassListV2Dto();
+        List<Object> list = classStudentDAO.findAllClassByStudent(nationalCode, page + 1, size);
+        long count = classStudentDAO.findAllCountClassByStudent(nationalCode).size();
+        long totalPage = 0;
+        if (count != 0 && size != 0) {
+            totalPage = count / size;
+        }
+        List<ElsClassV2Dto> result = new ArrayList<>();
+        for (Object o : list) {
+            ElsClassV2Dto elsClassDto = new ElsClassV2Dto();
+            Object[] arr = (Object[]) o;
+            Long classId = Long.parseLong(arr[1].toString());
+            Tclass tclass = tclassService.getTClass(classId);
+            elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
+            elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
+            elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
+            elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
+            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            result.add(elsClassDto);
+        }
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setCurrent(page);
+        paginationDto.setSize(size);
+        if (totalPage != 0) {
+            paginationDto.setTotal(totalPage + 1);
+            paginationDto.setLast((int) (totalPage));
+        } else {
+            paginationDto.setTotal(0);
+            paginationDto.setLast(0);
+        }
+        paginationDto.setTotalItems(count);
+        dto.setPaginationDto(paginationDto);
+        dto.setList(result);
+
+        return dto;
     }
 }
