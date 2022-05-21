@@ -93,6 +93,8 @@ public interface ITclassService {
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeachingHistory(SearchDTO.SearchRq request, Long teacherId);
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TclassDTO.Info> searchByEducationalCalenderId(SearchDTO.SearchRq request,Long educationalCalenderId);
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeacherId(SearchDTO.SearchRq request, Long tId);
@@ -205,4 +207,8 @@ public interface ITclassService {
     Map<String, Object> getEvaluationStatisticalReport(Long classId);
 
     TclassDTO.TClassForAgreement getTClassDataForAgreement(Long classId);
+
+    void addEducationalCalender(Long eCalenderId, List<Long> classIds);
+
+    void removeEducationalCalender(Long classId);
 }

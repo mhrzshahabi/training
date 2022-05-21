@@ -39,7 +39,7 @@ public class EducationalCalender extends Auditable {
     private String endDate;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "institute_id",insertable = false, updatable = false)
+    @JoinColumn(name = "institute_id", insertable = false, updatable = false)
     private Institute institute;
 
     @Column(name = "institute_id")
@@ -49,8 +49,9 @@ public class EducationalCalender extends Auditable {
     private String calenderStatus;
 
 
-    @OneToMany(mappedBy = "educationalCalender",fetch=FetchType.LAZY)
+    @OneToMany(mappedBy = "educationalCalender", fetch = FetchType.LAZY)
     private List<Tclass> classList;
-
-
 }
+
+
+

@@ -3758,13 +3758,116 @@ WHERE
             <column name="b_behavioral_to_online_status" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
-    <changeSet id="2799887766557-19" author="ZPakdaman">
-        <addColumn tableName="tbl_class">
-            <column name="educational_calender_id" type="NUMBER(19, 0)"></column>
-        </addColumn>
-    </changeSet>
-    <changeSet id="2799887766557-20" author="ZPakdaman">
-        <dropColumn columnName="e_title_en" tableName="tbl_educational_calender"/>
 
-    </changeSet>
+  <changeSet id="2799887766557-20" author="ZPakdaman">
+      <addColumn tableName="tbl_class">
+          <column name="CALENDAR_ID" type="NUMBER(19, 0)" ></column>
+
+      </addColumn>
+ </changeSet>
+<changeSet id="1653111793-01" author="ZPakdaman">
+    <createView viewName="view_class_detail" replaceIfExists="true">
+        <![CDATA[
+SELECT
+    tclass.id                                   AS id,
+    tclass.c_created_by                         AS c_created_by,
+    tclass.d_created_date                       AS d_created_date,
+    tclass.student_online_eval_execution_status AS student_online_eval_execution_status,
+    tclass.e_deleted                            AS e_deleted,
+    tclass.e_enabled                            AS e_enabled,
+    tclass.c_last_modified_by                   AS c_last_modified_by,
+    tclass.d_last_modified_date                 AS d_last_modified_date,
+    tclass.n_version                            AS n_version,
+    tclass.c_scoring_method                     AS tclass_scoring_method,
+    tclass.pre_course_test                      AS tclass_has_pre_test,
+    tclass.n_h_duration                         AS tclass_n_duration,
+    tclass.f_institute_organizer                AS tclass_organizer,
+    tclass.c_status                             AS tclass_status,
+    tclass.c_reason                             AS tclass_reason,
+    tclass.f_planner                            AS tclass_planner,
+    tclass.f_supervisor                         AS tclass_supervisor,
+    tclass.c_code                               AS tclass_c_code,
+    tclass.f_institute                          AS institute_id,
+    tclass.f_teacher                            AS teacher_id,
+    tclass.f_term                               AS term_id,
+    tclass.c_start_date                         AS tclass_c_start_date,
+    tclass.c_workflow_ending_status             AS tclass_ending_status,
+    tclass.c_end_date                           AS tclass_c_end_date,
+    tclass.evaluation_reaction_teacher          AS teacher_eval_status,
+    tclass.evaluation_reaction_training         AS training_eval_status,
+    tclass.c_evaluation                         AS c_evaluation,
+    tclass.c_behavioral_level                   AS c_behavioral_level,
+    tclass.start_evaluation                     AS start_evaluation,
+    tclass.f_cancel_class_reason                AS cancel_reason_id,
+    tclass.c_postpone_start_date                AS postpone_date,
+    tclass.c_teaching_type                      AS tclass_teaching_type,
+    tclass.complex_id,
+    personalinfo.c_first_name_fa                AS teacher_first_name,
+    personalinfo.c_last_name_fa                 AS teacher_last_name,
+    substr(tclass.c_start_date, 1, 4)           AS tclass_year,
+    course.id                                   AS course_id,
+    course.c_code                               AS course_c_code,
+    course.category_id                          AS course_category_id,
+    course.subcategory_id                       AS course_subcategory_id,
+    course.c_title_fa                           AS course_c_title_fa,
+    course.c_evaluation                         AS course_c_evaluation,
+    teachingmethod.c_title                      AS teaching_method_title,
+    CASE
+        WHEN students.counts IS NULL THEN
+            0
+        ELSE
+            students.counts
+    END                                         AS tclass_students_count,
+    term.c_title_fa                             AS term_titlefa,
+    institute.c_title_fa                        AS tclass_institute,
+    altclasses.c_code                           AS alternative_class_code,
+    CASE
+        WHEN altclasses.id IS NULL THEN
+            0
+        ELSE
+            1
+    END                                         AS re_holiding_status,
+    CASE
+        WHEN tclass.start_evaluation IS NULL THEN
+            NULL
+        ELSE
+            to_date(tclass.c_end_date, 'yyyy/mm/dd', 'nls_calendar=persian') + 30 * tclass.start_evaluation
+    END                                         AS behavioral_due_date,
+    tclass.student_online_eval_status           AS tclass_student_online_eval_status,
+    tclass.teacher_online_eval_status           AS tclass_teacher_online_eval_status,
+    view_complex.c_title                        AS complextitle,
+    tclass.calendar_id                         AS tclass_calender_id,
+     tclass.n_group              AS tclass_n_group,
+
+    tclass.c_student_cost                      AS tclass_c_student_cost,
+    tclass.f_student_cost_currency              AS tclass_f_student_cost_currency
+FROM
+    tbl_class           tclass
+    LEFT JOIN tbl_course          course ON tclass.f_course = course.id
+    LEFT JOIN (
+        SELECT
+            tbl_class_student.class_id,
+            COUNT(tbl_class_student.id) AS counts
+        FROM
+            tbl_class_student
+        GROUP BY
+            tbl_class_student.class_id
+    )                   students ON students.class_id = tclass.id
+    LEFT JOIN tbl_term            term ON tclass.f_term = term.id
+    LEFT JOIN tbl_institute       institute ON institute.id = tclass.f_institute
+    LEFT JOIN tbl_class           altclasses ON altclasses.id = tclass.f_alternative_class
+    LEFT JOIN tbl_teacher         teacher ON teacher.id = tclass.f_teacher
+    LEFT JOIN tbl_personal_info   personalinfo ON teacher.f_personality = personalinfo.id
+    LEFT JOIN tbl_parameter_value teachingmethod ON teachingmethod.id = tclass.f_teaching_method_id
+    LEFT JOIN view_complex ON tclass.complex_id = view_complex.id
+
+            ]]>
+    </createView>
+</changeSet>
+
 </databaseChangeLog>
+
+
+
+
+

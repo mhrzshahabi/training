@@ -327,11 +327,14 @@ public class Tclass extends Auditable {
     @NotAudited
     private String releaseDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "educational_calender", insertable = false, updatable = false)
+    @ManyToOne
+    @JoinColumn(name = "CALENDAR_ID", insertable = false, updatable = false)
     private EducationalCalender educationalCalender;
 
 
-    @Column(name = "educational_calender_id")
+    @Column(name = "CALENDAR_ID")
+    @NotAudited
     private Long educationalCalenderId;
+
+
 }

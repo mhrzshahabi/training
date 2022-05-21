@@ -10,6 +10,7 @@
 // <script>
  var  ec = isc.ValuesManager.create({});
  let educationalCalender_method = "POST";
+
 <%---------------------------------------------------Datasources----------------------------------------------------%>
     var RestDataSource_educationalCalender = isc.TrDS.create({
 
@@ -277,11 +278,14 @@ Menu_ListGrid_educational_Calender = isc.Menu.create({
          },
 
      ],
+
      rowDoubleClick: function () {
          show_EducationalCalender_EditForm();
      },
      selectionUpdated: function (record) {
+
          loadCalenderClasses(record);
+
      },
      filterEditorSubmit: function () {
          ListGrid_Educational_Calender.invalidateCache();
@@ -323,6 +327,7 @@ ToolStripButton_Remove_educationalCalender = isc.ToolStripButtonRemove.create({
 });
 
  var TabSet_Class_EducationalCalender = isc.TabSet.create({
+
      ID: "tabSetClass",
      enabled: false,
      tabBarPosition: "top",
@@ -330,12 +335,19 @@ ToolStripButton_Remove_educationalCalender = isc.ToolStripButtonRemove.create({
 
 
          {
+
+
              ID: "classesTab",
              title: "<spring:message code="classes"/>",
              pane: isc.ViewLoader.create({
                  autoDraw: true,
-                 viewURL:"tclass/calenderClasses"
-                 // viewURL: "tclass/student"
+                 viewURL:"tclass/calenderClasses",
+                 //
+                 // viewURLParams: {
+                 //
+                 //     recordId: ListGrid_Educational_Calender.getSelectedRecord(),
+                 // }
+
              })
          },
 
@@ -483,15 +495,21 @@ function save_EducationalCalender() {
         }));
     }
 }
+
 function loadCalenderClasses(){
     let record =  ListGrid_Educational_Calender.getSelectedRecord();
+
     if (record === null) {
+
         TabSet_Class_EducationalCalender.disable();
         return;
     }else {
-        // loadPage_InternalTeachingSubject(record.id);
+
+         loadPage_CalenderClasses(record.id)
+
     }
     TabSet_Class_EducationalCalender.enable();
+
 }
 
 

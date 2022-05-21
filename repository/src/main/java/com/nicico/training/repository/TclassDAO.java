@@ -7,12 +7,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.*;
+import org.springframework.data.repository.query.Param;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecificationExecutor<Tclass> {
@@ -190,5 +192,6 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Modifying
     @Query(value = "update TBL_CLASS set C_RELEASE_DATE =:date where ID IN (:classIds)", nativeQuery = true)
     void updateReleaseDate(List<Long> classIds, String date);
+
 
 }
