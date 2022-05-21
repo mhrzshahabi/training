@@ -171,4 +171,7 @@ public class ViewClassDetail extends Auditable {
 
     @Column(name="complextitle")
     private String complexTitle;
+
+    @Column(name="tclass_institute",insertable = false,updatable = false)
+    private String location;
 }

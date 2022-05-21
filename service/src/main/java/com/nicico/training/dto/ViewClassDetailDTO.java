@@ -68,6 +68,7 @@ public class ViewClassDetailDTO implements Serializable {
         private String classStudentCost;
         private Long classStudentCostCurrency;
         private String complexTitle;
+        private String location;
 
         public String getTeacherFullName() {
             return (teacherFirstName + " " + teacherLastName);

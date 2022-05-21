@@ -127,6 +127,7 @@
                 {name: "classStudentCost"},
                 {name: "classStudentCostCurrency"},
                 {name: "classCalenderId"},
+                {name: "location"},
             ]
 
 
@@ -426,6 +427,13 @@
                 {
                     name: "teachingMethodTitle",
                     title: "<spring:message code="teaching.method"/>",
+                    canSort: false,
+                    autoFitWidth: true,
+                    align: "center",
+                },
+                {
+                    name: "location",
+                    title: "<spring:message code="present.location"/>",
                     canSort: false,
                     autoFitWidth: true,
                     align: "center",
@@ -973,8 +981,7 @@
             mainCriteria.criteria = [];
 
             mainCriteria.criteria.add(departmentCalenderCriteria);
-            // mainCriteria.criteria.add(yearCalenderCriteria);
-            // mainCriteria.criteria.add(mainTermCalenderCriteria);
+
             return mainCriteria;
         }
 
@@ -982,7 +989,7 @@
 
                 calenderDS_class.fetchDataURL =  viewClassDetailUrl + "/iscList";
                 departmentCalenderCriteria = {fieldName: "classCalendarId", operator: "equals", value: id};
-                // departmentCalenderCriteria = {fieldName: "teacherId", operator: "equals", value: 2};
+
                 let mainCriteria = createMainCalenderCriteria();
                 calenderLG_class.invalidateCache();
                 calenderLG_class.fetchData(mainCriteria);
@@ -1004,8 +1011,8 @@
             let cr = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
-                criteria: [{fieldName: "classStatus", operator: "equals", value: "2"}
-                    // ,{fieldName: "firstName", operator: "notContains", value: "ابراهیم"}
+                criteria: [{fieldName: "classStatus", operator: "equals", value: "1"}
+
                 ]
             };
             classLG_calender.invalidateCache();
