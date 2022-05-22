@@ -206,7 +206,6 @@ public interface ITclassService {
 
     TclassDTO.TClassForAgreement getTClassDataForAgreement(Long classId);
 
-    List<Tclass> getTclassList ();
+    void updateClassStatus ();
 
-    Tclass saveOrUpdate(Tclass tclass);
 }

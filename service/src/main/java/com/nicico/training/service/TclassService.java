@@ -2241,12 +2241,8 @@ public class TclassService implements ITclassService {
     }
 
     @Override
-    public List<Tclass> getTclassList() {
-        return tclassDAO.findAll();
+    public void updateClassStatus() {
+           tclassDAO.updateClassStatus(DateUtil.todayDate());
     }
 
-    @Override
-    public Tclass saveOrUpdate(Tclass tclass) {
-        return tclassDAO.save(tclass);
-    }
 }
