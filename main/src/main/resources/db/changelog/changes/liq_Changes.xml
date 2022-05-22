@@ -4224,7 +4224,7 @@ SELECT
             students.counts
     END                                         AS tclass_students_count,
     term.c_title_fa                             AS term_titlefa,
-    institute.c_title_fa                        AS tclass_institute,
+    institute.c_title_fa                        AS class_location,
     altclasses.c_code                           AS alternative_class_code,
     CASE
         WHEN altclasses.id IS NULL THEN

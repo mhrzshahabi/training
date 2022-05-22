@@ -172,6 +172,6 @@ public class ViewClassDetail extends Auditable {
     @Column(name="complextitle")
     private String complexTitle;
 
-    @Column(name="tclass_institute",insertable = false,updatable = false)
+    @Column(name="class_location")
     private String location;
 }
