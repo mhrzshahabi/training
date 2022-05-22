@@ -10,6 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
@@ -1037,11 +1038,14 @@ public class TeacherRestController {
 
     private List<CategoryDTO.Info> setCats(LinkedHashMap request) {
         SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.inSet);
-        criteriaRq.setFieldName("id");
-        criteriaRq.setValue(request.get("categories"));
-        categoriesRequest.setCriteria(criteriaRq);
+//        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.inSet);
+//        criteriaRq.setFieldName("id");
+//        criteriaRq.setValue(request.get("categories"));
+//        categoriesRequest.setCriteria(criteriaRq);
+        categoriesRequest.setCriteria(
+                CriteriaUtil.createCriteria(EOperator.inSet, "id", request.get("categories"))
+        );
         List<CategoryDTO.Info> categories = categoryService.search(categoriesRequest).getList();
         request.remove("categories");
         return categories;
@@ -1050,11 +1054,14 @@ public class TeacherRestController {
 
     private List<SubcategoryDTO.Info> setSubCats(LinkedHashMap request) {
         SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.inSet);
-        criteriaRq.setFieldName("id");
-        criteriaRq.setValue(request.get("subCategories"));
-        subCategoriesRequest.setCriteria(criteriaRq);
+//        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.inSet);
+//        criteriaRq.setFieldName("id");
+//        criteriaRq.setValue(request.get("subCategories"));
+//        subCategoriesRequest.setCriteria(criteriaRq);
+        subCategoriesRequest.setCriteria(
+                CriteriaUtil.createCriteria(EOperator.inSet, "id", request.get("subCategories"))
+        );
         List<SubcategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
         request.remove("subCategories");
         return subCategories;

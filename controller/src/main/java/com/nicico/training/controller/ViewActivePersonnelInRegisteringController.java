@@ -6,10 +6,10 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.ViewActivePersonnelInRegisteringDTO;
 import com.nicico.training.iservice.IViewActivePersonnelInRegisteringService;
-import com.nicico.training.service.ViewActivePersonnelInRegisteringService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -41,10 +41,16 @@ public class ViewActivePersonnelInRegisteringController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
 
-        criteriaRq.setOperator(EOperator.equals);
-        criteriaRq.setFieldName("nationalCode");
-        criteriaRq.setValue(modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode());
-        searchRq.setCriteria(criteriaRq);
+//        criteriaRq.setOperator(EOperator.equals);
+//        criteriaRq.setFieldName("nationalCode");
+//        criteriaRq.setValue(modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode());
+//        searchRq.setCriteria(criteriaRq);
+        searchRq.setCriteria(
+                CriteriaUtil.createCriteria(
+                        EOperator.equals,
+                        "nationalCode",
+                        modelMapper.map(SecurityContextHolder.getContext().getAuthentication().getPrincipal(), CustomUserDetails.class).getNationalCode())
+        );
         searchRq.setSortBy("classId");
 
         SearchDTO.SearchRs<ViewActivePersonnelInRegisteringDTO.Info> searchRs = viewActivePersonnelInRegisteringService.search(searchRq);

@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IViewTrainingOverTimeReportService;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
+import static com.nicico.training.controller.util.CriteriaUtil.*;
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
 @Slf4j
@@ -64,29 +66,37 @@ public class ViewTrainingOverTimeController {
 
         List<SearchDTO.CriteriaRq> listOfCriteria=new ArrayList<>();
 
-        SearchDTO.CriteriaRq criteriaRq=null;
+//        SearchDTO.CriteriaRq criteriaRq=null;
+//
+//        criteriaRq=new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.greaterOrEqual);
+//        criteriaRq.setFieldName("date");
+//        criteriaRq.setValue(startDate);
+//
+//        listOfCriteria.add(criteriaRq);
+        listOfCriteria.add(
+                createCriteria(EOperator.greaterOrEqual, "date", startDate)
+        );
+//        criteriaRq=new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.lessOrEqual);
+//        criteriaRq.setFieldName("date");
+//        criteriaRq.setValue(endDate);
 
-        criteriaRq=new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.greaterOrEqual);
-        criteriaRq.setFieldName("date");
-        criteriaRq.setValue(startDate);
 
-        listOfCriteria.add(criteriaRq);
-
-        criteriaRq=new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.lessOrEqual);
-        criteriaRq.setFieldName("date");
-        criteriaRq.setValue(endDate);
-
-        listOfCriteria.add(criteriaRq);
+        listOfCriteria.add(
+                createCriteria(EOperator.lessOrEqual, "date", endDate)
+        );
 
 
-        criteriaRq=new SearchDTO.CriteriaRq();
-        criteriaRq.setCriteria(listOfCriteria);
-        criteriaRq.setOperator(EOperator.and);
 
-        request.setCriteria(criteriaRq);
-
+//        criteriaRq=new SearchDTO.CriteriaRq();
+//        criteriaRq.setCriteria(listOfCriteria);
+//        criteriaRq.setOperator(EOperator.and);
+//
+//        request.setCriteria(criteriaRq);
+        request.setCriteria(
+                addCriteria(listOfCriteria, EOperator.and)
+        );
         SearchDTO.SearchRs result=iTrainingOverTimeReportService.search(request, o -> modelMapper.map(o, ViewTrainingOverTimeReportDTO.Info.class));
 
         final ViewTrainingOverTimeReportDTO.SpecRs specResponse = new ViewTrainingOverTimeReportDTO.SpecRs();

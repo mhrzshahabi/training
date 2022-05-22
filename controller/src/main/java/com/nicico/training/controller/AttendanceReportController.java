@@ -5,11 +5,9 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewAttendanceReportDTO;
 import com.nicico.training.iservice.IAttendanceReportService;
-import com.nicico.training.service.AttendanceReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +18,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.nicico.training.controller.util.CriteriaUtil.addCriteria;
+import static com.nicico.training.controller.util.CriteriaUtil.createCriteria;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,7 +45,7 @@ public class AttendanceReportController {
         request.setStartIndex(null);
 
         request.setSortBy("personalNum");
-
+        /*
         List<SearchDTO.CriteriaRq> listOfCriteria=new ArrayList<>();
 
         SearchDTO.CriteriaRq criteriaRq=null;
@@ -123,6 +124,39 @@ public class AttendanceReportController {
         criteriaRq.setOperator(EOperator.and);
 
         request.setCriteria(criteriaRq);
+
+         */
+
+        List<SearchDTO.CriteriaRq> listOfCriteria=new ArrayList<>();
+
+        listOfCriteria.add(
+                createCriteria(EOperator.greaterOrEqual, "date", startDate)
+        );
+
+        listOfCriteria.add(
+                createCriteria(EOperator.lessOrEqual, "date", endDate)
+        );
+
+        switch (absecntType) {
+            case "3" -> {
+                SearchDTO.CriteriaRq criteriaRq = addCriteria(new ArrayList<>(), EOperator.or);
+                criteriaRq.getCriteria().add(createCriteria(EOperator.equals, "attendanceStatus", 3));
+
+                listOfCriteria.add(criteriaRq);
+            }
+            case "4" -> {
+                SearchDTO.CriteriaRq criteriaRq = addCriteria(new ArrayList<>(), EOperator.or);
+                criteriaRq.getCriteria().add(createCriteria(EOperator.equals, "attendanceStatus", 4));
+                listOfCriteria.add(criteriaRq);
+            }
+            default -> {
+                SearchDTO.CriteriaRq criteriaRq = addCriteria(new ArrayList<>(), EOperator.or);
+                criteriaRq.getCriteria().add(createCriteria(EOperator.equals, "attendanceStatus", 4));
+                listOfCriteria.add(createCriteria(EOperator.equals, "attendanceStatus", 3));
+            }
+        }
+
+        request.setCriteria(addCriteria(listOfCriteria, EOperator.and));
 
         SearchDTO.SearchRs result=iAttendanceReportService.search(request, o -> modelMapper.map(o,ViewAttendanceReportDTO.Info.class));
 
