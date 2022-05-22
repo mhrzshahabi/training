@@ -2014,7 +2014,13 @@
                 },
                 // {isSeparator: true},
                 </sec:authorize>
-
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="educational.calender"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/educationalCalender/show-form"/>");
+                    }
+                },
             ]
         })
     });
@@ -3663,6 +3669,7 @@
     const classDocumentUrl = rootUrl + "/classDocument/"
     const courseListNeedAssessment = rootUrl + "/trainingNeedAssessment/"
     const roleUrl = rootUrl + "/role/";
+    const educationalCalenderUrl= rootUrl + "/educational-calender/"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

@@ -105,6 +105,7 @@ public class TclassService implements ITclassService {
     private final ComplexDAO complexDAO;
     private final ClassStudentDAO classStudentDAO;
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
+    private final EducationalCalenderDAO educationalCalenderDAO;
 
 
     @Override
@@ -1395,6 +1396,33 @@ public class TclassService implements ITclassService {
         return response;
     }
 
+    @Override
+    public SearchDTO.SearchRs<TclassDTO.Info> searchByEducationalCalenderId(SearchDTO.SearchRq request, Long educationalCalenderId) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+//        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+//        list.add(makeNewCriteria("educationalCalenderId", educationalCalenderId, EOperator.notEqual, null));
+//        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, list);
+//        if (request.getCriteria() != null) {
+//            if (request.getCriteria().getCriteria() != null)
+//                request.getCriteria().getCriteria().add(criteriaRq);
+//            else
+//                request.getCriteria().setCriteria(list);
+//        } else
+//            request.setCriteria(criteriaRq);
+
+        SearchDTO.SearchRs<TclassDTO.Info> response = SearchUtil.search(tclassDAO, request, tclass -> modelMapper.map(tclass,TclassDTO.Info.class));
+        for (TclassDTO.Info aClass : response.getList()) {
+            Tclass tclass = getTClass(aClass.getId());
+            Set<ClassStudent> classStudents = tclass.getClassStudents();
+            Map<String, Double> reactionEvaluationResult = calculateStudentsReactionEvaluationResult(classStudents);
+            Double studentsGradeToTeacher = null;
+            if (reactionEvaluationResult.get("studentsGradeToTeacher") != null)
+                studentsGradeToTeacher = (Double) reactionEvaluationResult.get("studentsGradeToTeacher");
+//            aClass.setEvaluationGrade(studentsGradeToTeacher);
+        }
+        return response;
+    }
+
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TclassDTO.TeachingHistory> searchByTeacherId(SearchDTO.SearchRq request, Long tId) {
@@ -2239,5 +2267,30 @@ public class TclassService implements ITclassService {
         Tclass tclass = getTClass(classId);
         return modelMapper.map(tclass, TclassDTO.TClassForAgreement.class);
     }
+    @Transactional
+    @Override
+    public void addEducationalCalender(Long eCalenderId, List<Long> classIds) {
 
+        classIds.forEach(id -> {
+            Optional<Tclass> tclass = tclassDAO.findById(id);
+            if (tclass.isPresent()) {
+                Tclass c = tclass.get();
+                c.setEducationalCalenderId(eCalenderId);
+                tclassDAO.save(c);
+
+            }
+        });
+
+    }
+    @Override
+    @Transactional
+    public void removeEducationalCalender(Long classId) {
+        Optional<Tclass> tclass = tclassDAO.findById(classId);
+        if (tclass.isPresent()) {
+            Tclass c = tclass.get();
+           c.setEducationalCalenderId(null) ;
+           tclassDAO.save(c);
+        }
+
+    }
 }

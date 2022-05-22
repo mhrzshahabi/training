@@ -140,6 +140,7 @@ public class TclassDTO {
         private ParameterValueDTO teachingMethod;
         private Long hDuration;
         private Set<ClassStudentDTO.AttendanceInfo> classStudents;
+        private Long educationalCalenderId;
 
         public String getTeacher() {
             if (teacher != null)

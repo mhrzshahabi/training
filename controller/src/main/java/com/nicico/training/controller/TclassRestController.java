@@ -44,6 +44,7 @@ import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
 import response.tclass.TclassCreateResponse;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Type;
@@ -900,6 +901,109 @@ public class TclassRestController {
             response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
         }
         return response;
+    }
+
+    @Loggable
+    @GetMapping(value = "/calender-spec-list")
+    public ResponseEntity<TclassDTO.TclassSpecRs> listByCalender(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                       HttpServletRequest iscRq) throws IOException, NoSuchFieldException, IllegalAccessException {
+
+        SearchDTO.SearchRq request = ISC.convertToSearchRq(iscRq);
+
+
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+
+
+        SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
+
+        List<Long> classIdForCheckMessage = new ArrayList<>();
+
+        for (TclassDTO.Info tclassDTO : response.getList()) {
+            tclassDTO.setPlannerFullName("");
+            tclassDTO.setSupervisorFullName("");
+            tclassDTO.setOrganizerName("");
+
+            if (tclassDTO.getPlannerId() != null) {
+                Personnel planner = iPersonnelService.getPersonnel(tclassDTO.getPlannerId());
+                if (planner != null) {
+                    tclassDTO.setPlannerFullName(planner.getFirstName() + " " + planner.getLastName());
+                }
+
+                Personnel supervisor = iPersonnelService.getPersonnel(tclassDTO.getPlannerId());
+                if (supervisor != null) {
+                    tclassDTO.setSupervisorFullName(supervisor.getFirstName() + " " + supervisor.getLastName());
+                }
+            }
+            if (tclassDTO.getOrganizerId() != null) {
+                Institute institute = iInstituteService.getInstitute(tclassDTO.getOrganizerId());
+                if (institute != null) {
+                    tclassDTO.setOrganizerName(institute.getTitleFa());
+                }
+            }
+
+            if (tclassDTO.getStudentCount() > 0 && (tclassDTO.getClassStatus().equals("1") || tclassDTO.getClassStatus().equals("2"))) {
+                SearchDTO.SearchRq csSearchRq = new SearchDTO.SearchRq();
+                csSearchRq.setCount(1);
+                csSearchRq.setStartIndex(0);
+
+                List<String> csSortBy = new ArrayList<>();
+                csSortBy.add("sessionDate");
+                csSortBy.add("sessionStartHour");
+                csSearchRq.setSortBy(csSortBy);
+                SearchDTO.SearchRs<ClassSessionDTO.Info> result = classSessionService.searchWithCriteria(csSearchRq, tclassDTO.getId());
+
+                if (result.getList().size() > 0) {
+                    String str = DateUtil.convertKhToMi1(result.getList().get(0).getSessionDate());
+                    LocalDate date = LocalDate.parse(str);
+
+                    if ((date.isBefore(LocalDate.now().plusDays(7)) || date.equals(LocalDate.now().plusDays(7))) && (date.isAfter(LocalDate.now()) || date.equals(LocalDate.now()))) {
+                        classIdForCheckMessage.add(tclassDTO.getId());
+                    }
+                }
+            }
+        }
+
+        if (classIdForCheckMessage.size() > 0) {
+            Map<Long, Integer> classIds = tClassService.checkClassesForSendMessage(classIdForCheckMessage);
+
+            response.getList().forEach(p -> {
+                if (classIds != null && classIds.get(p.getId()) != null && classIds.get(p.getId()) > 0) {
+                    p.setIsSentMessage("alarm");
+                } else {
+                    p.setIsSentMessage("");
+                }
+            });
+        }
+
+        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
+        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @PostMapping(value = "/add-classes-educationalCalender/{eCalenderId}/{classIds}")
+    public ResponseEntity<Void> addEducationalCalender( @PathVariable Long eCalenderId, @PathVariable List<Long> classIds) {
+        tClassService.addEducationalCalender(eCalenderId, classIds);
+
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value="deleteEducationalCalFromClass/{classId}")
+    public  ResponseEntity<Void> removeEducationalCalFromClass(@PathVariable Long classId){
+        tClassService.removeEducationalCalender(classId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
 }
