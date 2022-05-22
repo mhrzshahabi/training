@@ -3,6 +3,7 @@ package com.nicico.training.model;
 import lombok.*;
 import lombok.experimental.Accessors;
 import org.hibernate.annotations.Subselect;
+import org.hibernate.envers.NotAudited;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
@@ -153,4 +154,24 @@ public class ViewClassDetail extends Auditable {
 
     @Column(name = "teaching_method_title")
     private String teachingMethodTitle;
+
+
+    @Column(name = "tclass_calender_id")
+    @NotAudited
+    private Long classCalendarId;
+
+    @Column(name="tclass_n_group")
+    private Long classGroup;
+
+    @Column(name = "tclass_c_student_cost")
+    private String classStudentCost;
+
+    @Column(name="tclass.f_student_cost_currency")
+    private Long classStudentCostCurrency;
+
+    @Column(name="complextitle")
+    private String complexTitle;
+
+    @Column(name="class_location")
+    private String location;
 }

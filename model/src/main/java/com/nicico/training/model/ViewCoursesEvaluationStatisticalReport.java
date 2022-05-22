@@ -83,4 +83,21 @@ public class ViewCoursesEvaluationStatisticalReport {
 
     @Column(name = "STD_AFFAIRS")
     private String studentAffairs;
+
+    @Column(name = "c_reaction_grade")
+    private String hasReactionEval;
+
+    @Column(name = "miangin_pre")
+    private String hasLearningEval;
+
+
+    @Column(name = "c_behavioral_grade")
+    private String hasBehavioralEval;
+
+
+    @Column(name = "c_results_grade")
+    private String hasResultEval;
+
+    @Column(name = "b_effectiveness_pass")
+    private String effective;
 }

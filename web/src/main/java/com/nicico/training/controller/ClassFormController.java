@@ -19,6 +19,7 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import net.sf.jasperreports.engine.util.JRLoader;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.codehaus.jackson.annotate.JsonMethod;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -130,6 +131,11 @@ public class ClassFormController {
     @RequestMapping("/student")
     public String showStudentsForm() {
         return "classTabs/student";
+    }
+    @RequestMapping("/calenderClasses")
+    public String showCalenderClassesForm(HttpServletRequest request) {
+        request.setAttribute("recordId", request.getParameter("recordId"));
+        return "classTabs/calenderClasses";
     }
 
     @RequestMapping("/scores-tab")

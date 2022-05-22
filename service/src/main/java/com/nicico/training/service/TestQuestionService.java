@@ -96,7 +96,7 @@ public class TestQuestionService implements ITestQuestionService {
         TestQuestion model = modelMapper.map(request, TestQuestion.class);
         model.setOnlineFinalExamStatus(false);
 
-        if (testQuestionDAO.IsExist(model.getTclassId(), false, 0L) == 0) {
+        if (testQuestionDAO.IsExist(model.getTclassId(), "FinalTest", 0L) == 0) {
             TestQuestion saved = testQuestionDAO.saveAndFlush(model);
             saved.setTclass(tclassDAO.findById(saved.getTclassId()).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TestQuestionNotFound)));
 
@@ -113,7 +113,7 @@ public class TestQuestionService implements ITestQuestionService {
     public TestQuestionDTO.Info update(Long id, TestQuestionDTO.Update request, HttpServletResponse response) {
         final TestQuestion dbModel = testQuestionDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TestQuestionNotFound));
 
-        if (testQuestionDAO.IsExist(dbModel.getTclassId(), false, id) == 0) {
+        if (testQuestionDAO.IsExist(dbModel.getTclassId(), "FinalTest", id) == 0) {
             TestQuestion updating = new TestQuestion();
             modelMapper.map(dbModel, updating);
             modelMapper.map(request, updating);
@@ -266,6 +266,6 @@ public class TestQuestionService implements ITestQuestionService {
     }
 
     public long getPreTestId(long id) {
-       return testQuestionDAO.findTestQuestionByTclassAndPreTestQuestion(id,true).getId();
+       return testQuestionDAO.findTestQuestionByTclassAndTestQuestionType(id,"PreTest").getId();
     }
 }

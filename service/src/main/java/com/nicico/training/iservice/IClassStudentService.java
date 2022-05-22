@@ -8,6 +8,8 @@ import request.exam.ElsExamScore;
 import request.exam.ExamResult;
 import response.BaseResponse;
 import response.tclass.dto.ElsClassListDto;
+import response.tclass.dto.ElsClassListV2Dto;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -45,8 +47,10 @@ public interface IClassStudentService {
     BaseResponse updateScore(ElsExamScore elsExamScore);
 
     ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size);
+    ElsClassListV2Dto getTeacherClassesV2(String nationalCode, Integer page, Integer size);
 
     ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size);
+    ElsClassListV2Dto getStudentClassesV2(String nationalCode, Integer page, Integer size);
 
     void testAddStudent(String classCode);
 

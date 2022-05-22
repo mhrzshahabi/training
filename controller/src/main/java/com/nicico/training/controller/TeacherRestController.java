@@ -10,6 +10,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
@@ -1037,11 +1038,14 @@ public class TeacherRestController {
 
     private List<CategoryDTO.Info> setCats(LinkedHashMap request) {
         SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.inSet);
-        criteriaRq.setFieldName("id");
-        criteriaRq.setValue(request.get("categories"));
-        categoriesRequest.setCriteria(criteriaRq);
+//        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.inSet);
+//        criteriaRq.setFieldName("id");
+//        criteriaRq.setValue(request.get("categories"));
+//        categoriesRequest.setCriteria(criteriaRq);
+        categoriesRequest.setCriteria(
+                CriteriaUtil.createCriteria(EOperator.inSet, "id", request.get("categories"))
+        );
         List<CategoryDTO.Info> categories = categoryService.search(categoriesRequest).getList();
         request.remove("categories");
         return categories;
@@ -1050,11 +1054,14 @@ public class TeacherRestController {
 
     private List<SubcategoryDTO.Info> setSubCats(LinkedHashMap request) {
         SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.inSet);
-        criteriaRq.setFieldName("id");
-        criteriaRq.setValue(request.get("subCategories"));
-        subCategoriesRequest.setCriteria(criteriaRq);
+//        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        criteriaRq.setOperator(EOperator.inSet);
+//        criteriaRq.setFieldName("id");
+//        criteriaRq.setValue(request.get("subCategories"));
+//        subCategoriesRequest.setCriteria(criteriaRq);
+        subCategoriesRequest.setCriteria(
+                CriteriaUtil.createCriteria(EOperator.inSet, "id", request.get("subCategories"))
+        );
         List<SubcategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
         request.remove("subCategories");
         return subCategories;
@@ -1217,15 +1224,48 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list-agreement")
-    public ResponseEntity<ISC<TeacherDTO.ForAgreementInfo>> forAgreementList(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<TeacherDTO.ForAgreementInfo>> forAgreementList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                             @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                                             @RequestParam(value = "id", required = false) Long id,
+                                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            searchRq.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            searchRq.setSortBy(sortBy);
+        }
+
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            searchRq.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        searchRq.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
         SearchDTO.SearchRs<TeacherDTO.ForAgreementInfo> result = teacherService.forAgreementInfoSearch(searchRq);
 
         ISC.Response<TeacherDTO.ForAgreementInfo> response = new ISC.Response<>();
         response.setData(result.getList())
-                .setStartRow(0)
-                .setEndRow(result.getList().size())
+                .setStartRow(startRow)
+                .setEndRow(startRow + result.getList().size())
                 .setTotalRows(result.getTotalCount().intValue());
         ISC<TeacherDTO.ForAgreementInfo> infoISC = new ISC<>(response);
 

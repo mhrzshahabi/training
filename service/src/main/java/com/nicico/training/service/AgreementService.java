@@ -56,22 +56,38 @@ public class AgreementService implements IAgreementService {
         Agreement agreement = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         List<AgreementClassCostDTO.Create> classCostCreate = update.getClassCostList();
 
-        if (classCostCreate.size() != 0) {
+        List<AgreementClassCost> costList =  agreementClassCostService.findAllByAgreementId(id);
 
-            List<AgreementClassCost> costList =  agreementClassCostService.findAllByAgreementId(id);
+        if (update.isChanged()) {
+
             costList.forEach(item -> {
                 agreementClassCostService.delete(item.getId());
             });
-            classCostCreate.forEach(item -> {
-                item.setAgreementId(agreement.getId());
-                agreementClassCostService.create(item);
-            });
+            if (classCostCreate.size() != 0) {
+
+                classCostCreate.forEach(item -> {
+                    item.setAgreementId(agreement.getId());
+                    agreementClassCostService.create(item);
+                });
+            }
         }
 
         Agreement updating = new Agreement();
         modelMapper.map(agreement, updating);
         modelMapper.map(update, updating);
         return agreementDAO.saveAndFlush(updating);
+    }
+
+    @Transactional
+    @Override
+    public Agreement upload(AgreementDTO.Upload upload) {
+
+        Optional<Agreement> agreementOptional = agreementDAO.findById(upload.getId());
+        Agreement agreement = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        agreement.setFileName(upload.getFileName());
+        agreement.setGroup_id(upload.getGroup_id());
+        agreement.setKey(upload.getKey());
+        return agreementDAO.saveAndFlush(agreement);
     }
 
     @Transactional(readOnly = true)
@@ -90,8 +106,5 @@ public class AgreementService implements IAgreementService {
         });
         agreementDAO.deleteById(id);
     }
-
-    @Override
-    public List<Agreement> findAll() { return agreementDAO.findAll(); }
 
 }

@@ -49,12 +49,12 @@ public class ViewCoursesEvaluationStatisticalReportDTO implements Serializable {
     @ApiModel("ViewCoursesEvaluationStatisticalReportDetail")
     public static class Detail {
 
-        private boolean hasReactionEval;
-        private boolean hasLearningEval;
-        private boolean hasBehavioralEval;
-        private boolean hasResultEval;
-        private boolean effective;
-        private boolean inEffective;
+        private String hasReactionEval;
+        private String hasLearningEval;
+        private String hasBehavioralEval;
+        private String hasResultEval;
+        private String effective;
+        private String inEffective;
     }
 
     @Getter

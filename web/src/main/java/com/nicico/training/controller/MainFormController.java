@@ -19,8 +19,11 @@ public class MainFormController {
 
     @Value("${nicico.minioQuestionsGroup}")
     private String groupId;
+    @Value("${nicico.uploadMinioUrl}")
+    private String uploadMinioUrl;
     @Value("${nicico.minioUrl}")
     private String minioUrl;
+
 
     @RequestMapping("/parameter")
     public String showParameterForm() {
@@ -182,6 +185,7 @@ public class MainFormController {
     @RequestMapping("/helpFiles")
     public String showHelpFileForm(HttpServletRequest request) {
         request.setAttribute("groupId", groupId);
+        request.setAttribute("uploadMinioUrl", uploadMinioUrl);
         request.setAttribute("minioUrl", minioUrl);
         return "security/helpFile";
     }
@@ -552,7 +556,10 @@ public class MainFormController {
     }
 
     @RequestMapping("/agreement")
-    public String showAgreementForm() {
+    public String showAgreementForm(HttpServletRequest request) {
+        request.setAttribute("groupId", groupId);
+        request.setAttribute("minioUrl", minioUrl);
+        request.setAttribute("uploadMinioUrl", uploadMinioUrl);
         return "finance/agreement";
     }
 

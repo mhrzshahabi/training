@@ -20,6 +20,8 @@ public class FmsRestController {
 
     @Value("${nicico.minioUrl}")
     private String minioUrl;
+    @Value("${nicico.uploadMinioUrl}")
+    private String uploadMinioUrl;
     @Value("${nicico.minioQuestionsGroup}")
     private String groupId;
 
@@ -44,7 +46,7 @@ public class FmsRestController {
     public ResponseEntity<FmsConfig> getConfig() {
         FmsConfig fmsConfig=new FmsConfig();
         fmsConfig.setGroupId(groupId);
-        fmsConfig.setUrl(minioUrl);
+        fmsConfig.setUrl(uploadMinioUrl);
         return new ResponseEntity<>(fmsConfig, HttpStatus.OK);
     }
 

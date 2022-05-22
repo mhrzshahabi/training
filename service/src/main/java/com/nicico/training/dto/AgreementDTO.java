@@ -36,6 +36,9 @@ public class AgreementDTO implements Serializable {
         private InstituteDTO.Info secondPartyInstitute;
         private ParameterValueDTO.MinInfo currency;
         private EServiceType serviceType;
+        private String fileName;
+        private String group_id;
+        private String key;
     }
 
     @Getter
@@ -51,10 +54,33 @@ public class AgreementDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Agreement - Update")
-    public static class Update extends AgreementDTO{
+    public static class Update extends AgreementDTO {
         private Long id;
+        private boolean changed;
         private Long serviceTypeId;
         private List<AgreementClassCostDTO.Create> classCostList;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Agreement - Upload")
+    public static class Upload {
+        private Long id;
+        private String fileName;
+        private String group_id;
+        private String key;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Agreement - Download")
+    public static class Download {
+        private Long id;
+        private String fileName;
+        private String group_id;
+        private String key;
     }
 
     @Getter

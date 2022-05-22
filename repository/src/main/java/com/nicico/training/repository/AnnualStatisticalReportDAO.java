@@ -17,6 +17,9 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
             "    SELECT  " +
             "        institute.id           AS institute_id, " +
             "        institute.c_title_fa   AS institute_title_fa, " +
+            "   course.n_theory_duration     AS course_duration,    \n" +
+            "class.f_teacher         AS f_teacher,"+
+            " course.e_technical_type     AS course_technical,    "+
             "        course.category_id     AS category_id, " +
             "        class.c_status         AS c_status, " +
             "        class.n_h_duration     AS n_h_duration, " +
@@ -47,11 +50,71 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
             "    r.institute_id          AS institute_id, " +
             "    r.institute_title_fa    AS institute_title_fa, " +
             "    r.category_id           AS category_id, " +
+            "    NVL(SUM(CASE WHEN r.c_status = '1' THEN 1 ELSE 0 END),0) AS barnamerizi_class_count, " +
+            "    nvl((\n" +
+            "        SELECT\n" +
+            "            COUNT(*)\n" +
+            "        FROM\n" +
+            "                 r r2\n" +
+            "            INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id\n" +
+            "        WHERE\n" +
+            "                r2.institute_id = r.institute_id\n" +
+            "            AND r2.category_id = r.category_id\n" +
+            "           \n" +
+            "            AND classstd.scores_state_id IN(400, 401)\n" +
+            "    ), 0)                AS student_count_ghabool,"+
+            "    NVL(SUM(CASE WHEN r.c_status = '2' THEN 1 ELSE 0 END),0) AS ejra_class_count, " +
+            "              NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id \n" +
+            "                 INNER JOIN tbl_student std ON std.id = classstd.student_id\n" +
+            "                 WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds)) AND (std.p_type is null) ),0) AS student_sayer,    \n" +
+            "\n" +
+            "                 \n" +
+            "                 \n" +
+            "                                  NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id \n" +
+            "                 INNER JOIN tbl_student std ON std.id = classstd.student_id\n" +
+            "                 WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds)) AND (std.p_type = 'Personal') ),0) AS student_personal,\n" +
+            "                 \n" +
+            "                 \n" +
+            "                             NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id \n" +
+            "                 INNER JOIN tbl_student std ON std.id = classstd.student_id\n" +
+            "                 WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds)) AND (std.p_type = 'ContractorPersonal') ),0) AS student_contractor_personal,"+
             "    NVL(SUM(CASE WHEN r.c_status = '3' THEN 1 ELSE 0 END),0) AS finished_class_count, " +
             "    NVL(SUM(CASE WHEN r.c_status = '4' THEN 1 ELSE 0 END),0) AS canceled_class_count, " +
-            "    NVL(SUM(CASE WHEN r.c_status = '3' THEN r.n_h_duration ELSE 0 END),0) AS sum_of_duration, " +
-            "    NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND r2.c_status = '3'),0) AS student_count, " +
-            "    NVL((SELECT SUM(r2.n_h_duration * COUNT(*)) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND r2.c_status = '3' GROUP BY r2.class_id, r2.n_h_duration),0) AS sum_of_student_hour  " +
+            "    NVL(SUM(CASE WHEN r.c_status = '5' THEN 1 ELSE 0 END),0) AS ekhtetam_class_count, " +
+            "                   nvl((    \n" +
+            "                     SELECT    \n" +
+            "                         COUNT(*)    \n" +
+            "                     FROM    \n" +
+            "                              r r2    \n" +
+            "                         left JOIN tbl_teacher teacher ON teacher.id = r2.f_teacher    \n" +
+            "                     WHERE    \n" +
+            "                             r2.institute_id = r.institute_id    \n" +
+            "                         AND r2.category_id = r.category_id    \n" +
+            "                            \n" +
+            "                         AND teacher.B_PERSONNEL = 1    \n" +
+            "                 ), 0)                AS ostad_count_dakheli, \n" +
+            "ROUND( \n" +
+            "nvl((    \n" +
+            "                     SELECT    \n" +
+            "                         COUNT(*)    \n" +
+            "                     FROM    \n" +
+            "                              r r2    \n" +
+            "                         left JOIN tbl_teacher teacher ON teacher.id = r2.f_teacher    \n" +
+            "                     WHERE    \n" +
+            "                             r2.institute_id = r.institute_id    \n" +
+            "                         AND r2.category_id = r.category_id    \n" +
+            "                            \n" +
+            "                         AND teacher.B_PERSONNEL = 1    \n" +
+            "                 ), 0)  /   nullif(SUM(CASE WHEN r.c_status in ('1','2','3','4','5')  THEN 1 ELSE 0 END),0)       , 2)   * 100     AS darsad_ostad_dakheli, "+
+            "                   NVL(SUM(CASE WHEN r.c_status in ('1','2','3','4','5')  THEN 1 ELSE 0 END),0) AS class_count,  \n" +
+"                                  NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds)) AND (course_technical=1)  THEN r.course_duration ELSE 0 END),0) AS sum_of_omomi,  \n" +
+            "                               ROUND(    NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds)) AND (course_technical=1)  THEN r.course_duration ELSE 0 END),0)/  nullif(  SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds))  THEN r.n_h_duration ELSE 0 END),0),2) AS sarane_omomi,    \n" +
+            "                                  NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds)) AND (course_technical=2)  THEN r.course_duration ELSE 0 END),0) AS sum_of_takhasosi,    \n" +
+            "                               ROUND(   NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds)) AND (course_technical=2)  THEN r.course_duration ELSE 0 END),0)/ nullif( SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds))  THEN r.n_h_duration ELSE 0 END),0),2) AS sarane_takhasosi,   "+
+
+            "    NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds))  THEN r.n_h_duration ELSE 0 END),0) AS sum_of_duration, " +
+            "    NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds)) ),0) AS student_count, " +
+            "    NVL((SELECT SUM(r2.n_h_duration * COUNT(*)) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds))  GROUP BY r2.class_id, r2.n_h_duration),0) AS sum_of_student_hour  " +
             "FROM " +
             "    r " +
             "GROUP BY " +
@@ -74,11 +137,17 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
                                                     @Param("startDate") String startDate,
                                                     @Param("endDate") String endDate,
                                                     @Param("startDate2") String startDate2,
-                                                    @Param("endDate2") String endDate2);
+                                                    @Param("endDate2") String endDate2,
+                                                    @Param("statusNull") int statusNull,
+                                                    @Param("classStatusIds") List<Long> classStatusIds);
+
 
     @Query(value ="WITH r AS(" +
             "                SELECT" +
             "                    institute.id           AS institute_id," +
+            "   course.n_theory_duration     AS course_duration,    \n" +
+            " course.e_technical_type     AS course_technical,    "+
+            "class.f_teacher         AS f_teacher,"+
             "                    institute.c_title_fa   AS institute_title_fa," +
             "                    0     AS category_id, " +
             "                    class.c_status         AS c_status," +
@@ -108,11 +177,71 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
             "            SELECT  " +
             "                r.institute_id          AS institute_id," +
             "                r.institute_title_fa    AS institute_title_fa," +
-            "                NVL(SUM(CASE WHEN r.c_status = '3' THEN 1 ELSE 0 END),0) AS finished_class_count," +
-            "                NVL(SUM(CASE WHEN r.c_status = '4' THEN 1 ELSE 0 END),0) AS canceled_class_count," +
-            "                NVL(SUM(CASE WHEN r.c_status = '3' THEN r.n_h_duration ELSE 0 END),0) AS sum_of_duration," +
-            "                NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id WHERE r2.institute_id = r.institute_id AND  r2.c_status = '3'),0) AS student_count," +
-            "                NVL((SELECT SUM(r2.n_h_duration * COUNT(*)) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id WHERE r2.institute_id = r.institute_id AND r2.c_status = '3' GROUP BY r2.class_id, r2.n_h_duration),0) AS sum_of_student_hour" +
+            "                   NVL(SUM(CASE WHEN r.c_status in ('1','2','3','4','5')  THEN 1 ELSE 0 END),0) AS class_count,  \n" +
+
+            "                   nvl((    \n" +
+            "                     SELECT    \n" +
+            "                         COUNT(*)    \n" +
+            "                     FROM    \n" +
+            "                              r r2    \n" +
+            "                         left JOIN tbl_teacher teacher ON teacher.id = r2.f_teacher    \n" +
+            "                     WHERE    \n" +
+            "                             r2.institute_id = r.institute_id    \n" +
+            "                         AND r2.category_id = r.category_id    \n" +
+            "                            \n" +
+            "                         AND teacher.B_PERSONNEL = 1    \n" +
+            "                 ), 0)                AS ostad_count_dakheli, \n" +
+            "ROUND( \n" +
+            "nvl((    \n" +
+            "                     SELECT    \n" +
+            "                         COUNT(*)    \n" +
+            "                     FROM    \n" +
+            "                              r r2    \n" +
+            "                         left JOIN tbl_teacher teacher ON teacher.id = r2.f_teacher    \n" +
+            "                     WHERE    \n" +
+            "                             r2.institute_id = r.institute_id    \n" +
+            "                         AND r2.category_id = r.category_id    \n" +
+            "                            \n" +
+            "                         AND teacher.B_PERSONNEL = 1    \n" +
+            "                 ), 0)  /   nullif(SUM(CASE WHEN r.c_status in ('1','2','3','4','5')  THEN 1 ELSE 0 END),0)       , 2) * 100      AS darsad_ostad_dakheli, "+
+            "    NVL(SUM(CASE WHEN r.c_status = '1' THEN 1 ELSE 0 END),0) AS barnamerizi_class_count, " +
+            "    NVL(SUM(CASE WHEN r.c_status = '2' THEN 1 ELSE 0 END),0) AS ejra_class_count, " +
+            "    NVL(SUM(CASE WHEN r.c_status = '3' THEN 1 ELSE 0 END),0) AS finished_class_count, " +
+            "    NVL(SUM(CASE WHEN r.c_status = '4' THEN 1 ELSE 0 END),0) AS canceled_class_count, " +
+            "              NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id \n" +
+            "                 INNER JOIN tbl_student std ON std.id = classstd.student_id\n" +
+            "                 WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds)) AND (std.p_type is null) ),0) AS student_sayer,    \n" +
+            "\n" +
+            "                 \n" +
+            "                 \n" +
+            "                                  NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id \n" +
+            "                 INNER JOIN tbl_student std ON std.id = classstd.student_id\n" +
+            "                 WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds)) AND (std.p_type = 'Personal') ),0) AS student_personal,\n" +
+            "                 \n" +
+            "                 \n" +
+            "                             NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id \n" +
+            "                 INNER JOIN tbl_student std ON std.id = classstd.student_id\n" +
+            "                 WHERE r2.institute_id = r.institute_id AND r2.category_id = r.category_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds)) AND (std.p_type = 'ContractorPersonal') ),0) AS student_contractor_personal,"+
+            "    nvl((\n" +
+            "        SELECT\n" +
+            "            COUNT(*)\n" +
+            "        FROM\n" +
+            "                 r r2\n" +
+            "            INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id\n" +
+            "        WHERE\n" +
+            "                r2.institute_id = r.institute_id\n" +
+            "            AND r2.category_id = r.category_id\n" +
+            "           \n" +
+            "            AND classstd.scores_state_id IN(400, 401)\n" +
+            "    ), 0)                AS student_count_ghabool,"+
+            "    NVL(SUM(CASE WHEN r.c_status = '5' THEN 1 ELSE 0 END),0) AS ekhtetam_class_count, " +
+            "                                  NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds)) AND (course_technical=1)  THEN r.course_duration ELSE 0 END),0) AS sum_of_omomi,  \n" +
+            "                               ROUND(    NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds)) AND (course_technical=1)  THEN r.course_duration ELSE 0 END),0)/  nullif(  SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds))  THEN r.n_h_duration ELSE 0 END),0),2) AS sarane_omomi,    \n" +
+            "                                  NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds)) AND (course_technical=2)  THEN r.course_duration ELSE 0 END),0) AS sum_of_takhasosi,    \n" +
+            "                               ROUND(   NVL(SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds)) AND (course_technical=2)  THEN r.course_duration ELSE 0 END),0)/ nullif( SUM(CASE WHEN  (:statusNull = 1 OR r.c_status IN (:classStatusIds))  THEN r.n_h_duration ELSE 0 END),0),2) AS sarane_takhasosi,   "+
+            "                NVL(SUM(CASE WHEN (:statusNull = 1 OR r.c_status IN (:classStatusIds))  THEN r.n_h_duration ELSE 0 END),0) AS sum_of_duration," +
+            "                NVL((SELECT COUNT(*) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id WHERE r2.institute_id = r.institute_id AND  (:statusNull = 1 OR r2.c_status IN (:classStatusIds)) ),0) AS student_count," +
+            "                NVL((SELECT SUM(r2.n_h_duration * COUNT(*)) FROM r r2 INNER JOIN tbl_class_student classstd ON classstd.class_id = r2.class_id WHERE r2.institute_id = r.institute_id AND (:statusNull = 1 OR r2.c_status IN (:classStatusIds))  GROUP BY r2.class_id, r2.n_h_duration),0) AS sum_of_student_hour" +
             "            FROM " +
             "                r  " +
             "            GROUP BY " +
@@ -133,6 +262,8 @@ public interface AnnualStatisticalReportDAO extends JpaRepository<AnnualStatisti
             @Param("startDate") String startDate,
             @Param("endDate") String endDate,
             @Param("startDate2") String startDate2,
-            @Param("endDate2") String endDate2);
+            @Param("endDate2") String endDate2,
+            @Param("statusNull") int statusNull,
+            @Param("classStatusIds") List<Long> classStatusIds);
 }
 

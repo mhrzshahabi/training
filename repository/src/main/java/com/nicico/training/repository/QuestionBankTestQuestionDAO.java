@@ -17,8 +17,8 @@ public interface QuestionBankTestQuestionDAO extends JpaRepository<QuestionBankT
     @Query(value = "select F_QUESTION_BANK from tbl_question_bank_test_question where F_TEST_QUESTION = :testQuestionId", nativeQuery = true)
     List<Long> findQuestionBankIdsByTestQuestionId(Long testQuestionId);
 
-    @Query(value = "select * from tbl_question_bank_test_question b INNER JOIN tbl_question_bank q ON b.f_question_bank = q.id " + "INNER JOIN tbl_test_question t ON b.f_test_question = t.id WHERE t.b_is_pre_test_question =:isPreTestQuestion AND t.f_class =:classId", nativeQuery = true)
-    List<QuestionBankTestQuestion> findByTypeAndClassId(@Param("isPreTestQuestion") boolean isPreTestQuestion, @Param("classId") Long classId);
+    @Query(value = "select * from tbl_question_bank_test_question b INNER JOIN tbl_question_bank q ON b.f_question_bank = q.id " + "INNER JOIN tbl_test_question t ON b.f_test_question = t.id WHERE t.c_test_question_type =:testQuestionType AND t.f_class =:classId", nativeQuery = true)
+    List<QuestionBankTestQuestion> findByTypeAndClassId(@Param("testQuestionType") String testQuestionType, @Param("classId") Long classId);
 
     List<QuestionBankTestQuestion> findByQuestionBankIdAndTestQuestionId(Long questionBankId, Long testQuestionId);
 

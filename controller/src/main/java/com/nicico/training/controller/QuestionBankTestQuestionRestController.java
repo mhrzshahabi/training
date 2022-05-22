@@ -105,12 +105,14 @@ public class QuestionBankTestQuestionRestController {
 
         criteriaRq1 = new SearchDTO.CriteriaRq();
         criteriaRq1.setOperator(EOperator.equals);
-        criteriaRq1.setFieldName("testQuestion.isPreTestQuestion");
+        criteriaRq1.setFieldName("testQuestion.testQuestionType");
 
         if (type.equals("preTest")) {
-            criteriaRq1.setValue(1);
+            criteriaRq1.setValue("PreTest");
+        } else if (type.equals("test")) {
+            criteriaRq1.setValue("FinalTest");
         } else {
-            criteriaRq1.setValue(0);
+            criteriaRq1.setValue("Preparation");
         }
 
 
@@ -213,12 +215,14 @@ public class QuestionBankTestQuestionRestController {
 
         criteriaRq1 = new SearchDTO.CriteriaRq();
         criteriaRq1.setOperator(EOperator.equals);
-        criteriaRq1.setFieldName("testQuestion.isPreTestQuestion");
+        criteriaRq1.setFieldName("testQuestion.testQuestionType");
 
         if (type.equals("preTest")) {
-            criteriaRq1.setValue(1);
+            criteriaRq1.setValue("PreTest");
+        } else if (type.equals("test")) {
+            criteriaRq1.setValue("FinalTest");
         } else {
-            criteriaRq1.setValue(0);
+            criteriaRq1.setValue("Preparation");
         }
 
         criteriaRqs.add(criteriaRq1);

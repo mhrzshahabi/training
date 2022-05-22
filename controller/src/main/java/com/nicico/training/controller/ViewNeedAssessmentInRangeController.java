@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
 import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,8 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.nicico.training.controller.util.CriteriaUtil.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -56,8 +59,6 @@ public class ViewNeedAssessmentInRangeController {
 
         List<SearchDTO.CriteriaRq> listOfCriteria=new ArrayList<>();
 
-        SearchDTO.CriteriaRq criteriaRq=null;
-
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
             Date parsedDate = dateFormat.parse(String.format("%s 00:00:00", startDate));
@@ -65,17 +66,24 @@ public class ViewNeedAssessmentInRangeController {
             Timestamp firstTime = new Timestamp(parsedDate.getTime());
             Timestamp secondDate = new Timestamp(parsedDate2.getTime());
 
-            criteriaRq=new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.greaterOrEqual);
-            criteriaRq.setFieldName("updateAt");
-            criteriaRq.setValue(new Date(firstTime.getTime()));
+//            criteriaRq=new SearchDTO.CriteriaRq();
+//            criteriaRq.setOperator(EOperator.greaterOrEqual);
+//            criteriaRq.setFieldName("updateAt");
+//            criteriaRq.setValue(new Date(firstTime.getTime()));
+            listOfCriteria.add(
+                    createCriteria(EOperator.greaterOrEqual, "updateAt", new Date(firstTime.getTime()))
+            );
 
-            listOfCriteria.add(criteriaRq);
+//            listOfCriteria.add(criteriaRq);
+//
+//            criteriaRq=new SearchDTO.CriteriaRq();
+//            criteriaRq.setOperator(EOperator.lessOrEqual);
+//            criteriaRq.setFieldName("updateAt");
+//            criteriaRq.setValue(new Date(secondDate.getTime()));
 
-            criteriaRq=new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.lessOrEqual);
-            criteriaRq.setFieldName("updateAt");
-            criteriaRq.setValue(new Date(secondDate.getTime()));
+            listOfCriteria.add(
+                    createCriteria(EOperator.lessOrEqual, "updateAt", new Date(secondDate.getTime()))
+            );
         } catch(Exception e) { //this generic but you can control another types of exception
             // look the origin of excption
         }
@@ -83,13 +91,15 @@ public class ViewNeedAssessmentInRangeController {
 
 
 
-        listOfCriteria.add(criteriaRq);
-        criteriaRq=new SearchDTO.CriteriaRq();
-        criteriaRq.setCriteria(listOfCriteria);
-        criteriaRq.setOperator(EOperator.and);
-
-        searchRq.setCriteria(criteriaRq);
-
+//        listOfCriteria.add(criteriaRq);
+//        criteriaRq=new SearchDTO.CriteriaRq();
+//        criteriaRq.setCriteria(listOfCriteria);
+//        criteriaRq.setOperator(EOperator.and);
+//
+//        searchRq.setCriteria(criteriaRq);
+        searchRq.setCriteria(
+                addCriteria(listOfCriteria, EOperator.and)
+        );
         SearchDTO.SearchRs result = iViewNeedAssessmentInRangeTimeService.search(searchRq, o -> modelMapper.map(o, ViewNeedAssessmentInRangeDTO.Info.class));
         final ViewNeedAssessmentInRangeDTO.SpecRs specResponse = new ViewNeedAssessmentInRangeDTO.SpecRs();
         final ViewNeedAssessmentInRangeDTO.TrainingNeedAssessmentDTOSpecRs specRs = new ViewNeedAssessmentInRangeDTO.TrainingNeedAssessmentDTOSpecRs();

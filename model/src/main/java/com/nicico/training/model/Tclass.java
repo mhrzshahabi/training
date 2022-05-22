@@ -326,4 +326,15 @@ public class Tclass extends Auditable {
     @Column(name = "C_RELEASE_DATE")
     @NotAudited
     private String releaseDate;
+
+    @ManyToOne
+    @JoinColumn(name = "CALENDAR_ID", insertable = false, updatable = false)
+    private EducationalCalender educationalCalender;
+
+
+    @Column(name = "CALENDAR_ID")
+    @NotAudited
+    private Long educationalCalenderId;
+
+
 }

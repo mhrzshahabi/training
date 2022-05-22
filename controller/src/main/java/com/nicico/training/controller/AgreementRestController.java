@@ -1,5 +1,6 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
@@ -20,6 +21,7 @@ import java.io.IOException;
 @RequestMapping(value = "/api/agreement")
 public class AgreementRestController {
 
+    private final ObjectMapper objectMapper;
     private final IAgreementService agreementService;
 
     @Loggable
@@ -47,16 +49,31 @@ public class AgreementRestController {
     }
 
     @Loggable
+    @PutMapping("/upload")
+    public ResponseEntity upload(@RequestBody AgreementDTO.Upload upload) {
+        try {
+            agreementService.upload(upload);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<ISC<AgreementDTO.Info>> agreementList(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<AgreementDTO.Info>> agreementList(HttpServletRequest iscRq,
+                                                                @RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                @RequestParam(value = "_endRow", required = false) Integer endRow) throws IOException {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        searchRq.setStartIndex(startRow);
+        searchRq.setCount(endRow - startRow);
         SearchDTO.SearchRs<AgreementDTO.Info> result = agreementService.search(searchRq);
 
         ISC.Response<AgreementDTO.Info> response = new ISC.Response<>();
-        response.setStartRow(0);
-        response.setEndRow(result.getList().size());
-        response.setTotalRows(result.getList().size());
+        response.setStartRow(startRow);
+        response.setEndRow(startRow + result.getList().size());
+        response.setTotalRows(result.getTotalCount().intValue());
         response.setData(result.getList());
         ISC<AgreementDTO.Info> infoISC = new ISC<>(response);
         return new ResponseEntity<>(infoISC, HttpStatus.OK);

@@ -16,6 +16,7 @@ import com.nicico.training.dto.teacherPdfRequirments.RequirementItemsResumeDTO;
 import com.nicico.training.dto.teacherPublications.ElsPublicationDTO;
 import com.nicico.training.dto.teacherPublications.TeacherPublicationResponseDTO;
 import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillDTO;
+import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillResponseDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.mapper.academicBK.AcademicBKBeanMapper;
@@ -35,7 +36,6 @@ import com.nicico.training.model.enums.EGender;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.MyUtils;
 import dto.evaluuation.EvalTargetUser;
-import com.nicico.training.dto.teacherSpecialSkill.TeacherSpecialSkillResponseDTO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -44,7 +44,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -82,6 +82,7 @@ import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.ElsSessionResponse;
 import response.tclass.ElsStudentAttendanceListResponse;
 import response.tclass.dto.ElsClassListDto;
+import response.tclass.dto.ElsClassListV2Dto;
 import response.teachingHistory.ElsStudentsLevelDto;
 import response.teachingHistory.ElsTeachingHistoryFindAllRespDto;
 import response.teachingHistory.ElsTeachingHistoryRespDto;
@@ -330,11 +331,16 @@ public class ElsRestController {
             try {
                 TestQuestion exam = iTestQuestionService.getById(examId);
                 PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(exam.getTclass().getTeacherId()).getPersonalityId());
-                if (exam.isPreTestQuestion()) {
+                if (exam.getTestQuestionType().equalsIgnoreCase("PreTest")) {
                     elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
                 } else {
                     elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
                 }
+//                else if (exam.getTestQuestionType().equalsIgnoreCase("FinalTest")) {
+//                    elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest2(exam.getTclass(), teacherInfo, exam, classStudentService.getClassStudents(exam.getTclassId()));
+//                } else {
+//                    // Preparation Test
+//                }
                 if (elsExamRequestResponse.getStatus() == 200) {
                     ElsExamRequest request = elsExamRequestResponse.getElsExamRequest();
                     elsExamQuestionsResponse.setExam(request.getExam());
@@ -1598,6 +1604,36 @@ public class ElsRestController {
     }
 
 
+    //get all classes foe a student and teacher
+    @GetMapping("/user-classes/v2/{page}/{size}")
+    public ElsClassListV2Dto getUserClassesV2(HttpServletRequest header
+            , @RequestParam String type
+            , @RequestParam String nationalCode
+            , @PathVariable Integer page, @PathVariable Integer size) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+
+                switch (type) {
+                    case "student" -> {
+                        return classStudentService.getStudentClassesV2(nationalCode, page, size);
+                    }
+                    case "teacher" -> {
+                        return classStudentService.getTeacherClassesV2(nationalCode, page, size);
+                    }
+                    default -> {
+                        log.error("default error" + type);
+                        throw new TrainingException(TrainingException.ErrorType.Unknown);
+                    }
+                }
+            } catch (Exception s) {
+                log.error("Exception error:" + s);
+                throw new TrainingException(TrainingException.ErrorType.Unknown);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
     //get all classes foe a student and teacher
     @GetMapping("/user-classes/{page}/{size}")
     public ElsClassListDto getUserClasses(HttpServletRequest header

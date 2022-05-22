@@ -61,6 +61,8 @@ public class AnnualRestController {
 
         String termId = null;
 
+        String classStatus = null;
+
         String Unit = null;
 
         String Affairs = null;
@@ -72,6 +74,8 @@ public class AnnualRestController {
         List<String> listYear = null;
 
         List<Long> listTerm = null;
+
+        List<Long> ListClassStatus = null;
 
         List<Long> listCategory = null;
 
@@ -116,6 +120,12 @@ public class AnnualRestController {
             String[] term = termId.substring(1, termId.length() - 1).split(",");
             listTerm = Arrays.stream(term).map(x -> Long.parseLong(x)).collect(Collectors.toList());
         }
+        if (!jsonObject.isNull("classStatus"))
+        {
+            classStatus = modelMapper.map(jsonObject.get("classStatus"), String.class);
+            String[] classStatus2 = classStatus.substring(1, classStatus.length() - 1).split(",");
+            ListClassStatus = Arrays.stream(classStatus2).map(x -> Long.parseLong(x.replace("\"",""))).collect(Collectors.toList());
+        }
         if (!jsonObject.isNull("Unit"))
             Unit = modelMapper.map(jsonObject.get("Unit"), String.class);
 
@@ -128,7 +138,7 @@ public class AnnualRestController {
         if (!jsonObject.isNull("complex_MSReport"))
             complex_MSReport = modelMapper.map(jsonObject.get("complex_MSReport"), String.class);
 
-        list= Collections.singletonList(iAnnualStatisticalService.list(listTerm != null ? listTerm : null, listYear != null ? listYear : null, complex_MSReport,listInstituteid != null ? listInstituteid: null, Assistant, Affairs,Unit, null, listCategory != null ? listCategory : null, startDate1, endDate1, startDate2, endDate2));
+        list= Collections.singletonList(iAnnualStatisticalService.list(listTerm != null ? listTerm : null, listYear != null ? listYear : null, complex_MSReport,listInstituteid != null ? listInstituteid: null, Assistant, Affairs,Unit, null, listCategory != null ? listCategory : null, startDate1, endDate1, startDate2, endDate2,ListClassStatus != null ? ListClassStatus : null));
 
         if (list != null) {
             DTOList = new ArrayList<>(list.size());

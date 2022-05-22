@@ -235,17 +235,12 @@
                  autoFitWidth: true
             },
             { name: "onlineExamDeadLineStatus", hidden: true}
-            /*{
-                name: "isPreTestQuestion",
-                title: "<spring:message code="test.question.type"/>",
-                filterOperator: "iContains", autoFitWidth: true
-            },*/
         ],
         fetchDataURL: testQuestionUrl + "/spec-list",
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
             operator: "and",
-            criteria: [{fieldName: "isPreTestQuestion", operator: "equals", value: false}]
+            criteria: [{fieldName: "testQuestionType", operator: "iContains", value: "FinalTest"}]
         },
     });
 
@@ -362,8 +357,6 @@
             { name: "showBtn",canFilter: false, title: "نتایج ", width: "130"},
             { name: "checkDate",canFilter: false, title: "اطلاعات کاربران", width: "145"},
             { name: "onlineExamDeadLineStatus",canFilter: false , hidden: true},
-
-            //{name: "isPreTestQuestion",}
         ],
         autoFetchData: true,
         gridComponents: [FinalTestTS_finalTest, "filterEditor", "header", "body",],
@@ -1657,7 +1650,12 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 title: "<spring:message code="resend.final.test"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/resend-final-exam-form"})
             },
-
+            {
+                ID: "monitoringFinalTest",
+                name: "monitoringFinalTest",
+                title: "<spring:message code="monitoring.final.test"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluation-final-test/monitoring-final-exam-form"})
+            }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
@@ -1679,7 +1677,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         </sec:authorize>
                     }
                 }
-
         }
     });
 
@@ -1696,7 +1693,10 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         loadTab(tab.ID);
                     break;
                 }
-
+                case "monitoringFinalTest": {
+                    loadPageMonitoring();
+                    break;
+                }
             }
         }
     }
@@ -2073,14 +2073,9 @@ let inValidStudents = [];
             });
                     TabSet_finalTest.enable();
                     checkAllowToAddQuestion(FinalTestLG_finalTest.getSelectedRecord());
-
                     break;
-
                 }
-
-            }
-
-
+        }
     }
 
     function sendFinalScoreToOnlineExam(form) {
