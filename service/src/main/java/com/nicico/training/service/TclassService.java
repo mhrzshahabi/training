@@ -2274,13 +2274,10 @@ public class TclassService implements ITclassService {
         classIds.forEach(id -> {
             Optional<Tclass> tclass = tclassDAO.findById(id);
             if (tclass.isPresent()) {
-
                 Tclass c = tclass.get();
-                if (c.getEducationalCalenderId() == null) {
-                    c.setEducationalCalenderId(eCalenderId);
+                c.setEducationalCalenderId(eCalenderId);
+                tclassDAO.save(c);
 
-                    tclassDAO.save(c);
-                }
             }
         });
 

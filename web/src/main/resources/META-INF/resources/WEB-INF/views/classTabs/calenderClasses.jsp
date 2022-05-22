@@ -1012,7 +1012,7 @@
                 _constructor: "AdvancedCriteria",
                 operator: "and",
                 criteria: [{fieldName: "classStatus", operator: "equals", value: "1"}
-                   , {fieldName: "educationalCalenderId", operator: "equals",value: "null"}
+                    , {fieldName: "educationalCalenderId", operator: "isNull",value:"true"}
 
                 ]
             };
