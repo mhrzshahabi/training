@@ -135,15 +135,6 @@ public class OperationalRoleService implements IOperationalRoleService {
         return rs;
     }
 
-//    @Override
-//    public OperationalRole findByPostIds(Set<Long> postIds) {
-//        Optional<OperationalRole> optionalRole = operationalRoleDAO.findByPostIds(postIds);
-//        if (optionalRole.isEmpty()) {
-//            throw new TrainingException(TrainingException.ErrorType.NotFound, "نقش عملیاتی یافت نشد");
-//        }
-//        return optionalRole.get();
-//    }
-
     @Override
     public OperationalRole findById(Long id) {
         Optional<OperationalRole> operationalRole = operationalRoleDAO.findById(id);
