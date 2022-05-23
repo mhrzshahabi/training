@@ -25,6 +25,7 @@ import request.exam.ExamImportedRequest;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -91,11 +92,11 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
         String testQuestionType;
         Locale locale = LocaleContextHolder.getLocale();
 
-        if (type.equals("PreTest")) {
-            testQuestionType = "true";
-        } else if (type.equals("test")) {
+        if (type.equalsIgnoreCase("PreTest")) {
+            testQuestionType = "PreTest";
+        } else if (type.equalsIgnoreCase("test")) {
             testQuestionType = "FinalTest";
-        } else if (type.equals("preparation")) {
+        } else if (type.equalsIgnoreCase("preparation")) {
             testQuestionType = "Preparation";
         } else {
             throw new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest);
@@ -157,12 +158,12 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
         object.setQuestions(questions);
         final ElsExamRequestResponse elsExamRequestResponse;
 
-        if (type.equals("preTest")) {
-            elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(tclass, personalInfo, object,
-                    classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
-        } else {
+        if (type.equals("test")) {
             elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclass, personalInfo, object,
                     classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
+        } else {
+            elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(tclass, personalInfo, object,
+                    classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()), type);
         }
         request = elsExamRequestResponse.getElsExamRequest();
         boolean hasWrongCorrectAnswer = evaluationBeanMapper.hasWrongCorrectAnswer(request.getQuestionProtocols());
@@ -177,11 +178,11 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
 
         String testQuestionType;
 
-        if (type.equals("preTest")) {
+        if (type.equalsIgnoreCase("preTest")) {
             testQuestionType = "PreTest";
-        } else if (type.equals("test")) {
+        } else if (type.equalsIgnoreCase("test")) {
             testQuestionType = "FinalTest";
-        } else if (type.equals("preparation")) {
+        } else if (type.equalsIgnoreCase("preparation")) {
             testQuestionType = "Preparation";
         } else {
             throw new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest);
@@ -194,19 +195,20 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
             testQuestion = new TestQuestion();
             testQuestion.setTestQuestionType(testQuestionType);
             testQuestion.setTclassId(classId);
-
             testQuestionDAO.save(testQuestion);
         }
 
         for (Long questionId : questionIds) {
-            QuestionBankTestQuestion questionBankTestQuestion = new QuestionBankTestQuestion();
 
-            questionBankTestQuestion.setQuestionBankId(questionId);
-            questionBankTestQuestion.setTestQuestionId(testQuestion.getId());
+            QuestionBankTestQuestion questionBankTestQuestionFind = findByTestQuestionIdAndQuestionBankId(testQuestion.getId(), questionId);
+            if (questionBankTestQuestionFind == null) {
 
-            questionBankTestQuestionDAO.save(questionBankTestQuestion);
+                QuestionBankTestQuestion questionBankTestQuestion = new QuestionBankTestQuestion();
+                questionBankTestQuestion.setQuestionBankId(questionId);
+                questionBankTestQuestion.setTestQuestionId(testQuestion.getId());
+                questionBankTestQuestionDAO.save(questionBankTestQuestion);
+            }
         }
-
     }
 
     @Transactional
@@ -255,6 +257,12 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
     @Override
     public void save(QuestionBankTestQuestion questionBankTestQuestion) {
         questionBankTestQuestionDAO.save(questionBankTestQuestion);
+    }
+
+    @Override
+    public QuestionBankTestQuestion findByTestQuestionIdAndQuestionBankId(Long testQuestionId, Long questionBankId) {
+        Optional<QuestionBankTestQuestion> questionBankTestQuestion = questionBankTestQuestionDAO.findFirstByTestQuestionIdAndQuestionBankId(testQuestionId, questionBankId);
+        return questionBankTestQuestion.orElse(null);
     }
 
 }

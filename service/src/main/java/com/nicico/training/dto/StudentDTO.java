@@ -322,4 +322,13 @@ public class StudentDTO {
         private String jobTitle;
         private Map<Integer, String> states;
     }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("PreparationInfo")
+    public static class PreparationInfo {
+        private String nationalCode;
+        private boolean hasPreparationTest;
+    }
 }

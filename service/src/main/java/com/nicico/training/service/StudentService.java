@@ -1,13 +1,9 @@
 package com.nicico.training.service;
-/* com.nicico.training.service
-@Author:roya
-*/
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.enums.ExamsType;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
@@ -90,6 +86,22 @@ public class StudentService implements IStudentService {
     public List<Student> getStudentByNationalCode(String nationalCode) {
         List<Student> list = studentDAO.findByNationalCode(nationalCode);
         return list;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public StudentDTO.PreparationInfo getStudentPreparationInfoByNationalCode(String nationalCode) {
+        Optional<Student> student = studentDAO.findFirstByHasPreparationTestTrueAndNationalCode(nationalCode);
+        if (student.isPresent())
+            return modelMapper.map(student, StudentDTO.PreparationInfo.class);
+        else
+            return null;
+    }
+
+    @Transactional
+    @Override
+    public void updateHasPreparationTestByNationalCodes(List<String> nationalCodes, boolean hasPreparation) {
+        studentDAO.updateHasPreparationTestByNationalCodes(nationalCodes, hasPreparation);
     }
 
     @Override

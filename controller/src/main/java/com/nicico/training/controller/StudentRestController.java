@@ -8,8 +8,6 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.iservice.IStudentService;
 import lombok.RequiredArgsConstructor;

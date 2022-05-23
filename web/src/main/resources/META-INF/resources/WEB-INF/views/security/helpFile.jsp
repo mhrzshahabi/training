@@ -209,7 +209,7 @@
         title: "<spring:message code='save'/>",
         align: "center",
         click: function () {
-debugger
+
             DynamicForm_Help_Files.validate();
             if (DynamicForm_Help_Files.hasErrors())
                 return;

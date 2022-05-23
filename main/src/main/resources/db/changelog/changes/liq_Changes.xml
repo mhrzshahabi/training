@@ -4163,4 +4163,10 @@ WHERE
         </sql>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-068">
+        <addColumn tableName="tbl_student">
+            <column name="b_has_preparation_test" type="number(1, 0)" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

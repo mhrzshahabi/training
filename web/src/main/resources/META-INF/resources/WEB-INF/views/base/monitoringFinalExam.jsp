@@ -29,6 +29,11 @@
                 name: "hasExamResult",
                 title: "سابقه شرکت در آزمون آنلاین",
                 valueMap: {"true" : "بله", "false" : "خیر"}
+            },
+            {
+                name: "hasPreparationTest",
+                title: "سابقه ارسال آزمون آمادگی",
+                valueMap: {"true" : "بله", "false" : "خیر"}
             }
         ]
     });
@@ -53,6 +58,10 @@
                 name: "hasExamResult",
                 title: "سابقه شرکت در آزمون آنلاین",
                 valueMap: {"true" : "بله", "false" : "خیر"}
+            },
+            {
+                name: "testEntryStatus",
+                title: "وضعیت شرکت در آزمون"
             }
         ]
     });
@@ -77,6 +86,10 @@
                 name: "hasExamResult",
                 title: "سابقه شرکت در آزمون آنلاین",
                 valueMap: {"true" : "بله", "false" : "خیر"}
+            },
+            {
+                name: "testEntryStatus",
+                title: "وضعیت شرکت در آزمون"
             }
         ]
     });
@@ -138,6 +151,7 @@
                 icon: '../static/img/msg/mail.svg',
                 startRow: false,
                 endRow: false,
+                hidden: true,
                 click: function (form, item) {
                     sendMessageForPerformingTest();
                 }
@@ -158,10 +172,12 @@
 
     ListGrid_Not_Started_Test_Monitoring = isc.TrLG.create({
         dataSource: RestDataSource_Not_Started_Test_Monitoring,
-        selectionType: "multiple",
+        width: "100%",
         sortField: 1,
         sortDirection: "descending",
-        width: "100%",
+        selectionType: "multiple",
+        selectCellTextOnClick: true,
+        alternateRecordStyles: true,
         fields: [
             {
                 name: "firstName"
@@ -174,18 +190,21 @@
             },
             {
                 name: "hasExamResult"
+            },
+            {
+                name: "hasPreparationTest"
             }
         ],
         gridComponents: [DynamicForm_Not_Started_Test_Monitoring, "filterEditor", "header", "body"]
-        // dataChanged: function () {},
-        // cellClick: function (record, rowNum, colNum) {}
     });
     ListGrid_Performing_Test_Monitoring = isc.TrLG.create({
         dataSource: RestDataSource_Performing_Test_Monitoring,
-        selectionType: "multiple",
+        width: "100%",
         sortField: 1,
         sortDirection: "descending",
-        width: "100%",
+        selectionType: "multiple",
+        selectCellTextOnClick: true,
+        alternateRecordStyles: true,
         fields: [
             {
                 name: "firstName"
@@ -198,22 +217,25 @@
             },
             {
                 name: "hasExamResult"
+            },
+            {
+                name: "testEntryStatus"
             }
         ],
-        gridComponents: [DynamicForm_Performing_Test_Monitoring, "filterEditor", "header", "body"]
-        // getCellCSSText: function (record) {
-        //     if (record.status === "وارد آزمون نشده")
-        //         return "background-color : #e67e7e";
-        //     else
-        //         return "background-color : #d8e4bc";
-        // }
+        gridComponents: [DynamicForm_Performing_Test_Monitoring, "filterEditor", "header", "body"],
+        getCellCSSText: function (record) {
+            if (record.testEntryStatus.contains("به آزمون ورود نکرده"))
+                return "background-color : #e67e7e";
+        }
     });
     ListGrid_Finished_Test_Monitoring = isc.TrLG.create({
         dataSource: RestDataSource_Finished_Test_Monitoring,
-        selectionType: "multiple",
+        width: "100%",
         sortField: 1,
         sortDirection: "descending",
-        width: "100%",
+        selectionType: "multiple",
+        selectCellTextOnClick: true,
+        alternateRecordStyles: true,
         fields: [
             {
                 name: "firstName"
@@ -226,13 +248,12 @@
             },
             {
                 name: "hasExamResult"
+            },
+            {
+                name: "testEntryStatus"
             }
         ],
         gridComponents: [DynamicForm_Finished_Test_Monitoring, "filterEditor", "header", "body"]
-        // getCellCSSText: function (record) {
-        //     if (record.status === "آزمون نداده اند")
-        //         return "background-color : #e67e7e";
-        // }
     });
 
     VLayout_Body_Monitoring = isc.VLayout.create({
@@ -343,6 +364,7 @@
                 DynamicForm_Not_Started_Test_Monitoring.setValue("timeToStart", timeToStart);
                 RestDataSource_Not_Started_Test_Monitoring.fetchDataURL = examMonitoringUrl + "/list/" + record.tclass.code;
                 ListGrid_Not_Started_Test_Monitoring.fetchData();
+                ListGrid_Not_Started_Test_Monitoring.invalidateCache();
                 VLayout_Body_Monitoring.addMembers(ListGrid_Not_Started_Test_Monitoring);
 
             } else if (testStatus === "performing") {
@@ -358,6 +380,7 @@
                 DynamicForm_Performing_Test_Monitoring.setValue("timeToEnd", timeToEnd);
                 RestDataSource_Performing_Test_Monitoring.fetchDataURL = examMonitoringUrl + "/list/" + record.tclass.code;
                 ListGrid_Performing_Test_Monitoring.fetchData();
+                ListGrid_Performing_Test_Monitoring.invalidateCache();
                 VLayout_Body_Monitoring.addMembers(ListGrid_Performing_Test_Monitoring);
 
             } else if (testStatus === "finished") {
@@ -365,8 +388,8 @@
                 VLayout_Body_Monitoring.setMembers([]);
                 DynamicForm_Finished_Test_Monitoring.setValue("testStatus", "پایان یافته")
                 RestDataSource_Finished_Test_Monitoring.fetchDataURL = examMonitoringUrl + "/list/" + record.tclass.code;
-                ListGrid_Finished_Test_Monitoring.invalidateCache();
                 ListGrid_Finished_Test_Monitoring.fetchData();
+                ListGrid_Finished_Test_Monitoring.invalidateCache();
                 VLayout_Body_Monitoring.addMembers(ListGrid_Finished_Test_Monitoring);
             }
         }
@@ -391,19 +414,17 @@
 
     function sendPreparationTest() {
 
-        let records = ListGrid_Not_Started_Test_Monitoring.getSelectedRecords();
+        let testQuestionRecord = FinalTestLG_finalTest.getSelectedRecord();
 
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(examMonitoringUrl + "/send-preparation-test", "POST", JSON.stringify(records), function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(examMonitoringUrl + "/send-preparation-test/" + + testQuestionRecord.tclass.id, "POST", null, function (resp) {
+            wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                wait.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                // Window_Agreement.close();
-                // ListGrid_Agreement.invalidateCache();
+                createDialog("info", "آزمون آمادگی برای فراگیران ارسال شد");
+                ListGrid_Not_Started_Test_Monitoring.invalidateCache();
             } else {
-                wait.close();
-                // createDialog("info", "خطایی رخ داده است");
-                // Window_Agreement.close();
+                let respText = JSON.parse(JSON.parse(resp.httpResponseText).message);
+                createDialog("info", respText);
             }
         }));
     }
