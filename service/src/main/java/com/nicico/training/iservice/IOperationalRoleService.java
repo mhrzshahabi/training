@@ -30,4 +30,13 @@ public interface IOperationalRoleService {
     SearchDTO.SearchRs<OperationalRoleDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException;
 
     SearchDTO.SearchRs<ViewTrainingPostDTO.Info> getRoleUsedPostList(Long roleId);
+
+    OperationalRole findById(Long id);
+
+    OperationalRole save(OperationalRole operationalRole);
+
+    void deleteIndividualPost(Long roleId, List<Long> postIds);
+
+
+
 }

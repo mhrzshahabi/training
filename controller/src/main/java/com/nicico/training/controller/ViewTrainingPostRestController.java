@@ -6,9 +6,14 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
-import com.nicico.training.dto.*;
+import com.nicico.training.TrainingException;
+import com.nicico.training.dto.CourseDTO;
+import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.PostGradeDTO;
+import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.*;
-import com.nicico.training.service.*;
+import com.nicico.training.model.OperationalRole;
+import com.nicico.training.service.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -205,4 +210,11 @@ public class ViewTrainingPostRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @PostMapping("/{roleId}")
+    public ResponseEntity<Void> deleteIndividualPost(@PathVariable Long roleId, @RequestBody List<Long> postIds) {
+        iOperationalRoleService.deleteIndividualPost(roleId, postIds);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 }

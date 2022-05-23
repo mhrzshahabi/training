@@ -3,15 +3,15 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AccountInfoDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
-import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
-import com.nicico.training.mapper.operationalRole.OperationalRoleBeanMapper;
 import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.*;
+import com.nicico.training.repository.ComplexDAO;
+import com.nicico.training.repository.OperationalRoleDAO;
+import com.nicico.training.repository.OperationalUnitDAO;
+import com.nicico.training.repository.ViewTrainingPostDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -133,5 +133,43 @@ public class OperationalRoleService implements IOperationalRoleService {
         rs.setTotalCount((long) viewTrainingPosts.size());
         rs.setList(viewTrainingPostMapper.changeToViewTrainingPostDtoInfo(viewTrainingPosts, dtoList));
         return rs;
+    }
+
+//    @Override
+//    public OperationalRole findByPostIds(Set<Long> postIds) {
+//        Optional<OperationalRole> optionalRole = operationalRoleDAO.findByPostIds(postIds);
+//        if (optionalRole.isEmpty()) {
+//            throw new TrainingException(TrainingException.ErrorType.NotFound, "نقش عملیاتی یافت نشد");
+//        }
+//        return optionalRole.get();
+//    }
+
+    @Override
+    public OperationalRole findById(Long id) {
+        Optional<OperationalRole> operationalRole = operationalRoleDAO.findById(id);
+        if (operationalRole.isEmpty()) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound, "نقش عملیاتی یافت نشد");
+        }
+        return operationalRole.get();
+    }
+
+    @Override
+    public OperationalRole save(OperationalRole operationalRole) {
+        return operationalRoleDAO.save(operationalRole);
+    }
+
+    @Override
+    public void deleteIndividualPost(Long roleId, List<Long> postIds) {
+        OperationalRole operationalRole = findById(roleId);
+        Set<Long> savedPostIds = operationalRole.getPostIds();
+
+        postIds.stream().forEach(id -> {
+            if (savedPostIds.contains(id)) {
+                savedPostIds.remove(id);
+            }
+        });
+
+        operationalRole.setPostIds(savedPostIds);
+        save(operationalRole);
     }
 }
