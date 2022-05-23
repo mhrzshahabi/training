@@ -2293,4 +2293,9 @@ public class TclassService implements ITclassService {
         }
 
     }
+    @Override
+    public void updateClassStatus() {
+           tclassDAO.updateClassStatus(DateUtil.todayDate());
+    }
+
 }
