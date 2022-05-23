@@ -332,6 +332,7 @@ public abstract class QuestionBankBeanMapper {
 //            create.setCategoryId(elsQuestionDto.getCategoryId());
 //            create.setSubCategoryId(elsQuestionDto.getSubCategory());
             create.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
+            if (elsQuestionDto.getReadingQuestionsIds()!=null)
             create.setReadingQuestions(questionBankService.getListOfReadingQuestions(elsQuestionDto.getReadingQuestionsIds()).stream().map(QuestionBank::getId).toList());
             create.setTeacherId(teacherId);
             create.setLines(1);
