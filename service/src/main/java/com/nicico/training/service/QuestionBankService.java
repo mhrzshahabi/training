@@ -17,9 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import response.question.dto.ElsQuestionDto;
 
-import java.lang.reflect.Type;
 import java.util.*;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
@@ -331,6 +329,11 @@ public class QuestionBankService implements IQuestionBankService {
         pageQuestionDto.setTotalSpecCount(totalModelsCount);
         return pageQuestionDto;
 
+    }
+
+    @Override
+    public List<QuestionBank> findAllByCreateBy(String createBy) {
+        return questionBankDAO.findAllByCreatedBy(createBy);
     }
 
 }

@@ -222,4 +222,7 @@ public class Student extends Auditable {
 
     @Column(name = "f_contact_info", insertable = false, updatable = false)
     private Long contactInfoId;
+
+    @Column(name = "b_has_preparation_test")
+    private boolean hasPreparationTest;
 }

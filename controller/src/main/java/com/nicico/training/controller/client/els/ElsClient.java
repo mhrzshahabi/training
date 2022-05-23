@@ -70,6 +70,6 @@ public interface ElsClient {
     ResponseEntity<List<MessagesAttDTO>> findAllMessagesBySessionId(@RequestParam("sessionId") Long sessionId);
 
     @GetMapping(value = "/profilesInExam")
-    ElsExamMonitoringRespDto getExamMonitoring(@RequestParam String examCode);
+    ElsExamMonitoringRespDto getExamMonitoring(@RequestParam String examCode, @RequestParam String method);
 
 }

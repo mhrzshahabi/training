@@ -1867,6 +1867,7 @@ let inValidStudents = [];
             let data = FinalTestDF_finalTest.getValues();
             if (finalTestMethod_finalTest.localeCompare("POST") === 0) {
 
+                data.testQuestionType = "FinalTest";
                 isc.RPCManager.sendRequest(TrDSRequest(isValidForExam+data.tclassId, "GET",null, function (resp) {
 
                     let respText = JSON.parse(resp.httpResponseText);

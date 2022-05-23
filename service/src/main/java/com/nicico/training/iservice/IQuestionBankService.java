@@ -1,7 +1,4 @@
 package com.nicico.training.iservice;
-/* com.nicico.training.iservice
-@Author:Mehran Golrokhi
-*/
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ElsSearchDTO;
@@ -46,4 +43,6 @@ public interface IQuestionBankService {
     PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long id) throws NoSuchFieldException, IllegalAccessException;
 
     List<QuestionBank> getListOfReadingQuestions(List<Long> readingQuestions);
+
+    List<QuestionBank> findAllByCreateBy(String createBy);
 }

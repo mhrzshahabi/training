@@ -421,13 +421,13 @@ public abstract class EvaluationBeanMapper {
         return elsExamRequestResponse;
     }
 
-    public ElsExamRequestResponse toGetPreExamRequest(Tclass tClass, PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents) {
+    public ElsExamRequestResponse toGetPreExamRequest(Tclass tClass, PersonalInfo teacherInfo, ExamImportedRequest object, List<ClassStudent> classStudents, String type) {
 
         ElsExamRequest request = new ElsExamRequest();
         ElsExamRequestResponse elsExamRequestResponse = new ElsExamRequestResponse();
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
 
-        ExamCreateDTO exam = getPreExamData(object, tClass);
+        ExamCreateDTO exam = getPreExamData(object, tClass, type);
         ImportedCourseCategory courseCategory = getCourseCategoryData(object);
         ImportedCourseDto courseDto = getCourseData(object);
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData(object);
@@ -1027,7 +1027,7 @@ public abstract class EvaluationBeanMapper {
         return examCreateDTO;
     }
 
-    private ExamCreateDTO getPreExamData(ExamImportedRequest object, Tclass tClass) {
+    private ExamCreateDTO getPreExamData(ExamImportedRequest object, Tclass tClass, String type) {
 
         ExamCreateDTO exam = new ExamCreateDTO();
         exam.setCode(object.getExamItem().getTclass().getCode());
@@ -1037,7 +1037,10 @@ public abstract class EvaluationBeanMapper {
         exam.setQuestionCount(object.getQuestions().size());
         exam.setSourceExamId(object.getExamItem().getId());
         exam.setDuration(0);
-        exam.setMethod("PreTest");
+        if (type.equalsIgnoreCase("preTest"))
+            exam.setMethod("PreTest");
+        else
+            exam.setMethod("Preparation");
 
         if (tClass.getScoringMethod().equals("3")) {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
