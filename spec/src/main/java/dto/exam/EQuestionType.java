@@ -7,7 +7,8 @@ public enum EQuestionType {
 
     DESCRIPTIVE(1, "تشریحی"),
     MULTI_CHOICES(2, "چند گزینه ای"),
-    QUALITATIVE(3, "طیفی");
+    QUALITATIVE(3, "طیفی"),
+    READING(4, "ردینگ");
 
     private int key;
     private String value;

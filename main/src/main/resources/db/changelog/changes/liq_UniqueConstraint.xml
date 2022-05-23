@@ -206,5 +206,9 @@
     <changeSet author="nick (generated)" id="1634122431773-561">
         <addUniqueConstraint columnNames="C_TITLE" constraintName="UC_TBL_OPERATIONAL_ROLEC_TITLE_COL" tableName="TBL_OPERATIONAL_ROLE"/>
     </changeSet>
-    
+
+    <changeSet author="namdari (generated)" id="1653279185000-04">
+        <addUniqueConstraint columnNames="f_parent_id, f_child_id" constraintName="UK_reading_questions" tableName="tbl_reading_question"/>
+    </changeSet>
+
 </databaseChangeLog>

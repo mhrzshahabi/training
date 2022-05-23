@@ -44,4 +44,6 @@ public interface IQuestionBankService {
     PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long id) throws NoSuchFieldException, IllegalAccessException;
 
     PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long id) throws NoSuchFieldException, IllegalAccessException;
+
+    List<QuestionBank> getListOfReadingQuestions(List<Long> readingQuestions);
 }

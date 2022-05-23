@@ -1347,4 +1347,12 @@
         <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_agreement_class_cost" constraintName="FK_class_in_agreement_class_cost" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
         <addForeignKeyConstraint baseColumnNames="f_agreement_id" baseTableName="tbl_agreement_class_cost" constraintName="FK_agreement_in_agreement_class_cost" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_agreement" validate="true"/>
     </changeSet>
+
+    <changeSet author="namdari (generated)" id="1653279185000-02">
+        <addForeignKeyConstraint baseColumnNames="f_parent_id" baseTableName="tbl_reading_question" constraintName="FK_parent_question_reading" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_question_bank" validate="true"/>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1653279185000-03">
+        <addForeignKeyConstraint baseColumnNames="f_child_id" baseTableName="tbl_reading_question" constraintName="FK_child_question_reading" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_question_bank" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

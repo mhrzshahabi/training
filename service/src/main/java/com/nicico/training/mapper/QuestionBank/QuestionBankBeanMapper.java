@@ -332,6 +332,7 @@ public abstract class QuestionBankBeanMapper {
 //            create.setCategoryId(elsQuestionDto.getCategoryId());
 //            create.setSubCategoryId(elsQuestionDto.getSubCategory());
             create.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
+            create.setReadingQuestions(questionBankService.getListOfReadingQuestions(elsQuestionDto.getReadingQuestionsIds()).stream().map(QuestionBank::getId).toList());
             create.setTeacherId(teacherId);
             create.setLines(1);
             create.setDisplayTypeId(521L);
@@ -432,6 +433,7 @@ public abstract class QuestionBankBeanMapper {
         update.setSubCategoryId(tClass.getCourse().getSubCategoryId());
         update.setQuestionDesigner(teacherService.getTeacherFullName(teacherId));
         update.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
+        update.setReadingQuestions(elsQuestionDto.getReadingQuestionsIds());
         update.setLines(1);
         update.setTclassId(tClass.getId());
         update.setCourseId(tClass.getCourseId());

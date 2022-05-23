@@ -1044,6 +1044,7 @@
                 ],
                 sortField: ["id"],
                 changed: function (form, item, value) {
+                    //zaza
                     if (value == 520) {
                         QuestionBankDF_questionBank.getItem("displayTypeId").enable();
 
@@ -1147,6 +1148,37 @@
                 pickListProperties:{
                     showFilterEditor: false
                 }
+            },
+            {
+                name: "readingQuestions",
+                title: "تعیین سوال reading",
+                 type: "SelectItem",
+                multiple: true,
+                hidden: true,
+
+                filterOnKeypress: true,
+                filterFields: ["question"],
+                textAlign: "center",
+                optionDataSource: QuestionBankDS_questionBank,
+                valueField: "id",
+                displayField: "question",
+                sortField: ["id"],
+                autoFetchData: false,
+                width: "*",
+                endRow: false,
+                startRow: true,
+                pickListFields: [
+                    {
+                        name: "question",
+                        title: "question",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                pickListProperties: {
+                    showFilterEditor: true
+                },
             },
             {
                 name: "proposedPointValue",
@@ -1460,7 +1492,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 }
 
     function showEditForm_questionBank() {
-
+        wait.show();
 
         let record = QuestionBankLG_questionBank.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -1716,6 +1748,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         delete data["eQuestionLevel"];
         data.questionLevelId = QuestionBankDF_questionBank.getField("eQuestionLevel.id").getValue();
         data.questionTargets = QuestionBankDF_questionBank.getField("questionTargets").getValue();
+        data.readingQuestions = QuestionBankDF_questionBank.getField("readingQuestions").getValue();
 
         wait.show();
         isc.RPCManager.sendRequest(

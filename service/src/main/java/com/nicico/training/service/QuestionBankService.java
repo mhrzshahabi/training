@@ -106,6 +106,8 @@ public class QuestionBankService implements IQuestionBankService {
         } else {
             model.setQuestionDesigner(SecurityUtil.getUsername());
         }
+        model.setReadingQuestions(getListOfReadingQuestions(request.getReadingQuestions()));
+
         return save(model);
     }
 
@@ -130,9 +132,24 @@ public class QuestionBankService implements IQuestionBankService {
 
         updating.setId(id);
         updating.setQuestionTargets(request.getQuestionTargets());
+        updating.setReadingQuestions(getListOfReadingQuestions(request.getReadingQuestions()));
         QuestionBank save = questionBankDAO.save(updating);
 
         return modelMapper.map(save, QuestionBankDTO.Info.class);
+    }
+
+    @Override
+    public List<QuestionBank> getListOfReadingQuestions(List<Long> readingQuestions) {
+        if (readingQuestions!=null)
+        {
+            List<QuestionBank> questionBanks=new ArrayList<>();
+            for (Long questionId : readingQuestions){
+                Optional<QuestionBank> questionBank=   questionBankDAO.findById(questionId);
+                questionBank.ifPresent(questionBanks::add);
+            }
+            return questionBanks;
+        }else
+            return null;
     }
 
     @Transactional
@@ -198,20 +215,9 @@ public class QuestionBankService implements IQuestionBankService {
     }
     @Override
     public List<QuestionBank> getQuestionListByCategoryAndSubCategory(Teacher teacher) {
-
         List<Long> categories=categoryService.findCategoryByTeacher(teacher.getId());
         List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacher.getId());
-
-
-        List<QuestionBank> questionBankList=  questionBankDAO.findAllWithCategoryAndSubList(categories,subCategories);
-
-
-
-
-
-
-
-        return questionBankList;
+        return questionBankDAO.findAllWithCategoryAndSubList(categories,subCategories);
     }
 
     @Override
