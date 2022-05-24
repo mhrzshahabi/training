@@ -1630,6 +1630,38 @@ public class ElsRestController {
         }
     }
     //get all classes foe a student and teacher
+
+    @GetMapping("/user-classes-filter/v2/{page}/{size}")
+    public ElsClassListV2Dto getUserClassesV2WithFilter(HttpServletRequest header
+            , @RequestParam String type
+            , @RequestParam String nationalCode
+             ,@RequestParam(required = false) String search
+            , @PathVariable Integer page, @PathVariable Integer size) {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+
+                switch (type) {
+                    case "student" -> {
+                        return classStudentService.getStudentClassesV2WithFilter(nationalCode,search, page, size);
+                    }
+                    case "teacher" -> {
+                        return classStudentService.getTeacherClassesV2WithFilter(nationalCode,search , page, size);
+                    }
+                    default -> {
+                        log.error("default error" + type);
+                        throw new TrainingException(TrainingException.ErrorType.Unknown);
+                    }
+                }
+            } catch (Exception s) {
+                log.error("Exception error:" + s);
+                throw new TrainingException(TrainingException.ErrorType.Unknown);
+            }
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+    }
+
     @GetMapping("/user-classes/{page}/{size}")
     public ElsClassListDto getUserClasses(HttpServletRequest header
             , @RequestParam String type

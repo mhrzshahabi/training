@@ -4,7 +4,6 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.*;
@@ -36,7 +35,6 @@ import java.util.function.Function;
 
 import static com.nicico.training.utility.persianDate.MyUtils.*;
 import static com.nicico.training.utility.persianDate.PersianDate.getEpochDate;
-import static com.nicico.training.utility.persianDate.PersianDate.ofEpochDay;
 
 @Service
 @RequiredArgsConstructor
@@ -533,6 +531,8 @@ public class ClassStudentService implements IClassStudentService {
     }
 
 
+
+
     public Long getStudentId(Long classId, String nationalCode) {
         List<Long> studentIds = classStudentDAO.getClassStudentIdByClassCodeAndNationalCode(classId, nationalCode);
         if (!studentIds.isEmpty())
@@ -641,10 +641,108 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
+    public ElsClassListV2Dto getTeacherClassesV2WithFilter(String nationalCode, String search, Integer page, Integer size) {
+        ElsClassListV2Dto dto = new ElsClassListV2Dto();
+        List<Object> list=new ArrayList<>();
+        long count=0;
+        if(search==null || search=="") {
+            list = classStudentDAO.findAllClassByTeacher(nationalCode, page + 1, size);
+            count = classStudentDAO.findAllCountClassByTeacher(nationalCode).size();
+        }else{
+            list = classStudentDAO.findAllClassByTeacherFilter(nationalCode, search, page + 1, size);
+            count = classStudentDAO.findAllCountClassByTeacherFilter(nationalCode, search).size();
+
+        }
+        long totalPage = 0;
+        if (count != 0 && size != 0) {
+            totalPage = count / size;
+        }
+
+        List<ElsClassV2Dto> result = new ArrayList<>();
+        for (Object o : list) {
+            ElsClassV2Dto elsClassDto = new ElsClassV2Dto();
+            Object[] arr = (Object[]) o;
+            Long classId = Long.parseLong(arr[1].toString());
+            Tclass tclass = tclassService.getTClass(classId);
+            elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
+            elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
+            elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
+            elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
+            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            result.add(elsClassDto);
+        }
+
+
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setCurrent(page);
+        paginationDto.setSize(size);
+        if (totalPage != 0) {
+            paginationDto.setTotal(totalPage + 1);
+            paginationDto.setLast((int) (totalPage));
+        } else {
+            paginationDto.setTotal(0);
+            paginationDto.setLast(0);
+        }
+        paginationDto.setTotalItems(count);
+        dto.setPagination(paginationDto);
+        dto.setData(result);
+
+        return dto;
+    }
+
+    @Override
     public ElsClassListV2Dto getStudentClassesV2(String nationalCode, Integer page, Integer size) {
         ElsClassListV2Dto dto = new ElsClassListV2Dto();
         List<Object> list = classStudentDAO.findAllClassByStudent(nationalCode, page + 1, size);
         long count = classStudentDAO.findAllCountClassByStudent(nationalCode).size();
+        long totalPage = 0;
+        if (count != 0 && size != 0) {
+            totalPage = count / size;
+        }
+        List<ElsClassV2Dto> result = new ArrayList<>();
+        for (Object o : list) {
+            ElsClassV2Dto elsClassDto = new ElsClassV2Dto();
+            Object[] arr = (Object[]) o;
+            Long classId = Long.parseLong(arr[1].toString());
+            Tclass tclass = tclassService.getTClass(classId);
+            elsClassDto.setCategoryId(tclass.getCourse().getCategoryId());
+            elsClassDto.setSubCategoryId(tclass.getCourse().getSubCategoryId());
+            elsClassDto.setCategoryName(tclass.getCourse().getCategory().getTitleFa());
+            elsClassDto.setSubCategoryName(tclass.getCourse().getSubCategory().getTitleFa());
+            elsClassDto.setCode(arr[3] == null ? null : arr[3].toString());
+            elsClassDto.setTitle(arr[4] == null ? null : arr[4].toString());
+            result.add(elsClassDto);
+        }
+        PaginationDto paginationDto = new PaginationDto();
+        paginationDto.setCurrent(page);
+        paginationDto.setSize(size);
+        if (totalPage != 0) {
+            paginationDto.setTotal(totalPage + 1);
+            paginationDto.setLast((int) (totalPage));
+        } else {
+            paginationDto.setTotal(0);
+            paginationDto.setLast(0);
+        }
+        paginationDto.setTotalItems(count);
+        dto.setPagination(paginationDto);
+        dto.setData(result);
+
+        return dto;
+    }
+
+    @Override
+    public ElsClassListV2Dto getStudentClassesV2WithFilter(String nationalCode,String search, Integer page, Integer size) {
+        ElsClassListV2Dto dto = new ElsClassListV2Dto();
+        List<Object> list=new ArrayList<>();
+        long count=0;
+        if(search==null || search==""){
+             list = classStudentDAO.findAllClassByStudent(nationalCode, page + 1, size);
+             count = classStudentDAO.findAllCountClassByStudent(nationalCode).size();
+        }else {
+            list = classStudentDAO.findAllClassByStudentFilter(nationalCode, search, page + 1, size);
+            count = classStudentDAO.findAllCountClassByStudentFilter(nationalCode, search).size();
+        }
         long totalPage = 0;
         if (count != 0 && size != 0) {
             totalPage = count / size;
