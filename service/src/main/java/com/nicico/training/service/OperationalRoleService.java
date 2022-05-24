@@ -3,15 +3,18 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AccountInfoDTO;
 import com.nicico.training.dto.OperationalRoleDTO;
-import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
-import com.nicico.training.mapper.operationalRole.OperationalRoleBeanMapper;
 import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
-import com.nicico.training.model.*;
-import com.nicico.training.repository.*;
+import com.nicico.training.model.Complex;
+import com.nicico.training.model.OperationalRole;
+import com.nicico.training.model.OperationalUnit;
+import com.nicico.training.model.ViewTrainingPost;
+import com.nicico.training.repository.ComplexDAO;
+import com.nicico.training.repository.OperationalRoleDAO;
+import com.nicico.training.repository.OperationalUnitDAO;
+import com.nicico.training.repository.ViewTrainingPostDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -134,4 +137,53 @@ public class OperationalRoleService implements IOperationalRoleService {
         rs.setList(viewTrainingPostMapper.changeToViewTrainingPostDtoInfo(viewTrainingPosts, dtoList));
         return rs;
     }
+
+    @Override
+    public OperationalRole findById(Long id) {
+        Optional<OperationalRole> operationalRole = operationalRoleDAO.findById(id);
+        if (operationalRole.isEmpty()) {
+            throw new TrainingException(TrainingException.ErrorType.NotFound, "نقش عملیاتی یافت نشد");
+        }
+        return operationalRole.get();
+    }
+
+    @Transactional
+    @Override
+    public OperationalRole save(OperationalRole operationalRole) {
+        return operationalRoleDAO.save(operationalRole);
+    }
+
+    @Transactional
+    @Override
+    public void deleteIndividualPost(Long roleId, List<Long> postIds) {
+        OperationalRole operationalRole = findById(roleId);
+        Set<Long> savedPostIds = operationalRole.getPostIds();
+
+        postIds.forEach(id -> {
+            if (savedPostIds.stream().toList().contains(id)) {
+                savedPostIds.remove(id);
+            }
+        });
+
+        operationalRole.setPostIds(savedPostIds);
+        save(operationalRole);
+    }
+    @Transactional
+    @Override
+    public OperationalRole addIndividualPost(Long roleId, List<Long> postIds) {
+        OperationalRole savedOperationalRole = findById(roleId);
+        Set<Long> savedPostIds = savedOperationalRole.getPostIds();
+
+        postIds.forEach(id -> {
+            if (!savedPostIds.stream().toList().contains(id)) {
+                savedPostIds.add(id);
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+            }
+        });
+
+        savedOperationalRole.setPostIds(savedPostIds);
+        return save(savedOperationalRole);
+    }
+
 }
