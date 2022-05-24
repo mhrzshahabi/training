@@ -12,9 +12,7 @@ import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.dto.TestQuestionDTO;
 import com.nicico.training.iservice.ITestQuestionService;
 import com.nicico.training.model.QuestionBank;
-import com.nicico.training.model.QuestionBankTestQuestion;
 import com.nicico.training.model.TestQuestion;
-import com.nicico.training.repository.QuestionBankTestQuestionDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TestQuestionDAO;
 import lombok.RequiredArgsConstructor;
@@ -39,12 +37,11 @@ import java.util.*;
 @Service
 public class TestQuestionService implements ITestQuestionService {
 
-    private final ModelMapper modelMapper;
-    private final TestQuestionDAO testQuestionDAO;
-    private final QuestionBankTestQuestionDAO questionBankTestQuestionDAO;
+    private final ObjectMapper mapper;
     private final TclassDAO tclassDAO;
     private final ReportUtil reportUtil;
-    private final ObjectMapper mapper;
+    private final ModelMapper modelMapper;
+    private final TestQuestionDAO testQuestionDAO;
 
     @Transactional
     @Override
@@ -204,6 +201,11 @@ public class TestQuestionService implements ITestQuestionService {
     @Override
     public TestQuestion findById(Long sourceExamId) {
         return testQuestionDAO.findById(sourceExamId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TestQuestionNotFound));
+    }
+
+    @Override
+    public TestQuestion findByTestQuestionTypeAndTclassId(String testQuestionType, Long classId) {
+        return testQuestionDAO.findTestQuestionByTclassAndTestQuestionType(classId, testQuestionType);
     }
 
     @Transactional

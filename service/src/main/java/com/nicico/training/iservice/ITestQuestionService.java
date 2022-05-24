@@ -1,6 +1,5 @@
 package com.nicico.training.iservice;
 
-
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.TestQuestion;
@@ -31,4 +30,7 @@ public interface ITestQuestionService {
     void changeOnlineFinalExamStatus(Long examId , boolean state);
 
     TestQuestion findById(Long sourceExamId);
+
+    TestQuestion findByTestQuestionTypeAndTclassId(String testQuestionType, Long classId);
+
 }

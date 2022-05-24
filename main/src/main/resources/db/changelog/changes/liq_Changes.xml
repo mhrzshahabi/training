@@ -4163,6 +4163,12 @@ WHERE
         </sql>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-068">
+        <addColumn tableName="tbl_student">
+            <column name="b_has_preparation_test" type="number(1, 0)" defaultValueBoolean="false"/>
+        </addColumn>
+    </changeSet>
+
 
   <changeSet id="2799887766557-20" author="ZPakdaman">
       <addColumn tableName="tbl_class">
@@ -4224,7 +4230,7 @@ SELECT
             students.counts
     END                                         AS tclass_students_count,
     term.c_title_fa                             AS term_titlefa,
-    institute.c_title_fa                        AS class_location,
+    institute.c_title_fa                        AS tclass_institute,
     altclasses.c_code                           AS alternative_class_code,
     CASE
         WHEN altclasses.id IS NULL THEN

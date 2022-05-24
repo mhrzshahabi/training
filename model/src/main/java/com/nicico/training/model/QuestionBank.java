@@ -136,5 +136,14 @@ public class QuestionBank extends Auditable {
 
     @Column(name = "C_QUESTION_DESIGNER")
     private String questionDesigner;
+
+
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_reading_question", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_parent_id", "f_child_id"})},
+            joinColumns = {@JoinColumn(name = "f_parent_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_child_id", referencedColumnName = "id")})
+
+    private List<QuestionBank> readingQuestions;
 }
 

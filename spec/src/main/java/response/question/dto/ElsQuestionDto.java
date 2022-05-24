@@ -45,6 +45,8 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     @ApiModelProperty
     private List<Integer> questionTargetIds;
     @ApiModelProperty
+    private List<Long> readingQuestionsIds;
+    @ApiModelProperty
     private String questionCode;
     @ApiModelProperty
     private String displayType;

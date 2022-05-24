@@ -1,7 +1,4 @@
 package com.nicico.training.iservice;
-/* com.nicico.training.iservice
-@Author:roya
-*/
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.StudentDTO;
@@ -40,12 +37,15 @@ public interface IStudentService {
 
     ElsStudentAttendanceListResponse getStudentAttendanceList(String classCode, String nationalCode);
 
-
     List<Map<String, Object>> findAllExamsByNationalCode(String nationalCode, ExamsType type);
 
     Set<String> findAllRoleByNationalCode(String nationalCode);
 
-     List<Student> getStudentByNationalCode(String nationalCode);
+    List<Student> getStudentByNationalCode(String nationalCode);
+
+    StudentDTO.PreparationInfo getStudentPreparationInfoByNationalCode(String nationalCode);
+
+    void updateHasPreparationTestByNationalCodes(List<String> nationalCodes, boolean hasPreparation);
 
     Page<Student> getAllActiveStudents(Integer page, Integer size);
 

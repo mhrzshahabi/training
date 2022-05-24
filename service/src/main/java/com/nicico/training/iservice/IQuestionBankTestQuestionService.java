@@ -28,4 +28,7 @@ public interface IQuestionBankTestQuestionService {
     List<QuestionBankTestQuestion> findByTestQuestionId(Long testId);
 
     void save(QuestionBankTestQuestion questionBankTestQuestion);
+
+    QuestionBankTestQuestion findByTestQuestionIdAndQuestionBankId(Long testQuestionId, Long questionBankId);
+
 }

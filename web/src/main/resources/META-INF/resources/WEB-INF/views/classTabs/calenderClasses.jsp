@@ -127,7 +127,7 @@
                 {name: "classStudentCost"},
                 {name: "classStudentCostCurrency"},
                 {name: "classCalenderId"},
-                {name: "location"},
+                {name: "instituteTitleFa"},
             ]
 
 
@@ -432,7 +432,7 @@
                     align: "center",
                 },
                 {
-                    name: "location",
+                    name: "instituteTitleFa",
                     title: "<spring:message code="present.location"/>",
                     canSort: false,
                     autoFitWidth: true,

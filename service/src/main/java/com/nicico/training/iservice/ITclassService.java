@@ -211,4 +211,7 @@ public interface ITclassService {
     void addEducationalCalender(Long eCalenderId, List<Long> classIds);
 
     void removeEducationalCalender(Long classId);
+
+    void updateClassStatus ();
+
 }

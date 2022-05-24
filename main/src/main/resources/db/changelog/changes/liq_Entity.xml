@@ -3596,23 +3596,16 @@
     </changeSet>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    <changeSet author="namdari (generated)" id="1653279185000-01">
+        <createTable tableName="tbl_reading_question">
+            <column name="f_parent_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_child_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 
 
 </databaseChangeLog>

@@ -15,7 +15,6 @@ import java.util.List;
 @Accessors(chain = true)
 public class TestQuestionDTO {
     private boolean isPreTestQuestion;
-    private String testQuestionType;
     private Long tclassId;
     private Boolean onlineFinalExamStatus;
     private Boolean onlineExamDeadLineStatus;
@@ -95,6 +94,7 @@ public class TestQuestionDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private Integer duration;
+        private String testQuestionType;
     }
 
     @Getter

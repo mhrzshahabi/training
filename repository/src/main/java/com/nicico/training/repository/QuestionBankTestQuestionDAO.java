@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface QuestionBankTestQuestionDAO extends JpaRepository<QuestionBankTestQuestion, Long>, JpaSpecificationExecutor<QuestionBankTestQuestion> {
@@ -28,6 +29,8 @@ public interface QuestionBankTestQuestionDAO extends JpaRepository<QuestionBankT
     List<QuestionBankTestQuestion> findAllByTestQuestionId(Long testQuestionId);
 
     List<QuestionBankTestQuestion> findAllByQuestionBankId(Long questionBankId);
+
+    Optional<QuestionBankTestQuestion> findFirstByTestQuestionIdAndQuestionBankId(Long testQuestionId, Long questionBankId);
 
 //    @Query(value = "SELECT * FROM tbl_question_bank_test_question b LEFT JOIN b.f_question_bank WHERE b.f_test_question = :testQuestionId" , nativeQuery = true)
 //    @EntityGraph(attributePaths = {"questionBank"}, type= EntityGraph.EntityGraphType.FETCH)
