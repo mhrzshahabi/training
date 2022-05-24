@@ -42,7 +42,7 @@ public interface IQuestionBankService {
 
     PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long id) throws NoSuchFieldException, IllegalAccessException;
 
-    List<QuestionBank> getListOfReadingQuestions(List<Long> readingQuestions);
+    List<QuestionBank> getListOfGroupQuestions(List<Long> groupQuestions);
 
     List<QuestionBank> findAllByCreateBy(String createBy);
 }

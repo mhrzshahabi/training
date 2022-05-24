@@ -104,7 +104,7 @@ public class QuestionBankService implements IQuestionBankService {
         } else {
             model.setQuestionDesigner(SecurityUtil.getUsername());
         }
-        model.setReadingQuestions(getListOfReadingQuestions(request.getReadingQuestions()));
+        model.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions()));
 
         return save(model);
     }
@@ -130,18 +130,18 @@ public class QuestionBankService implements IQuestionBankService {
 
         updating.setId(id);
         updating.setQuestionTargets(request.getQuestionTargets());
-        updating.setReadingQuestions(getListOfReadingQuestions(request.getReadingQuestions()));
+        updating.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions()));
         QuestionBank save = questionBankDAO.save(updating);
 
         return modelMapper.map(save, QuestionBankDTO.Info.class);
     }
 
     @Override
-    public List<QuestionBank> getListOfReadingQuestions(List<Long> readingQuestions) {
-        if (readingQuestions!=null)
+    public List<QuestionBank> getListOfGroupQuestions(List<Long> groupQuestions) {
+        if (groupQuestions!=null)
         {
             List<QuestionBank> questionBanks=new ArrayList<>();
-            for (Long questionId : readingQuestions){
+            for (Long questionId : groupQuestions){
                 Optional<QuestionBank> questionBank=   questionBankDAO.findById(questionId);
                 questionBank.ifPresent(questionBanks::add);
             }

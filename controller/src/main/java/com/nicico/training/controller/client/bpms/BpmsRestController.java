@@ -64,8 +64,10 @@ public class BpmsRestController {
     }   //confirm task
     @Loggable
     @PostMapping({"needAssessment/tasks/review"})
-    public BaseResponse reviewNeedAssessmentTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
-        return service.reviewNeedAssessmentTask(reviewTaskRequestDto);
+    public ResponseEntity<BaseResponse> reviewNeedAssessmentTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
+        BaseResponse baseResponse= service.reviewNeedAssessmentTask(reviewTaskRequestDto);
+        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
+
     }
 
     @Loggable
