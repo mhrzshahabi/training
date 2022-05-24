@@ -276,12 +276,7 @@ public class TeacherService implements ITeacherService {
 
     @Override
     public SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(operator);
-        criteriaRq.setFieldName(fieldName);
-        criteriaRq.setValue(value);
-        criteriaRq.setCriteria(criteriaRqList);
-        return criteriaRq;
+        return BaseService.makeNewCriteria(fieldName, value, operator, criteriaRqList);
     }
 
     @Override
