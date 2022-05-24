@@ -7,7 +7,10 @@ import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
-import com.nicico.training.model.*;
+import com.nicico.training.model.Complex;
+import com.nicico.training.model.OperationalRole;
+import com.nicico.training.model.OperationalUnit;
+import com.nicico.training.model.ViewTrainingPost;
 import com.nicico.training.repository.ComplexDAO;
 import com.nicico.training.repository.OperationalRoleDAO;
 import com.nicico.training.repository.OperationalUnitDAO;
@@ -154,8 +157,8 @@ public class OperationalRoleService implements IOperationalRoleService {
         OperationalRole operationalRole = findById(roleId);
         Set<Long> savedPostIds = operationalRole.getPostIds();
 
-        postIds.stream().forEach(id -> {
-            if (savedPostIds.contains(id)) {
+        postIds.forEach(id -> {
+            if (savedPostIds.stream().toList().contains(id)) {
                 savedPostIds.remove(id);
             }
         });
