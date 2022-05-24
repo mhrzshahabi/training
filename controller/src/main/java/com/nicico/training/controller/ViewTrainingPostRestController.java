@@ -21,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -211,10 +212,24 @@ public class ViewTrainingPostRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @PostMapping("/{roleId}")
+    @DeleteMapping("/delete/{roleId}")
     public ResponseEntity<Void> deleteIndividualPost(@PathVariable Long roleId, @RequestBody List<Long> postIds) {
         iOperationalRoleService.deleteIndividualPost(roleId, postIds);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PostMapping("/add/{roleId}")
+    public ResponseEntity<BaseResponse> addIndividualPost(@PathVariable Long roleId, @RequestBody List<Long> postIds) {
+        BaseResponse response = new BaseResponse();
+        try {
+            iOperationalRoleService.addIndividualPost(roleId, postIds);
+            response.setStatus(HttpStatus.OK.value());
+            response.setMessage("پست انفرادی با موفقیت اضافه شد");
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.CONFLICT.value());
+            response.setMessage("پست انفرادی تکراری می باشد");
+        }
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
 }

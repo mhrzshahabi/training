@@ -37,6 +37,6 @@ public interface IOperationalRoleService {
 
     void deleteIndividualPost(Long roleId, List<Long> postIds);
 
-
+    OperationalRole addIndividualPost(Long roleId, List<Long> postIds);
 
 }

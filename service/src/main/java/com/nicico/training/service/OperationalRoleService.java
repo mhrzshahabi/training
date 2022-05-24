@@ -147,11 +147,13 @@ public class OperationalRoleService implements IOperationalRoleService {
         return operationalRole.get();
     }
 
+    @Transactional
     @Override
     public OperationalRole save(OperationalRole operationalRole) {
         return operationalRoleDAO.save(operationalRole);
     }
 
+    @Transactional
     @Override
     public void deleteIndividualPost(Long roleId, List<Long> postIds) {
         OperationalRole operationalRole = findById(roleId);
@@ -166,4 +168,20 @@ public class OperationalRoleService implements IOperationalRoleService {
         operationalRole.setPostIds(savedPostIds);
         save(operationalRole);
     }
+    @Transactional
+    @Override
+    public OperationalRole addIndividualPost(Long roleId, List<Long> postIds) {
+        OperationalRole savedOperationalRole = findById(roleId);
+        Set<Long> savedPostIds = savedOperationalRole.getPostIds();
+
+        postIds.forEach(id -> {
+            if (!savedPostIds.stream().toList().contains(id)) {
+                savedPostIds.add(id);
+            }
+        });
+
+        savedOperationalRole.setPostIds(savedPostIds);
+        return save(savedOperationalRole);
+    }
+
 }
