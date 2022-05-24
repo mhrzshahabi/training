@@ -48,10 +48,11 @@ public interface IClassStudentService {
 
     ElsClassListDto getTeacherClasses(String nationalCode, Integer page, Integer size);
     ElsClassListV2Dto getTeacherClassesV2(String nationalCode, Integer page, Integer size);
+    ElsClassListV2Dto getTeacherClassesV2WithFilter(String nationalCode,String search, Integer page, Integer size);
 
     ElsClassListDto getStudentClasses(String nationalCode, Integer page, Integer size);
     ElsClassListV2Dto getStudentClassesV2(String nationalCode, Integer page, Integer size);
-
+    ElsClassListV2Dto getStudentClassesV2WithFilter(String nationalCode,String search, Integer page, Integer size);
     void testAddStudent(String classCode);
 
     BaseResponse updatePreTestScore(long id, List<ExamResult> examResult);
@@ -66,4 +67,6 @@ public interface IClassStudentService {
     Optional<ClassStudent> findById(Long classStudentId);
 
     List<String> getStudentBetWeenRangeTime(String startDate, String endDate,String personnelNos);
+
+
 }
