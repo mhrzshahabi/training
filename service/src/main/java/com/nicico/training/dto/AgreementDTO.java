@@ -9,6 +9,7 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -81,6 +82,21 @@ public class AgreementDTO implements Serializable {
         private String fileName;
         private String group_id;
         private String key;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Agreement - PrintInfo")
+    public static class PrintInfo {
+        private Long id;
+        private Map<String, String> firstParty;
+        private Map<String, String> secondParty;
+        private Map<String, String> secondPartyTeacher;
+        private Map<String, String> secondPartyInstitute;
+        private Long finalCost;
+        private String currency;
+        private String subject;
     }
 
     @Getter

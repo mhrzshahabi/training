@@ -6,6 +6,8 @@ import com.nicico.training.model.Agreement;
 
 public interface IAgreementService {
 
+    Agreement get(Long id);
+
     AgreementDTO.Info create(AgreementDTO.Create request);
 
     Agreement update(AgreementDTO.Update update, Long id);
