@@ -300,7 +300,6 @@
                                             var map_data = {"objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId,
                                                 "returnReason": reasonForm.getField("returnReason").getValue() ,
                                                 "assignTo": record.assignFrom ,
-                                                "isReturnTask": true ,
                                                 "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType};
                                             reviewTaskRequest  = {
                                                 // reason:reasonForm.getField("returnReason").getValue(),
