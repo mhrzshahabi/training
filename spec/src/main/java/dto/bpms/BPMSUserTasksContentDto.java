@@ -21,4 +21,5 @@ public class BPMSUserTasksContentDto {
     private String processDefinitionKey;
     private String objectId;
     private String objectType;
+    private Boolean approved;
 }
