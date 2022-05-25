@@ -110,6 +110,15 @@
             Agreement_Remove();
         }
     });
+    ToolStripButton_Print_Word_Agreement = isc.IButton.create({
+        layoutAlign: "center",
+        title: "چاپ فرمت تفاهم نامه برای امضا",
+        width: "190",
+        margin: 3,
+        click: function () {
+            Agreement_Print_Word();
+        }
+    });
     ToolStripButton_Refresh_Agreement = isc.ToolStripButtonRefresh.create({
         click: function () {
             Agreement_Refresh();
@@ -130,6 +139,7 @@
                 <sec:authorize access="hasAuthority('Agreement_D')">
                 ToolStripButton_Remove_Agreement,
                 </sec:authorize>
+                ToolStripButton_Print_Word_Agreement,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -739,6 +749,24 @@
                     }
                 }
             });
+        }
+    }
+    function Agreement_Print_Word() {
+
+        let record = ListGrid_Agreement.getSelectedRecord();
+        if (record == null) {
+            isc.Dialog.create({
+                message: "تفاهم نامه ای برای چاپ انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            let finalCostChars = String(record.finalCost).toPersianLetter();
+            window.open("/training/agreement/print/" + record.id + "?finalCostChars=" + finalCostChars);
         }
     }
     function Agreement_Refresh() {

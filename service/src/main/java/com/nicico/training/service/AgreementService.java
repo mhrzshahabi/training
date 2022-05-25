@@ -29,6 +29,11 @@ public class AgreementService implements IAgreementService {
     private final EnumsConverter.EServiceTypeConverter eServiceTypeConverter = new EnumsConverter.EServiceTypeConverter();
 
 
+    @Override
+    public Agreement get(Long id) {
+        return agreementDAO.findById(id).orElse(null);
+    }
+
     @Transactional
     @Override
     public AgreementDTO.Info create(AgreementDTO.Create request) {
