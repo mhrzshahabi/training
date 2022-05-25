@@ -25,6 +25,7 @@
             {name: "deploymentId"},
             {name: "objectId"},
             {name: "objectType"},
+            {name: "approved"},
             {name: "tenantId", title: "زیرسیستم"},
             {name: "createBy", title: "ایجاد کننده"},
             {name: "assignFrom", title: "کد ملی ایجاد کننده ایجاد کننده"},
@@ -142,6 +143,7 @@
             {name: "objectId", hidden: true},
             {name: "objectType", hidden: true},
             {name: "tenantId", hidden: true},
+            {name: "approved", hidden: true},
             {name: "createBy"},
             {name: "assignFrom",hidden: true},
             {name: "title"},
@@ -158,7 +160,14 @@
         dataPageSize: 50,
         showFilterEditor: true,
         filterOnKeypress: true,
+        selectionUpdated: function (record) {
+            if (record.approved ===false)
+                ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
+            else
+                ToolStripButton_Show_Processes_UserPortfolio.setDisabled(false);
+        },
         rowDoubleClick: function (record) {
+            if (record.approved !==false)
             showProcessAndCompletion(record);
         },
         recordClick: function(viewer, record) {
