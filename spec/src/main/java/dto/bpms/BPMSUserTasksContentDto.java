@@ -10,6 +10,7 @@ public class BPMSUserTasksContentDto {
     private String deploymentId;
     private String tenantId;
     private String createBy;
+    private String assignFrom;
     private String title;
     private String processInstanceId;
     private String processDefinitionId;

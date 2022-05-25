@@ -14,6 +14,7 @@ import java.util.List;
 public interface BPMSBeanMapper {
 
     @Mapping(source = "processVariables", target = "createBy", qualifiedByName = "processVariablesToCreateBy")
+    @Mapping(source = "processVariables", target = "assignFrom", qualifiedByName = "processVariablesToAssignFrom")
     @Mapping(source = "processVariables", target = "title", qualifiedByName = "processVariablesToTitle")
     @Mapping(source = "processVariables", target = "objectId", qualifiedByName = "processVariablesToObjectId")
     @Mapping(source = "processVariables", target = "objectType", qualifiedByName = "processVariablesToObjectType")
@@ -33,6 +34,13 @@ public interface BPMSBeanMapper {
     default String processVariablesToObjectType(LinkedHashMap<String, Object> variables) {
         if(variables!=null && variables.get("objectType")!=null)
             return String.valueOf(variables.get("objectType"));
+        else
+            return null;
+    }
+    @Named("processVariablesToAssignFrom")
+    default String processVariablesToAssignFrom(LinkedHashMap<String, Object> variables) {
+        if(variables!=null && variables.get("assignFrom")!=null)
+            return String.valueOf(variables.get("assignFrom"));
         else
             return null;
     }

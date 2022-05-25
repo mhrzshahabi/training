@@ -27,6 +27,7 @@
             {name: "objectType"},
             {name: "tenantId", title: "زیرسیستم"},
             {name: "createBy", title: "ایجاد کننده"},
+            {name: "assignFrom", title: "کد ملی ایجاد کننده ایجاد کننده"},
             {name: "title", title: "عنوان"},
             {name: "processInstanceId", title: "شناسه فرایند"},
             {name: "processDefinitionId"},
@@ -142,6 +143,7 @@
             {name: "objectType", hidden: true},
             {name: "tenantId", hidden: true},
             {name: "createBy"},
+            {name: "assignFrom",hidden: true},
             {name: "title"},
             {name: "processInstanceId", hidden: true},
             {name: "processDefinitionId", hidden: true},
@@ -295,7 +297,10 @@
                                     switch (ListGrid_Processes_UserPortfolio.getSelectedRecord().name) {
                                         case "بررسی نیازسنجی":
                                             url="/needAssessment/processes/cancel-process/";
-                                            var map_data = {"objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId, "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType};
+                                            var map_data = {"objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId,
+                                                "returnReason": reasonForm.getField("returnReason").getValue() ,
+                                                "assignTo": record.assignFrom ,
+                                                "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType};
                                             reviewTaskRequest  = {
                                                 // reason:reasonForm.getField("returnReason").getValue(),
                                                 variables:map_data,

@@ -81,6 +81,7 @@ public class BpmsService implements IBpmsService {
 
         map.put("assignTo", mainConfirmBoss);
         map.put("userId", SecurityUtil.getUserId());
+        map.put("assignFrom", SecurityUtil.getNationalCode());
         map.put("tenantId", tenantId);
         map.put("title", params.getData().get("title").toString());
         if (process.equals("needAssessment")) {
