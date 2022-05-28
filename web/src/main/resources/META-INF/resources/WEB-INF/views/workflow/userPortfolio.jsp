@@ -38,7 +38,13 @@
             {name: "processStartTime", title: "تاریخ شروع فرایند"},
             {name: "taskDefinitionKey"},
             {name: "processDefinitionKey"},
-            {name: "returnReason",title:"توضیحات"},
+            {name: "returnReason",title: "توضیحات",
+                showHover:true,
+                hoverWidth: 250,
+                hoverHTML(record) {
+                    return "دلیل عودت: " + record.returnReason + "<br>";
+                },
+            },
             // {name: "owner", title: "درخواست دهنده"},
             // {name: "description"},
             // {name: "processDocumentation"},
@@ -158,6 +164,7 @@
             {name: "processDefinitionKey", hidden: true},
             {name: "returnReason"},
         ],
+        showHoverComponents: true,
         sortField: ["date"],
         dataPageSize: 50,
         showFilterEditor: true,
