@@ -23,4 +23,6 @@ public class BPMSUserTasksContentDto {
     private String objectId;
     private String objectType;
     private Boolean approved;
+    private String returnReason;
+
 }

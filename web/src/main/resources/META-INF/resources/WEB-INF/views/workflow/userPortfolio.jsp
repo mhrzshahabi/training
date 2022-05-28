@@ -37,7 +37,8 @@
             {name: "date", title: "تاریخ"},
             {name: "processStartTime", title: "تاریخ شروع فرایند"},
             {name: "taskDefinitionKey"},
-            {name: "processDefinitionKey"}
+            {name: "processDefinitionKey"},
+            {name: "returnReason",title:"توضیحات"},
             // {name: "owner", title: "درخواست دهنده"},
             // {name: "description"},
             // {name: "processDocumentation"},
@@ -154,7 +155,8 @@
             {name: "date"},
             {name: "processStartTime"},
             {name: "taskDefinitionKey", hidden: true},
-            {name: "processDefinitionKey", hidden: true}
+            {name: "processDefinitionKey", hidden: true},
+            {name: "returnReason"},
         ],
         sortField: ["date"],
         dataPageSize: 50,
