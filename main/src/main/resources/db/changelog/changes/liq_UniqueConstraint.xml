@@ -208,7 +208,7 @@
     </changeSet>
 
     <changeSet author="namdari (generated)" id="1653279185000-04">
-        <addUniqueConstraint columnNames="f_parent_id, f_child_id" constraintName="UK_reading_questions" tableName="tbl_reading_question"/>
+        <addUniqueConstraint columnNames="f_parent_id, f_child_id" constraintName="UK_group_questions" tableName="tbl_group_question"/>
     </changeSet>
 
 </databaseChangeLog>

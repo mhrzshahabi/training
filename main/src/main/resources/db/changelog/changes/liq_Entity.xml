@@ -3597,7 +3597,7 @@
 
 
     <changeSet author="namdari (generated)" id="1653279185000-01">
-        <createTable tableName="tbl_reading_question">
+        <createTable tableName="tbl_group_question">
             <column name="f_parent_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>

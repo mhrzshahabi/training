@@ -140,7 +140,7 @@ public class QuestionBank extends Auditable {
 
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_reading_question", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_parent_id", "f_child_id"})},
+    @JoinTable(name = "tbl_group_question", uniqueConstraints = {@UniqueConstraint(columnNames = {"f_parent_id", "f_child_id"})},
             joinColumns = {@JoinColumn(name = "f_parent_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_child_id", referencedColumnName = "id")})
 
