@@ -139,6 +139,16 @@ public class OperationalRoleService implements IOperationalRoleService {
     }
 
     @Override
+    public SearchDTO.SearchRs<ViewTrainingPostDTO.Info> getNonRoleUsedPostList(Long roleId) {
+        List<ViewTrainingPost> viewTrainingPosts = viewTrainingPostDAO.getNonRoleUsedPostList(roleId);
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Info> rs = new SearchDTO.SearchRs<>();
+        List<ViewTrainingPostDTO.Info> dtoList = new ArrayList<>();
+        rs.setTotalCount((long) viewTrainingPosts.size());
+        rs.setList(viewTrainingPostMapper.changeToViewTrainingPostDtoInfo(viewTrainingPosts, dtoList));
+        return rs;
+    }
+
+    @Override
     public OperationalRole findById(Long id) {
         Optional<OperationalRole> operationalRole = operationalRoleDAO.findById(id);
         if (operationalRole.isEmpty()) {

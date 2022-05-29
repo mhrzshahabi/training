@@ -31,6 +31,8 @@ public interface IOperationalRoleService {
 
     SearchDTO.SearchRs<ViewTrainingPostDTO.Info> getRoleUsedPostList(Long roleId);
 
+    SearchDTO.SearchRs<ViewTrainingPostDTO.Info> getNonRoleUsedPostList(Long roleId);
+
     OperationalRole findById(Long id);
 
     OperationalRole save(OperationalRole operationalRole);

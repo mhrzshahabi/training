@@ -1329,6 +1329,8 @@
     const minIoUrl = rootUrl + "/minIo";
     const bpmsUrl = rootUrl + "/bpms" ;
     const systemStatusUrl = rootUrl + "/system-status";
+    const addIndividualPost = rootUrl + "/view-training-post/add";
+    const deleteIndividualPost = rootUrl + "/view-training-post/delete";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";

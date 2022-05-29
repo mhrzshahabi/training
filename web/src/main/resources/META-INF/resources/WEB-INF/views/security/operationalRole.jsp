@@ -150,6 +150,36 @@
         // fetchDataURL: viewTrainingPostUrl + "/iscList"
     });
 
+    let PostDS_just_Show_Non_Used_OperationalRole = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
+        ],
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            return this.Super("transformRequest", arguments);
+        },
+        // fetchDataURL: viewTrainingPostUrl + "/iscList"
+    });
+
     var RestDataSource_Categories_OperationalRole = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -292,6 +322,19 @@
         // selectionType: "single",
         dataSource: PostDS_just_Show_OperationalRole,
         // autoFetchData: true,
+        // rowDoubleClick: "Select_Post_NABOP()",
+        sortField: 1,
+        sortDirection: "descending"
+    });
+
+    let ListGrid_Non_Used_Post_OperationalRole = isc.TrLG.create({
+        minWidth: "600",
+        minHeight: "600",
+        width: "100%",
+        height: "100%",
+        selectionType: "multiple",
+        dataSource: PostDS_just_Show_Non_Used_OperationalRole,
+        autoFetchData: true,
         // rowDoubleClick: "Select_Post_NABOP()",
         sortField: 1,
         sortDirection: "descending"
@@ -581,6 +624,56 @@
         }
     });
 
+    let Window_Select_Individual_Post = isc.Window.create({
+        width: "800",
+        minWidth: "800",
+        minHeight: "640",
+        autoSize: true,
+        autoCenter: true,
+        // align: "center",
+        border: "1px solid gray",
+        title: "افزودن پست انفرادی",
+        items: [isc.TrVLayout.create({
+                    members: [
+                        ListGrid_Non_Used_Post_OperationalRole, isc.IButtonSave.create({
+                            title: "<spring:message code="verify"/>",
+                            click: function () {
+                                addPostToOperationalRole();
+                                Window_Select_Individual_Post.close();
+                            }
+                        })
+                    ]
+        })]
+    });
+
+    let IButton_Add_IndividualPost = isc.IButtonSave.create({
+        title: "<spring:message code="add"/>",
+        click: function () {
+            let recordId = ListGrid_JspOperationalRole.getSelectedRecord().id;
+            PostDS_just_Show_Non_Used_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleNonUsedPostList/" + recordId;
+            ListGrid_Non_Used_Post_OperationalRole.invalidateCache();
+            ListGrid_Non_Used_Post_OperationalRole.fetchData();
+            Window_Select_Individual_Post.show();
+        }
+    })
+
+    let IButton_Remove_IndividualPost = isc.IButtonCancel.create({
+        title: "<spring:message code="global.form.remove"/>",
+        click: function () {
+            deletePostFromOperationalRole();
+        }
+    })
+
+    let HLayout_AddOrRemove_IndividualPost = isc.TrHLayoutButtons.create({
+    align: "center",
+    layoutMargin: 8,
+    showEdges: false,
+    edgeImage: "",
+    padding: 8,
+    border: "1px solid gray",
+    members: [IButton_Add_IndividualPost, IButton_Remove_IndividualPost]
+    });
+
     var Window_show_Operational_Role_Post = isc.Window.create({
         title: "لیست پست های انفرادی",
         align: "center",
@@ -593,11 +686,10 @@
         },
         items: [isc.TrVLayout.create({
             members: [
-                ListGrid_Post_OperationalRole
+                ListGrid_Post_OperationalRole , HLayout_AddOrRemove_IndividualPost
             ]
         })]
     });
-
 
     var IButton_Cancel_JspOperationalRole = isc.IButtonCancel.create({
         click: function () {
@@ -857,6 +949,56 @@
         mainCriteria.criteria = [];
         mainCriteria.criteria.add(departmentCriteria);
         return mainCriteria;
+    }
+
+    function addPostToOperationalRole() {
+        let selectedOperationalRoleId = ListGrid_JspOperationalRole.getSelectedRecord().id
+        let selectedRecords = ListGrid_Non_Used_Post_OperationalRole.getSelectedRecords()
+        let postIds = []
+        if (selectedRecords.length === 0) {
+            createDialog("info", "<spring:message code="msg.no.records.selected"/>");
+            return;
+        }
+        for (let i = 0; i < selectedRecords.length; i++) {
+            postIds.push(selectedRecords[i].id)
+        }
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(addIndividualPost + "/" + selectedOperationalRoleId, "POST", JSON.stringify(postIds), function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                window.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                ListGrid_Post_OperationalRole.invalidateCache();
+            } else {
+                window.close();
+                createDialog("info", "<spring:message code="delete.was.not.successful"/>");
+            }
+        }));
+    }
+
+    function deletePostFromOperationalRole() {
+        let selectedOperationalRoleId = ListGrid_JspOperationalRole.getSelectedRecord().id
+        let selectedRecords = ListGrid_Post_OperationalRole.getSelectedRecords()
+        let postIds = []
+        if (selectedRecords.length === 0) {
+            createDialog("info", "<spring:message code="msg.no.records.selected"/>");
+            return;
+        }
+        for (let i = 0; i < selectedRecords.length; i++) {
+            postIds.push(selectedRecords[i].id)
+        }
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(deleteIndividualPost + "/" + selectedOperationalRoleId, "POST", JSON.stringify(postIds), function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                window.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                ListGrid_Post_OperationalRole.invalidateCache();
+            } else {
+                window.close();
+                createDialog("info", "<spring:message code="delete.was.not.successful"/>");
+            }
+        }));
     }
 
 //</script>

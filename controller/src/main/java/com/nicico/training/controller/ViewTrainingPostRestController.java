@@ -120,6 +120,22 @@ public class ViewTrainingPostRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @GetMapping(value = "/roleNonUsedPostList/{roleId}")
+    public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> nonRoleUsedPostList(HttpServletRequest iscRq, @PathVariable Long roleId) throws IOException {
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Info> response;
+        response = iOperationalRoleService.getNonRoleUsedPostList(roleId);
+
+        final ViewTrainingPostDTO.SpecRs specResponse = new ViewTrainingPostDTO.SpecRs();
+        final ViewTrainingPostDTO.PostSpecRs specRs = new ViewTrainingPostDTO.PostSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(0)
+                .setEndRow(response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
     @GetMapping(value = "/iscListReport")
     public ResponseEntity<ISC<ViewTrainingPostDTO.Report>> iscListReport(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
@@ -212,7 +228,7 @@ public class ViewTrainingPostRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @DeleteMapping("/delete/{roleId}")
+    @PostMapping("/delete/{roleId}")
     public ResponseEntity<Void> deleteIndividualPost(@PathVariable Long roleId, @RequestBody List<Long> postIds) {
         iOperationalRoleService.deleteIndividualPost(roleId, postIds);
         return new ResponseEntity<>(HttpStatus.OK);
