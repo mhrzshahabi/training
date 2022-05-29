@@ -19,6 +19,7 @@ public interface BPMSBeanMapper {
     @Mapping(source = "processVariables", target = "title", qualifiedByName = "processVariablesToTitle")
     @Mapping(source = "processVariables", target = "objectId", qualifiedByName = "processVariablesToObjectId")
     @Mapping(source = "processVariables", target = "objectType", qualifiedByName = "processVariablesToObjectType")
+    @Mapping(source = "processVariables", target = "returnReason", qualifiedByName = "processVariablesToReturnReason")
     BPMSUserTasksContentDto toUserTasksContent (BPMSUserTasksResponseDto bpmsUserTasksResponseDto);
 
     List<BPMSUserTasksContentDto> toUserTasksContentList(List<BPMSUserTasksResponseDto> bpmsUserTasksResponseDtoList);
@@ -66,4 +67,12 @@ public interface BPMSBeanMapper {
         else
             return null;
     }
+    @Named("processVariablesToReturnReason")
+    default String processVariablesToReturnReason(LinkedHashMap<String, Object> variables) {
+        if(variables!=null && variables.get("returnReason")!=null)
+            return String.valueOf(variables.get("returnReason"));
+        else
+            return " " ;
+    }
+
 }
