@@ -22,8 +22,10 @@ public class RequestItemDTO {
     private String lastName;
     private String affairs;
     private String post;
+    private String postTitle;
     private String currentPostTitle;
-    private String currentPostCode;
+    private String educationLevel;
+    private String educationMajor;
     private String workGroupCode;
     private String state;
     private long competenceReqId;

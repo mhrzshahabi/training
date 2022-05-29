@@ -12,11 +12,9 @@ import com.nicico.training.model.SynonymPersonnel;
 import com.nicico.training.repository.SynonymPersonnelDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.Optional;
 
 @Service
@@ -24,8 +22,6 @@ import java.util.Optional;
 public class SynonymPersonnelService implements ISynonymPersonnelService {
     private final SynonymPersonnelDAO dao;
     private final ModelMapper modelMapper;
-    @Autowired
-    EntityManager entityManager;
 
 
     @Transactional(readOnly = true)
@@ -33,8 +29,14 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
         return SearchUtil.search(dao, request, SynonymPersonnel -> modelMapper.map(SynonymPersonnel, PersonnelDTO.Info.class));
     }
 
+    @Override
     public SynonymPersonnel getByNationalCode(String nationalCode) {
         return dao.findSynonymPersonnelDataByNationalCode(nationalCode);
+    }
+
+    @Override
+    public SynonymPersonnel getByPersonnelNo2(String personnelNo2) {
+        return dao.findSynonymPersonnelDataByPersonnelNo2(personnelNo2);
     }
 
     @Transactional

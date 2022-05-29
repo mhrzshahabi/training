@@ -31,13 +31,22 @@ public class RequestItemWithDiff {
     private String correctLastName;
     private boolean isLastNameCorrect;
 
+    private String currentPostTitle;
+    private String correctCurrentPostTitle;
+    private boolean isCurrentPostTitleCorrect;
+
+//    private String postTitle;
+//    private String correctPostTitle;
+//    private boolean isPostTitleCorrect;
+
     private String affairs;
     private String correctAffairs;
     private boolean isAffairsCorrect;
 
     private String post;
-    private String currentPostTitle;
-    private String currentPostCode;
+    private String postTitle;
+    private String educationLevel;
+    private String educationMajor;
     private String workGroupCode;
     private String state;
 }

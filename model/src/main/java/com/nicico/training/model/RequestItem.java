@@ -47,11 +47,27 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "post")
     private String post;
 
+    @NotAudited
+    @Column(name = "post_title")
+    private String postTitle;
+
+    @NotAudited
+    @Column(name = "current_post_title")
+    private String currentPostTitle;
+
     @Column(name = "work_group_code")
     private String workGroupCode;
 
     @Column(name = "national_code")
     private String nationalCode;
+
+    @NotAudited
+    @Column(name = "education_level")
+    private String educationLevel;
+
+    @NotAudited
+    @Column(name = "education_major")
+    private String educationMajor;
 
     @Column(name = "state")
     private RequestItemState state;

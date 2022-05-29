@@ -2,10 +2,10 @@ package com.nicico.training.mapper.requestItem;
 
 
 import com.nicico.training.dto.RequestItemDTO;
+import com.nicico.training.iservice.ISynonymPersonnelService;
 import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.SynonymPersonnel;
 import com.nicico.training.model.enums.RequestItemState;
-import com.nicico.training.service.SynonymPersonnelService;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.requestItem.RequestItemWithDiff;
@@ -18,7 +18,7 @@ import java.util.List;
 public abstract class RequestItemBeanMapper {
 
     @Autowired
-    protected SynonymPersonnelService synonymPersonnelService;
+    protected ISynonymPersonnelService synonymPersonnelService;
 
     @Mapping(source = "state", target = "state", qualifiedByName = "strToState")
     public abstract RequestItem toRequestItem (RequestItemDTO.Create request);
@@ -34,19 +34,18 @@ public abstract class RequestItemBeanMapper {
             @Mapping(source = "nationalCode", target = "nationalCode"),
             @Mapping(source = "competenceReqId", target = "competenceReqId"),
             @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr"),
-            @Mapping(source = "nationalCode", target = "currentPostTitle", qualifiedByName = "getCurrentPostTitle"),
-            @Mapping(source = "nationalCode", target = "currentPostCode", qualifiedByName = "getCurrentPostCode"),
+//            @Mapping(source = "nationalCode", target = "currentPostTitle", qualifiedByName = "getCurrentPostTitle"),
     })
     public abstract RequestItemDTO.Info toRequestItemDto(RequestItem requestItem);
 
     @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr")
     abstract RequestItemDTO.Info toRequestItemDiffDto(RequestItemWithDiff requestItemWithDiff);
 
-    @Named("getCurrentPostTitle")
-    protected String getCurrentPostTitle(String nationalCode) {
-        SynonymPersonnel synonymPersonnel = synonymPersonnelService.getByNationalCode(nationalCode);
-        return synonymPersonnel.getPostTitle();
-    }
+//    @Named("getCurrentPostTitle")
+//    protected String getCurrentPostTitle(String nationalCode) {
+//        SynonymPersonnel synonymPersonnel = synonymPersonnelService.getByNationalCode(nationalCode);
+//        return synonymPersonnel.getPostTitle();
+//    }
 
     @Named("getCurrentPostCode")
     protected String getCurrentPostCode(String nationalCode) {

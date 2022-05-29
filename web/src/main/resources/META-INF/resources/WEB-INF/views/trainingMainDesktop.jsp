@@ -1318,7 +1318,6 @@
     const agreementClassCostUrl = rootUrl + "/agreement-class-cost";
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";
-    const RequestItemWithDiff = rootUrl + "/request-item/list";
     const requestItemUrl = rootUrl + "/request-item";
     const requestItemAuditUrl = rootUrl + "/request-item-audit";
     const requestUrl = rootUrl + "/request";

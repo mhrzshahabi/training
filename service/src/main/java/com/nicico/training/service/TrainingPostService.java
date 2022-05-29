@@ -226,4 +226,10 @@ public class TrainingPostService implements ITrainingPostService {
         List<String > area = trainingPostDAO.findAllArea();
         return area;
     }
+
+    @Override
+    public Optional<TrainingPost> isTrainingPostExist(String trainingPostCode) {
+        return trainingPostDAO.findByCodeAndDeleted(trainingPostCode, null);
+
+    }
 }

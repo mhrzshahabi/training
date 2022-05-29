@@ -3,6 +3,7 @@ package com.nicico.training.repository;
 import com.nicico.training.model.TrainingPost;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Date;
 import java.util.List;
@@ -18,4 +19,7 @@ public interface TrainingPostDAO extends BaseDAO<TrainingPost, Long> {
     List<String> findAllArea();
 
     Optional<TrainingPost> findFirstByCode(String code);
+
+    Optional<TrainingPost> findByCodeAndDeleted(@Param("code") String code, Long deleted);
+
 }
