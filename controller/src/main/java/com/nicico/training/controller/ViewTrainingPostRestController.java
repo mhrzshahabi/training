@@ -6,13 +6,11 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
-import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.*;
-import com.nicico.training.model.OperationalRole;
 import com.nicico.training.service.BaseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -121,9 +119,9 @@ public class ViewTrainingPostRestController {
     }
 
     @GetMapping(value = "/roleNonUsedPostList/{roleId}")
-    public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> nonRoleUsedPostList(HttpServletRequest iscRq, @PathVariable Long roleId) throws IOException {
+    public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> nonUsedRolePostList(HttpServletRequest iscRq, @PathVariable Long roleId) throws IOException {
         SearchDTO.SearchRs<ViewTrainingPostDTO.Info> response;
-        response = iOperationalRoleService.getNonRoleUsedPostList(roleId);
+        response = iOperationalRoleService.getNonUsedRolePostList(roleId);
 
         final ViewTrainingPostDTO.SpecRs specResponse = new ViewTrainingPostDTO.SpecRs();
         final ViewTrainingPostDTO.PostSpecRs specRs = new ViewTrainingPostDTO.PostSpecRs();
