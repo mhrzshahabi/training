@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
-17<%@include file="../messenger/MLanding.jsp" %>
+<%@include file="../messenger/MLanding.jsp" %>
 <%--<%@include file="teacher.jsp" %>--%>
 <jsp:include page="teacher.jsp" />
 
