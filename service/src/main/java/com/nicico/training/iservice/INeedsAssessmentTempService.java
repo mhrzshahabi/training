@@ -37,4 +37,5 @@ public interface   INeedsAssessmentTempService {
     Long createOrUpdateListForNewSkill(List<NeedsAssessmentDTO.Create> createList, Long skillId);
 
     boolean updateNeedsAssessmentTempBpmsWorkflow(ProcessInstance processInstance, Long objectId, String objectType,String mainWorkflowStatus,String mainWorkflowStatusCode);
+    Integer updateNeedsAssessmentTempMainWorkflowProcessInstanceId(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus);
 }
