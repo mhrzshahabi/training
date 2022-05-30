@@ -4,7 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
-<%@include file="../messenger/MLanding.jsp" %>
+17<%@include file="../messenger/MLanding.jsp" %>
 <%--<%@include file="teacher.jsp" %>--%>
 <jsp:include page="teacher.jsp" />
 
@@ -1754,8 +1754,10 @@
         groupTitle: "<spring:message code="class.meeting.time"/>",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
-        numCols: 6,
+        numCols: 5,
         colWidths: ["6%", "6%", "6%", "6%", "6%", "6%"],
+        // numCols: 6,
+        // colWidths: ["10%", "12%", "7%", "6%", "6%", "6%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
