@@ -129,7 +129,7 @@ public class NeedsAssessmentRestController {
     }
 
     @Loggable
-    @PostMapping("/createOrUpdateList")
+    @PostMapping("/createOrUpdateList")//////////////////////////////  دکمه ذخیره و ارسال به گردش کار
     public ResponseEntity<Boolean> createOrUpdateList(@RequestBody Object rq) {
         List<NeedsAssessmentDTO.Create> createList = modelMapper.map(rq, new TypeToken<List<NeedsAssessmentDTO.Create>>() {
         }.getType());
@@ -139,7 +139,7 @@ public class NeedsAssessmentRestController {
     }
 
     @Loggable
-    @PostMapping("/updateWorkFlowStatesToSent")
+    @PostMapping("/updateWorkFlowStatesToSent")  /////////here call if  hasAlreadySentToWorkFlow  true
     public ResponseEntity updateWorkFlowStatesToSent(@RequestParam String objectType, @RequestParam Long objectId) {
         iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 0, "ارسال به گردش کار اصلی");
         return new ResponseEntity<>(HttpStatus.OK);
