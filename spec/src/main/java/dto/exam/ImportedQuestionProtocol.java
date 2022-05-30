@@ -21,4 +21,8 @@ public class ImportedQuestionProtocol {
     private String correctAnswerTitle;
     @ApiModelProperty
     private ImportedQuestion question;
+    @ApiModelProperty
+    private Boolean hasParent;
+    @ApiModelProperty
+    private ImportedQuestion parent;
 }

@@ -33,9 +33,8 @@ public class QuestionBankService implements IQuestionBankService {
     private final EnumsConverter.EQuestionLevelConverter eQuestionLevelConverter = new EnumsConverter.EQuestionLevelConverter();
     private final ICategoryService categoryService;
     private final ISubcategoryService subcategoryService;
-    private  final TeacherDAO teacherDAO;
+    private final TeacherDAO teacherDAO;
     private final ObjectMapper objectMapper;
-
 
 
     @Transactional(readOnly = true)
@@ -58,9 +57,14 @@ public class QuestionBankService implements IQuestionBankService {
 
         final Optional<QuestionBank> cById = questionBankDAO.findById(id);
         final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
-
+        List<Long> questionGroupIds=new ArrayList<>();
+        if (model.getGroupQuestions() != null) {
+            questionGroupIds=model.getGroupQuestions().stream().map(QuestionBank::getId).toList();
+            model.setGroupQuestions(null);
+        }
         QuestionBankDTO.FullInfo map = modelMapper.map(model, QuestionBankDTO.FullInfo.class);
         map.setQuestionLevelId(model.getEQuestionLevel().getId());
+        map.setGroupQuestions(questionGroupIds);
         return map;
     }
 
@@ -74,16 +78,15 @@ public class QuestionBankService implements IQuestionBankService {
 
     @Override
     public List<QuestionBank> searchModels(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
-     SearchDTO.SearchRs<QuestionBank>  searchRs=  BaseService.optimizedSearch(questionBankDAO,p->modelMapper.map(p,QuestionBank.class),request);
-     List<QuestionBank> list=searchRs.getList();
-     return list;
+        SearchDTO.SearchRs<QuestionBank> searchRs = BaseService.optimizedSearch(questionBankDAO, p -> modelMapper.map(p, QuestionBank.class), request);
+        List<QuestionBank> list = searchRs.getList();
+        return list;
     }
 
     @Override
     public SearchDTO.SearchRs<QuestionBankDTO.IdClass> searchId(SearchDTO.SearchRq request) throws NoSuchFieldException, IllegalAccessException {
         return BaseService.<QuestionBank, QuestionBankDTO.IdClass, QuestionBankDAO>optimizedSearch(questionBankDAO, p -> modelMapper.map(p, QuestionBankDTO.IdClass.class), request);
     }
-
 
 
     @Transactional
@@ -138,15 +141,14 @@ public class QuestionBankService implements IQuestionBankService {
 
     @Override
     public List<QuestionBank> getListOfGroupQuestions(List<Long> groupQuestions) {
-        if (groupQuestions!=null)
-        {
-            List<QuestionBank> questionBanks=new ArrayList<>();
-            for (Long questionId : groupQuestions){
-                Optional<QuestionBank> questionBank=   questionBankDAO.findById(questionId);
+        if (groupQuestions != null) {
+            List<QuestionBank> questionBanks = new ArrayList<>();
+            for (Long questionId : groupQuestions) {
+                Optional<QuestionBank> questionBank = questionBankDAO.findById(questionId);
                 questionBank.ifPresent(questionBanks::add);
             }
             return questionBanks;
-        }else
+        } else
             return null;
     }
 
@@ -170,8 +172,6 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
 
-
-
     @Transactional
     public Page<QuestionBank> getQuestionBankByTeacherId(Long teacherId, Integer page, Integer size) {
 //        return questionBankDAO.findByTeacherId(teacherId);
@@ -191,40 +191,35 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
 
-
     @Override
-    public Page<QuestionBank> getQuestionsByCategoryAndSubCategory(Teacher teacher,Integer page,Integer size) {
+    public Page<QuestionBank> getQuestionsByCategoryAndSubCategory(Teacher teacher, Integer page, Integer size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(
                 Sort.Order.asc("id")
         ));
-        List<Long> categories=categoryService.findCategoryByTeacher(teacher.getId());
-        List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacher.getId());
+        List<Long> categories = categoryService.findCategoryByTeacher(teacher.getId());
+        List<Long> subCategories = subcategoryService.findSubCategoriesByTeacher(teacher.getId());
 
 
-        Page<QuestionBank> questionBankList=  questionBankDAO.findAllWithCategoryAndSubCategory(categories,subCategories,pageable);
-
-
-
-
-
+        Page<QuestionBank> questionBankList = questionBankDAO.findAllWithCategoryAndSubCategory(categories, subCategories, pageable);
 
 
         return questionBankList;
     }
+
     @Override
     public List<QuestionBank> getQuestionListByCategoryAndSubCategory(Teacher teacher) {
-        List<Long> categories=categoryService.findCategoryByTeacher(teacher.getId());
-        List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacher.getId());
-        return questionBankDAO.findAllWithCategoryAndSubList(categories,subCategories);
+        List<Long> categories = categoryService.findCategoryByTeacher(teacher.getId());
+        List<Long> subCategories = subcategoryService.findSubCategoriesByTeacher(teacher.getId());
+        return questionBankDAO.findAllWithCategoryAndSubList(categories, subCategories);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long teacherId) throws NoSuchFieldException, IllegalAccessException {
+    public PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO, Long teacherId) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.SearchRq totalRequest = new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-        list.add(makeNewCriteria("teacherId",teacherId,EOperator.equals,null));
+        list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
 
         if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
             elsSearchDTO.getElsSearchList().stream().forEach(elsSearch -> {
@@ -239,19 +234,18 @@ public class QuestionBankService implements IQuestionBankService {
         totalRequest.setCriteria(criteriaRq);
 
 
-        request.setStartIndex(size*page)
+        request.setStartIndex(size * page)
                 .setSortBy("-id")
                 .setCount(size);
 
 
-
         totalRequest.setStartIndex(0)
                 .setCount(1000);
-        List<QuestionBank> questionBanks=searchModels(request);
+        List<QuestionBank> questionBanks = searchModels(request);
         Long totalModelsCount = (long) searchModels(totalRequest).size();
 
 
-        PageQuestionDto pageQuestionDto=new PageQuestionDto();
+        PageQuestionDto pageQuestionDto = new PageQuestionDto();
         pageQuestionDto.setPageQuestion(questionBanks);
         pageQuestionDto.setTotalSpecCount(totalModelsCount);
         return pageQuestionDto;
@@ -259,26 +253,26 @@ public class QuestionBankService implements IQuestionBankService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long teacherId) throws NoSuchFieldException, IllegalAccessException {
+    public PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO, Long teacherId) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.SearchRq TotallRequest = new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         List<SearchDTO.CriteriaRq> secondList = new ArrayList<>();
         List<SearchDTO.CriteriaRq> filterList = new ArrayList<>();
-        List<Long> categories=categoryService.findCategoryByTeacher(teacherId);
-        List<Long> subCategories=subcategoryService.findSubCategoriesByTeacher(teacherId);
+        List<Long> categories = categoryService.findCategoryByTeacher(teacherId);
+        List<Long> subCategories = subcategoryService.findSubCategoriesByTeacher(teacherId);
         list.add(makeNewCriteria("categoryId", null, EOperator.isNull, null));
         list.add(makeNewCriteria("subCategoryId", null, EOperator.isNull, null));
-        if(categories.size()>0)
-            secondList.add(makeNewCriteria("categoryId",categories,EOperator.inSet,null));
-        if(subCategories.size()>0)
-            secondList.add(makeNewCriteria("subCategoryId",subCategories,EOperator.inSet,null));
+        if (categories.size() > 0)
+            secondList.add(makeNewCriteria("categoryId", categories, EOperator.inSet, null));
+        if (subCategories.size() > 0)
+            secondList.add(makeNewCriteria("subCategoryId", subCategories, EOperator.inSet, null));
 
 
         if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
             elsSearchDTO.getElsSearchList().stream().forEach(elsSearch -> {
                 if (elsSearch.getValue() != null) {
-                   filterList.add(makeNewCriteria(elsSearch.getFieldName(), elsSearch.getValue().toString(), EOperator.iContains, null));
+                    filterList.add(makeNewCriteria(elsSearch.getFieldName(), elsSearch.getValue().toString(), EOperator.iContains, null));
                 }
             });
         }
@@ -289,15 +283,13 @@ public class QuestionBankService implements IQuestionBankService {
         TotallRequest.setCriteria(criteriaRq);
 
 
-
         SearchDTO.CriteriaRq addCriteria = makeNewCriteria(null, null, EOperator.or, secondList);
 
 
-
-        request.setStartIndex(size*page)
+        request.setStartIndex(size * page)
                 .setSortBy("-id")
                 .setCount(size);
-        if(secondList.size()>0) {
+        if (secondList.size() > 0) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
             criteria.getCriteria().add(addCriteria);
             if (request.getCriteria() != null)
@@ -306,7 +298,7 @@ public class QuestionBankService implements IQuestionBankService {
             request.setCriteria(criteria);
             TotallRequest.setCriteria(criteria);
         }
-        if(filterList.size()>0){
+        if (filterList.size() > 0) {
             SearchDTO.CriteriaRq criteria = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
             criteria.getCriteria().add(criteriaRqFilter);
             if (TotallRequest.getCriteria() != null)
@@ -320,11 +312,11 @@ public class QuestionBankService implements IQuestionBankService {
         TotallRequest.setStartIndex(0)
                 .setCount(1000);
 
-        List<QuestionBank> questionBanks=searchModels(request);
+        List<QuestionBank> questionBanks = searchModels(request);
         Long totalModelsCount = (long) searchModels(TotallRequest).size();
 
 
-        PageQuestionDto pageQuestionDto=new PageQuestionDto();
+        PageQuestionDto pageQuestionDto = new PageQuestionDto();
         pageQuestionDto.setPageQuestion(questionBanks);
         pageQuestionDto.setTotalSpecCount(totalModelsCount);
         return pageQuestionDto;

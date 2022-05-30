@@ -1163,7 +1163,7 @@
                 title: "انتخاب سوالات گروهی",
                  type: "SelectItem",
                 multiple: true,
-                hidden: true,
+                hidden: false,
 
                 filterOnKeypress: true,
                 filterFields: ["question"],

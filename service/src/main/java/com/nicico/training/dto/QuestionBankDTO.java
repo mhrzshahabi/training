@@ -67,6 +67,8 @@ public class QuestionBankDTO {
         private Boolean hasAttachment;
         private Integer questionLevelId;
         private String questionDesigner;
+        private List<Long> groupQuestions;
+
     }
 
     @Getter

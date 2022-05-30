@@ -43,7 +43,7 @@ public class WorkflowVersion2RestController {
     @GetMapping(value = "/get-user-Supervisor/{Operationalـrole}")
     public ResponseEntity<String> getUserTasksCount(@PathVariable(value = "Operationalـrole", required = false) String operationalRole) {
         if (!operationalRole.isEmpty())
-        return new ResponseEntity<>("3621296476", HttpStatus.OK);
+        return new ResponseEntity<>("", HttpStatus.OK);
         else
             return new ResponseEntity<>("نقش عملیاتی یافت نشد", HttpStatus.NOT_FOUND);
 
