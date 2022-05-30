@@ -141,7 +141,7 @@ public class NeedsAssessmentRestController {
     @Loggable
     @PostMapping("/updateWorkFlowStatesToSent")
     public ResponseEntity updateWorkFlowStatesToSent(@RequestParam String objectType, @RequestParam Long objectId) {
-        iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(objectType, objectId, 0, "ارسال به گردش کار اصلی");
+        iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflowProcessInstanceId(objectType, objectId, 0, "ارسال به گردش کار اصلی");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

@@ -387,4 +387,13 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         }
     }
 
+    @Transactional
+    @Override
+    public Integer updateNeedsAssessmentTempMainWorkflowProcessInstanceId(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus) {
+        Optional<NeedsAssessmentTemp> needsAssessmentTemp = dao.findFirstByObjectTypeAndObjectIdAndProcessInstanceIdNotNull(objectType, objectId);
+
+        if (needsAssessmentTemp.isPresent()) {
+            return dao.updateNeedsAssessmentTempWorkflowProcessInstanceId(needsAssessmentTemp.get().getProcessInstanceId(), objectType, objectId, workflowStatusCode, workflowStatus);
+        } else return null;
+    }
 }
