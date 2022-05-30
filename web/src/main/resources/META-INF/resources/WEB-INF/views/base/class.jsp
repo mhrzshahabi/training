@@ -1755,7 +1755,8 @@
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
         numCols: 6,
-        colWidths: ["6%", "6%", "6%", "6%", "6%", "6%"],
+        // colWidths: ["6%", "6%", "6%", "6%", "6%", "6%"],
+        // colWidths: ["10%", "12%", "7%", "6%", "6%", "6%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
