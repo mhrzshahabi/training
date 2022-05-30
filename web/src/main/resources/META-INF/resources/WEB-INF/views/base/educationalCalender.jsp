@@ -11,6 +11,8 @@
  var  ec = isc.ValuesManager.create({});
  let educationalCalender_method = "POST";
 
+ let selectedRecord = null;
+
 <%---------------------------------------------------Datasources----------------------------------------------------%>
     var RestDataSource_educationalCalender = isc.TrDS.create({
 
@@ -419,24 +421,24 @@ function  Refresh_Educational_Calender() {
 }
 
  function show_EducationalCalenderNewForm(){
-     // ec.clearValues();
-     // ec.clearErrors(true);
+     selectedRecord = null;
+     ec.clearValues();
+     ec.clearErrors(true);
      // company_method = "POST";
-     <%--Window_EducationalCalender.setTitle("<spring:message code="educational.calender.create"/>");--%>
+     Window_EducationalCalender.setTitle("<spring:message code="educational.calender.create"/>");
 
      Window_EducationalCalender.show();
 
 }
 function  show_EducationalCalender_EditForm(){
-    let record_calender = ListGrid_Educational_Calender.getSelectedRecord();
-    if (record_calender == null || record_calender.id == null) {
+    selectedRecord =  ListGrid_Educational_Calender.getSelectedRecord();
+    if (selectedRecord == null || selectedRecord.id == null) {
         createDialog("info", "<spring:message code='msg.no.records.selected'/>");
     } else {
-        let record = ListGrid_Educational_Calender.getSelectedRecord();
         ec.clearValues();
         ec.clearErrors(true);
         educationalCalender_method = "POST";
-        ec.editRecord(record);
+        ec.editRecord(selectedRecord);
 
         Window_EducationalCalender.setTitle("<spring:message code="calender.edit"/>");
         Window_EducationalCalender.show();
@@ -479,6 +481,8 @@ function save_EducationalCalender() {
         return;
     } else {
         let data = ec.getValues();
+        if (selectedRecord!=null)
+        data.id = selectedRecord.id;
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(educationalCalenderUrl, "POST", JSON.stringify(data), function (resp) {
             wait.close();

@@ -30,13 +30,35 @@ public class EducationalCalenderService implements IEducationalCalenderService {
         return SearchUtil.search(educationalCalenderDAO,
                 searchRq, educationalCalender ->mapper.map(educationalCalender, EducationalCalenderDTO.Info.class));
     }
-    @Transactional
+//    @Transactional
     @Override
     public EducationalCalenderDTO create(EducationalCalenderDTO request) {
-        final EducationalCalender  educationalCalender = mapper.map(request, EducationalCalender.class);
+        final EducationalCalender educationalCalender = mapper.map(request, EducationalCalender.class);
 
-      EducationalCalender ec=  educationalCalenderDAO.save(educationalCalender);
-        return mapper.map(ec,  EducationalCalenderDTO.class);
+        EducationalCalender ec;
+
+        if (educationalCalender.getId() != null) {
+            Optional<EducationalCalender> optionalEducationalCalender = educationalCalenderDAO.findById(educationalCalender.getId());
+            if (optionalEducationalCalender.isPresent()) {
+                ec = optionalEducationalCalender.get();
+
+                ec.setTitleFa(educationalCalender.getTitleFa());
+                ec.setInstituteId(educationalCalender.getInstituteId());
+                ec.setStartDate(educationalCalender.getStartDate());
+                ec.setEndDate(educationalCalender.getEndDate());
+                ec.setCalenderStatus(educationalCalender.getCalenderStatus());
+                ec.setCode(educationalCalender.getCode());
+
+                EducationalCalender savedEc = educationalCalenderDAO.save(ec);
+                return mapper.map(savedEc, EducationalCalenderDTO.class);
+            } else {
+                throw new TrainingException(TrainingException.ErrorType.NotFound);
+            }
+        } else {
+            ec = educationalCalenderDAO.save(educationalCalender);
+            return mapper.map(ec, EducationalCalenderDTO.class);
+        }
+
     }
     @Transactional
     @Override

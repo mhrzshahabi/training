@@ -16,6 +16,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class EducationalCalenderDTO implements Serializable {
     @ApiModelProperty(required = true)
+    private Long id;
+    @ApiModelProperty(required = true)
     private String code;
     @ApiModelProperty(required = true)
     private String titleFa;
