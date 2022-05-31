@@ -15,6 +15,7 @@ import com.nicico.training.model.QuestionBank;
 import com.nicico.training.model.TestQuestion;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TestQuestionDAO;
+import dto.exam.EQuestionType;
 import lombok.RequiredArgsConstructor;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.hibernate.exception.ConstraintViolationException;
@@ -165,6 +166,9 @@ public class TestQuestionService implements ITestQuestionService {
                     q.setOption4(wrap_dir("rtl", q.getOption4()));
                 }
             }
+            if (q.getQuestionType().getTitle().equals(EQuestionType.GROUPQUESTION.getValue())) {
+                q.setQuestion(" با توجه  به سوال زیر " + testQuestionBanks.size() + "سوال زیر را جواب دهید : " + "\n\n" + q.getQuestion());
+            }
         }
 
         String data = mapper.writeValueAsString(testQuestionBanks);
@@ -195,7 +199,7 @@ public class TestQuestionService implements ITestQuestionService {
 
     @Override
     public void changeOnlineFinalExamStatus(Long examId, boolean state) {
-        testQuestionDAO.changeOnlineFinalExamStatus(examId,state);
+        testQuestionDAO.changeOnlineFinalExamStatus(examId, state);
     }
 
     @Override
@@ -231,7 +235,7 @@ public class TestQuestionService implements ITestQuestionService {
                     .filter(x -> x.getQuestion().trim().equals(q.getQuestion().trim()))
                     .findFirst()
                     .orElse(null);
-            if (answer != null){
+            if (answer != null) {
                 if (answer.getAnswer() != null)
                     q.setAnswer(answer.getAnswer().replace("\n", " "));
                 else
@@ -241,15 +245,13 @@ public class TestQuestionService implements ITestQuestionService {
                 String questionWithMark = q.getQuestion() +
                         " ( بارم : " + answer.getMark() + " ) ";
                 q.setQuestion(questionWithMark);
-            }
-            else
+            } else
                 q.setAnswer("پاسخ داده نشده" + "\n");
 
-            if (answer != null && answer.getExaminerAnswer()!=null)
+            if (answer != null && answer.getExaminerAnswer() != null)
                 q.setExaminerAnswer(answer.getExaminerAnswer());
-                else
-                    q.setExaminerAnswer("پاسخ داده نشده" + "\n");
-
+            else
+                q.setExaminerAnswer("پاسخ داده نشده" + "\n");
 
 
         }
@@ -268,6 +270,6 @@ public class TestQuestionService implements ITestQuestionService {
     }
 
     public long getPreTestId(long id) {
-       return testQuestionDAO.findTestQuestionByTclassAndTestQuestionType(id,"PreTest").getId();
+        return testQuestionDAO.findTestQuestionByTclassAndTestQuestionType(id, "PreTest").getId();
     }
 }
