@@ -94,7 +94,7 @@ Menu_ListGrid_educational_Calender = isc.Menu.create({
              showHintInField: true,
              hint:"تقویم شش ماهه دوم ۱۴۰۱ سرچشمه",
              validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
-             keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+             // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
          },
          {
              name: "instituteId",
@@ -127,19 +127,67 @@ Menu_ListGrid_educational_Calender = isc.Menu.create({
          {
              name: "startDate",
              title: "<spring:message code="start.date"/>",
+             ID: "startDate_jspEducationalCalendar",
              hint:"۱۴۰۰/۰۱/۰۱",
              showHintInField: true,
              filterOperator: "equals",
+             type: 'text',
              required: true,
+             keyPressFilter: "[\u200E\u200F ]",
+             icons: [{
+                 src: "<spring:url value="calendar.png"/>",
+                 click: function (form) {
+                     closeCalendarWindow();
+                     displayDatePicker('startDate_jspEducationalCalendar', this, 'ymd', '/');
+                 }
+             }],
+             textAlign: "center",
+             changed: function (form, item, value) {
+                 let dateCheck;
+                 // var endDate = form.getValue("endDate");
+                 dateCheck = checkDate(value);
+                 if (dateCheck === false) {
+                     form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                 } else {
+                     form.clearFieldErrors("startDate", true);
+                 }
+             }
 
          },
          {
              name: "endDate",
              title: "<spring:message code="end.date"/>",
+             ID: "endDate_jspEducationalCalendar",
              filterOperator: "equals",
              showHintInField: true,
              hint:"۱۴۰۰/۰۷/۰۱",
+             type: 'text',
              required: true,
+             keyPressFilter: "[\u200E\u200F ]",
+             icons: [{
+                 src: "<spring:url value="calendar.png"/>",
+                 click: function (form) {
+                     closeCalendarWindow();
+                     displayDatePicker('endDate_jspEducationalCalendar', this, 'ymd', '/');
+                 }
+             }],
+             textAlign: "center",
+             changed: function (form, item, value) {
+                 let startDate = form.getValue("startDate");
+                 let dateCheck;
+                 dateCheck = checkDate(value);
+                 if (dateCheck === false) {
+                     form.clearFieldErrors("endDate", true);
+                     form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                 } else if (value < startDate) {
+                     form.addFieldErrors("endDate", "<spring:message code="msg.equal.less.start.date"/>", true);
+                     createDialog("info", "<spring:message code="msg.equal.less.start.date"/>", "<spring:message code="error"/>");
+                     HLayout_Buttons_EducationalCalender.setDisabled(true);
+                 } else {
+                     form.clearFieldErrors("endDate", true);
+                     HLayout_Buttons_EducationalCalender.setDisabled(false);
+                 }
+             }
 
          },
 
