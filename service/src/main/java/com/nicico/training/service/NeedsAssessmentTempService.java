@@ -352,7 +352,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
             create(create);
         }
         Boolean hasAlreadySentToWorkFlow = !alreadyExist.isEmpty() && alreadyExist.stream()
-                .anyMatch(needsAssessmentTemp -> needsAssessmentTemp.getMainWorkflowStatusCode() != null && needsAssessmentTemp.getMainWorkflowStatusCode() == 0);
+                .anyMatch(needsAssessmentTemp -> needsAssessmentTemp.getMainWorkflowStatusCode() != null && (needsAssessmentTemp.getMainWorkflowStatusCode() == 0 || needsAssessmentTemp.getMainWorkflowStatusCode() == -1 ));
         return hasAlreadySentToWorkFlow;
     }
 
