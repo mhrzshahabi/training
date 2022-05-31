@@ -341,7 +341,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "                                       And tbl_parameter_value.c_code = '32'\n" +
             "                  ) evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_student.id)\n" +
             "                  WHERE tbl_student.national_code = :nationalCode\n" +
-           "                    And  tbl_course.c_title_fa like %:search%\n" +
+           "                    And  tbl_class.c_title_class like %:search%\n" +
             "                  ORDER BY classid DESC) a\n" +
             "         WHERE rownum < ((:page * :sizee) + 1)\n" +
             "     )\n" +
@@ -465,7 +465,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "                     And tbl_parameter_value.c_code = '32'\n" +
             ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_student.id)\n" +
             "WHERE tbl_student.national_code = :nationalCode \n" +
-           " And  tbl_course.c_title_fa like %:search%\n" +
+           " And  tbl_class.c_title_class like %:search%\n" +
             "ORDER BY classid desc",nativeQuery = true)
     List<Object> findAllCountClassByStudentFilter(String nationalCode,String search);
     @Query(value = "SELECT DISTINCT\n" +
@@ -540,7 +540,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "                        AND tbl_parameter_value.c_code = '11'\n" +
             "                  ) evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
             "                  WHERE tbl_teacher.c_teacher_code = :nationalCode\n" +
-            " And  tbl_course.c_title_fa like %:search%\n" +
+            " And  tbl_class.c_title_class like %:search%\n" +
             "                  ORDER BY classid Desc) a\n" +
             "         WHERE rownum < ((:page * :sizee) + 1)\n" +
             "     )\n" +
@@ -604,7 +604,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "      AND tbl_parameter_value.c_code = '11'\n" +
             ") evaluation ON (evaluation.class = tbl_class.id And evaluation.std = tbl_teacher.id)\n" +
             "WHERE tbl_teacher.c_teacher_code = :nationalCode \n" +
-            " And  tbl_course.c_title_fa like %:search%\n" +
+            " And  tbl_class.c_title_class like %:search%\n" +
             "ORDER BY classid Desc "
             ,nativeQuery = true)
     Collection<Object> findAllCountClassByTeacherFilter(String nationalCode,String search);

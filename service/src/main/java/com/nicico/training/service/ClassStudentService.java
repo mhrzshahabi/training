@@ -645,7 +645,7 @@ public class ClassStudentService implements IClassStudentService {
         ElsClassListV2Dto dto = new ElsClassListV2Dto();
         List<Object> list=new ArrayList<>();
         long count=0;
-        if(search==null || search=="") {
+        if(search==null || search.equals("")) {
             list = classStudentDAO.findAllClassByTeacher(nationalCode, page + 1, size);
             count = classStudentDAO.findAllCountClassByTeacher(nationalCode).size();
         }else{
