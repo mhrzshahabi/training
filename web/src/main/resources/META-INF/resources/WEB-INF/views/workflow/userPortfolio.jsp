@@ -118,7 +118,6 @@
         }
     });
     let ToolStripButton_Inprogress_Workflow_UserPortfolio = isc.ToolStripButton.create({
-        // icon: "[SKIN]/actions/refresh.png",
         title: "به جریان انداختن فرآیند",
         click: function () {
             let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
