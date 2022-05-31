@@ -816,7 +816,7 @@
             ],
 
             gridComponents: ["filterEditor", "header", "body"],
-            canRemoveRecords: true,
+            canRemoveRecords: false,
 
             cellClick: function (record, rowNum, colNum) {
                 if (colNum === 4) {
