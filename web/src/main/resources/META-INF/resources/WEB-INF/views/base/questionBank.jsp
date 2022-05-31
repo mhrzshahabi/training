@@ -1751,7 +1751,11 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
         }
 
+        if (QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 520 || QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 519){
 
+            QuestionBankDF_questionBank.getField("groupQuestions").setValue();
+
+        }
 
         let questionBankSaveUrl = questionBankUrl;
 

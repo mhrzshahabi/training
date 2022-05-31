@@ -163,6 +163,7 @@ public class BpmsService implements IBpmsService {
         }
 
         map.put("assignTo", mainConfirmBoss);
+        map.put("approved", true);
 
 
         client.reviewTask(reviewTaskRequest);
