@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecificationExecutor<Tclass> {
@@ -206,6 +205,10 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
             "                    where cs.CLASS_ID = u.id\n" +
             "                     )", nativeQuery = true)
     void updateClassStatus(String toDay);
+
+    @Modifying
+    @Query(value = "update tbl_class set calendar_id = null where calendar_id = :calendarId", nativeQuery = true)
+    void updateAllSetToNullByEducationalCalenderId(@Param("calendarId") Long id);
 
 
 }

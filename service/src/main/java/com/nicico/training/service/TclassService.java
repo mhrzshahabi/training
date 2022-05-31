@@ -2293,4 +2293,10 @@ public class TclassService implements ITclassService {
            tclassDAO.updateClassStatus(DateUtil.todayDate());
     }
 
+    @Override
+    public void updateAllSetToNullByEducationalCalenderId(Long id) {
+        tclassDAO.updateAllSetToNullByEducationalCalenderId(id);
+    }
+
+
 }

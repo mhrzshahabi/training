@@ -214,4 +214,6 @@ public interface ITclassService {
 
     void updateClassStatus ();
 
+    void updateAllSetToNullByEducationalCalenderId(Long id);
+
 }
