@@ -3,9 +3,9 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.dto.EducationalCalenderDTO;
 import com.nicico.training.iservice.IEducationalCalenderService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.EducationalCalender;
 import com.nicico.training.repository.EducationalCalenderDAO;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +22,7 @@ import java.util.Optional;
 public class EducationalCalenderService implements IEducationalCalenderService {
 
     private final EducationalCalenderDAO educationalCalenderDAO;
+    private final ITclassService tClassService;
     private final ModelMapper mapper;
 
     @Transactional
@@ -65,6 +66,7 @@ public class EducationalCalenderService implements IEducationalCalenderService {
     public void delete(Long id) {
         try {
             if (educationalCalenderDAO.existsById(id)) {
+                tClassService.updateAllSetToNullByEducationalCalenderId(id);
                 educationalCalenderDAO.deleteById(id);
             }
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {

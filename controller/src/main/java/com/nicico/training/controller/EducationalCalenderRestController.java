@@ -10,6 +10,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.dto.EducationalCalenderDTO;
 import com.nicico.training.iservice.IEducationalCalenderService;
+import com.nicico.training.iservice.ITclassService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
