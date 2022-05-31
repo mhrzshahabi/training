@@ -117,6 +117,13 @@
             showProcessAndCompletion(record);
         }
     });
+    let ToolStripButton_Inprogress_Workflow_UserPortfolio = isc.ToolStripButton.create({
+        title: "به جریان انداختن فرآیند",
+        click: function () {
+            let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
+            reAssingTask(record);
+        }
+    });
     let ToolStripButton_Show_Processes_History_UserPortfolio = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/column_preferences.png",
         title: "<spring:message code="workflow.history"/>",
@@ -127,6 +134,7 @@
         width: "100%",
         members: [
             ToolStripButton_Show_Processes_UserPortfolio,
+            ToolStripButton_Inprogress_Workflow_UserPortfolio,
             // ToolStripButton_Show_Processes_History_UserPortfolio,
             isc.ToolStrip.create({
                 width: "100%",
@@ -170,10 +178,14 @@
         showFilterEditor: true,
         filterOnKeypress: true,
         selectionUpdated: function (record) {
-            if (record.approved ===false)
+            if (record.approved ===false) {
                 ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
-            else
+                ToolStripButton_Inprogress_Workflow_UserPortfolio.setDisabled(false);
+            }
+            else {
                 ToolStripButton_Show_Processes_UserPortfolio.setDisabled(false);
+                ToolStripButton_Inprogress_Workflow_UserPortfolio.setDisabled(true);
+            }
         },
         rowDoubleClick: function (record) {
             if (record.approved !==false)
@@ -655,4 +667,46 @@
             return name.split('_').last();
     }
 }
+
+    function reAssingTask(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let url = ""
+            let reviewTaskRequest = {}
+            let data = {}
+
+            url = "/needAssessment/processes/reAssign-process/";
+            var map_data = {
+                "objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId,
+                "returnReason": null,
+                "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType
+            };
+            reviewTaskRequest = {
+                variables: map_data,
+                processInstanceId: record.processInstanceId,
+                taskId: record.taskId,
+                approve: false,
+                userName: userUserName,
+            };
+            data = {
+                reviewTaskRequest: reviewTaskRequest,
+                reason: null,
+            }
+
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + url, "POST", JSON.stringify(data), function (resp) {
+                wait.close();
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    window.close();
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    ToolStripButton_Refresh_Processes_UserPortfolio.click();
+                } else {
+                    window.close();
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
+        }
+    }
 // </script>

@@ -216,5 +216,10 @@ public class BpmsRestController {
         else
             return new ResponseEntity<>(null, HttpStatus.OK);
     }
+    @Loggable
+    @PostMapping({"/needAssessment/processes/reAssign-process"})
+    public void reAssignNeedAssessmentProcessInstance( @RequestBody BpmsCancelTaskDto value) {
+        service.reAssignNeedAssessmentProcessInstance(value.getReviewTaskRequest(), value);
+    }
 
 }

@@ -147,4 +147,24 @@ public class BpmsService implements IBpmsService {
         iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), -1, "عدم تایید اصلی",data.getReason());
          client.reviewTask(reviewTaskRequest);
     }
+
+    @Override
+    public void reAssignNeedAssessmentProcessInstance(ReviewTaskRequest reviewTaskRequest, BpmsCancelTaskDto data) {
+
+        iNeedsAssessmentTempService.updateNeedsAssessmentTempWorkflowMainStatusInBpms(data.getReviewTaskRequest().getVariables().get("objectType").toString(), Long.valueOf(data.getReviewTaskRequest().getVariables().get("objectId").toString()), 0, "ارسال به گردش کار اصلی",data.getReason());
+         Map<String, Object> map=reviewTaskRequest.getVariables();
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+//        String mainConfirmBoss = "ahmadi_z";
+        String mainConfirmBoss = "3621296476";
+        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
+//            mainConfirmBoss = "pourfathian_a";
+            mainConfirmBoss = "3149622123";
+//            mainConfirmBoss = "hajizadeh_mh";
+        }
+
+        map.put("assignTo", mainConfirmBoss);
+
+
+        client.reviewTask(reviewTaskRequest);
+    }
 }
