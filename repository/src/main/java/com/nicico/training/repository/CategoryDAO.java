@@ -4,9 +4,11 @@ import com.nicico.training.model.Category;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface CategoryDAO extends JpaRepository<Category, Long>, JpaSpecificationExecutor<Category> {
@@ -27,4 +29,8 @@ public interface CategoryDAO extends JpaRepository<Category, Long>, JpaSpecifica
             "WHERE\n" +
             "    teach.id =:teachHistoryId",nativeQuery = true)
     List<String> findCategoryNamesByTeachHistoryId(Long teachHistoryId);
+    @Query(value="select c_rc.* from   TBL_OPERATIONAL_ROLE r inner join  TBL_OPERATIONAL_ROLE_USER_IDS  rell on   rell.F_OPERATIONAL_ROLE = r.id inner join TBL_OPERATIONAL_ROLE_CATEGORY   rc  on   rc.F_OPERATIONAL_ROLE = r.id  inner join TBL_CATEGORY c_rc    on c_rc.id = rc.F_CATEGORY  where \n" +
+            "rell.user_ids  = :userId" , nativeQuery = true)
+    Set<Category> findAllByUserId (@Param("userId") Long userId);
+
 }

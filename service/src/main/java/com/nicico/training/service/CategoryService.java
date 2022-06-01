@@ -169,4 +169,8 @@ public class CategoryService implements ICategoryService {
         }.getType());
     }
 
+    @Override
+    public Set<Category> findAllByUserId(Long userId) {
+        return categoryDAO.findAllByUserId(userId);
+    }
 }

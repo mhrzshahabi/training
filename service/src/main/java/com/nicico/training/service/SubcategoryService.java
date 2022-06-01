@@ -159,4 +159,9 @@ public class SubcategoryService implements ISubcategoryService {
         return modelMapper.map(cAll, new TypeToken<List<ElsSubCategoryDto>>() {
         }.getType());
     }
+
+    @Override
+    public Set<Subcategory> findAllByUserId(Long userId) {
+        return subCategoryDAO.findAllByUserId(userId);
+    }
 }
