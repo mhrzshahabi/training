@@ -172,6 +172,7 @@ public class TestQuestionService implements ITestQuestionService {
                     q.setOption4(wrap_dir("rtl", q.getOption4()));
                 }
             }
+
             if (q.getQuestionType().getTitle().equals(EQuestionType.GROUPQUESTION.getValue())) {
                 q.setQuestion(" با توجه  به سوال زیر به " + q.getChilds().size() + " سوال زیر را جواب دهید  " + "\n" + q.getQuestion());
                 finalQuestions.add(q);
