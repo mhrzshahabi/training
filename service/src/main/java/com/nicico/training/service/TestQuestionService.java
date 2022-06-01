@@ -10,9 +10,13 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.dto.TestQuestionDTO;
+import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ITestQuestionService;
+import com.nicico.training.mapper.QuestionBank.QuestionBankBeanMapper;
 import com.nicico.training.model.QuestionBank;
+import com.nicico.training.model.TargetSociety;
 import com.nicico.training.model.TestQuestion;
+import com.nicico.training.repository.QuestionBankDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TestQuestionDAO;
 import dto.exam.EQuestionType;
@@ -42,7 +46,9 @@ public class TestQuestionService implements ITestQuestionService {
     private final TclassDAO tclassDAO;
     private final ReportUtil reportUtil;
     private final ModelMapper modelMapper;
+    private final QuestionBankBeanMapper questionBankBeanMapper;
     private final TestQuestionDAO testQuestionDAO;
+    private final QuestionBankDAO questionBankDAO;
 
     @Transactional
     @Override
@@ -68,8 +74,7 @@ public class TestQuestionService implements ITestQuestionService {
         final TestQuestion model = testQuestionDAO.findById(testQuestionId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TestQuestionNotFound));
         Set<QuestionBank> result = new HashSet<>();
         model.getQuestionBankTestQuestionList().forEach(q -> result.add(q.getQuestionBank()));
-        return modelMapper.map(result, new TypeToken<Set<QuestionBankDTO.Exam>>() {
-        }.getType());
+        return questionBankBeanMapper.toExamDtos(result);
     }
 
     @Transactional
@@ -147,6 +152,7 @@ public class TestQuestionService implements ITestQuestionService {
         TestQuestionDTO.fullInfo model = get(testQuestionId);
 
         Set<QuestionBankDTO.Exam> testQuestionBanks = getAllQuestionsByTestQuestionId(testQuestionId);
+        List<QuestionBankDTO.Exam> finalQuestions = new ArrayList<>();
 
         for (QuestionBankDTO.Exam q : testQuestionBanks) {
             for (int i = 0; i <= q.getLines(); i++) {
@@ -167,11 +173,36 @@ public class TestQuestionService implements ITestQuestionService {
                 }
             }
             if (q.getQuestionType().getTitle().equals(EQuestionType.GROUPQUESTION.getValue())) {
-                q.setQuestion(" با توجه  به سوال زیر " + testQuestionBanks.size() + "سوال زیر را جواب دهید : " + "\n\n" + q.getQuestion());
+                q.setQuestion(" با توجه  به سوال زیر به " + q.getChilds().size() + " سوال زیر را جواب دهید  " + "\n" + q.getQuestion());
+                finalQuestions.add(q);
+                for (QuestionBankDTO.Exam  z : q.getChilds()) {
+                    for (int i = 0; i <= q.getLines(); i++) {
+                        z.setQuestion(wrap_dir("rtl", z.getQuestion()) + "\n");
+                    }
+                    if (z.getQuestionType().getCode().equals("MultipleChoiceAnswer")) {
+                        if (z.getOption1() != null) {
+                            z.setOption1(wrap_dir("rtl", z.getOption1()));
+                        }
+                        if (z.getOption2() != null) {
+                            z.setOption2(wrap_dir("rtl", z.getOption2()));
+                        }
+                        if (z.getOption3() != null) {
+                            z.setOption3(wrap_dir("rtl", z.getOption3()));
+                        }
+                        if (z.getOption4() != null) {
+                            z.setOption4(wrap_dir("rtl", z.getOption4()));
+                        }
+                    }
+                    finalQuestions.add(z);
+
+                }
+
+            }else{
+                finalQuestions.add(q);
             }
         }
 
-        String data = mapper.writeValueAsString(testQuestionBanks);
+        String data = mapper.writeValueAsString(finalQuestions);
         params.put("today", DateUtil.todayDate());
         params.put("course", model.getTclass().getTitleClass());
         params.put("class_code", model.getTclass().getCode());

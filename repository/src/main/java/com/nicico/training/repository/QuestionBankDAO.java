@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -39,4 +40,7 @@ public interface QuestionBankDAO extends JpaRepository<QuestionBank, Long>, JpaS
    List<QuestionBank>  findAllWithCategoryAndSubList(List<Long> categories,List<Long> subCategories);
 
     List<QuestionBank> findAllByCreatedBy(String createBy);
+
+    @Query(value = "SELECT DISTINCT   tbl_question_bank.* FROM       tbl_group_question  INNER JOIN tbl_question_bank ON tbl_group_question.f_child_id = tbl_question_bank.id WHERE  tbl_group_question.f_parent_id =:f_parent_id",nativeQuery = true)
+    List<QuestionBank> getChillQuestionByParentId(@Param("f_parent_id")Long f_parent_id);
 }

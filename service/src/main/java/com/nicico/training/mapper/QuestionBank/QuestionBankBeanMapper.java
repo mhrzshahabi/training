@@ -1,8 +1,12 @@
 package com.nicico.training.mapper.QuestionBank;
 
 
+import com.ibm.icu.text.SimpleDateFormat;
+import com.ibm.icu.util.TimeZone;
+import com.ibm.icu.util.ULocale;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.QuestionBankDTO;
+import com.nicico.training.dto.RequestResVM;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ISubcategoryService;
@@ -12,18 +16,15 @@ import com.nicico.training.model.enums.EQuestionLevel;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.PersianDate;
 import dto.exam.EQuestionType;
-import org.mapstruct.Mapper;
-import org.mapstruct.ReportingPolicy;
+import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.question.dto.ElsAttachmentDto;
 import response.question.dto.ElsQuestionBankDto;
 import response.question.dto.ElsQuestionDto;
 import response.question.dto.ElsQuestionOptionDto;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.time.ZoneId;
+import java.util.*;
 
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
@@ -575,4 +576,19 @@ public abstract class QuestionBankBeanMapper {
         return create;
     }
 
+    @Mappings({
+             @Mapping(target = "childs",source = "questionBank",qualifiedByName ="getQuestionChilds")
+    })
+    abstract public QuestionBankDTO.Exam toExamDto(QuestionBank questionBank);
+    abstract public QuestionBankDTO toQuestionDto(QuestionBank questionBank);
+    abstract public List<QuestionBankDTO> toQuestionDtos(List<QuestionBank> questionBank);
+    abstract public List<QuestionBankDTO.Exam> toQuestionExamDtos(List<QuestionBank> questionBank);
+
+    abstract public Set<QuestionBankDTO.Exam> toExamDtos(Set<QuestionBank> questionBank);
+
+
+    @Named("getQuestionChilds")
+    List<QuestionBankDTO.Exam> getQuestionChilds(QuestionBank questionBank) {
+        return toQuestionExamDtos(questionBank.getGroupQuestions());
+    }
 }

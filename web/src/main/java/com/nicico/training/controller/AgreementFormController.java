@@ -86,7 +86,7 @@ public class AgreementFormController {
             wordUtil.replacePOI(doc, "SUBJECT", agreementDTO.getSubject());
 
 
-            response.setHeader("Content-Disposition", "attachment; filename=Agreement");
+            response.setHeader("Content-Disposition", "attachment; filename=Agreement.docx");
             response.setContentType("application/vnd.ms-word");
             ServletOutputStream out = response.getOutputStream();
             doc.write(out);

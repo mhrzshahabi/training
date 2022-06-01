@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -76,6 +77,8 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("Exam")
     public static class Exam {
+        private Long id;
+//        private Boolean isChild;
         private String option1;
         private String option2;
         private String option3;
@@ -84,6 +87,7 @@ public class QuestionBankDTO {
         private Integer lines;
         private ParameterValueDTO.TupleInfo questionType;
         private ParameterValueDTO.TupleInfo displayType;
+        private List<QuestionBankDTO.Exam> childs;
     }
 
     @Getter
