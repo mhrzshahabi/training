@@ -25,6 +25,7 @@ import response.question.dto.ElsQuestionOptionDto;
 
 import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN)
@@ -125,7 +126,7 @@ public abstract class QuestionBankBeanMapper {
 
             elsQuestionDto.setQuestionId(questionBank.getId());
             elsQuestionDto.setTitle(questionBank.getQuestion());
-            elsQuestionDto.setGroupQuestions(questionBank.getGroupQuestions().stream().map(QuestionBank::getId).toList());
+            elsQuestionDto.setGroupQuestions(questionBank.getGroupQuestions().stream().map(QuestionBank::getId).collect(Collectors.toSet()));
             elsQuestionDto.setType(mapAnswerType(questionBank.getQuestionTypeId()));
             elsQuestionDto.setQuestionLevel(questionBank.getEQuestionLevel().getTitleFa());
 
@@ -335,7 +336,7 @@ public abstract class QuestionBankBeanMapper {
 //            create.setSubCategoryId(elsQuestionDto.getSubCategory());
             create.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
             if (elsQuestionDto.getGroupQuestions()!=null)
-            create.setGroupQuestions(questionBankService.getListOfGroupQuestions(elsQuestionDto.getGroupQuestions()).stream().map(QuestionBank::getId).toList());
+            create.setGroupQuestions(questionBankService.getListOfGroupQuestions(elsQuestionDto.getGroupQuestions()).stream().map(QuestionBank::getId).collect(Collectors.toSet()));
             create.setTeacherId(teacherId);
             create.setLines(1);
             create.setDisplayTypeId(521L);
@@ -581,7 +582,7 @@ public abstract class QuestionBankBeanMapper {
     abstract public QuestionBankDTO.Exam toExamDto(QuestionBank questionBank);
     abstract public QuestionBankDTO toQuestionDto(QuestionBank questionBank);
     abstract public List<QuestionBankDTO> toQuestionDtos(List<QuestionBank> questionBank);
-    abstract public List<QuestionBankDTO.Exam> toQuestionExamDtos(List<QuestionBank> questionBank);
+    abstract public List<QuestionBankDTO.Exam> toQuestionExamDtos(Set<QuestionBank> questionBank);
 
     abstract public Set<QuestionBankDTO.Exam> toExamDtos(Set<QuestionBank> questionBank);
 

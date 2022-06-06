@@ -8,6 +8,7 @@ import response.BaseResponse;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -45,7 +46,7 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     @ApiModelProperty
     private List<Integer> questionTargetIds;
     @ApiModelProperty
-    private List<Long> groupQuestions;
+    private Set<Long> groupQuestions;
     @ApiModelProperty
     private String questionCode;
     @ApiModelProperty

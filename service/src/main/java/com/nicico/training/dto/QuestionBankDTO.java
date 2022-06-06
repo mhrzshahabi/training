@@ -68,7 +68,7 @@ public class QuestionBankDTO {
         private Boolean hasAttachment;
         private Integer questionLevelId;
         private String questionDesigner;
-        private List<Long> groupQuestions;
+        private Set<Long> groupQuestions;
 
     }
 
@@ -121,7 +121,7 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("QuestionBank-CreateRq")
     public static class Create extends FullInfo {
-        private List<Long> groupQuestions;
+        private Set<Long> groupQuestions;
     }
 
     @Getter
@@ -129,7 +129,7 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("QuestionBank-UpdateRq")
     public static class Update extends FullInfo {
-        private List<Long> groupQuestions;
+        private Set<Long> groupQuestions;
     }
 
     @Getter

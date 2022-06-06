@@ -568,7 +568,7 @@ public abstract class EvaluationBeanMapper {
                 EQuestionType type = convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle());
 
                 if (type != null && type.equals(GROUPQUESTION)) {
-                    List<QuestionBank> gropQuestions = questionBank.getGroupQuestions();
+                    Set<QuestionBank> gropQuestions = questionBank.getGroupQuestions();
                     for (QuestionBank groupQuestionBank : gropQuestions) {
                         ImportedQuestionProtocol protocol = GetGroupQuestionProtocolForFinalTest(groupQuestionBank, object, totalQuestionsTime, questionsSize, examTime);
                         protocol.setHasParent(true);
@@ -724,7 +724,7 @@ public abstract class EvaluationBeanMapper {
                 EQuestionType type = convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle());
 
                 if (type != null && type.equals(GROUPQUESTION)) {
-                    List<QuestionBank> gropQuestions = questionBank.getGroupQuestions();
+                    Set<QuestionBank> gropQuestions = questionBank.getGroupQuestions();
                     for (QuestionBank groupQuestionBank : gropQuestions) {
                         ImportedQuestionProtocol protocol = GetGroupQuestionProtocolForPreTest(groupQuestionBank, timeQues, protocolsMap);
                         protocol.setHasParent(true);

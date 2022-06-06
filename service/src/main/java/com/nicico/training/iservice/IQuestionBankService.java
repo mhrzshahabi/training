@@ -9,6 +9,7 @@ import com.nicico.training.model.Teacher;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
+import java.util.Set;
 
 
 public interface IQuestionBankService {
@@ -42,7 +43,7 @@ public interface IQuestionBankService {
 
     PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long id) throws NoSuchFieldException, IllegalAccessException;
 
-    List<QuestionBank> getListOfGroupQuestions(List<Long> groupQuestions);
+    Set<QuestionBank> getListOfGroupQuestions(Set<Long> groupQuestions);
 
     List<QuestionBank> findAllByCreateBy(String createBy);
 }

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -57,9 +58,9 @@ public class QuestionBankService implements IQuestionBankService {
 
         final Optional<QuestionBank> cById = questionBankDAO.findById(id);
         final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
-        List<Long> questionGroupIds=new ArrayList<>();
+        Set<Long> questionGroupIds=new HashSet<>();
         if (model.getGroupQuestions() != null) {
-            questionGroupIds=model.getGroupQuestions().stream().map(QuestionBank::getId).toList();
+            questionGroupIds=model.getGroupQuestions().stream().map(QuestionBank::getId).collect(Collectors.toSet());
             model.setGroupQuestions(null);
         }
         QuestionBankDTO.FullInfo map = modelMapper.map(model, QuestionBankDTO.FullInfo.class);
@@ -140,14 +141,14 @@ public class QuestionBankService implements IQuestionBankService {
     }
 
     @Override
-    public List<QuestionBank> getListOfGroupQuestions(List<Long> groupQuestions) {
+    public Set<QuestionBank> getListOfGroupQuestions(Set<Long> groupQuestions) {
         if (groupQuestions != null) {
             List<QuestionBank> questionBanks = new ArrayList<>();
             for (Long questionId : groupQuestions) {
                 Optional<QuestionBank> questionBank = questionBankDAO.findById(questionId);
                 questionBank.ifPresent(questionBanks::add);
             }
-            return questionBanks;
+            return new HashSet<>(questionBanks);
         } else
             return null;
     }
