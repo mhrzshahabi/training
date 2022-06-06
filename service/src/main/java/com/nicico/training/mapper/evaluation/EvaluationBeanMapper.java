@@ -3,6 +3,7 @@ package com.nicico.training.mapper.evaluation;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ParameterValueDTO;
+import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.question.ElsExamRequestResponse;
@@ -43,6 +44,7 @@ import response.question.dto.ElsQuestionTargetDto;
 
 import java.math.BigDecimal;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -51,7 +53,6 @@ import static dto.exam.EQuestionType.*;
 
 @Mapper(componentModel = "spring", unmappedTargetPolicy = ReportingPolicy.WARN, uses = QuestionBankService.class)
 public abstract class EvaluationBeanMapper {
-
 
 
     @Autowired
@@ -381,7 +382,7 @@ public abstract class EvaluationBeanMapper {
         if (QuestionBankTestQuestionList != null && QuestionBankTestQuestionList.size() > 0)
             timeQues = (time * 60) / QuestionBankTestQuestionList.size();
 
-        ExamCreateDTO examData = getExamData2(exam, tClass, QuestionBankTestQuestionList != null ? QuestionBankTestQuestionList.size() : 0);
+        ExamCreateDTO examData = getExamData2(exam, tClass,exam.getId());
         ImportedCourseCategory courseCategory = getCourseCategoryData2(exam);
         ImportedCourseDto courseDto = getCourseData2(exam);
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData2(exam);
@@ -470,7 +471,7 @@ public abstract class EvaluationBeanMapper {
 
         List<QuestionBankTestQuestion> QuestionBankTestQuestionList = questionBankTestQuestionDAO.findAllByTestQuestionId(exam.getId());
 
-        ExamCreateDTO exam2 = getPreExamData2(exam, tClass, QuestionBankTestQuestionList.size());
+        ExamCreateDTO exam2 = getPreExamData2(exam, tClass, exam.getId());
         ImportedCourseCategory courseCategory = getCourseCategoryData2(exam);
         ImportedCourseDto courseDto = getCourseData2(exam);
         CourseProtocolImportDTO courseProtocol = getCourseProtocolData2(exam);
@@ -564,20 +565,19 @@ public abstract class EvaluationBeanMapper {
             for (QuestionData questionData : object.getQuestions()) {
                 QuestionBank questionBank = questionBankService.getById(questionData.getQuestionBank().getId());
 
-              EQuestionType type=  convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle());
+                EQuestionType type = convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle());
 
-                if (type != null && type.equals(GROUPQUESTION)){
-                    List<QuestionBank> gropQuestions= questionBank.getGroupQuestions();
-                    for (QuestionBank groupQuestionBank:gropQuestions){
-                        ImportedQuestionProtocol protocol=GetGroupQuestionProtocolForFinalTest(groupQuestionBank,object,totalQuestionsTime,questionsSize,examTime);
+                if (type != null && type.equals(GROUPQUESTION)) {
+                    List<QuestionBank> gropQuestions = questionBank.getGroupQuestions();
+                    for (QuestionBank groupQuestionBank : gropQuestions) {
+                        ImportedQuestionProtocol protocol = GetGroupQuestionProtocolForFinalTest(groupQuestionBank, object, totalQuestionsTime, questionsSize, examTime);
                         protocol.setHasParent(true);
-                        ImportedQuestion parent=   GetGroupQuestionProtocolForFinalTest(questionBank,object,totalQuestionsTime,questionsSize,examTime).getQuestion();
+                        ImportedQuestion parent = GetGroupQuestionProtocolForFinalTest(questionBank, object, totalQuestionsTime, questionsSize, examTime).getQuestion();
                         protocol.setParent(parent);
                         questionProtocols.add(protocol);
                     }
 
-                }else
-                {
+                } else {
 
                     ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
 
@@ -707,7 +707,6 @@ public abstract class EvaluationBeanMapper {
     }
 
 
-
     private ExamQuestionsObject getQuestionsForPreTest(TestQuestion exam, Integer timeQues, List<QuestionBankTestQuestion> questionBankTestQuestions) {
         ExamQuestionsObject examQuestionsObject = new ExamQuestionsObject();
         List<ImportedQuestionProtocol> questionProtocols = new ArrayList<>();
@@ -722,111 +721,110 @@ public abstract class EvaluationBeanMapper {
 
                 QuestionBank questionBank = questionData.getQuestionBank();
 
-                EQuestionType type=  convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle());
+                EQuestionType type = convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle());
 
-                if (type != null && type.equals(GROUPQUESTION)){
-                    List<QuestionBank> gropQuestions= questionBank.getGroupQuestions();
-                    for (QuestionBank groupQuestionBank:gropQuestions){
-                        ImportedQuestionProtocol protocol=GetGroupQuestionProtocolForPreTest(groupQuestionBank,timeQues,protocolsMap);
+                if (type != null && type.equals(GROUPQUESTION)) {
+                    List<QuestionBank> gropQuestions = questionBank.getGroupQuestions();
+                    for (QuestionBank groupQuestionBank : gropQuestions) {
+                        ImportedQuestionProtocol protocol = GetGroupQuestionProtocolForPreTest(groupQuestionBank, timeQues, protocolsMap);
                         protocol.setHasParent(true);
-                        ImportedQuestion parent=   GetGroupQuestionProtocolForPreTest(questionBank,timeQues,protocolsMap).getQuestion();
+                        ImportedQuestion parent = GetGroupQuestionProtocolForPreTest(questionBank, timeQues, protocolsMap).getQuestion();
                         protocol.setParent(parent);
                         questionProtocols.add(protocol);
                     }
 
-                }else
-                {
+                } else {
 
-                ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
+                    ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
 
-                ImportedQuestion question = new ImportedQuestion();
+                    ImportedQuestion question = new ImportedQuestion();
 
-                QuestionAttachments attachments = getFilesForQuestion(questionBank.getId());
-                question.setId(questionData.getQuestionBank().getId());
-                question.setTitle(questionData.getQuestionBank().getQuestion());
-                if (attachments != null && attachments.getFiles() != null)
-                    question.setFiles(attachments.getFiles());
-                question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
+                    QuestionAttachments attachments = getFilesForQuestion(questionBank.getId());
+                    question.setId(questionData.getQuestionBank().getId());
+                    question.setTitle(questionData.getQuestionBank().getQuestion());
+                    if (attachments != null && attachments.getFiles() != null)
+                        question.setFiles(attachments.getFiles());
+                    question.setType(convertQuestionType(questionData.getQuestionBank().getQuestionType().getTitle()));
 
-                if (question.getType().equals(MULTI_CHOICES)) {
-
-
-                    List<ImportedQuestionOption> options = new ArrayList<>();
+                    if (question.getType().equals(MULTI_CHOICES)) {
 
 
-                    ImportedQuestionOption option1 = new ImportedQuestionOption();
-                    ImportedQuestionOption option2 = new ImportedQuestionOption();
-                    ImportedQuestionOption option3 = new ImportedQuestionOption();
-                    ImportedQuestionOption option4 = new ImportedQuestionOption();
-                    if (questionBank.getOption1() != null) {
-                        option1.setTitle(questionBank.getOption1());
-                        option1.setLabel("الف");
-                        options.add(option1);
-                        if (attachments != null && attachments.getOption1Files() != null)
-                            option1.setMapFiles(attachments.getOption1Files());
+                        List<ImportedQuestionOption> options = new ArrayList<>();
 
 
-                    }
-                    if (questionBank.getOption2() != null) {
-                        option2.setTitle(questionBank.getOption2());
-                        option2.setLabel("ب");
-                        options.add(option2);
-                        if (attachments != null && attachments.getOption2Files() != null)
-                            option2.setMapFiles(attachments.getOption2Files());
+                        ImportedQuestionOption option1 = new ImportedQuestionOption();
+                        ImportedQuestionOption option2 = new ImportedQuestionOption();
+                        ImportedQuestionOption option3 = new ImportedQuestionOption();
+                        ImportedQuestionOption option4 = new ImportedQuestionOption();
+                        if (questionBank.getOption1() != null) {
+                            option1.setTitle(questionBank.getOption1());
+                            option1.setLabel("الف");
+                            options.add(option1);
+                            if (attachments != null && attachments.getOption1Files() != null)
+                                option1.setMapFiles(attachments.getOption1Files());
 
-                    }
-                    if (questionBank.getOption3() != null) {
-                        option3.setTitle(questionBank.getOption3());
-                        option3.setLabel("ج");
-                        options.add(option3);
-                        if (attachments != null && attachments.getOption3Files() != null)
-                            option3.setMapFiles(attachments.getOption3Files());
 
-                    }
-                    if (questionBank.getOption4() != null) {
-                        option4.setTitle(questionBank.getOption4());
-                        option4.setLabel("د");
-                        options.add(option4);
-                        if (attachments != null && attachments.getOption4Files() != null)
-                            option4.setMapFiles(attachments.getOption4Files());
-
-                    }
-                    if (!findDuplicate) {
-                        String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
-                        findDuplicate = checkDuplicateQuestion(options, questionProtocols, title, question.getType());
-                        if (findDuplicate) {
-                            examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
-                            examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
                         }
-                    }
-                    question.setQuestionOption(options);
-                    questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
+                        if (questionBank.getOption2() != null) {
+                            option2.setTitle(questionBank.getOption2());
+                            option2.setLabel("ب");
+                            options.add(option2);
+                            if (attachments != null && attachments.getOption2Files() != null)
+                                option2.setMapFiles(attachments.getOption2Files());
 
-                } else if (question.getType().equals(DESCRIPTIVE)) {
-                    if (!findDuplicate) {
-                        String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
-                        findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, title, question.getType());
-                        if (findDuplicate) {
-                            examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
-                            examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
                         }
+                        if (questionBank.getOption3() != null) {
+                            option3.setTitle(questionBank.getOption3());
+                            option3.setLabel("ج");
+                            options.add(option3);
+                            if (attachments != null && attachments.getOption3Files() != null)
+                                option3.setMapFiles(attachments.getOption3Files());
+
+                        }
+                        if (questionBank.getOption4() != null) {
+                            option4.setTitle(questionBank.getOption4());
+                            option4.setLabel("د");
+                            options.add(option4);
+                            if (attachments != null && attachments.getOption4Files() != null)
+                                option4.setMapFiles(attachments.getOption4Files());
+
+                        }
+                        if (!findDuplicate) {
+                            String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                            findDuplicate = checkDuplicateQuestion(options, questionProtocols, title, question.getType());
+                            if (findDuplicate) {
+                                examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
+                                examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                            }
+                        }
+                        question.setQuestionOption(options);
+                        questionProtocol.setCorrectAnswerTitle(convertCorrectAnswer(questionBank.getMultipleChoiceAnswer(), questionBank));
+
+                    } else if (question.getType().equals(DESCRIPTIVE)) {
+                        if (!findDuplicate) {
+                            String title = question.getTitle().toUpperCase().replaceAll("[\\s]", "");
+                            findDuplicate = checkDuplicateDescriptiveQuestions(questionProtocols, title, question.getType());
+                            if (findDuplicate) {
+                                examQuestionsObject.setStatus(HttpStatus.CONFLICT.value());
+                                examQuestionsObject.setMessage("در آزمون سوال تکراری وجود دارد");
+                            }
+                        }
+                        questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
+                        question.setHasAttachment(questionBank.getHasAttachment());
                     }
-                    questionProtocol.setCorrectAnswerTitle(questionBank.getDescriptiveAnswer());
-                    question.setHasAttachment(questionBank.getHasAttachment());
+                    QuestionProtocol protocol = protocolsMap.get(question.getId());
+                    if (protocol != null) {
+                        if (protocol.getQuestionMark() != null)
+                            questionProtocol.setMark(Double.valueOf(protocol.getQuestionMark()));
+
+
+                        questionProtocol.setTime(timeQues);
+                        questionProtocol.setQuestion(question);
+                        questionProtocols.add(questionProtocol);
+                    }
+
+
                 }
-                QuestionProtocol protocol = protocolsMap.get(question.getId());
-                if (protocol != null) {
-                    if (protocol.getQuestionMark() != null)
-                        questionProtocol.setMark(Double.valueOf(protocol.getQuestionMark()));
-
-
-                    questionProtocol.setTime(timeQues);
-                    questionProtocol.setQuestion(question);
-                    questionProtocols.add(questionProtocol);
-                }
-
-
-            }
 
 
             }
@@ -981,7 +979,8 @@ public abstract class EvaluationBeanMapper {
         exam.setName(object.getExamItem().getTclass().getTitleClass());
         exam.setStartDate(startDate.getTime());
         exam.setEndDate(endDate.getTime());
-        exam.setQuestionCount(object.getQuestions().size());
+        Set<QuestionBankDTO.Exam> testQuestionBanks = iTestQuestionService.getAllQuestionsByTestQuestionId(object.getExamItem().getId());
+        exam.setQuestionCount(getSizeOfQuestions(testQuestionBanks));
         exam.setSourceExamId(object.getExamItem().getId());
         exam.setMethod("FinalTest");
 
@@ -1015,7 +1014,18 @@ public abstract class EvaluationBeanMapper {
         return exam;
     }
 
-    private ExamCreateDTO getExamData2(TestQuestion exam, Tclass tClass, int examQuestionSize) {
+    private Integer getSizeOfQuestions(Set<QuestionBankDTO.Exam> testQuestionBanks) {
+        int childSize = 0;
+
+        List<QuestionBankDTO.Exam> parents = testQuestionBanks.stream().filter(a -> a.getQuestionType().getTitle().equals(EQuestionType.GROUPQUESTION.getValue())).toList();
+        for (QuestionBankDTO.Exam parent : parents) {
+            childSize = parent.getChilds().size() +childSize;
+        }
+        return testQuestionBanks.size() + childSize - parents.size();
+    }
+
+    private ExamCreateDTO getExamData2(TestQuestion exam, Tclass tClass, Long examId) {
+        Set<QuestionBankDTO.Exam> testQuestionBanks = iTestQuestionService.getAllQuestionsByTestQuestionId(examId);
         int time = Math.toIntExact(exam.getDuration());
 
         String newTime = convertToTimeZone(exam.getTime());
@@ -1032,7 +1042,7 @@ public abstract class EvaluationBeanMapper {
         examCreateDTO.setName(exam.getTclass().getTitleClass());
         examCreateDTO.setStartDate(startDate.getTime());
         examCreateDTO.setEndDate(endDate.getTime());
-        examCreateDTO.setQuestionCount(examQuestionSize);
+        examCreateDTO.setQuestionCount(getSizeOfQuestions(testQuestionBanks));
         examCreateDTO.setSourceExamId(exam.getId());
 
         examCreateDTO.setDuration(time);
@@ -1072,7 +1082,8 @@ public abstract class EvaluationBeanMapper {
         exam.setName(object.getExamItem().getTclass().getTitleClass());
         exam.setStartDate(null);
         exam.setEndDate(null);
-        exam.setQuestionCount(object.getQuestions().size());
+        Set<QuestionBankDTO.Exam> testQuestionBanks = iTestQuestionService.getAllQuestionsByTestQuestionId(object.getExamItem().getId());
+        exam.setQuestionCount(getSizeOfQuestions(testQuestionBanks));
         exam.setSourceExamId(object.getExamItem().getId());
         exam.setDuration(0);
         if (type.equalsIgnoreCase("preTest"))
@@ -1098,15 +1109,16 @@ public abstract class EvaluationBeanMapper {
         return exam;
     }
 
-    private ExamCreateDTO getPreExamData2(TestQuestion exam, Tclass tClass, int examQuestionsSize) {
+    private ExamCreateDTO getPreExamData2(TestQuestion exam, Tclass tClass, Long examId) {
 
         ExamCreateDTO examDto = new ExamCreateDTO();
         examDto.setCode(exam.getTclass().getCode());
         examDto.setName(exam.getTclass().getTitleClass());
         examDto.setStartDate(null);
         examDto.setEndDate(null);
-        examDto.setQuestionCount(examQuestionsSize);
-        examDto.setSourceExamId(exam.getId());
+        Set<QuestionBankDTO.Exam> testQuestionBanks = iTestQuestionService.getAllQuestionsByTestQuestionId(examId);
+        examDto.setQuestionCount(getSizeOfQuestions(testQuestionBanks));
+         examDto.setSourceExamId(exam.getId());
         examDto.setDuration(0);
 
         if (tClass.getScoringMethod().equals("3")) {
@@ -1866,8 +1878,7 @@ public abstract class EvaluationBeanMapper {
 //                else  if (questionsDto.getType().equals(GROUPQUESTION.getValue())){
 //zaza fininsh 3
 //                }
-                else
-                {
+                else {
                     questionsDto.setOptions("-");
 
                 }
@@ -2128,6 +2139,7 @@ public abstract class EvaluationBeanMapper {
 
 
     public abstract List<ElsQuestionTargetDto> toQuestionTargets(List<ParameterValueDTO.Info> questions);
+
     private ImportedQuestionProtocol GetGroupQuestionProtocolForFinalTest(QuestionBank groupQuestionBank, ExamImportedRequest object, long totalQuestionsTime, int questionsSize, int examTime) {
         ImportedQuestion groupQuestion = new ImportedQuestion();
         ImportedQuestionProtocol groupQuestionProtocol = new ImportedQuestionProtocol();
@@ -2215,7 +2227,7 @@ public abstract class EvaluationBeanMapper {
         }
 
 
-        if (object.getQuestionData() != null  && !groupQuestion.getType().equals(GROUPQUESTION) ) {
+        if (object.getQuestionData() != null && !groupQuestion.getType().equals(GROUPQUESTION)) {
 
 
             QuestionScores questionScore = object.getQuestionData().stream()
@@ -2244,8 +2256,9 @@ public abstract class EvaluationBeanMapper {
         groupQuestionProtocol.setQuestion(groupQuestion);
         return groupQuestionProtocol;
     }
+
     private EQuestionType convertQuestionType(Long questionTypeId) {
-        ParameterValueDTO.TupleInfo  info= iParameterValueService.getInfo(questionTypeId);
+        ParameterValueDTO.TupleInfo info = iParameterValueService.getInfo(questionTypeId);
         return switch (info.getTitle()) {
             case "چند گزینه ای" -> MULTI_CHOICES;
             case "تشریحی" -> DESCRIPTIVE;
@@ -2253,6 +2266,7 @@ public abstract class EvaluationBeanMapper {
             default -> null;
         };
     }
+
     private ImportedQuestionProtocol GetGroupQuestionProtocolForPreTest(QuestionBank groupQuestionBank, Integer timeQues, Map<Long, QuestionProtocol> protocolsMap) {
 
         ImportedQuestionProtocol questionProtocol = new ImportedQuestionProtocol();
@@ -2334,13 +2348,13 @@ public abstract class EvaluationBeanMapper {
         }
         QuestionProtocol protocol = protocolsMap.get(question.getId());
 
-            if (protocol.getQuestionMark() != null)
-                questionProtocol.setMark(Double.valueOf(protocol.getQuestionMark()));
+        if (protocol.getQuestionMark() != null)
+            questionProtocol.setMark(Double.valueOf(protocol.getQuestionMark()));
 
 
-            questionProtocol.setTime(timeQues);
-            questionProtocol.setQuestion(question);
-            return questionProtocol;
+        questionProtocol.setTime(timeQues);
+        questionProtocol.setQuestion(question);
+        return questionProtocol;
 
 
     }

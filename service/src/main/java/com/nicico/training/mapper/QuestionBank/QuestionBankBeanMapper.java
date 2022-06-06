@@ -125,6 +125,7 @@ public abstract class QuestionBankBeanMapper {
 
             elsQuestionDto.setQuestionId(questionBank.getId());
             elsQuestionDto.setTitle(questionBank.getQuestion());
+            elsQuestionDto.setGroupQuestions(questionBank.getGroupQuestions().stream().map(QuestionBank::getId).toList());
             elsQuestionDto.setType(mapAnswerType(questionBank.getQuestionTypeId()));
             elsQuestionDto.setQuestionLevel(questionBank.getEQuestionLevel().getTitleFa());
 
@@ -515,14 +516,12 @@ public abstract class QuestionBankBeanMapper {
     protected String mapAnswerType(Long answerTypeId) {
 
         String answerTypeCode = parameterValueService.getParameterValueCodeById(answerTypeId);
-        switch (answerTypeCode) {
-            case "MultipleChoiceAnswer":
-                return EQuestionType.MULTI_CHOICES.getValue();
-            case "Descriptive":
-                return EQuestionType.DESCRIPTIVE.getValue();
-            default:
-                return null;
-        }
+        return switch (answerTypeCode) {
+            case "MultipleChoiceAnswer" -> EQuestionType.MULTI_CHOICES.getValue();
+            case "Descriptive" -> EQuestionType.DESCRIPTIVE.getValue();
+            case "GroupQuestion" -> EQuestionType.GROUPQUESTION.getValue();
+            default -> null;
+        };
     }
 
     protected Long reMapAnswerType(String type) {
