@@ -29,8 +29,18 @@ public interface CategoryDAO extends JpaRepository<Category, Long>, JpaSpecifica
             "WHERE\n" +
             "    teach.id =:teachHistoryId",nativeQuery = true)
     List<String> findCategoryNamesByTeachHistoryId(Long teachHistoryId);
-    @Query(value="select c_rc.* from   TBL_OPERATIONAL_ROLE r inner join  TBL_OPERATIONAL_ROLE_USER_IDS  rell on   rell.F_OPERATIONAL_ROLE = r.id inner join TBL_OPERATIONAL_ROLE_CATEGORY   rc  on   rc.F_OPERATIONAL_ROLE = r.id  inner join TBL_CATEGORY c_rc    on c_rc.id = rc.F_CATEGORY  where \n" +
-            "rell.user_ids  = :userId" , nativeQuery = true)
+    @Query(value = "select c_rc.*\n" +
+            "\n" +
+            "from \n" +
+            "    TBL_CATEGORY c_rc   \n" +
+            "        inner join  TBL_OPERATIONAL_ROLE_CATEGORY   rc    \n" +
+            "          on c_rc.id = rc.F_CATEGORY  \n" +
+            "        inner join TBL_OPERATIONAL_ROLE r\n" +
+            "          on rc.F_OPERATIONAL_ROLE = r.id \n" +
+            "         inner join  TBL_OPERATIONAL_ROLE_USER_IDS  rell \n" +
+            "          on    rell.F_OPERATIONAL_ROLE = r.id \n" +
+            "where \n" +
+            "rell.user_ids = :userId", nativeQuery = true)
     Set<Category> findAllByUserId (@Param("userId") Long userId);
 
 }

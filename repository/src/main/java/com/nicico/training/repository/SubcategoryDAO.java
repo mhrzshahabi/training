@@ -31,8 +31,17 @@ public interface SubcategoryDAO extends JpaRepository<Subcategory, Long>, JpaSpe
             "WHERE\n" +
             "    teach.id =:teachHistoryId",nativeQuery = true)
     List<String> findSubCategoryNamesByTeachHistoryId(Long teachHistoryId);
-
-    @Query(value = "select c_ruc.* from TBL_OPERATIONAL_ROLE r  inner join  TBL_OPERATIONAL_ROLE_USER_IDS  rell  on    rell.F_OPERATIONAL_ROLE = r.id inner join  TBL_OPERATIONAL_ROLE_SUBCATEGORY rsc   on rsc.F_OPERATIONAL_ROLE = r.id inner join TBL_SUB_CATEGORY c_ruc  on c_ruc.id = rsc.F_SUBCATEGORY  on c_ruc.id = rsc.F_SUBCATEGORY  where \n" +
+    @Query(value = "select c_ruc.*\n" +
+            "\n" +
+            "from \n" +
+            "     TBL_SUB_CATEGORY c_ruc\n" +
+            "        inner join  TBL_OPERATIONAL_ROLE_SUBCATEGORY rsc  \n" +
+            "          on c_ruc.id = rsc.F_SUBCATEGORY \n" +
+            "        inner join TBL_OPERATIONAL_ROLE r\n" +
+            "          on rsc.F_OPERATIONAL_ROLE = r.id \n" +
+            "         inner join  TBL_OPERATIONAL_ROLE_USER_IDS  rell \n" +
+            "          on    rell.F_OPERATIONAL_ROLE = r.id \n" +
+            "where \n" +
             "rell.user_ids = :userId" , nativeQuery = true)
     Set<Subcategory> findAllByUserId (@Param("userId") Long userId);
 }
