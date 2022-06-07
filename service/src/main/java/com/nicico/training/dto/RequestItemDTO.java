@@ -26,9 +26,10 @@ public class RequestItemDTO {
     private String currentPostTitle;
     private String educationLevel;
     private String educationMajor;
-    private String workGroupCode;
     private String state;
     private long competenceReqId;
+//    private String workGroupCode;
+//    private List<Long> operationalRoleIds;
 
     @Getter
     @Setter
@@ -37,6 +38,7 @@ public class RequestItemDTO {
     public static class Info extends RequestItemDTO {
         private Long id;
         private String nationalCode;
+        private List<String> operationalRoleTitles;
     }
 
     @Getter

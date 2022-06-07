@@ -40,7 +40,8 @@
             {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
+            // {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
+            {name: "operationalRoleTitles", title: "گروه های کاری"},
             {name: "state", title: "وضعیت", filterOperator: "iContains",
                 valueMap: {
                     "نیاز به گذراندن دوره": "نیاز به گذراندن دوره",
@@ -82,7 +83,7 @@
             {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
+            // {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
             {name: "state", title: "وضعیت", filterOperator: "iContains",
                 valueMap: {
                     "نیاز به گذراندن دوره": "نیاز به گذراندن دوره",
@@ -442,7 +443,6 @@
 
             let ToolStrip_Actions_Import_Data = isc.HLayout.create({
                 width: "100%",
-                // membersMargin: 5,
                 members: [
                     isc.DynamicForm.create({
                         width: "20%",
@@ -560,8 +560,33 @@
                                         }
                                     }
                                 }
-                            }
+                            },
                             </sec:authorize>
+                        ]
+                    }),
+                    isc.DynamicForm.create({
+                        ID:"trainingPostNeedAssessmentStatus",
+                        width: "20%",
+                        numCols: 8,
+                        fields: [
+                            {
+                                name: "statusTitle",
+                                title: "وضعیت نیازسنجی پست پیشنهادی",
+                                type: "staticText",
+                                colSpan: 8
+                            },
+                            {
+                                name: "modifiedDate",
+                                title: "تاریخ بروزرسانی:",
+                                type: "staticText",
+                                colSpan: 1
+                            },
+                            {
+                                name: "modifiedBy",
+                                title: "بروزرسانی کننده:",
+                                type: "staticText",
+                                colSpan: 1
+                            }
                         ]
                     }),
                     <sec:authorize access="hasAuthority('CompetenceRequest_P')">
@@ -662,19 +687,18 @@
                 width: "10%",
                 align: "center"
             },
+            // {
+            //     name: "workGroupCode",
+            //     width: "10%",
+            //     align: "center",
+            //     canFilter: false,
+            //     hidden: true
+            // },
             {
-                name: "workGroupCode",
+                name: "operationalRoleTitles",
                 width: "10%",
                 align: "center",
-                canFilter: false,
-                // autoFetchData: false,
-                // optionDataSource: RestDataSource_Competence_Request_Category,
-                // displayField: "titleFa",
-                // valueField: "id",
-                // filterFields: ["titleFa"],
-                // pickListProperties: {
-                //     showFilterEditor: false
-                // }
+                canFilter: false
             },
             {
                 name: "state",
@@ -1090,9 +1114,9 @@
         width: "100%",
         height: "100%",
         tabs: [
+            {name: "TabPane_Personnel_Training_History", title: "دوره های گذرانده فرد", pane: ListGrid_Personnel_Training_History},
             {name: "TabPane_Personnel_Job_History", title: "سوابق شغلی پرسنل", pane: ListGrid_Personnel_Job_History},
             // {name: "TabPane_Post_History", title: "سوابق پست پیشنهادی", pane: ListGrid_Post_History},
-            {name: "TabPane_Personnel_Training_History", title: "دوره های گذرانده فرد", pane: ListGrid_Personnel_Training_History}
         ],
         tabSelected: function () {
             selectionUpdated_Competence_Request();
@@ -1351,12 +1375,12 @@
                     width: "10%",
                     align: "center"
                 },
-                {
-                    name: "workGroupCode",
-                    width: "10%",
-                    align: "center",
-                    canEdit: false
-                },
+                // {
+                //     name: "workGroupCode",
+                //     width: "10%",
+                //     align: "center",
+                //     canEdit: false
+                // },
                 {
                     name: "state",
                     width: "10%",
@@ -1473,7 +1497,24 @@
             return;
         }
 
+        isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/getNeedAssessmentInfo?trainingPostCode=" + requestItem.post, "GET", null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let data = JSON.parse(resp.httpResponseText);
+                trainingPostNeedAssessmentStatus.setValue("modifiedDate", data.lastModifiedDateNA);
+                trainingPostNeedAssessmentStatus.setValue("modifiedBy", data.modifiedByNA);
+            } else {
+                trainingPostNeedAssessmentStatus.setValue("modifiedDate", "پست وجود ندارد");
+                trainingPostNeedAssessmentStatus.setValue("modifiedBy", "پست وجود ندارد");
+            }
+        }));
+
         switch (tab.name) {
+            case "TabPane_Personnel_Training_History": {
+                RestDataSource_Competence_Request_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + requestItem.nationalCode + "/" + requestItem.personnelNumber;
+                ListGrid_Personnel_Training_History.invalidateCache();
+                ListGrid_Personnel_Training_History.fetchData();
+                break;
+            }
             case "TabPane_Personnel_Job_History": {
                 RestDataSource_Competence_Request_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + requestItem.nationalCode;
                 ListGrid_Personnel_Job_History.fetchData();
@@ -1486,7 +1527,7 @@
                 ListGrid_Post_History.invalidateCache();
 
                 postStatus.setContents("وضعیت پست :");
-                isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/getNeedAssessment?postCode=" + requestItem.post, "GET", null, function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/getNeedAssessmentInfo?postCode=" + requestItem.post, "GET", null, function (resp) {
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         let data = JSON.parse(resp.httpResponseText);
                         needADate.setValue(data.lastModifiedDateNA);
@@ -1496,12 +1537,6 @@
                         needABy.setValue("پست وجود ندارد");
                     }
                 }));
-                break;
-            }
-            case "TabPane_Personnel_Training_History": {
-                RestDataSource_Competence_Request_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + requestItem.nationalCode + "/" + requestItem.personnelNumber;
-                ListGrid_Personnel_Training_History.invalidateCache();
-                ListGrid_Personnel_Training_History.fetchData();
                 break;
             }
         }

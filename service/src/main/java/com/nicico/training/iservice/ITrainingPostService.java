@@ -39,4 +39,7 @@ public interface ITrainingPostService {
 
     Optional<TrainingPost> isTrainingPostExist(String trainingPostCode);
 
+    TrainingPostDTO.needAssessmentInfo getNeedAssessmentInfo(String trainingPostCode);
+
+
 }

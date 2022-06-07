@@ -1,12 +1,15 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.copper.common.util.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -64,6 +67,22 @@ public class TrainingPostDTO {
     public static class Update extends Create {
         private Long id;
         private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("NeedAssessmentInfo")
+    public static class needAssessmentInfo {
+        private Date lastModifiedDateNA;
+        private String modifiedByNA;
+
+        public String getLastModifiedDateNA() {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+            if (lastModifiedDateNA != null)
+                return DateUtil.convertMiToKh(formatter.format(lastModifiedDateNA));
+            return "آپ دیت نشده";
+        }
     }
 
     @Getter

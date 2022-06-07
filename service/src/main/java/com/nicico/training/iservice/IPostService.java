@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 8/29/2019, 11:50 AM
-*/
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;

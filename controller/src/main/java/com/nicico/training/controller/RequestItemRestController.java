@@ -52,9 +52,7 @@ public class RequestItemRestController {
         List<RequestItem> requestItem = requestItemBeanMapper.toRequestItemDtos(requests);
         RequestItemDto dto = requestItemService.createList(requestItem);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
-
     }
-
 
     @Loggable
     @PutMapping(value = "/{id}")

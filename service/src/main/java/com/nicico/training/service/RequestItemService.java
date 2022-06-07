@@ -25,6 +25,7 @@ import response.requestItem.RequestItemWithDiff;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -36,7 +37,6 @@ public class RequestItemService implements IRequestItemService {
     private final IPersonnelService personnelService;
     private final ISynonymPersonnelService synonymPersonnelService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
-    private final IPostService iPostService;
     private final ITrainingPostService trainingPostService;
     private final ParameterValueService parameterValueService;
     private final RequestItemBeanMapper requestItemBeanMapper;
@@ -201,12 +201,19 @@ public class RequestItemService implements IRequestItemService {
             Optional<TrainingPost> optionalTrainingPost = trainingPostService.isTrainingPostExist(requestItem.getPost());
 
             if (!optionalTrainingPost.isPresent()) {
-                requestItemWithDiff.setWorkGroupCode("پست وجود ندارد");
+                requestItemWithDiff.setOperationalRoleIds(null);
+                requestItem.setOperationalRoleIds(null);
+//                requestItemWithDiff.setWorkGroupCode("پست وجود ندارد");
                 requestItem.setWorkGroupCode("پست وجود ندارد");
             } else {
-                String workGroupCode = iOperationalRoleService.getWorkGroup(optionalTrainingPost.get().getId());
-                requestItemWithDiff.setWorkGroupCode(workGroupCode);
-                requestItem.setWorkGroupCode(workGroupCode);
+                List<OperationalRole> operationalRoles = iOperationalRoleService.getOperationalRolesById(optionalTrainingPost.get().getId());
+                List<Long> operationalRoleIds = operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList());
+//                String workGroupCode = iOperationalRoleService.getWorkGroup(optionalTrainingPost.get().getId());
+                requestItemWithDiff.setOperationalRoleIds(operationalRoleIds);
+                requestItemWithDiff.setOperationalRoleTitles(operationalRoles.stream().map(OperationalRole::getTitle).collect(Collectors.toList()));
+                requestItem.setOperationalRoleIds(operationalRoleIds);
+//                requestItemWithDiff.setWorkGroupCode("گروه کاری");
+                requestItem.setWorkGroupCode("گروه کاری");
             }
 
             if (synonymPersonnel.getPersonnelNo() != null && requestItem.getPersonnelNumber() != null && synonymPersonnel.getPersonnelNo().trim().equals(requestItem.getPersonnelNumber().trim())) {

@@ -3,6 +3,8 @@ package response.requestItem;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 public class RequestItemWithDiff {
@@ -35,10 +37,6 @@ public class RequestItemWithDiff {
     private String correctCurrentPostTitle;
     private boolean isCurrentPostTitleCorrect;
 
-//    private String postTitle;
-//    private String correctPostTitle;
-//    private boolean isPostTitleCorrect;
-
     private String affairs;
     private String correctAffairs;
     private boolean isAffairsCorrect;
@@ -47,6 +45,9 @@ public class RequestItemWithDiff {
     private String postTitle;
     private String educationLevel;
     private String educationMajor;
-    private String workGroupCode;
+//    private String workGroupCode;
     private String state;
+    private List<Long> operationalRoleIds;
+    private List<String> operationalRoleTitles;
+
 }

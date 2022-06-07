@@ -68,7 +68,7 @@ public class PostDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("PersonnelInfo")
+    @ApiModel("NeedAssessmentInfo")
     public static class needAssessmentInfo {
         private Date lastModifiedDateNA;
         private String modifiedByNA;

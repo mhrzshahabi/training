@@ -1355,4 +1355,8 @@
     <changeSet author="namdari (generated)" id="1653279185000-03">
         <addForeignKeyConstraint baseColumnNames="f_child_id" baseTableName="tbl_group_question" constraintName="FK_child_question_group" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_question_bank" validate="true"/>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-071">
+        <addForeignKeyConstraint baseColumnNames="F_REQUEST_ITEM" baseTableName="TBL_REQUEST_ITEM_OPERATIONAL_ROLE_IDS" constraintName="FKRequestItemINOperationalRoleIds" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_request_item" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
