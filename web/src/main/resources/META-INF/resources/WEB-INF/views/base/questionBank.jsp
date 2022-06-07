@@ -1795,6 +1795,16 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
         }
 
+        if (QuestionBankDF_questionBank.getItem("questionTypeId").getValue() !== 520 && QuestionBankDF_questionBank.getItem("questionTypeId").getValue() !== 519){
+
+            if (QuestionBankDF_questionBank.getField("groupQuestions").getValue() === undefined || QuestionBankDF_questionBank.getField("groupQuestions").getValue() === null
+      || QuestionBankDF_questionBank.getField("groupQuestions").getValue().length === 0){
+
+          createDialog("info", "سوالات گروهی را انتخاب کنید");
+                return;
+      }
+        }
+
         if (QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 520 || QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 519){
 
             QuestionBankDF_questionBank.getField("groupQuestions").setValue();
