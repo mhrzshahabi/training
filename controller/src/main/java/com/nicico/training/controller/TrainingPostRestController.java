@@ -9,7 +9,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.ITrainingPostService;
-import com.nicico.training.service.TrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -120,7 +119,6 @@ public class TrainingPostRestController {
 
     @Loggable
     @DeleteMapping(value = "/removePost/{TrainingPostId}/{postId}")
-    //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> removePost(@PathVariable Long TrainingPostId, @PathVariable Long postId) {
         trainingPostService.removePost(TrainingPostId, postId);
         return new ResponseEntity(HttpStatus.OK);
@@ -128,7 +126,6 @@ public class TrainingPostRestController {
 
     @Loggable
     @DeleteMapping(value = "/removePosts/{TrainingPostId}/{postIds}")
-    //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Void> removePosts(@PathVariable Long TrainingPostId, @PathVariable Set<Long> postIds) {
         trainingPostService.removePosts(TrainingPostId, postIds);
         return new ResponseEntity(HttpStatus.OK);
@@ -162,7 +159,6 @@ public class TrainingPostRestController {
 
     @Loggable
     @GetMapping(value = "/{trainingPostId}/getPersonnel")
-//    @PreAuthorize("hasAnyAuthority('r_post_group')")
     public ResponseEntity<ISC<PersonnelDTO.Info>> getPersonnel(@PathVariable Long trainingPostId, HttpServletRequest iscRq) throws IOException {
         List<PostDTO.Info> postList = trainingPostService.getPosts(trainingPostId);
         if (postList == null || postList.isEmpty()) {
@@ -174,4 +170,14 @@ public class TrainingPostRestController {
         SearchDTO.SearchRs<PersonnelDTO.Info> searchRs = personnelService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
+
+    @GetMapping("/getNeedAssessmentInfo")
+    public ResponseEntity getNeedAssessmentInfo(@RequestParam String trainingPostCode) {
+        try {
+            return new ResponseEntity<>(trainingPostService.getNeedAssessmentInfo(trainingPostCode), HttpStatus.OK);
+        } catch (TrainingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
 }

@@ -10,6 +10,7 @@ import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -47,11 +48,33 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "post")
     private String post;
 
+    @NotAudited
+    @Column(name = "post_title")
+    private String postTitle;
+
+    @NotAudited
+    @Column(name = "current_post_title")
+    private String currentPostTitle;
+
     @Column(name = "work_group_code")
     private String workGroupCode;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "TBL_REQUEST_ITEM_OPERATIONAL_ROLE_IDS", joinColumns = @JoinColumn(name = "F_REQUEST_ITEM"))
+    @Column(name = "OPERATIONAL_ROLE_IDS")
+    @NotAudited
+    private List<Long> operationalRoleIds;
+
     @Column(name = "national_code")
     private String nationalCode;
+
+    @NotAudited
+    @Column(name = "education_level")
+    private String educationLevel;
+
+    @NotAudited
+    @Column(name = "education_major")
+    private String educationMajor;
 
     @Column(name = "state")
     private RequestItemState state;

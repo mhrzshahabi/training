@@ -2,10 +2,10 @@ package com.nicico.training.mapper.requestItem;
 
 
 import com.nicico.training.dto.RequestItemDTO;
+import com.nicico.training.iservice.IOperationalRoleService;
+import com.nicico.training.iservice.ISynonymPersonnelService;
 import com.nicico.training.model.RequestItem;
-import com.nicico.training.model.SynonymPersonnel;
 import com.nicico.training.model.enums.RequestItemState;
-import com.nicico.training.service.SynonymPersonnelService;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.requestItem.RequestItemWithDiff;
@@ -18,40 +18,33 @@ import java.util.List;
 public abstract class RequestItemBeanMapper {
 
     @Autowired
-    protected SynonymPersonnelService synonymPersonnelService;
+    protected IOperationalRoleService operationalRoleService;
+    @Autowired
+    protected ISynonymPersonnelService synonymPersonnelService;
 
     @Mapping(source = "state", target = "state", qualifiedByName = "strToState")
     public abstract RequestItem toRequestItem (RequestItemDTO.Create request);
 
     @Mappings({
-            @Mapping(source = "personnelNumber", target = "personnelNumber"),
-            @Mapping(source = "personnelNo2", target = "personnelNo2"),
-            @Mapping(source = "name", target = "name"),
-            @Mapping(source = "lastName", target = "lastName"),
-            @Mapping(source = "affairs", target = "affairs"),
-            @Mapping(source = "post", target = "post"),
-            @Mapping(source = "workGroupCode", target = "workGroupCode"),
-            @Mapping(source = "nationalCode", target = "nationalCode"),
-            @Mapping(source = "competenceReqId", target = "competenceReqId"),
+//            @Mapping(source = "personnelNumber", target = "personnelNumber"),
+//            @Mapping(source = "personnelNo2", target = "personnelNo2"),
+//            @Mapping(source = "name", target = "name"),
+//            @Mapping(source = "lastName", target = "lastName"),
+//            @Mapping(source = "affairs", target = "affairs"),
+//            @Mapping(source = "post", target = "post"),
+//            @Mapping(source = "nationalCode", target = "nationalCode"),
+//            @Mapping(source = "competenceReqId", target = "competenceReqId"),
             @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr"),
-            @Mapping(source = "nationalCode", target = "currentPostTitle", qualifiedByName = "getCurrentPostTitle"),
-            @Mapping(source = "nationalCode", target = "currentPostCode", qualifiedByName = "getCurrentPostCode"),
+            @Mapping(source = "operationalRoleIds", target = "operationalRoleTitles", qualifiedByName = "operationalRoleIdsToTitles"),
     })
     public abstract RequestItemDTO.Info toRequestItemDto(RequestItem requestItem);
 
     @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr")
     abstract RequestItemDTO.Info toRequestItemDiffDto(RequestItemWithDiff requestItemWithDiff);
 
-    @Named("getCurrentPostTitle")
-    protected String getCurrentPostTitle(String nationalCode) {
-        SynonymPersonnel synonymPersonnel = synonymPersonnelService.getByNationalCode(nationalCode);
-        return synonymPersonnel.getPostTitle();
-    }
-
-    @Named("getCurrentPostCode")
-    protected String getCurrentPostCode(String nationalCode) {
-        SynonymPersonnel synonymPersonnel = synonymPersonnelService.getByNationalCode(nationalCode);
-        return synonymPersonnel.getPostCode();
+    @Named("operationalRoleIdsToTitles")
+    protected List<String> operationalRoleIdsToTitles(List<Long> operationalRoleIds) {
+        return operationalRoleService.getOperationalRoleTitlesByIds(operationalRoleIds);
     }
 
     @Named("StateToStr")
@@ -60,7 +53,7 @@ public abstract class RequestItemBeanMapper {
         return state.getTitleFa();
         else return "";
     }
-//
+
     @Named("strToState")
     protected RequestItemState strToState(String title) {
         return Arrays.stream(RequestItemState.values())

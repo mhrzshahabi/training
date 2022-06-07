@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
@@ -12,6 +13,7 @@ import com.nicico.training.model.RequestItem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -22,7 +24,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -51,9 +52,7 @@ public class RequestItemRestController {
         List<RequestItem> requestItem = requestItemBeanMapper.toRequestItemDtos(requests);
         RequestItemDto dto = requestItemService.createList(requestItem);
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
-
     }
-
 
     @Loggable
     @PutMapping(value = "/{id}")
@@ -65,16 +64,14 @@ public class RequestItemRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        boolean flag = true;
-        HttpStatus httpStatus = HttpStatus.OK;
+    public ResponseEntity delete(@PathVariable Long id) {
         try {
             requestItemService.delete(id);
-        } catch (Exception e) {
-            httpStatus = HttpStatus.NO_CONTENT;
-            flag = false;
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
-        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
@@ -149,8 +146,7 @@ public class RequestItemRestController {
         }
 
         List<RequestItem> totalResponse = requestItemService.search(request, (long) id);
-        List<RequestItem> response = totalResponse.stream().filter(item -> item.getDeleted() == null).collect(Collectors.toList());
-        List<RequestItemDTO.Info> res = requestItemBeanMapper.toRequestItemDTODtos(response);
+        List<RequestItemDTO.Info> res = requestItemBeanMapper.toRequestItemDTODtos(totalResponse);
 
         final RequestItemDTO.SpecRs specResponse = new RequestItemDTO.SpecRs();
         final RequestItemDTO.RequestItemSpecRs specRs = new RequestItemDTO.RequestItemSpecRs();

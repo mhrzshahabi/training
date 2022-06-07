@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -114,11 +115,16 @@ public class OperationalRoleService implements IOperationalRoleService {
     }
 
     @Override
-    public String getWorkGroup(Long postId) {
-         Optional<OperationalRole> operationalRole = operationalRoleDAO.findByPostIds(postId);
-         if (operationalRole.isPresent())
-             return operationalRole.get().getTitle();
-         else return "گروه کاری ثبت نشده";
+    public List<OperationalRole> getOperationalRolesById(Long postId) {
+        List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByPostIds(postId);
+        if (operationalRoles.size() != 0)
+            return operationalRoles;
+        else return new ArrayList<>();
+    }
+
+    @Override
+    public List<String> getOperationalRoleTitlesByIds(List<Long> ids) {
+        return operationalRoleDAO.findAllById(ids).stream().map(OperationalRole::getTitle).collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)

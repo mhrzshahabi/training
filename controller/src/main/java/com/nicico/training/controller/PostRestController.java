@@ -86,7 +86,7 @@ public class PostRestController {
         }
     }
 
-    @GetMapping("/getNeedAssessment")
+    @GetMapping("/getNeedAssessmentInfo")
     public ResponseEntity getNeedAssessmentInfo(HttpServletRequest request) {
         try {
             String postCode = request.getParameter("postCode");

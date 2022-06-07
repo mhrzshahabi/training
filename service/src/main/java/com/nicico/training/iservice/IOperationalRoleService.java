@@ -25,8 +25,6 @@ public interface IOperationalRoleService {
 
     OperationalRole getOperationalRole(Long id);
 
-    String getWorkGroup(Long postId);
-
     SearchDTO.SearchRs<OperationalRoleDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException;
 
     SearchDTO.SearchRs<ViewTrainingPostDTO.Info> getRoleUsedPostList(Long roleId);
@@ -40,5 +38,9 @@ public interface IOperationalRoleService {
     void deleteIndividualPost(Long roleId, List<Long> postIds);
 
     OperationalRole addIndividualPost(Long roleId, List<Long> postIds);
+
+    List<OperationalRole> getOperationalRolesById(Long postId);
+
+    List<String> getOperationalRoleTitlesByIds(List<Long> ids);
 
 }

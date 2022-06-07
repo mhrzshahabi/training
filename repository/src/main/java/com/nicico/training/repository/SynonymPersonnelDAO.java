@@ -11,8 +11,11 @@ import java.util.Optional;
 @Repository
 public interface SynonymPersonnelDAO extends JpaRepository<SynonymPersonnel, Long>, JpaSpecificationExecutor<SynonymPersonnel> {
 
-    @Query(value = "select * from view_synonym_personnel where national_code = :nationalCode AND  deleted = 0" , nativeQuery = true)
+    @Query(value = "select * from view_synonym_personnel where national_code = :nationalCode AND deleted = 0" , nativeQuery = true)
     SynonymPersonnel findSynonymPersonnelDataByNationalCode(String nationalCode);
+
+    @Query(value = "select * from view_synonym_personnel where emp_no = :personnelNo2 AND deleted = 0" , nativeQuery = true)
+    SynonymPersonnel findSynonymPersonnelDataByPersonnelNo2(String personnelNo2);
 
     Optional<SynonymPersonnel> findByPersonnelNoAndDeleted(String nationalCode, Integer deleted);
 }

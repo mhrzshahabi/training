@@ -3607,5 +3607,14 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-070">
+        <createTable tableName="TBL_REQUEST_ITEM_OPERATIONAL_ROLE_IDS">
+            <column name="F_REQUEST_ITEM" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="OPERATIONAL_ROLE_IDS" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
 
 </databaseChangeLog>

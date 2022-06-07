@@ -21,6 +21,8 @@ public interface OperationalRoleDAO extends JpaRepository<OperationalRole, Long>
 
    Optional<OperationalRole> findByPostIds(Long postId);
 
+   List<OperationalRole> findAllByPostIds(Long postId);
+
     /**
      * it returns the id of posts which user has access to them in operational role
      *

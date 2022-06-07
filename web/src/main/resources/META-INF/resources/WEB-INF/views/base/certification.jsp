@@ -30,15 +30,18 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "nationalCode", title: "کدملی", filterOperator: "iContains"},
-            {name: "personnelNumber", title: "شماره پرسنلی 10 رقمی", filterOperator: "iContains"},
-            {name: "personnelNo2", title: "شماره پرسنلی 6 رقمی", filterOperator: "iContains"},
+            {name: "personnelNo2", title: "شماره پرسنلی قدیم", filterOperator: "iContains"},
+            {name: "personnelNumber", title: "شماره پرسنلی جدید", filterOperator: "iContains"},
             {name: "name", title: "نام", filterOperator: "iContains"},
             {name: "lastName", title: "نام خانوادگی", filterOperator: "iContains"},
+            {name: "educationLevel", title: "مدرک تحصیلی", filterOperator: "iContains"},
+            {name: "educationMajor", title: "رشته", filterOperator: "iContains"},
+            {name: "currentPostTitle", title: "پست فعلی", filterOperator: "iContains"},
+            {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            {name: "currentPostTitle", title: "عنوان پست فعلی", filterOperator: "iContains"},
-            {name: "currentPostCode", title: "کد پست فعلی", filterOperator: "iContains"},
-            {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
+            // {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
+            {name: "operationalRoleTitles", title: "گروه های کاری"},
             {name: "state", title: "وضعیت", filterOperator: "iContains",
                 valueMap: {
                     "نیاز به گذراندن دوره": "نیاز به گذراندن دوره",
@@ -72,15 +75,15 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "nationalCode", title: "کدملی", filterOperator: "iContains"},
-            {name: "personnelNumber", title: "شماره پرسنلی 10 رقمی", filterOperator: "iContains"},
-            {name: "personnelNo2", title: "شماره پرسنلی 6 رقمی", filterOperator: "iContains"},
+            {name: "personnelNo2", title: "شماره پرسنلی قدیم", filterOperator: "iContains"},
+            {name: "personnelNumber", title: "شماره پرسنلی جدید", filterOperator: "iContains"},
             {name: "name", title: "نام", filterOperator: "iContains"},
             {name: "lastName", title: "نام خانوادگی", filterOperator: "iContains"},
+            {name: "currentPostTitle", title: "پست فعلی", filterOperator: "iContains"},
+            {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            {name: "currentPostTitle", title: "عنوان پست فعلی", filterOperator: "iContains"},
-            {name: "currentPostCode", title: "کد پست فعلی", filterOperator: "iContains"},
-            {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
+            // {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
             {name: "state", title: "وضعیت", filterOperator: "iContains",
                 valueMap: {
                     "نیاز به گذراندن دوره": "نیاز به گذراندن دوره",
@@ -186,8 +189,10 @@
             // let headers = ListGrid_Competence_Request_Items.getFields().slice(1, 6).map(q => q.title);
             // let fieldNames = ListGrid_Competence_Request_Items.getFields().slice(1, 6).map(q => q.name);
 
-            let headers = ["کدملی", "شماره پرسنلی 10 رقمی", "شماره پرسنلی 6 رقمی", "نام", "نام خانوادگی", "امور", "کدپست پیشنهادی" ];
-            let fieldNames = ["nationalCode", "personnelNumber", "personnelNo2", "name", "lastName", "affairs", "post" ];
+            // let headers = ["کدملی", "شماره پرسنلی 10 رقمی", "شماره پرسنلی 6 رقمی", "نام", "نام خانوادگی", "امور", "کدپست پیشنهادی" ];
+            // let fieldNames = ["nationalCode", "personnelNumber", "personnelNo2", "name", "lastName", "affairs", "post" ];
+            let headers = ["کدملی", "شماره پرسنلی قدیم", "شماره پرسنلی جدید", "نام", "نام خانوادگی", "مدرک تحصیلی", "رشته", "پست فعلی", "پست پیشنهادی", "امور", "کدپست پیشنهادی"];
+            let fieldNames = ["nationalCode", "personnelNo2", "personnelNumber", "name", "lastName", "educationLevel", "educationMajor", "currentPostTitle", "postTitle", "affairs", "post" ];
             window.open("${contextPath}/training/reportsToExcel/export?headers=" + headers + "&fieldNames=" + fieldNames);
         }
     });
@@ -438,7 +443,6 @@
 
             let ToolStrip_Actions_Import_Data = isc.HLayout.create({
                 width: "100%",
-                // membersMargin: 5,
                 members: [
                     isc.DynamicForm.create({
                         width: "20%",
@@ -446,8 +450,8 @@
                         fields: [
                             <sec:authorize access="hasAuthority('CompetenceRequest_C')">
                             {
-                                ID:"certificatExcelFile",
-                                name: "certificatExcelFile",
+                                ID:"certificationExcelFile",
+                                name: "certificationExcelFile",
                                 type: "file",
                                 title: "انتخاب فایل",
                                 endRow: false,
@@ -464,7 +468,7 @@
                                 startRow: false,
                                 colSpan: 1,
                                 click:function () {
-                                    let address=certificatExcelFile.getValue();
+                                    let address=certificationExcelFile.getValue();
                                     if(address==null) {
                                         createDialog("info", "فايل خود را انتخاب نماييد.");
                                     } else {
@@ -487,10 +491,14 @@
                                                                 c.nationalCode === Object.values(XL_row_object[i])[0]).length === 0) {
                                                                 let current = {
                                                                     nationalCode: XL_row_object[i]["کدملی"],
-                                                                    personnelNumber: XL_row_object[i]["شماره پرسنلی 10 رقمی"],
-                                                                    personnelNo2: XL_row_object[i]["شماره پرسنلی 6 رقمی"],
+                                                                    personnelNo2: XL_row_object[i]["شماره پرسنلی قدیم"],
+                                                                    personnelNumber: XL_row_object[i]["شماره پرسنلی جدید"],
                                                                     name: XL_row_object[i]["نام"],
                                                                     lastName: XL_row_object[i]["نام خانوادگی"],
+                                                                    educationLevel: XL_row_object[i]["مدرک تحصیلی"],
+                                                                    educationMajor: XL_row_object[i]["رشته"],
+                                                                    currentPostTitle: XL_row_object[i]["پست فعلی"],
+                                                                    postTitle: XL_row_object[i]["پست پیشنهادی"],
                                                                     affairs: XL_row_object[i]["امور"],
                                                                     post: XL_row_object[i]["کدپست پیشنهادی"],
                                                                     competenceReqId:ListGrid_Competence_Request.getSelectedRecord().id
@@ -504,19 +512,19 @@
                                                                 continue;
                                                             }
                                                         }
-                                                        certificatExcelFile.setValue('');
+                                                        certificationExcelFile.setValue('');
                                                     });
 
                                                     if(records.length > 0) {
 
-                                                        let uniqueRecords = [];
-                                                        for (let i=0; i < records.length; i++) {
-                                                            if (uniqueRecords.filter(function (item) {return item.personnelNumber === records[i].personnelNumber ;}).length===0) {
-                                                                uniqueRecords.push(records[i]);
-                                                            }
-                                                        }
+                                                        // let uniqueRecords = [];
+                                                        // for (let i=0; i < records.length; i++) {
+                                                        //     if (uniqueRecords.filter(function (item) {return item.personnelNumber === records[i].personnelNumber ;}).length===0) {
+                                                        //         uniqueRecords.push(records[i]);
+                                                        //     }
+                                                        // }
                                                         wait.show();
-                                                        isc.RPCManager.sendRequest(TrDSRequest(RequestItemWithDiff, "POST", JSON.stringify(uniqueRecords), function (resp) {
+                                                        isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/list", "POST", JSON.stringify(records), function (resp) {
                                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                                 wait.close();
                                                                 let result = JSON.parse(resp.data);
@@ -543,17 +551,42 @@
                                             };
                                         };
 
-                                        let split=$('[name="certificatExcelFile"]')[0].files[0].name.split('.');
+                                        let split=$('[name="certificationExcelFile"]')[0].files[0].name.split('.');
                                         if(split[split.length-1]=='xls'||split[split.length-1]=='csv'||split[split.length-1]=='xlsx'){
                                             let xl2json = new ExcelToJSON();
-                                            xl2json.parseExcel($('[name="certificatExcelFile"]')[0].files[0]);
+                                            xl2json.parseExcel($('[name="certificationExcelFile"]')[0].files[0]);
                                         }else{
                                             createDialog("info", "فایل انتخابی نادرست است. پسوندهای فایل مورد تایید xlsx,xls,csv هستند.");
                                         }
                                     }
                                 }
-                            }
+                            },
                             </sec:authorize>
+                        ]
+                    }),
+                    isc.DynamicForm.create({
+                        ID:"trainingPostNeedAssessmentStatus",
+                        width: "20%",
+                        numCols: 8,
+                        fields: [
+                            {
+                                name: "statusTitle",
+                                title: "وضعیت نیازسنجی پست پیشنهادی",
+                                type: "staticText",
+                                colSpan: 8
+                            },
+                            {
+                                name: "modifiedDate",
+                                title: "تاریخ بروزرسانی:",
+                                type: "staticText",
+                                colSpan: 1
+                            },
+                            {
+                                name: "modifiedBy",
+                                title: "بروزرسانی کننده:",
+                                type: "staticText",
+                                colSpan: 1
+                            }
                         ]
                     }),
                     <sec:authorize access="hasAuthority('CompetenceRequest_P')">
@@ -579,7 +612,6 @@
         }
     });
     ListGrid_Competence_Request_Items = isc.TrLG.create({
-        ID: "Competence_Request_Items_LG",
         showFilterEditor: true,
         canAutoFitFields: true,
         width: "100%",
@@ -604,12 +636,12 @@
                 align: "center"
             },
             {
-                name: "personnelNumber",
+                name: "personnelNo2",
                 width: "10%",
                 align: "center"
             },
             {
-                name: "personnelNo2",
+                name: "personnelNumber",
                 width: "10%",
                 align: "center"
             },
@@ -624,13 +656,23 @@
                 align: "center"
             },
             {
+                name: "educationLevel",
+                width: "10%",
+                align: "center"
+            },
+            {
+                name: "educationMajor",
+                width: "10%",
+                align: "center"
+            },
+            {
                 name: "currentPostTitle",
                 width: "10%",
                 align: "center",
                 canFilter: false
             },
             {
-                name: "currentPostCode",
+                name: "postTitle",
                 width: "10%",
                 align: "center",
                 canFilter: false
@@ -645,25 +687,25 @@
                 width: "10%",
                 align: "center"
             },
+            // {
+            //     name: "workGroupCode",
+            //     width: "10%",
+            //     align: "center",
+            //     canFilter: false,
+            //     hidden: true
+            // },
             {
-                name: "workGroupCode",
+                name: "operationalRoleTitles",
                 width: "10%",
                 align: "center",
-                canFilter: false,
-                // autoFetchData: false,
-                // optionDataSource: RestDataSource_Competence_Request_Category,
-                // displayField: "titleFa",
-                // valueField: "id",
-                // filterFields: ["titleFa"],
-                // pickListProperties: {
-                //     showFilterEditor: false
-                // }
+                canFilter: false
             },
             {
                 name: "state",
                 width: "10%",
                 align: "center",
-                canEdit: true,
+                hidden: true,
+                canEdit: false,
                 canFilter: false,
                 valueMap: {
                     "نیاز به گذراندن دوره": "نیاز به گذراندن دوره",
@@ -686,6 +728,7 @@
                 name: "editIcon",
                 width: "4%",
                 align: "center",
+                hidden: true,
                 showTitle: false,
                 canFilter: false
             },
@@ -1071,9 +1114,9 @@
         width: "100%",
         height: "100%",
         tabs: [
+            {name: "TabPane_Personnel_Training_History", title: "دوره های گذرانده فرد", pane: ListGrid_Personnel_Training_History},
             {name: "TabPane_Personnel_Job_History", title: "سوابق شغلی پرسنل", pane: ListGrid_Personnel_Job_History},
-            {name: "TabPane_Post_History", title: "سوابق پست پیشنهادی", pane: ListGrid_Post_History},
-            {name: "TabPane_Personnel_Training_History", title: "دوره های گذرانده فرد", pane: ListGrid_Personnel_Training_History}
+            // {name: "TabPane_Post_History", title: "سوابق پست پیشنهادی", pane: ListGrid_Post_History},
         ],
         tabSelected: function () {
             selectionUpdated_Competence_Request();
@@ -1257,23 +1300,23 @@
                     }
                 },
                 {
-                    name: "personnelNumber",
-                    width: "10%",
-                    align: "center",
-                    formatCellValue: function (value, record) {
-                        if (record.personnelNumberCorrect != null && !record.personnelNumberCorrect)
-                            return record.correctPersonnelNumber;
-                        else
-                            return value;
-                    }
-                },
-                {
                     name: "personnelNo2",
                     width: "10%",
                     align: "center",
                     formatCellValue: function (value, record) {
                         if (record.personnelNo2Correct != null && !record.personnelNo2Correct)
                             return record.correctPersonnelNo2;
+                        else
+                            return value;
+                    }
+                },
+                {
+                    name: "personnelNumber",
+                    width: "10%",
+                    align: "center",
+                    formatCellValue: function (value, record) {
+                        if (record.personnelNumberCorrect != null && !record.personnelNumberCorrect)
+                            return record.correctPersonnelNumber;
                         else
                             return value;
                     }
@@ -1303,10 +1346,16 @@
                 {
                     name: "currentPostTitle",
                     width: "10%",
-                    align: "center"
+                    align: "center",
+                    formatCellValue: function (value, record) {
+                        if (record.currentPostTitleCorrect != null && !record.currentPostTitleCorrect)
+                            return record.correctCurrentPostTitle;
+                        else
+                            return value;
+                    }
                 },
                 {
-                    name: "currentPostCode",
+                    name: "postTitle",
                     width: "10%",
                     align: "center"
                 },
@@ -1326,24 +1375,17 @@
                     width: "10%",
                     align: "center"
                 },
-                {
-                    name: "workGroupCode",
-                    width: "10%",
-                    align: "center",
-                    canEdit: false,
-                    // autoFetchData: false,
-                    // optionDataSource: RestDataSource_Competence_Request_Category,
-                    // displayField: "titleFa",
-                    // valueField: "id",
-                    // filterFields: ["titleFa"],
-                    // pickListProperties: {
-                    //     showFilterEditor: false
-                    // }
-                },
+                // {
+                //     name: "workGroupCode",
+                //     width: "10%",
+                //     align: "center",
+                //     canEdit: false
+                // },
                 {
                     name: "state",
                     width: "10%",
                     align: "center",
+                    hidden: true,
                     canEdit: false
                 },
                 {
@@ -1353,22 +1395,25 @@
             ],
             getCellCSSText: function (record, rowNum, colNum) {
 
-                if (this.getFieldName(colNum) == "nationalCode") {
+                if (this.getFieldName(colNum) === "nationalCode") {
                     if (record.nationalCodeCorrect != null && !record.nationalCodeCorrect)
                         return "background-color:#57f271;";
-                } else if (this.getFieldName(colNum) == "personnelNumber") {
-                    if (record.personnelNumberCorrect != null && !record.personnelNumberCorrect)
-                        return "background-color:#57f271;";
-                } else if (this.getFieldName(colNum) == "personnelNo2") {
+                } else if (this.getFieldName(colNum) === "personnelNo2") {
                     if (record.personnelNo2Correct != null && !record.personnelNo2Correct)
                         return "background-color:#57f271;";
-                } else if (this.getFieldName(colNum) == "name") {
+                } else if (this.getFieldName(colNum) === "personnelNumber") {
+                    if (record.personnelNumberCorrect != null && !record.personnelNumberCorrect)
+                        return "background-color:#57f271;";
+                } else if (this.getFieldName(colNum) === "name") {
                     if (record.nameCorrect != null && !record.nameCorrect)
                         return "background-color:#57f271;";
-                } else if (this.getFieldName(colNum) == "lastName") {
+                } else if (this.getFieldName(colNum) === "lastName") {
                     if (record.lastNameCorrect != null && !record.lastNameCorrect)
                         return "background-color:#57f271;";
-                } else if (this.getFieldName(colNum) == "affairs") {
+                } else if (this.getFieldName(colNum) === "currentPostTitle") {
+                    if (record.currentPostTitleCorrect != null && !record.currentPostTitleCorrect)
+                        return "background-color:#57f271;";
+                } else if (this.getFieldName(colNum) === "affairs") {
                     if (record.affairsCorrect != null && !record.affairsCorrect)
                         return "background-color:#57f271;";
                 }
@@ -1379,7 +1424,7 @@
             width: "90%",
             height: 95,
             numCols: 2,
-            title: "اطلاعات صحیح براساس کدملی",
+            title: "اطلاعات صحیح براساس کدملی یا شماره پرسنلی قدیم",
             items: [
                 ListGrid_Request_Item_Valid_Data,
                 isc.MyHLayoutButtons.create({
@@ -1435,7 +1480,7 @@
 
         ListGrid_Competence_Request_Items.setData(result.list);
         if (result.list.size() === 0)
-            createDialog("info", "رکوردی با کدملی صحیح بر ای اضافه شدن وجود ندارد");
+            createDialog("info", "رکوردی با کدملی یا شماره پرسنلی قدیم صحیح برای اضافه شدن وجود ندارد");
         else {
             if (result.wrongCount !== 0)
                 createDialog("info"," از مجموع رکوردهای وارد شده؛ " + result.wrongCount + " رکورد با دیتای نادرست اضافه شده است ");
@@ -1452,7 +1497,24 @@
             return;
         }
 
+        isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/getNeedAssessmentInfo?trainingPostCode=" + requestItem.post, "GET", null, function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                let data = JSON.parse(resp.httpResponseText);
+                trainingPostNeedAssessmentStatus.setValue("modifiedDate", data.lastModifiedDateNA);
+                trainingPostNeedAssessmentStatus.setValue("modifiedBy", data.modifiedByNA);
+            } else {
+                trainingPostNeedAssessmentStatus.setValue("modifiedDate", "پست وجود ندارد");
+                trainingPostNeedAssessmentStatus.setValue("modifiedBy", "پست وجود ندارد");
+            }
+        }));
+
         switch (tab.name) {
+            case "TabPane_Personnel_Training_History": {
+                RestDataSource_Competence_Request_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + requestItem.nationalCode + "/" + requestItem.personnelNumber;
+                ListGrid_Personnel_Training_History.invalidateCache();
+                ListGrid_Personnel_Training_History.fetchData();
+                break;
+            }
             case "TabPane_Personnel_Job_History": {
                 RestDataSource_Competence_Request_PersonnelJobExperiences.fetchDataURL = masterDataUrl + "/job/" + requestItem.nationalCode;
                 ListGrid_Personnel_Job_History.fetchData();
@@ -1465,7 +1527,7 @@
                 ListGrid_Post_History.invalidateCache();
 
                 postStatus.setContents("وضعیت پست :");
-                isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/getNeedAssessment?postCode=" + requestItem.post, "GET", null, function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest(postUrl + "/getNeedAssessmentInfo?postCode=" + requestItem.post, "GET", null, function (resp) {
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         let data = JSON.parse(resp.httpResponseText);
                         needADate.setValue(data.lastModifiedDateNA);
@@ -1475,12 +1537,6 @@
                         needABy.setValue("پست وجود ندارد");
                     }
                 }));
-                break;
-            }
-            case "TabPane_Personnel_Training_History": {
-                RestDataSource_Competence_Request_PersonnelTraining.fetchDataURL = classUrl + "personnel-training/" + requestItem.nationalCode + "/" + requestItem.personnelNumber;
-                ListGrid_Personnel_Training_History.invalidateCache();
-                ListGrid_Personnel_Training_History.fetchData();
                 break;
             }
         }
@@ -1546,7 +1602,8 @@
                 {
                     name: "state.titleFa",
                     width: "10%",
-                    align: "center"
+                    align: "center",
+                    hidden: true
                 },
                 {
                     name: "lastModifiedDate",

@@ -226,4 +226,20 @@ public class TrainingPostService implements ITrainingPostService {
         List<String > area = trainingPostDAO.findAllArea();
         return area;
     }
+
+    @Override
+    public Optional<TrainingPost> isTrainingPostExist(String trainingPostCode) {
+        return trainingPostDAO.findByCodeAndDeleted(trainingPostCode, null);
+
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public TrainingPostDTO.needAssessmentInfo getNeedAssessmentInfo(String trainingPostCode) {
+        Optional<TrainingPost> optionalTrainingPost = trainingPostDAO.findByCodeAndDeleted(trainingPostCode, null);
+        if (optionalTrainingPost.isPresent())
+            return modelMapper.map(optionalTrainingPost.get(), TrainingPostDTO.needAssessmentInfo.class);
+        else
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
 }

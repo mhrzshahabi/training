@@ -4,10 +4,12 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.TrainingPostDTO;
+import com.nicico.training.model.TrainingPost;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface ITrainingPostService {
@@ -34,5 +36,10 @@ public interface ITrainingPostService {
     boolean updateToUnDeleted (Long id);
 
     List<String> getAllArea();
+
+    Optional<TrainingPost> isTrainingPostExist(String trainingPostCode);
+
+    TrainingPostDTO.needAssessmentInfo getNeedAssessmentInfo(String trainingPostCode);
+
 
 }

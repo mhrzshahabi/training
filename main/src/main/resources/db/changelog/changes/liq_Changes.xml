@@ -4276,6 +4276,15 @@ FROM
     </createView>
 </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-069">
+        <addColumn tableName="tbl_request_item">
+            <column name="post_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="current_post_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_level" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_major" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
