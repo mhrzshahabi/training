@@ -18,10 +18,7 @@ import com.nicico.training.utility.persianDate.PersianDate;
 import dto.exam.EQuestionType;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import response.question.dto.ElsAttachmentDto;
-import response.question.dto.ElsQuestionBankDto;
-import response.question.dto.ElsQuestionDto;
-import response.question.dto.ElsQuestionOptionDto;
+import response.question.dto.*;
 
 import java.time.ZoneId;
 import java.util.*;
@@ -126,7 +123,16 @@ public abstract class QuestionBankBeanMapper {
 
             elsQuestionDto.setQuestionId(questionBank.getId());
             elsQuestionDto.setTitle(questionBank.getQuestion());
-            elsQuestionDto.setGroupQuestions(questionBank.getGroupQuestions().stream().map(QuestionBank::getId).collect(Collectors.toSet()));
+            Set<GroupQuestionDto> groupQuestionDtos=new HashSet<>();
+            if (questionBank.getGroupQuestions()!=null && questionBank.getGroupQuestions().size()>0){
+                questionBank.getGroupQuestions().forEach(item->{
+                    GroupQuestionDto questionDto=new GroupQuestionDto();
+                    questionDto.setQuestion(item.getQuestion());
+                    questionDto.setId(item.getId());
+                    groupQuestionDtos.add(questionDto);
+                });
+            }
+            elsQuestionDto.setGroupQuestions(groupQuestionDtos);
             elsQuestionDto.setType(mapAnswerType(questionBank.getQuestionTypeId()));
             elsQuestionDto.setQuestionLevel(questionBank.getEQuestionLevel().getTitleFa());
 
@@ -336,7 +342,7 @@ public abstract class QuestionBankBeanMapper {
 //            create.setSubCategoryId(elsQuestionDto.getSubCategory());
             create.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
             if (elsQuestionDto.getGroupQuestions()!=null)
-            create.setGroupQuestions(questionBankService.getListOfGroupQuestions(elsQuestionDto.getGroupQuestions()).stream().map(QuestionBank::getId).collect(Collectors.toSet()));
+            create.setGroupQuestions(questionBankService.getListOfGroupQuestions(elsQuestionDto.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())).stream().map(QuestionBank::getId).collect(Collectors.toSet()));
             create.setTeacherId(teacherId);
             create.setLines(1);
             create.setDisplayTypeId(521L);
@@ -437,7 +443,7 @@ public abstract class QuestionBankBeanMapper {
         update.setSubCategoryId(tClass.getCourse().getSubCategoryId());
         update.setQuestionDesigner(teacherService.getTeacherFullName(teacherId));
         update.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
-        update.setGroupQuestions(elsQuestionDto.getGroupQuestions());
+        update.setGroupQuestions(elsQuestionDto.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet()));
         update.setLines(1);
         update.setTclassId(tClass.getId());
         update.setCourseId(tClass.getCourseId());

@@ -562,6 +562,15 @@
         },
     });
 
+    function changeFormDirection(style) {
+        QuestionBankDF_questionBank.getItem("question").setCellStyle(style);
+        QuestionBankDF_questionBank.getItem("option1").setCellStyle(style);
+        QuestionBankDF_questionBank.getItem("option2").setCellStyle(style);
+        QuestionBankDF_questionBank.getItem("option3").setCellStyle(style);
+        QuestionBankDF_questionBank.getItem("option4").setCellStyle(style);
+        QuestionBankDF_questionBank.getItem("descriptiveAnswer").setCellStyle(style);
+    }
+
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     let QuestionBankDF_questionBank = isc.DynamicForm.create({
         ID: "QuestionBankDF_questionBank",
@@ -572,6 +581,26 @@
         numCols: 4,
         colWidths: ["10%", "25%", "10%", "25%"],
         fields: [
+            {
+                name: "direction",
+                title: "تغییر جهت نمایش سوالات و گزینه ها",
+                type: "radioGroup",
+                vertical: false,
+                defaultValue: 1,
+                fillHorizontalSpace: true,
+                valueMap: {
+                    "1": "راست چین (سوالات فارسی)",
+                    "2": "چپ چین (سوالات غیر فارسی)",
+                },
+                colSpan: 4,
+                changed: function (form, item, value) {
+                    if (value === "1"){
+                        changeFormDirection('MSG_contentEditor')
+                    }else if(value === "2") {
+                        changeFormDirection('textAreaRTL')
+                    }
+                }
+            },
             {name: "id", hidden: true},
             {
                 name: "code", title: "<spring:message code="code"/>",
@@ -589,6 +618,7 @@
                 length: 1000,
                 colSpan: 4,
                 startRow: true,
+                showRTL: true,
                 wrap: "OFF",
             },
             {
@@ -1087,10 +1117,12 @@
                     if (value != 520 && value != 519){
                         //groupQuestions
                         QuestionBankDF_questionBank.getItem("groupQuestions").enable();
+                        QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(true);
 
                     }else {
                         //others
                         QuestionBankDF_questionBank.getItem("groupQuestions").disable();
+                        QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
 
                     }
 
@@ -1387,6 +1419,7 @@
                 }),
                 isc.TrCancelBtn.create({
                     click: function () {
+                        changeFormDirection('MSG_contentEditor')
                         QuestionBankWin_questionBank.close();
                     }
                 }),
@@ -1444,6 +1477,7 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
     // ------------------------------------------- Functions -------------------------------------------
     function refresh_questionBank() {
         if (QuestionBankWin_questionBank.isDrawn() && forceToCloseWindow) {
+            changeFormDirection('MSG_contentEditor')
             QuestionBankWin_questionBank.close();
         }
         QuestionBankLG_questionBank.invalidateCache();
@@ -1484,6 +1518,7 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
 
         QuestionBankDF_questionBank.clearErrors();
         QuestionBankDF_questionBank.getItem("groupQuestions").disable();
+        QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
 
         QuestionBankDF_questionBank.getItem("option1").disable();
         QuestionBankDF_questionBank.getItem("option2").disable();
@@ -1647,10 +1682,12 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 if (record.questionTypeId != 520 && record.questionTypeId != 519){
                     //groupQuestions
                     QuestionBankDF_questionBank.getItem("groupQuestions").enable();
+                    QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(true);
 
                 }else {
                     //others
                     QuestionBankDF_questionBank.getItem("groupQuestions").disable();
+                    QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
 
                 }
 
@@ -1749,6 +1786,13 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 }
            }
 
+
+            if(QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").getValue()=== null || QuestionBankDF_questionBank.getItem("multipleChoiceAnswer").getValue()=== undefined){
+                createDialog("info", "جواب گزینه صحیح را انتخاب کنید");
+
+                return;
+            }
+
         }
 
         if (QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 520 || QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 519){
@@ -1781,8 +1825,10 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                     let question = JSON.parse(resp.httpResponseText).question;
                     if (question!==null && question!==undefined &&  question.length > 50)
                         question = question.slice(0, 50) + " ...";
-                    if (forceToCloseWindow)
-                    QuestionBankWin_questionBank.close();
+                    if (forceToCloseWindow){
+                        changeFormDirection('MSG_contentEditor')
+                        QuestionBankWin_questionBank.close();
+                    }
                     createDialog("info", "سوال ( " + question + " ) " + questionBankAction);
                     QuestionBankLG_questionBank.invalidateCache();
                 } else if (resp.httpResponseCode == 403) {
@@ -1791,6 +1837,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 }
                 else {
                     wait.close();
+                    changeFormDirection('MSG_contentEditor')
                     QuestionBankWin_questionBank.close();
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }

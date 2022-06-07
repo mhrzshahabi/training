@@ -7,6 +7,10 @@ body {
     text-align: center;
     overflow: auto !important;
 }
+.textAreaRTLRTL, .textAreaRTLFocusedRTL  {
+    direction: ltr !important;
+    text-align: left !important;
+}
 
 .relativePosition {
     position: relative !important;

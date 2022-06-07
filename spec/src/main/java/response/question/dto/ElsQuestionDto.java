@@ -46,7 +46,7 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     @ApiModelProperty
     private List<Integer> questionTargetIds;
     @ApiModelProperty
-    private Set<Long> groupQuestions;
+    private Set<GroupQuestionDto> groupQuestions;
     @ApiModelProperty
     private String questionCode;
     @ApiModelProperty
