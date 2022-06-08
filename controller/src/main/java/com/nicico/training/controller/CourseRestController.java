@@ -7,19 +7,21 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.jpa.resource.SearchableResource;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.iservice.ICourseAuditService;
 import com.nicico.training.mapper.course.CourseBeanMapper;
-import com.nicico.training.model.Course;
-import com.nicico.training.model.CourseAudit;
-import com.nicico.training.model.Skill;
+import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
+import com.nicico.training.repository.CategoryDAO;
+import com.nicico.training.repository.SubcategoryDAO;
 import dto.SkillDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +56,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/course")
-public class CourseRestController extends SearchableResource<Course, CourseListResponse.Response>{
+public class CourseRestController extends SearchableResource<Course, CourseListResponse.Response> {
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final ICourseService iCourseService;
@@ -65,6 +67,9 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     private final ISkillService skillService;
     private final ICourseAuditService iCourseAuditService;
     private final CourseBeanMapper courseBeanMapper;
+    private final CriteriaUtil criteriaUtil;
+    private final CategoryDAO categoryDAO;
+    private final SubcategoryDAO subcategoryDAO;
 
     // ---------------------------------
     @Loggable
@@ -113,7 +118,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @Loggable
     @PostMapping
     //@PreAuthorize("hasAuthority('Course_C')")
-    public ResponseEntity<CourseDto> create(@RequestBody CourseDTO.Create  req, HttpServletResponse response) {
+    public ResponseEntity<CourseDto> create(@RequestBody CourseDTO.Create req, HttpServletResponse response) {
         CourseDto courseInfo = iCourseService.create(req, response);
         if (courseInfo != null)
             return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
@@ -131,10 +136,9 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         final CourseDTO.AddOrRemovePreCourse preCourse = new CourseDTO.AddOrRemovePreCourse();
         preCourse.setCourseId(id);
         preCourse.setPreCoursesId(req);
-        if(type.equals("create")) {
+        if (type.equals("create")) {
             iCourseService.addPreCourse(preCourse);
-        }
-        else if(type.equals("remove")){
+        } else if (type.equals("remove")) {
             iCourseService.removePreCourse(preCourse);
         }
         return new ResponseEntity<>(HttpStatus.CREATED);
@@ -152,7 +156,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<CourseUpdateResponse> update(@PathVariable Long id, @RequestBody CourseUpdateRequest request) {
-        if(request.getMainSkills().stream().anyMatch(skill->skill.getSubCategoryId() != request.getSubCategory().getId())){
+        if (request.getMainSkills().stream().anyMatch(skill -> skill.getSubCategoryId() != request.getSubCategory().getId())) {
             CourseUpdateResponse response = new CourseUpdateResponse();
             response.setMessage("خطا: زیرگروه اهداف اصلی با زیرگروه دوره همخوانی ندارد!");
             response.setStatus(409);
@@ -174,13 +178,12 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
                 iCourseService.delete(id);
                 response.setMessage("عمليات حذف با موفقيت انجام شد");
                 response.setStatus(200);
-            }
-            catch (Exception e){
-                if(e.toString().split(";")[2].contains("FKILBXORAQADWTOK81KWPDGBSSB")){
+            } catch (Exception e) {
+                if (e.toString().split(";")[2].contains("FKILBXORAQADWTOK81KWPDGBSSB")) {
                     response.setMessage("دوره قابل حذف نميباشد. بدليل اينکه معادل دوره ديگري است.");
-                }else if(e.toString().split(";")[2].contains("FKFO4NAM3WFRJ5URT3GD0KEVSLR")){
+                } else if (e.toString().split(";")[2].contains("FKFO4NAM3WFRJ5URT3GD0KEVSLR")) {
                     response.setMessage("دوره قابل حذف نميباشد. بدليل اينکه پيشنياز دوره ديگري است.");
-                }else{
+                } else {
                     response.setMessage("دوره قابل حذف نميباشد. بديل اينکه از آن در قسمتي از برنامه استفاده شده است.");
                 }
                 response.setStatus(409);
@@ -220,8 +223,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             }
         }
 
-
-        SearchDTO.CriteriaRq criteriaRq;
+        SearchDTO.CriteriaRq criteriaRq = null;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
@@ -230,11 +232,9 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
                     }));
             request.setCriteria(criteriaRq);
 
-
-            if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
-            {
+            if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
                 for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
-                    if(criterion.getFieldName()!=null) {
+                    if (criterion.getFieldName() != null) {
                         if (criterion.getFieldName().equals("duration")) {
                             criterion.setFieldName("theoryDuration");
                         }
@@ -257,7 +257,23 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
+        SearchDTO.CriteriaRq categoryCriteriaRq = criteriaUtil.addPermissionToCriteria("Category", "categoryId");
+        SearchDTO.CriteriaRq subCategoryCriteriaRq = criteriaUtil.addPermissionToCriteria("SubCategory", "subCategoryId");
+
+        List<SearchDTO.CriteriaRq> finalCriteriaRqs = new ArrayList<>();
+        finalCriteriaRqs.add(categoryCriteriaRq);
+        finalCriteriaRqs.add(subCategoryCriteriaRq);
+        if (criteriaRq != null) {
+            finalCriteriaRqs.add(criteriaRq);
+        }
+
+        if (operator == null) {
+            SearchDTO.CriteriaRq criteriaRq2 = CriteriaUtil.addCriteria(finalCriteriaRqs, EOperator.or);
+            request.setCriteria(criteriaRq2);
+        } else {
+            SearchDTO.CriteriaRq criteria2 = CriteriaUtil.addCriteria(finalCriteriaRqs, EOperator.and);
+            request.setCriteria(criteria2);
+        }
 
         SearchDTO.SearchRs<CourseDTO.Info> response = iCourseService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
@@ -468,7 +484,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     @GetMapping(value = {"/printTest/{courseId}"})
     //@PreAuthorize("hasAuthority('Course_P')")
     public void printGoalsAndSyllabus(HttpServletResponse response, @PathVariable Long courseId) throws Exception {
-        if(!workGroupService.isAllowUseId("Course",courseId)){
+        if (!workGroupService.isAllowUseId("Course", courseId)) {
             return;
         }
         final Map<String, Object> params = new HashMap<>();
@@ -534,8 +550,8 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //@PreAuthorize("hasAuthority('r_teacher')")
     //TODO:Unknown
     public ResponseEntity<CourseDTO.WithOutClassSpecRs> getCourseWithOutClass(
-                                                                                @RequestParam(value = "criteria", required = false) String criteria,
-                                                                                @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+            @RequestParam(value = "criteria", required = false) String criteria,
+            @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -586,7 +602,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
     //@PreAuthorize("hasAuthority('Course_WF')")
     public String getCourseMainObjective(@PathVariable Long courseId, HttpServletResponse response) throws IOException {
 
-        if(!workGroupService.isAllowUseId("Course",courseId)) {
+        if (!workGroupService.isAllowUseId("Course", courseId)) {
 
             return "";
         }
@@ -735,13 +751,13 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
     @Override
     public SearchDTO.SearchRq mappedValues(SearchDTO.SearchRq request) {
-        request.getCriteria().getCriteria().forEach(criteriaRq -> criteriaRq.getCriteria().forEach(cr-> {
+        request.getCriteria().getCriteria().forEach(criteriaRq -> criteriaRq.getCriteria().forEach(cr -> {
                     if ("duration".equals(cr.getFieldName())) {
                         cr.setFieldName("theoryDuration");
                     }
                 }
-            ));
-        if(request.getSortBy()!=null) {
+        ));
+        if (request.getSortBy() != null) {
             request.getSortBy().forEach(c -> {
                 if ("duration".equals(c.getFieldName())) {
                     if (c.getDescendingSafe())
@@ -764,6 +780,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
 
     /**
      * returns audit infos for a course by course ID
+     *
      * @param courseId
      * @return
      */
