@@ -55,8 +55,13 @@ public class OperationalRoleRestController {
             OperationalRole updating;
             OperationalRole arrivedUpdate = mapper.toOperationalRoleFromOperationalRoleUpdateDto(request);
             updating = mapper.copyOperationalRoleFrom(operationalRole);
-            updating.setUserIds(request.getUserIds());
-            updating.setPostIds(request.getPostIds());
+            /*
+                    avoid re-update of "TBL_OPERATIONAL_ROLE_POST_IDS" after assigning
+                    individual post to user
+             */
+//            updating.setUserIds(request.getUserIds());
+//            updating.setPostIds(request.getPostIds());
+
             updating.setCategories(arrivedUpdate.getCategories());
             if (!arrivedUpdate.getCategories().isEmpty() && arrivedUpdate.getCategories().size() != 0) {
                 updating.setSubCategories(arrivedUpdate.getSubCategories());
