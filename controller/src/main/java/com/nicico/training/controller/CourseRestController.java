@@ -221,7 +221,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         }
 
 
-        SearchDTO.CriteriaRq criteriaRq = null;
+        SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
