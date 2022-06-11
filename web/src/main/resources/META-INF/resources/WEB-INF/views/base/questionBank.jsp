@@ -293,15 +293,6 @@
             }
 
         ],
-        implicitCriteria: {
-            _constructor:"AdvancedCriteria",
-            operator:"or",
-            criteria: [{fieldName: "questionTypeId", operator: "equals", value: 521}, {
-                fieldName: "questionTypeId",
-                operator: "equals",
-                value: 520
-            }]
-         },
         fetchDataURL: questionBankUrl + "/with-filter/spec-list"
     });
     var RestDataSource_category = isc.TrDS.create({
@@ -1314,6 +1305,15 @@
                 displayField: "id",
                 sortField: ["id"],
                 autoFetchData: false,
+                implicitCriteria: {
+                    _constructor:"AdvancedCriteria",
+                    operator:"or",
+                    criteria: [{fieldName: "questionTypeId", operator: "equals", value: 521}, {
+                        fieldName: "questionTypeId",
+                        operator: "equals",
+                        value: 520
+                    }]
+                },
                 width: "*",
                 endRow: false,
                 pickListWidth: 550,
