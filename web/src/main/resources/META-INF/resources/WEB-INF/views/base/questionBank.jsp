@@ -194,7 +194,116 @@
         ],
         fetchDataURL: questionBankUrl + "/spec-list"
     });
+    QuestionBankDS_questionBank_with_filter = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "code",
+                title: "<spring:message code="code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "question",
+                title: "<spring:message code="question.bank.question"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "questionType.title",
+                title: "<spring:message code="question.bank.question.type"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "displayType.title",
+                title: "<spring:message code="question.bank.display.type"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "category.titleFa",
+                title: "<spring:message code="category"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "subCategory.titleFa",
+                title: "<spring:message code="subcategory"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "teacher.fullNameFa",
+                title: "<spring:message code="teacher"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "teacher.personality.lastNameFa",
+                title: "<spring:message code="teacher"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "tclass.course.titleFa",
+                title: "<spring:message code="class"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "tclass.code",
+                title: "<spring:message code='class.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "equestionLevel.titleFa",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "tclass.startDate",
+                title: "<spring:message code='class.start.date'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "tclass.endDate",
+                title: "<spring:message code='class.end.date'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "course.titleFa",
+                title: "<spring:message code="course"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            },
+            {
+                name: "createdBy",
+                title: "<spring:message code="created.by.user"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "questionDesigner",
+                title: "طراح سوال",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "createdDate",
+                title: "<spring:message code="create.date"/>",
+                filterOperator: "iContains", autoFitWidth: true
+            }
 
+        ],
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"or",
+            criteria: [{fieldName: "questionTypeId", operator: "equals", value: 521}, {
+                fieldName: "questionTypeId",
+                operator: "equals",
+                value: 520
+            }]
+         },
+        fetchDataURL: questionBankUrl + "/with-filter/spec-list"
+    });
     var RestDataSource_category = isc.TrDS.create({
         ID: "categoryDS",
         fields: [
@@ -1200,7 +1309,7 @@
                 filterOnKeypress: true,
                 filterFields: ["question"],
                 textAlign: "center",
-                optionDataSource: QuestionBankDS_questionBank,
+                optionDataSource: QuestionBankDS_questionBank_with_filter,
                 valueField: "id",
                 displayField: "id",
                 sortField: ["id"],

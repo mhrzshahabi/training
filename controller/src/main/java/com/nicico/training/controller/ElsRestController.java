@@ -1105,7 +1105,7 @@ public class ElsRestController {
                         dto.setQuestions(Collections.singletonList(elsQuestionDto));
                         return dto;
                     }
-                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO,teacherId);
+                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO,teacherId,false);
 
 
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
@@ -2792,5 +2792,67 @@ public class ElsRestController {
         }
         return response;
     }
+
+    @PostMapping("/spec-list/v2/teacher/{page}/{size}")
+    public ElsQuestionBankDto getQuestionBankFilterForGroupQuestions(HttpServletRequest header,
+                                                    @PathVariable Integer page, @PathVariable Integer size, @RequestBody ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
+
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+
+                if (elsSearchDTO.getNationalCode() != null) {
+                    Long teacherId = teacherService.getTeacherIdByNationalCode(elsSearchDTO.getNationalCode());
+                    if (teacherId == null) {
+                        ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                        ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                        elsQuestionDto.setStatus(406);
+                        elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
+                        dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                        return dto;
+                    }
+                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO,teacherId,true);
+
+
+                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
+                    PaginationDto paginationDto = new PaginationDto();
+                    paginationDto.setCurrent(page);
+                    paginationDto.setSize(size);
+                    if ((pageQuestionDto.getTotalSpecCount() % size) == 0)
+                        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size));
+                    else {
+                        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size) + 1);
+                    }
+
+                    paginationDto.setLast((int) (paginationDto.getTotal() - 1));
+                    paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
+                    questionBankDto.setPagination(paginationDto);
+                    return questionBankDto;
+
+                } else {
+                    ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                    ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                    elsQuestionDto.setStatus(500);
+                    elsQuestionDto.setMessage("کد ملی استاد را وارد کنید");
+                    dto.setQuestions(null);
+                    return dto;
+                }
+
+
+            } catch (Exception e) {
+                ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                elsQuestionDto.setStatus(500);
+                dto.setQuestions(null);
+                return dto;
+            }
+
+
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+        }
+
+
+    }
+
 
 }

@@ -177,5 +177,66 @@ public class QuestionBankRestController {
         return new ResponseEntity<>(iQuestionBankTestQuestionService.usedQuestion(id), HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/with-filter/spec-list")
+    public ResponseEntity<QuestionBankDTO.QuestionBankSpecRs> listWithFilter(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                                   @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
+                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                   @RequestParam(value = "id", required = false) Long id,
+                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws NoSuchFieldException, IllegalAccessException, IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+            if (request.getCriteria() != null && request.getCriteria().getCriteria() != null)
+            {
+                for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+                    if (criterion.getFieldName() != null) {
+                        if (criterion.getFieldName().equals("eQuestionLevel.id") || criterion.getFieldName().equals("eQuestionLevel") ||
+                                criterion.getFieldName().equals("equestionLevel.id") || criterion.getFieldName().equals("equestionLevel")) {
+                            criterion.setFieldName("eQuestionLevelId");
+                        }
+                    }
+                }
+            }
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            if (sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel") ||
+                    sortBy.equals("eQuestionLevel.id") || sortBy.equals("eQuestionLevel")){
+                sortBy = "eQuestionLevelId";
+            }
+            request.setSortBy(sortBy);
+        }
+
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<QuestionBankDTO.Info> response = iQuestionBankService.search(request);
+
+        final QuestionBankDTO.SpecRs specResponse = new QuestionBankDTO.SpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        final QuestionBankDTO.QuestionBankSpecRs specRs = new QuestionBankDTO.QuestionBankSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 
 }

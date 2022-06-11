@@ -1364,4 +1364,11 @@
     <changeSet author="namdari (generated)" id="1653279185000-04">
         <addForeignKeyConstraint baseColumnNames="CALENDAR_ID" baseTableName="tbl_class" constraintName="FK_calendar_in_class" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_educational_calender" validate="true"/>
     </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1654668348000-05">
+        <addForeignKeyConstraint baseColumnNames="f_educational_decision_header" baseTableName="tbl_educational_decision" constraintName="FK_educational_decision_header_in_decision" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_educational_decision_header" validate="true"/>
+    </changeSet>
+
+
 </databaseChangeLog>

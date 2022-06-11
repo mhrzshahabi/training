@@ -7,6 +7,7 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
+import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.iservice.IQuestionBankService;
 import com.nicico.training.iservice.ISubcategoryService;
 import com.nicico.training.model.*;
@@ -29,13 +30,10 @@ public class QuestionBankService implements IQuestionBankService {
 
     private final ModelMapper modelMapper;
     private final QuestionBankDAO questionBankDAO;
-    private final CategoryDAO categoryDAO;
-    private final SubcategoryDAO subcategoryDAO;
     private final EnumsConverter.EQuestionLevelConverter eQuestionLevelConverter = new EnumsConverter.EQuestionLevelConverter();
     private final ICategoryService categoryService;
     private final ISubcategoryService subcategoryService;
-    private final TeacherDAO teacherDAO;
-    private final ObjectMapper objectMapper;
+    private final IParameterValueService parameterValueService;
 
 
     @Transactional(readOnly = true)
@@ -216,11 +214,15 @@ public class QuestionBankService implements IQuestionBankService {
 
     @Override
     @Transactional(readOnly = true)
-    public PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO, Long teacherId) throws NoSuchFieldException, IllegalAccessException {
+    public PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO, Long teacherId,Boolean isFilterForGroupQuestion) throws NoSuchFieldException, IllegalAccessException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.SearchRq totalRequest = new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
+        if (isFilterForGroupQuestion){
+            Long groupQuestionId= parameterValueService.getId("GroupQuestion");
+            list.add(makeNewCriteria("questionTypeId", groupQuestionId, EOperator.notEqual, null));
+        }
 
         if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
             elsSearchDTO.getElsSearchList().stream().forEach(elsSearch -> {

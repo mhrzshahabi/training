@@ -1318,6 +1318,7 @@
     const agreementClassCostUrl = rootUrl + "/agreement-class-cost";
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";
+    const educationalDecisionHeaderRequestUrl = rootUrl + "/header";
     const requestItemUrl = rootUrl + "/request-item";
     const requestItemAuditUrl = rootUrl + "/request-item-audit";
     const requestUrl = rootUrl + "/request";
@@ -2305,6 +2306,12 @@
                     title: "<spring:message code="agreement"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/agreement"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="educational.decision"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/educational/decision"/>");
                     }
                 },
                 </sec:authorize>

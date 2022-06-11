@@ -347,4 +347,12 @@
     <changeSet id="2799887766557-19" author="ZPakdaman">
         <createSequence sequenceName="seq_educational_calender_id"/>
     </changeSet>
+
+    <changeSet id="1654668348000-03" author="namdari">
+        <createSequence sequenceName="seq_educational_decision_header_id"/>
+    </changeSet>
+
+    <changeSet id="1654668348000-04" author="namdari">
+        <createSequence sequenceName="seq_educational_decision_id"/>
+    </changeSet>
 </databaseChangeLog>

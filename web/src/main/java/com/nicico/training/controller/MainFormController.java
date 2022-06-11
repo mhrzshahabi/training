@@ -562,5 +562,7 @@ public class MainFormController {
         request.setAttribute("uploadMinioUrl", uploadMinioUrl);
         return "finance/agreement";
     }
+    @RequestMapping("/educational/decision")
+    public String showDecisionForm(HttpServletRequest request) {return "finance/decision";}
 
 }

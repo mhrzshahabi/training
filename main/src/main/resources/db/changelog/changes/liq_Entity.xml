@@ -3616,5 +3616,67 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="namdari" id="1654668348000-01">
+        <createTable tableName="tbl_educational_decision_header">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_educational_decision_headerPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+             <column name="complex" type="VARCHAR2(255 CHAR)"/>
+             <column name="item_from_date" type="VARCHAR2(255 CHAR)"/>
+             <column name="item_to_date" type="VARCHAR2(255 CHAR)"/>
+
+        </createTable>
+    </changeSet>
+
+    <changeSet author="namdari" id="1654668348000-02">
+        <createTable tableName="tbl_educational_decision">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_educational_decisionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="ref" type="VARCHAR2(255 CHAR)"/>
+            <column name="item_from_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="item_to_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_educational_decision_header" type="NUMBER(19, 0)"/>
+
+            <column name="educational_history_coefficient" type="FLOAT"/>
+            <column name="Educational_history_from" type="VARCHAR2(255 CHAR)"/>
+            <column name="Educational_history_to" type="VARCHAR2(255 CHAR)"/>
+
+            <column name="base_tuition_fee" type="VARCHAR2(255 CHAR)"/>
+            <column name="professor_tuition_fee" type="VARCHAR2(255 CHAR)"/>
+            <column name="knowledge_assistant_tuition_fee" type="VARCHAR2(255 CHAR)"/>
+            <column name="teacher_assistant_tuition_fee" type="VARCHAR2(255 CHAR)"/>
+            <column name="instructor_tuition_fee" type="VARCHAR2(255 CHAR)"/>
+            <column name="educational_assistant_tuition_fee" type="VARCHAR2(255 CHAR)"/>
+
+
+        </createTable>
+    </changeSet>
 
 </databaseChangeLog>

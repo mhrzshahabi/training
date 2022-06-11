@@ -39,7 +39,7 @@ public interface IQuestionBankService {
     Integer getMaxId();
     List<QuestionBank> getQuestionListByCategoryAndSubCategory(Teacher teacher);
 
-    PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long id) throws NoSuchFieldException, IllegalAccessException;
+    PageQuestionDto getPageQuestionByTeacher(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long id,Boolean isFilterForGroupQuestion) throws NoSuchFieldException, IllegalAccessException;
 
     PageQuestionDto getPageQuestionByCategoryAndSub(Integer page, Integer size, ElsSearchDTO elsSearchDTO,Long id) throws NoSuchFieldException, IllegalAccessException;
 
