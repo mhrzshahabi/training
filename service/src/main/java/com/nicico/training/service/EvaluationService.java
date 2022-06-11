@@ -802,7 +802,10 @@ public class EvaluationService implements IEvaluationService {
         if (index != 0)
             result = result / index;
 
+        if (result!=null)
         return Double.valueOf(df.format(result));
+        else
+            return null;
     }
 
     @Override
