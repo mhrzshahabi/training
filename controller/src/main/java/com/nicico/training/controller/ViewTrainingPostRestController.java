@@ -118,10 +118,10 @@ public class ViewTrainingPostRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/roleNonUsedPostList/{roleId}")
-    public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> nonUsedRolePostList(HttpServletRequest iscRq, @PathVariable Long roleId) throws IOException {
+    @GetMapping(value = "/roleNonUsedPostList")
+    public ResponseEntity<ViewTrainingPostDTO.PostSpecRs> nonUsedRolePostList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRs<ViewTrainingPostDTO.Info> response;
-        response = iOperationalRoleService.getNonUsedRolePostList(roleId);
+        response = iOperationalRoleService.getNonUsedRolePostList();
 
         final ViewTrainingPostDTO.SpecRs specResponse = new ViewTrainingPostDTO.SpecRs();
         final ViewTrainingPostDTO.PostSpecRs specRs = new ViewTrainingPostDTO.PostSpecRs();

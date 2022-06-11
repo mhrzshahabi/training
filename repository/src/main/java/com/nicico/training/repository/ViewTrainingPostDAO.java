@@ -15,6 +15,6 @@ public interface ViewTrainingPostDAO extends BaseDAO<ViewTrainingPost, Long> {
 
     @Query(value = "SELECT TP.* FROM VIEW_TRAINING_POST TP INNER JOIN TBL_OPERATIONAL_ROLE_POST_IDS rolePosts ON rolePosts.POST_IDS = TP.ID WHERE F_OPERATIONAL_ROLE = :roleId ", nativeQuery = true)
     List<ViewTrainingPost> getRoleUsedPostList(@Param("roleId") Long roleId);
-    @Query(value = "SELECT TP.* FROM VIEW_TRAINING_POST TP INNER JOIN TBL_OPERATIONAL_ROLE_POST_IDS rolePosts ON rolePosts.POST_IDS = TP.ID WHERE F_OPERATIONAL_ROLE != :roleId ", nativeQuery = true)
-    List<ViewTrainingPost> getNonUsedRolePostList(@Param("roleId") Long roleId);
+    @Query(value = "SELECT TP.* FROM VIEW_TRAINING_POST TP LEFT JOIN TBL_OPERATIONAL_ROLE_POST_IDS rolePosts ON rolePosts.POST_IDS = TP.ID ", nativeQuery = true)
+    List<ViewTrainingPost> getNonUsedRolePostList();
 }

@@ -649,8 +649,7 @@
     let IButton_Add_IndividualPost = isc.IButtonSave.create({
         title: "<spring:message code="add"/>",
         click: function () {
-            let recordId = ListGrid_JspOperationalRole.getSelectedRecord().id;
-            PostDS_just_Show_Non_Used_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleNonUsedPostList/" + recordId;
+            PostDS_just_Show_Non_Used_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleNonUsedPostList";
             ListGrid_Non_Used_Post_OperationalRole.invalidateCache();
             ListGrid_Non_Used_Post_OperationalRole.fetchData();
             Window_Select_Individual_Post.show();
