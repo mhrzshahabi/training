@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.MultiValueMap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -59,11 +60,10 @@ public class CriteriaUtil {
             case "SubCategory" -> ids = subcategoryDAO.findAllByUserId(SecurityUtil.getUserId()).stream().map(Subcategory::getId).toList();
         }
 
-        List<SearchDTO.CriteriaRq> criteriaRqs = new ArrayList<>();
-
         SearchDTO.CriteriaRq criteria1 = createCriteria(EOperator.inSet, fieldName, ids);
         SearchDTO.CriteriaRq criteria2 = createCriteria(EOperator.isNull, fieldName, ids);
 
+        List<SearchDTO.CriteriaRq> criteriaRqs = new ArrayList<>();
         criteriaRqs.add(criteria1);
         criteriaRqs.add(criteria2);
 

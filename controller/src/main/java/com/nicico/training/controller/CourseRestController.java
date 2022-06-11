@@ -257,23 +257,7 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.CriteriaRq categoryCriteriaRq = criteriaUtil.addPermissionToCriteria("Category", "categoryId");
-        SearchDTO.CriteriaRq subCategoryCriteriaRq = criteriaUtil.addPermissionToCriteria("SubCategory", "subCategoryId");
-
-        List<SearchDTO.CriteriaRq> finalCriteriaRqs = new ArrayList<>();
-        finalCriteriaRqs.add(categoryCriteriaRq);
-        finalCriteriaRqs.add(subCategoryCriteriaRq);
-        if (criteriaRq != null) {
-            finalCriteriaRqs.add(criteriaRq);
-        }
-
-        if (operator == null) {
-            SearchDTO.CriteriaRq criteriaRq2 = CriteriaUtil.addCriteria(finalCriteriaRqs, EOperator.or);
-            request.setCriteria(criteriaRq2);
-        } else {
-            SearchDTO.CriteriaRq criteria2 = CriteriaUtil.addCriteria(finalCriteriaRqs, EOperator.and);
-            request.setCriteria(criteria2);
-        }
+        request.setCriteria(workGroupService.addPermissionToCriteria("categoryId", request.getCriteria()));
 
         SearchDTO.SearchRs<CourseDTO.Info> response = iCourseService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
@@ -800,5 +784,95 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
             ex.printStackTrace();
             return new ResponseEntity<>(null, HttpStatus.BAD_REQUEST);
         }
+    }
+
+    @Loggable
+    @GetMapping(value = "/add-permission/spec-list")
+    //@PreAuthorize("hasAuthority('Course_R')")
+    public ResponseEntity<CourseDTO.CourseSpecRs> listWithPermission(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", required = false, defaultValue = "1") Integer endRow,
+                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "id", required = false) Long id,
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        if (sortBy != null) {
+            switch (sortBy) {
+                case "duration" -> sortBy = "theoryDuration";
+                case "-duration" -> sortBy = "-theoryDuration";
+            }
+        }
+
+        SearchDTO.CriteriaRq criteriaRq = null;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<>() {
+                    }));
+            request.setCriteria(criteriaRq);
+
+            if (request.getCriteria() != null && request.getCriteria().getCriteria() != null) {
+                for (SearchDTO.CriteriaRq criterion : request.getCriteria().getCriteria()) {
+                    if (criterion.getFieldName() != null) {
+                        if (criterion.getFieldName().equals("duration")) {
+                            criterion.setFieldName("theoryDuration");
+                        }
+                    }
+                }
+            }
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.CriteriaRq categoryCriteriaRq = criteriaUtil.addPermissionToCriteria("Category", "categoryId");
+        SearchDTO.CriteriaRq subCategoryCriteriaRq = criteriaUtil.addPermissionToCriteria("SubCategory", "subCategoryId");
+
+        List<SearchDTO.CriteriaRq> finalCriteriaRqs = new ArrayList<>();
+        finalCriteriaRqs.add(categoryCriteriaRq);
+        finalCriteriaRqs.add(subCategoryCriteriaRq);
+
+        SearchDTO.CriteriaRq criteriaRq2 = CriteriaUtil.addCriteria(finalCriteriaRqs, EOperator.or);
+
+        List<SearchDTO.CriteriaRq> finalCriteriaRqs2 = new ArrayList<>();
+        finalCriteriaRqs2.add(criteriaRq2);
+
+        if (criteriaRq != null) {
+            finalCriteriaRqs2.add(criteriaRq);
+        }
+
+        if (operator == null) {
+            SearchDTO.CriteriaRq criteriaRq3 = CriteriaUtil.addCriteria(finalCriteriaRqs2, EOperator.or);
+            request.setCriteria(criteriaRq3);
+        } else {
+            SearchDTO.CriteriaRq criteria3 = CriteriaUtil.addCriteria(finalCriteriaRqs2, EOperator.valueOf(operator));
+            request.setCriteria(criteria3);
+        }
+
+        SearchDTO.SearchRs<CourseDTO.Info> response = iCourseService.search(request);
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 }
