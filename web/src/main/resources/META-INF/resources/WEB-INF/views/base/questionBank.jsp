@@ -293,6 +293,15 @@
             }
 
         ],
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"or",
+            criteria: [{fieldName: "questionTypeId", operator: "equals", value: 521}, {
+                fieldName: "questionTypeId",
+                operator: "equals",
+                value: 520
+            }]
+        },
         fetchDataURL: questionBankUrl + "/with-filter/spec-list"
     });
     var RestDataSource_category = isc.TrDS.create({
@@ -1304,17 +1313,9 @@
                 valueField: "id",
                 displayField: "id",
                 sortField: ["id"],
+                sortDirection: "descending",
                 autoFetchData: false,
-                implicitCriteria: {
-                    _constructor:"AdvancedCriteria",
-                    operator:"or",
-                    criteria: [{fieldName: "questionTypeId", operator: "equals", value: 521}, {
-                        fieldName: "questionTypeId",
-                        operator: "equals",
-                        value: 520
-                    }]
-                },
-                width: "*",
+                // width: "*",
                 endRow: false,
                 pickListWidth: 550,
                 startRow: true,
@@ -1324,7 +1325,7 @@
                         title: "question",
                         align: "center",
                         filterOperator: "iContains",
-                        autoFitWidth: true
+                        autoFitWidth: false
                     }
                 ],
                 pickListProperties: {
