@@ -19,6 +19,7 @@ import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
+import com.nicico.training.service.BaseService;
 import dto.SkillDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -842,26 +843,12 @@ public class CourseRestController extends SearchableResource<Course, CourseListR
         SearchDTO.CriteriaRq categoryCriteriaRq = criteriaUtil.addPermissionToCriteria("Category", "categoryId");
         SearchDTO.CriteriaRq subCategoryCriteriaRq = criteriaUtil.addPermissionToCriteria("SubCategory", "subCategoryId");
 
-        List<SearchDTO.CriteriaRq> finalCriteriaRqs = new ArrayList<>();
-        finalCriteriaRqs.add(categoryCriteriaRq);
-        finalCriteriaRqs.add(subCategoryCriteriaRq);
+        List<SearchDTO.CriteriaRq> catAndSubCatCriteriaList = new ArrayList<>();
+        catAndSubCatCriteriaList.add(categoryCriteriaRq);
+        catAndSubCatCriteriaList.add(subCategoryCriteriaRq);
 
-        SearchDTO.CriteriaRq criteriaRq2 = CriteriaUtil.addCriteria(finalCriteriaRqs, EOperator.or);
-
-        List<SearchDTO.CriteriaRq> finalCriteriaRqs2 = new ArrayList<>();
-        finalCriteriaRqs2.add(criteriaRq2);
-
-        if (criteriaRq != null) {
-            finalCriteriaRqs2.add(criteriaRq);
-        }
-
-        if (operator == null) {
-            SearchDTO.CriteriaRq criteriaRq3 = CriteriaUtil.addCriteria(finalCriteriaRqs2, EOperator.or);
-            request.setCriteria(criteriaRq3);
-        } else {
-            SearchDTO.CriteriaRq criteria3 = CriteriaUtil.addCriteria(finalCriteriaRqs2, EOperator.valueOf(operator));
-            request.setCriteria(criteria3);
-        }
+        SearchDTO.CriteriaRq catAndSubCatCriteria = BaseService.makeNewCriteria(null, null, EOperator.or, catAndSubCatCriteriaList);
+        BaseService.setCriteria(request, catAndSubCatCriteria);
 
         SearchDTO.SearchRs<CourseDTO.Info> response = iCourseService.search(request);
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
