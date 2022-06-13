@@ -296,7 +296,7 @@
         implicitCriteria: {
             _constructor:"AdvancedCriteria",
             operator:"or",
-            criteria: [{fieldName: "questionTypeId", operator: "equals", value: 521}, {
+            criteria: [{fieldName: "questionTypeId", operator: "equals", value: 519}, {
                 fieldName: "questionTypeId",
                 operator: "equals",
                 value: 520
