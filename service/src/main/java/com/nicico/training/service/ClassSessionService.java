@@ -448,6 +448,7 @@ public class ClassSessionService implements IClassSessionService {
         }.getType());
     }
 
+
     @Override
     @Transactional
     public boolean getSessionPresenceState(ClassSession session) {

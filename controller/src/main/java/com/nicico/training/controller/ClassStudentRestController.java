@@ -527,5 +527,11 @@ public class ClassStudentRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/getSessionConflict")
+    public ResponseEntity getSessionConflictViaClassStudent(@RequestParam(value = "sessionDate") String sessionDate,@RequestParam(value="startHour") String startHour,@RequestParam(value="endHour") String endHour, @RequestParam(value="nationalCode") String nationalCode) {
+
+        return new ResponseEntity<>(iClassStudentService.getSessionConflictViaClassStudent(sessionDate,startHour,endHour,nationalCode).stream().collect(Collectors.toList()).size() > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString() , HttpStatus.OK);
+    }
 
 }
