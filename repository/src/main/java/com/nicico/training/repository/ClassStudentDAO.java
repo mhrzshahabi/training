@@ -608,4 +608,11 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "ORDER BY classid Desc "
             ,nativeQuery = true)
     Collection<Object> findAllCountClassByTeacherFilter(String nationalCode,String search);
+    @Query(value = "select tbl_session.id \n" +
+            "from tbl_class_student inner join tbl_class on tbl_class_student.class_id=tbl_class.id inner join  tbl_session on tbl_session.f_class_id=tbl_class.id \n" +
+            "inner join tbl_student on tbl_student.id=tbl_class_student.student_id\n" +
+            "where tbl_session.c_session_date= :sessionDate \n" +
+            "and tbl_session.c_session_start_hour = :startHour and tbl_session.c_session_end_hour= :endHour\n" +
+            "and tbl_student.national_code= :nationalCode ",nativeQuery = true)
+    List<Long> getSessionsInterferencePerStudent(String sessionDate,String startHour, String endHour,String nationalCode);
 }

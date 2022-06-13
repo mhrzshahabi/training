@@ -2805,6 +2805,12 @@
             let warnStudents = [];
             let inValidPersonnel = [];
             let warnPreCourseStudents = [];
+            let warnSameSessionStudents=[];
+            let interfrence=[];
+
+
+            let result= getSessionPerClass(classId);
+
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
 
                 JSON.parse(response.data).forEach(q => equalCourseIds.add(q));
@@ -2832,6 +2838,31 @@
                                 inValidPersonnel.add(studentsDataArray[inx]);
                             }
 
+                            if(result.length>0){
+                                for (let i = 0; i <result.length ; i++) {
+                                    let hasConflict = null;
+
+                                       isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (resp) {
+
+
+                                           if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                               hasConflict = JSON.parse(resp.data);
+                                               if (hasConflict) {
+                                                   if (!warnSameSessionStudents.contains(studentsDataArray[inx]))
+                                                       warnSameSessionStudents.add(studentsDataArray[inx]);
+
+                                               }
+
+                                           }
+                                       }));
+                                    if(hasConflict){
+                                        break;
+                                    }
+                                }
+
+
+                            }
+
 
                             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
                                 studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
@@ -2846,6 +2877,7 @@
                                         }
                                     } else {
                                         warnPreCourseStudents.add(studentsDataArray[inx]);
+
                                     }
 
                                     checkAll++;
@@ -2853,7 +2885,7 @@
                                         var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
                                         studentsDataArray.removeList(warnPreCourseStudents);
 
-                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel);
+                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents);
                                     }
 
                                 } else {
@@ -2876,11 +2908,13 @@
                     }
                 }));
             }));
+
         }
 
-        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel) {
+        function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents) {
             let preCourseNames = "";
             let names = "";
+            let sessionNames="";
 
             if (warnPreCourseStudents.length > 0) {
 
@@ -2894,9 +2928,20 @@
             if (warnStudents.length > 0) {
 
                 for (var j = 0; j < warnStudents.length; j++) {
+
                     names = names.concat(warnStudents[j].firstName + " " + warnStudents[j].lastName);
                     if (j !== warnStudents.length - 1)
                         names = names.concat(", ");
+                }
+            }
+
+            if(warnSameSessionStudents.length>0){
+                for (var j = 0; j < warnSameSessionStudents.length; j++) {
+
+                   sessionNames= sessionNames.concat(warnSameSessionStudents[j].firstName + " " + warnSameSessionStudents[j].lastName);
+                    if (j !== warnSameSessionStudents.length - 1)
+                        sessionNames =sessionNames.concat(", ");
+
                 }
             }
 
@@ -2909,11 +2954,11 @@
                 }
             }
 
-            if (warnPreCourseStudents.length > 0 || warnStudents.length > 0 || inValidPersonnel.length > 0) {
+            if (warnPreCourseStudents.length > 0 || warnStudents.length > 0 || inValidPersonnel.length > 0 || warnSameSessionStudents.length>0 || warnSameSessionStudents>0) {
 
                 let DynamicForm_Warn_Students = isc.DynamicForm.create({
                     width: 600,
-                    height: 100,
+                    height: 50,
                     padding: 6,
                     titleAlign: "right",
                     fields: [
@@ -2946,6 +2991,14 @@
                             editorType: 'staticText'
                         },
                         {
+                            name: "textSession",
+                            width: "100%",
+                            colSpan: 2,
+                            value: "<spring:message code='msg.class.student.conflict.sessions.warn'/>",
+                            showTitle: false,
+                            editorType: 'staticText'
+                        },
+                        {
                             name: "warnNames",
                             width: "100%",
                             colSpan: 2,
@@ -2956,30 +3009,65 @@
                         }
                     ]
                 });
+                if(warnSameSessionStudents.length>0) {
+                   var DynamicForm_Warn_Students_sessions = isc.DynamicForm.create({
+                        width: 600,
+                        height: 50,
+                        padding: 6,
+                        titleAlign: "right",
+                        fields: [
 
-                DynamicForm_Warn_Students.getItem("preCourseText").hide();
-                DynamicForm_Warn_Students.getItem("warnPreCourseNames").hide();
-                DynamicForm_Warn_Students.getItem("text").hide();
-                DynamicForm_Warn_Students.getItem("warnNames").hide();
 
-                if (warnPreCourseStudents.length > 0) {
-
-                    DynamicForm_Warn_Students.getItem("preCourseText").show();
-                    DynamicForm_Warn_Students.getItem("warnPreCourseNames").show();
-                    DynamicForm_Warn_Students.setValue("warnPreCourseNames", preCourseNames);
+                            {
+                                name: "textSession",
+                                width: "100%",
+                                colSpan: 2,
+                                value: "<spring:message code='msg.class.student.conflict.sessions.warn'/>",
+                                showTitle: false,
+                                editorType: 'staticText'
+                            },
+                            {
+                                name: "warnNames",
+                                width: "100%",
+                                colSpan: 2,
+                                title: "<spring:message code="title"/>",
+                                showTitle: false,
+                                editorType: 'textArea',
+                                canEdit: false
+                            }
+                        ]
+                    });
                 }
-                if (warnStudents.length > 0) {
+                    DynamicForm_Warn_Students.getItem("preCourseText").hide();
+                    DynamicForm_Warn_Students.getItem("warnPreCourseNames").hide();
+                    DynamicForm_Warn_Students.getItem("text").hide();
+                    DynamicForm_Warn_Students.getItem("textSession").hide();
+                    DynamicForm_Warn_Students.getItem("warnNames").hide();
 
-                    DynamicForm_Warn_Students.getItem("text").show();
-                    DynamicForm_Warn_Students.getItem("warnNames").show();
-                    DynamicForm_Warn_Students.setValue("warnNames", names);
-                }
-                if (inValidPersonnel.length > 0) {
-                    DynamicForm_Warn_Students.getItem("text").show();
-                    DynamicForm_Warn_Students.getItem("warnNames").show();
-                    DynamicForm_Warn_Students.setValue("text", "<spring:message code='msg.class.student.retired.warn'/>");
-                    DynamicForm_Warn_Students.setValue("warnNames", names);
-                }
+                    if (warnPreCourseStudents.length > 0) {
+
+                        DynamicForm_Warn_Students.getItem("preCourseText").show();
+                        DynamicForm_Warn_Students.getItem("warnPreCourseNames").show();
+                        DynamicForm_Warn_Students.setValue("warnPreCourseNames", preCourseNames);
+                    }
+                    if (warnStudents.length > 0) {
+
+                        DynamicForm_Warn_Students.getItem("text").show();
+                        DynamicForm_Warn_Students.getItem("warnNames").show();
+                        DynamicForm_Warn_Students.setValue("warnNames", names);
+                    }
+                    if (warnSameSessionStudents.length > 0) {
+                        DynamicForm_Warn_Students_sessions.getItem("textSession").show();
+                        DynamicForm_Warn_Students_sessions.getItem("warnNames").show();
+                        DynamicForm_Warn_Students_sessions.setValue("warnNames", sessionNames);
+                    }
+
+                    if (inValidPersonnel.length > 0) {
+                        DynamicForm_Warn_Students.getItem("text").show();
+                        DynamicForm_Warn_Students.getItem("warnNames").show();
+                        DynamicForm_Warn_Students.setValue("text", "<spring:message code='msg.class.student.retired.warn'/>");
+                        DynamicForm_Warn_Students.setValue("warnNames", names);
+                    }
 
                 let Window_Warn_Students = isc.Window.create({
                     width: 600,
@@ -2988,6 +3076,7 @@
                     title: "<spring:message code='student.plural'/>",
                     items: [
                         DynamicForm_Warn_Students,
+                        DynamicForm_Warn_Students_sessions,
                         isc.MyHLayoutButtons.create({
                             members: [
                                 isc.IButtonSave.create({
@@ -3018,7 +3107,7 @@
                     Window_Warn_Students.show();
                 }
 
-            } else {
+            } else    {
                 let appCompany = SelectedPersonnelsLG_student.getData().map(std => std.applicantCompanyName);
                 if (appCompany.contains(undefined)) {
                     createDialog("info", "لطفا ابتدا شرکت اعلام کننده همه فراگیران را مشخص کنید");
@@ -3242,10 +3331,7 @@
                                     list[i].description = "";
                                     if (!checkIfAlreadyExist(person)) {
 
-                                        // if (students.filter(function (item) {
-                                        //     debugger
-                                        //     return item.personnelNo2 == person.personnelNo2 || item.personnelNo == person.personnelNo;
-                                        // }).length == 0) {
+
                                             students.add({
                                                 "firstName": person.firstName,
                                                 "lastName": person.lastName,
@@ -3394,5 +3480,34 @@
             })
         );
     }
+   function getSessionPerClass(classId){
+
+       isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/"+ classId ,"GET",null,function(resp){
+           if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+               interfrence  = JSON.parse(resp.data);
+           }
+
+       }));
+       return interfrence;
+   }
+
+
+   // function getConflictedSessions(sessionDate,sessionStartHour,sessionEndHour,nationalCode) {
+   //
+   //
+   //     isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate="+ sessionDate + "&startHour=" + sessionStartHour + "&endHour=" + sessionEndHour + "&nationalCode=" + nationalCode, "GET", null, function (resp) {
+   //
+   //         let hasConflict = null;
+   //         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+   //             hasConflict = JSON.parse(resp.data);
+   //             if(hasConflict) {
+   //                 warnSameSessionStudents.add(stu);
+   //             }
+   //             debugger;
+   //         }
+   //         }));
+   //     return warnSameSessionStudents;
+   //
+   // }
 
     // </script>

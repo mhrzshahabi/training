@@ -530,7 +530,10 @@ public class ClassStudentService implements IClassStudentService {
         return classStudentDAO.getStudentBetWeenRangeTime(startDate,endDate,nationalCodes);
     }
 
-
+    @Override
+    public List<Long> getSessionConflictViaClassStudent(String sessionDate, String startHour, String endHour, String nationalCode) {
+        return classStudentDAO.getSessionsInterferencePerStudent(sessionDate,startHour,endHour,nationalCode);
+    }
 
 
     public Long getStudentId(Long classId, String nationalCode) {

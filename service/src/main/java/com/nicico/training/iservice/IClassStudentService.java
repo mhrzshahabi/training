@@ -69,4 +69,5 @@ public interface IClassStudentService {
     List<String> getStudentBetWeenRangeTime(String startDate, String endDate,String personnelNos);
 
 
+    List<Long> getSessionConflictViaClassStudent(String sessionDate, String startHour, String endHour, String nationalCode);
 }

@@ -62,4 +62,7 @@ public interface IClassSessionService {
     Long getClassIdBySessionId(Long id);
     @Transactional
     List<ClassSessionDTO.AttendanceClearForm> loadSessionsForClearAttendance(Long classId);
+
+
+
 }
