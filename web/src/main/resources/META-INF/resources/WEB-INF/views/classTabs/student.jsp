@@ -3492,22 +3492,5 @@
    }
 
 
-   // function getConflictedSessions(sessionDate,sessionStartHour,sessionEndHour,nationalCode) {
-   //
-   //
-   //     isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate="+ sessionDate + "&startHour=" + sessionStartHour + "&endHour=" + sessionEndHour + "&nationalCode=" + nationalCode, "GET", null, function (resp) {
-   //
-   //         let hasConflict = null;
-   //         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-   //             hasConflict = JSON.parse(resp.data);
-   //             if(hasConflict) {
-   //                 warnSameSessionStudents.add(stu);
-   //             }
-   //             debugger;
-   //         }
-   //         }));
-   //     return warnSameSessionStudents;
-   //
-   // }
 
     // </script>
