@@ -2841,9 +2841,9 @@
                             if(result.length>0){
                                 for (let i = 0; i <result.length ; i++) {
                                     let hasConflict = null;
-
+                                       wait.show();
                                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (resp) {
-
+                                        wait.close();
 
                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                                hasConflict = JSON.parse(resp.data);
@@ -3492,22 +3492,5 @@
    }
 
 
-   // function getConflictedSessions(sessionDate,sessionStartHour,sessionEndHour,nationalCode) {
-   //
-   //
-   //     isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate="+ sessionDate + "&startHour=" + sessionStartHour + "&endHour=" + sessionEndHour + "&nationalCode=" + nationalCode, "GET", null, function (resp) {
-   //
-   //         let hasConflict = null;
-   //         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-   //             hasConflict = JSON.parse(resp.data);
-   //             if(hasConflict) {
-   //                 warnSameSessionStudents.add(stu);
-   //             }
-   //             debugger;
-   //         }
-   //         }));
-   //     return warnSameSessionStudents;
-   //
-   // }
 
     // </script>
