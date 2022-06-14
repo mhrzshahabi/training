@@ -494,34 +494,36 @@ public class ClassStudentRestController {
         }
 
     }
+
     @Loggable
     @GetMapping(value = "/history/{classId}")
     public ResponseEntity<ClassStudentHistoryDTO.InfoForAudit.TclassAuditSpecRs> history(@PathVariable Long classId) throws IOException, ParseException {
 
-        List<ClassStudentHistory> list= iClassStudentHistoryService.getAllHistoryWithClassId(classId);
+        List<ClassStudentHistory> list = iClassStudentHistoryService.getAllHistoryWithClassId(classId);
         List<ClassStudentHistoryDTO.InfoForAudit> dto = tclassStudentMapper.toTclassesResponse(list);
         final ClassStudentHistoryDTO.SpecAuditRs specResponse = new ClassStudentHistoryDTO.SpecAuditRs();
         final ClassStudentHistoryDTO.TclassAuditSpecRs specRs = new ClassStudentHistoryDTO.TclassAuditSpecRs();
         specResponse.setData(dto)
                 .setStartRow(0)
                 .setEndRow(dto.size())
-                .setTotalRows( dto.size());
+                .setTotalRows(dto.size());
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-  @Loggable
+
+    @Loggable
     @GetMapping(value = "/add/history/{classId}")
     public ResponseEntity<ClassStudentHistoryDTO.InfoForAudit.TclassAuditSpecRs> historyAdd(@PathVariable Long classId) throws IOException, ParseException {
 
-        List<ClassStudent> list=iClassStudentService.getClassStudents(classId);
+        List<ClassStudent> list = iClassStudentService.getClassStudents(classId);
         List<ClassStudentHistoryDTO.InfoForAudit> dto = tclassStudentMapper.toTclassesStudentResponse(list);
         final ClassStudentHistoryDTO.SpecAuditRs specResponse = new ClassStudentHistoryDTO.SpecAuditRs();
         final ClassStudentHistoryDTO.TclassAuditSpecRs specRs = new ClassStudentHistoryDTO.TclassAuditSpecRs();
         specResponse.setData(dto)
                 .setStartRow(0)
                 .setEndRow(dto.size())
-                .setTotalRows( dto.size());
+                .setTotalRows(dto.size());
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -529,9 +531,11 @@ public class ClassStudentRestController {
 
     @Loggable
     @GetMapping(value = "/getSessionConflict")
-    public ResponseEntity getSessionConflictViaClassStudent(@RequestParam(value = "sessionDate") String sessionDate,@RequestParam(value="startHour") String startHour,@RequestParam(value="endHour") String endHour, @RequestParam(value="nationalCode") String nationalCode) {
+    public ResponseEntity<List<Long>> getSessionConflictViaClassStudent(@RequestParam(value = "sessionDate") String sessionDate, @RequestParam(value = "startHour") String startHour, @RequestParam(value = "endHour") String endHour, @RequestParam(value = "nationalCode") String nationalCode) {
 
-        return new ResponseEntity<>(iClassStudentService.getSessionConflictViaClassStudent(sessionDate,startHour,endHour,nationalCode).stream().collect(Collectors.toList()).size() > 0 ? Boolean.TRUE.toString() : Boolean.FALSE.toString() , HttpStatus.OK);
+        List<Long> longs = iClassStudentService.getSessionConflictViaClassStudent(sessionDate, startHour, endHour, nationalCode);
+
+            return new ResponseEntity<>(longs, HttpStatus.OK);
+
     }
-
 }

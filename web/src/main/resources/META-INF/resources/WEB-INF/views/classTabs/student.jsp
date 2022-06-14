@@ -2837,17 +2837,17 @@
                             ) {
                                 inValidPersonnel.add(studentsDataArray[inx]);
                             }
-
                             if(result.length>0){
+                                let hasConflict = null;
                                 for (let i = 0; i <result.length ; i++) {
-                                    let hasConflict = null;
                                        wait.show();
-                                       isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (resp) {
+                                       isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode,"GET", null, function (response) {
                                         wait.close();
+                                           debugger;
 
-                                           if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                               hasConflict = JSON.parse(resp.data);
-                                               if (hasConflict) {
+                                           if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
+                                               hasConflict = JSON.parse(response.data);
+                                               if (hasConflict.length>0) {
                                                    if (!warnSameSessionStudents.contains(studentsDataArray[inx]))
                                                        warnSameSessionStudents.add(studentsDataArray[inx]);
 
@@ -2855,9 +2855,10 @@
 
                                            }
                                        }));
-                                    if(hasConflict){
+                                    if(warnSameSessionStudents.length>0){
                                         break;
                                     }
+
                                 }
 
 
