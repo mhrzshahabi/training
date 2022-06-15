@@ -4285,63 +4285,20 @@ FROM
         </addColumn>
     </changeSet>
 
-    <changeSet author="Montazeri" id="1655278832000-01">
+    <changeSet author="Montazeri" id="1655288989000-01">
         <addColumn tableName="tbl_post_grade">
             <column name="c_title_fa_2" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
 
-    <changeSet author="Montazeri" id="1655278917000-02">
+    <changeSet author="Montazeri" id="1655289049000-02">
         <sql>
             <![CDATA[
-            UPDATE tbl_post_grade
+            UPDATE
+                tbl_post_grade
             SET
                 c_title_fa_2 =
-                    CASE
-                        WHEN
-                            c_title_fa LIKE '%0%'
-                        THEN
-                            REPLACE(c_title_fa, '0', '')
-                        WHEN
-                            c_title_fa LIKE '%1%'
-                        THEN
-                            REPLACE(c_title_fa, '1', '')
-                        WHEN
-                            c_title_fa LIKE '%2%'
-                        THEN
-                            REPLACE(c_title_fa, '2', '')
-                        WHEN
-                            c_title_fa LIKE '%3%'
-                        THEN
-                            REPLACE(c_title_fa, '3', '')
-                        WHEN
-                            c_title_fa LIKE '%4%'
-                        THEN
-                            REPLACE(c_title_fa, '4', '')
-                        WHEN
-                            c_title_fa LIKE '%5%'
-                        THEN
-                            REPLACE(c_title_fa, '5', '')
-                        WHEN
-                            c_title_fa LIKE '%6%'
-                        THEN
-                            REPLACE(c_title_fa, '6', '')
-                        WHEN
-                            c_title_fa LIKE '%7%'
-                        THEN
-                            REPLACE(c_title_fa, '7', '')
-                        WHEN
-                            c_title_fa LIKE '%8%'
-                        THEN
-                            REPLACE(c_title_fa, '8', '')
-                        WHEN
-                            c_title_fa LIKE '%9%'
-                        THEN
-                            REPLACE(c_title_fa, '9', '')
-                        ELSE
-                            c_title_fa
-                        END;
-
+                    RTRIM(regexp_replace(c_title_fa, '[0-9]', ''))
             ]]>
         </sql>
     </changeSet>

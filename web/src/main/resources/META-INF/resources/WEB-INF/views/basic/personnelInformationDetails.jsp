@@ -900,7 +900,7 @@
                             canEdit: false
                         },
                         {
-                            name: "post.postGrade.titleFa",
+                            name: "post.postGrade.titleFa2",
                             title: "<spring:message code="post.grade"/> : ",
                             canEdit: false
                         },

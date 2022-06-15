@@ -22,6 +22,9 @@ public class ViewPostGradeDTO implements Serializable {
     private String titleFa;
     @NotEmpty
     @ApiModelProperty(required = true)
+    private String titleFa2;
+    @NotEmpty
+    @ApiModelProperty(required = true)
     private String code;
     @ApiModelProperty()
     private String peopleType;
