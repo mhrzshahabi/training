@@ -13,6 +13,7 @@ import java.io.Serializable;
 public class PostGradeDTO implements Serializable {
     private String code;
     private String titleFa;
+    private String titleFa2;
     private String peopleType;
 
     @Getter

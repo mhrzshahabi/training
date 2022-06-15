@@ -26,6 +26,9 @@ public class PostGrade extends Auditable {
     @Column(name = "c_title_fa")
     private String titleFa;
 
+    @Column(name = "c_title_fa_2")
+    private String titleFa2;
+
     @Column(name = "c_people_type", length = 50)
     private String peopleType;
 
