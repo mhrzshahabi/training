@@ -4285,6 +4285,25 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1655288989000-01">
+        <addColumn tableName="tbl_post_grade">
+            <column name="c_title_fa_2" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="Montazeri" id="1655289049000-02">
+        <sql>
+            <![CDATA[
+            UPDATE
+                tbl_post_grade
+            SET
+                c_title_fa_2 =
+                    RTRIM(regexp_replace(c_title_fa, '[0-9]', ''))
+            ]]>
+        </sql>
+    </changeSet>
+
+
 </databaseChangeLog>
 
 

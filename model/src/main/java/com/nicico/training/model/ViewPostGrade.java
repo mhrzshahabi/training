@@ -28,6 +28,9 @@ public class ViewPostGrade extends Auditable {
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
+    @Column(name = "c_title_fa_2", nullable = false)
+    private String titleFa2;
+
     @Column(name = "c_code", unique = true, nullable = false)
     private String code;
 
