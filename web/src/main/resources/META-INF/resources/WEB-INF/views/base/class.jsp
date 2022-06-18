@@ -170,7 +170,7 @@
             {name: "categoryId"},
             {name: "subCategoryId"},
         ],
-        fetchDataURL: courseUrl + "spec-list?type=combo"
+        fetchDataURL: courseUrl + "add-permission/spec-list?type=combo"
     });
 
     var RestDataSource_Term_JspClass = isc.TrDS.create({
