@@ -240,7 +240,7 @@
                 hoverHTML(record) {
                     return (record.mainWorkflowStatus !== undefined ? record.mainWorkflowStatus : getFormulaMessage("به گردش کار ارسال نشده است", "2", "orange", "b")) + "<br>" +
                         (record.course ?
-                            "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code :
+                            "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "مدت دوره: " + record.course.theoryDuration + "<br>" + "کد دوره: " + record.course.code :
                             "نام مهارت: " + record.titleFa);
                 },
             },
@@ -268,6 +268,7 @@
             {name: "course"},
             {name: "course.code", title: "کد دوره", filterOperator: "iContains"},
             {name: "course.titleFa", title: "عنوان دوره", filterOperator: "iContains"},
+            {name: "course.theoryDuration", title: "مدت دوره", filterOperator: "iContains"},
             {name: "skill"},
             {name: "skill.code", title: "کد مهارت", filterOperator: "iContains"},
             {name: "mainWorkflowStatus"},
@@ -1309,6 +1310,7 @@
             {name: "id", hidden: true},
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa", align: "center"},
             {name: "skill.code", align: "center",
                 sortNormalizer: function (record) {
@@ -1321,7 +1323,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
+                fields: ["course.code","course.titleFa","course.theoryDuration","titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="knowledge"/>"
             }],
         headerHeight: 50,
@@ -1376,6 +1378,7 @@
             {name: "id", hidden: true},
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa", align: "center"},
             {name: "skill.code", align: "center",
                 sortNormalizer: function (record) {
@@ -1388,7 +1391,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
+                fields: ["course.code","course.titleFa","course.theoryDuration","titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
@@ -1444,6 +1447,7 @@
             {name: "id", hidden: true},
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa", align: "center"},
             {name: "skill.code", align: "center",
                 sortNormalizer: function (record) {
@@ -1456,7 +1460,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code","course.titleFa","titleFa", "objectType", "skill.code"],
+                fields: ["course.code","course.titleFa","course.theoryDuration","titleFa", "objectType", "skill.code"],
                 title: "<spring:message code="attitude"/>"
             }],
         headerHeight: 50,
