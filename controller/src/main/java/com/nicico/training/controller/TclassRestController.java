@@ -12,6 +12,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.client.els.ElsClient;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
 import com.nicico.training.model.*;
@@ -79,6 +80,9 @@ public class TclassRestController {
     private final ElsClient client;
     private final EvaluationBeanMapper evaluationBeanMapper;
     private final TclassAuditMapper tclassAuditMapper;
+
+    private final CriteriaUtil criteriaUtil;
+
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
     @Loggable
@@ -1004,6 +1008,147 @@ public class TclassRestController {
     public  ResponseEntity<Void> removeEducationalCalFromClass(@PathVariable Long classId){
         tClassService.removeEducationalCalender(classId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/add-permission/spec-list")
+    public ResponseEntity<TclassDTO.TclassSpecRs> listWithPermission(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "id", required = false) List<Long> ids,
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria=criteria.replaceAll("\\s","");
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        //criteriaRq=(SearchDTO.SearchRq[])request.getCriteria().getCriteria().stream().filter(p->p.getFieldName().equals("term.id")&&p.getValue().get(0).equals("[]")).toArray();
+
+        if (request.getCriteria() != null) {
+            if (request.getCriteria().getCriteria().stream().filter(p -> (p.getFieldName() == null ? false : p.getFieldName().equals("term.id")) && p.getValue().size() == 0).toArray().length > 0) {
+                ArrayList list = new ArrayList<>();
+                list.add("-1000");
+                ((SearchDTO.CriteriaRq) request.getCriteria().getCriteria().stream().filter(p -> p.getFieldName().equals("term.id") && p.getValue().size() == 0).toArray()[0]).setValue(list);
+            }
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (ids != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.inSet)
+                    .setFieldName("id")
+                    .setValue(ids);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = ids.size();
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.CriteriaRq categoryCriteriaRq = criteriaUtil.addPermissionToCriteria("Category","course.categoryId");
+        SearchDTO.CriteriaRq subCategoryCriteriaRq  = criteriaUtil.addPermissionToCriteria("SubCategory","course.subCategoryId");
+
+        List<SearchDTO.CriteriaRq> catAndSubCatCriteriaList = new ArrayList<>();
+        catAndSubCatCriteriaList.add(categoryCriteriaRq);
+        catAndSubCatCriteriaList.add(subCategoryCriteriaRq);
+
+        SearchDTO.CriteriaRq catAndSubCatCriteria = BaseService.makeNewCriteria(null,null,EOperator.or,catAndSubCatCriteriaList);
+        BaseService.setCriteria(request,catAndSubCatCriteria);
+
+        SearchDTO.SearchRs<TclassDTO.Info> response = tClassService.search(request);
+
+        List<Long> classIdForCheckMessage = new ArrayList<>();
+
+        for (TclassDTO.Info tclassDTO : response.getList()) {
+            tclassDTO.setPlannerFullName("");
+            tclassDTO.setSupervisorFullName("");
+            tclassDTO.setOrganizerName("");
+
+            if (tclassDTO.getPlannerId() != null) {
+                Personnel planner = iPersonnelService.getPersonnel(tclassDTO.getPlannerId());
+                if (planner != null) {
+                    tclassDTO.setPlannerFullName(planner.getFirstName() + " " + planner.getLastName());
+                }
+
+                Personnel supervisor = iPersonnelService.getPersonnel(tclassDTO.getPlannerId());
+                if (supervisor != null) {
+                    tclassDTO.setSupervisorFullName(supervisor.getFirstName() + " " + supervisor.getLastName());
+                }
+            }
+            if (tclassDTO.getOrganizerId() != null) {
+                Institute institute = iInstituteService.getInstitute(tclassDTO.getOrganizerId());
+                if (institute != null) {
+                    tclassDTO.setOrganizerName(institute.getTitleFa());
+                }
+            }
+
+            if (tclassDTO.getStudentCount() > 0 && (tclassDTO.getClassStatus().equals("1") || tclassDTO.getClassStatus().equals("2"))) {
+                SearchDTO.SearchRq csSearchRq = new SearchDTO.SearchRq();
+                csSearchRq.setCount(1);
+                csSearchRq.setStartIndex(0);
+
+                List<String> csSortBy = new ArrayList<>();
+                csSortBy.add("sessionDate");
+                csSortBy.add("sessionStartHour");
+                csSearchRq.setSortBy(csSortBy);
+                SearchDTO.SearchRs<ClassSessionDTO.Info> result = classSessionService.searchWithCriteria(csSearchRq, tclassDTO.getId());
+
+                if (result.getList().size() > 0) {
+                    String str = DateUtil.convertKhToMi1(result.getList().get(0).getSessionDate());
+                    LocalDate date = LocalDate.parse(str);
+
+                    if ((date.isBefore(LocalDate.now().plusDays(7)) || date.equals(LocalDate.now().plusDays(7))) && (date.isAfter(LocalDate.now()) || date.equals(LocalDate.now()))) {
+                        classIdForCheckMessage.add(tclassDTO.getId());
+                    }
+                }
+            }
+        }
+
+        if (classIdForCheckMessage.size() > 0) {
+            Map<Long, Integer> classIds = tClassService.checkClassesForSendMessage(classIdForCheckMessage);
+
+            response.getList().forEach(p -> {
+                if (classIds != null && classIds.get(p.getId()) != null && classIds.get(p.getId()) > 0) {
+                    p.setIsSentMessage("alarm");
+                } else {
+                    p.setIsSentMessage("");
+                }
+            });
+        }
+        //*********************************
+        //******old code for alarms********
+////        for (TclassDTO.Info tclassDTO : response.getList()) {
+////            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
+////                tclassDTO.setHasWarning("alarm");
+////           else
+////              tclassDTO.setHasWarning("");
+////        }
+        //*********************************
+
+        final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
+        final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

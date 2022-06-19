@@ -2713,7 +2713,7 @@
                         newCriteria.criteria.add(criteria.criteria[i])
                 }
             }
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "spec-list", 0, null, '', "اجرا - کلاس", newCriteria, null);
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Class_JspClass, classUrl + "add-permission/spec-list", 0, null, '', "اجرا - کلاس", newCriteria, null);
         }
     });
 
@@ -4402,7 +4402,7 @@
                     criteria.criteria.push(plannerCriteria[0]);
                 }
             }
-            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
+            RestDataSource_Class_JspClass.fetchDataURL = classUrl + "add-permission/spec-list";
             mainTermCriteria = criteria;
             let mainCriteria = createMainCriteria();
             ListGrid_Class_JspClass.invalidateCache();
@@ -4432,7 +4432,7 @@
                             criteria.criteria.push(termCriteria[0]);
                         }
                     }
-                    RestDataSource_Class_JspClass.fetchDataURL = classUrl + "spec-list";
+                    RestDataSource_Class_JspClass.fetchDataURL = classUrl + "add-permission/spec-list";
                     departmentCriteria = criteria;
                     let mainCriteria = createMainCriteria();
                     ListGrid_Class_JspClass.invalidateCache();
