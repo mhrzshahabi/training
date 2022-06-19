@@ -36,4 +36,8 @@ public class ViewAllPostDTO implements Serializable {
     @ApiModel(" ViewAllPostInfo")
     public static class Info extends ViewAllPostDTO {
     }
+
+    public String getPostGradeTitle() {
+        return postGradeTitle.replaceAll("\\d", "");
+    }
 }
