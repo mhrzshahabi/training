@@ -1319,6 +1319,7 @@
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";
     const educationalDecisionHeaderRequestUrl = rootUrl + "/header";
+    const educationalDecisionRequestUrl = rootUrl + "/decision";
     const requestItemUrl = rootUrl + "/request-item";
     const requestItemAuditUrl = rootUrl + "/request-item-audit";
     const requestUrl = rootUrl + "/request";
