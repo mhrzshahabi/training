@@ -25,4 +25,8 @@ public class PostGradeDTO implements Serializable {
         private Long enabled;
         private Long deleted;
     }
+
+    public String getTitleFa() {
+        return titleFa.replaceAll("\\d", "");
+    }
 }

@@ -53,4 +53,8 @@ public class ViewPostGradeDTO implements Serializable {
         private Long id;
         private Long enabled;
     }
+
+    public String getTitleFa() {
+        return titleFa.replaceAll("\\d", "");
+    }
 }
