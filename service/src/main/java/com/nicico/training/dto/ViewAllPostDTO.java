@@ -38,6 +38,9 @@ public class ViewAllPostDTO implements Serializable {
     }
 
     public String getPostGradeTitle() {
-        return postGradeTitle.replaceAll("\\d", "");
+        if (postGradeTitle != null) {
+            return postGradeTitle.replaceAll("\\d", "");
+        }
+        return null;
     }
 }

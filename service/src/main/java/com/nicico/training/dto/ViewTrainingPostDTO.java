@@ -117,6 +117,9 @@ public class ViewTrainingPostDTO implements Serializable {
     }
 
     public String getPostGradeTitleFa() {
-        return postGradeTitleFa.replaceAll("\\d", "");
+        if (postGradeTitleFa != null) {
+            return postGradeTitleFa.replaceAll("\\d", "");
+        }
+        return null;
     }
 }
