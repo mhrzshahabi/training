@@ -73,4 +73,11 @@ public class ViewTrainingFileDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    public String getPostGradeTitle() {
+        if (postGradeTitle != null) {
+            return postGradeTitle.replaceAll("\\d", "");
+        }
+        return null;
+    }
 }

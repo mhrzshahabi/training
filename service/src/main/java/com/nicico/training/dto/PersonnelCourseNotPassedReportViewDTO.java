@@ -39,5 +39,12 @@ public class PersonnelCourseNotPassedReportViewDTO {
         private Long categoryId;
         private Long isStudent;
         private Long hasNa;
+
+        public String getPersonnelPostGradeTitle() {
+            if (personnelPostGradeTitle != null) {
+                return personnelPostGradeTitle.replaceAll("\\d", "");
+            }
+            return null;
+        }
     }
 }

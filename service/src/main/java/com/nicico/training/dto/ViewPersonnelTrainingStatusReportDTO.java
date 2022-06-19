@@ -81,4 +81,12 @@ public class ViewPersonnelTrainingStatusReportDTO {
         private Long classId;
         private Long personnelId;
     }
+
+    public String getPersonnelPostGradeTitle() {
+        if (personnelPostGradeTitle != null) {
+            return personnelPostGradeTitle.replaceAll("\\d", "");
+        }
+        return null;
+    }
+
 }
