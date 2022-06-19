@@ -214,7 +214,7 @@
                 canEdit: false,
                 hoverWidth: 250,
                     hoverHTML(record) {
-                    return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
+                    return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "مدت دوره: " + record.course.theoryDuration + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
                 },
             },
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
@@ -241,6 +241,7 @@
             {name: "course"},
             {name: "course.code", title: "کد دوره", filterOperator: "iContains"},
             {name: "course.titleFa", title: "عنوان دوره", filterOperator: "iContains"},
+            {name: "course.theoryDuration", title: "مدت دوره", filterOperator: "iContains"},
             // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
             //     showHover:true,
             //     hoverWidth: 200,
@@ -263,7 +264,7 @@
                 canEdit: false,
                 hoverWidth: 250,
                     hoverHTML(record) {
-                    return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
+                    return record.course ? "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "مدت دوره: " + record.course.theoryDuration + "<br>" + "کد دوره: " + record.course.code : "نام مهارت: " + record.titleFa;
                 },
             },
             {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},
@@ -290,6 +291,7 @@
             {name: "course"},
             {name: "course.code", title: "کد دوره", filterOperator: "iContains"},
             {name: "course.titleFa", title: "عنوان دوره", filterOperator: "iContains"},
+            {name: "course.theoryDuration", title: "مدت دوره", filterOperator: "iContains"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,
                 showHover:true,
                 hoverWidth: 200,
@@ -731,6 +733,7 @@
         fields: [
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -750,7 +753,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","course.theoryDuration","titleFa", "objectType"],
                 title: "<spring:message code="knowledge"/>"
             }],
         headerHeight: 50,
@@ -809,6 +812,7 @@
         fields: [
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             // {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -825,7 +829,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","course.theoryDuration","titleFa", "objectType"],
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
@@ -889,6 +893,7 @@
         fields: [
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             // {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -905,7 +910,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","course.theoryDuration","titleFa", "objectType"],
                 title: "<spring:message code="attitude"/>"
             }],
         headerHeight: 50,
@@ -1028,6 +1033,7 @@
         fields: [
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1047,7 +1053,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","course.theoryDuration","titleFa", "objectType"],
                 title: "<spring:message code="knowledge"/>"
             }],
         headerHeight: 50,
@@ -1076,6 +1082,7 @@
         fields: [
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1092,7 +1099,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","course.theoryDuration","titleFa", "objectType"],
                 title: "<spring:message code="ability"/>"
             }],
         headerHeight: 50,
@@ -1124,6 +1131,7 @@
         fields: [
             {name: "course.code", align: "center"},
             {name: "course.titleFa", align: "center"},
+            {name: "course.theoryDuration", align: "center"},
             {name: "titleFa"},
             {name: "objectType"},
             {name: "hasWarning", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false},
@@ -1140,7 +1148,7 @@
         ],
         headerSpans: [
             {
-                fields: ["course.code", "course.titleFa","titleFa", "objectType"],
+                fields: ["course.code", "course.titleFa","course.theoryDuration","titleFa", "objectType"],
                 title: "<spring:message code="attitude"/>"
             }],
         headerHeight: 50,
