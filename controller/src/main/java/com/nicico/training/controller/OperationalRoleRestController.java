@@ -59,7 +59,7 @@ public class OperationalRoleRestController {
                     avoid re-update of "TBL_OPERATIONAL_ROLE_POST_IDS" after assigning
                     individual post to user
              */
-//            updating.setUserIds(request.getUserIds());
+            updating.setUserIds(request.getUserIds());
 //            updating.setPostIds(request.getPostIds());
 
             updating.setCategories(arrivedUpdate.getCategories());
