@@ -331,7 +331,7 @@
         ]
     });
     let buttonSendToWorkFlow = isc.ToolStripButtonCreate.create({
-        title: "ذخیره و ارسال به گردش کار",
+        title: " ذخیره و ارسال به گردش کار",
         click: async function () {
           saveAndSendToWorkFlow()
         }
