@@ -579,7 +579,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             ans[2]=Float.valueOf(scoreEvaluationVariable);
             if(scoreEvaluationVariable != 0)
 //                ans[3]= Float.valueOf(df.format(ScoreEvaluation /scoreEvaluationVariable));
-                ans[3]= Float.valueOf(df.format((sumScore / (list.size()-pastTestVariable))-(sumPreScore /(list.size()-preTestVariable))));
+                ans[3]= Float.valueOf(df.format((sumScore / (list.size()-pastTestVariable))-(sumPreScore /(list.size()-preTestVariable)))); // I change it
             else
                 ans[3]= null;
             pastTestVariable=0;
@@ -610,7 +610,8 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 ans[1] = Float.valueOf(df.format((sumPreScore / scoreEvaluationVariable)*5)); // I convert in to nomreh az 100
                 ans[2] = Float.valueOf(scoreEvaluationVariable);
 //                ans[3] = Float.valueOf(df.format(ScoreEvaluation / scoreEvaluationVariable));
-                ans[3] = Float.valueOf(df.format( (sumScore / scoreEvaluationVariable) - ((sumPreScore / scoreEvaluationVariable)*5)));
+//                ans[3] = Float.valueOf(df.format( (sumScore / scoreEvaluationVariable) - ((sumPreScore / scoreEvaluationVariable)*5))  );
+                ans[3] = Float.valueOf(df.format( Math.abs( (sumScore / scoreEvaluationVariable) - ((sumPreScore / scoreEvaluationVariable)*5) ) )  );
             }
             else{
                 ans[0] = null;
@@ -825,13 +826,14 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     }
 
     private Float calculateLearningRate(String postTestMeanScore, String preTestMeanScore, float minPreScore, float maxPastScore) {
+        DecimalFormat df = new DecimalFormat("0.00");
         float pastMean=postTestMeanScore != null && !postTestMeanScore.isEmpty() ? Float.parseFloat(postTestMeanScore) : 0F;
         float preMean=preTestMeanScore != null && !preTestMeanScore.isEmpty() ? Float.parseFloat(preTestMeanScore) : 0F;
 
         if (maxPastScore-minPreScore==0 )
             return 0F;
         else{
-            return ((pastMean - preMean) / (maxPastScore - minPreScore)) *100;
+            return Float.valueOf(df.format(Math.abs(((pastMean - preMean) / (maxPastScore - minPreScore)) *100))) ;
         }
     }
 
