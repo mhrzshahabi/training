@@ -578,7 +578,8 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             ans[1]=Float.valueOf(df.format(sumPreScore /(list.size()-preTestVariable) ));
             ans[2]=Float.valueOf(scoreEvaluationVariable);
             if(scoreEvaluationVariable != 0)
-                ans[3]= Float.valueOf(df.format(ScoreEvaluation /scoreEvaluationVariable));
+//                ans[3]= Float.valueOf(df.format(ScoreEvaluation /scoreEvaluationVariable));
+                ans[3]= Float.valueOf(df.format((sumScore / (list.size()-pastTestVariable))-(sumPreScore /(list.size()-preTestVariable))));
             else
                 ans[3]= null;
             pastTestVariable=0;
@@ -605,10 +606,11 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
                 }
             }
             if(scoreEvaluationVariable != 0) {
-                ans[0] = Float.valueOf(df.format(sumScore / scoreEvaluationVariable));
-                ans[1] = Float.valueOf(df.format(sumPreScore / scoreEvaluationVariable));
+                ans[0] = Float.valueOf(df.format(sumScore / scoreEvaluationVariable)); // it was nomereh az 100
+                ans[1] = Float.valueOf(df.format((sumPreScore / scoreEvaluationVariable)*5)); // I convert in to nomreh az 100
                 ans[2] = Float.valueOf(scoreEvaluationVariable);
-                ans[3] = Float.valueOf(df.format(ScoreEvaluation / scoreEvaluationVariable));
+//                ans[3] = Float.valueOf(df.format(ScoreEvaluation / scoreEvaluationVariable));
+                ans[3] = Float.valueOf(df.format( (sumScore / scoreEvaluationVariable) - ((sumPreScore / scoreEvaluationVariable)*5)));
             }
             else{
                 ans[0] = null;
@@ -829,7 +831,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         if (maxPastScore-minPreScore==0 )
             return 0F;
         else{
-            return (pastMean - preMean) / (maxPastScore - minPreScore);
+            return ((pastMean - preMean) / (maxPastScore - minPreScore)) *100;
         }
     }
 
