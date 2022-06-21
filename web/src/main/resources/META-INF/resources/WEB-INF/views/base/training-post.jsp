@@ -23,7 +23,8 @@
         // "Company" : "شرکتی",
         // "OrgCostCenter" : "پیمان کار"
     };
-    let TrainingPostDS_Url = viewTrainingPostUrl + "/iscList";
+    // let TrainingPostDS_Url = viewTrainingPostUrl + "/iscList";
+    let TrainingPostDS_Url = viewTrainingPostUrl + "/rolePostIscList";
 
 
     let PostDS_TrainingPost = isc.TrDS.create({
@@ -1369,7 +1370,7 @@
             <sec:authorize access="hasAuthority('Training_Post_P')">
             ToolStrip_TrainingPost_Export2EXcel,
             </sec:authorize>
-            DynamicForm_AlarmSelection,
+            // DynamicForm_AlarmSelection,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

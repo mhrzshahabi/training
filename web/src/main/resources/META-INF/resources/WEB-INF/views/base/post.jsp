@@ -4,7 +4,8 @@
 
 // <script>
     let LoadAttachments_Post = null;
-    let PostDS_Url = viewPostUrl + "/iscList";
+    // let PostDS_Url = viewPostUrl + "/iscList";
+    let PostDS_Url = viewPostUrl + "/roleIndPostIscList";
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -159,7 +160,7 @@
             //         Window_PostWebService_Post.show();
             //     }
             // }),
-            DynamicForm_PostAlarmSelection,
+            // DynamicForm_PostAlarmSelection,
             isc.LayoutSpacer.create({
                 width: "*"
             }),
