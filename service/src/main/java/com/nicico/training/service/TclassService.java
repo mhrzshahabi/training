@@ -1569,7 +1569,7 @@ public class TclassService implements ITclassService {
                 else if (parameterValue.getCode().equalsIgnoreCase("FECLZ2"))
                     FECLZ2 = Double.parseDouble(parameterValue.getValue());
             }
-            effectivenessGrade = (reactionGrade * FECLZ1 + learningGrade * FECLZ2) / 100;
+            effectivenessGrade = ((reactionGrade * FECLZ1) + (learningGrade * FECLZ2)) / 100;
         } else if (classEvaluation != null && (classEvaluation.equalsIgnoreCase("3") || classEvaluation.equalsIgnoreCase("4"))) {
             Double FECBZ1 = 0.0;
             Double FECBZ2 = 0.0;
@@ -1585,7 +1585,7 @@ public class TclassService implements ITclassService {
                     FECBZ3 = Double.parseDouble(parameterValue.getValue());
             }
 
-            effectivenessGrade = (reactionGrade * FECBZ1 + learningGrade * FECBZ2 + behavioralGrade * FECBZ3) / 100;
+            effectivenessGrade = ((reactionGrade * FECBZ1) + (learningGrade * FECBZ2) + (behavioralGrade * FECBZ3)) / 100;
         }
 
         if (effectivenessGrade >= minScoreFECR)
