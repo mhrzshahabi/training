@@ -337,6 +337,12 @@
           saveAndSendToWorkFlow()
         }
     });
+    let buttonSave = isc.ToolStripButtonCreate.create({
+        title: " ذخیره ",
+        click: async function () {
+            save()
+        }
+    });
     let buttonChangeCancel = isc.ToolStripButtonRemove.create({
         ID: "CancelChange_JspENA",
         title: "بازخوانی / لغو تغییرات",
@@ -361,6 +367,7 @@
         align: "center",
         border: "1px solid gray",
         members: [
+            buttonSave,
             buttonSendToWorkFlow,
             buttonChangeCancel
         ]
@@ -2390,6 +2397,7 @@
                 if(resp.httpResponseCode !== 200){
                     if (JSON.parse(resp.httpResponseText).errors && JSON.parse(resp.httpResponseText).errors.size() > 0) {
                         createDialog("info", JSON.parse(resp.httpResponseText).errors[0].field);
+                        buttonSave.disable();
                         buttonSendToWorkFlow.disable();
                         buttonChangeCancel.disable();
                         return;
@@ -2421,6 +2429,7 @@
     }
     function readOnly(status){
         if(status === true){
+            buttonSave.disable();
             buttonSendToWorkFlow.disable();
             buttonChangeCancel.disable();
             DynamicForm_JspEditNeedsAssessment.disable();
@@ -2433,6 +2442,7 @@
             ToolStrip_JspNeedsAssessment.disable();
         }
         else {
+            buttonSave.enable();
             buttonSendToWorkFlow.enable();
             buttonChangeCancel.enable();
             DynamicForm_JspEditNeedsAssessment.enable();
@@ -2611,6 +2621,19 @@ async function saveAndSendToWorkFlow() {
         sendNeedsAssessmentToWorkflow(mustSent);
         // createDialog("info", "تغییری صورت نگرفته است")
     }
+}
+async function save() {
+    if (hasChanged) {
+        wait.show();
+         let [isSaved] = await sendNeedsAssessmentForSaving();
+         wait.close();
+        if (isSaved) createDialog("info","تغییرات ذخیره شد.");
+         if (!isSaved)
+            return;
+    } else
+           return;
+         // createDialog("info", "تغییری صورت نگرفته است")
+
 }
     function updatePriority_AllSelectedRecords(records, priorityId) {
 
