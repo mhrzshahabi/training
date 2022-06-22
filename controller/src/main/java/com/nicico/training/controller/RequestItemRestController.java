@@ -6,13 +6,18 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.dto.RequestItemDTO;
-import com.nicico.training.iservice.IRequestItemService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.model.RequestItem;
+import com.nicico.training.model.RequestItemProcessDetail;
+import com.nicico.training.model.SynonymPersonnel;
+import dto.bpms.BPMSReqItemExpertsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +37,14 @@ import java.util.List;
 @RequestMapping("/api/request-item")
 public class RequestItemRestController {
 
-    private final RequestItemBeanMapper requestItemBeanMapper;
-    private final IRequestItemService requestItemService;
+    private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
+    private final IRequestItemService requestItemService;
+    private final RequestItemBeanMapper requestItemBeanMapper;
+    private final IParameterValueService parameterValueService;
+    private final ISynonymPersonnelService synonymPersonnelService;
+    private final IRequestItemProcessDetailService requestItemProcessDetailService;
+    private final IRequestItemCoursesDetailService requestItemCoursesDetailService;
 
 
     @Loggable
@@ -82,7 +92,6 @@ public class RequestItemRestController {
         return new ResponseEntity<>(res, HttpStatus.OK);
     }
 
-    //
     @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<RequestItemDTO.Info>> list() {
@@ -160,5 +169,59 @@ public class RequestItemRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+    @Loggable
+    @PutMapping(value = "/operational-roles/{id}")
+    public ResponseEntity updateOperationalRoles(@PathVariable Long id) {
+        requestItemService.updateOperationalRoles(id);
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get-experts/{requestItemId}/{nationalCodes}")
+    public ResponseEntity<ISC<BPMSReqItemExpertsDto>> getExperts(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                 @PathVariable Long requestItemId,
+                                                                 @PathVariable List<String> nationalCodes) {
+
+        List<BPMSReqItemExpertsDto> expertsDtoList = new ArrayList<>();
+        for (String nationalCode : nationalCodes) {
+            BPMSReqItemExpertsDto bpmsReqItemExpertsDto;
+            SynonymPersonnel synonymPersonnel = synonymPersonnelService.getByNationalCode(nationalCode);
+            if (synonymPersonnel == null) {
+                SynonymPersonnel synonymPersonnelModel = new SynonymPersonnel();
+                synonymPersonnelModel.setNationalCode(nationalCode);
+                bpmsReqItemExpertsDto = modelMapper.map(synonymPersonnelModel, BPMSReqItemExpertsDto.class);
+            } else {
+                bpmsReqItemExpertsDto = modelMapper.map(synonymPersonnel, BPMSReqItemExpertsDto.class);
+            }
+            bpmsReqItemExpertsDto.setGeneralOpinion(parameterValueService.getInfo(requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, nationalCode).getExpertsOpinionId()).getTitle());
+            expertsDtoList.add(bpmsReqItemExpertsDto);
+        }
+
+        ISC.Response<BPMSReqItemExpertsDto> response = new ISC.Response<>();
+        response.setStartRow(startRow);
+        response.setEndRow(startRow + expertsDtoList.size());
+        response.setTotalRows(expertsDtoList.size());
+        response.setData(expertsDtoList);
+        ISC<BPMSReqItemExpertsDto> infoISC = new ISC<>(response);
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/expert-opinion/{requestItemId}/{expertNationalCode}")
+    public ResponseEntity<ISC<RequestItemCoursesDetailDTO.Info>> getExpertOpinion(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                                  @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                                                  @PathVariable Long requestItemId,
+                                                                                  @PathVariable String expertNationalCode) {
+
+        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, expertNationalCode);
+        List<RequestItemCoursesDetailDTO.Info> requestItemCoursesDetails = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
+
+        ISC.Response<RequestItemCoursesDetailDTO.Info> response = new ISC.Response<>();
+        response.setStartRow(startRow);
+        response.setEndRow(startRow + requestItemCoursesDetails.size());
+        response.setTotalRows(requestItemCoursesDetails.size());
+        response.setData(requestItemCoursesDetails);
+        ISC<RequestItemCoursesDetailDTO.Info> infoISC = new ISC<>(response);
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
 
 }

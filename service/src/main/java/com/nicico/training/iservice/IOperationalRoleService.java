@@ -39,8 +39,10 @@ public interface IOperationalRoleService {
 
     OperationalRole addIndividualPost(Long roleId, List<Long> postIds);
 
-    List<OperationalRole> getOperationalRolesById(Long postId);
+    List<OperationalRole> getOperationalRolesByPostId(Long postId);
 
     List<String> getOperationalRoleTitlesByIds(List<Long> ids);
+
+    Set<Long> getAllUserIdsByIds(List<Long> ids);
 
 }

@@ -115,7 +115,7 @@ public class OperationalRoleService implements IOperationalRoleService {
     }
 
     @Override
-    public List<OperationalRole> getOperationalRolesById(Long postId) {
+    public List<OperationalRole> getOperationalRolesByPostId(Long postId) {
         List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByPostIds(postId);
         if (operationalRoles.size() != 0)
             return operationalRoles;
@@ -125,6 +125,15 @@ public class OperationalRoleService implements IOperationalRoleService {
     @Override
     public List<String> getOperationalRoleTitlesByIds(List<Long> ids) {
         return operationalRoleDAO.findAllById(ids).stream().map(OperationalRole::getTitle).collect(Collectors.toList());
+    }
+
+    public Set<Long> getAllUserIdsByIds(List<Long> ids) {
+        Set<Long> userIds = new HashSet<>();
+        List<OperationalRole> operationalRoles = operationalRoleDAO.findAllById(ids);
+        for (OperationalRole operationalRole : operationalRoles) {
+            userIds.addAll(operationalRole.getUserIds());
+        }
+        return userIds;
     }
 
     @Transactional(readOnly = true)

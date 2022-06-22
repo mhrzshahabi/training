@@ -3,6 +3,8 @@ package dto.bpms;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Setter
 @Getter
 public class BPMSUserTasksContentDto {
@@ -24,5 +26,8 @@ public class BPMSUserTasksContentDto {
     private String objectType;
     private Boolean approved;
     private String returnReason;
-
+    private String requestItemId;
+    private String requestNo;
+    private String requestLetterNumber;
+    private List<String> assigneeList;
 }

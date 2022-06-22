@@ -45,7 +45,6 @@ public class RequestItemWithDiff {
     private String postTitle;
     private String educationLevel;
     private String educationMajor;
-//    private String workGroupCode;
     private String state;
     private List<Long> operationalRoleIds;
     private List<String> operationalRoleTitles;

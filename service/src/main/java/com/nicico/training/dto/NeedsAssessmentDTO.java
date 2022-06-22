@@ -38,6 +38,20 @@ public class NeedsAssessmentDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("NeedsAssessmentDTO - CourseDetail")
+    public static class CourseDetail extends NeedsAssessmentDTO {
+
+        private String courseCode;
+        private String courseTitle;
+        private String categoryTitle;
+        private String subCategoryTitle;
+        private String priority;
+        private Long requestItemProcessDetailId;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("NeedsAssessmentDTO - Info")
     public static class Info extends NeedsAssessmentDTO {
         private Long id;

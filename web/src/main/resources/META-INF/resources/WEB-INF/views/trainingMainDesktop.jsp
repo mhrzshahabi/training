@@ -1327,6 +1327,7 @@
     const synonymPersonnel = rootUrl + "/personnel/Synonym";
     const minIoUrl = rootUrl + "/minIo";
     const bpmsUrl = rootUrl + "/bpms" ;
+    const requestItemBPMSUrl = rootUrl + "/certification-bpms" ;
     const systemStatusUrl = rootUrl + "/system-status";
     const addIndividualPost = rootUrl + "/view-training-post/add";
     const deleteIndividualPost = rootUrl + "/view-training-post/delete";
