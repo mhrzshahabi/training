@@ -208,6 +208,94 @@
                 required: true}
         ]
     });
+    DynamicForm_Decision_base = isc.DynamicForm.create({
+        width: 400,
+        height: "100%",
+        numCols: 2,
+        fields: [
+            {
+                name: "id",
+                title: "id",
+                primaryKey: true,
+                canEdit: false,
+                hidden: true
+            },
+            {
+                name: "itemFromDate",
+                ID: "date_itemFromDate_base",
+                title: "تاریخ شروع",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_itemFromDate_base', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "itemToDate",
+                ID: "date_itemToDate_base",
+                title: "تاریخ پایان ",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_itemToDate_base', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "baseTuitionFee",
+                title: "پايه",
+                keyPressFilter: "[0-9.]",
+                required: true},
+            {
+                name: "professorTuitionFee",
+                title: "استاد",
+                keyPressFilter: "[0-9.]",
+                required: true},
+            {
+                name: "knowledgeAssistantTuitionFee",
+                title: "دانشيار",
+                keyPressFilter: "[0-9.]",
+                required: true},
+            {
+                name: "teacherAssistantTuitionFee",
+                title: "استاديار",
+                keyPressFilter: "[0-9.]",
+                required: true},
+            {
+                name: "instructorTuitionFee",
+                title: "مربي",
+                keyPressFilter: "[0-9.]",
+                required: true},
+            {
+                name: "educationalAssistantTuitionFee",
+                title: "مربي آموزشيار",
+                keyPressFilter: "[0-9.]",
+                required: true}
+        ]
+    });
 
 
 
@@ -287,18 +375,35 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addHistory()
+                    addChildDecision(DynamicForm_Decision_history,Window_history_Decision)
                 }.bind(this)
             }),
             isc.ToolStripButtonRemove.create({
                 title: "حذف",
                 click: function () {
-                    deleteHistory()
+                    deleteChildDecision(ListGrid_Decision_Educational_history)
                 }.bind(this)
             })
         ]
     });
-
+    base_actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonCreate.create({
+                title: "افزودن",
+                click: function () {
+                    addChildDecision(DynamicForm_Decision_base,Window_base_Decision)
+                }.bind(this)
+            }),
+            isc.ToolStripButtonRemove.create({
+                title: "حذف",
+                click: function () {
+                    deleteChildDecision(ListGrid_Basic_Tuition)
+                }.bind(this)
+            })
+        ]
+    });
 
     ListGrid_Decision_Educational_history = isc.ListGrid.create({
         dataSource: RestDataSource_Decision_Educational_history,
@@ -438,7 +543,9 @@
                 align: "center",
                 canFilter: false
             }
-        ]
+        ],
+        gridComponents: [base_actions, "filterEditor", "header", "body", "summaryRow"]
+
     });
 
     //----------------------------------------------------Actions --------------------------------------------------
@@ -505,7 +612,7 @@
                 layoutMargin: 5,
                 membersMargin: 5,
                 click: function () {
-                    saveDecisionHistory();
+                    saveChildDecision(ListGrid_Decision_Educational_history,DynamicForm_Decision_history,Window_history_Decision,"history")
                 }
             }),
             isc.IButtonCancel.create({
@@ -514,6 +621,31 @@
                 width: 120,
                 click: function () {
                     Window_history_Decision.close();
+                }
+            })
+        ]
+    });
+    HLayout_IButtons_Decision_base = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            isc.IButtonSave.create({
+                top: 260,
+                layoutMargin: 5,
+                membersMargin: 5,
+                click: function () {
+                    saveChildDecision(ListGrid_Basic_Tuition,DynamicForm_Decision_base,Window_base_Decision,"base")
+                }
+            }),
+            isc.IButtonCancel.create({
+                layoutMargin: 5,
+                membersMargin: 5,
+                width: 120,
+                click: function () {
+                    Window_base_Decision.close();
                 }
             })
         ]
@@ -547,6 +679,21 @@
         items: [
             DynamicForm_Decision_history,
             HLayout_IButtons_Decision_history
+        ]
+    });
+    Window_base_Decision = isc.Window.create({
+        title: "افزودن مبلغ پایه حق التدریس",
+        width: 450,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            DynamicForm_Decision_base,
+            HLayout_IButtons_Decision_base
         ]
     });
 
@@ -597,40 +744,9 @@
         DynamicForm_Decision.clearErrors();
         Window_header_Decision.show();
     }
-    function addHistory() {
-        DynamicForm_Decision_history.clearValues();
-        DynamicForm_Decision_history.clearErrors();
-        Window_history_Decision.show();
-    }
 
-    function deleteHistory() {
-        let record = ListGrid_Decision_Educational_history.getSelectedRecord();
-        if (record == null) {
-            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
-            let Dialog_dec_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code="verify.delete"/>");
-            Dialog_dec_remove.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index === 0) {
-                        wait.show();
-                        isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionRequestUrl + "/" + record.id, "DELETE", null, function (resp) {
-                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                wait.close();
-                                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                ListGrid_Decision_Educational_history.invalidateCache();
 
-                            } else {
-                                wait.close();
-                                createDialog("info", "خطایی رخ داده است");
-                            }
-                        }));
-                    }
-                }
-            });
-        }
-    }
+
     function saveDecisionHeader() {
 
         if (!DynamicForm_Decision.validate())
@@ -657,28 +773,33 @@
 
     }
 
-    function saveDecisionHistory() {
+    function addChildDecision(dynamicForm,window) {
+        dynamicForm.clearValues();
+        dynamicForm.clearErrors();
+        window.show();
+    }
+    function saveChildDecision(listGrid,dynamicForm,window,ref) {
         let record = ListGrid_Decision_Header.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
-        if (!DynamicForm_Decision_history.validate())
+        if (!dynamicForm.validate())
             return;
-        if(DynamicForm_Decision_history.getValue("itemToDate") < DynamicForm_Decision_history.getValue("itemFromDate")) {
+        if(dynamicForm.getValue("itemToDate") < dynamicForm.getValue("itemFromDate")) {
             createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");
             return;
         }
-        let data = DynamicForm_Decision_history.getValues();
-        data.ref ="history"
+        let data = dynamicForm.getValues();
+        data.ref =ref
         data.educationalDecisionHeaderId =record.id
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionRequestUrl, "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 wait.close();
                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                Window_history_Decision.close();
-                ListGrid_Decision_Educational_history.invalidateCache();
+                window.close();
+                listGrid.invalidateCache();
             } else {
                 wait.close();
                 createDialog("info", "خطایی رخ داده است");
@@ -686,6 +807,34 @@
         }));
 
 
+    }
+    function deleteChildDecision(listGrid) {
+        let record = listGrid.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_dec_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
+            Dialog_dec_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionRequestUrl + "/" + record.id, "DELETE", null, function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                wait.close();
+                                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                listGrid.invalidateCache();
+
+                            } else {
+                                wait.close();
+                                createDialog("info", "خطایی رخ داده است");
+                            }
+                        }));
+                    }
+                }
+            });
+        }
     }
 
     function deleteDecisionHeader() {
@@ -730,7 +879,7 @@
 
         switch (tab.name) {
             case "TabPane_Decision_Educational_history": {
-                RestDataSource_Basic_Tuition.fetchDataURL = educationalDecisionRequestUrl + "/list/tuition/"+record.id;
+                RestDataSource_Basic_Tuition.fetchDataURL = educationalDecisionRequestUrl + "/list/base/"+record.id;
                 ListGrid_Basic_Tuition.invalidateCache();
                 ListGrid_Basic_Tuition.fetchData();
                 break;
