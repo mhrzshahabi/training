@@ -194,16 +194,19 @@
             {
                 name: "educationalHistoryCoefficient",
                 title: "ضريب",
+                length: 20,
                 keyPressFilter: "[0-9.]",
                 required: true},
             {
                 name: "educationalHistoryFrom",
                 title: "از سال",
+                length: 5,
                 keyPressFilter: "[0-9.]",
                 required: true},
             {
                 name: "educationalHistoryTo",
                 title: "تا سال",
+                length: 5,
                 keyPressFilter: "[0-9.]",
                 required: true}
         ]
@@ -267,31 +270,37 @@
             {
                 name: "baseTuitionFee",
                 title: "پايه",
+                length: 20,
                 keyPressFilter: "[0-9.]",
                 required: true},
             {
                 name: "professorTuitionFee",
                 title: "استاد",
+                length: 20,
                 keyPressFilter: "[0-9.]",
                 required: true},
             {
                 name: "knowledgeAssistantTuitionFee",
                 title: "دانشيار",
+                length: 20,
                 keyPressFilter: "[0-9.]",
                 required: true},
             {
                 name: "teacherAssistantTuitionFee",
                 title: "استاديار",
+                length: 20,
                 keyPressFilter: "[0-9.]",
                 required: true},
             {
                 name: "instructorTuitionFee",
                 title: "مربي",
+                length: 20,
                 keyPressFilter: "[0-9.]",
                 required: true},
             {
                 name: "educationalAssistantTuitionFee",
                 title: "مربي آموزشيار",
+                length: 20,
                 keyPressFilter: "[0-9.]",
                 required: true}
         ]
@@ -857,7 +866,7 @@
 
                             } else {
                                 wait.close();
-                                createDialog("info", "خطایی رخ داده است");
+                                createDialog("info", "رکورد مورد نظر دارای زیر مجموعه می باشد");
                             }
                         }));
                     }
