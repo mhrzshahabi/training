@@ -7,6 +7,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 import org.mapstruct.ReportingPolicy;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -20,6 +21,10 @@ public interface BPMSBeanMapper {
     @Mapping(source = "processVariables", target = "objectId", qualifiedByName = "processVariablesToObjectId")
     @Mapping(source = "processVariables", target = "objectType", qualifiedByName = "processVariablesToObjectType")
     @Mapping(source = "processVariables", target = "returnReason", qualifiedByName = "processVariablesToReturnReason")
+    @Mapping(source = "processVariables", target = "requestItemId", qualifiedByName = "processVariablesToRequestItemId")
+    @Mapping(source = "processVariables", target = "requestNo", qualifiedByName = "processVariablesToRequestNo")
+    @Mapping(source = "processVariables", target = "requestLetterNumber", qualifiedByName = "processVariablesToRequestLetterNumber")
+    @Mapping(source = "processVariables", target = "assigneeList", qualifiedByName = "processVariablesToAssigneeList")
     BPMSUserTasksContentDto toUserTasksContent (BPMSUserTasksResponseDto bpmsUserTasksResponseDto);
 
     List<BPMSUserTasksContentDto> toUserTasksContentList(List<BPMSUserTasksResponseDto> bpmsUserTasksResponseDtoList);
@@ -73,6 +78,38 @@ public interface BPMSBeanMapper {
             return String.valueOf(variables.get("returnReason"));
         else
             return " " ;
+    }
+
+    @Named("processVariablesToRequestItemId")
+    default String processVariablesToRequestItemId(LinkedHashMap<String, Object> variables) {
+        if(variables!=null && variables.get("requestItemId")!=null)
+            return String.valueOf(variables.get("requestItemId"));
+        else
+            return null;
+    }
+
+    @Named("processVariablesToRequestNo")
+    default String processVariablesToRequestNo(LinkedHashMap<String, Object> variables) {
+        if(variables!=null && variables.get("requestNo")!=null)
+            return String.valueOf(variables.get("requestNo"));
+        else
+            return null;
+    }
+
+    @Named("processVariablesToRequestLetterNumber")
+    default String processVariablesToRequestLetterNumber(LinkedHashMap<String, Object> variables) {
+        if(variables!=null && variables.get("requestLetterNumber")!=null)
+            return String.valueOf(variables.get("requestLetterNumber"));
+        else
+            return null;
+    }
+
+    @Named("processVariablesToAssigneeList")
+    default List<String> processVariablesToAssigneeList(LinkedHashMap<String, Object> variables) {
+        List<String> assigneeList = new ArrayList<>();
+        if(variables!=null && variables.get("assigneeList")!=null)
+            assigneeList.addAll((List<String>) variables.get("assigneeList"));
+        return assigneeList;
     }
 
 }

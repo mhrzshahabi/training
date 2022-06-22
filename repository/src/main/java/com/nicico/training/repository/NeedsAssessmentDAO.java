@@ -4,6 +4,7 @@ import com.nicico.training.model.NeedsAssessment;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
@@ -28,6 +29,8 @@ public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
     @Modifying
     @Query(value = "update TBL_NEEDS_ASSESSMENT SET e_deleted = :deleted WHERE id = :id", nativeQuery = true)
     public void updateDeleted(Long id, Long deleted);
+
+    List<NeedsAssessment> findAllByObjectTypeAndObjectCode(String objectType, String objectCode);
 }
 
 

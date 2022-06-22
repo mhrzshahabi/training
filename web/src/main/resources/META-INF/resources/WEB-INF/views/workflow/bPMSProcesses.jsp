@@ -18,7 +18,7 @@
             {name: "deploymentId"},
             {name: "tenantId", title: "زیرسیستم"},
             {name: "createBy", title: "ایجاد کننده"},
-            {name: "title", title: "عنوان"},
+            {name: "title", title: "عنوان", showHover: true},
             {name: "processInstanceId", title: "شناسه فرایند"},
             {name: "processDefinitionId"},
             {name: "taskId"},
@@ -27,13 +27,6 @@
             {name: "processStartTime", title: "تاریخ شروع فرایند"},
             {name: "taskDefinitionKey"},
             {name: "processDefinitionKey"}
-            // {name: "owner", title: "درخواست دهنده"},
-            // {name: "description"},
-            // {name: "processDocumentation"},
-            // {name: "postTitle"},
-            // {name: "senderUserName"},
-            // {name: "instanceDetails"},
-            // {name: "formListDTOS"}
         ],
         transformRequest: function (dsRequest) {
 
@@ -69,7 +62,6 @@
 
         }
     });
-
     let ToolStripButton_showImage_BPMSProcesses = isc.ToolStripButton.create({
         icon: "contact.png",
         title: "<spring:message code="process.image"/>",
@@ -77,7 +69,6 @@
             showBPMSProcessImage(ListGrid_BPMSProcesses.getSelectedRecord().taskId, ListGrid_BPMSProcesses.getSelectedRecord().deploymentId);
         }
     });
-
     let ToolStripButton_Refresh_BPMSProcesses = isc.ToolStripButtonRefresh.create({
         title: "<spring:message code="refresh"/>",
         click: function () {
@@ -85,7 +76,6 @@
             ListGrid_BPMSProcesses.invalidateCache();
         }
     });
-
     let ToolStrip_Actions_BPMSProcesses = isc.ToolStrip.create({
         width: "100%",
         members: [
@@ -101,7 +91,6 @@
             })
         ]
     });
-
     let HLayout_Actions_BPMSProcesses = isc.HLayout.create({
         width: "100%",
         members: [
@@ -145,7 +134,6 @@
         freezeFieldText: "<spring:message code="freezeFieldText"/>",
         startsWithTitle: "tt"
     });
-
     let HLayout_Grid_BPMSProcesses = isc.HLayout.create({
         width: "100%",
         height: "100%",

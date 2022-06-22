@@ -1,8 +1,8 @@
 package com.nicico.training.mapper.requestItem;
 
-
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
+import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.iservice.ISynonymPersonnelService;
 import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.enums.RequestItemState;
@@ -10,6 +10,7 @@ import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.requestItem.RequestItemWithDiff;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -18,24 +19,20 @@ import java.util.List;
 public abstract class RequestItemBeanMapper {
 
     @Autowired
+    protected IParameterValueService parameterValueService;
+    @Autowired
     protected IOperationalRoleService operationalRoleService;
     @Autowired
     protected ISynonymPersonnelService synonymPersonnelService;
+
 
     @Mapping(source = "state", target = "state", qualifiedByName = "strToState")
     public abstract RequestItem toRequestItem (RequestItemDTO.Create request);
 
     @Mappings({
-//            @Mapping(source = "personnelNumber", target = "personnelNumber"),
-//            @Mapping(source = "personnelNo2", target = "personnelNo2"),
-//            @Mapping(source = "name", target = "name"),
-//            @Mapping(source = "lastName", target = "lastName"),
-//            @Mapping(source = "affairs", target = "affairs"),
-//            @Mapping(source = "post", target = "post"),
-//            @Mapping(source = "nationalCode", target = "nationalCode"),
-//            @Mapping(source = "competenceReqId", target = "competenceReqId"),
             @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr"),
-            @Mapping(source = "operationalRoleIds", target = "operationalRoleTitles", qualifiedByName = "operationalRoleIdsToTitles"),
+            @Mapping(source = "processStatusId", target = "processStatusTitle", qualifiedByName = "processStatusIdToTitle"),
+            @Mapping(source = "operationalRoleIds", target = "operationalRoleTitles", qualifiedByName = "operationalRoleIdsToTitles")
     })
     public abstract RequestItemDTO.Info toRequestItemDto(RequestItem requestItem);
 
@@ -44,7 +41,16 @@ public abstract class RequestItemBeanMapper {
 
     @Named("operationalRoleIdsToTitles")
     protected List<String> operationalRoleIdsToTitles(List<Long> operationalRoleIds) {
-        return operationalRoleService.getOperationalRoleTitlesByIds(operationalRoleIds);
+        if (operationalRoleIds.size() != 0)
+            return operationalRoleService.getOperationalRoleTitlesByIds(operationalRoleIds);
+        else return new ArrayList<>();
+    }
+
+    @Named("processStatusIdToTitle")
+    protected String processStatusIdToTitle(Long processStatusId) {
+        if (processStatusId != null)
+            return parameterValueService.getInfo(processStatusId).getTitle();
+        else return "";
     }
 
     @Named("StateToStr")

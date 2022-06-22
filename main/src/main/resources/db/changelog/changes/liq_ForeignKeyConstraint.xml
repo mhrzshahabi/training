@@ -1365,6 +1365,20 @@
         <addForeignKeyConstraint baseColumnNames="CALENDAR_ID" baseTableName="tbl_class" constraintName="FK_calendar_in_class" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_educational_calender" validate="true"/>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-075">
+        <addForeignKeyConstraint baseColumnNames="f_process_status_id" baseTableName="tbl_request_item" constraintName="FK_parameter_value_process_status_in_request_item" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-079">
+        <addForeignKeyConstraint baseColumnNames="f_request_item_id" baseTableName="tbl_request_item_process_detail" constraintName="FK_request_item_id_in_request_item_process_detail" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_request_item" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_experts_opinion_id" baseTableName="tbl_request_item_process_detail" constraintName="FK_parameter_value_experts_opinion_in_request_item_process_detail" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-082">
+        <addForeignKeyConstraint baseColumnNames="f_request_item_process_detail_id" baseTableName="tbl_request_item_courses_detail" constraintName="FK_request_item_process_detail_id_in_request_item_courses_detail" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_request_item_process_detail" validate="true"/>
+    </changeSet>
+
+
 
     <changeSet author="namdari (generated)" id="1654668348000-05">
         <addForeignKeyConstraint baseColumnNames="f_educational_decision_header" baseTableName="tbl_educational_decision" constraintName="FK_educational_decision_header_in_decision" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_educational_decision_header" validate="true"/>

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface RequestItemDAO extends JpaRepository<RequestItem, Long>, JpaSpecificationExecutor<RequestItem> {
@@ -15,4 +16,9 @@ public interface RequestItemDAO extends JpaRepository<RequestItem, Long>, JpaSpe
 
     @Query(value = "select ri.id from tbl_request_item ri where ri.f_competence_id=:competenceId", nativeQuery = true)
     List<Long> findAllRequestItemIdsWithCompetenceId(Long competenceId);
+
+    Optional<RequestItem> findByProcessInstanceId(String processInstanceId);
+
+    Optional<RequestItem> findFirstByProcessInstanceId(String processInstanceId);
+
 }

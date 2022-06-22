@@ -156,12 +156,12 @@ public class BpmsRestController {
         Object object = client.searchTask(taskSearchDto, page, size);
         BPMSUserTasksDto bpmsUserTasksDto = mapper.convertValue(object, new TypeReference<>() {
         });
-        List<BPMSUserTasksContentDto> bpmsUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
+        List<BPMSUserTasksContentDto> bPMSUserTasksContentDtoList = bpmsBeanMapper.toUserTasksContentList(bpmsUserTasksDto.getContent());
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<BPMSUserTasksContentDto> searchRs = new SearchDTO.SearchRs<>();
-        searchRs.setTotalCount((long) bpmsUserTasksContentDtoList.size());
-        searchRs.setList(bpmsUserTasksContentDtoList);
+        searchRs.setTotalCount((long) bPMSUserTasksContentDtoList.size());
+        searchRs.setList(bPMSUserTasksContentDtoList);
 
         ISC<BPMSUserTasksContentDto> infoISC = ISC.convertToIscRs(searchRs, searchRq.getStartIndex());
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
@@ -209,13 +209,11 @@ public class BpmsRestController {
     }
 
     @Loggable
-    @GetMapping({"/processes/details/{processInstanceId}/{processName}"})
-    ResponseEntity<Object> getProcessDetailByProcessInstanceId(@PathVariable String processInstanceId, @PathVariable String processName) {
-        if (processName.equals("competence"))
-            return new ResponseEntity<>(competenceService.getProcessDetailByProcessInstanceId(processInstanceId), HttpStatus.OK);
-        else
-            return new ResponseEntity<>(null, HttpStatus.OK);
+    @GetMapping({"/processes/details/{processInstanceId}"})
+    ResponseEntity<Object> getProcessDetailByProcessInstanceId(@PathVariable String processInstanceId) {
+        return new ResponseEntity<>(competenceService.getProcessDetailByProcessInstanceId(processInstanceId), HttpStatus.OK);
     }
+
     @Loggable
     @PostMapping({"/needAssessment/processes/reAssign-process"})
     public void reAssignNeedAssessmentProcessInstance( @RequestBody BpmsCancelTaskDto value) {

@@ -4285,6 +4285,410 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-072">
+        <addColumn tableName="tbl_request_item">
+            <column name="process_instance_id" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-073">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code)
+            VALUES (l_parameter_id,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'وضعیت فرایند تایید صلاحیت علمی و فنی',
+                    'requestItemProcessStatus');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار بررسی رئیس برنامه ریزی',
+                    'waitingReviewByPlanningChief');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار بررسی کارشناسهای برنامه ریزی',
+                    'waitingReviewByPlanningExperts');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار بررسی رئیس برنامه ریزی جهت تعیین وضعیت',
+                    'waitingReviewByPlanningChiefToDetermineStatus');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'تایید نهایی شده توسط رئیس برنامه ریزی',
+                    'finalApprovalByPlanningChief');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار بررسی کارشناس انتصاب سمت',
+                    'waitingReviewByPositionAppointmentExpert');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار بررسی سرپرست اجرا جهت برگزاری دوره ها',
+                    'waitingReviewByRunSupervisorToHoldingCourses');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار بررسی کارشناس اجرا جهت برگزاری دوره ها',
+                    'waitingReviewByRunExpertToHoldingCourses');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار تایید نهایی سرپرست اجرا',
+                    'waitingFinalApprovalByRunSupervisor');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار تایید نهایی رئیس اجرا',
+                    'waitingFinalApprovalByRunChief');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'در انتظار تایید نهایی توسط رئیس برنامه ریزی (بعد از واحد اجرا)',
+                    'waitingFinalApprovalByPlanningChief(AfterRun)');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'خاتمه فرایند',
+                    'terminationOfTheProcess');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-074">
+        <addColumn tableName="tbl_request_item">
+            <column name="f_process_status_id" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-076">
+        <addColumn tableName="tbl_request_item">
+            <column name="c_return_detail" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-077">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code)
+            VALUES (l_parameter_id,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'نظر کارشناسان درباره تایید صلاحیت علمی و فنی',
+                    'requestItemExpertsOpinion');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'بلا مانع',
+                    'noObjection');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'نیاز به گذراندن دوره',
+                    'needToPassCourse');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
     <changeSet author="Montazeri" id="1655288989000-01">
         <addColumn tableName="tbl_post_grade">
             <column name="c_title_fa_2" type="VARCHAR2(255 CHAR)"/>

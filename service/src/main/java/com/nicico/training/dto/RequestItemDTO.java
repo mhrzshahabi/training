@@ -28,8 +28,7 @@ public class RequestItemDTO {
     private String educationMajor;
     private String state;
     private long competenceReqId;
-//    private String workGroupCode;
-//    private List<Long> operationalRoleIds;
+    private String processInstanceId;
 
     @Getter
     @Setter
@@ -38,6 +37,7 @@ public class RequestItemDTO {
     public static class Info extends RequestItemDTO {
         private Long id;
         private String nationalCode;
+        private String processStatusTitle;
         private List<String> operationalRoleTitles;
     }
 

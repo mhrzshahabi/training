@@ -3616,6 +3616,63 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-078">
+        <createTable tableName="tbl_request_item_process_detail">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_request_item_process_detailPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="c_expert_national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_request_item_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_experts_opinion_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-081">
+        <createTable tableName="tbl_request_item_courses_detail">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_request_item_courses_detailPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="c_course_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_course_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_category_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_sub_category_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_priority" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_request_item_process_detail_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet author="namdari" id="1654668348000-01">
         <createTable tableName="tbl_educational_decision_header">
             <column name="id" type="NUMBER(19, 0)">

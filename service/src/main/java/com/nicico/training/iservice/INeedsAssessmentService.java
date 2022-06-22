@@ -20,4 +20,6 @@ public interface INeedsAssessmentService {
     SearchDTO.SearchRs<NeedsAssessmentDTO.Info> workflowSearch(Long objectId, String objectType);
 
     TotalResponse<NeedsAssessmentDTO.Tree> tree(NICICOCriteria nicicoCriteria);
+
+    List<NeedsAssessmentDTO.CourseDetail> findCoursesByTrainingPostCode(String trainingPostCode);
 }

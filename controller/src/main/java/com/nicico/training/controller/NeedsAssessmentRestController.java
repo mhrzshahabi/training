@@ -1,8 +1,3 @@
-/*
-ghazanfari_f,
-1/14/2020,
-2:46 PM
-*/
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
@@ -15,6 +10,7 @@ import com.nicico.training.dto.NeedAssessmentTempDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.iservice.INeedsAssessmentService;
 import com.nicico.training.iservice.INeedsAssessmentTempService;
+import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.mapper.needsassessment.NeedsAssessmentBeanMapper;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -28,8 +24,10 @@ import org.springframework.web.bind.annotation.*;
 import request.dataForNewSkill.DataForNewSkillDto;
 import request.needsassessment.NeedsAssessmentUpdateRequest;
 import response.needsassessment.NeedsAssessmentUpdateResponse;
+
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -38,6 +36,7 @@ public class NeedsAssessmentRestController {
 
     private final INeedsAssessmentService iNeedsAssessmentService;
     private final INeedsAssessmentTempService iNeedsAssessmentTempService;
+    private final IRequestItemService requestItemService;
     private final MessageSource messageSource;
     private final ModelMapper modelMapper;
     private final NeedsAssessmentBeanMapper mapper;
@@ -252,7 +251,23 @@ public class NeedsAssessmentRestController {
         return new ResponseEntity<>(b, HttpStatus.OK);
           else
         return new ResponseEntity<>(b,HttpStatus.BAD_REQUEST);
+    }
 
+    @Loggable
+    @GetMapping(value = "by-training-post-code/spec-list/{requestItemId}")
+    public ResponseEntity<ISC<NeedsAssessmentDTO.CourseDetail>> byTrainingPostCodeList(
+            @RequestParam(value = "_startRow", required = false) Integer startRow,
+            @RequestParam(value = "_endRow", required = false) Integer endRow, @PathVariable String requestItemId) {
+
+        List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = iNeedsAssessmentService.findCoursesByTrainingPostCode(requestItemService.get(Long.valueOf(requestItemId)).getPost()).stream()
+                .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
+        ISC.Response<NeedsAssessmentDTO.CourseDetail> response = new ISC.Response<>();
+        response.setStartRow(startRow);
+        response.setEndRow(startRow + needsAssessmentDTOList.size());
+        response.setTotalRows(needsAssessmentDTOList.size());
+        response.setData(needsAssessmentDTOList);
+        ISC<NeedsAssessmentDTO.CourseDetail> infoISC = new ISC<>(response);
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
 
 }

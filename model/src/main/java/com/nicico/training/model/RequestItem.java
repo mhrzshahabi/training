@@ -87,4 +87,21 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "f_competence_id")
     @NotAudited
     private Long competenceReqId;
+
+    @Column(name = "process_instance_id")
+    @NotAudited
+    private String processInstanceId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_process_status_id", insertable = false, updatable = false)
+    @NotAudited
+    private ParameterValue processStatus;
+
+    @Column(name = "f_process_status_id")
+    @NotAudited
+    private Long processStatusId;
+
+    @Column(name = "c_return_detail")
+    @NotAudited
+    private String returnDetail;
 }

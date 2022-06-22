@@ -1,9 +1,14 @@
 package com.nicico.training.iservice;
 
-
+import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
+import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
+import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.model.RequestItem;
+import dto.bpms.BPMSReqItemCoursesDto;
+import dto.bpms.BpmsStartParamsDto;
+import response.BaseResponse;
 import response.requestItem.RequestItemDto;
 import response.requestItem.RequestItemWithDiff;
 
@@ -36,5 +41,25 @@ public interface IRequestItemService {
     List<Long> getAllRequestItemIdsWithCompetenceId(Long competenceId);
 
     RequestItemWithDiff validData(Long id);
+
+    void updateOperationalRoles(Long id);
+
+    void updateStartedRequestItemProcess(Long id, String processInstanceId);
+
+    StartProcessWithDataDTO getRequestItemStartProcessDto(Long requestItemId, BpmsStartParamsDto params, String tenantId);
+
+    ProcessInstance startRequestItemProcessWithData(StartProcessWithDataDTO startProcessDto);
+
+    RequestItemDTO.Info getRequestItemProcessDetailByProcessInstanceId(String processInstanceId);
+
+    void cancelRequestItemProcess(ReviewTaskRequest reviewTaskRequest, String reason);
+
+    void reAssignRequestItemProcess(ReviewTaskRequest reviewTaskRequest);
+
+    BaseResponse reviewRequestItemTask(ReviewTaskRequest reviewTaskRequestDto);
+
+    BaseResponse reviewParallelRequestItemTask(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, Long expertOpinionId, String userNationalCode);
+
+    BaseResponse reviewRequestItemTaskToDetermineStatus(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, Long chiefOpinionId, String userNationalCode);
 
 }

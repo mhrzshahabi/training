@@ -1,8 +1,3 @@
-/*
-ghazanfari_f,
-1/14/2020,
-1:58 PM
-*/
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
@@ -13,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.iservice.INeedsAssessmentService;
+import com.nicico.training.mapper.NeedAssessment.NeedAssessmentBeanMapper;
 import com.nicico.training.model.NeedsAssessment;
 import com.nicico.training.repository.NeedsAssessmentDAO;
 import lombok.RequiredArgsConstructor;
@@ -34,18 +30,16 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
 
     @Autowired
     private CompetenceService competenceService;
-
     @Autowired
     private ParameterValueService parameterValueService;
-
     @Autowired
     private NeedsAssessmentDAO needsAssessmentDAO;
-
     @Autowired
     private NeedsAssessmentReportsService needsAssessmentReportsService;
-
     @Autowired
     private NeedsAssessmentTempService needsAssessmentTempService;
+    @Autowired
+    private NeedAssessmentBeanMapper needAssessmentBeanMapper;
 
     @Autowired
     NeedsAssessmentService(NeedsAssessmentDAO competenceDAO) {
@@ -153,6 +147,12 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
         treeTotalResponse.getResponse().setData(generations);
 
         return treeTotalResponse;
+    }
+
+    @Override
+    public List<NeedsAssessmentDTO.CourseDetail> findCoursesByTrainingPostCode(String trainingPostCode) {
+        List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCode("TrainingPost", trainingPostCode);
+        return needAssessmentBeanMapper.toNeedsAssessmentCourseDetailDTOList(needsAssessmentList);
     }
 
     private List<NeedsAssessmentDTO.Tree> findGenerations(List<NeedsAssessmentDTO.Tree> tree) {
