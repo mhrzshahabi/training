@@ -129,8 +129,8 @@
                 baseStyle: "evaluation-code",
                 canEdit: false,
                 valueMap: {
-                    "true": "تائید",
-                    "false": "عدم تائید"
+                    "true": "تائید است",
+                    "false": "تائید نیست"
                 }
             },
             {
@@ -145,8 +145,8 @@
                 baseStyle: "evaluation-code",
                 canEdit: false,
                 valueMap: {
-                    "true": "تائید",
-                    "false": "عدم تائید"
+                    "true": "تائید است",
+                    "false": "تائید نیست"
                 }
             },
             {

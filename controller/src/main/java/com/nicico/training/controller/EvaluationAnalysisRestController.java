@@ -240,19 +240,19 @@ public class EvaluationAnalysisRestController {
         params.put("ScoreEvaluation",result.getFelgrade());
         if(result.getFelpass() != null && result.getFelpass().equalsIgnoreCase("true"))
         {
-            params.put("resault","تایید");
+            params.put("resault","تایید است");
         }
         else
         {
-            params.put("resault","عدم تایید");
+            params.put("resault","تایید نیست");
         }
 
 
         params.put("ScoreEffective", result.getFeclgrade());
         if(result.getFeclpass() != null && result.getFeclpass().equalsIgnoreCase("true"))
-            params.put("resultEffective", "تایید");
+            params.put("resultEffective", "تایید است");
         else
-            params.put("resultEffective", "عدم تایید");
+            params.put("resultEffective", "تایید نیست");
 
         List<?> list=evaluationAnalysisService.getStudentWithOutPreTest(Long.parseLong(recordId));
         String data = "{" + "\"studentWithOutPreTest\": " + objectMapper.writeValueAsString(list) + "}";
