@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -193,9 +194,10 @@ public class OperationalRoleService implements IOperationalRoleService {
         postIds.forEach(id -> {
             if (!savedPostIds.stream().toList().contains(id)) {
                 savedPostIds.add(id);
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
             }
+//            else {
+                //                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+//            }
         });
 
         savedOperationalRole.setPostIds(savedPostIds);
