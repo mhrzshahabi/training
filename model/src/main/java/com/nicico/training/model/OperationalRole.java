@@ -62,4 +62,14 @@ public class OperationalRole extends Auditable {
             joinColumns = {@JoinColumn(name = "F_OPERATIONAL_ROLE", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "F_SUBCATEGORY", referencedColumnName = "ID")})
     private Set<Subcategory> subCategories;
+
+    @Column(name = "OBJECT_USER_ID", unique = true)
+    private Long objectUserId;
+
+    @Column(name = "OBJECT_TYPE", unique = true)
+    private String objectType;
+
+    @Column(name = "OBJECT_NATIONAL_CODE", unique = true)
+    private String nationalCode;
+
 }

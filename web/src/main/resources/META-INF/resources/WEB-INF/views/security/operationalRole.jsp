@@ -598,17 +598,39 @@
     var IButton_Save_JspOperationalRole = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspOperationalRole.validate())
+            if (!DynamicForm_JspOperationalRole.validate() || !DynamicForm_Role_type_JspOperationalRole.validate() || !DynamicForm_User_Role_type_JspOperationalRole.validate())
                 return;
             if (!DynamicForm_JspOperationalRole.valuesHaveChanged()) {
                 Window_JspOperationalRole.close();
                 return;
             }
+
+            let data = DynamicForm_JspOperationalRole.getValues();
+
+            let objectType = DynamicForm_Role_type_JspOperationalRole.getValues().roleType;
+            let userId = DynamicForm_User_Role_type_JspOperationalRole.getValues().userId
+            let nationalCode = DynamicForm_User_Role_type_JspOperationalRole.getField("userId").$19z
+
+            if(objectType === undefined && userId !== undefined) {
+                createDialog("info", "لطفاً نوع نقش را نیز مشخص نمایید");
+                return;
+            }
+
+            if(objectType !== undefined && userId === undefined) {
+                createDialog("info", "لطفاً کاربر را نیز مشخص نمایید");
+                return;
+            }
+
+            data.objectType = objectType
+            data.objectUserId = userId
+            data.nationalCode = nationalCode
+
             wait_Permission = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalRole,
                 methodOperationalRole,
-                JSON.stringify(DynamicForm_JspOperationalRole.getValues()),
+                JSON.stringify(data),
                 OperationalRole_save_result));
+            debugger
         }
     });
     var IButton_Show_Selected_Posts_JspOperationalRole = isc.ToolStripButton.create({
@@ -663,6 +685,124 @@
         }
     })
 
+    let DynamicForm_Role_type_JspOperationalRole = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        titleAlign: "center",
+        fields: [
+            {
+                name: "roleType",
+                title: "نوع نقش:",
+                multiple: false,
+                type: "SelectItem",
+                valueMap: {
+                    "EXECUTIVE_SUPERVISOR": "سرپرست اجرا",
+                    "CHIEF_EXECUTIVE_OFFICER": "رییس اجرا",
+                    "EXECUTION_EXPERT": "کارشناس اجرا",
+                    "MASTER_OF_PLANNING": "کارشناس ارشد برنامه ریزی",
+                    "HEAD_OF_PLANNING": "رییس برنامه ریزی"
+                },
+                // valueField: "title",
+                // displayField: "title",
+                icons: [
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click: function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            // DynamicForm_User_Role_type_JspOperationalRole.getItem("objectType").setValue();
+                        }
+                    }
+                ],
+                required: false,
+                validateOnExit: true,
+                length: 255,
+                canSort: false,
+                pickListWidth: 175
+            }
+        ]
+    });
+
+    let DynamicForm_User_Role_type_JspOperationalRole = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        titleAlign: "center",
+        fields: [
+            {
+                name: "userId",
+                title: "<spring:message code="user"/>" + ":",
+                textAlign: "center",
+                autoFetchData: false,
+                displayField: "nationalCode",
+                valueField: "id",
+                optionDataSource: UserDS_JspOperationalRole,
+                sortField: ["userId"],
+                filterFields: ["userId"],
+                pickListFields: [
+                    {
+                        name: "firstName",
+                        title: "<spring:message code="firstName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"
+                    },
+                    {
+                        name: "username",
+                        title: "<spring:message code="username"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "nationalCode",
+                        title: "<spring:message code="national.code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]",
+                    pickListProperties: {
+                        showFilterEditor: true
+                    }
+                },
+                filterOnKeypress: true,
+                autoFitWidth: true,
+                pickListWidth: 400,
+                icons: [
+                    {
+                    name: "clear",
+                    src: "[SKIN]actions/remove.png",
+                    width: 15,
+                    height: 15,
+                    inline: true,
+                    prompt: "پاک کردن",
+                    click: function (form, item, icon) {
+                        item.clearValue();
+                        item.focusInItem();
+                        DynamicForm_User_Role_type_JspOperationalRole.getItem("nationalCode").setValue();
+                    }
+                    }
+                ],
+                endRow: true,
+                startRow: false,
+                required: false,
+                changed: function (form, item, value) {
+                    if (item.getSelectedRecord() && item.getSelectedRecord().userId) {
+                        DynamicForm_User_Role_type_JspOperationalRole.getItem("userId").setValue(item.getSelectedRecord().id);
+                    }
+                }
+
+            }
+        ]
+    });
+
     let HLayout_AddOrRemove_IndividualPost = isc.TrHLayoutButtons.create({
     align: "center",
     layoutMargin: 8,
@@ -705,14 +845,26 @@
         members: [IButton_Save_JspOperationalRole, IButton_Cancel_JspOperationalRole, IButton_Show_Selected_Posts_JspOperationalRole]
     });
 
+    let HLayout_User_Role_Type = isc.TrHLayoutButtons.create({
+        align: "center",
+        layoutMargin: 8,
+        showEdges: false,
+        edgeImage: "",
+        padding: 8,
+        // border: "1px solid gray",
+        members: [DynamicForm_Role_type_JspOperationalRole, DynamicForm_User_Role_type_JspOperationalRole ]
+    });
+
     var Window_JspOperationalRole = isc.Window.create({
-        width: "550",
-        minWidth: "550",
+        width: "800",
+        minWidth: "600",
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code="operational.role"/>",
         items: [isc.TrVLayout.create({
-            members: [DynamicForm_JspOperationalRole,
+            members: [
+                DynamicForm_JspOperationalRole,
+                HLayout_User_Role_Type,
                 HLayout_SaveOrExit_JspOperationalRole
             ]
         })]

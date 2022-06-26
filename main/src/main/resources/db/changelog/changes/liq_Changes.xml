@@ -4303,6 +4303,23 @@ FROM
         </sql>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1656221511000-03">
+        <addColumn tableName="tbl_operational_role">
+            <column name="object_user_id" type="NUMBER(19, 0)"/>
+        </addColumn>
+
+        <addColumn tableName="tbl_operational_role">
+            <column name="object_type" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+
+        <addColumn tableName="tbl_operational_role">
+            <column name="object_national_code" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+
+    </changeSet>
+
+
+
 
 </databaseChangeLog>
 
