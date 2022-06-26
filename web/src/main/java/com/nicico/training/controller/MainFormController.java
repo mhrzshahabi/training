@@ -150,6 +150,11 @@ public class MainFormController {
         return "base/training-post";
     }
 
+    @RequestMapping("/Committee-Of-Experts")
+    public String showCommitteeOfExpertsForm() {
+        return "base/CommitteeOfExperts";
+    }
+
     @RequestMapping("/certification")
     public String showCertificationForm() {
         return "base/certification";

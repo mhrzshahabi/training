@@ -80,6 +80,10 @@
       "title": "منوی نیازسنجی - پست"
     },
     {
+      "code": "Menu_NeedAssessment_Committee_Of_Experts",
+      "title": "منوی نیازسنجی - کمیته خبرگان"
+    },
+    {
       "code": "Menu_NeedAssessment_CompetenceRequest",
       "title": "منوی نیازسنجی - تایید صلاحیت علمی و فنی"
     },

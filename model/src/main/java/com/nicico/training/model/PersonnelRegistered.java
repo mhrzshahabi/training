@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -218,4 +219,8 @@ public class PersonnelRegistered extends Auditable {
 
     @Column(name = "f_contact_info", insertable = false, updatable = false)
     private Long contactInfoId;
+
+
+//    @OneToMany(mappedBy = "personnelReg", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<CommitteePersonnelRegistred> committeePersonnelRegs;
 }

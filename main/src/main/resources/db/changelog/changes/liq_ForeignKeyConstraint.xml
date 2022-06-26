@@ -1385,4 +1385,23 @@
     </changeSet>
 
 
+    <changeSet author="namdari" id="1656131979000-05">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_of_experts_personnel" constraintName="FKCommitteeOfExpertsPersonnel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
+    </changeSet>
+
+    <changeSet author="namdari" id="1656131979000-06">
+        <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_committee_of_experts_personnel" constraintName="FKPersonnelCommitteeOfExperts" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel" validate="true"/>
+    </changeSet>
+
+
+
+    <changeSet author="namdari" id="1656131979000-07">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_of_experts_registered" constraintName="FKCommitteeOfExpertsPersonnelRegistered" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
+    </changeSet>
+
+    <changeSet author="namdari" id="1656131979000-08">
+        <addForeignKeyConstraint baseColumnNames="f_personnel_id" baseTableName="tbl_committee_of_experts_registered" constraintName="FKPersonnelRegisteredCommitteeOfExperts" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personnel_registered" validate="true"/>
+    </changeSet>
+
+
 </databaseChangeLog>
