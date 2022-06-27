@@ -59,13 +59,9 @@ public class AnnualStatisticalReport {
     private Long student_personal;
     private Long student_sayer;
 
-//    @Column(name = "sum_presence_hour_actual")
     private Long sum_presence_hour_actual;
-//    @Column(name = "sum_presence_minute_actual")
     private Long sum_presence_minute_actual;
-//    @Column(name = "sum_absence_hour_actual")
     private Long sum_absence_hour_actual;
-//    @Column(name = "sum_absence_minute_actual")
     private Long sum_absence_minute_actual;
 
 }

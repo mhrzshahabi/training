@@ -5,7 +5,6 @@ import io.swagger.annotations.ApiModel;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.List;
