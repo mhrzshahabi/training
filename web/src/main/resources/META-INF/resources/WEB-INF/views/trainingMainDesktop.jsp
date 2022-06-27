@@ -79,6 +79,7 @@
         userRoles.tehranRetirement = access;
         <%--access= "<%= hasAuthority("ROLE.Training.admin_role") %>"--%>
         <%--userRoles.admin = access;--%>
+        let postAdmin= "<%= hasAuthority("Admin_Post_Access") %>"
 
 
        /* jQuery.loadScript = function (url, callback) {
