@@ -1802,12 +1802,6 @@
                         createTab(this.title, "<spring:url value="web/departmentChart"/>");
                     }
                 },
-                {
-                    title: "<spring:message code="operational.chart"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/operationalChart"/>");
-                    }
-                },
 
                 <sec:authorize access="hasAuthority('Menu_BasicInfo_HelpFiles')">
                 {
