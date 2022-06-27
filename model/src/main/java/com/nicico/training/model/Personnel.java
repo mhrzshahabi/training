@@ -204,8 +204,6 @@ public class Personnel {
     @Column(name = "f_contact_info", insertable = false, updatable = false)
     private Long contactInfoId;
 
-    @OneToMany(mappedBy = "personnel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<CommitteePersonnel> committeePersonnels;
 
 
 }

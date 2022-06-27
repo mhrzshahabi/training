@@ -9,6 +9,8 @@
 
     //----------------------------------------------------Variables-----------------------------------------------------
 
+    let personnelTypeEx ;
+    let personnelIdEx;
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
@@ -56,6 +58,11 @@
     });
 
     //----------------------------------------------------Request Window------------------------------------------------
+
+
+
+
+
 
     DynamicForm_Committee_Ex = isc.DynamicForm.create({
         width: 400,
@@ -118,7 +125,7 @@
 
         ]
     });
-    DynamicForm_Decision_base = isc.DynamicForm.create({
+    DynamicForm_Committee_personnel = isc.DynamicForm.create({
         width: 400,
         height: "100%",
         numCols: 2,
@@ -131,85 +138,31 @@
                 hidden: true
             },
             {
-                name: "itemFromDate",
-                ID: "date_itemFromDate_base",
-                title: "تاریخ شروع",
-                required: true,
-                defaultValue: todayDate,
-                keyPressFilter: "[0-9/]",
-                length: 10,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('date_itemFromDate_base', this, 'ymd', '/');
-                    }
-                }],
-                changed: function (form, item, value) {
-                    if (value == null || value === "" || checkDate(value))
-                        item.clearErrors();
-                    else
-                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                name: "personnel",
+                title: "انتخاب پرسنل",
+                colSpan: 2,
+                align: "center",
+                width: 170,
+                type: "button",
+                startRow: false,
+                endRow: false,
+                click: function () {
+                     showPersonnelWin();
                 }
             },
             {
-                name: "itemToDate",
-                ID: "date_itemToDate_base",
-                title: "تاریخ پایان ",
-                required: true,
-                defaultValue: todayDate,
-                keyPressFilter: "[0-9/]",
-                length: 10,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('date_itemToDate_base', this, 'ymd', '/');
-                    }
-                }],
-                changed: function (form, item, value) {
-                    if (value == null || value === "" || checkDate(value))
-                        item.clearErrors();
-                    else
-                        item.setErrors("<spring:message code='msg.correct.date'/>");
-                }
+                name: "personnelName",
+                canEdit: false,
+                title: "فرد انتخاب شده",
+                required: true
             },
             {
-                name: "baseTuitionFee",
-                title: "پايه",
-                length: 20,
-                keyPressFilter: "[0-9.]",
-                required: true},
-            {
-                name: "professorTuitionFee",
-                title: "استاد",
-                length: 20,
-                keyPressFilter: "[0-9.]",
-                required: true},
-            {
-                name: "knowledgeAssistantTuitionFee",
-                title: "دانشيار",
-                length: 20,
-                keyPressFilter: "[0-9.]",
-                required: true},
-            {
-                name: "teacherAssistantTuitionFee",
-                title: "استاديار",
-                length: 20,
-                keyPressFilter: "[0-9.]",
-                required: true},
-            {
-                name: "instructorTuitionFee",
-                title: "مربي",
-                length: 20,
-                keyPressFilter: "[0-9.]",
-                required: true},
-            {
-                name: "educationalAssistantTuitionFee",
-                title: "مربي آموزشيار",
-                length: 20,
-                keyPressFilter: "[0-9.]",
-                required: true}
+                name: "role",
+                length: 150,
+                title: "نقش در کمیته",
+                required: true
+            },
+
         ]
     });
 
@@ -243,6 +196,183 @@
 
 
     //------------------------------------------------------List Grids--------------------------------------------------
+
+
+
+    let PersonnelRegDS_student_ex = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "companyName",
+                title: "<spring:message code="company.name"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo",
+                title: "<spring:message code="personnel.no"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo2",
+                title: "<spring:message code="personnel.no.6.digits"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "postTitle",
+                title: "<spring:message code="post"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+
+        ],
+        // autoFetchData: true,
+        fetchDataURL: personnelRegUrl + "/spec-list",
+    });
+
+
+
+    let PersonnelsRegLG_student_ex = isc.TrLG.create({
+        ID: "PersonnelsRegLG_student",
+        dataSource: PersonnelRegDS_student_ex,
+        selectionType: "single",
+        fields: [
+            //{name: "id", hidden: true},
+            {name: "firstName"},
+            {name: "lastName"},
+            {
+                name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName", hidden: true},
+            {
+                name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {
+                name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postTitle"}
+        ],
+
+
+
+
+     });
+
+    var SynonymPersonnelsDS_student_ex = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "companyName",
+                title: "<spring:message code="company.name"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo",
+                title: "<spring:message code="personnel.no"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo2",
+                title: "<spring:message code="personnel.no.6.digits"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "postTitle",
+                title: "<spring:message code="post"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            }
+
+        ],
+        fetchDataURL: personnelUrl + "/Synonym/iscList"
+    });
+
+
+    let SynonymPersonnelsLG_student_ex = isc.TrLG.create({
+        ID: "SynonymPersonnelsLG_student",
+        dataSource: SynonymPersonnelsDS_student_ex,
+        selectionType: "single",
+        fields: [
+            {name: "id", hidden: true},
+            {name: "firstName"},
+            {name: "lastName"},
+            {
+                name: "nationalCode",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "companyName", hidden: true},
+            {
+                name: "personnelNo",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {
+                name: "personnelNo2",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+            },
+            {name: "postTitle"}
+        ],
+
+    });
+
+
+
+
+
+
 
     ListGrid_Committee_EX = isc.ListGrid.create({
         sortDirection: "descending",
@@ -341,14 +471,14 @@
 
     });
 
-    base_actions = isc.ToolStrip.create({
+    Committee_Persons_actions = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_Decision_base,Window_base_Decision)
+                    addToCommitteePersonnel()
                 }.bind(this)
             }),
             isc.ToolStripButtonRemove.create({
@@ -445,9 +575,163 @@
                 canFilter: false
             }
         ],
-        gridComponents: [base_actions, "filterEditor", "header", "body", "summaryRow"]
+        gridComponents: [Committee_Persons_actions, "filterEditor", "header", "body", "summaryRow"]
 
     });
+
+
+
+    let registered_List_VLayout_ex = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        border: "0px solid red", layoutMargin: 5,
+        members: [
+            isc.SectionStack.create({
+                sections: [{
+                    title: "<spring:message code="all.persons"/>",
+                    expanded: true,
+                    canCollapse: false,
+                    align: "center",
+                    items: [
+                        PersonnelsRegLG_student_ex
+                    ]
+                }]
+            }),
+        ]
+    });
+    let synonym_Personnel_List_VLayout_ex = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        border: "0px solid red", layoutMargin: 5,
+        members: [
+            isc.SectionStack.create({
+                sections: [{
+                    title: "<spring:message code="all.persons"/>",
+                    expanded: true,
+                    canCollapse: false,
+                    align: "center",
+                    items: [
+                        SynonymPersonnelsLG_student_ex
+                    ]
+                }]
+            }),
+        ]
+    });
+
+
+    let personnelTabs_ex = isc.TabSet.create({
+        height: "50%",
+        width: "100%",
+        showTabScroller: false,
+        tabs: [
+            {
+                name:"PersonnelList_Tab_synonym_Personnel",
+                title: "<spring:message code='PersonnelList_Tab_synonym_Personnel'/>",
+                pane: synonym_Personnel_List_VLayout_ex
+            },
+            {
+                name:"personnel.tab.registered",
+                title: "<spring:message code='personnel.tab.registered'/>",
+                pane: registered_List_VLayout_ex
+            }
+
+        ]
+        ,tabSelected: function () {
+
+            let tab = personnelTabs_ex.getSelectedTab();
+
+
+
+            switch (tab.name) {
+                case "personnel.tab.registered": {
+                    PersonnelsRegLG_student_ex.invalidateCache();
+                    PersonnelsRegLG_student_ex.fetchData();
+                    break;
+                }
+                case "PersonnelList_Tab_synonym_Personnel": {
+                    SynonymPersonnelsLG_student_ex.invalidateCache();
+                    SynonymPersonnelsLG_student_ex.fetchData();
+
+                    break;
+                }
+
+            }
+        }
+    });
+
+
+    var personnelTabs_exHlayout = isc.TrHLayoutButtons.create({
+        members: [
+            isc.IButtonSave.create({
+                top: 100,
+                title: "<spring:message code='save'/>",
+                align: "center",
+                icon: "[SKIN]/actions/save.png",
+                click: function () {
+                    let tab = personnelTabs_ex.getSelectedTab();
+                    switch (tab.name) {
+                        case "personnel.tab.registered": {
+                            let record = PersonnelsRegLG_student_ex.getSelectedRecord();
+                            if (record == null) {
+                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else {
+                                 personnelTypeEx ="registered";
+                                 personnelIdEx=record.id;
+                                DynamicForm_Committee_personnel.getItem("personnelName").setValue(record.firstName + " "+record.lastName);
+                            }
+
+                            break;
+                        }
+                        case "PersonnelList_Tab_synonym_Personnel": {
+
+                            let record = SynonymPersonnelsLG_student_ex.getSelectedRecord();
+                            if (record == null) {
+                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else {
+                                personnelTypeEx ="Synonym";
+                                personnelIdEx=record.id;
+                                DynamicForm_Committee_personnel.getItem("personnelName").setValue(record.firstName + " "+record.lastName);
+                            }
+
+                            break;
+                        }
+
+                    }
+
+
+
+
+                    ClassStudentWin_student_ex.close();
+                }
+            }),
+            isc.IButtonCancel.create({
+                top: 100,
+                title: "<spring:message code='cancel'/>",
+                align: "center",
+                icon: "[SKIN]/actions/cancel.png",
+                click: function () {
+                    ClassStudentWin_student_ex.close();
+                }
+            }),
+        ]
+    });
+
+
+    let ClassStudentWin_student_ex = isc.Window.create({
+        width: 1000,
+        title:"انتخاب پرسنل",
+        height: 768,
+        minWidth: 1000,
+        minHeight: 600,
+        autoSize: false,
+        items: [
+            personnelTabs_ex,
+            personnelTabs_exHlayout
+        ]
+    });
+
 
     //----------------------------------------------------Actions --------------------------------------------------
 
@@ -500,7 +784,7 @@
             Cancel_Button_Add_Committee_Ex
         ]
     });
-    HLayout_IButtons_Decision_base = isc.HLayout.create({
+    HLayout_IButtons_committee_persons = isc.HLayout.create({
         layoutMargin: 5,
         membersMargin: 15,
         width: "100%",
@@ -512,7 +796,7 @@
                 layoutMargin: 5,
                 membersMargin: 5,
                 click: function () {
-                    saveChildDecision(ListGrid_Basic_Tuition,DynamicForm_Decision_base,Window_base_Decision,"base")
+                    savePartOfCommitte()
                 }
             }),
             isc.IButtonCancel.create({
@@ -520,7 +804,7 @@
                 membersMargin: 5,
                 width: 120,
                 click: function () {
-                    Window_base_Decision.close();
+                    Window_base_Decision_committee_persons.close();
                 }
             })
         ]
@@ -541,8 +825,8 @@
         ]
     });
 
-    Window_base_Decision = isc.Window.create({
-        title: "افزودن مبلغ پایه حق التدریس",
+    Window_base_Decision_committee_persons = isc.Window.create({
+        title: "افزودن اعضای کمیته",
         width: 450,
         autoSize: true,
         autoCenter: true,
@@ -552,8 +836,8 @@
         autoDraw: false,
         dismissOnEscape: true,
         items: [
-            DynamicForm_Decision_base,
-            HLayout_IButtons_Decision_base
+            DynamicForm_Committee_personnel,
+            HLayout_IButtons_committee_persons
         ]
     });
 
@@ -680,42 +964,55 @@
 
 
     }
+    function showPersonnelWin() {
+        SynonymPersonnelsLG_student_ex.invalidateCache();
+        // SynonymPersonnelsLG_student_ex.fetchData();
+        PersonnelsRegLG_student_ex.invalidateCache();
+        // PersonnelsRegLG_student_ex.fetchData();
+         ClassStudentWin_student_ex.show();
 
-    <%--function addChildDecision(dynamicForm,window) {--%>
-    <%--    dynamicForm.clearValues();--%>
-    <%--    dynamicForm.clearErrors();--%>
-    <%--    window.show();--%>
-    <%--}--%>
-    <%--function saveChildDecision(listGrid,dynamicForm,window,ref) {--%>
-    <%--    let record = ListGrid_Decision_Header.getSelectedRecord();--%>
-    <%--    if (record == null) {--%>
-    <%--        createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--        return;--%>
-    <%--    }--%>
-    <%--    if (!dynamicForm.validate())--%>
-    <%--        return;--%>
-    <%--    if(dynamicForm.getValue("itemToDate") < dynamicForm.getValue("itemFromDate")) {--%>
-    <%--        createDialog("info","تاریخ پایان نمی تواند کوچکتر از تاریخ شروع باشد");--%>
-    <%--        return;--%>
-    <%--    }--%>
-    <%--    let data = dynamicForm.getValues();--%>
-    <%--    data.ref =ref--%>
-    <%--    data.educationalDecisionHeaderId =record.id--%>
-    <%--    wait.show();--%>
-    <%--    isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionRequestUrl, "POST", JSON.stringify(data), function (resp) {--%>
-    <%--        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--            wait.close();--%>
-    <%--            createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-    <%--            window.close();--%>
-    <%--            listGrid.invalidateCache();--%>
-    <%--        } else {--%>
-    <%--            wait.close();--%>
-    <%--            createDialog("info", "خطایی رخ داده است");--%>
-    <%--        }--%>
-    <%--    }));--%>
+    }
+
+    function addToCommitteePersonnel() {
+        let record = ListGrid_Committee_EX.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            DynamicForm_Committee_personnel.clearValues();
+            DynamicForm_Committee_personnel.clearErrors();
+            Window_base_Decision_committee_persons.show();
+        }
+    }
+    function savePartOfCommitte() {
+        let record = ListGrid_Committee_EX.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return;
+        }
+        if (!DynamicForm_Committee_personnel.validate())
+            return;
+
+        let data = DynamicForm_Committee_personnel.getValues();
+
+        data.personnelType =personnelTypeEx
+        data.personnelId =personnelIdEx
+        data.parentId =record.id
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl+"/addPart", "POST", JSON.stringify(data), function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                wait.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                Window_base_Decision_committee_persons.close();
+                DynamicForm_Committee_personnel.invalidateCache();
+                ListGrid_Committee_Persons.invalidateCache();
+            } else {
+                wait.close();
+                createDialog("info", "خطایی رخ داده است");
+            }
+        }));
 
 
-    <%--}--%>
+    }
     <%--function deleteChildDecision(listGrid) {--%>
     <%--    let record = listGrid.getSelectedRecord();--%>
     <%--    if (record == null) {--%>
@@ -802,5 +1099,4 @@
         }
     }
 
-
-    // </script>
+     // </script>

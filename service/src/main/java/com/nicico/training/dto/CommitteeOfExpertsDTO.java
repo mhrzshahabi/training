@@ -108,5 +108,17 @@ public class CommitteeOfExpertsDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CommitteeCreateRq")
+    public static class CreatePartOfPersons  {
+        private String role;
+        private String personnelType;
+        private Long personnelId;
+        private Long parentId;
+
+    }
 }
 

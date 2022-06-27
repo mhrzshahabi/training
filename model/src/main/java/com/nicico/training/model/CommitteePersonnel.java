@@ -10,16 +10,15 @@ import org.hibernate.envers.RelationTargetAuditMode;
 import javax.persistence.*;
 
 
-@Getter
 @Setter
+@Getter
+@NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@NoArgsConstructor
 @Table(name = "tbl_committee_of_experts_personnel")
-@Audited(targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
-public class CommitteePersonnel {
+ public class CommitteePersonnel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "committee_personnel_seq")
@@ -27,19 +26,22 @@ public class CommitteePersonnel {
     @Column(name = "id", precision = 10)
     private Long id ;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @Column("f_committee_id")
+    @ManyToOne
     @JoinColumn(name = "f_committee_id", insertable = false, updatable = false)
     private CommitteeOfExperts committeeOfExperts;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-//    @Column("f_personnel_id")
-    @JoinColumn(name = "f_personnel_id", insertable = false, updatable = false)
-    private Personnel personnel;
-
+   @Column(name = "f_committee_id")
+   private Long committeeOfExpertId;
 
     @Column(name = "role")
     private String role;
+
+
+    @Column(name = "object_type")
+    private String objectType;
+
+    @Column(name = "object_id")
+    private Long objectId;
 
 
 }

@@ -14,5 +14,7 @@ public interface ISynonymPersonnelService {
 
     SynonymPersonnel getByNationalCode(String nationalCode);
 
+    SynonymPersonnel getById(Long nationalCode);
+
     SynonymPersonnel getByPersonnelNo2(String personnelNo2);
 }

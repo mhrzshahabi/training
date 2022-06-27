@@ -51,6 +51,19 @@ public class CommitteeOfExpertsRestController {
     }
 
     @Loggable
+    @PostMapping(value = "/addPart")
+    public ResponseEntity<BaseResponse> addPart(@RequestBody CommitteeOfExpertsDTO.CreatePartOfPersons req) {
+        BaseResponse res = new BaseResponse();
+        try {
+            res = committeeOfExpertsService.addPart(req);
+        }catch (TrainingException ex){
+            res.setStatus(406);
+        }
+        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+
+    }
+
+    @Loggable
     @PutMapping
     public ResponseEntity<BaseResponse> edit(@RequestBody CommitteeOfExpertsDTO.Create req) {
         BaseResponse res = new BaseResponse();

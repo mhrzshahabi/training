@@ -14,6 +14,7 @@ public interface ICommitteeOfExpertsService {
     SearchDTO.SearchRs<CommitteeOfExpertsDTO.Info> search(SearchDTO.SearchRq request);
 
     BaseResponse create(CommitteeOfExperts committeeOfExperts);
+    BaseResponse addPart(CommitteeOfExpertsDTO.CreatePartOfPersons req);
 
     void delete(Long id);
 

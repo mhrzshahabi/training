@@ -35,6 +35,11 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
     }
 
     @Override
+    public SynonymPersonnel getById(Long id) {
+        return dao.findById(id).get();
+    }
+
+    @Override
     public SynonymPersonnel getByPersonnelNo2(String personnelNo2) {
         return dao.findSynonymPersonnelDataByPersonnelNo2(personnelNo2);
     }

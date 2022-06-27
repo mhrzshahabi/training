@@ -221,6 +221,4 @@ public class PersonnelRegistered extends Auditable {
     private Long contactInfoId;
 
 
-//    @OneToMany(mappedBy = "personnelReg", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<CommitteePersonnelRegistred> committeePersonnelRegs;
 }

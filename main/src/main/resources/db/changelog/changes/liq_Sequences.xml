@@ -376,9 +376,4 @@
 
 
 
-    <changeSet id="1656131979000-11" author="namdari">
-        <createSequence sequenceName="seq_committee_reg_id"/>
-    </changeSet>
-
-
 </databaseChangeLog>

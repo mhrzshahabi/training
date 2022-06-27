@@ -40,25 +40,11 @@ public class CommitteeOfExperts extends Auditable {
 
     @Column(name = "email")
     private String email;
-    //
-    @OneToMany(mappedBy = "committeeOfExperts", cascade = CascadeType.ALL, orphanRemoval = true)
+
+     @OneToMany(fetch = FetchType.LAZY, mappedBy = "committeeOfExperts",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<CommitteePersonnel> committeePersonnels;
 
-//    @OneToMany(mappedBy = "committeeOfExpertsForReg", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<CommitteePersonnelRegistred> committeePersonnelRegs;
 
-
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-//    @JoinTable(name = "tbl_committee_of_experts_personnel",
-//            joinColumns = {@JoinColumn(name = "f_committee_id", referencedColumnName = "id")},
-//            inverseJoinColumns = {@JoinColumn(name = "f_personnel_id", referencedColumnName = "id")})
-//    private Set<Personnel> personnels;
-//
-//    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-//    @JoinTable(name = "tbl_committee_of_experts_registered",
-//            joinColumns = {@JoinColumn(name = "f_committee_id", referencedColumnName = "id")},
-//            inverseJoinColumns = {@JoinColumn(name = "f_personnel_id", referencedColumnName = "id")})
-//    private Set<PersonnelRegistered> personnelRegisters;
 
 
 }
