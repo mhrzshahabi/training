@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import lombok.*;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
 import java.io.Serializable;
 import java.text.DecimalFormat;
 import java.util.List;
@@ -42,6 +43,10 @@ public class AnnualStatisticalReportDTO implements Serializable {
     @Getter(AccessLevel.NONE)
     private Double darsad_ostad_dakheli;
     private Long ostad_count_dakheli;
+    private Long sum_presence_hour_actual;
+    private Long sum_presence_minute_actual;
+    private Long sum_absence_hour_actual;
+    private Long sum_absence_minute_actual;
     @Getter
     @Setter
     @Accessors(chain = true)

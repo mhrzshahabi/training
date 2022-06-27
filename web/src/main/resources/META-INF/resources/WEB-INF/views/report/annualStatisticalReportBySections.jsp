@@ -46,6 +46,10 @@
             {name: "sum_of_duration"},
             {name: "student_count"},
             {name: "sum_of_student_hour"},
+            {name: "sum_presence_hour_actual"},
+            {name: "sum_presence_minute_actual"},
+            {name: "sum_absence_hour_actual"},
+            {name: "sum_absence_minute_actual"},
             {name: "sum_of_omomi"},
             {name: "sum_of_takhasosi"},
             {name: "sarane_omomi"},
@@ -58,6 +62,10 @@
             {name: "student_sayer"},
         ], dataFormat: "json",
         autoFetchData:false,
+        // transformResponse: function (dsResponse, dsRequest, data) {
+        //        debugger
+        //     return this.Super("transformResponse", arguments);
+        // }
     });
 
 
@@ -204,7 +212,11 @@
             {name: "student_count",  title:"تعداد کل فراگیر", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "student_count_ghabool",  title:"تعداد فراگیر قبول شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
 
-            {name: "sum_of_student_hour",  title:"جمع نفر ساعت آموزشي", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sum_of_student_hour",  title:"جمع نفر ساعت آموزشي برنامه ریزی شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sum_presence_hour_actual",  title:"جمع نفر ساعت آموزشي ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sum_presence_minute_actual",  title:"جمع نفر دقیقه آموزشي ارائه شده", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sum_absence_hour_actual",  title:"جمع نفر ساعت غیبت", align: "center", filterOperator: "iContains",autoFitWidth:true},
+            {name: "sum_absence_minute_actual",  title:"جمع نفر دقیقه غیبت", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sum_of_omomi",  title:"جمع ساعت آموزش عمومي", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sum_of_takhasosi",  title:"جمع ساعت آموزش تخصصي", align: "center", filterOperator: "iContains",autoFitWidth:true},
             {name: "sarane_omomi",  title:"سرانه انباشت سابقه آموزشی عمومي", align: "center", filterOperator: "iContains",autoFitWidth:true},
