@@ -180,7 +180,6 @@
                             PostDS_post.fetchDataURL = PostDS_Url ;
                             closeToShowUnGroupedPosts_POST();
                             refreshLG(PostLG_post);
-                            debugger
                         }
                     })
                     </sec:authorize>
@@ -297,7 +296,6 @@
                     PostDS_post.fetchDataURL = viewPostUrl + "/roleIndPostIscList";
                 }
             }
-            debugger
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },

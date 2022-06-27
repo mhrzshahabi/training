@@ -163,7 +163,6 @@
                     this.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
                 }
             }
-            debugger
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
