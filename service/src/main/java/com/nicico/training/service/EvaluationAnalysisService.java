@@ -518,7 +518,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             return ans;
         }
 
-        if (scoringMethod.equals("1")) {
+        if (scoringMethod.equals("1")) { // ارزشی
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
                 if(score.getValence() != null && score.getPreTestScore() != null)
@@ -556,7 +556,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
         }
 
 
-        if (scoringMethod.equals("2")) {
+        if (scoringMethod.equals("2")) { // نمره از 100
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
                 if(score.getScore() != null && score.getPreTestScore() != null)
@@ -578,7 +578,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             ans[1]=Float.valueOf(df.format(sumPreScore /(list.size()-preTestVariable) ));
             ans[2]=Float.valueOf(scoreEvaluationVariable);
             if(scoreEvaluationVariable != 0)
-                ans[3]= Float.valueOf(df.format(ScoreEvaluation /scoreEvaluationVariable));
+                ans[3]= Float.valueOf(df.format((sumScore / (list.size()-pastTestVariable))-(sumPreScore /(list.size()-preTestVariable))));
             else
                 ans[3]= null;
             pastTestVariable=0;
@@ -586,7 +586,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             scoreEvaluationVariable=0;
             return ans;
         }
-        if(scoringMethod.equals("3"))
+        if(scoringMethod.equals("3"))  //نمره از 20
         {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
@@ -606,9 +606,9 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             }
             if(scoreEvaluationVariable != 0) {
                 ans[0] = Float.valueOf(df.format(sumScore / scoreEvaluationVariable));
-                ans[1] = Float.valueOf(df.format(sumPreScore / scoreEvaluationVariable));
+                ans[1] = Float.valueOf(df.format((sumPreScore / scoreEvaluationVariable)*5));
                 ans[2] = Float.valueOf(scoreEvaluationVariable);
-                ans[3] = Float.valueOf(df.format(ScoreEvaluation / scoreEvaluationVariable));
+                ans[3] = Float.valueOf(df.format( Math.abs( (sumScore / scoreEvaluationVariable) - ((sumPreScore / scoreEvaluationVariable)*5) )));
             }
             else{
                 ans[0] = null;
@@ -618,7 +618,7 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
             }
             return ans;
         }
-        if (scoringMethod.equals("4"))
+        if (scoringMethod.equals("4")) // بدون نمره
         {
             for (ClassStudentDTO.evaluationAnalysistLearning score : list) {
 
@@ -823,13 +823,14 @@ public class EvaluationAnalysisService implements IEvaluationAnalysisService {
     }
 
     private Float calculateLearningRate(String postTestMeanScore, String preTestMeanScore, float minPreScore, float maxPastScore) {
+        DecimalFormat df = new DecimalFormat("0.00");
         float pastMean=postTestMeanScore != null && !postTestMeanScore.isEmpty() ? Float.parseFloat(postTestMeanScore) : 0F;
         float preMean=preTestMeanScore != null && !preTestMeanScore.isEmpty() ? Float.parseFloat(preTestMeanScore) : 0F;
 
         if (maxPastScore-minPreScore==0 )
             return 0F;
         else{
-            return (pastMean - preMean) / (maxPastScore - minPreScore);
+            return Float.valueOf(df.format(Math.abs(((pastMean - preMean) / (maxPastScore - minPreScore)) *100))) ;
         }
     }
 

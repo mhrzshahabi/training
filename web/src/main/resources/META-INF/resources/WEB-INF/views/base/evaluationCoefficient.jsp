@@ -184,7 +184,7 @@
                 width: "200",
                 mask: "###",
                 name: "minPreTestEL",
-                title: "حد قبولی نمره پیش آزمون",
+                title: "حد قبولی یادگیری برای دوره هایی که پیش آزمون دارند",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
@@ -197,7 +197,7 @@
                 width: "200",
                  mask: "###",
                 name: "minPasTestEL",
-                title: "حد قبولی نمره پس آزمون",
+                title: "حد قبولی یادگیری برای دوره هایی که پیش آزمون ندارند",
 
                 change: function (form, item, value) {
                     if (value > 100) {
@@ -210,7 +210,7 @@
                 width: "200",
                  mask: "###",
                 name: "minScoreEL",
-                title: "حد قبولی",
+                title: "حد قبولی نرخ یادگیری",
                 change: function (form, item, value) {
                     if (value > 100) {
                         item.setValue()
