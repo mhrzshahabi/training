@@ -39,6 +39,10 @@ public class MainFormController {
     public String showDepartmentChartForm() {
         return "basic/departmentChart";
     }
+    @RequestMapping("/operationalChart")
+    public String showOperationalChartForm() {
+        return "basic/operationalChart";
+    }
 
     @RequestMapping("/trainingFile")
     public String showTrainingFileForm() {
