@@ -290,7 +290,8 @@
         ],
         transformRequest: function (dsRequest) {
             if (postAdmin !== undefined && postAdmin != null) {
-                if (postAdmin === true) {
+
+                if (postAdmin === "true") {
                     PostDS_post.fetchDataURL = viewPostUrl + "/iscList";
                 } else {
                     PostDS_post.fetchDataURL = viewPostUrl + "/roleIndPostIscList";

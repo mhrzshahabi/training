@@ -157,7 +157,7 @@
         ],
         transformRequest: function (dsRequest) {
             if (postAdmin !== undefined && postAdmin != null) {
-                if (postAdmin === true) {
+                if (postAdmin === "true") {
                     this.fetchDataURL = viewTrainingPostUrl + "/iscList";
                 } else {
                     this.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
