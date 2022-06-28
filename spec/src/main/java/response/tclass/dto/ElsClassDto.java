@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @Setter
 public class ElsClassDto implements Serializable {
-//    private Long classId;
+    private Long classId;
     private String name;
 //    private String title;
     private String code;
