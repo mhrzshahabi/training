@@ -12,6 +12,6 @@ import java.util.List;
 @Setter
 public class ElsSessionResponse extends BaseResponse implements Serializable {
     private String code;
-    private List<ElsSessionUsersDto> users;
+//    private List<ElsSessionUsersDto> users;
     private List<ElsSessionDetailDto> sessions;
 }

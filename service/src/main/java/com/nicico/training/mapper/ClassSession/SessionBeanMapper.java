@@ -26,18 +26,18 @@ public abstract class SessionBeanMapper {
     public ElsSessionResponse toGetElsSessionResponse(Tclass tclass) {
 
         ElsSessionResponse elsSessionResponse = new ElsSessionResponse();
-        List<ElsSessionUsersDto> elsSessionUsersDtos = new ArrayList<>();
+//        List<ElsSessionUsersDto> elsSessionUsersDtos = new ArrayList<>();
         List<ElsSessionDetailDto> elsSessionDetailDtos = new ArrayList<>();
 
-        tclass.getClassStudents().forEach(student -> {
-
-            ElsSessionUsersDto elsSessionUsersDto = new ElsSessionUsersDto();
-            elsSessionUsersDto.setUserId(student.getStudentId());
-            elsSessionUsersDto.setNationalCode(student.getStudent().getNationalCode());
-            elsSessionUsersDto.setFullName(student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
-
-            elsSessionUsersDtos.add(elsSessionUsersDto);
-        });
+//        tclass.getClassStudents().forEach(student -> {
+//
+//            ElsSessionUsersDto elsSessionUsersDto = new ElsSessionUsersDto();
+//            elsSessionUsersDto.setUserId(student.getStudentId());
+//            elsSessionUsersDto.setNationalCode(student.getStudent().getNationalCode());
+//            elsSessionUsersDto.setFullName(student.getStudent().getFirstName() + " " + student.getStudent().getLastName());
+//
+//            elsSessionUsersDtos.add(elsSessionUsersDto);
+//        });
 
         tclass.getClassSessions().forEach(session -> {
 
@@ -59,7 +59,7 @@ public abstract class SessionBeanMapper {
         elsSessionDetailDtos.sort(Comparator.comparing(ElsSessionDetailDto::getDateOfHolding));
 
         elsSessionResponse.setCode(tclass.getCode());
-        elsSessionResponse.setUsers(elsSessionUsersDtos);
+//        elsSessionResponse.setUsers(elsSessionUsersDtos);
         elsSessionResponse.setSessions(elsSessionDetailDtos);
         return elsSessionResponse;
     }
