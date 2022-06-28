@@ -128,7 +128,8 @@ public class TrainingException extends NICICOException {
         SkillCatIsNotEqualWithNACat(411),
         NeedsAssessmentIsNotEditable(412),
         InvalidClassStatus(405),
-        InvalidClassType(405);
+        InvalidClassType(405),
+        OperationalChartNotFound(404),;
 
 
         private final Integer httpStatusCode;

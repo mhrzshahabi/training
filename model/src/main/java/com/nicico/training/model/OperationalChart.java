@@ -41,5 +41,5 @@ public class OperationalChart extends Auditable{
     @JoinTable(name = "tbl_operational_chart_parent_child", uniqueConstraints = {@UniqueConstraint(columnNames = {"parent_id", "child_id"})},
             joinColumns = {@JoinColumn(name = "parent_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "child_id", referencedColumnName = "id")})
-    private List<OperationalChart> operationalCharParentChild;
+    private List<OperationalChart> operationalChartParentChild;
 }
