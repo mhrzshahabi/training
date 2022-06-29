@@ -235,14 +235,14 @@ public class ViewTrainingPostRestController {
     @PostMapping("/add/{roleId}")
     public ResponseEntity<BaseResponse> addIndividualPost(@PathVariable Long roleId, @RequestBody List<Long> postIds) {
         BaseResponse response = new BaseResponse();
-        try {
+//        try {
             iOperationalRoleService.addIndividualPost(roleId, postIds);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("پست انفرادی با موفقیت اضافه شد");
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.CONFLICT.value());
-            response.setMessage("پست انفرادی تکراری می باشد");
-        }
+//        } catch (Exception e) {
+//            response.setStatus(HttpStatus.CONFLICT.value());
+//            response.setMessage("پست انفرادی تکراری می باشد");
+//        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
