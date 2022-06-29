@@ -17,6 +17,8 @@ public interface IOperationalChartService {
 
     OperationalChartDTO.Info update(Long id, OperationalChartDTO.Update request);
 
+    OperationalChartDTO.Info updateParent(Long id,Long parentId, OperationalChartDTO.Update request);
+
     void delete(Long id);
 
     void delete(OperationalChartDTO.Delete request);

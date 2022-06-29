@@ -6,6 +6,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalChartDTO;
 import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.iservice.IOperationalChartService;
+import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.Country;
 import com.nicico.training.model.OperationalChart;
 import com.nicico.training.repository.OperationalChartDAO;
@@ -50,29 +51,27 @@ public class OperationalChartService implements IOperationalChartService {
     @Override
     public OperationalChartDTO.Info addChild(OperationalChartDTO.Create request) {
 
-       Long parentId = operationalChartDAO.findById(request.getParentId()).get().getId();
-        if(parentId!=null) {
-            final OperationalChart operationalChart = modelMapper.map(request, OperationalChart.class);
-            return save(operationalChart);
-        } else {
-//            OperationalChartDTO.Info savedOperationalChart =save(operationalChart);
-//
-//            Set<OperationalChart> childsToSave = (Set<OperationalChart>) operationalChart.getOperationalChartParentChild();
-//            if(childsToSave != null) {
-//                List<OperationalChart> childs = new ArrayList<>();
-//
-//
-//                for (OperationalChart childToSave : childsToSave) {
-//                    childToSave.setParentId(savedOperationalChart.getId());
-//                    save(childToSave);
-//                    childs.add(childToSave);
-//                }
-//                savedOperationalChart.setOperationalChartParentChild(childs);
-//            }
+        final OperationalChart operationalChart = modelMapper.map(request, OperationalChart.class);
+        final Optional<OperationalChart> parent  = operationalChartDAO.findById(operationalChart.getParentId());
+        final Long parentId = parent.get().getId();
+        if ( parentId != null) {
+                    final Optional<OperationalChart> findParent = operationalChartDAO.findById(request.getParentId());
+                    final OperationalChart parentToSave = findParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+
+            OperationalChart childsToSave =  modelMapper.map(request, OperationalChart.class);
+
+                    if (parentToSave.getOperationalChartParentChild()==null) {
+                        parentToSave.setOperationalChartParentChild(new ArrayList<>());
+                    }
+
+                    parentToSave.getOperationalChartParentChild().add(childsToSave );
+
+
+//              operationalChartDAO.saveAndFlush(parentToSave);
+
+            return save(childsToSave);
+        } else
             return null;
-        }
-
-
     }
 
     @Transactional
@@ -88,16 +87,34 @@ public class OperationalChartService implements IOperationalChartService {
 
     @Transactional
     @Override
+    public OperationalChartDTO.Info updateParent(Long id,Long parentId, OperationalChartDTO.Update request) {
+        final Optional<OperationalChart> cById = operationalChartDAO.findById(id);
+        final OperationalChart operationalChart = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        operationalChart.setParentId(parentId);
+        //TODO save new parent listchild and remove oldparent listchild
+
+        return save(operationalChart);
+    }
+
+    @Transactional
+    @Override
     public void delete(Long id) {
         final Optional<OperationalChart> one = operationalChartDAO.findById(id);
         final OperationalChart operationalChart = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-        operationalChartDAO.delete(operationalChart);
+        if (operationalChart.getOperationalChartParentChild() == null) {
+            operationalChartDAO.delete(operationalChart);
+        }else
+        { new TrainingException(TrainingException.ErrorType.OperationalChartHasChild);}
     }
 
     @Transactional
     @Override
     public void delete(OperationalChartDTO.Delete request) {
         final List<OperationalChart> gAllById = operationalChartDAO.findAllById(request.getIds());
+        if(  gAllById.stream().filter(parent->parent.getOperationalChartParentChild().stream().findAny().isPresent()).equals(true)  ) {
+            new TrainingException(TrainingException.ErrorType.OperationalChartHasChild);
+        } else
+
         operationalChartDAO.deleteAll(gAllById);
     }
 

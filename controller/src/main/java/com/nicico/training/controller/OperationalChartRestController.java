@@ -42,13 +42,19 @@ public class OperationalChartRestController {
     @Loggable
     @PostMapping(value = "/addchild")
     public ResponseEntity<OperationalChartDTO.Info> addChild(@Validated @RequestBody OperationalChartDTO.Create request) {
-        return new ResponseEntity<>(operationalChartService.create(request), HttpStatus.CREATED);
+         return new ResponseEntity<>(operationalChartService.addChild(request), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<OperationalChartDTO.Info> update(@PathVariable Long id, @Validated @RequestBody OperationalChartDTO.Update request) {
         return new ResponseEntity<>(operationalChartService.update(id, request), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/{id}{parentId}")
+    public ResponseEntity<OperationalChartDTO.Info> updateParent(@PathVariable Long id,@PathVariable Long parentId, @Validated @RequestBody OperationalChartDTO.Update request) {
+        return new ResponseEntity<>(operationalChartService.updateParent(id,parentId, request), HttpStatus.OK);
     }
 
     @Loggable

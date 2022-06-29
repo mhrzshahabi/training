@@ -129,7 +129,8 @@ public class TrainingException extends NICICOException {
         NeedsAssessmentIsNotEditable(412),
         InvalidClassStatus(405),
         InvalidClassType(405),
-        OperationalChartNotFound(404),;
+        OperationalChartNotFound(404),
+        OperationalChartHasChild(404);
 
 
         private final Integer httpStatusCode;
