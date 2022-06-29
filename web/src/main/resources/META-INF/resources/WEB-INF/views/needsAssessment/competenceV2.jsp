@@ -105,6 +105,9 @@
             {name: "processInstanceId", hidden: true},
             {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceTypeId", hidden: true},
+            {name: "competenceLevelId"},
+            {name: "competencePriorityId"},
+            {name: "complex"},
             {name: "competenceType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "categoryId",
@@ -190,10 +193,32 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: parameterValueUrl + "/iscList/100",
+        fetchDataURL: parameterValueUrl + "/listByCode/gapCompetenceType",
     });
 
+    CompetenceLevelDS_competenceV2 = isc.TrDS.create({
+        ID: "CompetenceLevelDS_competenceV2",
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/NeedsAssessmentDomain",
+    });
 
+    CompetencePriorityDS_competenceV2 = isc.TrDS.create({
+        ID: "CompetencePriorityDS_competenceV2",
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/NeedsAssessmentPriority",
+    });
+
+    let RestDataSource_competence_Department_Filter = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     let CompetenceDF_competenceV2 = isc.DynamicForm.create({
@@ -204,21 +229,52 @@
             {name: "code", title: "کد", canEdit: false, textAlign: "center"},
             {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty], textAlign: "center"},
             {
-                name: "competenceTypeId", title: "<spring:message code='type'/>", required: true, type: "select", optionDataSource: CompetenceTypeDS_competenceV2,
+                name: "competenceTypeId", title: "نوع شایستگی", required: true, type: "select", optionDataSource: CompetenceTypeDS_competenceV2,
                 textAlign: "center",
                 valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,},
                 changed(){
-                    actionCompetenceTypeV2()
+                    // actionCompetenceTypeV2()
                     createCompetenceCodeV2()
                 }
+            },
+            {
+                name: "competenceLevelId", title: "سطح شایستگی", required: true, type: "select", optionDataSource: CompetenceLevelDS_competenceV2,
+                textAlign: "center",
+                valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,},
+
+            },
+            {
+                name: "competencePriorityId", title: "اولویت شایستگی", required: true, type: "select", optionDataSource: CompetencePriorityDS_competenceV2,
+                textAlign: "center",
+                valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,},
+
+            },
+            {
+                name: "complex",
+                title: "مجتمع",
+                required: true,
+                optionDataSource: RestDataSource_competence_Department_Filter,
+                autoFetchData: false,
+                textAlign: "center",
+                displayField: "title",
+                valueField: "title",
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
             },
             {
                 name: "categoryId",
                 colSpan: 1,
                 title: "<spring:message code="category"/>",
                 textAlign: "center",
-                hidden: true,
+                hidden: false,
                 width: "*",
+                required: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_category_JspCompetence,
@@ -238,7 +294,8 @@
                 title: "<spring:message code="subcategory"/>",
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
-                hidden: true,
+                hidden: false,
+                required: true,
                 width: "*",
                 displayField: "titleFa",
                 valueField: "id",
@@ -262,6 +319,17 @@
                 }
             },
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem"},
+            {
+                name: "isActive",
+                title: "فعال",
+                type: "checkbox",
+                width: "2",
+                defaultValue: true,
+
+                changed: function (form, item, value) {
+
+                }
+            },
         ]
     });
 
@@ -335,7 +403,7 @@
                     if (CompetenceDF_competenceV2.getItem("competenceTypeId").getSelectedRecord() !== undefined) {
                         clearInterval(inter)
                         CompetenceWin_competenceV2.show();
-                        actionCompetenceTypeV2();
+                        // actionCompetenceTypeV2();
                     }
                 }, 100)
             }
@@ -408,24 +476,24 @@
         }
     }
 
-    function actionCompetenceTypeV2() {
-        let item = CompetenceDF_competenceV2.getItem("competenceTypeId");
-        let form = CompetenceDF_competenceV2;
-        if(item.getSelectedRecord().title === "تخصصی"){
-            form.getItem("categoryId").show();
-            form.getItem("subCategoryId").show();
-            form.getItem("categoryId").setRequired(true);
-            form.getItem("subCategoryId").setRequired(true);
-        }
-        else{
-            form.getItem("categoryId").hide();
-            form.getItem("subCategoryId").hide();
-            form.clearValue("categoryId");
-            form.clearValue("subCategoryId");
-            form.getItem("categoryId").setRequired(false);
-            form.getItem("subCategoryId").setRequired(false);
-        }
-    }
+    // function actionCompetenceTypeV2() {
+    //     let item = CompetenceDF_competenceV2.getItem("competenceTypeId");
+    //     let form = CompetenceDF_competenceV2;
+    //     if(item.getSelectedRecord().title === "تخصصی"){
+    //         form.getItem("categoryId").show();
+    //         form.getItem("subCategoryId").show();
+    //         form.getItem("categoryId").setRequired(true);
+    //         form.getItem("subCategoryId").setRequired(true);
+    //     }
+    //     else{
+    //         form.getItem("categoryId").hide();
+    //         form.getItem("subCategoryId").hide();
+    //         form.clearValue("categoryId");
+    //         form.clearValue("subCategoryId");
+    //         form.getItem("categoryId").setRequired(false);
+    //         form.getItem("subCategoryId").setRequired(false);
+    //     }
+    // }
 
     function createCompetenceCodeV2() {
         let form = CompetenceDF_competenceV2;
@@ -434,15 +502,15 @@
         let cat = (form.getField("categoryId").getSelectedRecord()) ? (form.getField("categoryId").getSelectedRecord().code) : "";
         let subCat = (form.getField("subCategoryId").getSelectedRecord()) ? (form.getField("subCategoryId").getSelectedRecord().code) : "";
         switch (title) {
-            case "تخصصی":
-                code.setValue("T" + cat + subCat);
+            case "تيمی , گروهی (سازمانی)":
+                code.setValue("G" + cat + subCat);
                 break;
-            case "عمومی":
-                code.setValue("O00000");
+            case "فردی (پستی)":
+                code.setValue("P" + cat + subCat);
                 break;
-            case "مدیریتی":
-                code.setValue("M00000");
-                break;
+            // case "مدیریتی":
+            //     code.setValue("M00000");
+            //     break;
         }
     }
 
@@ -456,6 +524,9 @@
             "id": method !== "POST" ? record.id : 0,
             "title": record.title,
             "competenceTypeId": record.competenceTypeId,
+            "competenceLevelId": record.competenceLevelId,
+            "competencePriorityId": record.competencePriorityId,
+            "complex": record.complex,
             "code": record.code,
             "categoryId": record.categoryId,
             "subCategoryId": record.subCategoryId,

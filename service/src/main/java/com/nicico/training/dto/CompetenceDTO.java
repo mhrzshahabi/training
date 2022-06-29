@@ -25,6 +25,9 @@ public class CompetenceDTO implements Serializable {
     private Long categoryId;
     private Long subCategoryId;
     private String code;
+    private Long competenceLevelId;
+    private Long competencePriorityId;
+    private String complex;
     private Long workFlowStatusCode;
     private String processInstanceId;
 
