@@ -204,9 +204,6 @@ public class OperationalRoleService implements IOperationalRoleService {
             if (!savedPostIds.stream().toList().contains(id)) {
                 savedPostIds.add(id);
             }
-//            else {
-                //                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
-//            }
         });
 
         savedOperationalRole.setPostIds(savedPostIds);
