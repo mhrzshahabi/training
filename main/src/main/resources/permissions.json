@@ -844,7 +844,10 @@
 
     {"code": "remove.uncertainty.needAssessment.changes",
       "title": "حذف تغییرات نیازسنجی بلاتکلیف"
-    }
+    },
+
+    {"code": "Admin_Post_Access", "title": "مشاهده تمامی پست ها"}
+
   ]
 }
 

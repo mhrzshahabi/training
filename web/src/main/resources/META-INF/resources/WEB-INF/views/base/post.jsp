@@ -1,3 +1,4 @@
+<%@ page import="static com.nicico.copper.core.SecurityUtil.hasAuthority" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
@@ -35,41 +36,41 @@
     });
 
     // ------------------------------------------- forms -------------------------------------------
-    var DynamicForm_PostAlarmSelection = isc.DynamicForm.create({
-        width: "85%",
-        height: "100%",
-        fields: [
-            {
-
-                name: "loadTypeSelect",
-                title: "",
-                type: "radioGroup",
-                defaultValue: "1",
-                valueMap: {
-                    "1": "لیست تمامی پست ها",
-                    "2": "لیست پست های عملیاتی",
-                },
-                vertical: false,
-                changed: function (form, item, value) {
-                    if (value === "1") {
-                        LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
-                        objectIdAttachment=null
-                        PostDS_Url = viewPostUrl + "/iscList" ;
-                        PostDS_post.fetchDataURL = PostDS_Url ;
-                        PostLG_post.invalidateCache();
-                        closeToShowUnGroupedPosts_POST();
-                    } else if(value === "2"){
-                        objectIdAttachment=null
-                        LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
-                        PostDS_Url = viewPostUrl + "/roleIndPostIscList" ;
-                        PostDS_post.fetchDataURL = PostDS_Url ;
-                        PostLG_post.invalidateCache();
-                    }
-
-                },
-            }
-        ]
-    });
+    // var DynamicForm_PostAlarmSelection = isc.DynamicForm.create({
+    //     width: "85%",
+    //     height: "100%",
+    //     fields: [
+    //         {
+    //
+    //             name: "loadTypeSelect",
+    //             title: "",
+    //             type: "radioGroup",
+    //             defaultValue: "1",
+    //             valueMap: {
+    //                 "1": "لیست تمامی پست ها",
+    //                 "2": "لیست پست های عملیاتی",
+    //             },
+    //             vertical: false,
+    //             changed: function (form, item, value) {
+    //                 if (value === "1") {
+    //                     LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
+    //                     objectIdAttachment=null
+    //                     PostDS_Url = viewPostUrl + "/iscList" ;
+    //                     PostDS_post.fetchDataURL = PostDS_Url ;
+    //                     PostLG_post.invalidateCache();
+    //                     closeToShowUnGroupedPosts_POST();
+    //                 } else if(value === "2"){
+    //                     objectIdAttachment=null
+    //                     LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
+    //                     PostDS_Url = viewPostUrl + "/roleIndPostIscList" ;
+    //                     PostDS_post.fetchDataURL = PostDS_Url ;
+    //                     PostLG_post.invalidateCache();
+    //                 }
+    //
+    //             },
+    //         }
+    //     ]
+    // });
 
 
     // ------------------------------------------- ToolStrip -------------------------------------------
@@ -159,7 +160,7 @@
             //         Window_PostWebService_Post.show();
             //     }
             // }),
-            DynamicForm_PostAlarmSelection,
+            // DynamicForm_PostAlarmSelection,
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -288,10 +289,18 @@
             },
         ],
         transformRequest: function (dsRequest) {
+            if (postAdmin !== undefined && postAdmin != null) {
+
+                if (postAdmin === "true") {
+                    PostDS_post.fetchDataURL = viewPostUrl + "/iscList";
+                } else {
+                    PostDS_post.fetchDataURL = viewPostUrl + "/roleIndPostIscList";
+                }
+            }
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: PostDS_Url
+        // fetchDataURL: PostDS_Url_User_posts
     });
 
     DepartmentWebserviceDS_post = isc.TrDS.create({

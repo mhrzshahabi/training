@@ -156,10 +156,17 @@
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         transformRequest: function (dsRequest) {
+            if (postAdmin !== undefined && postAdmin != null) {
+                if (postAdmin === "true") {
+                    this.fetchDataURL = viewTrainingPostUrl + "/iscList";
+                } else {
+                    this.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
+                }
+            }
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: TrainingPostDS_Url
+        // fetchDataURL: TrainingPostDS_Url
     });
     var Menu_ListGrid_TrainingPost_Jsp = isc.Menu.create({
         width: 150,
@@ -1312,40 +1319,40 @@
         ]
     });
 
-    var DynamicForm_AlarmSelection = isc.DynamicForm.create({
-        width: "85%",
-        height: "100%",
-        fields: [
-            {
-
-                name: "loadTypeSelect",
-                title: "",
-                type: "radioGroup",
-                defaultValue: "1",
-                valueMap: {
-                    "1": "لیست تمامی پست ها",
-                    "2": "لیست پست های عملیاتی",
-                },
-                vertical: false,
-                changed: function (form, item, value) {
-                    if (value === "1") {
-                        objectIdAttachment=null
-                        LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
-                        TrainingPostDS_Url = viewTrainingPostUrl + "/iscList" ;
-                        RestDataSource_TrainingPost_Jsp.fetchDataURL  = TrainingPostDS_Url ;
-                        ListGrid_TrainingPost_refresh();
-                    } else if(value === "2"){
-                        objectIdAttachment=null
-                        LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
-                        TrainingPostDS_Url = viewTrainingPostUrl + "/rolePostIscList" ;
-                        RestDataSource_TrainingPost_Jsp.fetchDataURL  = TrainingPostDS_Url ;
-                        ListGrid_TrainingPost_Jsp.invalidateCache();
-                    }
-
-                },
-            }
-        ]
-    });
+    // var DynamicForm_AlarmSelection = isc.DynamicForm.create({
+    //     width: "85%",
+    //     height: "100%",
+    //     fields: [
+    //         {
+    //
+    //             name: "loadTypeSelect",
+    //             title: "",
+    //             type: "radioGroup",
+    //             defaultValue: "1",
+    //             valueMap: {
+    //                 "1": "لیست تمامی پست ها",
+    //                 "2": "لیست پست های عملیاتی",
+    //             },
+    //             vertical: false,
+    //             changed: function (form, item, value) {
+    //                 if (value === "1") {
+    //                     objectIdAttachment=null
+    //                     LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
+    //                     TrainingPostDS_Url = viewTrainingPostUrl + "/iscList" ;
+    //                     RestDataSource_TrainingPost_Jsp.fetchDataURL  = TrainingPostDS_Url ;
+    //                     ListGrid_TrainingPost_refresh();
+    //                 } else if(value === "2"){
+    //                     objectIdAttachment=null
+    //                     LoadAttachments_Training_Post.ListGrid_JspAttachment.setData([]);
+    //                     TrainingPostDS_Url = viewTrainingPostUrl + "/rolePostIscList" ;
+    //                     RestDataSource_TrainingPost_Jsp.fetchDataURL  = TrainingPostDS_Url ;
+    //                     ListGrid_TrainingPost_Jsp.invalidateCache();
+    //                 }
+    //
+    //             },
+    //         }
+    //     ]
+    // });
         var ToolStrip_Actions_TrainingPost_Jsp = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -1369,7 +1376,7 @@
             <sec:authorize access="hasAuthority('Training_Post_P')">
             ToolStrip_TrainingPost_Export2EXcel,
             </sec:authorize>
-            DynamicForm_AlarmSelection,
+            // DynamicForm_AlarmSelection,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1767,7 +1774,13 @@
     });
 
     function ListGrid_TrainingPost_Posts_refresh() {
-        RestDataSource_TrainingPost_Jsp.fetchDataURL  = TrainingPostDS_Url ;
+        if (postAdmin !== undefined && postAdmin != null) {
+            if (postAdmin === true) {
+                RestDataSource_TrainingPost_Jsp.fetchDataURL  = viewTrainingPostUrl + "/iscList";
+            } else {
+                RestDataSource_TrainingPost_Jsp.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
+            }
+        }
         if (ListGrid_TrainingPost_Jsp.getSelectedRecord() == null)
             ListGrid_TrainingPost_Posts.setData([]);
         else
