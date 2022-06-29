@@ -433,7 +433,9 @@ public class PersonnelService implements IPersonnelService {
     public PersonnelDTO.Info getByPersonnelCodeAndNationalCode(String nationalCode, String personnelNo) {
 
         Personnel personnel = null;
+        SynonymPersonnel synonymPersonnel = null;
         List<Personnel> personnels = null;
+        List<SynonymPersonnel> synonymPersonnels = null;
 
         if (StringUtils.isNotEmpty(nationalCode)) {
 
@@ -459,7 +461,26 @@ public class PersonnelService implements IPersonnelService {
             }
         }
 
-        return modelMapper.map(personnel, PersonnelDTO.Info.class);
+
+
+        if (personnels.size()==0 && personnel ==null){
+            synonymPersonnels = synonymPersonnelDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
+            synonymPersonnel = synonymPersonnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
+
+            if (synonymPersonnel == null) {
+                if (synonymPersonnels.size() > 0) {
+                    synonymPersonnel = synonymPersonnels.get(0);
+                }
+            }
+            return modelMapper.map(synonymPersonnel, PersonnelDTO.Info.class);
+
+        }else {
+            return modelMapper.map(personnel, PersonnelDTO.Info.class);
+
+        }
+
+
+
     }
 
     //TODO:must be check

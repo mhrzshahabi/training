@@ -1885,7 +1885,6 @@
                 DynamicForm_Committee_personnel.invalidateCache();
                 ListGrid_Committee_Persons.invalidateCache();
             } else {
-                debugger
                 let result = JSON.parse(resp.httpResponseText);
                 wait.close();
                 createDialog("info", result.message);

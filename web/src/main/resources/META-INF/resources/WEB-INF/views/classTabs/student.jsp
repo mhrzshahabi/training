@@ -2817,16 +2817,15 @@
             <%--}--%>
         }
 
-        function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
+        async function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
             let warnStudents = [];
             let inValidPersonnel = [];
             let warnPreCourseStudents = [];
-            let warnSameSessionStudents=[];
-            let interfrence=[];
+            let warnSameSessionStudents = [];
 
-
-            let result= getSessionPerClass(classId);
-
+            // wait.show();
+            let result = await getSessionPerClass(classId);
+            // wait.close();
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
 
                 JSON.parse(response.data).forEach(q => equalCourseIds.add(q));
@@ -2854,27 +2853,27 @@
                                 inValidPersonnel.add(studentsDataArray[inx]);
                             }
 
-                            if(result.length > 0) {
+                            if (result.length > 0) {
                                 let hasConflict = null;
                                 let flag = true;
-                                for (let i = 0; i < result.length && flag; i++){
-                                    wait.show();
-                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
-                                    wait.close();
-                                    debugger;
-                                    if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
-                                        hasConflict = JSON.parse(response.data);
-                                        if (hasConflict.length > 0) {
-                                            if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
-                                                warnSameSessionStudents.add(studentsDataArray[inx]);
-                                                flag = false;
+                                wait.show();
+                                for (let i = 0; i < result.length && flag; i++) {
+
+                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
+
+                                        if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
+                                            hasConflict = JSON.parse(response.data);
+                                            if (hasConflict.length > 0) {
+                                                if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
+                                                    warnSameSessionStudents.add(studentsDataArray[inx]);
+                                                    flag = false;
+                                                }
                                             }
                                         }
-                                    }
-                                }));
+                                    }));
+                                }
+                                wait.close();
                             }
-                        }
-
 
 
                             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
@@ -2898,7 +2897,7 @@
                                         var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
                                         studentsDataArray.removeList(warnPreCourseStudents);
 
-                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents);
+                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel, warnSameSessionStudents);
                                     }
 
                                 } else {
@@ -3493,13 +3492,14 @@
             })
         );
     }
-   function getSessionPerClass(classId){
+    async function getSessionPerClass(classId){
+       wait.show();
 
        isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/"+ classId ,"GET",null,function(resp){
            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                interfrence  = JSON.parse(resp.data);
            }
-
+           wait.close();
        }));
        return interfrence;
    }

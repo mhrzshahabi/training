@@ -1,11 +1,13 @@
 package com.nicico.training.repository;
 
+import com.nicico.training.model.Personnel;
 import com.nicico.training.model.SynonymPersonnel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -20,4 +22,7 @@ public interface SynonymPersonnelDAO extends JpaRepository<SynonymPersonnel, Lon
     Optional<SynonymPersonnel> findByPersonnelNoAndDeleted(String nationalCode, Integer deleted);
 
     Optional<SynonymPersonnel> findFirstByPostCode(String postCode);
+
+    List<SynonymPersonnel> findAllByPersonnelNoOrderByIdDesc(String personnelNo);
+
 }
