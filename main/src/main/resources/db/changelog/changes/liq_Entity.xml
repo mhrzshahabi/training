@@ -3776,6 +3776,22 @@
             </column>
             <column name="role" type="VARCHAR2(255 CHAR)">
             </column>
+            <column name="position" type="VARCHAR2(255 CHAR)">
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="namdari" id="1656131979000-11">
+        <createTable tableName="tbl_committee_of_experts_post">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="TBL_tbl_committee_post_AUDPK"/>
+            </column>
+            <column name="f_committee_id" type="NUMBER(19, 0)">
+            </column>
+            <column name="object_id" type="NUMBER(19, 0)">
+            </column>
+            <column name="object_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="object_code" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

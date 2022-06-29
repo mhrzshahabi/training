@@ -36,7 +36,10 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
 
     @Override
     public SynonymPersonnel getById(Long id) {
+        Optional<SynonymPersonnel> optionalSynonymPersonnel=dao.findById(id);
+        if (optionalSynonymPersonnel.isPresent())
         return dao.findById(id).get();
+        else return null;
     }
 
     @Override
@@ -50,6 +53,11 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
         final SynonymPersonnel personnel = optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return modelMapper.map(personnel, ViewActivePersonnelDTO.PersonalityInfo.class);
     }
+
+    @Override
+    public Optional<SynonymPersonnel> getByPostCode(String postCode) {
+        return dao.findFirstByPostCode(postCode);
+     }
 
 //    @Transactional
 //    public List<PersonnelDTO.InfoForStudent> checkSynonymPersonnelNos(List<String> personnelNos, Long courseId) {

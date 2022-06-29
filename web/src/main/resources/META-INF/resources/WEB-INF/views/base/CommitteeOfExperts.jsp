@@ -9,8 +9,12 @@
 
     //----------------------------------------------------Variables-----------------------------------------------------
 
-    let personnelTypeEx ;
-    let personnelIdEx;
+    let personnelTypeEx="" ;
+    let personnelIdEx="";
+
+    let postTypeEx="" ;
+    let postIdEx="";
+    let postCodeEX="";
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
@@ -51,6 +55,26 @@
             {name: "phone"},
             {name: "postTitle"},
             {name: "role"},
+            {name: "position"},
+
+        ],
+
+
+    });
+
+    RestDataSource_Posts = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "type"},
+            {name: "nationalCode"},
+            {name: "personnelNo"},
+            {name: "personnelNo2"},
+            {name: "firstName"},
+            {name: "lastName"},
+            {name: "phone"},
+            {name: "postTitle"},
+            {name: "role"},
+            {name: "position"},
 
         ],
 
@@ -147,7 +171,7 @@
                 startRow: false,
                 endRow: false,
                 click: function () {
-                     showPersonnelWin();
+                    showPersonnelWin();
                 }
             },
             {
@@ -160,8 +184,69 @@
                 name: "role",
                 length: 150,
                 title: "نقش در کمیته",
+                required: true,
+                defaultValue: "عضو عادي",
+                valueMap: {
+                    "عضو خارجي کميته" : "عضو خارجي کميته",
+                    "نماينده آموزش در کميته" : "نماينده آموزش در کميته",
+                    "عضو عادي" : "عضو عادي"
+                }
+
+            },
+            {
+                name: "position",
+                length: 150,
+                title: "سمت در کمیته",
+                required: true,
+                defaultValue:  "رئيس و هماهنگ کننده کميته",
+                valueMap: {
+                    "رئيس و هماهنگ کننده کميته" : "رئيس و هماهنگ کننده کميته",
+                    "اعضای کميته" : "اعضای کميته"
+                }
+
+            },
+
+        ]
+    });
+
+    DynamicForm_Committee_post = isc.DynamicForm.create({
+        width: 400,
+        height: "100%",
+        numCols: 2,
+        fields: [
+            {
+                name: "id",
+                title: "id",
+                primaryKey: true,
+                canEdit: false,
+                hidden: true
+            },
+            {
+                name: "personnel",
+                title: "انتخاب پست",
+                colSpan: 2,
+                align: "center",
+                width: 170,
+                type: "button",
+                startRow: false,
+                endRow: false,
+                click: function () {
+                    showPostWin();
+                }
+            },
+            {
+                name: "objectCode",
+                canEdit: false,
+                title: "کد پست انتخاب شده : ",
                 required: true
             },
+            {
+                name: "objectType",
+                canEdit: false,
+                title: "نوع پست انتخاب شده : ",
+                required: true
+            },
+
 
         ]
     });
@@ -284,9 +369,9 @@
 
 
 
-     });
+    });
 
-    var SynonymPersonnelsDS_student_ex = isc.TrDS.create({
+    let SynonymPersonnelsDS_student_ex = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {
@@ -336,6 +421,278 @@
     });
 
 
+
+
+    let Post_DS_ex_committee = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "has_committee", hidden: true},
+            {name: "committee", title: " کمیته  ",  filterOperator: "iContains",autoFitWidth: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
+        ],
+        fetchDataURL: viewPostUrl + "/iscList"
+    });
+
+    let Post_DS_ex_committee_with_filter = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "has_committee", hidden: true},
+            {name: "committee", title: " کمیته  ",  filterOperator: "iContains",autoFitWidth: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
+        ],
+        fetchDataURL: viewPostUrl + "/iscList"
+    });
+    let training_Post_DS_ex_committee = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "committee", title: " کمیته ",  filterOperator: "iContains",autoFitWidth: true},
+
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "jobTitleFa",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postGradeTitleFa",
+                title: "<spring:message code="post.grade.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "assistance",
+                title: "<spring:message code="assistance"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "affairs",
+                title: "<spring:message code="affairs"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "section",
+                title: "<spring:message code="section"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "costCenterCode",
+                title: "<spring:message code="reward.cost.center.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "costCenterTitleFa",
+                title: "<spring:message code="reward.cost.center.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "competenceCount",
+                title: "تعداد شایستگی",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "personnelCount",
+                title: "تعداد پرسنل",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            }
+        ],
+        fetchDataURL: viewTrainingPostUrl + "/iscList"
+    });
+    let training_Post_DS_ex_committee_with_filter = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "committee", title: " کمیته ",  filterOperator: "iContains",autoFitWidth: true},
+
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:peopleTypeMap, filterOnKeypress: true},
+            {
+                name: "code",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "jobTitleFa",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "postGradeTitleFa",
+                title: "<spring:message code="post.grade.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "assistance",
+                title: "<spring:message code="assistance"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "affairs",
+                title: "<spring:message code="affairs"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "section",
+                title: "<spring:message code="section"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "costCenterCode",
+                title: "<spring:message code="reward.cost.center.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "costCenterTitleFa",
+                title: "<spring:message code="reward.cost.center.title"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "competenceCount",
+                title: "تعداد شایستگی",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "personnelCount",
+                title: "تعداد پرسنل",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true,
+                autoFitWidthApproach: "both"
+            },
+            {
+                name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both",
+                valueMap:{
+                    // undefined : "فعال",
+                    74 : "غیر فعال"
+                },filterOnKeypress: true,
+            }
+        ],
+        fetchDataURL: viewTrainingPostUrl + "/iscList"
+    });
+
+    let group_Post_DS_ex_committee = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "committee", title: " کمیته  ", filterOperator: "iContains", autoFitWidth: true},
+
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "نام گروه پست", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "نام لاتین گروه پست ", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "description", title: "توضیحات", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "version", title: "version", canEdit: false, hidden: true}
+
+        ],
+        fetchDataURL: viewPostGroupUrl + "/iscList"
+    });
+    let group_Post_DS_ex_committee_with_filter = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "committee", title: " کمیته  ", filterOperator: "iContains", autoFitWidth: true},
+
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "نام گروه پست", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "نام لاتین گروه پست ", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "description", title: "توضیحات", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "version", title: "version", canEdit: false, hidden: true}
+
+        ],
+        fetchDataURL: viewPostGroupUrl + "/iscList"
+    });
+
+
+
+
+
+
     let SynonymPersonnelsLG_student_ex = isc.TrLG.create({
         ID: "SynonymPersonnelsLG_student",
         dataSource: SynonymPersonnelsDS_student_ex,
@@ -370,6 +727,45 @@
 
 
 
+    let Post_lsLG_ex = isc.TrLG.create({
+         dataSource: Post_DS_ex_committee,
+        selectionType: "single",
+        sortField:"id",
+
+    });
+
+    let Post_lsLG_ex_with_filter = isc.TrLG.create({
+         dataSource: Post_DS_ex_committee_with_filter,
+        selectionType: "single",
+        sortField:"id",
+
+    });
+
+    let training_Post_lsLG_ex = isc.TrLG.create({
+         dataSource: training_Post_DS_ex_committee,
+        selectionType: "single",
+        sortField: "id",
+
+
+    });
+    let training_Post_lsLG_ex_with_filter = isc.TrLG.create({
+         dataSource: training_Post_DS_ex_committee_with_filter,
+        selectionType: "single",
+        sortField: "id",
+
+
+    });
+
+    let group_Post_lsLG_ex = isc.TrLG.create({
+         dataSource: group_Post_DS_ex_committee,
+        selectionType: "single",
+        sortField: "id",
+    });
+    let group_Post_lsLG_ex_with_filter = isc.TrLG.create({
+         dataSource: group_Post_DS_ex_committee_with_filter,
+        selectionType: "single",
+        sortField: "id",
+    });
 
 
 
@@ -478,13 +874,31 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addToCommitteePersonnel()
+                    addToCommittee(ListGrid_Committee_EX,DynamicForm_Committee_personnel,Window_base_Decision_committee_persons)
                 }.bind(this)
             }),
             isc.ToolStripButtonRemove.create({
                 title: "حذف",
                 click: function () {
-                    deleteChildDecision(ListGrid_Basic_Tuition)
+                    deleteFromCommittee(ListGrid_Committee_EX,ListGrid_Committee_Persons,"/deletePart/")
+                }.bind(this)
+            })
+        ]
+    });
+    Committee_Post_actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonCreate.create({
+                title: "افزودن",
+                click: function () {
+                    addToCommittee(ListGrid_Committee_EX,DynamicForm_Committee_post,Window_base_Decision_committee_post)
+                }.bind(this)
+            }),
+            isc.ToolStripButtonRemove.create({
+                title: "حذف",
+                click: function () {
+                    deleteFromCommittee(ListGrid_Committee_EX,ListGrid_Committee_Posts,"/deletePost/")
                 }.bind(this)
             })
         ]
@@ -566,6 +980,12 @@
                 width: "10%",
                 align: "center",
                 canFilter: false
+            },{
+                name: "position",
+                title: "سمت در کمیته",
+                width: "10%",
+                align: "center",
+                canFilter: false
             },
             {
                 name: "type",
@@ -576,6 +996,65 @@
             }
         ],
         gridComponents: [Committee_Persons_actions, "filterEditor", "header", "body", "summaryRow"]
+
+    });
+    ListGrid_Committee_Posts = isc.ListGrid.create({
+        dataSource: RestDataSource_Posts,
+        sortDirection: "descending",
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        canAutoFitFields: true,
+        width: "100%",
+        height: "100%",
+        autoFetchData: false,
+        initialSort: [
+            {property: "id", direction: "descending"}
+        ],
+        fields: [
+            {
+                name: "id",
+                hidden: true,
+                primaryKey: true,
+                canEdit: false,
+                align: "center"
+            },
+            {
+                name: "objectType",
+                title: "نوع پست",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "objectCode",
+                title: "کد پست",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "userNationalCode",
+                title: "کد ملي فرد حاضر در پست",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "userName",
+                title: "نام فرد حاضر در پست",
+                width: "10%",
+                canFilter: false,
+                align: "center"
+            },
+            {
+                name: "phone",
+                title: "موبايل",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            }
+        ],
+        gridComponents: [Committee_Post_actions, "filterEditor", "header", "body", "summaryRow"]
 
     });
 
@@ -614,6 +1093,117 @@
                     align: "center",
                     items: [
                         SynonymPersonnelsLG_student_ex
+                    ]
+                }]
+            }),
+        ]
+    });
+
+    let post_committee_List_VLayout_ex = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        border: "0px solid red", layoutMargin: 5,
+        members: [
+            isc.SectionStack.create({
+                sections: [{
+                    expanded: true,
+                    canCollapse: false,
+                    align: "center",
+                    items: [
+                        Post_lsLG_ex
+                    ]
+                }]
+            }),
+        ]
+    });
+    let post_committee_List_VLayout_ex_with_filter = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        border: "0px solid red", layoutMargin: 5,
+        members: [
+            isc.SectionStack.create({
+                sections: [{
+                    expanded: true,
+                    canCollapse: false,
+                    align: "center",
+                    items: [
+                        Post_lsLG_ex_with_filter
+                    ]
+                }]
+            }),
+        ]
+    });
+
+    let training_committee_List_VLayout_ex = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        border: "0px solid red", layoutMargin: 5,
+        members: [
+            isc.SectionStack.create({
+                sections: [{
+                    expanded: true,
+                    canCollapse: false,
+                    align: "center",
+                    items: [
+                        training_Post_lsLG_ex
+                    ]
+                }]
+            }),
+        ]
+    });
+    let training_committee_List_VLayout_ex_with_filter = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        border: "0px solid red", layoutMargin: 5,
+        members: [
+            isc.SectionStack.create({
+                sections: [{
+                    expanded: true,
+                    canCollapse: false,
+                    align: "center",
+                    items: [
+                        training_Post_lsLG_ex_with_filter
+                    ]
+                }]
+            }),
+        ]
+    });
+
+    let group_Post_List_VLayout_ex = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        border: "0px solid red", layoutMargin: 5,
+        members: [
+            isc.SectionStack.create({
+                sections: [{
+                    expanded: true,
+                    canCollapse: false,
+                    align: "center",
+                    items: [
+                        group_Post_lsLG_ex
+                    ]
+                }]
+            }),
+        ]
+    });
+    let group_Post_List_VLayout_ex_with_filter = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        border: "0px solid red", layoutMargin: 5,
+        members: [
+            isc.SectionStack.create({
+                sections: [{
+                    expanded: true,
+                    canCollapse: false,
+                    align: "center",
+                    items: [
+                        group_Post_lsLG_ex_with_filter
                     ]
                 }]
             }),
@@ -660,9 +1250,113 @@
             }
         }
     });
+    let PostTabs_ex = isc.TabSet.create({
+        height: "50%",
+        width: "100%",
+        showTabScroller: false,
+        tabs: [
+
+            {
+                name:"training_Post_committee",
+                title: "پست ",
+                pane: training_committee_List_VLayout_ex
+            },
+            {
+                name:"group_Post_committee",
+                title: "پست گروهی",
+                pane: group_Post_List_VLayout_ex
+            },
+            {
+                name:"post_committee",
+                title: "پست انفرادی",
+                pane: post_committee_List_VLayout_ex
+            }
+
+        ]
+        ,tabSelected: function () {
+
+            let tab = PostTabs_ex.getSelectedTab();
 
 
-    var personnelTabs_exHlayout = isc.TrHLayoutButtons.create({
+
+            switch (tab.name) {
+                case "post_committee": {
+                    Post_lsLG_ex.invalidateCache();
+                    Post_lsLG_ex.fetchData();
+                    break;
+                }
+                case "training_Post_committee": {
+                    training_Post_lsLG_ex.invalidateCache();
+                    training_Post_lsLG_ex.fetchData();
+
+                    break;
+                }
+                case "group_Post_committee": {
+                    group_Post_lsLG_ex.invalidateCache();
+                    group_Post_lsLG_ex.fetchData();
+
+                    break;
+                }
+
+            }
+        }
+    });
+
+    let PostTabs_ex_with_filter = isc.TabSet.create({
+        height: "50%",
+        width: "100%",
+        showTabScroller: false,
+        tabs: [
+
+            {
+                name:"training_Post_committee",
+
+                title: "پست ",
+                pane: training_committee_List_VLayout_ex_with_filter
+            },
+            {
+                name:"group_Post_committee",
+
+                title: "پست گروهی",
+                pane: group_Post_List_VLayout_ex_with_filter
+            } ,{
+                name:"post_committee",
+
+                title: "پست انفرادی",
+                pane: post_committee_List_VLayout_ex_with_filter
+            }
+
+        ]
+        ,tabSelected: function () {
+            let tab = PostTabs_ex_with_filter.getSelectedTab();
+
+
+
+            switch (tab.name) {
+                case "post_committee": {
+                    Post_lsLG_ex_with_filter.invalidateCache();
+                    Post_lsLG_ex_with_filter.fetchData();
+                    break;
+                }
+                case "training_Post_committee": {
+                    training_Post_lsLG_ex_with_filter.invalidateCache();
+                    training_Post_lsLG_ex_with_filter.fetchData();
+
+                    break;
+                }
+                case "group_Post_committee": {
+                    group_Post_lsLG_ex_with_filter.invalidateCache();
+                    group_Post_lsLG_ex_with_filter.fetchData();
+
+                    break;
+                }
+
+            }
+        }
+    });
+
+
+    let personnelTabs_exHlayout = isc.TrHLayoutButtons.create({
         members: [
             isc.IButtonSave.create({
                 top: 100,
@@ -677,8 +1371,8 @@
                             if (record == null) {
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                             } else {
-                                 personnelTypeEx ="registered";
-                                 personnelIdEx=record.id;
+                                personnelTypeEx ="registered";
+                                personnelIdEx=record.id;
                                 DynamicForm_Committee_personnel.getItem("personnelName").setValue(record.firstName + " "+record.lastName);
                             }
 
@@ -717,6 +1411,74 @@
             }),
         ]
     });
+    let PostTabs_exHlayout = isc.TrHLayoutButtons.create({
+        members: [
+            isc.IButtonSave.create({
+                top: 100,
+                title: "<spring:message code='save'/>",
+                align: "center",
+                icon: "[SKIN]/actions/save.png",
+                click: function () {
+                    let tab = PostTabs_ex.getSelectedTab();
+                    switch (tab.name) {
+                        case "post_committee": {
+                            let record = Post_lsLG_ex.getSelectedRecord();
+                            if (record == null) {
+                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else {
+                                postTypeEx ="post";
+                                postIdEx=record.id;
+                                postCodeEX=record.code;
+                                DynamicForm_Committee_post.getItem("objectCode").setValue(record.code);
+                                DynamicForm_Committee_post.getItem("objectType").setValue("پست انفرادی");
+                            }
+                            break;
+                        }
+                        case "training_Post_committee": {
+                            let record = training_Post_lsLG_ex.getSelectedRecord();
+                            if (record == null) {
+                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else {
+
+                                postTypeEx ="training_Post";
+                                postIdEx=record.id;
+                                postCodeEX=record.code;
+                                DynamicForm_Committee_post.getItem("objectCode").setValue(record.code);
+                                DynamicForm_Committee_post.getItem("objectType").setValue("پست");
+                            }
+                            break;
+                        }
+                        case "group_Post_committee": {
+                            let record = group_Post_lsLG_ex.getSelectedRecord();
+                            if (record == null) {
+                                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                            } else {
+                                postTypeEx ="group_Post";
+                                postIdEx=record.id;
+                                postCodeEX=record.code;
+                                DynamicForm_Committee_post.getItem("objectCode").setValue(record.code);
+                                DynamicForm_Committee_post.getItem("objectType").setValue("گروه پستی");
+                            }
+                            break;
+                        }
+
+                    }
+
+
+                    Post_Win_ex.close();
+                }
+            }),
+            isc.IButtonCancel.create({
+                top: 100,
+                title: "<spring:message code='cancel'/>",
+                align: "center",
+                icon: "[SKIN]/actions/cancel.png",
+                click: function () {
+                    Post_Win_ex.close();
+                }
+            }),
+        ]
+    });
 
 
     let ClassStudentWin_student_ex = isc.Window.create({
@@ -729,6 +1491,30 @@
         items: [
             personnelTabs_ex,
             personnelTabs_exHlayout
+        ]
+    });
+    let Post_Win_ex = isc.Window.create({
+        width: 1000,
+        title:"انتخاب پست",
+        height: 768,
+        minWidth: 1000,
+        minHeight: 600,
+        autoSize: false,
+        items: [
+            PostTabs_ex,
+            PostTabs_exHlayout
+        ]
+    });
+
+    let Post_not_in_committee_Win_ex = isc.Window.create({
+        width: 1000,
+        title:" پست هاي فاقد کميته ",
+        height: 768,
+        minWidth: 1000,
+        minHeight: 600,
+        autoSize: false,
+        items: [
+            PostTabs_ex_with_filter
         ]
     });
 
@@ -753,6 +1539,37 @@
             ListGrid_Committee_EX.invalidateCache();
         }
     });
+    ToolStripButton_not_post_in_Committee = isc.ToolStripButtonRefresh.create({
+        title:" پست هاي فاقد کميته ",
+
+        click: function () {
+
+            Post_lsLG_ex_with_filter.invalidateCache();
+            training_Post_lsLG_ex_with_filter.invalidateCache();
+            group_Post_lsLG_ex_with_filter.invalidateCache();
+
+
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {fieldName: "hasCommittee", operator: "equals",value:0},
+                ]
+            };
+
+            Post_DS_ex_committee_with_filter.fetchDataURL = viewPostUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" +  JSON.stringify(criteria);
+
+             training_Post_DS_ex_committee_with_filter.fetchDataURL = viewTrainingPostUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" +  JSON.stringify(criteria);
+
+             group_Post_DS_ex_committee_with_filter.fetchDataURL = viewPostGroupUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" +  JSON.stringify(criteria);
+
+
+
+
+            Post_not_in_committee_Win_ex.show();
+
+        }
+    });
 
 
 
@@ -763,6 +1580,8 @@
         tabBarPosition: "top",
         tabs: [
             {name: "TabPane_Committee_Persons", title: "اعضاي کميته", pane: ListGrid_Committee_Persons},
+            {name: "TabPane_Committee_Posts", title: "پست هاي تحت پوشش", pane: ListGrid_Committee_Posts},
+
         ],
         tabSelected: function () {
             committeeSelectionUpdated_Tabs();
@@ -809,6 +1628,34 @@
             })
         ]
     });
+
+    HLayout_IButtons_committee_post = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            isc.IButtonSave.create({
+                top: 260,
+                layoutMargin: 5,
+                membersMargin: 5,
+                click: function () {
+                    savePostFoeCommitte()
+                }
+            }),
+            isc.IButtonCancel.create({
+                layoutMargin: 5,
+                membersMargin: 5,
+                width: 120,
+                click: function () {
+                    Window_base_Decision_committee_post.close();
+                }
+            })
+        ]
+    });
+
+
     Window_Committee_Experts = isc.Window.create({
         title: "افزودن کمیته خبرگان",
         width: 450,
@@ -841,6 +1688,22 @@
         ]
     });
 
+    Window_base_Decision_committee_post = isc.Window.create({
+        title: "افزودن پست",
+        width: 450,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            DynamicForm_Committee_post,
+            HLayout_IButtons_committee_post
+        ]
+    });
+
     ToolStrip_Actions_Committee = isc.ToolStrip.create({
         width: "100%",
         border: '0px',
@@ -853,6 +1716,7 @@
                 align: "left",
                 border: '0px',
                 members: [
+                    ToolStripButton_not_post_in_Committee,
                     ToolStripButton_Refresh_Committee
                 ]
             })
@@ -931,56 +1795,71 @@
 
         let data = DynamicForm_Committee_Ex.getValues();
 
-            wait.show();
-            if (editOrSave === "save"){
-                isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl, "POST", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        wait.close();
-                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        Window_Committee_Experts.close();
-                        ListGrid_Committee_EX.invalidateCache();
-                    } else {
-                        wait.close();
-                        createDialog("info", "خطایی رخ داده است");
-                    }
-                }));
+        wait.show();
+        if (editOrSave === "save"){
+            isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl, "POST", JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    wait.close();
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    Window_Committee_Experts.close();
+                    ListGrid_Committee_EX.invalidateCache();
+                } else {
+                    wait.close();
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
 
-            }else if (editOrSave === "edit"){
-                let record = ListGrid_Committee_EX.getSelectedRecord();
-                data.id=record.id
-                isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl, "PUT", JSON.stringify(data), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        wait.close();
-                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        Window_Committee_Experts.close();
-                        ListGrid_Committee_EX.invalidateCache();
-                    } else {
-                        wait.close();
-                        createDialog("info", "خطایی رخ داده است");
-                    }
-                }));
+        }else if (editOrSave === "edit"){
+            let record = ListGrid_Committee_EX.getSelectedRecord();
+            data.id=record.id
+            isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl, "PUT", JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    wait.close();
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    Window_Committee_Experts.close();
+                    ListGrid_Committee_EX.invalidateCache();
+                } else {
+                    wait.close();
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
 
-            }
+        }
 
 
     }
     function showPersonnelWin() {
         SynonymPersonnelsLG_student_ex.invalidateCache();
-        // SynonymPersonnelsLG_student_ex.fetchData();
         PersonnelsRegLG_student_ex.invalidateCache();
-        // PersonnelsRegLG_student_ex.fetchData();
-         ClassStudentWin_student_ex.show();
+        ClassStudentWin_student_ex.show();
 
     }
 
-    function addToCommitteePersonnel() {
-        let record = ListGrid_Committee_EX.getSelectedRecord();
+    function showPostWin() {
+        Post_lsLG_ex.invalidateCache();
+        training_Post_lsLG_ex.invalidateCache();
+        group_Post_lsLG_ex.invalidateCache();
+
+        Post_DS_ex_committee.fetchDataURL = viewPostUrl + "/iscList";
+
+        training_Post_DS_ex_committee.fetchDataURL = viewTrainingPostUrl + "/iscList";
+
+        group_Post_DS_ex_committee.fetchDataURL = viewPostGroupUrl + "/iscList";
+
+
+
+        Post_Win_ex.show();
+
+    }
+
+    function addToCommittee(listGrid,dynamicForm,window) {
+        let record = listGrid.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            DynamicForm_Committee_personnel.clearValues();
-            DynamicForm_Committee_personnel.clearErrors();
-            Window_base_Decision_committee_persons.show();
+            dynamicForm.clearValues();
+            dynamicForm.clearErrors();
+            window.show();
         }
     }
     function savePartOfCommitte() {
@@ -998,13 +1877,47 @@
         data.personnelId =personnelIdEx
         data.parentId =record.id
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl+"/addPart", "POST", JSON.stringify(data), function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl+"/addPartOfPersonnel", "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 wait.close();
                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
                 Window_base_Decision_committee_persons.close();
                 DynamicForm_Committee_personnel.invalidateCache();
                 ListGrid_Committee_Persons.invalidateCache();
+            } else {
+                debugger
+                let result = JSON.parse(resp.httpResponseText);
+                wait.close();
+                createDialog("info", result.message);
+            }
+        }));
+
+
+    }
+
+    function savePostFoeCommitte() {
+        let record = ListGrid_Committee_EX.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return;
+        }
+        if (!DynamicForm_Committee_post.validate())
+            return;
+
+        let data = DynamicForm_Committee_post.getValues();
+
+        data.postType =postTypeEx
+        data.postId =postIdEx
+        data.postCode =postCodeEX
+        data.parentId =record.id
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl+"/addPartOfPost", "POST", JSON.stringify(data), function (resp) {
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                wait.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                Window_base_Decision_committee_post.close();
+                DynamicForm_Committee_post.invalidateCache();
+                ListGrid_Committee_Posts.invalidateCache();
             } else {
                 wait.close();
                 createDialog("info", "خطایی رخ داده است");
@@ -1013,34 +1926,37 @@
 
 
     }
-    <%--function deleteChildDecision(listGrid) {--%>
-    <%--    let record = listGrid.getSelectedRecord();--%>
-    <%--    if (record == null) {--%>
-    <%--        createDialog("info", "<spring:message code='msg.no.records.selected'/>");--%>
-    <%--    } else {--%>
-    <%--        let Dialog_dec_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",--%>
-    <%--            "<spring:message code="verify.delete"/>");--%>
-    <%--        Dialog_dec_remove.addProperties({--%>
-    <%--            buttonClick: function (button, index) {--%>
-    <%--                this.close();--%>
-    <%--                if (index === 0) {--%>
-    <%--                    wait.show();--%>
-    <%--                    isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionRequestUrl + "/" + record.id, "DELETE", null, function (resp) {--%>
-    <%--                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-    <%--                            wait.close();--%>
-    <%--                            createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-    <%--                            listGrid.invalidateCache();--%>
 
-    <%--                        } else {--%>
-    <%--                            wait.close();--%>
-    <%--                            createDialog("info", "خطایی رخ داده است");--%>
-    <%--                        }--%>
-    <%--                    }));--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--        });--%>
-    <%--    }--%>
-    <%--}--%>
+    function deleteFromCommittee(parentListGrid,childListGrid,url) {
+        let parentRecord = parentListGrid.getSelectedRecord();
+        let childRecord = childListGrid.getSelectedRecord();
+        if (parentRecord == null || childRecord==null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_dec_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
+            Dialog_dec_remove.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(committeeRequestUrl+ url+ parentRecord.id+"/"+childRecord.id, "DELETE", null, function (resp) {
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                wait.close();
+                                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                parentListGrid.invalidateCache();
+                                childListGrid.invalidateCache();
+
+                            } else {
+                                wait.close();
+                                createDialog("info", "خطایی رخ داده است");
+                            }
+                        }));
+                    }
+                }
+            });
+        }
+    }
 
     function deleteCommittee() {
         let record = ListGrid_Committee_EX.getSelectedRecord();
@@ -1089,14 +2005,14 @@
                 ListGrid_Committee_Persons.fetchData();
                 break;
             }
-            // case "TabPane_Basic_Tuition": {
-            //     RestDataSource_Decision_Educational_history.fetchDataURL = educationalDecisionRequestUrl + "/list/history/"+record.id;
-            //     ListGrid_Decision_Educational_history.invalidateCache();
-            //     ListGrid_Decision_Educational_history.fetchData();
-            //     break;
-            // }
+            case "TabPane_Committee_Posts": {
+                RestDataSource_Posts.fetchDataURL = committeeRequestUrl + "/listOfPosts/"+record.id;
+                ListGrid_Committee_Posts.invalidateCache();
+                ListGrid_Committee_Posts.fetchData();
+                break;
+            }
 
         }
     }
 
-     // </script>
+    // </script>

@@ -14,6 +14,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -85,6 +86,9 @@ public class ViewTrainingPostDTO implements Serializable {
     public static class Info extends ViewTrainingPostDTO {
         private Long id;
         private Long enabled;
+        private String committee;
+        private Boolean hasCommittee;
+
     }
 
     @Getter

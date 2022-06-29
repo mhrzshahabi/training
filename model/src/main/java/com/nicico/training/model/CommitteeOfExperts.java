@@ -45,6 +45,10 @@ public class CommitteeOfExperts extends Auditable {
     private List<CommitteePersonnel> committeePersonnels;
 
 
+     @OneToMany(fetch = FetchType.LAZY, mappedBy = "committeeOfExperts",cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CommitteePost> committeePosts;
+
+
 
 
 }

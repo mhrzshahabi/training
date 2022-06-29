@@ -12,6 +12,7 @@ import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -49,5 +50,7 @@ public class ViewPostGroupDTO implements Serializable {
     @ApiModel("PostGroupInfo")
     public static class Info extends ViewPostGroupDTO {
         private Long id;
+        private String committee;
+        private Boolean hasCommittee;
     }
 }

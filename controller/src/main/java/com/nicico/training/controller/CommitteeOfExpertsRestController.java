@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
  import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CommitteeOfExpertsDTO;
+import com.nicico.training.dto.CommitteeOfExpertsPostDTO;
 import com.nicico.training.dto.CommitteeOfExpertsUsersDTO;
 import com.nicico.training.iservice.ICommitteeOfExpertsService;
 import com.nicico.training.mapper.CommitteeOfExperts.CommitteeOfExpertsBeanMapper;
@@ -51,11 +52,25 @@ public class CommitteeOfExpertsRestController {
     }
 
     @Loggable
-    @PostMapping(value = "/addPart")
-    public ResponseEntity<BaseResponse> addPart(@RequestBody CommitteeOfExpertsDTO.CreatePartOfPersons req) {
+    @PostMapping(value = "/addPartOfPersonnel")
+    public ResponseEntity<BaseResponse> addPartOfPersonnel(@RequestBody CommitteeOfExpertsDTO.CreatePartOfPersons req) {
         BaseResponse res = new BaseResponse();
         try {
-            res = committeeOfExpertsService.addPart(req);
+            res = committeeOfExpertsService.addPartOfPersonnel(req);
+        }catch (TrainingException ex){
+            res.setStatus(406);
+        }
+        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+
+    }
+
+
+    @Loggable
+    @PostMapping(value = "/addPartOfPost")
+    public ResponseEntity<BaseResponse> addPartOfPost(@RequestBody CommitteeOfExpertsDTO.CreatePartOfPosts req) {
+        BaseResponse res = new BaseResponse();
+        try {
+            res = committeeOfExpertsService.addPartOfPost(req);
         }catch (TrainingException ex){
             res.setStatus(406);
         }
@@ -133,6 +148,31 @@ public class CommitteeOfExpertsRestController {
 
 
     @Loggable
+    @DeleteMapping("/deletePart/{parentId}/{childId}")
+    public ResponseEntity deletePartOfPersonnel(@PathVariable Long parentId, @PathVariable Long childId) {
+        try {
+            committeeOfExpertsService.deletePartOfPersonnel(parentId,childId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
+    @DeleteMapping("/deletePost/{parentId}/{childId}")
+    public ResponseEntity deletePartOfPosts(@PathVariable Long parentId, @PathVariable Long childId) {
+        try {
+            committeeOfExpertsService.deletePartOfPosts(parentId,childId);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+
+    @Loggable
     @GetMapping("/get/{id}")
     public ResponseEntity<CommitteeOfExpertsDTO> get(@PathVariable Long id) {
         try {
@@ -157,6 +197,22 @@ public class CommitteeOfExpertsRestController {
                 .setTotalRows(data.size());
 
         final CommitteeOfExpertsUsersDTO.CommitteeSpecRs specRs = new CommitteeOfExpertsUsersDTO.CommitteeSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/listOfPosts/{id}")
+//    @PreAuthorize("hasAuthority('r_country')")
+    public ResponseEntity<CommitteeOfExpertsPostDTO.CommitteeSpecRs> listOfPost(@PathVariable Long id) {
+        List<CommitteeOfExpertsPostDTO.Info> data=  committeeOfExpertsService.listOfPost(id);
+        final CommitteeOfExpertsPostDTO.SpecRs specResponse = new CommitteeOfExpertsPostDTO.SpecRs();
+        specResponse.setData(data)
+                .setStartRow(0)
+                .setEndRow(data.size())
+                .setTotalRows(data.size());
+
+        final CommitteeOfExpertsPostDTO.CommitteeSpecRs specRs = new CommitteeOfExpertsPostDTO.CommitteeSpecRs();
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }

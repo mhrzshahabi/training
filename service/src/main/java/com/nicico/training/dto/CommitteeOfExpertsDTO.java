@@ -57,7 +57,7 @@ public class CommitteeOfExpertsDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CommitteeCreateRq")
+    @ApiModel("CommitteeCreateRq-Create")
     public static class Create extends CommitteeOfExpertsDTO {
     }
 
@@ -112,11 +112,23 @@ public class CommitteeOfExpertsDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CommitteeCreateRq")
+    @ApiModel("CommitteeCreateRq-CreatePartOfPersons")
     public static class CreatePartOfPersons  {
         private String role;
+        private String position;
         private String personnelType;
         private Long personnelId;
+        private Long parentId;
+
+    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CommitteeCreateRq-CreatePartOfPosts")
+    public static class CreatePartOfPosts  {
+        private String postType;
+        private Long postId;
+        private String postCode;
         private Long parentId;
 
     }

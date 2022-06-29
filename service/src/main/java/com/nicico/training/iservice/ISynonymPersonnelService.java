@@ -6,11 +6,15 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.model.SynonymPersonnel;
 
+import java.util.Optional;
+
 public interface ISynonymPersonnelService {
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria nicicoCriteria);
 
     ViewActivePersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode);
+
+    Optional<SynonymPersonnel> getByPostCode(String postCode);
 
     SynonymPersonnel getByNationalCode(String nationalCode);
 

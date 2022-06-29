@@ -3,9 +3,6 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.envers.AuditOverride;
-import org.hibernate.envers.Audited;
-import org.hibernate.envers.RelationTargetAuditMode;
 
 import javax.persistence.*;
 
@@ -17,12 +14,12 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_committee_of_experts_personnel")
- public class CommitteePersonnel {
+@Table(name = "tbl_committee_of_experts_post")
+ public class CommitteePost {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "committee_personnel_seq")
-    @SequenceGenerator(name = "committee_personnel_seq", sequenceName = "seq_committee_personnel_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "committee_post_seq")
+    @SequenceGenerator(name = "committee_post_seq", sequenceName = "seq_committee_post_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id ;
 
@@ -33,18 +30,15 @@ import javax.persistence.*;
    @Column(name = "f_committee_id")
    private Long committeeOfExpertId;
 
-    @Column(name = "role")
-    private String role;
-
-    @Column(name = "position")
-    private String position;
-
 
     @Column(name = "object_type")
-    private String objectType;
+    private String postType;
 
     @Column(name = "object_id")
-    private Long objectId;
+    private Long postId;
+
+    @Column(name = "object_code")
+    private String postCode;
 
 
 }

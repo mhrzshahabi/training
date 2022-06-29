@@ -374,6 +374,10 @@
         <createSequence sequenceName="seq_committee_personnel_id"/>
     </changeSet>
 
+    <changeSet id="1656131979000-13" author="namdari">
+        <createSequence sequenceName="seq_committee_post_id"/>
+    </changeSet>
+
 
 
 </databaseChangeLog>

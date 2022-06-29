@@ -15,28 +15,24 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class CommitteeOfExpertsUsersDTO implements Serializable {
+public class CommitteeOfExpertsPostDTO implements Serializable {
 
 
     private Long id;
 
-    private String type;
-    private String nationalCode;
-    private String personnelNo;
-    private String personnelNo2;
-    private String firstName;
-    private String lastName;
+    private String objectType;
+    private String objectCode;
+    private String userNationalCode;
+    private String userName;
     private String phone;
-    private String postTitle;
-    private String role;
-    private String position;
+
 
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CommitteeOfExpertsUsersInfo")
-    public static class Info extends CommitteeOfExpertsUsersDTO {
+    @ApiModel("CommitteeOfExpertsPostsInfo")
+    public static class Info extends CommitteeOfExpertsPostDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -49,21 +45,21 @@ public class CommitteeOfExpertsUsersDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CommitteeOfExpertsUsersCreateRq")
-    public static class Create extends CommitteeOfExpertsUsersDTO {
+    @ApiModel("CommitteeOfExpertsPostsCreateRq")
+    public static class Create extends CommitteeOfExpertsPostDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CommitteeOfExpertsUsersUpdateRq")
-    public static class Update extends CommitteeOfExpertsUsersDTO {
+    @ApiModel("CommitteeOfExpertsPostsUpdateRq")
+    public static class Update extends CommitteeOfExpertsPostDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CommitteeOfExpertsUsersDeleteRq")
+    @ApiModel("CommitteeOfExpertsPostsDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
@@ -73,7 +69,7 @@ public class CommitteeOfExpertsUsersDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CommitteeOfExpertsUsersIdListRq")
+    @ApiModel("CommitteeOfExpertsPostsIdListRq")
     public static class CommitteeIdList {
         @NotNull
         @ApiModelProperty(required = true)
@@ -84,9 +80,9 @@ public class CommitteeOfExpertsUsersDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("CommitteeOfExpertsUsersSpecRs")
+    @ApiModel("CommitteeOfExpertsPostsSpecRs")
     public static class CommitteeSpecRs {
-        private CommitteeOfExpertsUsersDTO.SpecRs response;
+        private CommitteeOfExpertsPostDTO.SpecRs response;
     }
 
     @Getter
@@ -94,7 +90,7 @@ public class CommitteeOfExpertsUsersDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<CommitteeOfExpertsUsersDTO.Info> data;
+        private List<CommitteeOfExpertsPostDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

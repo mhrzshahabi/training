@@ -91,4 +91,12 @@ public class ViewPost extends Auditable {
 
     @Column(name = "c_people_type")
     private String peopleType;
+
+    @Column(name = "committee")
+    private String committee;
+
+
+    @Column(name = "has_committee")
+    private Boolean hasCommittee;
+
 }
