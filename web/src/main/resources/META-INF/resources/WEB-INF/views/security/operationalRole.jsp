@@ -78,32 +78,6 @@
         fetchDataURL: operationalUnitUrl + "spec-list"
     });
 
-
-    <%--let PostDS_OperationalRole = isc.TrDS.create({--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", primaryKey: true, hidden: true},--%>
-    <%--        {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},--%>
-    <%--        {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "postGradeTitleFa", hidden: true, title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "assistance", hidden: true, title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "affairs", hidden: true, title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "section", hidden: true, title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "unit", hidden: true, title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "costCenterCode", hidden: true, title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "costCenterTitleFa", hidden: true, title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-    <%--        {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},--%>
-    <%--        {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},--%>
-    <%--        {name: "lastModifiedDateNA", hidden: true, title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},--%>
-    <%--        {name: "modifiedByNA", hidden: true, title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},--%>
-    <%--        {name: "enabled", hidden: true, title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}--%>
-    <%--    ],--%>
-    <%--    // fetchDataURL: viewPostUrl + "/iscList"--%>
-    <%--    // fetchDataURL: viewPostUrl + "/rolePostList"--%>
-    <%--});--%>
-
     let PostDS_OperationalRole = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -681,7 +655,12 @@
 
             let objectType = DynamicForm_Role_type_JspOperationalRole.getValues().roleType;
             let userId = DynamicForm_User_Role_type_JspOperationalRole.getValues().userId
-            let nationalCode = DynamicForm_User_Role_type_JspOperationalRole.getField("userId").$19z
+
+            let nationalCode = null
+
+            if (userId !== undefined) {
+                nationalCode = DynamicForm_User_Role_type_JspOperationalRole.getField("userId").$19z
+            }
 
             if(objectType === undefined && userId !== undefined) {
                 createDialog("info", "لطفاً نوع نقش را نیز مشخص نمایید");
@@ -696,8 +675,7 @@
             data.objectType = objectType
             data.objectUserId = userId
             data.nationalCode = nationalCode
-
-            wait_Permission = createDialog("wait");
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalRole,
                 methodOperationalRole,
                 JSON.stringify(data),
@@ -1013,6 +991,9 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_OperationalRole_Add() {
+        DynamicForm_User_Role_type_JspOperationalRole.clearValues();
+        DynamicForm_Role_type_JspOperationalRole.clearValues();
+
         methodOperationalRole = "POST";
         // IButton_Show_Selected_Posts_JspOperationalRole.disable();
         IButton_Show_Selected_Posts_JspOperationalRole.hide();
@@ -1054,19 +1035,22 @@
                     subCatIds.add(subCategoryIds[i].id);
                 DynamicForm_JspOperationalRole.getField("subCategories").setValue(subCatIds);
             }
+
+            DynamicForm_User_Role_type_JspOperationalRole.getField("userId").setValue(selected_record.objectUserId);
+            DynamicForm_Role_type_JspOperationalRole.getField("roleType").setValue(selected_record.objectType);
+
             Window_JspOperationalRole.show();
+
+            debugger
         }
     }
 
     function OperationalRole_save_result(resp) {
-        wait_Permission.close();
+        wait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
             refreshLG(ListGrid_JspOperationalRole);
             Window_JspOperationalRole.close();
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
+            createDialog("info", "<spring:message code="global.form.request.successful"/>");
         } else {
             if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
                 createDialog("info", "<spring:message code="msg.record.duplicate"/>");
