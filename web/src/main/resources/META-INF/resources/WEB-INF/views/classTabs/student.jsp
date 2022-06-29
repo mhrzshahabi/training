@@ -1802,22 +1802,22 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        if (studentForceToHasPhone){
-                            isc.Dialog.create({
-                                message: "اطلاعات شخص مورد نظر با کد ملی " +current.nationalCode +"  ناقص است. شماره تلفن برای این شخص وارد نشده است.",
-                                icon: "[SKIN]stop.png",
-                                title: "<spring:message code="message"/>",
-                                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                                buttonClick: function (button, index) {
-                                    this.close();
-                                }
+                        <%--if (studentForceToHasPhone){--%>
+                        <%--    isc.Dialog.create({--%>
+                        <%--        message: "اطلاعات شخص مورد نظر با کد ملی " +current.nationalCode +"  ناقص است. شماره تلفن برای این شخص وارد نشده است.",--%>
+                        <%--        icon: "[SKIN]stop.png",--%>
+                        <%--        title: "<spring:message code="message"/>",--%>
+                        <%--        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],--%>
+                        <%--        buttonClick: function (button, index) {--%>
+                        <%--            this.close();--%>
+                        <%--        }--%>
 
-                            });
+                        <%--    });--%>
 
-                            studentSelection = true;
-                            SynonymPersonnelsLG_student.deselectRecord(current)
-                            studentSelection = false;
-                        }else {
+                        <%--    studentSelection = true;--%>
+                        <%--    SynonymPersonnelsLG_student.deselectRecord(current)--%>
+                        <%--    studentSelection = false;--%>
+                        <%--}else {--%>
                             current.applicantCompanyName = current.companyName;
                             current.presenceTypeId = studentDefaultPresenceId;
                             current.registerTypeId = 1;
@@ -1833,7 +1833,7 @@
                             current.isChecked = true;
 
                             SynonymPersonnelsLG_student.redraw();
-                        }
+                        // }
                     }
 
                     function checkIfAlreadyExist(currentVal) {
