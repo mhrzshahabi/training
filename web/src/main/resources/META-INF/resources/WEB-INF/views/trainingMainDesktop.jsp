@@ -1320,6 +1320,7 @@
     const examMonitoringUrl = rootUrl + "/exam-monitoring";
     const competenceRequestUrl = rootUrl + "/competence-request";
     const educationalDecisionHeaderRequestUrl = rootUrl + "/header";
+    const committeeRequestUrl = rootUrl + "/CommitteeOfExperts";
     const educationalDecisionRequestUrl = rootUrl + "/decision";
     const requestItemUrl = rootUrl + "/request-item";
     const requestItemAuditUrl = rootUrl + "/request-item-audit";
@@ -1950,6 +1951,15 @@
                     title: "<spring:message code="post"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/training-post"/>");
+                    }
+                },
+                </sec:authorize>
+
+                 <sec:authorize access="hasAuthority('Menu_NeedAssessment_Committee_Of_Experts')">
+                {
+                    title: "کمیته خبرگان",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/Committee-Of-Experts"/>");
                     }
                 },
                 </sec:authorize>

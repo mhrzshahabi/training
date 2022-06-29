@@ -12,6 +12,7 @@ import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 @Getter
 @Setter
@@ -82,6 +83,8 @@ public class ViewPostDTO implements Serializable {
         private Long id;
         private Long enabled;
         private Long deleted;
+        private String committee;
+        private Boolean hasCommittee;
     }
 
     public String getPostGradeTitleFa() {

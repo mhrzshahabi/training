@@ -93,6 +93,14 @@ public class TrainingPostService implements ITrainingPostService {
         return modelMapper.map(posts.stream().filter(post -> post.getDeleted() == null).collect(Collectors.toList()), new TypeToken<List<PostDTO.Info>>() {
         }.getType());
     }
+    @Transactional
+    @Override
+    public TrainingPostDTO.Info getTrainingPost(Long trainingPostID) {
+        final Optional<TrainingPost> optionalTrainingPost = trainingPostDAO.findById(trainingPostID);
+        final TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPostNotFound));
+        return modelMapper.map(trainingPost, TrainingPostDTO.Info.class);
+
+    }
 
     @Override
     public List<PostDTO.Info> getNullPosts() {

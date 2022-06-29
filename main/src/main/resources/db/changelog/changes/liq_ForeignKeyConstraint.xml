@@ -1385,4 +1385,15 @@
     </changeSet>
 
 
+    <changeSet author="namdari" id="1656131979000-05">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_of_experts_personnel" constraintName="FKCommitteeOfExpertsPersonnel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1656131979000-12">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_of_experts_post" constraintName="FKCommitteeOfExpertsPost" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
+    </changeSet>
+
+
+
 </databaseChangeLog>

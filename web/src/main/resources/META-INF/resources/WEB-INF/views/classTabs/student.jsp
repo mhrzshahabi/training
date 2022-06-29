@@ -1802,8 +1802,7 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        if (studentForceToHasPhone && ( current.mobile===undefined
-                            || current.mobile==null)){
+                        if (studentForceToHasPhone){
                             isc.Dialog.create({
                                 message: "اطلاعات شخص مورد نظر با کد ملی " +current.nationalCode +"  ناقص است. شماره تلفن برای این شخص وارد نشده است.",
                                 icon: "[SKIN]stop.png",

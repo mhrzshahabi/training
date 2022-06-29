@@ -364,4 +364,20 @@
     <changeSet id="1654668348000-04" author="namdari">
         <createSequence sequenceName="seq_educational_decision_id"/>
     </changeSet>
+
+    <changeSet id="1656131979000-09" author="namdari">
+        <createSequence sequenceName="seq_committee_of_experts_id"/>
+    </changeSet>
+
+
+    <changeSet id="1656131979000-10" author="namdari">
+        <createSequence sequenceName="seq_committee_personnel_id"/>
+    </changeSet>
+
+    <changeSet id="1656131979000-13" author="namdari">
+        <createSequence sequenceName="seq_committee_post_id"/>
+    </changeSet>
+
+
+
 </databaseChangeLog>

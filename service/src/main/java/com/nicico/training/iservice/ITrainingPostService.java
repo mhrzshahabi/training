@@ -24,6 +24,8 @@ public interface ITrainingPostService {
 
     List<PostDTO.Info> getPosts(Long trainingPostID);
 
+    TrainingPostDTO.Info getTrainingPost(Long trainingPostID);
+
     List<PostDTO.Info> getNullPosts();
 
     List<PersonnelDTO.Info> getPersonnel(Long trainingPostID);

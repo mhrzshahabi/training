@@ -18,4 +18,6 @@ public interface SynonymPersonnelDAO extends JpaRepository<SynonymPersonnel, Lon
     SynonymPersonnel findSynonymPersonnelDataByPersonnelNo2(String personnelNo2);
 
     Optional<SynonymPersonnel> findByPersonnelNoAndDeleted(String nationalCode, Integer deleted);
+
+    Optional<SynonymPersonnel> findFirstByPostCode(String postCode);
 }
