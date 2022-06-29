@@ -124,38 +124,8 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals",  valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
-            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains",  autoFitWidthApproach: "both"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains"},
-            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
-            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
-            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains"},
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains"},
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains"},
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains"},
-            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains"},
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains"},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains"},
-            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains",  autoFitWidthApproach: "both"},
-            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals",  autoFitWidthApproach: "both"},
-            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals",  autoFitWidthApproach: "both"},
-            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals",  autoFitWidthApproach: "both"},
-            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains",  autoFitWidthApproach: "both"},
-            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals",  filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
-        ],
-        transformRequest: function (dsRequest) {
-            transformCriteriaForLastModifiedDateNA(dsRequest);
-            return this.Super("transformRequest", arguments);
-        },
-        // fetchDataURL: viewTrainingPostUrl + "/iscList"
-    });
-
-    let PostDS_just_Show_Non_Used_OperationalRole = isc.TrDS.create({
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals",  valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
-            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains",  autoFitWidthApproach: "both"},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -166,18 +136,48 @@
             {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains",  autoFitWidthApproach: "both"},
-            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals",  autoFitWidthApproach: "both"},
-            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals",  autoFitWidthApproach: "both"},
-            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals",  autoFitWidthApproach: "both"},
-            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains",  autoFitWidthApproach: "both"},
-            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals",  filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
+            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
         ],
         transformRequest: function (dsRequest) {
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: viewTrainingPostUrl + "/roleNonUsedPostList"
+        fetchDataURL: viewTrainingPostUrl + "/iscList"
+    });
+
+    let PostDS_just_Show_Non_Used_OperationalRole = isc.TrDS.create({
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
+            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals", autoFitWidth: true, valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
+            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains", autoFitWidth: true, autoFitWidthApproach: "both"},
+            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals", autoFitWidth: true, filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
+        ],
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            return this.Super("transformRequest", arguments);
+        },
+        // fetchDataURL: viewTrainingPostUrl + "/iscList"
     });
 
     var RestDataSource_Categories_OperationalRole = isc.TrDS.create({
@@ -317,71 +317,25 @@
         }
     });
 
-    // پست های انتخاب شده
-    let ListGrid_Post_OperationalRole = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
-        canAutoFitWidth: true,
-        selectionType: "simple",
-        selectionAppearance: "checkbox",
+
+    var ListGrid_Post_OperationalRole = isc.TrLG.create({
+        // selectionType: "single",
         dataSource: PostDS_just_Show_OperationalRole,
-        autoFetchData: true,
+        // autoFetchData: true,
+        // rowDoubleClick: "Select_Post_NABOP()",
         sortField: 1,
-        sortDirection: "descending",
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals",  valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
-            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", },
-            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", },
-            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", },
-            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains"},
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", },
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", },
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", },
-            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", },
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains"},
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", },
-            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains"},
-            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals"},
-            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals"},
-            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals"},
-            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains"},
-            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals",  filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
-        ]
+        sortDirection: "descending"
     });
-    // پست های انتخاب نشده
+
     let ListGrid_Non_Used_Post_OperationalRole = isc.TrLG.create({
+        minWidth: "600",
+        minHeight: "600",
         width: "100%",
         height: "100%",
-        canAutoFitWidth: true,
-        selectionType: "simple",
-        selectionAppearance: "checkbox",
+        selectionType: "multiple",
         dataSource: PostDS_just_Show_Non_Used_OperationalRole,
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "departmentId", title: "departmentId", primaryKey: true, canEdit: false, hidden: true},
-            {name: "peopleType", title: "<spring:message code="people.type"/>", filterOperator: "equals",  valueMap:{"Personal" : "شرکتی", "ContractorPersonal" : "پیمان کار"},filterOnKeypress: true},
-            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", },
-            {name: "jobTitleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", },
-            {name: "postGradeTitleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", },
-            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", },
-            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", },
-            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", },
-            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", },
-            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", },
-            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", },
-            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", },
-            {name: "description", hidden: true, title: "توضیحات", align: "center", filterOperator: "iContains"},
-            {name: "competenceCount", hidden: true, title: "تعداد شایستگی", align: "center", filterOperator: "equals"},
-            {name: "personnelCount", hidden: true, title: "تعداد پرسنل", align: "center", filterOperator: "equals"},
-            {name: "lastModifiedDateNA", title: "<spring:message code="update.date"/>", align: "center", filterOperator: "equals"},
-            {name: "modifiedByNA", title: "<spring:message code="updated.by"/>", align: "center", filterOperator: "iContains"},
-            {name: "enabled", title: "<spring:message code="active.status"/>", align: "center", filterOperator: "equals",  filterOnKeypress: true,valueMap:{74 : "غیر فعال"}}
-            ],
         autoFetchData: true,
+        // rowDoubleClick: "Select_Post_NABOP()",
         sortField: 1,
         sortDirection: "descending"
     });
@@ -641,19 +595,66 @@
         ]
     });
 
+    let Section_Stack_Non_Used_posts = isc.SectionStack.create({
+        width: "100%",
+        height: "100%",
+        border: "1px solid green",
+        sections: [{
+            title: "پست های انتخاب نشده",
+            expanded: true,
+            canCollapse: false,
+            align: "center",
+            items: [ListGrid_Non_Used_Post_OperationalRole]
+        }]
+    });
+
+    let Section_Stack_Used_Posts = isc.SectionStack.create({
+        width: "100%",
+        height: "100%",
+        border: "1px solid red",
+        sections: [{
+        title: "پست های انتخاب شده",
+        expanded: true,
+        canCollapse: false,
+        align: "center",
+        items: [ ListGrid_Post_OperationalRole]
+        }]
+    });
+
     var IButton_Save_JspOperationalRole = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspOperationalRole.validate())
+            if (!DynamicForm_JspOperationalRole.validate() || !DynamicForm_Role_type_JspOperationalRole.validate() || !DynamicForm_User_Role_type_JspOperationalRole.validate())
                 return;
             if (!DynamicForm_JspOperationalRole.valuesHaveChanged()) {
                 Window_JspOperationalRole.close();
                 return;
             }
+
+            let data = DynamicForm_JspOperationalRole.getValues();
+
+            let objectType = DynamicForm_Role_type_JspOperationalRole.getValues().roleType;
+            let userId = DynamicForm_User_Role_type_JspOperationalRole.getValues().userId
+            let nationalCode = DynamicForm_User_Role_type_JspOperationalRole.getField("userId").$19z
+
+            if(objectType === undefined && userId !== undefined) {
+                createDialog("info", "لطفاً نوع نقش را نیز مشخص نمایید");
+                return;
+            }
+
+            if(objectType !== undefined && userId === undefined) {
+                createDialog("info", "لطفاً کاربر را نیز مشخص نمایید");
+                return;
+            }
+
+            data.objectType = objectType
+            data.objectUserId = userId
+            data.nationalCode = nationalCode
+
             wait_Permission = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalRole,
                 methodOperationalRole,
-                JSON.stringify(DynamicForm_JspOperationalRole.getValues()),
+                JSON.stringify(data),
                 OperationalRole_save_result));
         }
     });
@@ -670,38 +671,6 @@
         }
     });
 
-    let Window_Select_Individual_Post = isc.Window.create({
-        width: "800",
-        minWidth: "800",
-        minHeight: "640",
-        autoSize: true,
-        autoCenter: true,
-        // align: "center",
-        border: "1px solid gray",
-        title: "افزودن پست انفرادی",
-        items: [isc.TrVLayout.create({
-                    members: [
-                        ListGrid_Non_Used_Post_OperationalRole, isc.IButtonSave.create({
-                            title: "<spring:message code="verify"/>",
-                            click: function () {
-                                addPostToOperationalRole();
-                                Window_Select_Individual_Post.close();
-                            }
-                        })
-                    ]
-        })]
-    });
-
-    <%--let IButton_Add_IndividualPost = isc.IButtonSave.create({--%>
-    <%--    title: "<spring:message code="add"/>",--%>
-    <%--    click: function () {--%>
-    <%--        PostDS_just_Show_Non_Used_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleNonUsedPostList";--%>
-    <%--        ListGrid_Non_Used_Post_OperationalRole.invalidateCache();--%>
-    <%--        ListGrid_Non_Used_Post_OperationalRole.fetchData();--%>
-    <%--        Window_Select_Individual_Post.show();--%>
-    <%--    }--%>
-    <%--})--%>
-
     let IButton_Remove_IndividualPost = isc.ToolStripButtonRemove.create({
         width:"10%",
         height:30,
@@ -711,47 +680,122 @@
         }
     })
 
-    // var Window_show_Operational_Role_Post = isc.Window.create({
-    //     title: "لیست پست های انفرادی",
-    //     align: "center",
-    //     placement: "fillScreen",
-    //     border: "1px solid gray",
-    //     minWidth: 1024,
-    //     closeClick: function () {
-    //         // ListGrid_Post_OperationalRole.invalidateCache();
-    //         this.hide();
-    //     },
-    //     items: [isc.TrVLayout.create({
-    //         members: [
-    //             ListGrid_Post_OperationalRole , HLayout_AddOrRemove_IndividualPost
-    //         ]
-    //     })]
-    // });
-
-    let Section_Stack_Non_Used_posts = isc.SectionStack.create({
+    let DynamicForm_Role_type_JspOperationalRole = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
-        border: "1px solid green",
-        sections: [{
-        title: "پست های انتخاب نشده",
-        expanded: true,
-        canCollapse: false,
-        align: "center",
-        items: [ListGrid_Non_Used_Post_OperationalRole]
-        }]
+        titleAlign: "center",
+        fields: [
+            {
+                name: "roleType",
+                title: "نوع نقش:",
+                multiple: false,
+                type: "SelectItem",
+                valueMap: {
+                    "EXECUTIVE_SUPERVISOR": "سرپرست اجرا",
+                    "CHIEF_EXECUTIVE_OFFICER": "رییس اجرا",
+                    "EXECUTION_EXPERT": "کارشناس اجرا",
+                    "MASTER_OF_PLANNING": "کارشناس ارشد برنامه ریزی",
+                    "HEAD_OF_PLANNING": "رییس برنامه ریزی"
+                },
+                // valueField: "title",
+                // displayField: "title",
+                icons: [
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click: function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                            // DynamicForm_User_Role_type_JspOperationalRole.getItem("objectType").setValue();
+                        }
+                    }
+                ],
+                required: false,
+                validateOnExit: true,
+                length: 255,
+                canSort: false,
+                pickListWidth: 175
+            }
+        ]
     });
 
-    let Section_Stack_Used_Posts = isc.SectionStack.create({
+    let DynamicForm_User_Role_type_JspOperationalRole = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
-        border: "1px solid red",
-        sections: [{
-        title: "پست های انتخاب شده",
-        expanded: true,
-        canCollapse: false,
-        align: "center",
-        items: [ ListGrid_Post_OperationalRole]
-        }]
+        titleAlign: "center",
+        fields: [
+            {
+                name: "userId",
+                title: "<spring:message code="user"/>" + ":",
+                textAlign: "center",
+                autoFetchData: false,
+                displayField: "nationalCode",
+                valueField: "id",
+                optionDataSource: UserDS_JspOperationalRole,
+                sortField: ["userId"],
+                filterFields: ["userId"],
+                pickListFields: [
+                    {
+                        name: "firstName",
+                        title: "<spring:message code="firstName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"
+                    },
+                    {
+                        name: "username",
+                        title: "<spring:message code="username"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "nationalCode",
+                        title: "<spring:message code="national.code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9/]",
+                    pickListProperties: {
+                        showFilterEditor: true
+                    }
+                },
+                filterOnKeypress: true,
+                autoFitWidth: true,
+                pickListWidth: 400,
+                icons: [
+                    {
+                    name: "clear",
+                    src: "[SKIN]actions/remove.png",
+                    width: 15,
+                    height: 15,
+                    inline: true,
+                    prompt: "پاک کردن",
+                    click: function (form, item, icon) {
+                        item.clearValue();
+                        item.focusInItem();
+                        DynamicForm_User_Role_type_JspOperationalRole.getItem("nationalCode").setValue();
+                    }
+                    }
+                ],
+                endRow: true,
+                startRow: false,
+                required: false,
+                changed: function (form, item, value) {
+                    if (item.getSelectedRecord() && item.getSelectedRecord().userId) {
+                        DynamicForm_User_Role_type_JspOperationalRole.getItem("userId").setValue(item.getSelectedRecord().id);
+                    }
+                }
+
+            }
+        ]
     });
 
     let IButton_Add_Individual_Post = isc.ToolStripButtonAdd.create({
@@ -772,15 +816,14 @@
         align: "center",
         placement: "fillScreen",
         border: "1px solid gray",
+        minWidth: 1024,
         closeClick: function () {
-            refreshLG(ListGrid_Non_Used_Post_OperationalRole);
-            refreshLG(ListGrid_Post_OperationalRole);
-            this.close();
+            // ListGrid_Post_OperationalRole.invalidateCache();
+            this.hide();
         },
         items: [isc.TrVLayout.create({
             members: [
-                // ListGrid_Post_OperationalRole , HLayout_AddOrRemove_IndividualPost
-                Section_Stack_Non_Used_posts, Spacer_Top, IButton_Add_Individual_Post, Spacer_Bottom, Section_Stack_Used_Posts, Spacer_Top, IButton_Remove_IndividualPost, Spacer_Bottom
+                ListGrid_Post_OperationalRole , HLayout_AddOrRemove_IndividualPost
             ]
         })]
     });
@@ -800,14 +843,26 @@
         members: [IButton_Save_JspOperationalRole, IButton_Cancel_JspOperationalRole, IButton_Show_Selected_Posts_JspOperationalRole]
     });
 
+    let HLayout_User_Role_Type = isc.TrHLayoutButtons.create({
+        align: "center",
+        layoutMargin: 8,
+        showEdges: false,
+        edgeImage: "",
+        padding: 8,
+        // border: "1px solid gray",
+        members: [DynamicForm_Role_type_JspOperationalRole, DynamicForm_User_Role_type_JspOperationalRole ]
+    });
+
     var Window_JspOperationalRole = isc.Window.create({
-        width: "550",
-        minWidth: "550",
+        width: "800",
+        minWidth: "600",
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code="operational.role"/>",
         items: [isc.TrVLayout.create({
-            members: [DynamicForm_JspOperationalRole,
+            members: [
+                DynamicForm_JspOperationalRole,
+                HLayout_User_Role_Type,
                 HLayout_SaveOrExit_JspOperationalRole
             ]
         })]
@@ -1062,10 +1117,10 @@
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 window.close();
                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                refreshLG(ListGrid_Post_OperationalRole);
+                ListGrid_Post_OperationalRole.invalidateCache();
             } else {
                 window.close();
-                createDialog("info", "<spring:message code="msg.operation.error"/>");
+                createDialog("info", "<spring:message code="delete.was.not.successful"/>");
             }
         }));
     }
@@ -1087,7 +1142,7 @@
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 window.close();
                 createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                refreshLG(ListGrid_Post_OperationalRole);
+                ListGrid_Post_OperationalRole.invalidateCache();
             } else {
                 window.close();
                 createDialog("info", "<spring:message code="delete.was.not.successful"/>");
