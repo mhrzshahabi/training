@@ -1193,6 +1193,8 @@
                 let nationalCode = SelectedPersonnelsLG_student.data[rowNum].nationalCode;
 
                 studentSelection = true;
+
+  /////
                 let list = PersonnelsLG_student.getSelection();
                 let current = list.filter(function (x) {
                     return x.nationalCode == nationalCode
@@ -1204,7 +1206,7 @@
                 }
                 PersonnelsLG_student.deselectRecord(current)
 
-
+///////////////////////////////////////////////////////////////
                 list = PersonnelsRegLG_student.getSelection();
                 current = list.filter(function (x) {
                     return x.nationalCode == nationalCode
@@ -1215,6 +1217,21 @@
                     current[0].isClicked = false
                 }
                 PersonnelsRegLG_student.deselectRecord(current);
+///////////
+
+                list = SynonymPersonnelsLG_student.getSelection();
+                current = list.filter(function (x) {
+                    return x.nationalCode == nationalCode
+                });
+                current.setProperty("enabled", true);
+                if (current && current[0]) {
+                    current[0].isChecked = false;
+                    current[0].isClicked = false
+                }
+                SynonymPersonnelsLG_student.deselectRecord(current);
+
+
+                //////////
 
                 studentSelection = false;
 
