@@ -646,7 +646,10 @@
         click: function () {
             if (!DynamicForm_JspOperationalRole.validate() || !DynamicForm_Role_type_JspOperationalRole.validate() || !DynamicForm_User_Role_type_JspOperationalRole.validate())
                 return;
-            if (!DynamicForm_JspOperationalRole.valuesHaveChanged()) {
+            if (!DynamicForm_JspOperationalRole.valuesHaveChanged() &&
+                !DynamicForm_Role_type_JspOperationalRole.valuesHaveChanged() &&
+                !DynamicForm_User_Role_type_JspOperationalRole.valuesHaveChanged()
+                ) {
                 Window_JspOperationalRole.close();
                 return;
             }
@@ -805,7 +808,7 @@
                     click: function (form, item, icon) {
                         item.clearValue();
                         item.focusInItem();
-                        DynamicForm_User_Role_type_JspOperationalRole.getItem("nationalCode").setValue();
+                        DynamicForm_User_Role_type_JspOperationalRole.getField("userId").$19z.setValue();
                     }
                     }
                 ],
