@@ -2109,6 +2109,7 @@ public class TclassService implements ITclassService {
     @Override
     public ElsClassDetailResponse getClassDetail(String classCode) {
         Tclass tclass= getClassByCode(classCode);
+        ElsClassDetailResponse elsClassDto=new ElsClassDetailResponse();
         if (tclass != null) {
             Optional<Course> course= courseDAO.findById(tclass.getCourseId());
             StringBuilder courseTitle= new StringBuilder("");
@@ -2117,6 +2118,13 @@ public class TclassService implements ITclassService {
             if (tclass.getComplexId()!=null){
                 Optional<Complex> complex = complexDAO.findById(tclass.getComplexId());
                 complex.ifPresent(value -> complexTitle.append(value.getTitle()));
+            }
+
+          List<ClassStudent> classStudents=  classStudentDAO.findByTclassId(tclass.getId());
+            if(classStudents!=null){
+                List<String> studentsNationalCodes=new ArrayList<>();
+                classStudents.stream().forEach(classStudent -> studentsNationalCodes.add(classStudent.getStudent().getNationalCode()));
+                elsClassDto.setStudentsNationalCodes(studentsNationalCodes);
             }
 
             StringBuilder teacherFullName= new StringBuilder("");
@@ -2132,7 +2140,7 @@ public class TclassService implements ITclassService {
             course.ifPresent(value -> courseTitle.append(value.getTitleFa()));
 
 
-            ElsClassDetailResponse elsClassDto=new ElsClassDetailResponse();
+
             elsClassDto.setId(tclass.getId());
             if (tclass.getSupervisor()!=null){
 //                elsClassDto.setSupervisor(tclass.getSupervisor().getFirstName() + " "+tclass.getSupervisor().getLastName());
