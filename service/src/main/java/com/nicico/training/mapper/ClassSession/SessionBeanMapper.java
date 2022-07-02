@@ -42,8 +42,9 @@ public abstract class SessionBeanMapper {
             });
             elsSessionResponse.setStudentsNationalCodes(studentsNationalCodes);
         }
-        Optional<Teacher> tById = teacherDAO.findById(tclass.getTeacherId());
-         elsSessionResponse.setInstructorNationalCode(tById.get().getTeacherCode());
+        Optional<Teacher> teacher = teacherDAO.findById(tclass.getTeacherId());
+        if(teacher.isPresent())
+         elsSessionResponse.setInstructorNationalCode(teacher.get().getTeacherCode());
         tclass.getClassSessions().forEach(session -> {
 
             Calendar calendar = Calendar.getInstance();
