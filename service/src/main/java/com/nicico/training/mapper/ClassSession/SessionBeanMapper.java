@@ -65,7 +65,6 @@ public abstract class SessionBeanMapper {
         elsSessionDetailDtos.sort(Comparator.comparing(ElsSessionDetailDto::getDateOfHolding));
 
         elsSessionResponse.setCode(tclass.getCode());
-//        elsSessionResponse.setUsers(elsSessionUsersDtos);
         elsSessionResponse.setSessions(elsSessionDetailDtos);
         return elsSessionResponse;
     }
