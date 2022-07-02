@@ -1043,8 +1043,6 @@
             DynamicForm_Role_type_JspOperationalRole.getField("roleType").setValue(selected_record.objectType);
 
             Window_JspOperationalRole.show();
-
-            debugger
         }
     }
 
