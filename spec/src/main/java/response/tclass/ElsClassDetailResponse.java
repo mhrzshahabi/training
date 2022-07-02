@@ -37,4 +37,5 @@ public class ElsClassDetailResponse extends BaseResponse implements Serializable
     private List<CourseProgramDTO> coursePrograms;
     private String instructorNationalCode;
 //    private String supervisor;
+    private List<String> studentsNationalCodes;
 }
