@@ -1,9 +1,12 @@
 package com.nicico.training.repository;
 
 import com.nicico.training.model.NeedsAssessmentTemp;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Long> {
@@ -39,4 +42,14 @@ public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Lon
     Integer updateNeedsAssessmentTempWorkflowProcessInstanceId(String processInstanceId,String objectType, Long objectId, Integer mainWorkflowStatusCode, String mainWorkflowStatus);
 
     Optional<NeedsAssessmentTemp> findFirstByObjectTypeAndObjectIdAndProcessInstanceIdNotNull(String objectType, Long objectId);
+
+
+    @Query(value = "SELECT * FROM TBL_NEEDS_ASSESSMENT_TEMP WHERE f_competence = ?1",
+            countQuery = "SELECT count(*) FROM TBL_NEEDS_ASSESSMENT_TEMP WHERE f_competence = ?1",
+            nativeQuery = true)
+    Page<NeedsAssessmentTemp> findAllByCompetenceId(Long competenceId, Pageable pageable);
+
+    @Modifying
+    @Query(value = "delete from TBL_NEEDS_ASSESSMENT_TEMP where f_competence = :id", nativeQuery = true)
+    void deleteByCompetenceId(Long id);
 }

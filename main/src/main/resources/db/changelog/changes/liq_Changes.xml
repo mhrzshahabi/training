@@ -4820,6 +4820,16 @@ FROM
 
     </changeSet>
 
+    <changeSet author="namdari" id="1656221511111-03">
+        <addColumn tableName="tbl_competence">
+            <column name="active" type="NUMBER(10, 0)"/>
+
+        </addColumn>
+
+
+
+    </changeSet>
+
 
 </databaseChangeLog>
 

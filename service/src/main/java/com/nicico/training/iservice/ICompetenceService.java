@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.model.Competence;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -14,7 +15,9 @@ public interface ICompetenceService {
 
     CompetenceDTO.Info checkAndCreate(CompetenceDTO.Create create, HttpServletResponse response);
 
-    List<NeedsAssessmentDTO.Info> checkUsed(Long id);
+    List<NeedsAssessmentDTO.Info> getUsedList(Long id);
+
+    Boolean checkUsed(Long id);
 
     CompetenceDTO.Info checkAndUpdate(Long id, CompetenceDTO.Update update, HttpServletResponse response);
 
@@ -23,4 +26,8 @@ public interface ICompetenceService {
     TotalResponse<CompetenceDTO.Info> search(NICICOCriteria nicicoCriteria);
 
     SearchDTO.SearchRs<CompetenceDTO.Info> search(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<CompetenceDTO.Posts> searchPosts(Long id, Integer startRow, Integer endRow);
+    SearchDTO.SearchRs<CompetenceDTO.Posts> searchTempPosts(Long id, Integer startRow, Integer endRow);
+
+    Competence getCompetence(Long id);
 }

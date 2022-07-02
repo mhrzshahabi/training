@@ -108,6 +108,8 @@
             {name: "competenceLevelId"},
             {name: "competencePriorityId"},
             {name: "complex"},
+            {name: "isUsed", hidden: true},
+            {name: "active"},
             {name: "competenceType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "categoryId",
@@ -168,6 +170,12 @@
             {name: "description"},
             {name: "returnDetail"}
         ],
+        getCellCSSText: function (record, rowNum, colNum) {
+            if ((record.isUsed === false)){
+                return "background-color : #fa5f71";
+            }
+
+        },
         gridComponents: [
             CompetenceTS_competenceV2, "filterEditor", "header", "body"
         ],
@@ -218,6 +226,16 @@
         fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
         cacheAllData: true,
         fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
+    let CompetenceDS_postTocompetenceV2 = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code"}, {name: "title"}, {name: "type"}, {name: "skill"}],
+    });
+    let CompetenceDS_postTocompetenceV3 = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code"}, {name: "title"}, {name: "type"}, {name: "skill"}],
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -320,7 +338,7 @@
             },
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem"},
             {
-                name: "isActive",
+                name: "active",
                 title: "فعال",
                 type: "checkbox",
                 width: "2",
@@ -340,6 +358,122 @@
             members: [
                 isc.IButtonSave.create({click: function () { saveCompetence_competenceV2(); }}),
                 isc.IButtonCancel.create({click: function () { CompetenceWin_competenceV2.close(); }}),
+            ],
+        }),]
+    });
+
+
+    LG_postTocompetenceV2 = isc.ListGrid.create({
+        ID: "LG_postTocompetenceV2",
+        canAutoFitFields: true,
+        width: "100%",
+        height: "100%",
+        minHeight: 500,
+        dataPageSize: 50,
+         dataSource: CompetenceDS_postTocompetenceV2,
+         autoFetchData: true,
+        fields: [
+            {name: "title",title:"عنوان"},
+            {name: "code",title:"کد پست"},
+            {name: "type",title:"نوع پست"},
+            {name: "skill",title:"عنوان مهارت"},
+
+        ],
+
+
+       });
+
+    LG_postTocompetenceV3 = isc.ListGrid.create({
+        ID: "LG_postTocompetenceV3",
+        canAutoFitFields: true,
+        width: "100%",
+        height: "100%",
+        minHeight: 500,
+        dataPageSize: 75,
+        dataSource: CompetenceDS_postTocompetenceV3,
+        autoFetchData: true,
+        fields: [
+            {name: "title",title:"عنوان"},
+            {name: "code",title:"کد پست"},
+            {name: "type",title:"نوع پست"},
+            {name: "skill",title:"عنوان مهارت"},
+
+        ],
+
+
+    });
+
+
+    let CompetenceWin_postToCompetence2 = isc.Window.create({
+        title:"مشاهده پست های متصل به نیازسنجی",
+        ID: "CompetenceWin_postToCompetence2",
+        width: 800,
+        height: 600,
+        items: [
+            LG_postTocompetenceV2,
+            isc.IButtonCancel.create({
+                layoutAlign: "center",
+
+                click: function () { CompetenceWin_postToCompetence2.close(); }})
+
+        ]
+    });
+
+    let CompetenceWin_postToCompetence3 = isc.Window.create({
+        title:"مشاهده پست های متصل به نیازسنجی",
+        ID: "CompetenceWin_postToCompetence3",
+        width: 800,
+        height: 600,
+        items: [
+            LG_postTocompetenceV3,
+            isc.IButtonCancel.create({
+                layoutAlign: "center",
+
+                click: function () { CompetenceWin_postToCompetence3.close(); }})
+
+        ]
+    });
+
+    let CompetenceWin_delete = isc.Window.create({
+        title:"مشاهده پست های متصل به نیازسنجی",
+        ID: "CompetenceWin_delete",
+        width: 800,
+        items: [
+            isc.Label.create({
+                ID: "deleteCompetenceLabel",
+                dynamicContents: true,
+                align: "center",
+                padding: 5
+            }),
+            isc.TrHLayoutButtons.create({
+            members: [
+                 isc.IButton.create({
+                     width: 200,
+                     title: "پست های نیاز سنجی شده",
+                     click: function () {
+                         LG_postTocompetenceV2.invalidateCache()
+                          CompetenceWin_postToCompetence2.show()
+                     }}),
+                isc.IButton.create({
+                    width: 200,
+
+                    title: "پست های در حال نیاز سنجی ",
+                    click: function () {
+                        LG_postTocompetenceV3.invalidateCache()
+                        CompetenceWin_postToCompetence3.show()
+                    }}),
+                 isc.IButtonCancel.create({
+                     title: "حذف نیازسنجی",
+                     click: function () {
+                         let record = CompetenceLG_competenceV2.getSelectedRecord();
+                         let entityType = '<spring:message code="competence"/>';
+                         CompetenceWin_delete.close();
+
+                         removeCompetenceToWorkflowV2(record,entityType)
+
+
+                     }}),
+                 isc.IButtonCancel.create({click: function () { CompetenceWin_delete.close(); }}),
             ],
         }),]
     });
@@ -462,15 +596,30 @@
     function removeCompetence_competenceV2() {
         let record = CompetenceLG_competenceV2.getSelectedRecord();
         let entityType = '<spring:message code="competence"/>';
+
+        CompetenceDS_postTocompetenceV2.fetchDataURL = competenceUrl + "/show-posts/spec-list" + "?id="+record.id;
+        CompetenceDS_postTocompetenceV3.fetchDataURL = competenceUrl + "/show-posts-temp/spec-list" + "?id="+record.id;
+
+        function showRemoveDialog() {
+            deleteCompetenceLabel.setContents(" شایستگی مورد نظر در نیازسنجی  های مختلف استفاده شده است، جهت مشاهده دکمه ی مشاهده را کلیک نمایید.با حذف شایستگی , شایستگی مورد نظر از همه ی پست ها مربوطه نیز حذف خواهد شد");
+            CompetenceWin_delete.show()
+
+        }
+
         if (checkRecordAsSelected(record, true, entityType)) {
             wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(competenceUrl + "/" + record.id, "GET", null, (resp)=>{
                 wait.close();
                 if(resp.httpResponseCode !== 226){
-                    removeCompetenceToWorkflowV2(record,entityType)
+                    if (resp.httpResponseCode === 406){
+                        createDialog("warning", "بدلیل اینکه شایستگی در کارتابل وجود دارد، این شایستگی قابل حذف نمیباشد.", "اخطار");
+
+                    }else {
+                        removeCompetenceToWorkflowV2(record,entityType)
+                    }
                 }
                 else{
-                    createDialog("warning", "بدلیل اینکه شایستگی در نیازسنجی استفاده شده است، این شایستگی قابل حذف نمیباشد.", "اخطار");
+                    showRemoveDialog()
                 }
             }))
         }
@@ -527,6 +676,7 @@
             "competenceLevelId": record.competenceLevelId,
             "competencePriorityId": record.competencePriorityId,
             "complex": record.complex,
+            "active": record.active,
             "code": record.code,
             "categoryId": record.categoryId,
             "subCategoryId": record.subCategoryId,
@@ -548,15 +698,7 @@
         }));
     }
     function removeCompetenceToWorkflowV2(record,entityType){
-        wait.show()
-        isc.RPCManager.sendRequest(TrDSRequest(bpmsWorkflowUrl + "/processes/cancel-process/"+record.processInstanceId, "POST","remove in training app", (resp)=>{
-            wait.close()
-            if (resp.httpResponseCode === 200) {
                 removeRecord(competenceUrl + "/" + record.id, entityType, record.title, 'CompetenceLG_competenceV2');
-            } else {
-                simpleDialog("<spring:message code="message"/>", "<spring:message code='msg.remove.to.workflow.problem'/>", 3000, "stop");
-            }
-        }));
     }
 
     //</script>

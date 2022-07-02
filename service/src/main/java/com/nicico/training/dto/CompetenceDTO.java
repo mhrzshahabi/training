@@ -25,8 +25,12 @@ public class CompetenceDTO implements Serializable {
     private Long categoryId;
     private Long subCategoryId;
     private String code;
+    private String competenceLevel;
+    private String competencePriority;
     private Long competenceLevelId;
     private Long competencePriorityId;
+    private Boolean active;
+    private Boolean isUsed;
     private String complex;
     private Long workFlowStatusCode;
     private String processInstanceId;
@@ -42,6 +46,19 @@ public class CompetenceDTO implements Serializable {
         private ParameterValueDTO.MinInfo competenceType;
         private CategoryDTO.CategoryInfoTuple category;
         private SubcategoryDTO.SubCategoryInfoTuple subCategory;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CompetenceDTO - Posts")
+    public static class Posts {
+        private Long id;
+         private String title;
+         private String type;
+         private String code;
+         private String skill;
+
     }
 
     @Getter

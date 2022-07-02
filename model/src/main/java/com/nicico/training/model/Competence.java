@@ -69,4 +69,7 @@ public class Competence extends Auditable {
 
     @Column(name = "complex")
     private String complex;
+
+    @Column(name = "active")
+    private Boolean active;
 }

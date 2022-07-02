@@ -11,6 +11,7 @@ public class BpmsCompetenceDTO {
     private String code;
     private Long competenceLevelId;
     private Long competencePriorityId;
+    private Boolean active;
     private String complex;
     private String description;
     private Long categoryId;

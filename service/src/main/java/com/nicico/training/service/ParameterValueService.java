@@ -82,6 +82,13 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
         return parameterValue.getCode();
 
     }
+    @Transactional
+    public String getParameterTitleCodeById (Long id) {
+        Optional<ParameterValue> byId = dao.findById(id);
+        ParameterValue parameterValue = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return parameterValue.getTitle();
+
+    }
 
     public TotalResponse<ParameterValueDTO> getMessages(String type, String target) {
         List<ParameterValue> list = dao.findMessagesByCode("%"+type+"%","%"+target+"%");

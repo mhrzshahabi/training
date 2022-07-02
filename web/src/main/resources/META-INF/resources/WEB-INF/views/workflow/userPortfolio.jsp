@@ -86,6 +86,9 @@
                 }
             },
             {name: "description", title: "توضیحات", type: "staticText"},
+            {name: "complex", title: "مجتمع", type: "staticText"},
+            {name: "competencePriority", title: "اولویت شایستگی", type: "staticText"},
+            {name: "competenceLevel", title: "سطح شایستگی", type: "staticText"},
             {name: "processInstanceId", hidden: true}
         ]
     });
