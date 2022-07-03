@@ -1771,6 +1771,32 @@ public class ElsRestController {
         }
     }
 
+    @GetMapping("/class-userDetails/{classCode}")
+    public ElsSessionDetailsResponse getClassUsersDetail(HttpServletRequest header, @PathVariable String classCode) {
+
+
+        ElsSessionDetailsResponse elsClassDetailResponse = new ElsSessionDetailsResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+
+        try {
+            elsClassDetailResponse = tclassService.getClassUsersDetail(classCode.trim());
+            elsClassDetailResponse.setStatus(200);
+            return elsClassDetailResponse;
+
+        } catch (Exception e) {
+
+            elsClassDetailResponse.setStatus(HttpStatus.NOT_FOUND.value());
+            elsClassDetailResponse.setMessage("کلاس موردنظر یافت نشد");
+            return elsClassDetailResponse;
+        }
+        } else {
+            elsClassDetailResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsClassDetailResponse.setMessage("دسترسی موردنظر یافت نشد");
+            return elsClassDetailResponse;
+        }
+
+    }
+
     /**
      * @param header
      * @param elsTeacherCertification

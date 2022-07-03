@@ -44,6 +44,7 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.evaluation.dto.TeacherEvaluationAnswer;
 import response.tclass.ElsClassDetailResponse;
 import response.tclass.ElsSessionResponse;
+import response.tclass.dto.ElsSessionDetailsResponse;
 import response.tclass.dto.TclassDto;
 
 import javax.servlet.http.HttpServletResponse;
@@ -2304,6 +2305,28 @@ public class TclassService implements ITclassService {
     @Override
     public void updateAllSetToNullByEducationalCalenderId(Long id) {
         tclassDAO.updateAllSetToNullByEducationalCalenderId(id);
+    }
+
+    @Override
+    public ElsSessionDetailsResponse getClassUsersDetail(String classCode) {
+        Tclass tclass = getClassByCode(classCode);
+        ElsSessionDetailsResponse elsClassDto = new ElsSessionDetailsResponse();
+
+        List<ClassStudent> classStudents = classStudentDAO.findByTclassId(tclass.getId());
+        if (classStudents != null) {
+            List<String> studentsNationalCodes = new ArrayList<>();
+            classStudents.stream().forEach(classStudent -> studentsNationalCodes.add(classStudent.getStudent().getNationalCode()));
+            elsClassDto.setStudentsNationalCodes(studentsNationalCodes);
+        }
+
+
+        Optional<Teacher> teacher = teacherDAO.findById(tclass.getTeacherId());
+        if (teacher.isPresent()) {
+            String teacherNationalCode = teacher.get().getTeacherCode();
+            elsClassDto.setInstructorNationalCode(teacherNationalCode);
+        }
+
+        return elsClassDto;
     }
 
 
