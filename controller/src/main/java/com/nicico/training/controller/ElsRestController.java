@@ -77,12 +77,11 @@ import response.exam.ExamListResponse;
 import response.exam.ExamQuestionsDto;
 import response.exam.ResendExamTimes;
 import response.question.dto.*;
-import response.tclass.ElsClassDetailResponse;
-import response.tclass.ElsSessionAttendanceResponse;
-import response.tclass.ElsSessionResponse;
-import response.tclass.ElsStudentAttendanceListResponse;
+import response.tclass.*;
 import response.tclass.dto.ElsClassListDto;
 import response.tclass.dto.ElsClassListV2Dto;
+import response.tclass.dto.ElsSessionDetailsResponse;
+import response.tclass.dto.ElsSessionUsersDto;
 import response.teachingHistory.ElsStudentsLevelDto;
 import response.teachingHistory.ElsTeachingHistoryFindAllRespDto;
 import response.teachingHistory.ElsTeachingHistoryRespDto;
@@ -929,6 +928,36 @@ public class ElsRestController {
             elsSessionResponse.setMessage("دسترسی موردنظر یافت نشد");
             return elsSessionResponse;
         }
+    }
+
+    /**
+     * @param sessionId
+     * @return session-details
+     * @author zohreh
+     */
+    @GetMapping("/sessionDetails/{sessionId}")
+    public ElsSessionDetailsResponse getClassSessions(HttpServletRequest header, @PathVariable Long sessionId) {
+        ElsSessionDetailsResponse elsSessionDetailsResponse=new ElsSessionDetailsResponse();
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+            try {
+
+                elsSessionDetailsResponse = classSessionService.getSessionDetails(sessionId);
+               elsSessionDetailsResponse.setStatus(200);
+                return elsSessionDetailsResponse;
+
+            } catch (Exception e) {
+
+                elsSessionDetailsResponse.setStatus(HttpStatus.NOT_FOUND.value());
+                elsSessionDetailsResponse.setMessage("جلسه موردنظر یافت نشد");
+                return elsSessionDetailsResponse;
+            }
+
+        } else {
+            elsSessionDetailsResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
+            elsSessionDetailsResponse.setMessage("دسترسی موردنظر یافت نشد");
+            return elsSessionDetailsResponse;
+        }
+
     }
 
     /**
