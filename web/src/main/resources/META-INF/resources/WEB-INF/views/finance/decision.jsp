@@ -42,6 +42,35 @@
         ],
 
     });
+    let RestDataSource_teaching_methods = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/intraOrganizationalHoldingClassType"
+    });
+
+    let RestDataSource_course_type = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
+        ],
+        fetchDataURL: enumUrl + "eTheoType",
+    });
+
+
+    RestDataSource_Decision_teaching_method = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "itemFromDate"},
+            {name: "itemToDate"},
+            {name: "teachingMethod"},
+            {name: "courseTypeTeachingMethod"},
+            {name: "coefficientOfTeachingMethod"},
+
+
+        ],
+
+    });
     RestDataSource_Basic_Tuition = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -305,6 +334,110 @@
                 required: true}
         ]
     });
+    DynamicForm_teaching_method = isc.DynamicForm.create({
+        width: 400,
+        height: "100%",
+        numCols: 2,
+        fields: [
+            {
+                name: "id",
+                title: "id",
+                primaryKey: true,
+                canEdit: false,
+                hidden: true
+            },
+            {
+                name: "itemFromDate",
+                ID: "date_itemFromDate_teaching_method",
+                title: "تاریخ شروع",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_itemFromDate_teaching_method', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "itemToDate",
+                ID: "date_itemToDate_teaching_method",
+                title: "تاریخ پایان ",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_itemToDate_teaching_method', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                optionDataSource: RestDataSource_teaching_methods,
+                displayField: "title",
+                autoFetchData: false,
+                valueField: "title",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                name: "teachingMethod",
+                title: "روش آموزش",
+                type: "ComboBoxItem",
+
+            },
+            {
+                optionDataSource: RestDataSource_course_type,
+                displayField: "titleFa",
+                autoFetchData: false,
+                valueField: "titleFa",
+                textAlign: "center",
+                 textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "titleFa", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                  type: "ComboBoxItem",
+                name: "courseTypeTeachingMethod",
+                title: "نوع دوره",
+                required: false
+            },{
+                name: "coefficientOfTeachingMethod",
+                title: "ضریب روش تدریس",
+                length: 20,
+                keyPressFilter: "[0-9.]",
+                required: true
+            },
+
+        ]
+    });
 
 
 
@@ -395,6 +528,24 @@
             })
         ]
     });
+    teaching_method_actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonCreate.create({
+                title: "افزودن",
+                click: function () {
+                    addChildDecision(DynamicForm_teaching_method,Window_teaching_method)
+                }.bind(this)
+            }),
+            isc.ToolStripButtonRemove.create({
+                title: "حذف",
+                click: function () {
+                    deleteChildDecision(ListGrid_Decision_teaching_method)
+                }.bind(this)
+            })
+        ]
+    });
     base_actions = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -472,6 +623,68 @@
 
         ],
         gridComponents: [history_actions, "filterEditor", "header", "body", "summaryRow"]
+
+
+    });
+    ListGrid_Decision_teaching_method = isc.ListGrid.create({
+        dataSource: RestDataSource_Decision_teaching_method,
+        sortDirection: "descending",
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        canAutoFitFields: true,
+        width: "100%",
+        height: "100%",
+        autoFetchData: false,
+        initialSort: [
+            {property: "id", direction: "descending"}
+        ],
+        fields: [
+            {
+                name: "id",
+                hidden: true,
+                primaryKey: true,
+                canEdit: false,
+                align: "center"
+            },
+            {
+                name: "itemFromDate",
+                title: "تاریخ شروع",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "itemToDate",
+                title: "تاریخ پایان",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "teachingMethod",
+                title: "روش آموزش",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "courseTypeTeachingMethod",
+                title: "نوع دوره",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "coefficientOfTeachingMethod",
+                title: "ضریب روش تدریس",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+
+
+        ],
+        gridComponents: [teaching_method_actions, "filterEditor", "header", "body", "summaryRow"]
 
 
     });
@@ -588,6 +801,7 @@
         tabs: [
             {name: "TabPane_Decision_Educational_history", title: "مبلغ پایه حق التدریس", pane: ListGrid_Basic_Tuition},
             {name: "TabPane_Basic_Tuition", title: "ضریب سابقه آموزشی", pane: ListGrid_Decision_Educational_history},
+            {name: "TabPane_teaching_method", title: "ضریب روش تدریس", pane: ListGrid_Decision_teaching_method},
         ],
         tabSelected: function () {
             selectionUpdated_Tabs();
@@ -659,6 +873,31 @@
             })
         ]
     });
+    HLayout_IButtons_teaching_method = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            isc.IButtonSave.create({
+                top: 260,
+                layoutMargin: 5,
+                membersMargin: 5,
+                click: function () {
+                    saveChildDecision(ListGrid_Decision_teaching_method,DynamicForm_teaching_method,Window_teaching_method,"teaching-method")
+                }
+            }),
+            isc.IButtonCancel.create({
+                layoutMargin: 5,
+                membersMargin: 5,
+                width: 120,
+                click: function () {
+                    Window_teaching_method.close();
+                }
+            })
+        ]
+    });
     Window_header_Decision = isc.Window.create({
         title: "افزودن هدر تصمیم گیری",
         width: 450,
@@ -703,6 +942,22 @@
         items: [
             DynamicForm_Decision_base,
             HLayout_IButtons_Decision_base
+        ]
+    });
+
+    Window_teaching_method = isc.Window.create({
+        title: "افزودن ضریب روش تدریس",
+        width: 450,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            DynamicForm_teaching_method,
+            HLayout_IButtons_teaching_method
         ]
     });
 
@@ -897,6 +1152,12 @@
                 RestDataSource_Decision_Educational_history.fetchDataURL = educationalDecisionRequestUrl + "/list/history/"+record.id;
                 ListGrid_Decision_Educational_history.invalidateCache();
                 ListGrid_Decision_Educational_history.fetchData();
+                break;
+            }
+            case "TabPane_teaching_method": {
+                RestDataSource_Decision_teaching_method.fetchDataURL = educationalDecisionRequestUrl + "/list/teaching-method/"+record.id;
+                ListGrid_Decision_teaching_method.invalidateCache();
+                ListGrid_Decision_teaching_method.fetchData();
                 break;
             }
 

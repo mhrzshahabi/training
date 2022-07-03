@@ -4814,6 +4814,17 @@ FROM
 
 
     </changeSet>
+    <changeSet author="namdari" id="1656832784000-01">
+        <addColumn tableName="tbl_educational_decision">
+            <column name="teaching_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="course_type_teaching_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="coefficient_of_teaching_method" type="VARCHAR2(255 CHAR)"/>
+
+        </addColumn>
+
+
+
+    </changeSet>
 
 
 </databaseChangeLog>

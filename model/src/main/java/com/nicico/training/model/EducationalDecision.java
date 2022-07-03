@@ -72,7 +72,14 @@ public class EducationalDecision extends Auditable{
     @Column(name = "educational_assistant_tuition_fee")
     private String educationalAssistantTuitionFee;
 
-    //
+    //teaching Method
+    @Column(name = "teaching_method")
+    private String teachingMethod;
 
+    @Column(name = "course_type_teaching_method")
+    private String courseTypeTeachingMethod;
+
+    @Column(name = "coefficient_of_teaching_method")
+    private String coefficientOfTeachingMethod;
 
 }
