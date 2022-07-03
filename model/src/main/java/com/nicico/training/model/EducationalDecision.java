@@ -82,4 +82,17 @@ public class EducationalDecision extends Auditable{
     @Column(name = "coefficient_of_teaching_method")
     private String coefficientOfTeachingMethod;
 
+    //course type
+    @Column(name = "type_of_specialization_course_type")
+    private String typeOfSpecializationCourseType;
+
+    @Column(name = "course_level_course_type")
+    private String courseLevelCourseType;
+
+    @Column(name = "course_for_course_type")
+    private String courseForCourseType;
+
+    @Column(name = "coefficient_of_course_type")
+    private String coefficientOfCourseType;
+
 }

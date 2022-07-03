@@ -36,6 +36,12 @@ public class EducationalDecisionDTO {
     private String courseTypeTeachingMethod;
     private String coefficientOfTeachingMethod;
 
+    /////////////////////////////////////
+    private String coefficientOfCourseType;
+    private String courseForCourseType;
+    private String courseLevelCourseType;
+    private String typeOfSpecializationCourseType;
+
 
     @Getter
     @Setter

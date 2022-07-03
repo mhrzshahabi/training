@@ -58,6 +58,22 @@
     });
 
 
+    let RestDataSource_e_level_type_decision= isc.TrDS.create({
+        autoCacheAllData: false,
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
+        ],
+        fetchDataURL: enumUrl + "eLevelType",
+    });
+
+    let RestDataSource_e_for_course_type_decision = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/TargetPopulation"
+    });
+
     RestDataSource_Decision_teaching_method = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -66,6 +82,21 @@
             {name: "teachingMethod"},
             {name: "courseTypeTeachingMethod"},
             {name: "coefficientOfTeachingMethod"},
+
+
+        ],
+
+    });
+
+    RestDataSource_Decision_course_type = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "itemFromDate"},
+            {name: "itemToDate"},
+            {name: "coefficientOfCourseType"},
+            {name: "courseForCourseType"},
+            {name: "courseLevelCourseType"},
+            {name: "typeOfSpecializationCourseType"},
 
 
         ],
@@ -438,6 +469,133 @@
 
         ]
     });
+    DynamicForm_course_type = isc.DynamicForm.create({
+        width: 400,
+        height: "100%",
+        numCols: 2,
+        fields: [
+            {
+                name: "id",
+                title: "id",
+                primaryKey: true,
+                canEdit: false,
+                hidden: true
+            },
+            {
+                name: "itemFromDate",
+                ID: "date_itemFromDate_course_type",
+                title: "تاریخ شروع",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_itemFromDate_course_type', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "itemToDate",
+                ID: "date_itemToDate_course_type",
+                title: "تاریخ پایان ",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_itemToDate_course_type', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                textAlign: "center",
+                required: true,
+                displayField: "titleFa",
+                valueField: "id",
+                //optionDataSource: RestDataSource_eTechnicalType,
+                sortField: ["id"],
+                // titleOrientation: "top",
+                width: "*",
+                // height: "30",
+                pickListProperties:{
+                    showFilterEditor: false
+                },
+                valueMap: {
+                    "1": "عمومي",
+                    "2": "تخصصی",
+                    "3": "مديريتي",
+                },
+                name: "typeOfSpecializationCourseType",
+                title: "نوع تخصص",
+                type: "ComboBoxItem",
+
+            },
+            {
+                optionDataSource: RestDataSource_e_level_type_decision,
+                displayField: "titleFa",
+                autoFetchData: false,
+                valueField: "titleFa",
+                textAlign: "center",
+                 textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "titleFa", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                  type: "ComboBoxItem",
+                name: "courseLevelCourseType",
+                title: "سطح دوره",
+                required: false
+            },
+            {
+                optionDataSource: RestDataSource_e_for_course_type_decision,
+                displayField: "title",
+                autoFetchData: false,
+                valueField: "title",
+                textAlign: "center",
+                 textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true}
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+                  type: "ComboBoxItem",
+                name: "courseForCourseType",
+                title: "دوره ویژه ی",
+                required: false
+            },
+            {
+                name: "coefficientOfCourseType",
+                title: "ضریب نوع دوره",
+                length: 20,
+                keyPressFilter: "[0-9.]",
+                required: true
+            },
+
+        ]
+    });
 
 
 
@@ -542,6 +700,24 @@
                 title: "حذف",
                 click: function () {
                     deleteChildDecision(ListGrid_Decision_teaching_method)
+                }.bind(this)
+            })
+        ]
+    });
+    course_type_actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonCreate.create({
+                title: "افزودن",
+                click: function () {
+                    addChildDecision(DynamicForm_course_type,Window_course_type)
+                }.bind(this)
+            }),
+            isc.ToolStripButtonRemove.create({
+                title: "حذف",
+                click: function () {
+                    deleteChildDecision(ListGrid_Decision_course_type)
                 }.bind(this)
             })
         ]
@@ -688,6 +864,75 @@
 
 
     });
+    ListGrid_Decision_course_type = isc.ListGrid.create({
+        dataSource: RestDataSource_Decision_course_type,
+        sortDirection: "descending",
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        canAutoFitFields: true,
+        width: "100%",
+        height: "100%",
+        autoFetchData: false,
+        initialSort: [
+            {property: "id", direction: "descending"}
+        ],
+        fields: [
+            {
+                name: "id",
+                hidden: true,
+                primaryKey: true,
+                canEdit: false,
+                align: "center"
+            },
+            {
+                name: "itemFromDate",
+                title: "تاریخ شروع",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "itemToDate",
+                title: "تاریخ پایان",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "typeOfSpecializationCourseType",
+                title: "نوع تخصص",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "courseLevelCourseType",
+                title: "سطح دوره",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "courseForCourseType",
+                title: "دوره ویژه ی",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "coefficientOfCourseType",
+                title: "ضریب نوع دوره",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+
+
+        ],
+        gridComponents: [course_type_actions, "filterEditor", "header", "body", "summaryRow"]
+
+
+    });
     ListGrid_Basic_Tuition = isc.ListGrid.create({
         dataSource: RestDataSource_Basic_Tuition,
         sortDirection: "descending",
@@ -802,6 +1047,7 @@
             {name: "TabPane_Decision_Educational_history", title: "مبلغ پایه حق التدریس", pane: ListGrid_Basic_Tuition},
             {name: "TabPane_Basic_Tuition", title: "ضریب سابقه آموزشی", pane: ListGrid_Decision_Educational_history},
             {name: "TabPane_teaching_method", title: "ضریب روش تدریس", pane: ListGrid_Decision_teaching_method},
+            {name: "TabPane_course_type", title: "ضریب روش تدریس", pane: ListGrid_Decision_course_type},
         ],
         tabSelected: function () {
             selectionUpdated_Tabs();
@@ -898,6 +1144,31 @@
             })
         ]
     });
+    HLayout_IButtons_course_type = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            isc.IButtonSave.create({
+                top: 260,
+                layoutMargin: 5,
+                membersMargin: 5,
+                click: function () {
+                    saveChildDecision(ListGrid_Decision_course_type,DynamicForm_course_type,Window_course_type,"course-type")
+                }
+            }),
+            isc.IButtonCancel.create({
+                layoutMargin: 5,
+                membersMargin: 5,
+                width: 120,
+                click: function () {
+                    Window_course_type.close();
+                }
+            })
+        ]
+    });
     Window_header_Decision = isc.Window.create({
         title: "افزودن هدر تصمیم گیری",
         width: 450,
@@ -958,6 +1229,21 @@
         items: [
             DynamicForm_teaching_method,
             HLayout_IButtons_teaching_method
+        ]
+    });
+    Window_course_type = isc.Window.create({
+        title: "افزودن ضریب نوع دوره",
+        width: 450,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            DynamicForm_course_type,
+            HLayout_IButtons_course_type
         ]
     });
 
@@ -1158,6 +1444,12 @@
                 RestDataSource_Decision_teaching_method.fetchDataURL = educationalDecisionRequestUrl + "/list/teaching-method/"+record.id;
                 ListGrid_Decision_teaching_method.invalidateCache();
                 ListGrid_Decision_teaching_method.fetchData();
+                break;
+            }
+            case "TabPane_course_type": {
+                RestDataSource_Decision_course_type.fetchDataURL = educationalDecisionRequestUrl + "/list/course-type/"+record.id;
+                ListGrid_Decision_course_type.invalidateCache();
+                ListGrid_Decision_course_type.fetchData();
                 break;
             }
 
