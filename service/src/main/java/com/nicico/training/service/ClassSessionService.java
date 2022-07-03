@@ -24,6 +24,7 @@ import response.event.EventDto;
 import response.event.EventListDto;
 import response.tclass.ElsSessionAttendanceResponse;
 import response.tclass.dto.ElsSessionAttendanceUserInfoDto;
+import response.tclass.dto.ElsSessionDetailsResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormatSymbols;
@@ -53,6 +54,8 @@ public class ClassSessionService implements IClassSessionService {
     private final ClassAlarmService classAlarmService;
     private final ParameterValueService parameterValueService;
     private final StudentDAO studentDAO;
+    private final TeacherDAO teacherDAO;
+    private final ClassStudentDAO classStudentDAO;
 
     //********************************
 
@@ -446,6 +449,30 @@ public class ClassSessionService implements IClassSessionService {
     public List<ClassSessionDTO.AttendanceClearForm> loadSessionsForClearAttendance(Long classId) {
         return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.AttendanceClearForm>>() {
         }.getType());
+    }
+
+    @Override
+    public ElsSessionDetailsResponse getSessionDetails(Long sessionId) {
+        ElsSessionDetailsResponse response=new ElsSessionDetailsResponse();
+        List<String> studentsNationalCodes=new ArrayList<>();
+       ClassSession classSession= classSessionDAO.getClassSessionById(sessionId);
+      Long tclassId=classSession.getClassId();
+    Optional< Tclass> tclass=tclassDAO.findById(tclassId);
+          List<ClassStudent> classStudents = classStudentDAO.findByTclassId(tclassId);
+          if (classStudents != null) {
+              classStudents.forEach(student -> {
+                  studentsNationalCodes.add(student.getStudent().getNationalCode());
+
+              });
+              response.setStudentsNationalCodes(studentsNationalCodes);
+          }
+          if(tclass.isPresent()){
+          Optional<Teacher> teacher = teacherDAO.findById(tclass.get().getTeacherId());
+          if (teacher.isPresent()) {
+              response.setInstructorNationalCode(teacher.get().getTeacherCode());
+          }
+      }
+        return response;
     }
 
 
