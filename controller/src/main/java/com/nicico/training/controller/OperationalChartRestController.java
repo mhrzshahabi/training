@@ -40,9 +40,9 @@ public class OperationalChartRestController {
     }
 
     @Loggable
-    @PostMapping(value = "/addchild")
-    public ResponseEntity<OperationalChartDTO.Info> addChild(@Validated @RequestBody OperationalChartDTO.Create request) {
-         return new ResponseEntity<>(operationalChartService.addChild(request), HttpStatus.OK);
+    @PostMapping(value = "/addchild/{child_id}/{parent_id}")
+    public ResponseEntity<OperationalChartDTO.Info> addChild(@PathVariable Long parent_id,@PathVariable Long child_id) {
+         return new ResponseEntity<>(operationalChartService.addChild(parent_id,child_id), HttpStatus.OK);
     }
 
     @Loggable

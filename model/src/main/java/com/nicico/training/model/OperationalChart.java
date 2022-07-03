@@ -37,9 +37,10 @@ public class OperationalChart extends Auditable{
     @Column(name = "c_nationalcode")
     private String nationalCode;
 
-    @OneToMany(fetch = FetchType.EAGER)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_operational_chart_parent_child", uniqueConstraints = {@UniqueConstraint(columnNames = {"parent_id", "child_id"})},
             joinColumns = {@JoinColumn(name = "parent_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "child_id", referencedColumnName = "id")})
     private List<OperationalChart> operationalChartParentChild;
+
 }

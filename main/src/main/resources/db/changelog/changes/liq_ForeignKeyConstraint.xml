@@ -1385,11 +1385,11 @@
     </changeSet>
 
     <changeSet author="kasehpour (generated)" id="1654668348111-05">
-        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="tbl_operational_chart_parent_child" constraintName="FK_operational_chart" deferrable="false" initiallyDeferred="false" referencedColumnNames="parent_id" referencedTableName="tbl_operational_chart" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="child_id" baseTableName="tbl_operational_chart_parent_child" constraintName="FK_operational_chart" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_chart" validate="true"/>
     </changeSet>
 
     <changeSet author="kasehpour (generated)" id="1654668348111-06">
-        <addForeignKeyConstraint baseColumnNames="child_id" baseTableName="tbl_operational_chart_parent_child" constraintName="FK_operational_chart" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_chart" validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="tbl_operational_chart_parent_child" constraintName="FK_parent_id_operational_chart" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_chart" validate="true"/>
     </changeSet>
 
 </databaseChangeLog>

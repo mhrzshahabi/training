@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface OperationalChartDAO extends JpaRepository<OperationalChart, Long>, JpaSpecificationExecutor<OperationalChart> {
+    List<OperationalChart> findAllByParentId(Long id);
 }
