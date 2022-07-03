@@ -4821,9 +4821,13 @@ FROM
             <column name="coefficient_of_teaching_method" type="VARCHAR2(255 CHAR)"/>
 
         </addColumn>
+    </changeSet>
 
 
-
+    <changeSet author="Montazeri" id="1656221511000-03">
+        <addColumn tableName="tbl_operational_role">
+            <column name="object_type" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
     </changeSet>
 
 
