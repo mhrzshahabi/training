@@ -18,6 +18,7 @@ import response.tclass.ElsClassDetailResponse;
 import response.tclass.ElsSessionResponse;
 import com.nicico.training.dto.enums.ClassStatusDTO;
 import com.nicico.training.dto.enums.ClassTypeDTO;
+import response.tclass.dto.ElsSessionDetailsResponse;
 import response.tclass.dto.TclassDto;
 
 import javax.servlet.http.HttpServletResponse;
@@ -216,4 +217,5 @@ public interface ITclassService {
 
     void updateAllSetToNullByEducationalCalenderId(Long id);
 
+    ElsSessionDetailsResponse getClassUsersDetail(String classCode);
 }
