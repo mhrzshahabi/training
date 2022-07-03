@@ -151,7 +151,7 @@
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: viewTrainingPostUrl + "/roleNonUsedPostList"
+        fetchDataURL: viewTrainingPostUrl + "/iscList"
     });
 
     var RestDataSource_Categories_OperationalRole = isc.TrDS.create({
@@ -1180,6 +1180,17 @@
                 createDialog("info", "<spring:message code="delete.was.not.successful"/>");
             }
         }));
+
+        let selectedNonUsedPosts = ListGrid_Non_Used_Post_OperationalRole.getSelectedRecords();
+        for(let i = 0; i < selectedNonUsedPosts.length; i++) {
+            for(let j = 0; j < selectedRecords.length; j++) {
+                if (selectedNonUsedPosts[i].id === selectedRecords[j].id) {
+                    ListGrid_Non_Used_Post_OperationalRole.deselectRecord(selectedNonUsedPosts[i]);
+                    break;
+                }
+            }
+        }
+
     }
 
 //</script>
