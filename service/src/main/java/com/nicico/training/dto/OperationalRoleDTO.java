@@ -21,9 +21,7 @@ public class OperationalRoleDTO {
     private Set<Long> userIds;
     private Set<Long> postIds;
     private Long complexId;
-    private Long objectUserId;
     private String objectType;
-    private String nationalCode;
 
     @Getter
     @Setter
