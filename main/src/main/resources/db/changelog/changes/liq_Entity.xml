@@ -3754,7 +3754,6 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="complex" type="VARCHAR2(255 CHAR)"/>
             <column name="title" type="VARCHAR2(255 CHAR)"/>
             <column name="address" type="VARCHAR2(255 CHAR)"/>
             <column name="phone" type="VARCHAR2(255 CHAR)"/>
@@ -3792,6 +3791,15 @@
             </column>
             <column name="object_type" type="VARCHAR2(255 CHAR)"/>
             <column name="object_code" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1656131979000-14">
+        <createTable tableName="tbl_committee_of_experts_complex">
+            <column name="committee_of_experts_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="complex_values" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

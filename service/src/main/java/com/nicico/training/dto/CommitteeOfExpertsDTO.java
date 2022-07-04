@@ -19,7 +19,7 @@ public class CommitteeOfExpertsDTO implements Serializable {
 
     private Long id;
 
-    private String complex;
+    private List<String> complexes;
 
     private String title;
 

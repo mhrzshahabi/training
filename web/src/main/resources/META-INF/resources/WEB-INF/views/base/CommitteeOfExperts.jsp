@@ -106,6 +106,8 @@
                 required: true,
                 optionDataSource: RestDataSource_committee_Department_Filter,
                 autoFetchData: false,
+                type: "SelectItem",
+                multiple: true,
                 displayField: "title",
                 valueField: "title",
                 pickListFields: [

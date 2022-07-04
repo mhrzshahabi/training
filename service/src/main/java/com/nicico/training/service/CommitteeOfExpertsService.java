@@ -136,7 +136,7 @@ public class CommitteeOfExpertsService implements ICommitteeOfExpertsService {
     @Override
     public BaseResponse edit(CommitteeOfExperts committeeOfExperts) {
         CommitteeOfExperts getItem = get(committeeOfExperts.getId());
-        getItem.setComplex(committeeOfExperts.getComplex());
+        getItem.setComplexes(committeeOfExperts.getComplexes());
         getItem.setAddress(committeeOfExperts.getAddress());
         getItem.setEmail(committeeOfExperts.getEmail());
         getItem.setFax(committeeOfExperts.getFax());

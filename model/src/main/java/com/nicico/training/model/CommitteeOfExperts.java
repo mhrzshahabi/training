@@ -23,9 +23,6 @@ public class CommitteeOfExperts extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "complex")
-    private String complex;
-
     @Column(name = "title")
     private String title;
 
@@ -49,6 +46,10 @@ public class CommitteeOfExperts extends Auditable {
     private List<CommitteePost> committeePosts;
 
 
+    @ElementCollection
+    @CollectionTable(name = "tbl_committee_of_experts_complex", joinColumns = @JoinColumn(name = "committee_of_experts_id"))
+    @Column(name = "complex_values")
+    private List<String> complexes;
 
 
 }
