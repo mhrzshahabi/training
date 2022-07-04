@@ -353,11 +353,15 @@
     });
 
     var HLayout_Grid_Teacher_JspSatisfaction = isc.TrHLayout.create({
+        width: "100%",
+        height: "60%",
+        showResizeBar: true,
         members: [ListGrid_Teacher_JspSatisfaction]
     });
 
     var HLayout_Actions_Satisfaction = isc.HLayout.create({
         width: "100%",
+        height: "1%",
         members: [ToolStrip_Actions_JspSatisfaction]
     });
     let HLayout_Tab_teachingSubject = isc.HLayout.create({
