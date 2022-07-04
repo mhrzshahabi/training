@@ -1047,7 +1047,7 @@
             {name: "TabPane_Decision_Educational_history", title: "مبلغ پایه حق التدریس", pane: ListGrid_Basic_Tuition},
             {name: "TabPane_Basic_Tuition", title: "ضریب سابقه آموزشی", pane: ListGrid_Decision_Educational_history},
             {name: "TabPane_teaching_method", title: "ضریب روش تدریس", pane: ListGrid_Decision_teaching_method},
-            {name: "TabPane_course_type", title: "ضریب روش تدریس", pane: ListGrid_Decision_course_type},
+            {name: "TabPane_course_type", title: "ضریب نوع دوره", pane: ListGrid_Decision_course_type},
         ],
         tabSelected: function () {
             selectionUpdated_Tabs();
