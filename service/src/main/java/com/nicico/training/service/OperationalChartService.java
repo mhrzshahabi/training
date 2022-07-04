@@ -82,7 +82,6 @@ public class OperationalChartService implements IOperationalChartService {
                 throw new TrainingException(TrainingException.ErrorType. Forbidden, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
                 } else {
 
-
                     Set<OperationalChart> lastChilds = new HashSet<>(operationalChartDAO.findAllByParentId(parentId));
                     lastChilds.add(child);
                     parent.setOperationalChartParentChild(lastChilds.stream().toList());
@@ -109,7 +108,6 @@ public class OperationalChartService implements IOperationalChartService {
 
       return save( operationalChart);
 
-
     }
 
     @Transactional
@@ -121,9 +119,6 @@ public class OperationalChartService implements IOperationalChartService {
 //todo set child on new parent and remove from lod parent list
         return save(operationalChart);
     }
-
-
-
 
     @Transactional
     @Override
@@ -143,17 +138,6 @@ public class OperationalChartService implements IOperationalChartService {
         {
         throw new TrainingException(TrainingException.ErrorType. OperationalChartHasChild, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
         }
-    }
-
-    @Transactional
-    @Override
-    public void delete(OperationalChartDTO.Delete request) {
-        final List<OperationalChart> gAllById = operationalChartDAO.findAllById(request.getIds());
-        if(  gAllById.stream().filter(current->current.getOperationalChartParentChild().stream().findAny().isPresent()).equals(true)  ) {
-            throw new TrainingException(TrainingException.ErrorType. OperationalChartHasChild, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
-        } else
-
-        operationalChartDAO.deleteAll(gAllById);
     }
 
     @Transactional(readOnly = true)

@@ -13,17 +13,13 @@ public interface IOperationalChartService {
 
     OperationalChartDTO.Info create(OperationalChartDTO.Create request);
 
-//    OperationalChartDTO.Info addChild(OperationalChartDTO.Create request);
-
     OperationalChartDTO.Info update(Long id, OperationalChartDTO.Update request);
 
     OperationalChartDTO.Info updateParent(Long id,Long parentId, OperationalChartDTO.Update request);
 
     void delete(Long id);
 
-    void delete(OperationalChartDTO.Delete request);
-
-    SearchDTO.SearchRs<OperationalChartDTO.Info> search(SearchDTO.SearchRq request);
+     SearchDTO.SearchRs<OperationalChartDTO.Info> search(SearchDTO.SearchRq request);
 
     OperationalChartDTO.Info addChild(Long parent_id, Long child_id);
 }

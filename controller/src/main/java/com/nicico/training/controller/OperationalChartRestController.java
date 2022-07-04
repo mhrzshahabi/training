@@ -58,16 +58,9 @@ public class OperationalChartRestController {
     }
 
     @Loggable
-    @DeleteMapping(value = "delete/{id}")
+    @DeleteMapping(value = "/delete/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         operationalChartService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/list")
-    public ResponseEntity<Void> delete(@Validated @RequestBody OperationalChartDTO.Delete request) {
-        operationalChartService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
     }
 
