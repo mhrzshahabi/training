@@ -6,10 +6,11 @@
 
 
     var averageEvalGradeLabel = isc.Label.create({
+        margin: 2,
         contents: "میانگین نمره فراگیران به استاد : ",
         border: "0px solid black",
-        align: "center",
-        width: "100%",
+        align: "left",
+        width: "50%",
         height: "100%"
     });
     var chartData_teachingSubject = [
@@ -135,6 +136,7 @@
     });
     //----------------------------------------------------------------------------Toolscrip--------------------------------------------------------------------
     ToolStripButton_ShowChart_TeachingSubject = isc.ToolStripButton.create({
+        margin: 2,
         enabled: false,
         title:"نمایش نمودار رضایت فراگیر",
         click: function () {
@@ -163,6 +165,20 @@
         })]
     });
 
+    let Export_To_Excel = isc.ToolStripButtonExcel.create({
+        margin: 2,
+        click: function () {
+            makeExcelReport();
+        }
+    });
+
+    let HLayout_Buttons = isc.HLayout.create({
+        width: "50%",
+        height: "100%",
+        members: [
+            ToolStripButton_ShowChart_TeachingSubject, Export_To_Excel
+        ]
+    })
 
     VLayout_Body_JspInternalTeachingSubject = isc.TrVLayout.create({
         members: [
@@ -170,7 +186,7 @@
                 width: "100%",
                 height: "1%",
                 margin: 10,
-                members: [ToolStripButton_ShowChart_TeachingSubject,averageEvalGradeLabel]
+                members: [HLayout_Buttons, averageEvalGradeLabel]
             }),
             ListGrid_JspInternalTeachingSubject
         ],
@@ -217,6 +233,24 @@
 
     }
 
+    function makeExcelReport() {
+        if (ListGrid_JspInternalTeachingSubject.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else {
+            let restUrl = viewTrainingPostUrl + "/iscListReport?_endRow=10000";
+            ExportToFile.downloadExcelRestUrl(
+                null,
+                ListGrid_JspInternalTeachingSubject,
+                restUrl,
+                0,
+                null,
+                '',
+                "گزارش رضایت فراگیر از استاد",
+                ListGrid_JspInternalTeachingSubject.getCriteria(),
+                null
+            );
+        }
+    }
 
 
     //</script>

@@ -13574,7 +13574,7 @@ GROUP BY
     j.c_code,
     pg.c_title_fa,
     pg.c_code,
-    devtraining.tbl_committee_of_experts.title
+    tbl_committee_of_experts.title
             ]]>
         </createView>
     </changeSet>
