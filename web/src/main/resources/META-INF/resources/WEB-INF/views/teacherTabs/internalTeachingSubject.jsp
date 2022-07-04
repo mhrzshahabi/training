@@ -237,7 +237,7 @@
         if (ListGrid_JspInternalTeachingSubject.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else {
-            let restUrl = viewTrainingPostUrl + "/iscListReport?_endRow=10000";
+            let restUrl = classUrl + "/spec-list?_endRow=10000";
             ExportToFile.downloadExcelRestUrl(
                 null,
                 ListGrid_JspInternalTeachingSubject,
