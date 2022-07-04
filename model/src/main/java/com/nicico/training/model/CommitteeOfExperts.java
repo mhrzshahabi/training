@@ -46,7 +46,7 @@ public class CommitteeOfExperts extends Auditable {
     private List<CommitteePost> committeePosts;
 
 
-    @ElementCollection
+    @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "tbl_committee_of_experts_complex", joinColumns = @JoinColumn(name = "committee_of_experts_id"))
     @Column(name = "complex_values")
     private List<String> complexes;

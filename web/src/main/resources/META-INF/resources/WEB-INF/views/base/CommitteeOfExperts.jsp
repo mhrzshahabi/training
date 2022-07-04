@@ -22,7 +22,7 @@
     RestDataSource_Committee = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "complex", title: "گستردگي کميته", filterOperator: "iContains"},
+            {name: "complexes", title: "گستردگي کميته", filterOperator: "iContains"},
             {name: "title", title: "نام", filterOperator: "iContains"},
             {name: "address", title: "آدرس", filterOperator: "iContains"},
             {name: "phone", title: "تلفن", filterOperator: "iContains"},
@@ -101,7 +101,7 @@
                 hidden: true
             },
             {
-                name: "complex",
+                name: "complexes",
                 title: "گستردگي کميته",
                 required: true,
                 optionDataSource: RestDataSource_committee_Department_Filter,
@@ -185,7 +185,8 @@
             {
                 name: "role",
                 length: 150,
-                title: "نقش در کمیته",
+                title: "سمت در کمیته",
+
                 required: true,
                 defaultValue: "عضو عادي",
                 valueMap: {
@@ -197,8 +198,9 @@
             },
             {
                 name: "position",
+                title: "نقش در کمیته",
+
                 length: 150,
-                title: "سمت در کمیته",
                 required: true,
                 defaultValue:  "رئيس و هماهنگ کننده کميته",
                 valueMap: {
@@ -796,7 +798,7 @@
                 align: "center"
             },
             {
-                name: "complex",
+                name: "complexes",
                 title: "گستردگي کميته",
                 width: "10%",
                 align: "center"
@@ -977,14 +979,14 @@
                 canFilter: false
             },
             {
+                title: "سمت در کمیته",
                 name: "role",
-                title: "نقش در کمیته",
                 width: "10%",
                 align: "center",
                 canFilter: false
             },{
                 name: "position",
-                title: "سمت در کمیته",
+                title: "نقش در کمیته",
                 width: "10%",
                 align: "center",
                 canFilter: false
@@ -1125,6 +1127,15 @@
         autoDraw: false,
         border: "0px solid red", layoutMargin: 5,
         members: [
+            isc.IButtonSave.create({
+                top: 100,
+                title: "چاپ اکسل",
+                align: "center",
+                click: function () {
+                    makeExcelReport(Post_lsLG_ex_with_filter,"پست های انفرادی فاقد کمیته")
+
+                }
+            }),
             isc.SectionStack.create({
                 sections: [{
                     expanded: true,
@@ -1162,6 +1173,14 @@
         autoDraw: false,
         border: "0px solid red", layoutMargin: 5,
         members: [
+            isc.IButtonSave.create({
+                top: 100,
+                title: "چاپ اکسل",
+                align: "center",
+                click: function () {
+                    makeExcelReport(training_Post_lsLG_ex_with_filter,"پست های فاقد کمیته")
+                }
+            }),
             isc.SectionStack.create({
                 sections: [{
                     expanded: true,
@@ -1199,6 +1218,15 @@
         autoDraw: false,
         border: "0px solid red", layoutMargin: 5,
         members: [
+            isc.IButtonSave.create({
+                top: 100,
+                title: "چاپ اکسل",
+                align: "center",
+                click: function () {
+                    makeExcelReport(group_Post_lsLG_ex_with_filter,"'گروه پست های فاقد کمیته")
+
+                }
+            }),
             isc.SectionStack.create({
                 sections: [{
                     expanded: true,
@@ -1771,7 +1799,7 @@
                     wait.close();
                     let currentCommittee = JSON.parse(resp.data);
 
-                    DynamicForm_Committee_Ex.getItem("complex").setValue(currentCommittee.complex);
+                    DynamicForm_Committee_Ex.getItem("complexes").setValue(currentCommittee.complexes);
                     DynamicForm_Committee_Ex.getItem("title").setValue(currentCommittee.title);
                     DynamicForm_Committee_Ex.getItem("address").setValue(currentCommittee.address);
                     DynamicForm_Committee_Ex.getItem("phone").setValue(currentCommittee.phone);
@@ -1920,8 +1948,9 @@
                 DynamicForm_Committee_post.invalidateCache();
                 ListGrid_Committee_Posts.invalidateCache();
             } else {
+                let result = JSON.parse(resp.httpResponseText);
                 wait.close();
-                createDialog("info", "خطایی رخ داده است");
+                createDialog("info", result.message);
             }
         }));
 
@@ -2013,6 +2042,25 @@
                 break;
             }
 
+        }
+    }
+
+    function makeExcelReport(grid,title) {
+        if (grid.getOriginalData().localData === undefined)
+            createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
+        else {
+            let restUrl = viewTrainingPostUrl + "/iscListReport?_endRow=10000";
+            ExportToFile.downloadExcelRestUrl(
+                null,
+                grid,
+                restUrl,
+                0,
+                null,
+                '',
+                title,
+                grid.getCriteria(),
+                null
+            );
         }
     }
 

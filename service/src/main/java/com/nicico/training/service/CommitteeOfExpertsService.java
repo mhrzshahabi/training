@@ -71,6 +71,10 @@ public class CommitteeOfExpertsService implements ICommitteeOfExpertsService {
                     personnels.add(savedPersonnel);
                     committeeOfExperts.setCommitteePersonnels(personnels.stream().toList());
                     create(committeeOfExperts);
+                }else{
+                    baseResponse.setStatus(400);
+                    baseResponse.setMessage("این فرد قبلا اضافه شده است");
+                    return baseResponse;
                 }
                 baseResponse.setStatus(200);
                 return baseResponse;
@@ -82,7 +86,7 @@ public class CommitteeOfExpertsService implements ICommitteeOfExpertsService {
 
         }catch (Exception e){
             baseResponse.setStatus(400);
-            baseResponse.setMessage("اخطا در اضافه کردن فرد به کمیته");
+            baseResponse.setMessage("خطا در اضافه کردن فرد به کمیته");
 
             return baseResponse;
         }
@@ -106,11 +110,18 @@ public class CommitteeOfExpertsService implements ICommitteeOfExpertsService {
                 posts.add(savedPost);
                 committeeOfExperts.setCommitteePosts(posts.stream().toList());
                 create(committeeOfExperts);
+            }else {
+                baseResponse.setStatus(400);
+                baseResponse.setMessage("این پست قبلا اضافه شده است");
+                return baseResponse;
+
             }
             baseResponse.setStatus(200);
             return baseResponse;
         }catch (Exception e){
             baseResponse.setStatus(400);
+            baseResponse.setMessage("خطا در اضافه کردن پست به کمیته");
+
             return baseResponse;
         }
 
