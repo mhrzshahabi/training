@@ -49,12 +49,12 @@ public class OperationalChartService implements IOperationalChartService {
     public OperationalChartDTO.Info create(OperationalChartDTO.Create request)  {
         final OperationalChart operationalChart = mapper.toOperationalChart(request);
 
-        final List<OperationalChart> all = operationalChartDAO.findAll();
+        final List<OperationalChart> allOperationalChart = operationalChartDAO.findAll();
 
         Set<OperationalChart> set = new HashSet<>();
-        all.forEach(o -> {
-                    if (o.getNationalCode().contains(operationalChart.getNationalCode())) {
-                        set.add(o);
+        allOperationalChart.forEach(one -> {
+                    if (one.getNationalCode().contains(operationalChart.getNationalCode())) {
+                        set.add(one);
                     }
                 }
         );
@@ -122,23 +122,35 @@ public class OperationalChartService implements IOperationalChartService {
         return save(operationalChart);
     }
 
+
+
+
     @Transactional
     @Override
     public void delete(Long id) {
         final Optional<OperationalChart> one = operationalChartDAO.findById(id);
-        final OperationalChart operationalChart = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-        if (operationalChart.getOperationalChartParentChild() == null) {
-            operationalChartDAO.delete(operationalChart);
+        final OperationalChart OperationalToDelete = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+
+        Optional<OperationalChart> findOperationalParent=  operationalChartDAO.findById(OperationalToDelete.getParentId());
+        Optional<OperationalChart> operationalParent= Optional.ofNullable(findOperationalParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
+
+        if (OperationalToDelete.getOperationalChartParentChild().size()==0) {
+            OperationalChart parent = operationalParent.get();
+            parent.getOperationalChartParentChild().remove(OperationalToDelete);
+            save(parent);
+            operationalChartDAO.delete(OperationalToDelete);
         }else
-        { new TrainingException(TrainingException.ErrorType.OperationalChartHasChild);}
+        {
+        throw new TrainingException(TrainingException.ErrorType. OperationalChartHasChild, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
+        }
     }
 
     @Transactional
     @Override
     public void delete(OperationalChartDTO.Delete request) {
         final List<OperationalChart> gAllById = operationalChartDAO.findAllById(request.getIds());
-        if(  gAllById.stream().filter(parent->parent.getOperationalChartParentChild().stream().findAny().isPresent()).equals(true)  ) {
-            new TrainingException(TrainingException.ErrorType.OperationalChartHasChild);
+        if(  gAllById.stream().filter(current->current.getOperationalChartParentChild().stream().findAny().isPresent()).equals(true)  ) {
+            throw new TrainingException(TrainingException.ErrorType. OperationalChartHasChild, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
         } else
 
         operationalChartDAO.deleteAll(gAllById);

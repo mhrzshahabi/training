@@ -46,13 +46,13 @@ public class OperationalChartRestController {
     }
 
     @Loggable
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/update/{id}")
     public ResponseEntity<OperationalChartDTO.Info> update(@PathVariable Long id, @Validated @RequestBody OperationalChartDTO.Update request) {
         return new ResponseEntity<>(operationalChartService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
-    @PutMapping(value = "/{id}{parentId}")
+    @PutMapping(value = "/updateParent/{id}/{parentId}")
     public ResponseEntity<OperationalChartDTO.Info> updateParent(@PathVariable Long id,@PathVariable Long parentId, @Validated @RequestBody OperationalChartDTO.Update request) {
         return new ResponseEntity<>(operationalChartService.updateParent(id,parentId, request), HttpStatus.OK);
     }
