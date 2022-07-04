@@ -131,7 +131,7 @@ public class TrainingException extends NICICOException {
         InvalidClassType(405),
         OperationalChartNotFound(404),
         OperationalChartHasChild(404),
-        OperationalChartIsDuplicated(403);
+        OperationalChartIsDuplicated(409);
 
         private final Integer httpStatusCode;
 

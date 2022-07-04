@@ -9,9 +9,13 @@ import com.nicico.training.mapper.operationalChart.OperationalChartMapper;
 import com.nicico.training.model.OperationalChart;
 import com.nicico.training.repository.OperationalChartDAO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -21,6 +25,8 @@ import java.util.stream.Collectors;
 public class OperationalChartService implements IOperationalChartService {
      private final OperationalChartDAO operationalChartDAO;
      private final OperationalChartMapper mapper;
+    @Autowired
+    private MessageSource messageSource;
 
     @Transactional(readOnly = true)
     @Override
@@ -40,7 +46,7 @@ public class OperationalChartService implements IOperationalChartService {
 
     @Transactional
     @Override
-    public OperationalChartDTO.Info create(OperationalChartDTO.Create request) {
+    public OperationalChartDTO.Info create(OperationalChartDTO.Create request)  {
         final OperationalChart operationalChart = mapper.toOperationalChart(request);
 
         final List<OperationalChart> all = operationalChartDAO.findAll();
@@ -53,36 +59,40 @@ public class OperationalChartService implements IOperationalChartService {
                 }
         );
 
-        if (set.stream().toList().size() == 0) {
-            return save(operationalChart);
+        if (set.stream().toList().size() != 0) {
+            throw new TrainingException(TrainingException.ErrorType.OperationalChartIsDuplicated, messageSource.getMessage("exception.duplicate.information", null, LocaleContextHolder.getLocale()));
         }
-         new TrainingException(TrainingException.ErrorType.OperationalChartIsDuplicated);
-        return null;
+        return save(operationalChart);
 
     }
 
     @Override
     public OperationalChartDTO.Info addChild(Long parentId, Long childId)  {
-        Optional<OperationalChart> findoperationalParent=  operationalChartDAO.findById(parentId);
-        Optional<OperationalChart> findoperationalChild=  operationalChartDAO.findById(childId);
-        Optional<OperationalChart> operationalParent= Optional.ofNullable(findoperationalParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
-        Optional<OperationalChart> operationalChild= Optional.ofNullable(findoperationalChild.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
+        Optional<OperationalChart> findOperationalParent=  operationalChartDAO.findById(parentId);
+        Optional<OperationalChart> findOperationalChild=  operationalChartDAO.findById(childId);
+        Optional<OperationalChart> operationalParent= Optional.ofNullable(findOperationalParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
+        Optional<OperationalChart> operationalChild= Optional.ofNullable(findOperationalChild.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
 
         if (!operationalParent.isPresent() || !operationalChild.isPresent()){
-            return null;
+            throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));
         }else {
-            OperationalChart parent=operationalParent.get();
-            OperationalChart child=operationalChild.get();
+            OperationalChart parent = operationalParent.get();
+            OperationalChart child = operationalChild.get();
+            if(parent.getParentId() == child.getId() || parent.getId() ==child.getId()) {
+                throw new TrainingException(TrainingException.ErrorType. Forbidden, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
+                } else {
 
-            Set<OperationalChart> lastChilds= new HashSet<>(operationalChartDAO.findAllByParentId(parentId));
-            lastChilds.add(child);
-            parent.setOperationalChartParentChild(lastChilds.stream().toList());
-            save(parent);
-            Optional<OperationalChart> savedParent=  operationalChartDAO.findById(parent.getId());
 
-            child.setParentId(savedParent.get().getId());
-            OperationalChartDTO.Info savedChild=   save(child);
-            return savedChild;
+                    Set<OperationalChart> lastChilds = new HashSet<>(operationalChartDAO.findAllByParentId(parentId));
+                    lastChilds.add(child);
+                    parent.setOperationalChartParentChild(lastChilds.stream().toList());
+                    save(parent);
+                    Optional<OperationalChart> savedParent = operationalChartDAO.findById(parent.getId());
+
+                    child.setParentId(savedParent.get().getId());
+                    OperationalChartDTO.Info savedChild = save(child);
+                    return savedChild;
+                }
         }
 
     }
