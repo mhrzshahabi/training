@@ -1581,7 +1581,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup",false);
             // Window_NeedsAssessment_Edit.setProperties({
             //     close() {
             //         ListGrid_Post_Group_Jsp.invalidateCache()
@@ -1592,6 +1592,27 @@
             // Window_NeedsAssessment_Edit.show();
         }
     });
+
+    ToolStripButton_EditNA_JspGap = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی (گپ)",
+        click: function () {
+            if (ListGrid_Post_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup",true);
+            // Window_NeedsAssessment_Edit.setProperties({
+            //     close() {
+            //         ListGrid_Post_Group_Jsp.invalidateCache()
+            //         this.Super("close", arguments)
+            //     }
+            // })
+            // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), 'PostGroup')");
+            // Window_NeedsAssessment_Edit.show();
+        }
+    });
+
+
     ToolStripButton_TreeNA_JspPostGroup = isc.ToolStripButton.create({
         title: "درخت نیازسنجی",
         click: function () {
@@ -1617,6 +1638,9 @@
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_T')">
             ToolStripButton_TreeNA_JspPostGroup
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_JspGap,
             </sec:authorize>
         ]
     });

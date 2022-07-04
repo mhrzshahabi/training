@@ -16,6 +16,7 @@
     };
     var selectedRecord = {};
     var editing = false;
+    let isGap;
     var hasChanged = false;
     var canSendToWorkFlowNA = false;
 
@@ -2377,7 +2378,8 @@
     }
 
 
-    function loadEditNeedsAssessment(objectId, type, state = "R&W") {
+    function loadEditNeedsAssessment(objectId, type, state = "R&W",isFromGap) {
+        isGap=isFromGap
         ListGrid_Knowledge_JspNeedsAssessment.unsort();
         ListGrid_Ability_JspNeedsAssessment.unsort();
         ListGrid_Attitude_JspNeedsAssessment.unsort();
