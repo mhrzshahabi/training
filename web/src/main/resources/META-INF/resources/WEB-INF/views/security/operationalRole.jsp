@@ -730,7 +730,7 @@
     let Spacer_Bottom = isc.LayoutSpacer.create({height: 35});
 
     var Window_show_Operational_Role_Post = isc.Window.create({
-        title: "لیست پست های انفرادی",
+        title: "لیست پست ها",
         align: "center",
         placement: "fillScreen",
         border: "1px solid gray",
