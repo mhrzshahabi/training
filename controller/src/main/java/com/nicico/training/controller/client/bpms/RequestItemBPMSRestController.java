@@ -106,8 +106,26 @@ public class RequestItemBPMSRestController {
 
     @Loggable
     @PostMapping({"/tasks/determine-status/request-item/review/{chiefOpinionId}/{chiefNationalCode}"})
-    public BaseResponse reviewDetermineStatusRequestItemTask(@RequestBody BPMSReqItemCoursesDto bpmsReqItemCoursesDto, @PathVariable Long chiefOpinionId, @PathVariable String chiefNationalCode) {
-        return requestItemService.reviewRequestItemTaskToDetermineStatus(bpmsReqItemCoursesDto, chiefOpinionId, chiefNationalCode);
+    public BaseResponse reviewDetermineStatusRequestItemTask(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable Long chiefOpinionId, @PathVariable String chiefNationalCode) {
+        return requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, chiefOpinionId, chiefNationalCode);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-chief/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunChief(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunChief(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-supervisor/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunSupervisor(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunSupervisor(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/appointment-expert/request-item/review/{letterNumberSent}"})
+    public BaseResponse reviewRequestItemTaskByAppointmentExpert(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String letterNumberSent) {
+        return requestItemService.reviewRequestItemTaskByAppointmentExpert(reviewTaskRequest, letterNumberSent);
     }
 
 }

@@ -4,6 +4,7 @@ import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.model.RequestItem;
 import dto.bpms.BPMSReqItemCoursesDto;
@@ -36,7 +37,7 @@ public interface IRequestItemService {
 
     List<RequestItem> getListWithCompetenceRequest(Long id);
 
-    List<RequestItemDTO.Info> getItemListWithCompetenceRequest(Long id);
+    List<RequestItemDTO.ExcelOutputInfo> getItemListWithCompetenceRequest(Long id);
 
     List<Long> getAllRequestItemIdsWithCompetenceId(Long competenceId);
 
@@ -60,6 +61,20 @@ public interface IRequestItemService {
 
     BaseResponse reviewParallelRequestItemTask(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, Long expertOpinionId, String userNationalCode);
 
-    BaseResponse reviewRequestItemTaskToDetermineStatus(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, Long chiefOpinionId, String userNationalCode);
+    BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, Long chiefOpinionId, String userNationalCode);
+
+    BaseResponse reviewRequestItemTaskByRunChief(ReviewTaskRequest reviewTaskRequest);
+
+    BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest);
+
+    BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequest, String letterNumberSent);
+
+    BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest);
+
+    String getPlanningChiefNationalCode();
+
+    List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getSupervisorAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
+
+    List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
 
 }

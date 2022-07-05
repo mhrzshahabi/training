@@ -11,4 +11,9 @@ public interface IRequestItemCoursesDetailService {
     RequestItemCoursesDetail create(RequestItemCoursesDetailDTO.Create create);
 
     List<RequestItemCoursesDetailDTO.Info> findAllByRequestItemProcessDetailId(Long requestItemProcessDetailId);
+
+    RequestItemCoursesDetailDTO.OpinionInfo findAllOpinionByRequestItemProcessDetailId(Long requestItemProcessDetailId, String chiefOpinion);
+
+    List<RequestItemCoursesDetailDTO.Info> findAllByRequestItem(Long requestItemId);
+
 }

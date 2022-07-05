@@ -173,4 +173,9 @@ public class CategoryService implements ICategoryService {
     public Set<Category> findAllByUserId(Long userId) {
         return categoryDAO.findAllByUserId(userId);
     }
+
+    @Override
+    public Category findByTitleFa(String titleFa) {
+        return categoryDAO.findByTitleFa(titleFa);
+    }
 }

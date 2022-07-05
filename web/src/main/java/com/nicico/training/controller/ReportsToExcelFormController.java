@@ -107,14 +107,22 @@ public class ReportsToExcelFormController {
     public void ExportToExcel(@RequestParam("headers") String[] headers,
                               @RequestParam("fieldNames") String[] fieldNames,
                               @RequestParam("compReqId") Long compReqId,
-                              @RequestParam("title") String title,
+                              @RequestParam("state") String state,
                               HttpServletResponse response) throws Exception {
 
         List<Object> resp = new ArrayList<>();
-        List<RequestItemDTO.Info> requestItems = iRequestItemService.getItemListWithCompetenceRequest(compReqId);
-        if (requestItems != null) resp.addAll(requestItems);
+        List<RequestItemDTO.ExcelOutputInfo> requestItems = iRequestItemService.getItemListWithCompetenceRequest(compReqId);
+        if (requestItems != null) {
+            if (state.contains("گذراندن")) {
+                resp.addAll(requestItems.stream().filter(item -> item.getPlanningChiefOpinion().contains("گذراندن")).collect(Collectors.toList()));
+            } else if (state.contains("مانع")) {
+                resp.addAll(requestItems.stream().filter(item -> item.getPlanningChiefOpinion().contains("مانع")).collect(Collectors.toList()));
+            } else {
+                resp.addAll(requestItems);
+            }
+        }
 
-        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, RequestItemDTO.Info.class, fieldNames, headers, true, title);
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, RequestItemDTO.ExcelOutputInfo.class, fieldNames, headers, true, "");
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
 

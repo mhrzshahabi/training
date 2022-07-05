@@ -1,17 +1,14 @@
 package com.nicico.training.mapper.requestItem;
 
 import com.nicico.training.dto.RequestItemDTO;
-import com.nicico.training.iservice.IOperationalRoleService;
-import com.nicico.training.iservice.IParameterValueService;
-import com.nicico.training.iservice.ISynonymPersonnelService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.RequestItem;
-import com.nicico.training.model.enums.RequestItemState;
+import com.nicico.training.model.RequestItemProcessDetail;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.requestItem.RequestItemWithDiff;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 
@@ -24,25 +21,47 @@ public abstract class RequestItemBeanMapper {
     protected IOperationalRoleService operationalRoleService;
     @Autowired
     protected ISynonymPersonnelService synonymPersonnelService;
+    @Autowired
+    protected IRequestItemService requestItemService;
+    @Autowired
+    protected IRequestItemProcessDetailService requestItemProcessDetailService;
 
 
-    @Mapping(source = "state", target = "state", qualifiedByName = "strToState")
     public abstract RequestItem toRequestItem (RequestItemDTO.Create request);
 
     @Mappings({
-            @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr"),
             @Mapping(source = "processStatusId", target = "processStatusTitle", qualifiedByName = "processStatusIdToTitle"),
-            @Mapping(source = "operationalRoleIds", target = "operationalRoleTitles", qualifiedByName = "operationalRoleIdsToTitles")
+            @Mapping(source = "id", target = "planningChiefOpinion", qualifiedByName = "idToPlanningChiefOpinion"),
+            @Mapping(source = "operationalRoleIds", target = "operationalRoleTitles", qualifiedByName = "operationalRoleIdsToTitles"),
+            @Mapping(source = "operationalRoleIds", target = "operationalRoleUsers", qualifiedByName = "operationalRoleIdsToUserIds")
     })
     public abstract RequestItemDTO.Info toRequestItemDto(RequestItem requestItem);
 
-    @Mapping(source = "state", target = "state", qualifiedByName = "StateToStr")
+    @Mapping(source = "id", target = "planningChiefOpinion", qualifiedByName = "idToPlanningChiefOpinion")
+    public abstract RequestItemDTO.ExcelOutputInfo toRequestItemExcelOutputDto(RequestItem requestItem);
+
     abstract RequestItemDTO.Info toRequestItemDiffDto(RequestItemWithDiff requestItemWithDiff);
+
+    @Named("idToPlanningChiefOpinion")
+    protected String idToPlanningChiefOpinion(Long id) {
+        String chiefNationalCode = requestItemService.getPlanningChiefNationalCode();
+        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(id, chiefNationalCode);
+        if (requestItemProcessDetail != null)
+            return parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle();
+        else return "";
+    }
 
     @Named("operationalRoleIdsToTitles")
     protected List<String> operationalRoleIdsToTitles(List<Long> operationalRoleIds) {
         if (operationalRoleIds.size() != 0)
             return operationalRoleService.getOperationalRoleTitlesByIds(operationalRoleIds);
+        else return new ArrayList<>();
+    }
+
+    @Named("operationalRoleIdsToUserIds")
+    protected List<Long> operationalRoleIdsToUserIds(List<Long> operationalRoleIds) {
+        if (operationalRoleIds.size() != 0)
+            return operationalRoleService.getOperationalRoleUserIdsByIds(operationalRoleIds);
         else return new ArrayList<>();
     }
 
@@ -53,22 +72,6 @@ public abstract class RequestItemBeanMapper {
         else return "";
     }
 
-    @Named("StateToStr")
-    protected String StateToStr(RequestItemState state) {
-        if (state!=null)
-        return state.getTitleFa();
-        else return "";
-    }
-
-    @Named("strToState")
-    protected RequestItemState strToState(String title) {
-        return Arrays.stream(RequestItemState.values())
-                .filter(e -> e.getTitleFa().equals(title))
-                .findFirst()
-                .orElse(null);
-    }
-
-    abstract List<RequestItemDTO.Info> toRequestItemDiffDTODtos(List<RequestItemWithDiff> requestItemWithDiffList);
     public abstract List<RequestItemDTO.Info> toRequestItemDTODtos(List<RequestItem> requestItemList);
     public abstract List<RequestItem> toRequestItemDtos(List<RequestItemDTO.Create> requestItemList);
 }

@@ -43,4 +43,6 @@ public interface ICategoryService {
 
     Set<Category> findAllByUserId (Long userId);
 
+    Category findByTitleFa(String titleFa);
+
 }

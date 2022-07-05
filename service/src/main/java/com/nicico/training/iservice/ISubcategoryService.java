@@ -4,7 +4,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.SubcategoryDTO;
 import com.nicico.training.model.Subcategory;
-import org.springframework.data.repository.query.Param;
 import response.question.dto.ElsSubCategoryDto;
 
 import java.util.List;
@@ -42,5 +41,7 @@ public interface ISubcategoryService {
     List<ElsSubCategoryDto> getAllSubCategoriesForEls();
 
     Set<Subcategory> findAllByUserId ( Long userId);
+
+    Subcategory findByCategoryIdAndTitleFa(Long categoryId, String titleFa);
 
 }
