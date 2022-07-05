@@ -2377,7 +2377,7 @@
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
                                         click: function () {
-                                             wait.show();
+
                                             SelectedPersonnelsLG_student.endEditing();
                                             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                             let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
@@ -2389,7 +2389,7 @@
 
                                             }
                                             // SelectedPersonnelsLG_student.data.clearAll();
-                                            wait.close();
+
                                         }
                                     }),
                                     isc.IButtonCancel.create({
@@ -2828,13 +2828,14 @@
             // wait.show();
             let result = await getSessionPerClass(classId);
             // wait.close();
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
-
+                wait.close();
                 JSON.parse(response.data).forEach(q => equalCourseIds.add(q));
                 let checkAll = 0;
                  wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "preCourse/" + courseId, "GET", null, function (resp) {
-
+                    wait.close();
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                         let preCourseIds = JSON.parse(resp.httpResponseText).map(q => q.id);
@@ -2858,7 +2859,7 @@
                             if (result.length > 0) {
                                 let hasConflict = null;
                                 let flag = true;
-                                wait.show();
+
                                 for (let i = 0; i < result.length && flag; i++) {
 
                                     isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
@@ -2874,13 +2875,13 @@
                                         }
                                     }));
                                 }
-                                wait.close();
+
                             }
 
                              wait.show();
                             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
                                 studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
-
+                                wait.close();
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                     let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).map(q => q.courseId);
@@ -2915,16 +2916,13 @@
                                     inx = studentsDataArray.length - 1;
                                 }
                             }));
-                            wait.close();
                         }
 
                     } else {
                         createDialog("info", "<spring:message code='exception.un-managed'/>");
                     }
                 }));
-                wait.close();
             }));
-
         }
 
         function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents) {
