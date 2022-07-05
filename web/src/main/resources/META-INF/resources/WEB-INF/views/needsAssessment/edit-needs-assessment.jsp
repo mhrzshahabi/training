@@ -1091,7 +1091,11 @@
         gridComponents: ["filterEditor", "header", "body"],
         rowDoubleClick(record){
             if (checkSaveData(record, DataSource_Competence_JspNeedsAssessment, "id")) {
-                ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+                if(isGap){
+
+                }else {
+                    ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+                }
                 return;
             }
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
@@ -1906,6 +1910,22 @@
                     }),
                 ]
             })]
+    });
+
+    let  Window_get_limit_sufficiency = isc.Window.create({
+        title: "افزودن حد بسندگی",
+        width: 450,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            DynamicForm_Decision_history,
+            HLayout_IButtons_Decision_history
+        ]
     });
 
     var ViewLoader_Eval_Person  = isc.ViewLoader.create({
