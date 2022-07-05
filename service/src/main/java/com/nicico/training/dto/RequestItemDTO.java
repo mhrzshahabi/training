@@ -38,7 +38,25 @@ public class RequestItemDTO {
         private Long id;
         private String nationalCode;
         private String processStatusTitle;
+        private String planningChiefOpinion;
+        private List<Long> operationalRoleUsers;
         private List<String> operationalRoleTitles;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ExcelOutputInfo")
+    public static class ExcelOutputInfo {
+        private Long id;
+        private String personnelNo2;
+        private String name;
+        private String lastName;
+        private String affairs;
+        private String currentPostTitle;
+        private String postTitle;
+        private String post;
+        private String planningChiefOpinion;
     }
 
     @Getter

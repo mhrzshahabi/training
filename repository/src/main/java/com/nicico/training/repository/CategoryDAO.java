@@ -43,4 +43,6 @@ public interface CategoryDAO extends JpaRepository<Category, Long>, JpaSpecifica
             "rell.user_ids = :userId", nativeQuery = true)
     Set<Category> findAllByUserId (@Param("userId") Long userId);
 
+    Category findByTitleFa(String titleFa);
+
 }

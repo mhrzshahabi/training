@@ -167,16 +167,6 @@ public class BpmsRestController {
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
 
-    /**
-     * to show all the tasks from bpms
-     *
-     * @param iscRq
-     * @param tenantId
-     * @param page
-     * @param size
-     * @return
-     * @throws IOException
-     */
     @Loggable
     @PostMapping({"/tasks/searchAll"})
     public ResponseEntity<ISC<BPMSUserTasksContentDto>> searchAllTask(HttpServletRequest iscRq,

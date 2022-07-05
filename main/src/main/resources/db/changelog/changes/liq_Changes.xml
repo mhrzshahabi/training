@@ -4828,6 +4828,12 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-084">
+        <addColumn tableName="tbl_request_item">
+            <column name="c_letter_number_sent" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 
     <changeSet author="namdari" id="1656832784000-02">
         <addColumn tableName="tbl_educational_decision">

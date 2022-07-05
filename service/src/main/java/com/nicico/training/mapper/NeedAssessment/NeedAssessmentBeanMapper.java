@@ -36,8 +36,8 @@ public abstract class NeedAssessmentBeanMapper {
     @Named("toCourseCode")
     protected String toCourseCode(Long skillId) {
         if (skillId != null) {
-            if (skillService.get(skillId).getCourseId() != null)
-                return courseService.get(skillService.get(skillId).getCourseId()).getCode();
+            if (skillService.get(skillId).getCourseMainObjectiveId() != null)
+                return courseService.get(skillService.get(skillId).getCourseMainObjectiveId()).getCode();
             else return null;
         }
         else return null;
@@ -46,8 +46,8 @@ public abstract class NeedAssessmentBeanMapper {
     @Named("toCourseTitle")
     protected String toCourseTitle(Long skillId) {
         if (skillId != null) {
-            if (skillService.get(skillId).getCourseId() != null)
-                return courseService.get(skillService.get(skillId).getCourseId()).getTitleFa();
+            if (skillService.get(skillId).getCourseMainObjectiveId() != null)
+                return courseService.get(skillService.get(skillId).getCourseMainObjectiveId()).getTitleFa();
             else return null;
         }
         else return null;
