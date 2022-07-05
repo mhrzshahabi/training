@@ -2859,7 +2859,7 @@
                             if (result.length > 0) {
                                 let hasConflict = null;
                                 let flag = true;
-
+                                   wait.show();
                                 for (let i = 0; i < result.length && flag; i++) {
 
                                     isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
@@ -2875,6 +2875,7 @@
                                         }
                                     }));
                                 }
+                                wait.close();
 
                             }
 
