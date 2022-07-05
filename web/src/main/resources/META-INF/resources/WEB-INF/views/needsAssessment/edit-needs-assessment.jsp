@@ -17,6 +17,9 @@
     var selectedRecord = {};
     var editing = false;
     let isGap;
+    let canInsert;
+    let limit=0;
+    let selectedRecordForGap;
     var hasChanged = false;
     var canSendToWorkFlowNA = false;
 
@@ -159,6 +162,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
             {name: "categoryId", title: "گروه"},
+            {name: "limitSufficiency", title: "حد بسندگی"},
             {name: "subCategoryId", title: "زیر گروه"}
         ],
         fetchDataURL: competenceUrl + "/spec-list",
@@ -225,7 +229,8 @@
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
             {name: "categoryId", title: "گروه"},
             {name: "subCategoryId", title: "زیرگروه"},
-            {name: "code", title:"کد"}
+            {name: "code", title:"کد"},
+            {name: "limitSufficiency", title:"حد بسندگی"}
         ],
         testData: competenceData,
         // fetchDataURL: competenceUrl + "/iscList",
@@ -1085,16 +1090,29 @@
             {name: "code", title: "کد شایستگی", autoFitData: true, autoFitWidthApproach: true},
             {name: "title", title: "نام شایستگی"},
             {name: "competenceType.title", title: "نوع شایستگی"},
+            {name: "limitSufficiency", title: "حد بسندگی"},
             {name: "categoryId", title: "گروه", optionDataSource: RestDataSource_category_JspENA, displayField: "titleFa", valueField:"id"},
             {name: "subCategoryId", title: "زیر گروه" , optionDataSource: RestDataSource_subCategory_JspENA, displayField: "titleFa", valueField:"id"}
         ],
         gridComponents: ["filterEditor", "header", "body"],
         rowDoubleClick(record){
             if (checkSaveData(record, DataSource_Competence_JspNeedsAssessment, "id")) {
-                if(isGap){
-
+                if(isGap && canInsert){
+                    selectedRecordForGap=record
+                    DynamicForm_limit_sufficiency.clearValues();
+                    DynamicForm_limit_sufficiency.clearErrors();
+                    Window_get_limit_sufficiency.show();
                 }else {
-                    ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+
+                    if(isGap){
+                        ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+
+                    }else {
+                        ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+
+                    }
+
+                    canInsert=isGap
                 }
                 return;
             }
@@ -1154,7 +1172,9 @@
         selectionType:"single",
         showHeaderContextMenu: false,
         showRowNumbers: false,
-        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},
+            {name:"limitSufficiency",title: "حد بسندگی"}
+        ],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
             CompetenceTS_needsAssessment, "header", "body"
@@ -1912,6 +1932,70 @@
             })]
     });
 
+    DynamicForm_limit_sufficiency = isc.DynamicForm.create({
+        width: 400,
+        height: "100%",
+        numCols: 2,
+        fields: [
+            {
+                name: "limitSufficiency",
+                title: "حد بسندگی",
+                defaultValue: 0, min: 0,
+                validators: [{
+                    type: "integerRange", min: 0, max: 100,
+                    errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",
+                }],
+                max:100,
+                length: 3,
+                type: "Integer",
+                keyPressFilter: "[0-9]",
+                required: true},
+        ]
+    });
+
+
+
+    HLayout_IButtons_limit_sufficiency = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            isc.IButtonSave.create({
+                top: 260,
+                layoutMargin: 5,
+                membersMargin: 5,
+                click: function () {
+                     if (!DynamicForm_limit_sufficiency.validate()) {
+                        return;
+                    }else {
+                         canInsert=false;
+                         debugger
+                          limit=DynamicForm_limit_sufficiency.getItem('limitSufficiency').getValue()
+                         selectedRecordForGap.limitSufficiency=limit
+                         ListGrid_AllCompetence_JspNeedsAssessment.setData(selectedRecordForGap);
+
+                         Window_get_limit_sufficiency.close();
+                         ListGrid_AllCompetence_JspNeedsAssessment.rowDoubleClick(selectedRecordForGap)
+
+
+                     }
+                }
+            }),
+            isc.IButtonCancel.create({
+                layoutMargin: 5,
+                membersMargin: 5,
+                width: 120,
+                click: function () {
+                    Window_get_limit_sufficiency.close();
+                }
+            })
+        ]
+    });
+
+
+
     let  Window_get_limit_sufficiency = isc.Window.create({
         title: "افزودن حد بسندگی",
         width: 450,
@@ -1923,8 +2007,8 @@
         autoDraw: false,
         dismissOnEscape: true,
         items: [
-            DynamicForm_Decision_history,
-            HLayout_IButtons_Decision_history
+            DynamicForm_limit_sufficiency,
+            HLayout_IButtons_limit_sufficiency
         ]
     });
 
@@ -2400,6 +2484,7 @@
 
     function loadEditNeedsAssessment(objectId, type, state = "R&W",isFromGap) {
         isGap=isFromGap
+        canInsert=isFromGap
         ListGrid_Knowledge_JspNeedsAssessment.unsort();
         ListGrid_Ability_JspNeedsAssessment.unsort();
         ListGrid_Attitude_JspNeedsAssessment.unsort();
