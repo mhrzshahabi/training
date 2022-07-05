@@ -2377,7 +2377,7 @@
                                         align: "center",
                                         icon: "[SKIN]/actions/save.png",
                                         click: function () {
-
+                                             wait.show();
                                             SelectedPersonnelsLG_student.endEditing();
                                             let classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                             let courseId = ListGrid_Class_JspClass.getSelectedRecord().courseId;
@@ -2386,8 +2386,10 @@
                                             if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
 
                                                 addValidStudents(classId, courseId, equalCourseIds, SelectedPersonnelsLG_student.data.toArray());
+
                                             }
                                             // SelectedPersonnelsLG_student.data.clearAll();
+                                            wait.close();
                                         }
                                     }),
                                     isc.IButtonCancel.create({
@@ -2830,7 +2832,7 @@
 
                 JSON.parse(response.data).forEach(q => equalCourseIds.add(q));
                 let checkAll = 0;
-
+                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "preCourse/" + courseId, "GET", null, function (resp) {
 
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -2875,7 +2877,7 @@
                                 wait.close();
                             }
 
-
+                             wait.show();
                             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
                                 studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
 
@@ -2913,12 +2915,14 @@
                                     inx = studentsDataArray.length - 1;
                                 }
                             }));
+                            wait.close();
                         }
 
                     } else {
                         createDialog("info", "<spring:message code='exception.un-managed'/>");
                     }
                 }));
+                wait.close();
             }));
 
         }
