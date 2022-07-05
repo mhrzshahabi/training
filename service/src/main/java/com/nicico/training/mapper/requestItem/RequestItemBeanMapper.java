@@ -1,9 +1,11 @@
 package com.nicico.training.mapper.requestItem;
 
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.RequestItemProcessDetail;
+import com.nicico.training.repository.PersonnelDAO;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.requestItem.RequestItemWithDiff;
@@ -18,11 +20,13 @@ public abstract class RequestItemBeanMapper {
     @Autowired
     protected IParameterValueService parameterValueService;
     @Autowired
+    protected PersonnelDAO personnelDAO;
+    @Autowired
     protected IOperationalRoleService operationalRoleService;
     @Autowired
     protected ISynonymPersonnelService synonymPersonnelService;
-    @Autowired
-    protected IRequestItemService requestItemService;
+//    @Autowired
+//    protected IRequestItemService requestItemService;
     @Autowired
     protected IRequestItemProcessDetailService requestItemProcessDetailService;
 
@@ -44,11 +48,23 @@ public abstract class RequestItemBeanMapper {
 
     @Named("idToPlanningChiefOpinion")
     protected String idToPlanningChiefOpinion(Long id) {
-        String chiefNationalCode = requestItemService.getPlanningChiefNationalCode();
+        String chiefNationalCode = getPlanningChiefNationalCode();
         RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(id, chiefNationalCode);
         if (requestItemProcessDetail != null)
             return parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle();
         else return "";
+    }
+
+    private String getPlanningChiefNationalCode() {
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+//        String mainConfirmBoss = "ahmadi_z";
+        String mainConfirmBoss = "3621296476";
+        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
+//            mainConfirmBoss = "pourfathian_a";
+            mainConfirmBoss = "3149622123";
+//            mainConfirmBoss = "hajizadeh_mh";
+        }
+        return mainConfirmBoss;
     }
 
     @Named("operationalRoleIdsToTitles")
