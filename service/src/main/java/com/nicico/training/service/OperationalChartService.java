@@ -99,13 +99,10 @@ public class OperationalChartService implements IOperationalChartService {
     public OperationalChartDTO.Info update(Long id, OperationalChartDTO.Update request) {
         final Optional<OperationalChart> cById = operationalChartDAO.findById(id);
         final OperationalChart operationalChart = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-//        OperationalChart updating = new OperationalChart();
-//        modelMapper.map(operationalChart, updating);
-//        modelMapper.map(request, updating);
-//        return save(updating);
 
-      return save( operationalChart);
+        OperationalChart toUpdate= mapper.toUpdate(operationalChart,request);
 
+      return save(toUpdate) ;
     }
 
     @Transactional
