@@ -52,9 +52,9 @@ public class OperationalChartRestController {
     }
 
     @Loggable
-    @PutMapping(value = "/updateParent/{id}/{parentId}")
-    public ResponseEntity<OperationalChartDTO.Info> updateParent(@PathVariable Long id,@PathVariable Long parentId, @Validated @RequestBody OperationalChartDTO.Update request) {
-        return new ResponseEntity<>(operationalChartService.updateParent(id,parentId, request), HttpStatus.OK);
+    @PutMapping(value = "/updateParent/{id}/{newParentId}")
+    public ResponseEntity<OperationalChartDTO.Info> updateParent(@PathVariable Long id,@PathVariable Long newParentId) {
+        return new ResponseEntity<>(operationalChartService.updateParent(id,newParentId), HttpStatus.OK);
     }
 
     @Loggable
