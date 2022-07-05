@@ -230,7 +230,7 @@
             {name: "categoryId", title: "گروه"},
             {name: "subCategoryId", title: "زیرگروه"},
             {name: "code", title:"کد"},
-            {name: "limitSufficiency", title:"حد بسندگی"}
+            {name: "limitSufficiency", title:"حد بسندگی",hidden: true}
         ],
         testData: competenceData,
         // fetchDataURL: competenceUrl + "/iscList",
@@ -952,6 +952,21 @@
                         ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
                     }
                 }
+            }, {
+                title: "ویرایش حد بسندگی ",
+                click: function () {
+                    if(checkSelectedRecord(ListGrid_Competence_JspNeedsAssessment)) {
+                        if (isGap){
+                            selectedRecordForGap=ListGrid_Competence_JspNeedsAssessment.getSelectedRecord()
+                            DynamicForm_limit_sufficiency.clearValues();
+                            DynamicForm_limit_sufficiency.clearErrors();
+                            Window_get_limit_sufficiency.show();
+                            DynamicForm_limit_sufficiency.getItem("limitSufficiency").setValue(selectedRecordForGap.limitSufficiency)
+                        }
+
+                     }
+
+                }
             },
         ]
     });
@@ -1090,7 +1105,7 @@
             {name: "code", title: "کد شایستگی", autoFitData: true, autoFitWidthApproach: true},
             {name: "title", title: "نام شایستگی"},
             {name: "competenceType.title", title: "نوع شایستگی"},
-            {name: "limitSufficiency", title: "حد بسندگی"},
+            {name: "limitSufficiency", title: "حد بسندگی",hidden: true},
             {name: "categoryId", title: "گروه", optionDataSource: RestDataSource_category_JspENA, displayField: "titleFa", valueField:"id"},
             {name: "subCategoryId", title: "زیر گروه" , optionDataSource: RestDataSource_subCategory_JspENA, displayField: "titleFa", valueField:"id"}
         ],
@@ -1971,11 +1986,9 @@
                         return;
                     }else {
                          canInsert=false;
-                         debugger
                           limit=DynamicForm_limit_sufficiency.getItem('limitSufficiency').getValue()
                          selectedRecordForGap.limitSufficiency=limit
-                         ListGrid_AllCompetence_JspNeedsAssessment.setData(selectedRecordForGap);
-
+                         RestDataSource_Competence_JspNeedsAssessment.addData(selectedRecordForGap);
                          Window_get_limit_sufficiency.close();
                          ListGrid_AllCompetence_JspNeedsAssessment.rowDoubleClick(selectedRecordForGap)
 
