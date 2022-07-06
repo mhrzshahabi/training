@@ -142,7 +142,6 @@
         click: function () {
             let localData = ListGrid_JspInternalTeachingSubject.data.localData;
             showChart_teachingSubject(localData);
-            debugger
         }
     });
     Chart_teachingSubject = isc.FacetChart.create({
@@ -209,7 +208,6 @@
         RestDataSource_JspInternalTeachingSubject.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingSubject;
 
          ListGrid_InternalTeachingSubject_refresh();
-         debugger
     }
 
     function clear_InternalTeachingSubject() {

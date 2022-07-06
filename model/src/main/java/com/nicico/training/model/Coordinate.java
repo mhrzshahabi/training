@@ -8,12 +8,14 @@ public class Coordinate {
     private Double vertical;
     private String seriesName;
     private String courseName;
+    private String label;
 
-    public Coordinate(Integer horizontal, Double vertical, String seriesName,String courseName) {
+    public Coordinate(Integer horizontal, Double vertical, String seriesName, String courseName, String label) {
         this.horizontal = horizontal;
         this.vertical = vertical;
         this.seriesName = seriesName;
-        this.courseName=courseName;
+        this.courseName = courseName;
+        this.label = label;
     }
 
     public String getCourseName() {
@@ -49,5 +51,13 @@ public class Coordinate {
 
     public void setSeriesName(String seriesName) {
         this.seriesName = seriesName;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
     }
 }

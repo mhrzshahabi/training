@@ -5,6 +5,7 @@
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
 	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
 	<subDataset name="Dataset" uuid="c441db47-98fa-4b28-bd7e-8202e4827ac1">
+		<parameter name="label" class="java.lang.String"/>
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
@@ -18,6 +19,7 @@
 	<parameter name="CHART_TITLE" class="java.lang.String">
 		<defaultValueExpression><![CDATA[$P{CHART_TITLE}]]></defaultValueExpression>
 	</parameter>
+	<parameter name="label" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
@@ -33,7 +35,7 @@
 				<reportElement isPrintRepeatedValues="false" x="50" y="50" width="445" height="29" uuid="4bbaace7-2932-41bd-855f-7a1b64c6e6f3"/>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Titr"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{CHART_TITLE}]]></textFieldExpression>
 			</textField>
@@ -49,17 +51,24 @@
 		<band height="350" splitType="Stretch">
 			<xyLineChart>
 				<chart evaluationTime="Report">
-					<reportElement x="50" y="-95" width="445" height="416" uuid="97700e5b-526b-4e1d-85f6-8c71ddfb68e4"/>
+					<reportElement x="50" y="-95" width="445" height="416" uuid="9335145f-8407-40ed-9dae-792bda7df189">
+						<property name="net.sf.jasperreports.chart.domain.axis.integer.unit" value="true"/>
+						<propertyExpression name="com.jaspersoft.studio.unit.x"><![CDATA[]]></propertyExpression>
+						<propertyExpression name="net.sf.jasperreports.chart.dial.label"><![CDATA[]]></propertyExpression>
+					</reportElement>
 					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend>
-						<font fontName="Shabnam-FD&#xD;&#xA;Shabnam-FD"/>
+						<font fontName="Shabnam-FD"/>
 					</chartLegend>
 				</chart>
 				<xyDataset>
 					<dataset>
-						<datasetRun subDataset="Dataset" uuid="07cefa5a-ec66-4c00-a542-e895c5f913a3">
+						<datasetRun subDataset="Dataset" uuid="b66d2700-686a-4aac-9c8f-95523da42710">
+							<datasetParameter name="label">
+								<datasetParameterExpression><![CDATA[$P{label}]]></datasetParameterExpression>
+							</datasetParameter>
 							<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.data.JRBeanCollectionDataSource($P{CHART_DATA})]]></dataSourceExpression>
 						</datasetRun>
 					</dataset>
@@ -67,6 +76,7 @@
 						<seriesExpression><![CDATA[$F{seriesName}]]></seriesExpression>
 						<xValueExpression><![CDATA[$F{horizontal}]]></xValueExpression>
 						<yValueExpression><![CDATA[$F{vertical}]]></yValueExpression>
+						<labelExpression><![CDATA[$P{label}]]></labelExpression>
 					</xySeries>
 				</xyDataset>
 				<linePlot>
@@ -99,7 +109,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Titr"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[شماره دوره]]></text>
 			</staticText>
@@ -115,7 +125,7 @@
 					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
 				<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="Left">
-					<font fontName="B Titr"/>
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<text><![CDATA[نمره ارزیابی فراگیر]]></text>
 			</staticText>
