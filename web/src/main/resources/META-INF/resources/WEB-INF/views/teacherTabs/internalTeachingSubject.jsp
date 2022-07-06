@@ -142,6 +142,7 @@
         click: function () {
             let localData = ListGrid_JspInternalTeachingSubject.data.localData;
             showChart_teachingSubject(localData);
+            debugger
         }
     });
     Chart_teachingSubject = isc.FacetChart.create({
@@ -198,13 +199,17 @@
         ListGrid_JspInternalTeachingSubject.filterByEditor();
     }
 
+    let teacher_fullName = "";
 
-    function loadPage_InternalTeachingSubject(id) {
+    function loadPage_InternalTeachingSubject(record) {
 
-        teacherIdInternalTeachingSubject = id;
+        let teacherIdInternalTeachingSubject = record.id
+        teacher_fullName = record.fullName
+
         RestDataSource_JspInternalTeachingSubject.fetchDataURL = classUrl + "listByteacherID/" + teacherIdInternalTeachingSubject;
 
          ListGrid_InternalTeachingSubject_refresh();
+         debugger
     }
 
     function clear_InternalTeachingSubject() {
@@ -219,12 +224,14 @@
             canSubmit: true,
             fields:[
                 {name: "list", type: "hidden"},
+                {name: "fullName", type: "hidden"}
             ]
         });
 
 
 
           criteriaForm.setValue("list", JSON.stringify(data));
+          criteriaForm.setValue("fullName", teacher_fullName);
           criteriaForm.show();
           criteriaForm.submitForm();
 

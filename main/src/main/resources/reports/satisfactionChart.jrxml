@@ -3,6 +3,7 @@
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_5" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d0bd77d5-a46d-46f2-bfee-c444d3d8f3d3">
 	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="net.sf.jasperreports.print.create.bookmarks" value="false"/>
 	<subDataset name="Dataset" uuid="c441db47-98fa-4b28-bd7e-8202e4827ac1">
 		<queryString>
 			<![CDATA[]]>
@@ -11,7 +12,12 @@
 		<field name="vertical" class="java.lang.Double"/>
 		<field name="seriesName" class="java.lang.String"/>
 	</subDataset>
-	<parameter name="CHART_DATA" class="java.util.List"/>
+	<parameter name="CHART_DATA" class="java.util.List">
+		<defaultValueExpression><![CDATA[$P{CHART_DATA}]]></defaultValueExpression>
+	</parameter>
+	<parameter name="CHART_TITLE" class="java.lang.String">
+		<defaultValueExpression><![CDATA[$P{CHART_TITLE}]]></defaultValueExpression>
+	</parameter>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
@@ -22,7 +28,16 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch"/>
+		<band height="79" splitType="Stretch">
+			<textField>
+				<reportElement isPrintRepeatedValues="false" x="50" y="50" width="445" height="29" uuid="4bbaace7-2932-41bd-855f-7a1b64c6e6f3"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Titr"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CHART_TITLE}]]></textFieldExpression>
+			</textField>
+		</band>
 	</title>
 	<pageHeader>
 		<band height="35" splitType="Stretch"/>
@@ -31,10 +46,11 @@
 		<band height="61" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="343" splitType="Stretch">
+		<band height="350" splitType="Stretch">
 			<xyLineChart>
 				<chart evaluationTime="Report">
-					<reportElement x="50" y="-95" width="445" height="438" uuid="97700e5b-526b-4e1d-85f6-8c71ddfb68e4"/>
+					<reportElement x="50" y="-95" width="445" height="416" uuid="97700e5b-526b-4e1d-85f6-8c71ddfb68e4"/>
+					<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
 					<chartTitle/>
 					<chartSubtitle/>
 					<chartLegend>
@@ -56,13 +72,53 @@
 				<linePlot>
 					<plot/>
 					<categoryAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
+							<labelFont/>
+							<tickLabelFont/>
+						</axisFormat>
 					</categoryAxisFormat>
 					<valueAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
+							<labelFont>
+								<font isBold="false"/>
+							</labelFont>
+							<tickLabelFont/>
+						</axisFormat>
 					</valueAxisFormat>
 				</linePlot>
 			</xyLineChart>
+			<staticText>
+				<reportElement x="50" y="300" width="445" height="20" uuid="e1378127-f7d6-4b2c-96a3-55cecdff917d">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Titr"/>
+				</textElement>
+				<text><![CDATA[شماره دوره]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="30" y="-96" width="20" height="415" uuid="f0c1bd71-a024-4b47-907d-bbb4eff05e5d">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Bottom" rotation="Left">
+					<font fontName="B Titr"/>
+				</textElement>
+				<text><![CDATA[نمره ارزیابی فراگیر]]></text>
+			</staticText>
 		</band>
 	</detail>
 	<columnFooter>

@@ -392,7 +392,7 @@
            TabSet_teachingSubject.disable();
            return;
        }else {
-           loadPage_InternalTeachingSubject(record.id);
+           loadPage_InternalTeachingSubject(record);
        }
        TabSet_teachingSubject.enable();
    }

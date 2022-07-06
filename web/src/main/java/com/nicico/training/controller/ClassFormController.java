@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -214,7 +215,7 @@ public class ClassFormController {
     }
 
     @PostMapping(value = {"/chartPrint/{type}"})
-    public void chartPrint(HttpServletResponse response, @PathVariable String type, @RequestParam(value = "list") String list) throws SQLException, IOException, JRException {
+    public void chartPrint(HttpServletResponse response, @PathVariable String type, @RequestParam(value = "list") String list, @RequestParam(value = "fullName") String fullName) throws SQLException, IOException, JRException {
 
         Gson gson = new Gson();
         Type resultType = new TypeToken<List<TclassDTO.TeachingHistory>>() {
@@ -242,6 +243,8 @@ public class ClassFormController {
        });
         Map<String, Object> parameters = new HashMap<>();
       parameters.put("CHART_DATA",xyData);
+
+        parameters.put("CHART_TITLE", String.format("روند رضایت فراگیران از آقا/خانم %s بعنوان مدرس", fullName));
 
        xyData.stream().forEach(xy->{
            parameters.put("horizontal",xy.getHorizontal());
