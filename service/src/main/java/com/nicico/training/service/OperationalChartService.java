@@ -107,27 +107,47 @@ public class OperationalChartService implements IOperationalChartService {
 
     @Transactional
     @Override
-    public OperationalChartDTO.Info updateParent(Long id,Long newParentId) {
-        final Optional<OperationalChart> cById = operationalChartDAO.findById(id);
+    public OperationalChartDTO.Info updateParent(Long childId,Long newParentId) {
+        return null;
+//        final Optional<OperationalChart> cById = operationalChartDAO.findById(childId);
+//        final OperationalChart operationalChart = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+//
+//        operationalChart.setParentId(newParentId);
+//        OperationalChartDTO.Info savedChild = save(operationalChart);
+//
+//        //remove from old parent
+//        Optional<OperationalChart> findOperationalOldParent=  operationalChartDAO.findById(operationalChart.getParentId());
+//        Optional<OperationalChart> operationalOldParent= Optional.ofNullable(findOperationalOldParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
+//        if (operationalOldParent.isPresent()) {
+//            OperationalChart OldParent = operationalOldParent.get();
+//            OldParent.getOperationalChartParentChild().remove(operationalChart);
+//            save(OldParent);
+//        }else{  throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));}
+//
+//        //set on new parent
+//        Set<OperationalChart> lastChilds = new HashSet<>(operationalChartDAO.findAllByParentId(newParentId));
+//        lastChilds.add(operationalChart);
+//        Optional<OperationalChart> findOperationalNewParent=  operationalChartDAO.findById(newParentId);
+//        Optional<OperationalChart> operationalNewParent= Optional.ofNullable(findOperationalNewParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
+//        if (operationalNewParent.isPresent()) {
+//            OperationalChart newParent = operationalNewParent.get();
+//
+//
+//            List<OperationalChart>  newChilds = lastChilds.stream().toList();
+//            newParent.setOperationalChartParentChild(newChilds);
+//            save(newParent);
+//
+//        }else{  throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));}
+//
+//
+//        return savedChild;
+    }
+
+    @Transactional
+    @Override
+    public OperationalChartDTO.Info removeOldParent(Long childId) {
+        final Optional<OperationalChart> cById = operationalChartDAO.findById(childId);
         final OperationalChart operationalChart = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-
-        operationalChart.setParentId(newParentId);
-        OperationalChartDTO.Info savedChild = save(operationalChart);
-
-
-        //set on new parent
-        Set<OperationalChart> lastChilds = new HashSet<>(operationalChartDAO.findAllByParentId(newParentId));
-
-        lastChilds.add(operationalChart);
-        Optional<OperationalChart> findOperationalNewParent=  operationalChartDAO.findById(newParentId);
-        Optional<OperationalChart> operationalNewParent= Optional.ofNullable(findOperationalNewParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
-        if (operationalNewParent.isPresent()) {
-            OperationalChart NewParent = operationalNewParent.get();
-            NewParent.setOperationalChartParentChild(lastChilds.stream().toList());
-            save(NewParent);
-        }else{  throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));}
-
-
 
         //remove from old parent
         Optional<OperationalChart> findOperationalOldParent=  operationalChartDAO.findById(operationalChart.getParentId());
@@ -135,13 +155,16 @@ public class OperationalChartService implements IOperationalChartService {
         if (operationalOldParent.isPresent()) {
             OperationalChart OldParent = operationalOldParent.get();
             OldParent.getOperationalChartParentChild().remove(operationalChart);
-            save(OldParent);
+            return save(OldParent);
         }else{  throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));}
 
+//
+//        operationalChart.setParentId(operationalChart.getParentId());
+//        OperationalChartDTO.Info savedChild = save(operationalChart);
 
 
-        return savedChild;
     }
+
 
     @Transactional
     @Override
@@ -168,8 +191,8 @@ public class OperationalChartService implements IOperationalChartService {
     public SearchDTO.SearchRs<OperationalChartDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(operationalChartDAO, request, operationalChart -> mapper.toInfoDTO(request));
     }
-
-    private OperationalChartDTO.Info save(OperationalChart operationalChart) {
+    @Transactional
+    OperationalChartDTO.Info save(OperationalChart operationalChart) {
         final OperationalChart saved = operationalChartDAO.saveAndFlush(operationalChart);
         return mapper.toInfoDTO(saved);
     }

@@ -40,6 +40,12 @@ public class OperationalChartRestController {
     }
 
     @Loggable
+    @PutMapping(value = "/removeOldParent/{childId}")
+    public ResponseEntity<OperationalChartDTO.Info> removeOldParent(@PathVariable Long childId) {
+        return new ResponseEntity<>(operationalChartService.removeOldParent(childId), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping(value = "/addchild/{child_id}/{parent_id}")
     public ResponseEntity<OperationalChartDTO.Info> addChild(@PathVariable Long parent_id,@PathVariable Long child_id) {
          return new ResponseEntity<>(operationalChartService.addChild(parent_id,child_id), HttpStatus.OK);
@@ -52,9 +58,9 @@ public class OperationalChartRestController {
     }
 
     @Loggable
-    @PutMapping(value = "/updateParent/{id}/{newParentId}")
-    public ResponseEntity<OperationalChartDTO.Info> updateParent(@PathVariable Long id,@PathVariable Long newParentId) {
-        return new ResponseEntity<>(operationalChartService.updateParent(id,newParentId), HttpStatus.OK);
+    @PutMapping(value = "/updateParent/{childId}/{newParentId}")
+    public ResponseEntity<OperationalChartDTO.Info> updateParent(@PathVariable Long childId,@PathVariable Long newParentId) {
+        return new ResponseEntity<>(operationalChartService.updateParent(childId,newParentId), HttpStatus.OK);
     }
 
     @Loggable
