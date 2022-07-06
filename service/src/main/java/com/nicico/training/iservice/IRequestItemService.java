@@ -77,4 +77,5 @@ public interface IRequestItemService {
 
     List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
 
+    void updateProcessStatus(Long requestItemId, String processStatus);
 }

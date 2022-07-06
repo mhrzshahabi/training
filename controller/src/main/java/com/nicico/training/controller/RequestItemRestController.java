@@ -271,4 +271,18 @@ public class RequestItemRestController {
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
 
+    @Loggable
+    @PutMapping(value = "/update-status/run-supervisor-to-experts")
+    public ResponseEntity updateProcessStatusToRunExperts(@RequestParam Long requestItemId) {
+        requestItemService.updateProcessStatus(requestItemId, "waitingReviewByRunExpertToHoldingCourses");
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/update-status/run-experts-to-supervisor-approval")
+    public ResponseEntity updateProcessStatusToSupervisorApproval(@RequestParam Long requestItemId) {
+        requestItemService.updateProcessStatus(requestItemId, "waitingFinalApprovalByRunSupervisor");
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
 }
