@@ -111,14 +111,9 @@ public class OperationalChartService implements IOperationalChartService {
         final Optional<OperationalChart> cById = operationalChartDAO.findById(id);
         final OperationalChart operationalChart = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
 
-        //remove from old parent
-        Optional<OperationalChart> findOperationalOldParent=  operationalChartDAO.findById(operationalChart.getParentId());
-        Optional<OperationalChart> operationalOldParent= Optional.ofNullable(findOperationalOldParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
-        if (operationalOldParent.isPresent()) {
-            OperationalChart OldParent = operationalOldParent.get();
-            OldParent.getOperationalChartParentChild().remove(operationalChart);
-            save(OldParent);
-        }else{  throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));}
+        operationalChart.setParentId(newParentId);
+        OperationalChartDTO.Info savedChild = save(operationalChart);
+
 
         //set on new parent
         Set<OperationalChart> lastChilds = new HashSet<>(operationalChartDAO.findAllByParentId(newParentId));
@@ -132,8 +127,19 @@ public class OperationalChartService implements IOperationalChartService {
             save(NewParent);
         }else{  throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));}
 
-        operationalChart.setParentId(newParentId);
-        OperationalChartDTO.Info savedChild = save(operationalChart);
+
+
+        //remove from old parent
+        Optional<OperationalChart> findOperationalOldParent=  operationalChartDAO.findById(operationalChart.getParentId());
+        Optional<OperationalChart> operationalOldParent= Optional.ofNullable(findOperationalOldParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
+        if (operationalOldParent.isPresent()) {
+            OperationalChart OldParent = operationalOldParent.get();
+            OldParent.getOperationalChartParentChild().remove(operationalChart);
+            save(OldParent);
+        }else{  throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));}
+
+
+
         return savedChild;
     }
 
