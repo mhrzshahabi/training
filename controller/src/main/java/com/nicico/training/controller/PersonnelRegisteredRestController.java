@@ -83,12 +83,15 @@ public class PersonnelRegisteredRestController {
     public ResponseEntity<PersonnelRegisteredDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
 
         Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredService.getByNationalCode(nationalCode);
-        Optional<Personnel> optionalPersonnel = iPersonnelService.getOneByNationalCodeAndDeleted(nationalCode, 0);
-
-        if (((optionalPersonnel.map(personalInfo -> modelMapper.map(personalInfo, PersonnelDTO.Info.class)).orElse(null)) != null)
-                || ((optionalPersonnelReg.map(personalInfo -> modelMapper.map(personalInfo, PersonnelRegisteredDTO.Info.class)).orElse(null)) != null)) {
-            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+//        Optional<Personnel> optionalPersonnel = iPersonnelService.getOneByNationalCodeAndDeleted(nationalCode, 0);
+        if(optionalPersonnelReg.isPresent() && optionalPersonnelReg.get().getDeleted()!=null){
+            if(optionalPersonnelReg.get().getDeleted()==0){
+                return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+            }
         }
+
+
+
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
