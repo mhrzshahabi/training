@@ -1186,8 +1186,9 @@
 
 
             RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/courses-run-supervisor/" + record.requestItemId;
+            wait.show();
             ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
-
+                wait.close();
                 if (dsResponse.httpResponseCode === 200) {
                     let resp = JSON.parse(dsResponse.httpResponseText);
                     DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);

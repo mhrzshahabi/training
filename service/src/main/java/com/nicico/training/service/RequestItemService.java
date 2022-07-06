@@ -492,7 +492,6 @@ public class RequestItemService implements IRequestItemService {
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
-
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> coursesAssigneeList = getSupervisorAssigneeList(courseCategoryInfos);
             if (coursesAssigneeList.stream().anyMatch(item -> item.getSupervisorAssigneeList().size() == 0)) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -500,7 +499,6 @@ public class RequestItemService implements IRequestItemService {
                 Collection<String> supervisorAssigneeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getSupervisorAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
                 Map<String, Object> map = reviewTaskRequest.getVariables();
                 map.put("supervisorAssigneeList", supervisorAssigneeList);
-
                 requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByRunSupervisorToHoldingCourses"));
                 requestItemDAO.saveAndFlush(requestItem);
                 response.setStatus(200);
@@ -539,7 +537,6 @@ public class RequestItemService implements IRequestItemService {
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
 
-
             List<RequestItemCoursesDetailDTO.CourseCategoryInfo> coursesAssigneeList = getExpertsAssigneeList(courseCategoryInfos);
             if (coursesAssigneeList.stream().anyMatch(item -> item.getExpertsAssigneeList().size() == 0)) {
                 response.setStatus(HttpStatus.BAD_REQUEST.value());
@@ -547,9 +544,7 @@ public class RequestItemService implements IRequestItemService {
                 Collection<String> expertsAssigneeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getExpertsAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
                 Map<String, Object> map = reviewTaskRequest.getVariables();
                 map.put("expertsAssigneeList", expertsAssigneeList);
-
-//                requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByRunExpertToHoldingCourses"));
-//                requestItemDAO.saveAndFlush(requestItem);
+                map.put("requestItemId", requestItem.getId());
                 response.setStatus(200);
             }
         } else {
@@ -713,6 +708,17 @@ public class RequestItemService implements IRequestItemService {
             item.setExpertsAssigneeList(expertsAssigneeList);
         });
         return courseCategoryInfos;
+    }
+
+    @Override
+    public void updateProcessStatus(Long requestItemId, String processStatus) {
+
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findById(requestItemId);
+        if (optionalRequestItem.isPresent()) {
+            RequestItem requestItem = optionalRequestItem.get();
+            requestItem.setProcessStatusId(parameterValueService.getId(processStatus));
+            requestItemDAO.saveAndFlush(requestItem);
+        }
     }
 
     private int getWrongCount(List<RequestItemWithDiff> list) {
