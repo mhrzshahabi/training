@@ -76,23 +76,18 @@
 						<seriesExpression><![CDATA[$F{seriesName}]]></seriesExpression>
 						<xValueExpression><![CDATA[$F{horizontal}]]></xValueExpression>
 						<yValueExpression><![CDATA[$F{vertical}]]></yValueExpression>
-						<labelExpression><![CDATA[$P{label}]]></labelExpression>
 					</xySeries>
 				</xyDataset>
 				<linePlot>
 					<plot/>
 					<categoryAxisFormat>
-						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
-							<labelFont/>
-							<tickLabelFont/>
-						</axisFormat>
+						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000"/>
 					</categoryAxisFormat>
 					<valueAxisFormat>
 						<axisFormat labelColor="#000000" tickLabelColor="#000000" axisLineColor="#000000">
 							<labelFont>
 								<font isBold="false"/>
 							</labelFont>
-							<tickLabelFont/>
 						</axisFormat>
 					</valueAxisFormat>
 				</linePlot>

@@ -36,7 +36,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.sql.SQLException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -228,7 +227,7 @@ public class ClassFormController {
 
         finalData.forEach(item -> {
             if(item.getEvaluationGrade()>0.0) {
-                xyData.add(new Coordinate(count[0], item.getEvaluationGrade(),"" ,item.getEndDate(), item.getEndDate()));
+                xyData.add(new Coordinate(count[0], item.getEvaluationGrade(),"" ,item.getEndDate()));
                 ++count[0];
             }
         });
@@ -250,10 +249,10 @@ public class ClassFormController {
            parameters.put("horizontal",xy.getHorizontal());
            parameters.put("vertical",xy.getVertical());
            parameters.put("seriesName",xy.getSeriesName());
-           parameters.put("label", xy.getLabel());
        });
 
         parameters.put(ConstantVARs.REPORT_TYPE, type);
+
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(xyData) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
