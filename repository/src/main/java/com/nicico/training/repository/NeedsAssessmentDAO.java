@@ -23,8 +23,9 @@ public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
     public Long getNextId();
 
     @Modifying
-    @Query(value = "update TBL_NEEDS_ASSESSMENT SET f_parameter_value_needs_assessment_priority = :priority WHERE id = :id", nativeQuery = true)
-    public void updateNeedsAssessmentPriority(Long id, Long priority);
+    @Query(value = "update TBL_NEEDS_ASSESSMENT SET f_parameter_value_needs_assessment_priority = :priority ,\n" +
+            "limit_sufficiency = :limit WHERE id = :id", nativeQuery = true)
+    public void updateNeedsAssessmentPriority(Long id, Long priority , String limit);
 
     Optional<NeedsAssessment> findFirstByCompetenceId(Long competenceId);
 

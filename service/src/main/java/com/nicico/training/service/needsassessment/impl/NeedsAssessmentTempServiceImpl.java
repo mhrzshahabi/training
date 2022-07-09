@@ -24,6 +24,16 @@ public class NeedsAssessmentTempServiceImpl implements NeedsAssessmentTempServic
     }
 
     @Override
+    public void updateLimitSufficiency(String objectType, Long objectId,Long id,Long limitSufficiency) {
+        List<NeedsAssessmentTemp> needsAssessmentTemps = repo.findAllByObjectTypeAndObjectIdAndCompetenceId(objectType,objectId,id);
+        for (NeedsAssessmentTemp temp :needsAssessmentTemps){
+            temp.setLimitSufficiency(limitSufficiency);
+            repo.save(temp);
+        }
+
+    }
+
+    @Override
     public NeedsAssessmentTemp get(long id) {
         return repo.findById(id).get();
     }

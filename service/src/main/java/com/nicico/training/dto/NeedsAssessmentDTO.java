@@ -25,6 +25,9 @@ public class NeedsAssessmentDTO implements Serializable {
     @NotNull
     @ApiModelProperty(required = true)
     private Long competenceId;
+
+    private String limitSufficiency;
+
     @NotNull
     @ApiModelProperty(required = true)
     private Long skillId;

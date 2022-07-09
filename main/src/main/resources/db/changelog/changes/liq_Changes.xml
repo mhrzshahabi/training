@@ -4839,6 +4839,20 @@ FROM
         </addColumn>
     </changeSet>
 
+
+    <changeSet author="namdari" id="1656832784000-03">
+        <addColumn tableName="tbl_needs_assessment_temp">
+            <column name="limit_sufficiency" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1656832784000-04">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="limit_sufficiency" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

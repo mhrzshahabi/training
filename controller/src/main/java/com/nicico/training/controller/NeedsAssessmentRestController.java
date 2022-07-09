@@ -160,6 +160,22 @@ public class NeedsAssessmentRestController {
         response.setMessage("ویرایش موفقیت آمیز");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @Loggable
+    @PutMapping("update-limitSufficiency/{id}/{limitSufficiency}")
+    public ResponseEntity<NeedsAssessmentUpdateResponse> updateLimitSufficiency(@PathVariable Long id, @PathVariable Long limitSufficiency,@RequestBody NeedsAssessmentUpdateRequest rq) {
+        NeedsAssessmentUpdateResponse response = new NeedsAssessmentUpdateResponse();
+
+        if (!iNeedsAssessmentTempService.isEditable(rq.getObjectType(), rq.getObjectId())) {
+            response.setMessage(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()));
+            response.setStatus(HttpStatus.CONFLICT.value());
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }
+
+        tempService.updateLimitSufficiency(rq.getObjectType(), rq.getObjectId(),id,limitSufficiency);
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage("ویرایش موفقیت آمیز");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @Loggable
     @DeleteMapping("/{id}/{objectType}/{objectId}")
