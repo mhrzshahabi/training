@@ -40,7 +40,17 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade");
+            Window_NeedsAssessment_Edit.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade",false);
+        }
+    });
+    ToolStripButton_EditNA_PostGradeGap = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی (گپ)",
+        click: function () {
+            if (PostGradeLG_postGrade.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade",true);
         }
     });
     ToolStripButton_TreeNA_PostGrade = isc.ToolStripButton.create({
@@ -76,6 +86,9 @@
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_T')">
             ToolStripButton_TreeNA_PostGrade,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_PostGradeGap,
             </sec:authorize>
             <sec:authorize access="hasAuthority('PostGrade_P')">
             ToolStrip_Post_Grade_Export2EXcel

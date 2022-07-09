@@ -72,8 +72,8 @@ function defineWindowsEditNeedsAssessment(grid = null) {
         items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/edit-needs-assessment/"})],
         // items: [isc.ViewLoader.create({autoDraw: true, viewURL: "web/diff-needs-assessment/"})],
         placement: "fillScreen",
-        showUs(record, objectType) {
-            loadEditNeedsAssessment(record, objectType);
+        showUs(record, objectType,isGap) {
+            loadEditNeedsAssessment(record, objectType,"R&W",isGap);
             // loadDiffNeedsAssessment(record, objectType);
             hasChanged = false;
             this.Super("show", arguments);

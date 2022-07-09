@@ -703,6 +703,17 @@
         }
     });
 
+    ToolStripButton_EditNA_PGGGap = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی (گپ)",
+        click: function () {
+            if (ListGrid_Post_Grade_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");
+        }
+    });
+
     ToolStripButton_TreeNA_PGG = isc.ToolStripButton.create({
         title: "درخت نیازسنجی",
         click: function () {
@@ -722,7 +733,10 @@
             ToolStripButton_EditNA_PGG,
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_T')">
-            ToolStripButton_TreeNA_PGG
+            ToolStripButton_TreeNA_PGG,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_PGGGap,
             </sec:authorize>
         ]
     });

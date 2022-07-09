@@ -19,6 +19,7 @@ import com.nicico.training.repository.SkillDAO;
 import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -43,6 +44,7 @@ import java.util.Optional;
 public class CompetenceService extends BaseService<Competence, Long, CompetenceDTO.Info, CompetenceDTO.Create, CompetenceDTO.Update, CompetenceDTO.Delete, CompetenceDAO> implements ICompetenceService {
 
     @Autowired
+    @Lazy
     private IBpmsService bPMSService;
     @Autowired
     private MessageSource messageSource;

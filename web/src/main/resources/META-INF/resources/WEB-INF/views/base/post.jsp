@@ -81,7 +81,17 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post");
+            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post",false);
+        }
+    });
+    ToolStripButton_EditNA_POSTGap = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی (گپ)",
+        click: function () {
+            if (PostLG_post.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post",true);
         }
     });
     ToolStripButton_TreeNA_JspPost = isc.ToolStripButton.create({
@@ -117,6 +127,9 @@
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_T')">
             ToolStripButton_TreeNA_JspPost,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_POSTGap,
             </sec:authorize>
             <sec:authorize access="hasAuthority('Post_P')">
             ToolStrip_Post_Export2EXcel

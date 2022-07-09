@@ -16,6 +16,11 @@
     };
     var selectedRecord = {};
     var editing = false;
+    let isGap;
+    let isFromEdit=false;
+    let canInsert;
+    let limit=0;
+    let selectedRecordForGap;
     var hasChanged = false;
     var canSendToWorkFlowNA = false;
 
@@ -158,6 +163,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
             {name: "categoryId", title: "گروه"},
+            {name: "limitSufficiency", title: "حد بسندگی"},
             {name: "subCategoryId", title: "زیر گروه"}
         ],
         fetchDataURL: competenceUrl + "/spec-list",
@@ -224,7 +230,8 @@
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains"},
             {name: "categoryId", title: "گروه"},
             {name: "subCategoryId", title: "زیرگروه"},
-            {name: "code", title:"کد"}
+            {name: "code", title:"کد"},
+            {name: "limitSufficiency", title:"حد بسندگی",hidden: true}
         ],
         testData: competenceData,
         // fetchDataURL: competenceUrl + "/iscList",
@@ -248,6 +255,7 @@
             {name: "needsAssessmentDomainId", filterOperator: "iContains", hidden:true},
             {name: "skillId", primaryKey: true, filterOperator: "iContains", hidden:true},
             {name: "competenceId", filterOperator: "iContains", hidden:true},
+            {name: "limitSufficiency", filterOperator: "iContains", hidden:true},
             {name: "objectId", filterOperator: "iContains", hidden:true},
             {name: "objectType", title: "<spring:message code="reference"/>", primaryKey: true, filterOperator: "iContains", valueMap: priorityList, autoFitWidth:true,
                 showHover:true,
@@ -318,6 +326,7 @@
                 title:"افزودن",
                 click: function () {
                     if(DynamicForm_JspEditNeedsAssessment.getValue("objectId")!=null) {
+                        isFromEdit=false;
                         ListGrid_AllCompetence_JspNeedsAssessment.fetchData();
                         ListGrid_AllCompetence_JspNeedsAssessment.invalidateCache();
                         Window_AddCompetence.show();
@@ -334,7 +343,7 @@
     let buttonSendToWorkFlow = isc.ToolStripButtonCreate.create({
         title: " ذخیره و ارسال به گردش کار",
         click: async function () {
-          saveAndSendToWorkFlow()
+            saveAndSendToWorkFlow()
         }
     });
     let buttonSave = isc.ToolStripButtonCreate.create({
@@ -946,6 +955,22 @@
                         ListGrid_Competence_JspNeedsAssessment.rowDoubleClick(ListGrid_Competence_JspNeedsAssessment.getSelectedRecord())
                     }
                 }
+            }, {
+                title: "ویرایش حد بسندگی ",
+                click: function () {
+                    if(checkSelectedRecord(ListGrid_Competence_JspNeedsAssessment)) {
+                        if (isGap){
+                            isFromEdit=true;
+                            selectedRecordForGap=ListGrid_Competence_JspNeedsAssessment.getSelectedRecord()
+                            DynamicForm_limit_sufficiency.clearValues();
+                            DynamicForm_limit_sufficiency.clearErrors();
+                            Window_get_limit_sufficiency.show();
+                            DynamicForm_limit_sufficiency.getItem("limitSufficiency").setValue(selectedRecordForGap.limitSufficiency)
+                        }
+
+                    }
+
+                }
             },
         ]
     });
@@ -1084,13 +1109,22 @@
             {name: "code", title: "کد شایستگی", autoFitData: true, autoFitWidthApproach: true},
             {name: "title", title: "نام شایستگی"},
             {name: "competenceType.title", title: "نوع شایستگی"},
+            {name: "limitSufficiency", title: "حد بسندگی",hidden: true},
             {name: "categoryId", title: "گروه", optionDataSource: RestDataSource_category_JspENA, displayField: "titleFa", valueField:"id"},
             {name: "subCategoryId", title: "زیر گروه" , optionDataSource: RestDataSource_subCategory_JspENA, displayField: "titleFa", valueField:"id"}
         ],
         gridComponents: ["filterEditor", "header", "body"],
         rowDoubleClick(record){
             if (checkSaveData(record, DataSource_Competence_JspNeedsAssessment, "id")) {
-                ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+                if(isGap && canInsert){
+                    selectedRecordForGap=record
+                    DynamicForm_limit_sufficiency.clearValues();
+                    DynamicForm_limit_sufficiency.clearErrors();
+                    Window_get_limit_sufficiency.show();
+                }else {
+                    canInsert=isGap
+                    ListGrid_Competence_JspNeedsAssessment.transferSelectedData(this);
+                }
                 return;
             }
             createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
@@ -1149,7 +1183,9 @@
         selectionType:"single",
         showHeaderContextMenu: false,
         showRowNumbers: false,
-        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},],
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},
+            {name:"limitSufficiency",title: "حد بسندگی",canEdit:true}
+        ],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
             CompetenceTS_needsAssessment, "header", "body"
@@ -1907,6 +1943,99 @@
             })]
     });
 
+    DynamicForm_limit_sufficiency = isc.DynamicForm.create({
+        width: 400,
+        height: "100%",
+        numCols: 2,
+        fields: [
+            {
+                name: "limitSufficiency",
+                title: "حد بسندگی",
+                defaultValue: 0, min: 0,
+                validators: [{
+                    type: "integerRange", min: 0, max: 100,
+                    errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",
+                }],
+                max:100,
+                length: 3,
+                type: "Integer",
+                keyPressFilter: "[0-9]",
+                required: true},
+        ]
+    });
+
+
+
+    HLayout_IButtons_limit_sufficiency = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            isc.IButtonSave.create({
+                top: 260,
+                layoutMargin: 5,
+                membersMargin: 5,
+                click: async function () {
+                    if (!DynamicForm_limit_sufficiency.validate()) {
+                        return;
+                    } else {
+                        if (!isFromEdit) {
+                            canInsert = false;
+                            limit = DynamicForm_limit_sufficiency.getItem('limitSufficiency').getValue()
+                            selectedRecordForGap.limitSufficiency = limit
+                            RestDataSource_Competence_JspNeedsAssessment.addData(selectedRecordForGap);
+                            Window_get_limit_sufficiency.close();
+                            ListGrid_AllCompetence_JspNeedsAssessment.rowDoubleClick(selectedRecordForGap)
+
+                        } else {
+                            canInsert = true;
+                            limit = DynamicForm_limit_sufficiency.getItem('limitSufficiency').getValue()
+                            // selectedRecordForGap.limitSufficiency=limit
+                            // DataSource_Competence_JspNeedsAssessment.addData(selectedRecordForGap);
+
+                            updateRecord(selectedRecordForGap, limit);
+
+
+                            Window_get_limit_sufficiency.close();
+
+                            // updateListGridsLimit(limit)
+                        }
+
+
+                    }
+                }
+            }),
+            isc.IButtonCancel.create({
+                layoutMargin: 5,
+                membersMargin: 5,
+                width: 120,
+                click: function () {
+                    Window_get_limit_sufficiency.close();
+                }
+            })
+        ]
+    });
+
+
+
+    let  Window_get_limit_sufficiency = isc.Window.create({
+        title: "افزودن حد بسندگی",
+        width: 450,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            DynamicForm_limit_sufficiency,
+            HLayout_IButtons_limit_sufficiency
+        ]
+    });
+
     var ViewLoader_Eval_Person  = isc.ViewLoader.create({
         autoDraw:false,
         width: "1810",
@@ -1985,8 +2114,8 @@
                                 click: function () {
 
                                     if (ListGrid_Knowledge_JspNeedsAssessment.data.localData!== undefined
-                                    && ListGrid_Attitude_JspNeedsAssessment.data.localData!== undefined
-                                    && ListGrid_Ability_JspNeedsAssessment.data.localData!== undefined)
+                                        && ListGrid_Attitude_JspNeedsAssessment.data.localData!== undefined
+                                        && ListGrid_Ability_JspNeedsAssessment.data.localData!== undefined)
                                     {
                                         Window_total_courses_times.show();
                                         let servingTime=0;
@@ -2202,6 +2331,7 @@
             skill.needsAssessmentDomainId = data[i].needsAssessmentDomainId;
             skill.skillId = data[i].skillId;
             skill.competenceId = data[i].competenceId;
+            skill.limitSufficiency = data[i].limitSufficiency;
             skill.objectId = data[i].objectId;
             skill.objectType = data[i].objectType;
             skill.objectName = data[i].objectName;
@@ -2219,6 +2349,7 @@
             flags[data[i].competenceId] = true;
             // outPut.push(data[i].competenceId);
             competence.id = data[i].competenceId;
+            competence.limitSufficiency = data[i].limitSufficiency;
             competence.title = data[i].competence.title;
             competence.competenceType = data[i].competence.competenceType;
             competence.categoryId = data[i].competence.categoryId;
@@ -2261,6 +2392,7 @@
             objectName: DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().titleFa,
             objectCode: DynamicForm_JspEditNeedsAssessment.getItem("objectId").getSelectedRecord().code,
             competenceId: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().id,
+            limitSufficiency: ListGrid_Competence_JspNeedsAssessment.getSelectedRecord().limitSufficiency,
             skillId: record.id,
             titleFa: record.titleFa,
             needsAssessmentPriorityId: PriorityId,
@@ -2317,22 +2449,22 @@
             wait.show();
             // let id = record.id
             // if (id === undefined) {
-                let dataForNewSkill= {};
-                dataForNewSkill.list=DataSource_Skill_JspNeedsAssessment.cacheData;
-                dataForNewSkill.skillId=record.skillId;
-                if (dataForNewSkill.list.length !== 0) {
+            let dataForNewSkill= {};
+            dataForNewSkill.list=DataSource_Skill_JspNeedsAssessment.cacheData;
+            dataForNewSkill.skillId=record.skillId;
+            if (dataForNewSkill.list.length !== 0) {
 
-                    isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl+"/createOrUpdateListForNewSkill" , "POST", JSON.stringify(dataForNewSkill),
-                        function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl+"/createOrUpdateListForNewSkill" , "POST", JSON.stringify(dataForNewSkill),
+                    function (resp) {
 
-                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                changePriority(resp.httpResponseText, updating, record, viewer);
-                            }
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            changePriority(resp.httpResponseText, updating, record, viewer);
                         }
+                    }
 
-                    ));
+                ));
 
-                }
+            }
 
             // } else {
             //     changePriority(id, updating, record, viewer);
@@ -2377,7 +2509,9 @@
     }
 
 
-    function loadEditNeedsAssessment(objectId, type, state = "R&W") {
+    function loadEditNeedsAssessment(objectId, type, state = "R&W",isFromGap) {
+        isGap=isFromGap
+        canInsert=isFromGap
         ListGrid_Knowledge_JspNeedsAssessment.unsort();
         ListGrid_Ability_JspNeedsAssessment.unsort();
         ListGrid_Attitude_JspNeedsAssessment.unsort();
@@ -2607,34 +2741,67 @@
         }));
 
     }
-async function saveAndSendToWorkFlow() {
-    if (hasChanged) {
-        let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
-        if (!isSaved)
-            return;
-        sendNeedsAssessmentToWorkflow(mustSent);
-    } else {
-        canSendToWorkFlowNA = false;
-        let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
-        if (!isSaved)
-            return;
-        sendNeedsAssessmentToWorkflow(mustSent);
-        // createDialog("info", "تغییری صورت نگرفته است")
+    async function saveAndSendToWorkFlow() {
+        if (hasChanged) {
+            let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
+            if (!isSaved)
+                return;
+            sendNeedsAssessmentToWorkflow(mustSent);
+        } else {
+            canSendToWorkFlowNA = false;
+            let [isSaved, mustSent] = await sendNeedsAssessmentForSaving();
+            if (!isSaved)
+                return;
+            sendNeedsAssessmentToWorkflow(mustSent);
+            // createDialog("info", "تغییری صورت نگرفته است")
+        }
     }
-}
-async function save() {
-    if (hasChanged) {
-        wait.show();
-         let [isSaved] = await sendNeedsAssessmentForSaving();
-         wait.close();
-        if (isSaved) createDialog("info","تغییرات ذخیره شد.");
-         if (!isSaved)
+    async function save() {
+        if (hasChanged || isGap) {
+            wait.show();
+            let [isSaved] = await sendNeedsAssessmentForSaving();
+            wait.close();
+            if (isSaved) createDialog("info","تغییرات ذخیره شد.");
+            if (!isSaved)
+                return;
+        } else
             return;
-    } else
-           return;
-         // createDialog("info", "تغییری صورت نگرفته است")
+        // createDialog("info", "تغییری صورت نگرفته است")
 
-}
+    }
+
+
+    function updateRecord(record,limitSufficiency) {
+// zaza
+        record.limitSufficiency = limitSufficiency;
+        DataSource_Competence_JspNeedsAssessment.updateData(record);
+
+
+        let data = ListGrid_Knowledge_JspNeedsAssessment.data.localData.toArray();
+        data.addAll(ListGrid_Attitude_JspNeedsAssessment.data.localData.toArray());
+        data.addAll(ListGrid_Ability_JspNeedsAssessment.data.localData.toArray());
+        if (data.length !== 0) {
+            let rec = data[0]
+            let changedData = {}
+            changedData.objectId=rec.objectId
+            changedData.objectType=rec.objectType
+            rec.limitSufficiency = limitSufficiency;
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/update-limitSufficiency/" + record.id+"/"+limitSufficiency, "PUT",JSON.stringify(changedData), function (resp) {
+                if (resp.httpResponseCode !== 200) {
+                    createDialog("info", "<spring:message code='error'/>");
+                    return false
+                }
+
+            }));
+
+            for (let i = 0; i < data.length; i++) {
+                let rec = data[i]
+                rec.limitSufficiency = limitSufficiency;
+                DataSource_Skill_JspNeedsAssessment.updateData(rec);
+            }
+
+        }
+    }
     function updatePriority_AllSelectedRecords(records, priorityId) {
 
         wait.show();

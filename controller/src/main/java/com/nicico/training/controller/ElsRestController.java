@@ -937,12 +937,12 @@ public class ElsRestController {
      */
     @GetMapping("/sessionDetails/{sessionId}")
     public ElsSessionDetailsResponse getClassSessions(HttpServletRequest header, @PathVariable Long sessionId) {
-        ElsSessionDetailsResponse elsSessionDetailsResponse=new ElsSessionDetailsResponse();
+        ElsSessionDetailsResponse elsSessionDetailsResponse = new ElsSessionDetailsResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
 
                 elsSessionDetailsResponse = classSessionService.getSessionDetails(sessionId);
-               elsSessionDetailsResponse.setStatus(200);
+                elsSessionDetailsResponse.setStatus(200);
                 return elsSessionDetailsResponse;
 
             } catch (Exception e) {
@@ -1134,23 +1134,40 @@ public class ElsRestController {
                         dto.setQuestions(Collections.singletonList(elsQuestionDto));
                         return dto;
                     }
-                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO,teacherId,false);
+
+                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO, teacherId, false);
+if (pageQuestionDto.getPageQuestion()!=null){
+    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
+    PaginationDto paginationDto = new PaginationDto();
+    paginationDto.setCurrent(page);
+    paginationDto.setSize(size);
+    if ((pageQuestionDto.getTotalSpecCount() % size) == 0)
+        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size));
+    else {
+        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size) + 1);
+    }
+
+    paginationDto.setLast((int) (paginationDto.getTotal() - 1));
+    paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
+    questionBankDto.setPagination(paginationDto);
+    return questionBankDto;
+}else {
+    PaginationDto paginationDto = new PaginationDto();
+    paginationDto.setLast(0);
+    paginationDto.setTotal(0);
+    paginationDto.setSize(size);
+    paginationDto.setCurrent(page);
+
+    ElsQuestionBankDto questionBankDto =new ElsQuestionBankDto();
+    questionBankDto.setNationalCode(elsSearchDTO.getNationalCode());
+    List<ElsQuestionDto> emptyList=new ArrayList<>();
+    questionBankDto.setQuestions(emptyList);
+    questionBankDto.setPagination(paginationDto);
+
+    return questionBankDto;
+}
 
 
-                    ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
-                    PaginationDto paginationDto = new PaginationDto();
-                    paginationDto.setCurrent(page);
-                    paginationDto.setSize(size);
-                    if ((pageQuestionDto.getTotalSpecCount() % size) == 0)
-                        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size));
-                    else {
-                        paginationDto.setTotal((int) Math.ceil(pageQuestionDto.getTotalSpecCount() / size) + 1);
-                    }
-
-                    paginationDto.setLast((int) (paginationDto.getTotal() - 1));
-                    paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
-                    questionBankDto.setPagination(paginationDto);
-                    return questionBankDto;
 
                 } else {
                     ElsQuestionBankDto dto = new ElsQuestionBankDto();
@@ -1251,7 +1268,7 @@ public class ElsRestController {
                         dto.setQuestions(Collections.singletonList(elsQuestionDto));
                         return dto;
                     }
-                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByCategoryAndSub(page, size, elsSearchDTO,teacherId);
+                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByCategoryAndSub(page, size, elsSearchDTO, teacherId);
 
 
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
@@ -1391,16 +1408,16 @@ public class ElsRestController {
         ElsQuestionDto response = new ElsQuestionDto();
 
 //        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            try {
-                QuestionBank questionBank = questionBankService.getById(id);
-                ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
-                ElsQuestionDto questionDto = questionBankDto.getQuestions().get(0);
-                questionDto.setStatus(200);
-                return questionDto;
-            } catch (Exception e) {
-                response.setStatus(HttpStatus.NOT_FOUND.value());
-                response.setMessage("سوال یافت نشد");
-            }
+        try {
+            QuestionBank questionBank = questionBankService.getById(id);
+            ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
+            ElsQuestionDto questionDto = questionBankDto.getQuestions().get(0);
+            questionDto.setStatus(200);
+            return questionDto;
+        } catch (Exception e) {
+            response.setStatus(HttpStatus.NOT_FOUND.value());
+            response.setMessage("سوال یافت نشد");
+        }
 //        } else {
 //            response.setStatus(HttpStatus.UNAUTHORIZED.value());
 //            response.setMessage("خطای دسترسی");
@@ -1664,7 +1681,7 @@ public class ElsRestController {
     public ElsClassListV2Dto getUserClassesV2WithFilter(HttpServletRequest header
             , @RequestParam String type
             , @RequestParam String nationalCode
-             ,@RequestParam(required = false) String search
+            , @RequestParam(required = false) String search
             , @PathVariable Integer page, @PathVariable Integer size) {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
@@ -1672,10 +1689,10 @@ public class ElsRestController {
 
                 switch (type) {
                     case "student" -> {
-                        return classStudentService.getStudentClassesV2WithFilter(nationalCode,search, page, size);
+                        return classStudentService.getStudentClassesV2WithFilter(nationalCode, search, page, size);
                     }
                     case "teacher" -> {
-                        return classStudentService.getTeacherClassesV2WithFilter(nationalCode,search , page, size);
+                        return classStudentService.getTeacherClassesV2WithFilter(nationalCode, search, page, size);
                     }
                     default -> {
                         log.error("default error" + type);
@@ -1778,17 +1795,17 @@ public class ElsRestController {
         ElsSessionDetailsResponse elsClassDetailResponse = new ElsSessionDetailsResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
-        try {
-            elsClassDetailResponse = tclassService.getClassUsersDetail(classCode.trim());
-            elsClassDetailResponse.setStatus(200);
-            return elsClassDetailResponse;
+            try {
+                elsClassDetailResponse = tclassService.getClassUsersDetail(classCode.trim());
+                elsClassDetailResponse.setStatus(200);
+                return elsClassDetailResponse;
 
-        } catch (Exception e) {
+            } catch (Exception e) {
 
-            elsClassDetailResponse.setStatus(HttpStatus.NOT_FOUND.value());
-            elsClassDetailResponse.setMessage("کلاس موردنظر یافت نشد");
-            return elsClassDetailResponse;
-        }
+                elsClassDetailResponse.setStatus(HttpStatus.NOT_FOUND.value());
+                elsClassDetailResponse.setMessage("کلاس موردنظر یافت نشد");
+                return elsClassDetailResponse;
+            }
         } else {
             elsClassDetailResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             elsClassDetailResponse.setMessage("دسترسی موردنظر یافت نشد");
@@ -1931,7 +1948,7 @@ public class ElsRestController {
 
             if (teacherCertifications != null && teacherCertifications.size() > 0)
                 dtos = teacherCertificationMapper.toElsTeacherCertifications(teacherCertifications);
-         List<ElsTeacherCertificationDate>  sorted= dtos.stream().sorted(Comparator.comparing(ElsTeacherCertificationDate::getId).reversed()).collect(Collectors.toList());
+            List<ElsTeacherCertificationDate> sorted = dtos.stream().sorted(Comparator.comparing(ElsTeacherCertificationDate::getId).reversed()).collect(Collectors.toList());
 
 
             return sorted;
@@ -2057,7 +2074,7 @@ public class ElsRestController {
             List<TeacherSuggestedCourse> teacherSuggestedCourses = teacherSuggestedService.findAllTeacherSuggested(teacherId);
             if (teacherSuggestedCourses != null && teacherSuggestedCourses.size() > 0)
                 dtos = teacherSuggestedCourseMapper.toElsSuggestedCourses(teacherSuggestedCourses);
-            List<ElsSuggestedCourse>  sorted= dtos.stream().sorted(Comparator.comparing(ElsSuggestedCourse::getId).reversed()).collect(Collectors.toList());
+            List<ElsSuggestedCourse> sorted = dtos.stream().sorted(Comparator.comparing(ElsSuggestedCourse::getId).reversed()).collect(Collectors.toList());
 
             return sorted;
 
@@ -2112,7 +2129,7 @@ public class ElsRestController {
             ElsPresentableResponse response = new ElsPresentableResponse();
 
             TeacherPresentableCourse teacherPresentableCourse = teacherPresentableCourseService.savePresentableCourse(elsPresentableCourse);
-            response = teacherPresentableCourseMapper.toElsPresentableCourse(teacherPresentableCourse,elsPresentableCourse);
+            response = teacherPresentableCourseMapper.toElsPresentableCourse(teacherPresentableCourse, elsPresentableCourse);
             response.setStatus(200);
             response.setMessage("successfully saved");
             return response;
@@ -2124,21 +2141,18 @@ public class ElsRestController {
     }
 
 
-
     /**
-     *
      * @param header
      * @param nationalCode
      * @return this method return list of TeacherPresentableCourse-list via  teachers nationalCode.
      */
     @GetMapping("/presentable-courses/getAllBy/{nationalCode}")
-    public List<ElsPresentableResponse> getAllPresentableByTeacher(HttpServletRequest header,@PathVariable String nationalCode) {
+    public List<ElsPresentableResponse> getAllPresentableByTeacher(HttpServletRequest header, @PathVariable String nationalCode) {
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
 
 
-
-            List<ElsPresentableResponse> responseList=teacherPresentableCourseService.getAllByNationalCode(nationalCode);
-            List<ElsPresentableResponse>  sorted= responseList.stream().sorted(Comparator.comparing(ElsPresentableResponse::getId).reversed()).collect(Collectors.toList());
+            List<ElsPresentableResponse> responseList = teacherPresentableCourseService.getAllByNationalCode(nationalCode);
+            List<ElsPresentableResponse> sorted = responseList.stream().sorted(Comparator.comparing(ElsPresentableResponse::getId).reversed()).collect(Collectors.toList());
             return sorted;
 
         } else {
@@ -2578,12 +2592,12 @@ public class ElsRestController {
     }
 
     @PostMapping("/teacher/cv/{nationalCode}")
-    BaseResponse saveTeacherCv(HttpServletRequest header, @RequestBody ElsAttachmentDto elsAttachmentDto,@PathVariable String nationalCode) {
+    BaseResponse saveTeacherCv(HttpServletRequest header, @RequestBody ElsAttachmentDto elsAttachmentDto, @PathVariable String nationalCode) {
         BaseResponse response = new BaseResponse();
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
             try {
                 Long teacherId = teacherService.getTeacherIdByNationalCode(nationalCode);
-                response=  iAttachmentService.saveTeacherCv(teacherId,elsAttachmentDto);
+                response = iAttachmentService.saveTeacherCv(teacherId, elsAttachmentDto);
 
             } catch (Exception e) {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
@@ -2693,6 +2707,7 @@ public class ElsRestController {
 
     /**
      * for deleting special skills by id
+     *
      * @param header
      * @param id
      * @return
@@ -2812,6 +2827,7 @@ public class ElsRestController {
 
     /**
      * returns all teacher's data for pdf output for els by national code
+     *
      * @param header
      * @param nationalCode
      * @return
@@ -2826,7 +2842,7 @@ public class ElsRestController {
             List<ElsPublicationDTO.Resume> publicationDTOS = iPublicationService.findTeacherPublicationsResumeListByNationalCode(nationalCode);
             List<ElsEmploymentHistoryFindAllRespDto.Resume> executiveHistoryRespDTOs = iEmploymentHistoryService.findEmploymentHistoryResumeListByNationalCode(nationalCode);
             List<ElsTeacherCertificationDate> passedCourseRespDTOs = teacherCertificationService.findTeacherCertificationList(nationalCode);
-            List<ForeignLangKnowledgeDTO.Resume> foreignLanguageDTOs= foreignLangKnowledgeService.getListByTeacherId(nationalCode);
+            List<ForeignLangKnowledgeDTO.Resume> foreignLanguageDTOs = foreignLangKnowledgeService.getListByTeacherId(nationalCode);
             List<ElsSuggestedCourse> suggestedCourseDTOs = teacherSuggestedService.findAllTeacherSuggestedDtoList(nationalCode);
             List<TeacherSpecialSkillDTO.Resume> specialSkillsInfos = iTeacherSpecialSkillService.findTeacherSpecialSkillsByNationalCode(nationalCode);
             List<ElsPresentableResponse> presentableCourseDTOS = teacherPresentableCourseService.getAllByNationalCode(nationalCode);
@@ -2850,24 +2866,24 @@ public class ElsRestController {
 
     @PostMapping("/spec-list/v2/teacher/{page}/{size}")
     public ElsQuestionBankDto getQuestionBankFilterForGroupQuestions(HttpServletRequest header,
-                                                    @PathVariable Integer page, @PathVariable Integer size, @RequestBody ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
+                                                                     @PathVariable Integer page, @PathVariable Integer size, @RequestBody ElsSearchDTO elsSearchDTO) throws NoSuchFieldException, IllegalAccessException, JsonProcessingException {
 
         if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
-            try {
+        try {
 
-                if (elsSearchDTO.getNationalCode() != null) {
-                    Long teacherId = teacherService.getTeacherIdByNationalCode(elsSearchDTO.getNationalCode());
-                    if (teacherId == null) {
-                        ElsQuestionBankDto dto = new ElsQuestionBankDto();
-                        ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
-                        elsQuestionDto.setStatus(406);
-                        elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
-                        dto.setQuestions(Collections.singletonList(elsQuestionDto));
-                        return dto;
-                    }
-                    PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO,teacherId,true);
+            if (elsSearchDTO.getNationalCode() != null) {
+                Long teacherId = teacherService.getTeacherIdByNationalCode(elsSearchDTO.getNationalCode());
+                if (teacherId == null) {
+                    ElsQuestionBankDto dto = new ElsQuestionBankDto();
+                    ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+                    elsQuestionDto.setStatus(406);
+                    elsQuestionDto.setMessage("این استاد در آموزش وجود ندارد");
+                    dto.setQuestions(Collections.singletonList(elsQuestionDto));
+                    return dto;
+                }
+                PageQuestionDto pageQuestionDto = questionBankService.getPageQuestionByTeacher(page, size, elsSearchDTO, teacherId, true);
 
-
+                if (pageQuestionDto.getPageQuestion() != null) {
                     ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBankFilter(pageQuestionDto.getPageQuestion(), elsSearchDTO.getNationalCode());
                     PaginationDto paginationDto = new PaginationDto();
                     paginationDto.setCurrent(page);
@@ -2882,24 +2898,41 @@ public class ElsRestController {
                     paginationDto.setTotalItems(pageQuestionDto.getTotalSpecCount());
                     questionBankDto.setPagination(paginationDto);
                     return questionBankDto;
-
                 } else {
-                    ElsQuestionBankDto dto = new ElsQuestionBankDto();
-                    ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
-                    elsQuestionDto.setStatus(500);
-                    elsQuestionDto.setMessage("کد ملی استاد را وارد کنید");
-                    dto.setQuestions(null);
-                    return dto;
+                    PaginationDto paginationDto = new PaginationDto();
+                    paginationDto.setLast(0);
+                    paginationDto.setTotal(0);
+                    paginationDto.setSize(size);
+                    paginationDto.setCurrent(page);
+
+                    ElsQuestionBankDto questionBankDto =new ElsQuestionBankDto();
+                    questionBankDto.setNationalCode(elsSearchDTO.getNationalCode());
+                    List<ElsQuestionDto> emptyList=new ArrayList<>();
+                    questionBankDto.setQuestions(emptyList);
+                    questionBankDto.setPagination(paginationDto);
+
+                    return questionBankDto;
+
                 }
 
 
-            } catch (Exception e) {
+            } else {
                 ElsQuestionBankDto dto = new ElsQuestionBankDto();
                 ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
                 elsQuestionDto.setStatus(500);
+                elsQuestionDto.setMessage("کد ملی استاد را وارد کنید");
                 dto.setQuestions(null);
                 return dto;
             }
+
+
+        } catch (Exception e) {
+            ElsQuestionBankDto dto = new ElsQuestionBankDto();
+            ElsQuestionDto elsQuestionDto = new ElsQuestionDto();
+            elsQuestionDto.setStatus(500);
+            dto.setQuestions(null);
+            return dto;
+        }
 
 
         } else {
