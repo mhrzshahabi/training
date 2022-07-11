@@ -1466,14 +1466,14 @@
             variables: {}
         };
 
-        // wait.show();
-        // isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
-        //     wait.close();
-        //     let response = JSON.parse(resp.httpResponseText);
-        //     window.close();
-        //     createDialog("info", response.message);
-        //     ToolStripButton_Refresh_Processes_UserPortfolio.click();
-        // }));
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
     }
     function confirmRequestItemProcessByAppointmentExpert(record, letterNumberSent, window) {
 
