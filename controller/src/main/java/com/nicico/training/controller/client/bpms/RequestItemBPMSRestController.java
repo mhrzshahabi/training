@@ -1,14 +1,10 @@
 package com.nicico.training.controller.client.bpms;
 
-import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
-import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.controller.util.AppUtils;
-import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.IRequestItemService;
-import com.nicico.training.service.CompetenceService;
 import dto.bpms.BPMSReqItemCoursesDto;
 import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsStartParamsDto;
@@ -27,41 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class RequestItemBPMSRestController {
 
-    private final IBpmsService service;
-    private final BpmsClientService client;
-    private final CompetenceService competenceService;
     private final IRequestItemService requestItemService;
-
-
-    @Loggable
-    @PostMapping({"/processes/definition-search"})
-    public Object searchProcess(@RequestBody ProcessDefinitionRequestDTO processDefinitionRequestDTO, @RequestParam int page, @RequestParam int size) {
-        return client.searchProcess(processDefinitionRequestDTO, page, size);
-    }
-
-    @Loggable
-    @PostMapping({"needAssessment/tasks/review"})
-    public ResponseEntity<BaseResponse> reviewNeedAssessmentTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
-        BaseResponse baseResponse= service.reviewNeedAssessmentTask(reviewTaskRequestDto);
-        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
-    }
-
-    @Loggable
-    @PostMapping({"/processes/definition-search/{page}/{size}"})
-    public BaseResponse getProcessDefinitionKey(@RequestBody String definitionName, @PathVariable int page, @PathVariable int size) {
-        return service.getDefinitionKey(definitionName, AppUtils.getTenantId(), page, size);
-    }
-
-    @Loggable
-    @PostMapping({"/processes/start-data-validation"})
-    public ResponseEntity<BaseResponse> startProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
-        BaseResponse baseResponse = competenceService.checkAndCreateInBPMS(params, response);
-        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
-    }
 
     @Loggable
     @PostMapping({"/processes/request-item/start-data-validation"})
-    public ResponseEntity<BaseResponse> startNeedAssessmentProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
+    public ResponseEntity<BaseResponse> startRequestItemProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
         BaseResponse res = new BaseResponse();
         Long requestItemId = Long.valueOf(params.getData().get("requestItemId").toString());
         try {

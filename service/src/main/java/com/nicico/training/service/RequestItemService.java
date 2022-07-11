@@ -8,7 +8,6 @@ import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
-import com.nicico.copper.oauth.common.iservice.IOAUserService;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
@@ -21,7 +20,6 @@ import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.mapper.requestItem.RequestItemCoursesDetailBeanMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.model.enums.RequestItemState;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.RequestItemDAO;
@@ -49,11 +47,11 @@ public class RequestItemService implements IRequestItemService {
     private final ModelMapper modelMapper;
     private final PersonnelDAO personnelDAO;
     private final IBpmsService iBpmsService;
-    private final IOAUserService oaUserService;
     private final RequestItemDAO requestItemDAO;
     private final IPersonnelService personnelService;
     private final BpmsClientService bpmsClientService;
     private final ITrainingPostService trainingPostService;
+    private final ISynonymOAUserService synonymOAUserService;
     private final RequestItemBeanMapper requestItemBeanMapper;
     private final IParameterValueService parameterValueService;
     private final IOperationalRoleService operationalRoleService;
@@ -63,8 +61,6 @@ public class RequestItemService implements IRequestItemService {
     private final IRequestItemProcessDetailService requestItemProcessDetailService;
     private final IRequestItemCoursesDetailService requestItemCoursesDetailService;
     private final RequestItemCoursesDetailBeanMapper requestItemCoursesDetailBeanMapper;
-    private final EnumsConverter.RequestItemStateTypeConverter stateTypeConverter = new EnumsConverter.RequestItemStateTypeConverter();
-
 
     @Override
     @Transactional
@@ -239,7 +235,7 @@ public class RequestItemService implements IRequestItemService {
             List<Long> operationalRoleIds = requestItem.getOperationalRoleIds();
             Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
             for (Long userId : userIds) {
-                assigneeList.add(oaUserService.get(userId, "Training").getNationalCode());
+                assigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
             }
 
             map.put("assigneeList", assigneeList);
@@ -551,20 +547,20 @@ public class RequestItemService implements IRequestItemService {
             response.setStatus(404);
         }
 
-//        if (response.getStatus() == 200) {
-//            try {
-//                bpmsClientService.reviewTask(reviewTaskRequest);
-//                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
-//            } catch (Exception e) {
-//                response.setStatus(404);
-//                response.setMessage("عملیات bpms انجام نشد");
-//            }
-//        } else if (response.getStatus() == 400) {
-//            response.setMessage("برای بعضی از دوره ها کارشناس اجرا تعریف نشده است");
-//        } else {
-//            response.setStatus(406);
-//            response.setMessage("تغییر وضعیت درخواست انجام نشد");
-//        }
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else if (response.getStatus() == 400) {
+            response.setMessage("برای بعضی از دوره ها کارشناس اجرا تعریف نشده است");
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
         return response;
     }
 
@@ -671,7 +667,7 @@ public class RequestItemService implements IRequestItemService {
             List<Long> operationalRoleIds = operationalRoleService.getAllUserIdsByComplexAndCategoryAndSubCategory(complexId, "EXECUTIVE_SUPERVISOR", item.getCategoryId(), item.getSubCategoryId());
             Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
             for (Long userId : userIds) {
-                supervisorAssigneeList.add(oaUserService.get(userId, "Training").getNationalCode());
+                supervisorAssigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
             }
             item.setSupervisorAssigneeList(supervisorAssigneeList);
         });
@@ -703,7 +699,7 @@ public class RequestItemService implements IRequestItemService {
             List<Long> operationalRoleIds = operationalRoleService.getAllUserIdsByComplexAndCategoryAndSubCategory(complexId, "EXECUTION_EXPERT", item.getCategoryId(), item.getSubCategoryId());
             Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
             for (Long userId : userIds) {
-                expertsAssigneeList.add(oaUserService.get(userId, "Training").getNationalCode());
+                expertsAssigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
             }
             item.setExpertsAssigneeList(expertsAssigneeList);
         });
