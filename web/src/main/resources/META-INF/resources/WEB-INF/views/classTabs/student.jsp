@@ -2874,28 +2874,28 @@
                             }
 
 
-                            if (result.length > 0) {
-                                let hasConflict = null;
-                                let flag = true;
-                                   wait.show();
-                                for (let i = 0; i < result.length && flag; i++) {
-
-                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
-
-                                        if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
-                                            hasConflict = JSON.parse(response.data);
-                                            if (hasConflict.length > 0) {
-                                                if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
-                                                    warnSameSessionStudents.add(studentsDataArray[inx]);
-                                                    flag = false;
-                                                }
-                                            }
-                                        }
-                                    }));
-                                }
-                                wait.close();
-
-                            }
+                            // if (result.length > 0) {
+                            //     let hasConflict = null;
+                            //     let flag = true;
+                            //        wait.show();
+                            //     for (let i = 0; i < result.length && flag; i++) {
+                            //
+                            //         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
+                            //
+                            //             if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
+                            //                 hasConflict = JSON.parse(response.data);
+                            //                 if (hasConflict.length > 0) {
+                            //                     if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
+                            //                         warnSameSessionStudents.add(studentsDataArray[inx]);
+                            //                         flag = false;
+                            //                     }
+                            //                 }
+                            //             }
+                            //         }));
+                            //     }
+                            //     wait.close();
+                            //
+                            // }
 
                              wait.show();
                             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
