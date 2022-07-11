@@ -699,7 +699,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup",false);
         }
     });
 
@@ -710,7 +710,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup");
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup",true);
         }
     });
 

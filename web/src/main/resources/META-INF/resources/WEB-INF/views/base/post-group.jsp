@@ -1593,7 +1593,7 @@
         }
     });
 
-    ToolStripButton_EditNA_JspGap = isc.ToolStripButton.create({
+    ToolStripButton_EditNA_JspGroupGap = isc.ToolStripButton.create({
         title: "ویرایش نیازسنجی (گپ)",
         click: function () {
             if (ListGrid_Post_Group_Jsp.getSelectedRecord() == null){
@@ -1601,14 +1601,6 @@
                 return;
             }
             Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup",true);
-            // Window_NeedsAssessment_Edit.setProperties({
-            //     close() {
-            //         ListGrid_Post_Group_Jsp.invalidateCache()
-            //         this.Super("close", arguments)
-            //     }
-            // })
-            // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(ListGrid_Post_Group_Jsp.getSelectedRecord(), 'PostGroup')");
-            // Window_NeedsAssessment_Edit.show();
         }
     });
 
@@ -1637,10 +1629,10 @@
             ToolStripButton_EditNA_Jsp,
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_T')">
-            ToolStripButton_TreeNA_JspPostGroup
+            ToolStripButton_TreeNA_JspPostGroup,
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_U')">
-            ToolStripButton_EditNA_JspGap,
+            ToolStripButton_EditNA_JspGroupGap
             </sec:authorize>
         ]
     });

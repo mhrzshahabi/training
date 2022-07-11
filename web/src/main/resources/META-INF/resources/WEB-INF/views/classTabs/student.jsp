@@ -13,6 +13,7 @@
         var selectedRecord_addStudent_class = '';
         var checkRefresh = 0;
         var selectedRow = {};
+        let result = [];
         var listGridType = null;
         let previousSelectedRow = {};
         let previousSelectedRowReg = {};
@@ -37,7 +38,17 @@
                     title: "<spring:message code="add"/>",
                     icon: "<spring:url value="create.png"/>",
                     click: function () {
-                        addStudent_student();
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/"+ ListGrid_Class_JspClass.getSelectedRecord().id ,"GET",null,function(resp){
+                            wait.close();
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                result  = JSON.parse(resp.data);
+                                addStudent_student();
+                            }else {
+                                result=[]
+                            }
+
+                        }));
                     }
                 },
                 </sec:authorize>
@@ -67,7 +78,17 @@
         // ------------------------------------------- ToolStrip -------------------------------------------
         let btnAdd_student_class = isc.ToolStripButtonAdd.create({
             click: function () {
-                addStudent_student();
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/"+ ListGrid_Class_JspClass.getSelectedRecord().id ,"GET",null,function(resp){
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        result  = JSON.parse(resp.data);
+                        addStudent_student();
+                    }else {
+                        result=[]
+                    }
+
+                }));
             }
         });
 
@@ -1607,7 +1628,6 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        //personel zaza
                         if (studentForceToHasPhone && ( current.mobile===undefined
                             || current.mobile==null)){
                             isc.Dialog.create({
@@ -2114,7 +2134,6 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        //reg zaza
                         if (studentForceToHasPhone && ( current.contactInfo===undefined ||  current.contactInfo==null || current.contactInfo.mobile===undefined
                             || current.contactInfo.mobile==null)){
                             isc.Dialog.create({
@@ -2825,9 +2844,7 @@
             let warnPreCourseStudents = [];
             let warnSameSessionStudents = [];
 
-            // wait.show();
-            let result = await getSessionPerClass(classId);
-            // wait.close();
+
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
                 wait.close();
@@ -2855,6 +2872,7 @@
                             ) {
                                 inValidPersonnel.add(studentsDataArray[inx]);
                             }
+
 
                             if (result.length > 0) {
                                 let hasConflict = null;
@@ -3495,17 +3513,6 @@
             })
         );
     }
-    async function getSessionPerClass(classId){
-       wait.show();
-
-       isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/"+ classId ,"GET",null,function(resp){
-           if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-               interfrence  = JSON.parse(resp.data);
-           }
-           wait.close();
-       }));
-       return interfrence;
-   }
 
 
 
