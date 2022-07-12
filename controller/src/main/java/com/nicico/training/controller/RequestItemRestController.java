@@ -240,7 +240,7 @@ public class RequestItemRestController {
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/courses-run-supervisor/{requestItemId}")
+    @GetMapping(value = "/related-courses-to-run/{requestItemId}")
     public ResponseEntity<RequestItemCoursesDetailDTO.OpinionInfo> getCoursesRelatedToRunSupervisor(@PathVariable Long requestItemId) {
 
         List<RequestItemCoursesDetailDTO.Info> userCourses = new ArrayList<>();
@@ -280,8 +280,15 @@ public class RequestItemRestController {
 
     @Loggable
     @PutMapping(value = "/update-status/run-experts-to-supervisor-approval")
-    public ResponseEntity updateProcessStatusToSupervisorApproval(@RequestParam Long requestItemId) {
+    public ResponseEntity updateProcessStatusToSupervisorFinalApproval(@RequestParam Long requestItemId) {
         requestItemService.updateProcessStatus(requestItemId, "waitingFinalApprovalByRunSupervisor");
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/update-status/run-supervisor-to-chief")
+    public ResponseEntity updateProcessStatusToRunChief(@RequestParam Long requestItemId) {
+        requestItemService.updateProcessStatus(requestItemId, "waitingFinalApprovalByRunChief");
         return new ResponseEntity<>(null, HttpStatus.OK);
     }
 

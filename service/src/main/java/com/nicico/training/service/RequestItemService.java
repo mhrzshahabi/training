@@ -566,6 +566,89 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
+    public BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
+
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> coursesAssigneeList = getSupervisorAssigneeList(courseCategoryInfos);
+            if (coursesAssigneeList.stream().anyMatch(item -> item.getSupervisorAssigneeList().size() == 0)) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+            } else {
+                Collection<String> supervisorAssigneeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getSupervisorAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
+                Map<String, Object> map = reviewTaskRequest.getVariables();
+                map.put("supervisorAssigneeList", supervisorAssigneeList);
+                map.put("requestItemId", requestItem.getId());
+                response.setStatus(200);
+            }
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else if (response.getStatus() == 400) {
+            response.setMessage("برای بعضی از دوره ها سرپرست اجرا تعریف نشده است");
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+            // String mainRunChief = "ابراهیم نژاد";
+            String mainRunChief = "0965399435";
+            if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
+                // mainRunChief = "hajizadeh_mh";
+                mainRunChief = "3149622123";
+            }
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("assignTo", mainRunChief);
+            response.setStatus(200);
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
     public BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequestDto, String letterNumberSent) {
 
         BaseResponse response = new BaseResponse();
@@ -592,40 +675,6 @@ public class RequestItemService implements IRequestItemService {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
         }
-        return response;
-    }
-
-    @Override
-    @Transactional
-    public BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest) {
-
-        BaseResponse response = new BaseResponse();
-        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
-
-        if (optionalRequestItem.isPresent()) {
-
-            RequestItem requestItem = optionalRequestItem.get();
-            Map<String, Object> map = reviewTaskRequest.getVariables();
-            map.put("supervisorAssigneeList", new ArrayList<String>());
-//            requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByRunExpertToHoldingCourses"));
-//            requestItemDAO.saveAndFlush(requestItem);
-            response.setStatus(200);
-        } else {
-            response.setStatus(404);
-        }
-
-//        if (response.getStatus() == 200) {
-//            try {
-//                bpmsClientService.reviewTask(reviewTaskRequest);
-//                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
-//            } catch (Exception e) {
-//                response.setStatus(404);
-//                response.setMessage("عملیات bpms انجام نشد");
-//            }
-//        } else {
-//            response.setStatus(406);
-//            response.setMessage("تغییر وضعیت درخواست انجام نشد");
-//        }
         return response;
     }
 

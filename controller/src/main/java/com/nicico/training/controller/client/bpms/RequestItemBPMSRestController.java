@@ -89,6 +89,18 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
+    @PostMapping({"/tasks/run-experts/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunExperts(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunExperts(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-supervisor-for-approval/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunSupervisorForApproval(reviewTaskRequest);
+    }
+
+    @Loggable
     @PostMapping({"/tasks/appointment-expert/request-item/review/{letterNumberSent}"})
     public BaseResponse reviewRequestItemTaskByAppointmentExpert(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String letterNumberSent) {
         return requestItemService.reviewRequestItemTaskByAppointmentExpert(reviewTaskRequest, letterNumberSent);
