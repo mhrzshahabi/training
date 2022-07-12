@@ -821,16 +821,14 @@ public class RequestItemService implements IRequestItemService {
             if (!optionalTrainingPost.isPresent()) {
                 requestItemWithDiff.setOperationalRoleIds(null);
                 requestItem.setOperationalRoleIds(null);
-//                requestItemWithDiff.setWorkGroupCode("پست وجود ندارد");
                 requestItem.setWorkGroupCode("پست وجود ندارد");
             } else {
                 List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByPostId(optionalTrainingPost.get().getId());
                 List<Long> operationalRoleIds = operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList());
-//                String workGroupCode = operationalRoleService.getWorkGroup(optionalTrainingPost.get().getId());
                 requestItemWithDiff.setOperationalRoleIds(operationalRoleIds);
                 requestItemWithDiff.setOperationalRoleTitles(operationalRoles.stream().map(OperationalRole::getTitle).collect(Collectors.toList()));
+                requestItemWithDiff.setOperationalRoleUsers(operationalRoleIds.size() != 0 ? operationalRoleService.getOperationalRoleUserIdsByIds(operationalRoleIds) : new ArrayList<>());
                 requestItem.setOperationalRoleIds(operationalRoleIds);
-//                requestItemWithDiff.setWorkGroupCode("گروه کاری");
                 requestItem.setWorkGroupCode("گروه کاری");
             }
 

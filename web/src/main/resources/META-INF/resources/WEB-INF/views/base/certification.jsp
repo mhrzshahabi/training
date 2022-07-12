@@ -1479,6 +1479,28 @@
         let cellNum = 11;
         ListGrid_Competence_Request_Items.startEditing(rowNum, cellNum);
     }
+
+    function refreshRequestItem() {
+        ListGrid_Competence_Request_Items.invalidateCache();
+        let record = ListGrid_Competence_Request.getSelectedRecord();
+        if (record == null || record.id == null)
+            return;
+        let criteriaReq = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [{fieldName: "competenceReqId", operator: "equals", value: record.id}]
+        };
+        ListGrid_Competence_Request_Items.fetchData(criteriaReq, function (dsResponse, data, dsRequest) {
+            if (data.length == 0) {
+                ListGrid_Competence_Request_Items.setData([]);
+                ListGrid_Competence_Request_Items.show();
+            } else {
+                ListGrid_Competence_Request_Items.setData(data);
+                ListGrid_Competence_Request_Items.setAutoFitMaxRecords(1);
+                ListGrid_Competence_Request_Items.show();
+            }
+        }, {operationId: "00"});
+    }
     function deleteRequestItem(record) {
 
         if (record == null) {
@@ -1496,8 +1518,7 @@
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     wait.close();
                                     createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                    ListGrid_Competence_Request.invalidateCache();
-
+                                    refreshRequestItem();
                                 } else {
                                     wait.close();
                                     createDialog("info", "خطایی رخ داده است");
@@ -1559,7 +1580,7 @@
         wait.close()
         if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
-            ListGrid_Competence_Request.invalidateCache();
+            refreshRequestItem();
         } else if (resp.httpResponseCode === 404) {
             isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
         } else {
@@ -1572,23 +1593,8 @@
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/operational-roles/" + record.id, "PUT", null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
                 wait.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                let criteriaReq = {
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "competenceReqId", operator: "equals", value: record.id}]
-                };
-                ListGrid_Competence_Request_Items.fetchData(criteriaReq, function (dsResponse, data, dsRequest) {
-                    if (data.length == 0) {
-                        ListGrid_Competence_Request_Items.setData([]);
-                    } else {
-                        ListGrid_Competence_Request_Items.setData(data);
-                        ListGrid_Competence_Request_Items.setAutoFitMaxRecords(1);
-                    }
-                    ListGrid_Competence_Request.invalidateCache();
-                }, {operationId: "00"});
+                refreshRequestItem();
             } else {
                 wait.close();
                 createDialog("info", "خطایی رخ داده است");
