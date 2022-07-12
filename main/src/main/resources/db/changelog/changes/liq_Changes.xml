@@ -4859,6 +4859,14 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-085">
+        <dropColumn columnName="work_group_code" tableName="tbl_request_item"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-086">
+        <dropColumn columnName="work_group_code" tableName="tbl_request_item_aud"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 
