@@ -28,7 +28,6 @@ public class RequestItemAuditDTO implements Serializable {
         private String lastName;
         private String affairs;
         private String post;
-        private String workGroupCode;
         private String nationalCode;
         private RequestItemState state;
         protected Date createdDate;

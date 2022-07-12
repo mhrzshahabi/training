@@ -41,7 +41,6 @@
             {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            // {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
             {name: "operationalRoleTitles", title: "گروه های کاری"},
             {name: "planningChiefOpinion", title: "نظر رئیس برنامه ریزی"},
             {name: "processStatusTitle", title: "وضعیت فرایند در گردش کار"},
@@ -59,7 +58,6 @@
             {name: "lastName", title: "نام خانوادگی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
             {name: "state.titleFa", title: "وضعیت", filterOperator: "iContains"},
             {name: "lastModifiedDate", title: "تغییر داده شده درتاریخ"},
             {name: "lastModifiedBy", title: "تغییر داده شده توسط"},
@@ -79,7 +77,6 @@
             {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            // {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
             {name: "competenceReqId", hidden: true}
         ],
     });
@@ -697,13 +694,6 @@
                 width: "10%",
                 align: "center"
             },
-            // {
-            //     name: "workGroupCode",
-            //     width: "10%",
-            //     align: "center",
-            //     canFilter: false,
-            //     hidden: true
-            // },
             {
                 name: "operationalRoleTitles",
                 width: "10%",
@@ -1413,12 +1403,6 @@
                     width: "10%",
                     align: "center"
                 },
-                // {
-                //     name: "workGroupCode",
-                //     width: "10%",
-                //     align: "center",
-                //     canEdit: false
-                // },
                 {
                     name: "competenceReqId",
                     hidden: true
@@ -1708,11 +1692,6 @@
                 },
                 {
                     name: "post",
-                    width: "10%",
-                    align: "center"
-                },
-                {
-                    name: "workGroupCode",
                     width: "10%",
                     align: "center"
                 },

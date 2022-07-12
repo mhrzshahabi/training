@@ -82,7 +82,6 @@ public class RequestItemService implements IRequestItemService {
         requestItem.setCompetenceReqId(newData.getCompetenceReqId());
         requestItem.setLastName(newData.getLastName());
         requestItem.setName(newData.getName());
-        requestItem.setWorkGroupCode(newData.getWorkGroupCode());
         requestItem.setPersonnelNumber(newData.getPersonnelNumber());
         requestItem.setPersonnelNo2(newData.getPersonnelNo2());
         requestItem.setPost(newData.getPost());
@@ -821,7 +820,6 @@ public class RequestItemService implements IRequestItemService {
             if (!optionalTrainingPost.isPresent()) {
                 requestItemWithDiff.setOperationalRoleIds(null);
                 requestItem.setOperationalRoleIds(null);
-                requestItem.setWorkGroupCode("پست وجود ندارد");
             } else {
                 List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByPostId(optionalTrainingPost.get().getId());
                 List<Long> operationalRoleIds = operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList());
@@ -829,7 +827,6 @@ public class RequestItemService implements IRequestItemService {
                 requestItemWithDiff.setOperationalRoleTitles(operationalRoles.stream().map(OperationalRole::getTitle).collect(Collectors.toList()));
                 requestItemWithDiff.setOperationalRoleUsers(operationalRoleIds.size() != 0 ? operationalRoleService.getOperationalRoleUserIdsByIds(operationalRoleIds) : new ArrayList<>());
                 requestItem.setOperationalRoleIds(operationalRoleIds);
-                requestItem.setWorkGroupCode("گروه کاری");
             }
 
             if (synonymPersonnel.getPersonnelNo() != null && requestItem.getPersonnelNumber() != null && synonymPersonnel.getPersonnelNo().trim().equals(requestItem.getPersonnelNumber().trim())) {

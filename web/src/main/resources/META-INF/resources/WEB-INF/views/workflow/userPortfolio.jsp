@@ -761,7 +761,9 @@
             isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/getNeedAssessmentInfo/byRequestItemId?requestItemId=" + record.requestItemId, "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let data = JSON.parse(resp.httpResponseText);
-                    DynamicForm_Parallel_RequestItem_Completion.setValue("postUpdateStatus", "تاریخ بروزرسانی: " + data.lastModifiedDateNA + " - بروزرسانی کننده: " + data.modifiedByNA);
+                    let lastModifiedDate = data.lastModifiedDateNA !== undefined ? data.lastModifiedDateNA : "";
+                    let modifiedBy = data.modifiedByNA !== undefined ? data.modifiedByNA : "";
+                    DynamicForm_Parallel_RequestItem_Completion.setValue("postUpdateStatus", "تاریخ بروزرسانی: " + lastModifiedDate + " - بروزرسانی کننده: " + modifiedBy);
                 } else {
                     DynamicForm_Parallel_RequestItem_Completion.setValue("postUpdateStatus", "پست وجود ندارد");
                 }
