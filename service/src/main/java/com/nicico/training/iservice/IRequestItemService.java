@@ -67,9 +67,11 @@ public interface IRequestItemService {
 
     BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest);
 
-    BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequest, String letterNumberSent);
-
     BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest);
+
+    BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(ReviewTaskRequest reviewTaskRequest);
+
+    BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequest, String letterNumberSent);
 
     String getPlanningChiefNationalCode();
 
