@@ -226,7 +226,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
 
     @Override
     public Optional<PersonnelRegistered> getByNationalCode(String nationalCode) {
-        return personnelRegisteredDAO.findByNationalCodeAndDeleted(nationalCode,75L);
+        return personnelRegisteredDAO.findByNationalCodeAndDeleted(nationalCode,null);
     }
 
     @Override
