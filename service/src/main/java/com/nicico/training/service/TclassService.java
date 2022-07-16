@@ -830,6 +830,178 @@ public class TclassService implements ITclassService {
         return evaluationResult;
     }
 
+    private Double getTrainingGradeToTeacherExecution(Long classId, Long trainingId, Long teacherId) {
+        EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(758L, classId, trainingId,
+                454L, teacherId, 187L, 757L);
+        if (evaluationDTO != null) {
+            Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
+            return evaluationService.getEvaluationFormGrade(evaluation);
+        } else
+            return null;
+    }
+
+    @Override
+    @Transactional
+    public TclassDTO.ExecutionEvaluationResult getExecutionEvaluationResult(Long tclassId) {
+        Boolean FERPass = null;
+        Boolean FETPass = null;
+        Boolean FECRPass = null;
+        Double FERGrade = null;
+        Double FETGrade = null;
+        Double FECRGrade = null;
+        Double minQus_ER = null;
+        Double minScore_ER = null;
+        Double minScore_ET = null;
+        Double minQus_ET = null;
+        Double minScoreFECR = null;
+        Set<ClassStudent> classStudents;
+        Long teacherId = null;
+        Long classId = tclassId;
+        Long trainingId = null;
+        Double studentsGradeToTeacher = null;
+        Double studentsGradeToGoals = null;
+        Double studentsGradeToFacility = null;
+        Double trainingGradeToTeacher = null;
+        Double teacherGradeToClass = null;
+        Double percentOfFilledExecutionEvaluationForms = null;
+        Integer studentCount = null;
+        String FERGradeS = null;
+        Double executionEvaluationAveGrade=null;
+        Boolean executionEvaluationStatus=null;
+
+        Tclass tclass = getTClass(classId);
+        classStudents = tclass.getClassStudents();
+        teacherId = tclass.getTeacherId();
+        trainingId = tclass.getSupervisorId();
+        TclassDTO.ExecutionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ExecutionEvaluationResult.class);
+        executionEvaluationAveGrade=evaluationService.getExecutionEvaluationAverageGrade(classId);
+        if(executionEvaluationAveGrade>=65.00){
+            executionEvaluationStatus=true;
+        }else{
+            executionEvaluationStatus=false;
+        }
+        Map<String, Double> executionEvaluationResult = calculateStudentsExecutionEvaluationResult(classStudents);
+        if (executionEvaluationResult.get("studentsGradeToTeacher") != null)
+            studentsGradeToTeacher = (Double) executionEvaluationResult.get("studentsGradeToTeacher");
+        if (executionEvaluationResult.get("studentsGradeToGoals") != null)
+            studentsGradeToGoals = (Double) executionEvaluationResult.get("studentsGradeToGoals");
+        if (executionEvaluationResult.get("studentsGradeToFacility") != null)
+            studentsGradeToFacility = (Double) executionEvaluationResult.get("studentsGradeToFacility");
+        percentOfFilledExecutionEvaluationForms = getPercentOfFilledExecutionEvaluationForms(classStudents);
+        teacherGradeToClass = getTeacherGradeToClassExecution(classId, teacherId);
+        trainingGradeToTeacher = getTrainingGradeToTeacherExecution(classId, trainingId, teacherId);
+        studentCount = getStudentCount(classStudents);
+
+
+        Map<String, Object> FERGradeResult = getFERGradeExecution(studentsGradeToTeacher,
+                studentsGradeToGoals,
+                studentsGradeToFacility,
+               percentOfFilledExecutionEvaluationForms,
+                teacherGradeToClass);
+
+
+        if (FERGradeResult.get("FERGrade") != null)
+            FERGrade = (Double) FERGradeResult.get("FERGrade");
+        if (FERGradeResult.get("FERPass") != null)
+            FERPass = (Boolean) FERGradeResult.get("FERPass");
+        if (FERGradeResult.get("minQus_ER") != null)
+            minQus_ER = (Double) FERGradeResult.get("minQus_ER");
+        if (FERGradeResult.get("minQus_ER") != null)
+            minScore_ER = (Double) FERGradeResult.get("minScore_ER");
+
+        Map<String, Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,
+                trainingGradeToTeacher,
+                percentOfFilledExecutionEvaluationForms);
+        if (FETGradeResult.get("FETGrade") != null)
+            FETGrade = (Double) FETGradeResult.get("FETGrade");
+        if (FETGradeResult.get("FETPass") != null)
+            FETPass = (Boolean) FETGradeResult.get("FETPass");
+        if (FETGradeResult.get("minScore_ET") != null)
+            minScore_ET = (Double) FETGradeResult.get("minScore_ET");
+        if (FETGradeResult.get("minQus_ET") != null)
+            minQus_ET = (Double) FETGradeResult.get("minQus_ET");
+
+        Map<String, Object> FECRResult = null;
+        if (FERGrade != null)
+            FERGradeS = FERGrade.toString();
+        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findAllBytClassId(classId);
+        if (evaluationAnalyses != null && evaluationAnalyses.size() != 0) {
+            FECRResult = calculateEffectivenessEvaluation(FERGradeS, evaluationAnalyses.get(0).getLearningGrade(), evaluationAnalyses.get(0).getBehavioralGrade(), tclass.getEvaluation());
+        } else {
+            FECRResult = calculateEffectivenessEvaluation(FERGradeS, null, null, tclass.getEvaluation());
+        }
+
+        if (FECRResult.get("EffectivenessGrade") != null)
+            FECRGrade = (Double) FECRResult.get("EffectivenessGrade");
+        if (FECRResult.get("EffectivenessPass") != null)
+            FECRPass = (Boolean) FECRResult.get("EffectivenessPass");
+        if (FECRResult.get("minScoreFECR") != null)
+            minScoreFECR = (Double) FECRResult.get("minScoreFECR");
+
+        if (studentCount != null)
+            evaluationResult.setStudentCount(studentCount);
+        if (FERGrade != null)
+            evaluationResult.setFERGrade(Double.parseDouble(numberFormat.format(FERGrade).toString()));
+        if (FERPass != null)
+            evaluationResult.setFERPass(FERPass);
+        if (FETGrade != null)
+            evaluationResult.setFETGrade(Double.parseDouble(numberFormat.format(FETGrade).toString()));
+        if (FETPass != null)
+            evaluationResult.setFETPass(FETPass);
+        if (FECRGrade != null)
+            evaluationResult.setFECRGrade(Double.parseDouble(numberFormat.format(FECRGrade).toString()));
+        if (FECRPass != null)
+            evaluationResult.setFECRPass(FECRPass);
+        if (minScore_ER != null)
+            evaluationResult.setMinScore_ER(minScore_ER);
+        if (minScore_ET != null)
+            evaluationResult.setMinScore_ET(minScore_ET);
+        if (minScoreFECR != null)
+            evaluationResult.setMinScoreFECR(minScoreFECR);
+
+        if (getNumberOfEmptyExecutionEvaluationForms(classStudents) != null)
+            evaluationResult.setNumberOfEmptyExecutionEvaluationForms(getNumberOfEmptyExecutionEvaluationForms(classStudents));
+        if (getNumberOfFilledExecutionEvaluationForms(classStudents) != null)
+            evaluationResult.setNumberOfFilledExecutionEvaluationForms(getNumberOfFilledExecutionEvaluationForms(classStudents));
+        if (getNumberOfInCompletedExecutionEvaluationForms(classStudents) != null)
+            evaluationResult.setNumberOfInCompletedExecutionEvaluationForms(getNumberOfInCompletedExecutionEvaluationForms(classStudents));
+        if (getPercentOfFilledExecutionEvaluationForms(classStudents) != null)
+            evaluationResult.setPercentOfFilledExecutionEvaluationForms(Double.parseDouble(numberFormat.format(getPercentOfFilledExecutionEvaluationForms(classStudents)).toString()));
+        if (getNumberOfExportedExecutionEvaluationForms(classStudents) != null)
+            evaluationResult.setNumberOfExportedExecutionEvaluationForms(getNumberOfExportedExecutionEvaluationForms(classStudents));
+
+        if (studentsGradeToFacility != null)
+            evaluationResult.setStudentsGradeToFacility(Double.parseDouble(numberFormat.format(studentsGradeToFacility).toString()));
+        if (studentsGradeToGoals != null)
+            evaluationResult.setStudentsGradeToGoals(Double.parseDouble(numberFormat.format(studentsGradeToGoals).toString()));
+        if (studentsGradeToTeacher != null)
+            evaluationResult.setStudentsGradeToTeacher(Double.parseDouble(numberFormat.format(studentsGradeToTeacher).toString()));
+        if (trainingGradeToTeacher != null)
+            evaluationResult.setTrainingGradeToTeacher(Double.parseDouble(numberFormat.format(trainingGradeToTeacher).toString()));
+        if (teacherGradeToClass != null)
+            evaluationResult.setTeacherGradeToClass(Double.parseDouble(numberFormat.format(teacherGradeToClass).toString()));
+        if(executionEvaluationAveGrade!=null)
+            evaluationResult.setExecutionEvaluationAveGrade(Double.parseDouble(numberFormat.format(executionEvaluationAveGrade).toString()));
+        if (FETGradeResult.get("z1") != null)
+            evaluationResult.setZ1(Double.parseDouble(FETGradeResult.get("z1").toString()));
+        if (FETGradeResult.get("z2") != null)
+            evaluationResult.setZ2(Double.parseDouble(FETGradeResult.get("z2").toString()));
+        if(executionEvaluationStatus!=null){
+            evaluationResult.setExecutionEvaluationStatus(executionEvaluationStatus);
+        }
+        return evaluationResult;
+    }
+
+    private Double getTeacherGradeToClassExecution(Long classId, Long teacherId) {
+        EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(758L, classId, teacherId,
+                187L, classId, 504L, 757L);
+        if (evaluationDTO != null) {
+            Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
+            return evaluationService.getEvaluationFormGrade(evaluation);
+        } else
+            return null;
+    }
+
     @Override
     @Transactional
     public Double getJustFERGrade(Long classId) {
@@ -1078,6 +1250,100 @@ public class TclassService implements ITclassService {
         result.put("allStudentsNum", Double.valueOf(classStudents.size()));
         return result;
     }
+    @Transactional
+    public Map<String, Double> calculateStudentsExecutionEvaluationResult( Set<ClassStudent> classStudents) {
+//
+        Double studentsGradeToTeacher_l = null;
+        Double studentsGradeToFacility_l = null;
+        Double studentsGradeToGoals_l = null;
+        Integer studentsGradeToTeacher_count = null;
+        Integer studentsGradeToFacility_count = null;
+        Integer studentsGradeToGoals_count = null;
+        Map<String, Double> result = new HashMap<>();
+        Double completeNum = 0.0;
+
+
+        for (ClassStudent classStudent : classStudents) {
+            if (Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
+                EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(758L, classStudent.getTclass().getId(), classStudent.getId(), 188L,
+                        classStudent.getTclass().getId(), 504L, 757L);
+
+                Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
+                if (evaluation != null) {
+                    completeNum ++;
+                    int studentsGradeToTeacher_cl = 0;
+                    int studentsGradeToFacility_cl = 0;
+                    int studentsGradeToGoals_cl = 0;
+                    List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers = evaluationService.getEvaluationFormAnswerDetail(evaluation);
+                    double teacherTotalGrade = 0.0;
+                    double facilityTotalGrade = 0.0;
+                    double goalsTotalGrade = 0.0;
+                    double teacherTotalWeight = 0.0;
+                    double facilityTotalWeight = 0.0;
+                    double goalsTotalWeight = 0.0;
+                    for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
+                        if (answer.getAnswerId() != null) {
+                            if (answer.getDomainId().equals(54L)) { //studentsToFacilities
+                                studentsGradeToFacility_cl = 1;
+                                if (answer.getWeight() != null)
+                                    facilityTotalWeight += answer.getWeight();
+                                else
+                                    facilityTotalWeight++;
+                                facilityTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
+                            } else if (answer.getDomainId().equals(183L)) { //studentsToContent
+                                studentsGradeToGoals_cl = 1;
+                                if (answer.getWeight() != null)
+                                    goalsTotalWeight += answer.getWeight();
+                                else
+                                    goalsTotalWeight++;
+                                goalsTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
+                            } else if (answer.getDomainId().equals(53L)) { //studentsToTeacher
+                                studentsGradeToTeacher_cl = 1;
+                                if (answer.getWeight() != null)
+                                    teacherTotalWeight += answer.getWeight();
+                                else
+                                    teacherTotalWeight++;
+                                teacherTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
+                            }
+                        }
+                    }
+                    if (teacherTotalWeight != 0) {
+                        if (studentsGradeToTeacher_l == null) studentsGradeToTeacher_l = 0.0;
+                        if (studentsGradeToTeacher_count == null) studentsGradeToTeacher_count = 0;
+                        studentsGradeToTeacher_l += (teacherTotalGrade / teacherTotalWeight);
+                        studentsGradeToTeacher_count += studentsGradeToTeacher_cl;
+                    }
+                    if (facilityTotalWeight != 0) {
+                        if (studentsGradeToFacility_l == null) studentsGradeToFacility_l = 0.0;
+                        if (studentsGradeToFacility_count == null) studentsGradeToFacility_count = 0;
+                        studentsGradeToFacility_l += (facilityTotalGrade / facilityTotalWeight);
+                        studentsGradeToFacility_count += studentsGradeToFacility_cl;
+                    }
+                    if (goalsTotalWeight != 0) {
+                        if (studentsGradeToGoals_l == null) studentsGradeToGoals_l = 0.0;
+                        if (studentsGradeToGoals_count == null) studentsGradeToGoals_count = 0;
+                        studentsGradeToGoals_l += (goalsTotalGrade / goalsTotalWeight);
+                        studentsGradeToGoals_count += studentsGradeToGoals_cl;
+                    }
+
+                }
+            }
+        }
+        if (studentsGradeToTeacher_l != null && studentsGradeToTeacher_count != 0)
+            studentsGradeToTeacher_l /= studentsGradeToTeacher_count;
+        if (studentsGradeToFacility_l != null && studentsGradeToFacility_count != 0)
+            studentsGradeToFacility_l /= studentsGradeToFacility_count;
+        if (studentsGradeToGoals_l != null && studentsGradeToGoals_count != 0)
+            studentsGradeToGoals_l /= studentsGradeToGoals_count;
+
+        result.put("studentsGradeToTeacher", studentsGradeToTeacher_l);
+        result.put("studentsGradeToFacility", studentsGradeToFacility_l);
+        result.put("studentsGradeToGoals", studentsGradeToGoals_l);
+        result.put("evaluatedPercent", (completeNum/Double.valueOf(classStudents.size())) * 100);
+        result.put("answeredStudentsNum", Double.valueOf(completeNum));
+        result.put("allStudentsNum", Double.valueOf(classStudents.size()));
+        return result;
+    }
 
     public Double getTeacherGradeToClass(Long classId, Long teacherId) {
         EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(140L, classId, teacherId,
@@ -1158,6 +1424,64 @@ public class TclassService implements ITclassService {
         return result;
     }
 
+    private Map<String, Object> getFERGradeExecution(Double studentsGradeToTeacher,
+                                            Double studentsGradeToGoals,
+                                            Double studentsGradeToFacility,
+                                            Double percentOfFilledExecutionEvaluationForms,
+                                            Double teacherGradeToClass) {
+        Map<String, Object> result = new HashMap<>();
+        Boolean FERPass = null;
+        Double FERGrade = null;
+
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FER");
+        List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
+        Double z3 = null;
+        Double z4 = null;
+        Double z5 = null;
+        Double z6 = null;
+        Double minQus_ER = null;
+        Double minScore_ER = null;
+        for (ParameterValueDTO.Info parameterValue : parameterValues) {
+            if (parameterValue.getCode().equalsIgnoreCase("z3"))
+                z3 = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("z4"))
+                z4 = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("z5"))
+                z5 = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("z6"))
+                z6 = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minQusER"))
+                minQus_ER = Double.parseDouble(parameterValue.getValue());
+            else if (parameterValue.getCode().equalsIgnoreCase("minScoreER"))
+                minScore_ER = Double.parseDouble(parameterValue.getValue());
+        }
+        if (studentsGradeToTeacher == null && studentsGradeToGoals == null && studentsGradeToFacility == null && teacherGradeToClass == null)
+            FERGrade = null;
+        else {
+            if (studentsGradeToTeacher == null)
+                studentsGradeToTeacher = 0.0;
+            if (studentsGradeToGoals == null)
+                studentsGradeToGoals = 0.0;
+            if (studentsGradeToFacility == null)
+                studentsGradeToFacility = 0.0;
+            if (teacherGradeToClass == null)
+                teacherGradeToClass = 0.0;
+            FERGrade = z4 * studentsGradeToTeacher + z3 * studentsGradeToGoals +
+                    z6 * studentsGradeToFacility + z5 * teacherGradeToClass;
+            FERGrade /= 100;
+            if (FERGrade >= minScore_ER && percentOfFilledExecutionEvaluationForms>= minQus_ER)
+                FERPass = true;
+            else
+                FERPass = false;
+        }
+
+        result.put("FERGrade", FERGrade);
+        result.put("FERPass", FERPass);
+        result.put("minQus_ER", minQus_ER);
+        result.put("minScore_ER", minScore_ER);
+
+        return result;
+    }
     private Map<String, Object> getFETGrade(Double studentsGradeToTeacher,
                                             Double trainingGradeToTeacher,
                                             Double percenetOfFilledReactionEvaluationForms) {
@@ -1237,6 +1561,16 @@ public class TclassService implements ITclassService {
         return result;
     }
 
+
+    private Integer getNumberOfFilledExecutionEvaluationForms(Set<ClassStudent> classStudents) {
+        int result = 0;
+        for (ClassStudent classStudent : classStudents) {
+            if (Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 2 ||
+                    Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 3)
+                result++;
+        }
+        return result;
+    }
     private Integer getNumberOfInCompletedReactionEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1245,7 +1579,14 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
-
+    private Integer getNumberOfInCompletedExecutionEvaluationForms(Set<ClassStudent> classStudents) {
+        int result = 0;
+        for (ClassStudent classStudent : classStudents) {
+            if (Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 3)
+                result++;
+        }
+        return result;
+    }
     public Integer getNumberOfCompletedReactionEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1264,7 +1605,15 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
-
+    private Integer getNumberOfEmptyExecutionEvaluationForms(Set<ClassStudent> classStudents) {
+        int result = 0;
+        for (ClassStudent classStudent : classStudents) {
+            if (Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 1 ||
+                    Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 0)
+                result++;
+        }
+        return result;
+    }
     private Integer getNumberOfExportedEvaluationForms(Set<ClassStudent> classStudents) {
         int result = 0;
         for (ClassStudent classStudent : classStudents) {
@@ -1273,7 +1622,14 @@ public class TclassService implements ITclassService {
         }
         return result;
     }
-
+    private Integer getNumberOfExportedExecutionEvaluationForms(Set<ClassStudent> classStudents) {
+        int result = 0;
+        for (ClassStudent classStudent : classStudents) {
+            if (Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 1)
+                result++;
+        }
+        return result;
+    }
     private Double getPercenetOfFilledReactionEvaluationForms(Set<ClassStudent> classStudents) {
         double r1 = getNumberOfFilledReactionEvaluationForms(classStudents);
         double r2 = getNumberOfFilledReactionEvaluationForms(classStudents) + (double) getNumberOfEmptyReactionEvaluationForms(classStudents);
@@ -1281,6 +1637,15 @@ public class TclassService implements ITclassService {
         return (r1 / r2) * 100;
     else
         return null;
+    }
+
+    private Double getPercentOfFilledExecutionEvaluationForms(Set<ClassStudent> classStudents) {
+       double r1 = getNumberOfFilledExecutionEvaluationForms(classStudents);
+        double r2 = getNumberOfFilledExecutionEvaluationForms(classStudents) + (double) getNumberOfEmptyExecutionEvaluationForms(classStudents);
+        if (r2!=0.0)
+            return (r1 / r2) * 100;
+        else
+            return null;
     }
 
     ///---------------------------------------------- Reaction Evaluation ----------------------------------------------
@@ -2328,6 +2693,8 @@ public class TclassService implements ITclassService {
 
         return elsClassDto;
     }
+
+
 
 
 }

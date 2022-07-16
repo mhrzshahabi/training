@@ -42,6 +42,8 @@ public interface IEvaluationService {
     Evaluation getBehavioralEvaluationByStudent(Long studentId, Long classId);
 
     EvaluationDTO.Info getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId);
+    EvaluationDTO.Info getExecutionEvaluation(Long classId);
+    Double getExecutionEvaluationAverageGrade(Long classId);
 
     Boolean deleteEvaluation(@RequestBody HashMap req);
 

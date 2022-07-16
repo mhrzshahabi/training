@@ -263,6 +263,21 @@ public class EvaluationService implements IEvaluationService {
             return modelMapper.map(evaluation, EvaluationDTO.Info.class);
     }
 
+    @Override
+    public EvaluationDTO.Info getExecutionEvaluation(Long classId) {
+      Long evaluationId= evaluationDAO.findExecutionEvaluationByClassID(classId);
+     Optional<Evaluation> evaluation =evaluationDAO.findById(evaluationId);
+        if (evaluation.isEmpty())
+            return null;
+        else
+            return modelMapper.map(evaluation.get(), EvaluationDTO.Info.class);
+    }
+
+    @Override
+    public Double getExecutionEvaluationAverageGrade(Long classId) {
+     return   evaluationDAO.findAverageExecutionEvaluationAverageGrade(classId);
+    }
+
     @Transactional
     @Override
     public List<EvaluationAnswerDTO.EvaluationAnswerFullData> getEvaluationForm(@RequestBody HashMap req) {

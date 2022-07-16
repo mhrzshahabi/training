@@ -546,6 +546,11 @@ public class TclassRestController {
     public ResponseEntity<TclassDTO.ReactionEvaluationResult> getReactionEvaluationResult(@PathVariable Long classId) {
         return new ResponseEntity<TclassDTO.ReactionEvaluationResult>(tClassService.getReactionEvaluationResult(classId), HttpStatus.OK);
     }
+    @Loggable
+    @GetMapping(value = "/executionEvaluationResult/{classId}")
+    public ResponseEntity<TclassDTO.ExecutionEvaluationResult> getExecutionEvaluationResult(@PathVariable Long classId) {
+        return new ResponseEntity<TclassDTO.ExecutionEvaluationResult>(tClassService.getExecutionEvaluationResult(classId), HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping(value = "/preCourse-test-questions/{classId}")
