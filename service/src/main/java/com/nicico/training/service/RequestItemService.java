@@ -422,7 +422,7 @@ public class RequestItemService implements IRequestItemService {
             Map<String, Object> variables = reviewTaskRequest.getVariables();
             String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
             // String mainRunChief = "ابراهیم نژاد";
-            String mainRunChief = "0965399435";
+            String mainRunChief = "0938091972";
             if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
                 // mainRunChief = "hajizadeh_mh";
                 mainRunChief = "3149622123";
@@ -435,7 +435,7 @@ public class RequestItemService implements IRequestItemService {
                 variables.put("assignTo", mainRunChief);
             } else {
                 // بلامانع
-                if (courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).collect(Collectors.toList()).size() != 0) {
+                if (courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() != 0) {
                     // دارای ضمن خدمت
                     // رییس اجرا و کارشناس انتصاب سمت
                     variables.put("finalOpinion", "noObjection");
@@ -619,7 +619,7 @@ public class RequestItemService implements IRequestItemService {
 
             String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
             // String mainRunChief = "ابراهیم نژاد";
-            String mainRunChief = "0965399435";
+            String mainRunChief = "0938091972";
             if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
                 // mainRunChief = "hajizadeh_mh";
                 mainRunChief = "3149622123";
@@ -648,14 +648,95 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
+    public BaseResponse reviewRequestItemTaskByRunChiefForApproval(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("assignTo", getPlanningChiefNationalCode());
+            requestItem.setProcessStatusId(parameterValueService.getId("waitingFinalApprovalByPlanningChief(AfterRun)"));
+            requestItemDAO.saveAndFlush(requestItem);
+            response.setStatus(200);
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
+            if (!requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) &&
+                    courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() != 0)
+                requestItem.setProcessStatusId(parameterValueService.getId("terminationOfTheProcess"));
+            else
+                requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPositionAppointmentExpert"));
+            requestItemDAO.saveAndFlush(requestItem);
+            response.setStatus(200);
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
     public BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequestDto, String letterNumberSent) {
 
         BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequestDto.getProcessInstanceId());
         if (optionalRequestItem.isPresent()) {
+
             RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
             requestItem.setLetterNumberSent(letterNumberSent);
-//            requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningExperts"));
+            if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) ||
+                    (!requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) &&
+                    courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() == 0)) {
+                requestItem.setProcessStatusId(parameterValueService.getId("terminationOfTheProcess"));
+            }
             requestItemDAO.saveAndFlush(requestItem);
             response.setStatus(200);
         } else {
