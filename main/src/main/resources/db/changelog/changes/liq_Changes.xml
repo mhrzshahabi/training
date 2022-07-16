@@ -4866,6 +4866,42 @@ FROM
     <changeSet author="MShahabi" id="1799887766557-086">
         <dropColumn columnName="work_group_code" tableName="tbl_request_item_aud"/>
     </changeSet>
+    <changeSet id="2799887766557-21" author="ZPakdaman">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_role_id NUMBER;
+            BEGIN
+            BEGIN
+            l_role_id
+            := seq_role_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_role (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                      description ,
+                                       name)
+            VALUES (l_role_id,
+                    'ZPakdaman',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'ادمین'
+                    ,'SYSADMIN');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
 
