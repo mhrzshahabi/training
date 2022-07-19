@@ -4917,6 +4917,50 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari" id="1658205590000-04">
+        <addColumn tableName="tbl_question_bank">
+            <column name="c_question_v2" type="CLOB"/>
+        </addColumn>
+        <sql>
+            <![CDATA[
+            UPDATE tbl_question_bank SET c_question_v2 = c_question;
+              ]]>
+        </sql>
+    </changeSet>
+    <changeSet author="namdari" id="1658205590000-05">
+        <sql>
+            <![CDATA[
+            ALTER TABLE tbl_question_bank
+            DROP COLUMN c_question;
+              ]]>
+        </sql>
+    </changeSet>
+    <changeSet author="namdari" id="1658205590000-06">
+        <sql>
+            <![CDATA[
+            ALTER TABLE tbl_question_bank
+                RENAME COLUMN c_question_v2 TO c_question;
+              ]]>
+        </sql>
+    </changeSet>
+
+
+
+    <changeSet author="namdari" id="1658205590000-07">
+        <addColumn tableName="tbl_question_bank">
+            <column name="c_descriptive_answer_v2" type="CLOB"/>
+        </addColumn>
+        <sql>
+            <![CDATA[
+            UPDATE tbl_question_bank SET c_descriptive_answer_v2 = c_descriptive_answer;
+            ALTER TABLE tbl_question_bank
+            DROP COLUMN c_descriptive_answer;
+            ALTER TABLE tbl_question_bank
+                RENAME COLUMN c_descriptive_answer_v2 TO c_descriptive_answer;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
 
 
