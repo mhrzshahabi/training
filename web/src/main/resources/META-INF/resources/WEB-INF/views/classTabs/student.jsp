@@ -1551,29 +1551,6 @@
             ],
             gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
             selectionAppearance: "checkbox",
-            dataArrived: function (startRow, endRow) {
-                let lgNationalCodes = StudentsLG_student.data.localData.map(function (item) {
-                    return item.student.nationalCode;
-                });
-                let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function (item) {
-                    return item['nationalCode'];
-                });
-
-                let nationals = lgNationalCodes.concat(selectedNationalCodes);
-
-                let findRows = PersonnelsLG_student.findAll({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
-                });
-                studentSelection = true;
-                findRows.forEach(current => current.isChecked = true);
-
-                PersonnelsLG_student.setSelectedState(findRows);
-                findRows.setProperty("enabled", false);
-
-                studentSelection = false;
-            },
             getCellCSSText: rowStyle,
             rowClick: function (record, recordNum, fieldNum) {
                 if (Object.keys(previousSelectedRow).length > 1) {
@@ -1762,29 +1739,6 @@
             ],
             gridComponents: [SynonymPersonnelsTS_student, "filterEditor", "header", "body"],
             selectionAppearance: "checkbox",
-            dataArrived: function (startRow, endRow) {
-                let lgNationalCodes = StudentsLG_student.data.localData.map(function (item) {
-                    return item.student.nationalCode;
-                });
-                let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function (item) {
-                    return item['nationalCode'];
-                });
-
-                let nationals = lgNationalCodes.concat(selectedNationalCodes);
-
-                let findRows = SynonymPersonnelsLG_student.findAll({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
-                });
-                studentSelection = true;
-                findRows.forEach(current => current.isChecked = true);
-
-                SynonymPersonnelsLG_student.setSelectedState(findRows);
-                findRows.setProperty("enabled", false);
-
-                studentSelection = false;
-            },
             getCellCSSText: rowStyle,
             rowClick: function (record, recordNum, fieldNum) {
                 if (Object.keys(previousSelectedRow).length > 1) {
@@ -2058,28 +2012,6 @@
                 {name: "ccpUnit", hidden: true},
             ],
             gridComponents: [RegisteredTS_student, "filterEditor", "header", "body"],
-            dataArrived: function (startRow, endRow) {
-                let lgNationalCodes = StudentsLG_student.data.localData.map(function (item) {
-                    return item.student.nationalCode;
-                });
-                let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function (item) {
-                    return item['nationalCode'];
-                });
-
-                let nationals = lgNationalCodes.concat(selectedNationalCodes);
-
-                let findRows = PersonnelsRegLG_student.findAll({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
-                });
-                studentSelection = true;
-                findRows.forEach(current => current.isChecked = true);
-                PersonnelsRegLG_student.setSelectedState(findRows);
-                findRows.setProperty("enabled", false);
-
-                studentSelection = false;
-            },
             getCellCSSText: rowStyle,
             rowClick: function (record, recordNum, fieldNum) {
                 if (Object.keys(previousSelectedRowReg).length > 1) {

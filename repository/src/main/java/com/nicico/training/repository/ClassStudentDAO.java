@@ -616,4 +616,14 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
             "and tbl_session.c_session_start_hour = :startHour and tbl_session.c_session_end_hour= :endHour\n" +
             "and tbl_student.national_code= :nationalCode ",nativeQuery = true)
     List<Long> getSessionsInterferencePerStudent(@Param("sessionDate") String sessionDate,@Param("startHour") String startHour,@Param("endHour") String endHour, @Param("nationalCode") String nationalCode);
+
+    @Query(value = "SELECT\n" +
+            "    st.national_code\n" +
+            "FROM\n" +
+            "    tbl_class cl\n" +
+            "    INNER JOIN tbl_class_student cs ON cl.id = cs.class_id\n" +
+            "    INNER JOIN tbl_student       st ON st.id = cs.student_id\n" +
+            "WHERE\n" +
+            "    cl.id =:classId",nativeQuery = true)
+    List<String> findClassStudentsNationalCodeByTclassId(long classId);
 }

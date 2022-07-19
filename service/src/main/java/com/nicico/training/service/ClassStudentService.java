@@ -83,6 +83,8 @@ public class ClassStudentService implements IClassStudentService {
                 throw new TrainingException(TrainingException.ErrorType.registerNotAccepted);
         }
 
+        List<String> classStudentsNationalCode = getClassStudentsNationalCode(classId);
+        request.removeIf(create -> classStudentsNationalCode.contains(create.getNationalCode()));
 
         for (ClassStudentDTO.Create c : request) {
             List<Student> list = studentService.getStudentByPostIdAndPersonnelNoAndDepartmentIdAndFirstNameAndLastNameOrderByIdDesc(c.getPostId(), c.getPersonnelNo(), c.getDepartmentId(), c.getFirstName(), c.getLastName());
@@ -219,6 +221,10 @@ public class ClassStudentService implements IClassStudentService {
     @Override
     public List<ClassStudent> getClassStudents(long classId) {
         return classStudentDAO.findAllByTclassId(classId);
+    }
+
+    public List<String> getClassStudentsNationalCode(long classId) {
+        return classStudentDAO.findClassStudentsNationalCodeByTclassId(classId);
     }
 
     @Transactional
