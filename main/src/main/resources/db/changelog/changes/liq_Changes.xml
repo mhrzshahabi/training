@@ -4903,6 +4903,13 @@ FROM
         </sql>
     </changeSet>
 
+
+    <changeSet author="namdari (generated)" id="1658205590000-01">
+        <addColumn tableName="tbl_teacher">
+            <column name="residence" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

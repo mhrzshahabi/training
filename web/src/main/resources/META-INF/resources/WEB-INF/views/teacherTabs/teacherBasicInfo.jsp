@@ -711,6 +711,19 @@
                 pickListProperties: {
                     showFilterEditor: false
                 }
+            },
+            {
+                name: "residence",
+                title: "محل سکونت",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                valueMap: {
+                    "داخل استان": "داخل استان",
+                    "خارج از استان": "خارج از استان",
+                    "خارج از کشور": "خارج از کشور"
+                },
+                type: "ComboBoxItem",
             }
         ],
         itemChanged: function (item, newValue) {
