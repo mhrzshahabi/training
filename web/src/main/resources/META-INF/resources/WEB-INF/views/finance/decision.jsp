@@ -87,6 +87,18 @@
         ],
 
     });
+    RestDataSource_Decision_distance = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "itemFromDate"},
+            {name: "itemToDate"},
+            {name: "distance"},
+            {name: "residence"},
+
+
+        ],
+
+    });
 
     RestDataSource_Decision_course_type = isc.TrDS.create({
         fields: [
@@ -596,6 +608,86 @@
 
         ]
     });
+    DynamicForm_distance = isc.DynamicForm.create({
+        width: 400,
+        height: "100%",
+        numCols: 2,
+        fields: [
+            {
+                name: "id",
+                title: "id",
+                primaryKey: true,
+                canEdit: false,
+                hidden: true
+            },
+            {
+                name: "itemFromDate",
+                ID: "date_itemFromDate_distance",
+                title: "تاریخ شروع",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_itemFromDate_distance', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "itemToDate",
+                ID: "date_itemToDate_distance",
+                title: "تاریخ پایان ",
+                required: true,
+                defaultValue: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('date_itemToDate_distance', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "residence",
+                title: "محل سکونت",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                valueMap: {
+                    "داخل استان": "داخل استان",
+                    "خارج از استان": "خارج از استان",
+                    "خارج از کشور": "خارج از کشور"
+                },
+                type: "ComboBoxItem",
+
+            },
+            {
+                name: "distance",
+                title: "ضریب مسافت",
+                length: 20,
+                keyPressFilter: "[0-9.]",
+                required: true
+            },
+
+        ]
+    });
 
 
 
@@ -718,6 +810,24 @@
                 title: "حذف",
                 click: function () {
                     deleteChildDecision(ListGrid_Decision_course_type)
+                }.bind(this)
+            })
+        ]
+    });
+    distance_actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonCreate.create({
+                title: "افزودن",
+                click: function () {
+                    addChildDecision(DynamicForm_distance,Window_distance)
+                }.bind(this)
+            }),
+            isc.ToolStripButtonRemove.create({
+                title: "حذف",
+                click: function () {
+                    deleteChildDecision(ListGrid_Decision_distance)
                 }.bind(this)
             })
         ]
@@ -933,6 +1043,63 @@
 
 
     });
+    ListGrid_Decision_distance = isc.ListGrid.create({
+        dataSource: RestDataSource_Decision_distance,
+        sortDirection: "descending",
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        canAutoFitFields: true,
+        width: "100%",
+        height: "100%",
+        autoFetchData: false,
+        initialSort: [
+            {property: "id", direction: "descending"}
+        ],
+        fields: [
+            {
+                name: "id",
+                hidden: true,
+                primaryKey: true,
+                canEdit: false,
+                align: "center"
+            },
+            {
+                name: "itemFromDate",
+                title: "تاریخ شروع",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "itemToDate",
+                title: "تاریخ پایان",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+
+            {
+                name: "residence",
+                title: "محل سکونت",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "distance",
+                title: "مسافت",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+
+
+
+        ],
+        gridComponents: [distance_actions, "filterEditor", "header", "body", "summaryRow"]
+
+
+    });
     ListGrid_Basic_Tuition = isc.ListGrid.create({
         dataSource: RestDataSource_Basic_Tuition,
         sortDirection: "descending",
@@ -1048,6 +1215,7 @@
             {name: "TabPane_Basic_Tuition", title: "ضریب سابقه آموزشی", pane: ListGrid_Decision_Educational_history},
             {name: "TabPane_teaching_method", title: "ضریب روش تدریس", pane: ListGrid_Decision_teaching_method},
             {name: "TabPane_course_type", title: "ضریب نوع دوره", pane: ListGrid_Decision_course_type},
+            {name: "TabPane_distance", title: "ضریب مسافت", pane: ListGrid_Decision_distance},
         ],
         tabSelected: function () {
             selectionUpdated_Tabs();
@@ -1169,6 +1337,31 @@
             })
         ]
     });
+    HLayout_IButtons_distance = isc.HLayout.create({
+        layoutMargin: 5,
+        membersMargin: 15,
+        width: "100%",
+        height: "100%",
+        align: "center",
+        members: [
+            isc.IButtonSave.create({
+                top: 260,
+                layoutMargin: 5,
+                membersMargin: 5,
+                click: function () {
+                    saveChildDecision(ListGrid_Decision_distance,DynamicForm_distance,Window_distance,"distance")
+                }
+            }),
+            isc.IButtonCancel.create({
+                layoutMargin: 5,
+                membersMargin: 5,
+                width: 120,
+                click: function () {
+                    Window_distance.close();
+                }
+            })
+        ]
+    });
     Window_header_Decision = isc.Window.create({
         title: "افزودن هدر تصمیم گیری",
         width: 450,
@@ -1244,6 +1437,22 @@
         items: [
             DynamicForm_course_type,
             HLayout_IButtons_course_type
+        ]
+    });
+
+    Window_distance = isc.Window.create({
+        title: "افزودن ضریب مسافت",
+        width: 450,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            DynamicForm_distance,
+            HLayout_IButtons_distance
         ]
     });
 
@@ -1450,6 +1659,12 @@
                 RestDataSource_Decision_course_type.fetchDataURL = educationalDecisionRequestUrl + "/list/course-type/"+record.id;
                 ListGrid_Decision_course_type.invalidateCache();
                 ListGrid_Decision_course_type.fetchData();
+                break;
+            }
+            case "TabPane_distance": {
+                RestDataSource_Decision_distance.fetchDataURL = educationalDecisionRequestUrl + "/list/distance/"+record.id;
+                ListGrid_Decision_distance.invalidateCache();
+                ListGrid_Decision_distance.fetchData();
                 break;
             }
 

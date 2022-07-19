@@ -41,6 +41,9 @@ public class EducationalDecisionDTO {
     private String courseForCourseType;
     private String courseLevelCourseType;
     private String typeOfSpecializationCourseType;
+    ////////////////////////////////////
+    private String distance;
+    private String residence;
 
 
     @Getter

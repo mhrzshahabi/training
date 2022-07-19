@@ -4910,6 +4910,13 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari" id="1658205590000-02">
+        <addColumn tableName="tbl_educational_decision">
+            <column name="distance" type="VARCHAR2(255 CHAR)"/>
+            <column name="residence" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 
