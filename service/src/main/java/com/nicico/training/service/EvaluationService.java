@@ -391,7 +391,7 @@ public class EvaluationService implements IEvaluationService {
 //            } else
                 if (evaluation.getEvaluatorTypeId() == 188L ) {
                 Optional<ClassStudent> classStudent = classStudentDAO.findById(evaluation.getEvaluatorId());
-                if (classStudent.isPresent() && classStudent.get().getStudent() != null && classStudent.get().getStudent().getNationalCode().equals(evaluatorNationalCode))
+                if (classStudent.isPresent() && classStudent.get().getStudent() != null && classStudent.get().getStudent().getNationalCode()!=null && classStudent.get().getStudent().getNationalCode().equals(evaluatorNationalCode))
                     finalList.add(evaluation);
             } else if (evaluation.getEvaluatorTypeId() != 188L && evaluation.getEvaluatorTypeId() != 187L){
                 Optional<ViewActivePersonnel> activePersonnel = viewActivePersonnelDAO.findById(evaluation.getEvaluatorId());
