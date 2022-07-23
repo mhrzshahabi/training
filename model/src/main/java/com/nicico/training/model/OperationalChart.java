@@ -37,6 +37,12 @@ public class OperationalChart extends Auditable{
     @Column(name = "c_nationalcode")
     private String nationalCode;
 
+    @Column(name = "role_id")
+    private Long roleId;
+
+    @Column(name = "c_code")
+    private String code;
+
     @OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_operational_chart_parent_child", uniqueConstraints = {@UniqueConstraint(columnNames = {"parent_id", "child_id"})},
             joinColumns = {@JoinColumn(name = "parent_id", referencedColumnName = "id")},

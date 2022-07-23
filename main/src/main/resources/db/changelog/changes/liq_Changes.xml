@@ -4707,6 +4707,17 @@ FROM
         </sql>
     </changeSet>
 
+    <changeSet author="kasehpour_t" id="1655289049000-03">
+        <addColumn tableName="tbl_operational_chart">
+            <column name="role_id" type="NUMBER(19,0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="kasehpour_t" id="1655289049000-04">
+        <addColumn tableName="tbl_operational_chart">
+            <column name="c_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
 
