@@ -1857,6 +1857,9 @@
                 width: "140",
                 click: function () {
 
+                    if (!DynamicForm_RequestItem_Appointment_Expert.validate())
+                        return;
+
                     isc.Dialog.create({
                         message: "آیا اطمینان دارید؟",
                         icon: "[SKIN]ask.png",
