@@ -79,4 +79,14 @@ public class QuestionnaireQuestionDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ExecutionInfo {
+     Double questionOrder;
+      String questionTitle;
+      Double AveGradeToQuestion;
+    }
 }

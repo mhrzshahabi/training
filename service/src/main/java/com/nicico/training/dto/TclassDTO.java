@@ -523,6 +523,30 @@ public class TclassDTO {
         Double z1;
         Double z2;
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ExecutionEvaluationResult")
+    public static class ExecutionEvaluationResult {
+        Boolean FEEPass;
+        Integer studentCount;
+        Double FEEGrade;
+        Integer numberOfFilledExecutionEvaluationForms;
+        Integer numberOfInCompletedExecutionEvaluationForms;
+        Integer numberOfEmptyExecutionEvaluationForms;
+        Integer numberOfExportedExecutionEvaluationForms;
+        Double percentOfFilledExecutionEvaluationForms;
+        Double studentsGradeToTeacher;
+        Double studentsGradeToFacility;
+        Double studentsGradeToGoals;
+        Double z9;
+        String executionEvaluationStatus;
+        List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions;
+        String QuestionnaireTitle;
+        Double differ;
+
+    }
+
 
     @Getter
     @Setter
