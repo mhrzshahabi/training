@@ -4858,6 +4858,94 @@ FROM
             <column name="limit_sufficiency" type="VARCHAR2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet  id="2799887766557-22" author="ZPakdaman">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code)
+            VALUES (l_parameter_id,
+                    'ZPakdaman',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'فرمول ارزیابی حین اجرا کلاس ',
+                    'FEE');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             c_value)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'ZPakdaman',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'نمره ارزیابی فراگیر به استاد',
+                    'z9',
+                    '65');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code,
+                                             c_value)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    ' حدنصاب پرسشنامه های تکمیل شده ',
+                    'minQusEE',
+                    '50');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
 

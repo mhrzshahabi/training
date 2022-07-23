@@ -528,30 +528,23 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("ExecutionEvaluationResult")
     public static class ExecutionEvaluationResult {
-        Boolean FERPass;
-        Boolean FETPass;
-        Boolean FECRPass;
+        Boolean FEEPass;
         Integer studentCount;
-        Double FERGrade;
-        Double FETGrade;
-        Double FECRGrade;
+        Double FEEGrade;
         Integer numberOfFilledExecutionEvaluationForms;
         Integer numberOfInCompletedExecutionEvaluationForms;
         Integer numberOfEmptyExecutionEvaluationForms;
         Integer numberOfExportedExecutionEvaluationForms;
         Double percentOfFilledExecutionEvaluationForms;
-        Double minScore_ER;
-        Double minScore_ET;
-        Double minScoreFECR;
-        Double teacherGradeToClass;
         Double studentsGradeToTeacher;
         Double studentsGradeToFacility;
         Double studentsGradeToGoals;
-        Double trainingGradeToTeacher;
-        Double z1;
-        Double z2;
-        Double executionEvaluationAveGrade;
-        Boolean executionEvaluationStatus;
+        Double z9;
+        String executionEvaluationStatus;
+        List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions;
+        String QuestionnaireTitle;
+        Double differ;
+
     }
 
 

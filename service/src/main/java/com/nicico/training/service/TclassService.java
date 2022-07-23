@@ -77,6 +77,7 @@ public class TclassService implements ITclassService {
     private final StudentDAO studentDAO;
     private final EvaluationAnswerService evaluationAnswerService;
     private final QuestionnaireQuestionDAO questionnaireQuestionDAO;
+
     private final DynamicQuestionDAO dynamicQuestionDAO;
     private final ClassSessionService classSessionService;
     private final TermDAO termDAO;
@@ -107,6 +108,7 @@ public class TclassService implements ITclassService {
     private final ClassStudentDAO classStudentDAO;
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
     private final EducationalCalenderDAO educationalCalenderDAO;
+    private final QuestionnaireDAO questionnaireDAO;
 
 
     @Override
@@ -843,43 +845,29 @@ public class TclassService implements ITclassService {
     @Override
     @Transactional
     public TclassDTO.ExecutionEvaluationResult getExecutionEvaluationResult(Long tclassId) {
-        Boolean FERPass = null;
-        Boolean FETPass = null;
-        Boolean FECRPass = null;
-        Double FERGrade = null;
-        Double FETGrade = null;
-        Double FECRGrade = null;
-        Double minQus_ER = null;
-        Double minScore_ER = null;
-        Double minScore_ET = null;
-        Double minQus_ET = null;
-        Double minScoreFECR = null;
+        Boolean FEEPass = null;
+        Double FEEGrade = null;
         Set<ClassStudent> classStudents;
-        Long teacherId = null;
+
         Long classId = tclassId;
-        Long trainingId = null;
+
         Double studentsGradeToTeacher = null;
         Double studentsGradeToGoals = null;
         Double studentsGradeToFacility = null;
-        Double trainingGradeToTeacher = null;
-        Double teacherGradeToClass = null;
         Double percentOfFilledExecutionEvaluationForms = null;
         Integer studentCount = null;
-        String FERGradeS = null;
-        Double executionEvaluationAveGrade=null;
-        Boolean executionEvaluationStatus=null;
+       String executionEvaluationStatus=null;
+        Double z9=null;
+        List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions=new ArrayList<>();
+
+
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers=new ArrayList<>();
+        List<QuestionnaireQuestionDTO.ExecutionInfo> executionInfos=new ArrayList<>();
 
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
-        teacherId = tclass.getTeacherId();
-        trainingId = tclass.getSupervisorId();
+
         TclassDTO.ExecutionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ExecutionEvaluationResult.class);
-        executionEvaluationAveGrade=evaluationService.getExecutionEvaluationAverageGrade(classId);
-        if(executionEvaluationAveGrade>=65.00){
-            executionEvaluationStatus=true;
-        }else{
-            executionEvaluationStatus=false;
-        }
         Map<String, Double> executionEvaluationResult = calculateStudentsExecutionEvaluationResult(classStudents);
         if (executionEvaluationResult.get("studentsGradeToTeacher") != null)
             studentsGradeToTeacher = (Double) executionEvaluationResult.get("studentsGradeToTeacher");
@@ -888,76 +876,47 @@ public class TclassService implements ITclassService {
         if (executionEvaluationResult.get("studentsGradeToFacility") != null)
             studentsGradeToFacility = (Double) executionEvaluationResult.get("studentsGradeToFacility");
         percentOfFilledExecutionEvaluationForms = getPercentOfFilledExecutionEvaluationForms(classStudents);
-        teacherGradeToClass = getTeacherGradeToClassExecution(classId, teacherId);
-        trainingGradeToTeacher = getTrainingGradeToTeacherExecution(classId, trainingId, teacherId);
+
         studentCount = getStudentCount(classStudents);
+         if(executionEvaluationResult.get("evaluationId")!=null) {
+             Optional<Evaluation> evaluation = evaluationDAO.findById(executionEvaluationResult.get("evaluationId").longValue());
 
+             if (evaluation.isPresent()) {
+                 answers = evaluationService.getEvaluationFormAnswerDetail(evaluation.get());
 
-        Map<String, Object> FERGradeResult = getFERGradeExecution(studentsGradeToTeacher,
+                 if (answers != null && answers.size() > 0) {
+                     executionInfos = getQuestionnaireInfo(answers, evaluation.get().getQuestionnaireId());
+                 }
+
+                 Optional<Questionnaire> questionnaire = questionnaireDAO.findById(evaluation.get().getQuestionnaireId());
+                 if (questionnaire.isPresent()) {
+                     evaluationResult.setQuestionnaireTitle(questionnaire.get().getTitle());
+                 }
+             }
+         }
+        if(executionInfos!=null )
+          evaluationResult.setQuestionnaireQuestions(executionInfos);
+
+        Map<String, Object> FEEGradeResult = getFEEGrade(studentsGradeToTeacher,
                 studentsGradeToGoals,
                 studentsGradeToFacility,
-               percentOfFilledExecutionEvaluationForms,
-                teacherGradeToClass);
+               percentOfFilledExecutionEvaluationForms);
 
 
-        if (FERGradeResult.get("FERGrade") != null)
-            FERGrade = (Double) FERGradeResult.get("FERGrade");
-        if (FERGradeResult.get("FERPass") != null)
-            FERPass = (Boolean) FERGradeResult.get("FERPass");
-        if (FERGradeResult.get("minQus_ER") != null)
-            minQus_ER = (Double) FERGradeResult.get("minQus_ER");
-        if (FERGradeResult.get("minQus_ER") != null)
-            minScore_ER = (Double) FERGradeResult.get("minScore_ER");
-
-        Map<String, Object> FETGradeResult = getFETGrade(studentsGradeToTeacher,
-                trainingGradeToTeacher,
-                percentOfFilledExecutionEvaluationForms);
-        if (FETGradeResult.get("FETGrade") != null)
-            FETGrade = (Double) FETGradeResult.get("FETGrade");
-        if (FETGradeResult.get("FETPass") != null)
-            FETPass = (Boolean) FETGradeResult.get("FETPass");
-        if (FETGradeResult.get("minScore_ET") != null)
-            minScore_ET = (Double) FETGradeResult.get("minScore_ET");
-        if (FETGradeResult.get("minQus_ET") != null)
-            minQus_ET = (Double) FETGradeResult.get("minQus_ET");
-
-        Map<String, Object> FECRResult = null;
-        if (FERGrade != null)
-            FERGradeS = FERGrade.toString();
-        List<EvaluationAnalysis> evaluationAnalyses = evaluationAnalysisDAO.findAllBytClassId(classId);
-        if (evaluationAnalyses != null && evaluationAnalyses.size() != 0) {
-            FECRResult = calculateEffectivenessEvaluation(FERGradeS, evaluationAnalyses.get(0).getLearningGrade(), evaluationAnalyses.get(0).getBehavioralGrade(), tclass.getEvaluation());
-        } else {
-            FECRResult = calculateEffectivenessEvaluation(FERGradeS, null, null, tclass.getEvaluation());
-        }
-
-        if (FECRResult.get("EffectivenessGrade") != null)
-            FECRGrade = (Double) FECRResult.get("EffectivenessGrade");
-        if (FECRResult.get("EffectivenessPass") != null)
-            FECRPass = (Boolean) FECRResult.get("EffectivenessPass");
-        if (FECRResult.get("minScoreFECR") != null)
-            minScoreFECR = (Double) FECRResult.get("minScoreFECR");
+        if (FEEGradeResult.get("FEEGrade") != null)
+            FEEGrade = (Double) FEEGradeResult.get("FEEGrade");
+        if (FEEGradeResult.get("FEEPass") != null)
+            FEEPass = (Boolean) FEEGradeResult.get("FEEPass");
+         if(FEEGradeResult.get("z9")!=null)
+             z9=(Double) FEEGradeResult.get("z9");
 
         if (studentCount != null)
             evaluationResult.setStudentCount(studentCount);
-        if (FERGrade != null)
-            evaluationResult.setFERGrade(Double.parseDouble(numberFormat.format(FERGrade).toString()));
-        if (FERPass != null)
-            evaluationResult.setFERPass(FERPass);
-        if (FETGrade != null)
-            evaluationResult.setFETGrade(Double.parseDouble(numberFormat.format(FETGrade).toString()));
-        if (FETPass != null)
-            evaluationResult.setFETPass(FETPass);
-        if (FECRGrade != null)
-            evaluationResult.setFECRGrade(Double.parseDouble(numberFormat.format(FECRGrade).toString()));
-        if (FECRPass != null)
-            evaluationResult.setFECRPass(FECRPass);
-        if (minScore_ER != null)
-            evaluationResult.setMinScore_ER(minScore_ER);
-        if (minScore_ET != null)
-            evaluationResult.setMinScore_ET(minScore_ET);
-        if (minScoreFECR != null)
-            evaluationResult.setMinScoreFECR(minScoreFECR);
+        if (FEEGrade != null)
+            evaluationResult.setFEEGrade(Double.parseDouble(numberFormat.format(FEEGrade).toString()));
+        if (FEEPass != null)
+            evaluationResult.setFEEPass(FEEPass);
+
 
         if (getNumberOfEmptyExecutionEvaluationForms(classStudents) != null)
             evaluationResult.setNumberOfEmptyExecutionEvaluationForms(getNumberOfEmptyExecutionEvaluationForms(classStudents));
@@ -970,25 +929,34 @@ public class TclassService implements ITclassService {
         if (getNumberOfExportedExecutionEvaluationForms(classStudents) != null)
             evaluationResult.setNumberOfExportedExecutionEvaluationForms(getNumberOfExportedExecutionEvaluationForms(classStudents));
 
-        if (studentsGradeToFacility != null)
-            evaluationResult.setStudentsGradeToFacility(Double.parseDouble(numberFormat.format(studentsGradeToFacility).toString()));
-        if (studentsGradeToGoals != null)
-            evaluationResult.setStudentsGradeToGoals(Double.parseDouble(numberFormat.format(studentsGradeToGoals).toString()));
+
         if (studentsGradeToTeacher != null)
             evaluationResult.setStudentsGradeToTeacher(Double.parseDouble(numberFormat.format(studentsGradeToTeacher).toString()));
-        if (trainingGradeToTeacher != null)
-            evaluationResult.setTrainingGradeToTeacher(Double.parseDouble(numberFormat.format(trainingGradeToTeacher).toString()));
-        if (teacherGradeToClass != null)
-            evaluationResult.setTeacherGradeToClass(Double.parseDouble(numberFormat.format(teacherGradeToClass).toString()));
-        if(executionEvaluationAveGrade!=null)
-            evaluationResult.setExecutionEvaluationAveGrade(Double.parseDouble(numberFormat.format(executionEvaluationAveGrade).toString()));
-        if (FETGradeResult.get("z1") != null)
-            evaluationResult.setZ1(Double.parseDouble(FETGradeResult.get("z1").toString()));
-        if (FETGradeResult.get("z2") != null)
-            evaluationResult.setZ2(Double.parseDouble(FETGradeResult.get("z2").toString()));
-        if(executionEvaluationStatus!=null){
-            evaluationResult.setExecutionEvaluationStatus(executionEvaluationStatus);
+        if(z9!=null)
+            evaluationResult.setZ9(z9);
+
+        if(  FEEPass!=null && FEEPass.equals(true)){
+            if( evaluationResult.getFEEGrade()!=null && evaluationResult.getFEEGrade()>=z9){
+               evaluationResult.setExecutionEvaluationStatus("تایید");
+               if(z9!=null) {
+                   evaluationResult.setDiffer((double) Math.round((FEEGrade-z9)* 100) / 100);
+               }else{
+                   evaluationResult.setDiffer(FEEGrade);
+               }
+
+
+            }else{
+                evaluationResult.setExecutionEvaluationStatus("عدم تایید");
+                evaluationResult.setDiffer(0.00);
+            }
+        }else {
+            evaluationResult.setExecutionEvaluationStatus("عدم تایید(به حدنصاب نرسیدن پرسشنامه ها)");
+            evaluationResult.setDiffer(0.00);
         }
+
+
+
+
         return evaluationResult;
     }
 
@@ -1261,11 +1229,14 @@ public class TclassService implements ITclassService {
         Integer studentsGradeToGoals_count = null;
         Map<String, Double> result = new HashMap<>();
         Double completeNum = 0.0;
+        List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions=new ArrayList<>();
+        Long questionnaireId=null;
+        EvaluationDTO.Info evaluationDTO =new EvaluationDTO.Info();
 
 
         for (ClassStudent classStudent : classStudents) {
-            if (Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusReaction()).orElse(0) == 3) {
-                EvaluationDTO.Info evaluationDTO = evaluationService.getEvaluationByData(758L, classStudent.getTclass().getId(), classStudent.getId(), 188L,
+            if (Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 2 || Optional.ofNullable(classStudent.getEvaluationStatusExecution()).orElse(0) == 3) {
+                evaluationDTO = evaluationService.getEvaluationByData(758L, classStudent.getTclass().getId(), classStudent.getId(), 188L,
                         classStudent.getTclass().getId(), 504L, 757L);
 
                 Evaluation evaluation = modelMapper.map(evaluationDTO, Evaluation.class);
@@ -1281,6 +1252,10 @@ public class TclassService implements ITclassService {
                     double teacherTotalWeight = 0.0;
                     double facilityTotalWeight = 0.0;
                     double goalsTotalWeight = 0.0;
+                    questionnaireId=   evaluation.getQuestionnaireId();
+
+                    result.put("questionnaireId",questionnaireId.doubleValue());
+
                     for (EvaluationAnswerDTO.EvaluationAnswerFullData answer : answers) {
                         if (answer.getAnswerId() != null) {
                             if (answer.getDomainId().equals(54L)) { //studentsToFacilities
@@ -1299,14 +1274,17 @@ public class TclassService implements ITclassService {
                                 goalsTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
                             } else if (answer.getDomainId().equals(53L)) { //studentsToTeacher
                                 studentsGradeToTeacher_cl = 1;
-                                if (answer.getWeight() != null)
+                                if (answer.getWeight() != null) {
                                     teacherTotalWeight += answer.getWeight();
+
+                                }
                                 else
                                     teacherTotalWeight++;
                                 teacherTotalGrade += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
                             }
                         }
                     }
+
                     if (teacherTotalWeight != 0) {
                         if (studentsGradeToTeacher_l == null) studentsGradeToTeacher_l = 0.0;
                         if (studentsGradeToTeacher_count == null) studentsGradeToTeacher_count = 0;
@@ -1336,13 +1314,83 @@ public class TclassService implements ITclassService {
         if (studentsGradeToGoals_l != null && studentsGradeToGoals_count != 0)
             studentsGradeToGoals_l /= studentsGradeToGoals_count;
 
+
         result.put("studentsGradeToTeacher", studentsGradeToTeacher_l);
         result.put("studentsGradeToFacility", studentsGradeToFacility_l);
         result.put("studentsGradeToGoals", studentsGradeToGoals_l);
         result.put("evaluatedPercent", (completeNum/Double.valueOf(classStudents.size())) * 100);
         result.put("answeredStudentsNum", Double.valueOf(completeNum));
         result.put("allStudentsNum", Double.valueOf(classStudents.size()));
+        if(evaluationDTO.getId()!=null)
+        result.put("evaluationId",evaluationDTO.getId().doubleValue());
+
         return result;
+    }
+
+
+
+    private List<QuestionnaireQuestionDTO.ExecutionInfo> getQuestionnaireInfo(List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers, Long questionnaireId) {
+        List<QuestionnaireQuestionDTO.ExecutionInfo> executionInfos=new ArrayList<>();
+        final int[] studentsGradeToQuestion_cl = {0};
+        final Double[] questionTotalWeight = {0.00};
+        final Double[] questionTotalGrade = {0.00};
+        final Double[] studentsGradeToQuestion_l = {0.00};
+        final Integer[] studentsGradeToQuestion_count = {0};
+        List<Double> orders=new ArrayList<>();
+
+
+        List<EvaluationAnswerDTO.EvaluationAnswerFullData> forTeacherAnswers= answers.stream().filter(answer->{
+            if (answer.getAnswerId()!=null && answer.getDomainId()!=null && answer.getDomainId().equals(53L))
+                return true;
+            else
+                return false;
+        }).collect(Collectors.toList());
+     List<Long> evaluationQuestionIds=  forTeacherAnswers.stream().map(answer->answer.getEvaluationQuestionId()).collect(Collectors.toList());
+       evaluationQuestionIds.stream().forEach(evaluationQuestionId->{
+
+      forTeacherAnswers.stream().filter(answer->answer.getEvaluationQuestionId().equals(evaluationQuestionId)).collect(Collectors.toList()).forEach(answer->{
+          studentsGradeToQuestion_cl[0] = 1;
+          if (answer.getWeight() != null) {
+              questionTotalWeight[0] += answer.getWeight();
+
+          }
+          else
+              questionTotalWeight[0]++;
+          questionTotalGrade[0] += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
+          if (questionTotalWeight[0] != 0) {
+              if (studentsGradeToQuestion_l[0] == null) studentsGradeToQuestion_l[0] = 0.0;
+              if (studentsGradeToQuestion_count[0] == null) studentsGradeToQuestion_count[0] = 0;
+              studentsGradeToQuestion_l[0] += (questionTotalGrade[0] / questionTotalWeight[0]);
+              studentsGradeToQuestion_count[0] += studentsGradeToQuestion_cl[0];
+
+
+          }
+          if (studentsGradeToQuestion_l[0] != null && studentsGradeToQuestion_count[0] != 0)
+              studentsGradeToQuestion_l[0] /= studentsGradeToQuestion_count[0];
+
+
+
+          QuestionnaireQuestionDTO.ExecutionInfo executionInfo=new QuestionnaireQuestionDTO.ExecutionInfo();
+          executionInfo.setAveGradeToQuestion((double) Math.round( studentsGradeToQuestion_l[0]* 100) / 100);
+
+//       QuestionnaireQuestion questionnaireQuestion=   questionnaireQuestionDAO.findByQuestionnaireIdAndEvaluationQuestionId(questionnaireId,answer.getEvaluationQuestionId());
+
+        Double order=  answer.getOrder().doubleValue();
+        if(orders.contains(order))
+            order+=0.1;
+        else{
+            orders.add(order.doubleValue());
+        }
+        Collections.sort(orders);
+          executionInfo.setQuestionOrder(order);
+
+        executionInfo.setQuestionTitle(answer.getQuestion());
+          executionInfos.add(executionInfo);
+      });
+
+       });
+      List<QuestionnaireQuestionDTO.ExecutionInfo> sortedList= executionInfos.stream().sorted(Comparator.comparing(QuestionnaireQuestionDTO.ExecutionInfo::getQuestionOrder)).collect(Collectors.toList());
+       return sortedList;
     }
 
     public Double getTeacherGradeToClass(Long classId, Long teacherId) {
@@ -1424,39 +1472,33 @@ public class TclassService implements ITclassService {
         return result;
     }
 
-    private Map<String, Object> getFERGradeExecution(Double studentsGradeToTeacher,
+    private Map<String, Object> getFEEGrade(Double studentsGradeToTeacher,
                                             Double studentsGradeToGoals,
                                             Double studentsGradeToFacility,
-                                            Double percentOfFilledExecutionEvaluationForms,
-                                            Double teacherGradeToClass) {
+                                            Double percentOfFilledExecutionEvaluationForms
+                                           ) {
         Map<String, Object> result = new HashMap<>();
-        Boolean FERPass = null;
-        Double FERGrade = null;
+        Boolean FEEPass = null;
+        Double FEEGrade = null;
 
-        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FER");
+        TotalResponse<ParameterValueDTO.Info> parameters = parameterService.getByCode("FEE");
         List<ParameterValueDTO.Info> parameterValues = parameters.getResponse().getData();
-        Double z3 = null;
-        Double z4 = null;
-        Double z5 = null;
-        Double z6 = null;
-        Double minQus_ER = null;
-        Double minScore_ER = null;
+
+        Double z9 = null;
+
+        Double minQus_EE = null;
+
         for (ParameterValueDTO.Info parameterValue : parameterValues) {
-            if (parameterValue.getCode().equalsIgnoreCase("z3"))
-                z3 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("z4"))
-                z4 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("z5"))
-                z5 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("z6"))
-                z6 = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minQusER"))
-                minQus_ER = Double.parseDouble(parameterValue.getValue());
-            else if (parameterValue.getCode().equalsIgnoreCase("minScoreER"))
-                minScore_ER = Double.parseDouble(parameterValue.getValue());
+
+            if (parameterValue.getCode().equalsIgnoreCase("z9"))
+                z9 = Double.parseDouble(parameterValue.getValue());
+
+            else if (parameterValue.getCode().equalsIgnoreCase("minQusEE"))
+                minQus_EE = Double.parseDouble(parameterValue.getValue());
+
         }
-        if (studentsGradeToTeacher == null && studentsGradeToGoals == null && studentsGradeToFacility == null && teacherGradeToClass == null)
-            FERGrade = null;
+        if (studentsGradeToTeacher == null && studentsGradeToGoals == null && studentsGradeToFacility == null )
+            FEEGrade = null;
         else {
             if (studentsGradeToTeacher == null)
                 studentsGradeToTeacher = 0.0;
@@ -1464,21 +1506,20 @@ public class TclassService implements ITclassService {
                 studentsGradeToGoals = 0.0;
             if (studentsGradeToFacility == null)
                 studentsGradeToFacility = 0.0;
-            if (teacherGradeToClass == null)
-                teacherGradeToClass = 0.0;
-            FERGrade = z4 * studentsGradeToTeacher + z3 * studentsGradeToGoals +
-                    z6 * studentsGradeToFacility + z5 * teacherGradeToClass;
-            FERGrade /= 100;
-            if (FERGrade >= minScore_ER && percentOfFilledExecutionEvaluationForms>= minQus_ER)
-                FERPass = true;
+
+            FEEGrade =studentsGradeToTeacher;
+//            FEEGrade /= 100;
+            if ( percentOfFilledExecutionEvaluationForms>= minQus_EE)
+                FEEPass = true;
             else
-                FERPass = false;
+                FEEPass = false;
         }
 
-        result.put("FERGrade", FERGrade);
-        result.put("FERPass", FERPass);
-        result.put("minQus_ER", minQus_ER);
-        result.put("minScore_ER", minScore_ER);
+        result.put("FEEGrade", FEEGrade);
+        result.put("FEEPass", FEEPass);
+        result.put("z9",z9);
+
+
 
         return result;
     }

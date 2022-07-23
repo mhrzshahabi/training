@@ -157,6 +157,75 @@ public class EvaluationAnalysisRestController {
         reportUtil.export("/reports/ReactionEvaluationResult.jasper", params, jsonDataSource, response);
     }
 
+    @Loggable
+    @PostMapping(value = {"/printExecutionEvaluation"})
+    public void printExecutionEvaluation(HttpServletResponse response,
+                                        @RequestParam(value = "code") String code,
+                                         @RequestParam(value = "titleClass") String titleClass,
+                                        @RequestParam(value = "term") String term,
+                                         @RequestParam(value = "studentCount") String studentCount,
+                                        @RequestParam(value = "classStatus") String classStatus,
+                                         @RequestParam(value = "teacher") String teacher,
+                                        @RequestParam(value = "studentsGradeToTeacher") String studentsGradeToTeacher ,
+                                        @RequestParam(value = "numberOfExportedExecutionEvaluationForms") String numberOfExportedExecutionEvaluationForms,
+                                        @RequestParam(value = "numberOfFilledExecutionEvaluationForms") String numberOfFilledExecutionEvaluationForms,
+                                        @RequestParam(value = "numberOfInCompletedExecutionEvaluationForms") String numberOfInCompletedExecutionEvaluationForms,
+                                        @RequestParam(value = "percentOfFilledExecutionEvaluationForms") String percentOfFilledExecutionEvaluationForms,
+                                        @RequestParam(value = "FEEGrade") String FEEGrade,
+                                       @RequestParam(value = "executionEvaluationStatus") String executionEvaluationStatus,
+                                         @RequestParam(value = "z9") String z9,@RequestParam(value = "differ") String differ
+                                    ) throws Exception {
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", DateUtil.todayDate());
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
+
+        params.put("code",code);
+        params.put("titleClass",titleClass);
+        params.put("term",term);
+        params.put("studentCount", studentCount);
+        if(classStatus.equalsIgnoreCase("1"))
+            params.put("classStatus", "برنامه ریزی");
+        else if(classStatus.equalsIgnoreCase("2"))
+            params.put("classStatus", "در حال اجرا");
+        else if(classStatus.equalsIgnoreCase("3"))
+            params.put("classStatus", "پایان یافته");
+        params.put("teacher", teacher);
+
+        params.put("numberOfExportedExecutionEvaluationForms", numberOfExportedExecutionEvaluationForms);
+        params.put("numberOfFilledExecutionEvaluationForms", numberOfFilledExecutionEvaluationForms);
+        params.put("numberOfInCompletedExecutionEvaluationForms", numberOfInCompletedExecutionEvaluationForms);
+        params.put("percentOfFilledExecutionEvaluationForms", percentOfFilledExecutionEvaluationForms);
+
+        params.put("FEEGrade", FEEGrade);
+
+        params.put("executionEvaluationStatus",executionEvaluationStatus);
+        params.put("z9",z9);
+        params.put("differ",differ);
+
+
+
+
+
+        if(!studentsGradeToTeacher.equalsIgnoreCase(""))
+            params.put("studentsGradeToTeacher", Double.parseDouble(studentsGradeToTeacher));
+        else
+            params.put("studentsGradeToTeacher", 0.0);
+
+        HashMap<Double,String> doubleArrayList = new HashMap<>();
+
+
+
+        doubleArrayList = new HashMap<>();
+        if(!studentsGradeToTeacher.equalsIgnoreCase(""))
+            doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به مدرس");
+
+
+
+        ArrayList<String> list = new ArrayList();
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/ExecutionEvaluationResult.jasper", params, jsonDataSource, response);
+    }
     private String getMinFactor(HashMap<Double, String> list){
         String result = "";
         Double min = 1000.0;

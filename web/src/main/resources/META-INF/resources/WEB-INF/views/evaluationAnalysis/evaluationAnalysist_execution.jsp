@@ -6,7 +6,7 @@
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 
 // <script>
-    var execution_chartData = null;
+    var execution_chartData=null ;
     var classRecord_evaluationAnalysist_execution;
     //----------------------------------------------------Reaction Evaluation-------------------------------------------
 
@@ -64,7 +64,8 @@
                 name: "numberOfExportedExecutionEvaluationForms",
                 title: "<spring:message code='numberOfExportedReactionEvaluationForms'/>",
                 hidden: true
-            }
+            },
+            {name:"numberOfFilledExecutionEvaluationForms",hidden: true}
         ]
     });
 
@@ -84,40 +85,34 @@
 
 
             {
-                name: "FERPass",
+                name: "FEEPass",
                 hidden: true
             },
-            {
-                name: "FETPass",
-                hidden: true
-            },
-            {
-                name: "minScore_ER",
-                hidden: true
-            },
-            {
-                name: "minScore_ET",
-                hidden: true
-            },
-            {name: "executionEvaluationAveGrade",
-                title: "<spring:message code='FEEGrade'/>",
-                baseStyle: "evaluation-code",
-                canEdit: false
-            },
+
             {name: "executionEvaluationStatus",
                 title: "<spring:message code='evaluation.status'/>",
                 baseStyle: "evaluation-code",
                 canEdit: false,
-                valueMap: {
-                    "true": "تائید",
-                    "false": "عدم تائید"
-                }
+
             },
-            {name: "teacherGradeToClass", hidden: true},
-            {name: "studentsGradeToTeacher", hidden: true},
+
+            {name: "FEEGrade",
+                title: "<spring:message code='students.average.grade'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false,
+            },
+            {name: "z9",
+                title: "<spring:message code='execution.grade.limits'/>",
+                baseStyle: "evaluation-code",
+                canEdit: false,
+
+            },
+
+            {name: "studentsGradeToTeacher",hidden: true},
             {name: "studentsGradeToFacility" , hidden: true},
             {name: "studentsGradeToGoals", hidden: true},
-            {name: "trainingGradeToTeacher", hidden: true}
+            {name: "differ", hidden: true}
+
         ]
 
     });
@@ -135,11 +130,21 @@
     DynamicForm_Execution_EvaluationAnalysis_Header.getItem("filledFormsInfoExecution").titleStyle = 'evaluation-code-title';
     DynamicForm_Execution_EvaluationAnalysis_Header.getItem("percentOfFilledExecutionEvaluationForms").setCellStyle('evaluation-code-label');
     DynamicForm_Execution_EvaluationAnalysis_Header.getItem("percentOfFilledExecutionEvaluationForms").titleStyle = 'evaluation-code-title';
+    DynamicForm_Execution_EvaluationAnalysis_Header.getItem("numberOfFilledExecutionEvaluationForms").setCellStyle('evaluation-code-label');
+    DynamicForm_Execution_EvaluationAnalysis_Header.getItem("numberOfFilledExecutionEvaluationForms").titleStyle = 'evaluation-code-title';
 
-    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem('executionEvaluationAveGrade').setCellStyle('evaluation-code-label');
-    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem('executionEvaluationAveGrade').titleStyle = 'evaluation-code-title';
+    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem("FEEGrade").setCellStyle('evaluation-code-label');
+    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem("FEEGrade").setCellStyle('evaluation-code-label');
+    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem('studentsGradeToTeacher').setCellStyle('evaluation-code-label');
+    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem('studentsGradeToTeacher').titleStyle = 'evaluation-code-title';
     DynamicForm_Execution_EvaluationAnalysis_Footer.getItem("executionEvaluationStatus").setCellStyle('evaluation-code-label');
     DynamicForm_Execution_EvaluationAnalysis_Footer.getItem("executionEvaluationStatus").titleStyle = 'evaluation-code-title';
+    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem("z9").setCellStyle('evaluation-code-label');
+    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem("z9").titleStyle = 'evaluation-code-title';
+    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem("differ").setCellStyle('evaluation-code-label');
+    DynamicForm_Execution_EvaluationAnalysis_Footer.getItem("differ").titleStyle = 'evaluation-code-title';
+
+
 
 
 
@@ -150,7 +155,8 @@
         margin: 2,
         title: "چاپ خلاصه نتیجه ارزیابی حین دوره",
         click: function () {
-            var obj1 = vm_reaction_evaluation.getValues();
+
+            var obj1 = vm_execution_evaluation.getValues();
             var obj2 =  classRecord_evaluationAnalysist_execution;
             var obj1_str = JSON.stringify(obj1);
             var obj2_str = JSON.stringify(obj2);
@@ -158,9 +164,11 @@
             obj1_str = obj1_str + ",";
             obj2_str = obj2_str.substr(1,obj2_str.length);
             var object = obj1_str + obj2_str;
-            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printReactionEvaluation"/>",null,object);
+            trPrintWithCriteria("<spring:url value="/evaluationAnalysis/printExecutionEvaluation"/>",null,object);
         }
     });
+
+
 
     var VLayout_Body_evaluation_analysis_execution = isc.VLayout.create({
         defaultLayoutAlign: "center",
@@ -178,41 +186,55 @@
         axisEndValue: 100,
         showDataValues:true,
         brightenAllOnHover:true,
+        showValueOnHover:true,
         hoverLabelPadding: -7,
+        chartType: "Column",
         facets: [
-            {id: "region", title: "حیطه"}],
+            {id: "questionTitle", title: "سوالات پرسشنامه"},
+
+        ],
         data: execution_chartData,
         valueProperty: "grade",
         valueTitle: "نمره ارزیابی از صد",
-        title: "تحلیل ارزیابی واکنشی کلاس",
+        title: "تحلیل ارزیابی سوالات پرسشنامه",
+
+
+
+        minDataPointSize: 10,
+        maxDataPointSize: 50,
+
+        showChartRect: true,
+        chartRectProperties: {
+            lineWidth: 1,
+            lineColor: "#bbbbbb",
+            rounding: 0.05
+        },
+        bandedBackground: false,
+        chartRectMargin: 15,
+        showValueOnHover: true,
+        autoDraw: false,
+
+        chartBackgroundDrawn : function() {
+            avgLineY =this.getYCoord(65.00);
+
+            isc.DrawLine.create({
+                drawPane: this,
+                startPoint: [this.getChartLeft(), avgLineY],
+                endPoint : [this.getChartLeft() + this.getChartWidth(), avgLineY],
+                autoDraw: true
+            }, {
+                lineWidth: 4,
+                lineColor: "red",
+                linePattern: "dash"
+            });
+        }
+
+
+
+
     });
 
 
-    var chartSelector_execution  = isc.DynamicForm.create({
-        canSubmit: true,
-        titleAlign: "right",
-        titleWidth: 120,
-        width: "200",
-        fields: [{
-            name: "chartType",
-            title: "انتخاب نوع نمودار",
-            type: "select",
-            width: "200",
-            valueMap: ["ستونی", "راداری"],
-            defaultValue: "ستونی",
-            pickListProperties: {
-                showFilterEditor: false
-            },
-            changed : function (form, item, value) {
-                if(value == "ستونی"){
-                    ExecutionEvaluationChart.setChartType("Column");
-                }
-                if(value == "راداری"){
-                    ExecutionEvaluationChart.setChartType("Radar");
-                }
-            }
-        }]
-    });
 
     var ExecutionEvaluationChartLayout =  isc.VLayout.create({
         defaultLayoutAlign: "center",
@@ -232,7 +254,6 @@
     DynamicForm_Execution_EvaluationAnalysis_Header.hide();
     DynamicForm_Execution_EvaluationAnalysis_Footer.hide();
     IButton_Print_ExecutionEvaluation_Evaluation_Analysis.hide();
-    chartSelector_execution.hide();
     ExecutionEvaluationChart.hide();
     ExecutionEvaluationChart.setChartType("Column");
 
