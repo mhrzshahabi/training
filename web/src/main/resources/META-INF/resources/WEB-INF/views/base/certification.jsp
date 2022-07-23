@@ -1529,13 +1529,13 @@
     function sendRequestItemProcess(record) {
 
         if (record.processInstanceId != null) {
-            isc.say("فرایند پیش تر به موتور گردش کار ارسال شده است");
+            createDialog("info", "فرایند پیش تر به موتور گردش کار ارسال شده است");
             return;
         } else if (record.operationalRoleTitles.size() === 0 || record.operationalRoleTitles == null) {
-            isc.say("پست پیشنهادی در هیچ گروه کاری ای ثبت نشده است.");
+            createDialog("info", "پست پیشنهادی در هیچ گروه کاری ای ثبت نشده است.");
             return;
         } else if (record.operationalRoleUsers.size() === 0 || record.operationalRoleUsers == null) {
-            isc.say("کاربری برای گروه های کاری پست پیشنهادی تعریف نشده است.");
+            createDialog("info", "کاربری برای گروه های کاری پست پیشنهادی تعریف نشده است.");
             return;
         } else {
             isc.MyYesNoDialog.create({
@@ -1554,21 +1554,20 @@
                             "requestLetterNumber": requestRecord.letterNumber
                         }
                         wait.show();
-                        isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/request-item/start-data-validation", "POST", JSON.stringify(param), startProcess_callback));
+                        isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/request-item/start-data-validation", "POST", JSON.stringify(param), function (resp) {
+                            wait.close();
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                createDialog("info", "<spring:message code='course.set.on.workflow.engine'/>");
+                                refreshRequestItem();
+                            } else if (resp.httpResponseCode === 404) {
+                                createDialog("info", "<spring:message code='workflow.bpmn.not.uploaded'/>");
+                            } else {
+                                createDialog("info", "<spring:message code='msg.send.to.workflow.problem'/>");
+                            }
+                        }));
                     }
                 }
             });
-        }
-    }
-    function startProcess_callback(resp) {
-        wait.close()
-        if (resp.httpResponseCode === 200) {
-            isc.say("<spring:message code='course.set.on.workflow.engine'/>");
-            refreshRequestItem();
-        } else if (resp.httpResponseCode === 404) {
-            isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
-        } else {
-            isc.say("<spring:message code='msg.send.to.workflow.problem'/>");
         }
     }
     function updateOperationalRoles() {
