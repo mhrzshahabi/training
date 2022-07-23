@@ -221,4 +221,16 @@ public class PersonnelRegisteredRestController {
         return new ResponseEntity<>("added successful", HttpStatus.CREATED);
     }
 
+    @Loggable
+    @PutMapping(value = "/edit-national-code/{id}/{nationalCode}")
+//    @PreAuthorize("hasAuthority('d_personnelRegistered')")
+    public ResponseEntity<Boolean> editNationalCode(@PathVariable Long id,@PathVariable String nationalCode) {
+        try {
+            personnelRegisteredService.editNationalCode(id,nationalCode);
+            return new ResponseEntity(true, HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity(false, HttpStatus.NO_CONTENT);
+        }
+    }
+
 }

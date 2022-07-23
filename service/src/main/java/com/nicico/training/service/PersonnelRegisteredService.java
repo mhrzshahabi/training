@@ -270,4 +270,10 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
 
         return map;
     }
+
+    @Override
+    @Transactional
+    public void editNationalCode(Long id,String nationalCode) {
+        personnelRegisteredDAO.editNationalCode(id,nationalCode);
+    }
 }
