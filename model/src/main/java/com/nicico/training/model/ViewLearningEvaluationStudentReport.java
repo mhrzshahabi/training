@@ -9,6 +9,7 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.io.Serializable;
+import java.util.List;
 
 @Getter
 @Setter
@@ -46,6 +47,9 @@ public class ViewLearningEvaluationStudentReport implements Serializable {
     @Column(name = "category_titlefa")
     private String category_titlefa;
 
+    @Column(name = "category_id")
+    private Long category_id;
+
     @Column(name = "sub_category_titlefa")
     private String sub_category_titlefa;
 
@@ -57,6 +61,9 @@ public class ViewLearningEvaluationStudentReport implements Serializable {
 
     @Column(name = "is_personnel")
     private String is_personnel;
+
+    @Column(name = "teacher_id")
+    private String teacher_id;
 
     @Column(name = "teacher_national_code")
     private String teacher_national_code;
@@ -99,4 +106,33 @@ public class ViewLearningEvaluationStudentReport implements Serializable {
 
     @Column(name = "learning")
     private String learning;
+
+    @Column(name = "moavenat")
+    private String moavenat;
+
+    @Column(name = "ghesmat")
+    private String ghesmat;
+
+    @Column(name = "vahed")
+    private String vahed;
+//
+//    @Column(name = "class_year")
+//    private String classYear;
+//
+    @Column(name = "term_code")
+    private String term_code;
+
+    @Column(name = "term_title")
+    private String term_title;
+//
+    @Column(name = "institute")
+    private String institute;
+//
+    @Column(name = "teaching_method")
+    private String teachingMethod;
+
+    @Column(name = "term_id")
+    private Long termId;
+
+
 }
