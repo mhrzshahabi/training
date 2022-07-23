@@ -81,8 +81,8 @@ public class OperationalChartDTO {
         @ApiModelProperty(required = true)
         private String nationalCode;
 
-        @ApiModelProperty(required = true)
-        private List<OperationalChart> operationalChartParentChild;
+//        @ApiModelProperty(required = true)
+//        private List<OperationalChart> operationalChartParentChild;
 
         @NotNull
         @ApiModelProperty(required = true)
