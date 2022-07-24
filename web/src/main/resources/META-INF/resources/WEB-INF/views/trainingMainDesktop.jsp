@@ -1299,6 +1299,7 @@
     const presenceReportUrl = rootUrl + "/presence-report";
     const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
     const departmentUrl = rootUrl + "/department";
+    const operationalUrl = rootUrl + "/operationalchart";
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";

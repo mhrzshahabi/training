@@ -166,7 +166,7 @@
 
     function getTreeData() {
 
-        var url = operationalUrl + "/getDepChartData";
+        var url = operationalUrl + "/list";
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             wait.close();
@@ -174,7 +174,7 @@
                 return false;
             else {
                 let data = JSON.parse(resp.data);
-
+/*
                 let complexes = data.filter(q => q.category === "complex");
                 let assistants = data.filter(q => q.category === "assistant");
                 let affairs = data.filter(q => q.category === "affair");
@@ -185,8 +185,13 @@
                 affairs.forEach(a => a.directReports = sections.filter(s => s.parentTitle === a.title));
                 assistants.forEach(a => a.directReports = affairs.filter(af => af.parentTitle === a.title));
                 complexes.forEach(c => c.directReports = assistants.filter(a => a.parentTitle === c.title));
+*/
 
-                let treeData = setTreeData(operationalTree, complexes, false);
+                let childs = data.filter(p=> p);
+                let chart = data.filter(p=> p);
+                chart.forEach(p=> p.directReports = childs.filter(c => c.parentId === p.id));
+debugger
+                let treeData = setTreeData(operationalTree, chart, false);
                 return treeData;
             }
         }));
@@ -262,6 +267,7 @@
             root: {parentTitle: "-", directReports: data}
         });
         tree.setData(treeData);
+        debugger
         return treeData;
     }
 
