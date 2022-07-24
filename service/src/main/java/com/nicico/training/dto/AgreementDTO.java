@@ -32,9 +32,9 @@ public class AgreementDTO implements Serializable {
     @ApiModel("Agreement - Info")
     public static class Info extends AgreementDTO {
         private Long id;
-        private InstituteDTO.Info firstParty;
-        private TeacherDTO.Info secondPartyTeacher;
-        private InstituteDTO.Info secondPartyInstitute;
+        private InstituteDTO.InstituteInfoTuple firstParty;
+        private TeacherDTO.TeacherInfo secondPartyTeacher;
+        private InstituteDTO.InstituteInfoTuple secondPartyInstitute;
         private ParameterValueDTO.MinInfo currency;
         private EServiceType serviceType;
         private String fileName;
