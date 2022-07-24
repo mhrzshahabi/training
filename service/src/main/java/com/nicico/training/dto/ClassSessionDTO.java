@@ -1,6 +1,8 @@
 package com.nicico.training.dto;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.nicico.copper.common.util.date.DateUtil;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -378,4 +380,25 @@ public class ClassSessionDTO implements Serializable {
         @ApiModelProperty(required = true)
         private Boolean teacherAttendancePermission = true;
     }
+
+
+    @Accessors(chain = true)
+    @ApiModel("ClassStudentSession")
+    @Data
+    @JsonInclude
+    public static class ClassStudentSession implements Serializable {
+
+        @NotNull
+        @ApiModelProperty(required = true)
+       private String sessionDate;
+        @NotNull
+        @ApiModelProperty(required = true)
+       private  String startHour;
+        @NotNull
+        @ApiModelProperty(required = true)
+       private String endHour;
+
+    }
+
+
 }

@@ -41,6 +41,11 @@ public class EvaluationAnalysisFormController {
         return "evaluationAnalysis/evaluationAnalysist_behavioral";
     }
 
+    @RequestMapping("/evaluationAnalysis-executionTab/show-form")
+    public String executionTab() {
+        return "evaluationAnalysis/evaluationAnalysist_execution";
+    }
+
     @RequestMapping("/evaluationAnalysis-reactionTab/show-form")
     public String reactionTab() {
         return "evaluationAnalysis/evaluationAnalysist_reaction";
@@ -158,6 +163,70 @@ public class EvaluationAnalysisFormController {
 
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printReactionEvaluation" , HttpMethod.POST, entity, byte[].class);
     }
+    @PostMapping("/printExecutionEvaluation")
+    public ResponseEntity<?> printExecutionEvaluation(final HttpServletRequest request) {
+        String token = request.getParameter("token");
+        MultiValueMap<String, String> params = new LinkedMultiValueMap();
+        final RestTemplate restTemplate = new RestTemplate();
+        final HttpHeaders headers = new HttpHeaders();
+        JSONObject object=new JSONObject();
+        if(!request.getParameter("data").equals(null)) {
+            object = new JSONObject(request.getParameter("data"));
+
+            restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+
+            headers.add("Authorization", "Bearer " + token);
+
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+            headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+
+            params.add("code", object.get("tclassCode").toString());
+            params.add("titleClass", object.get("courseTitleFa").toString());
+            params.add("term", object.get("termTitleFa").toString());
+            params.add("studentCount", object.get("tclassStudentsCount").toString());
+            params.add("classStatus", object.get("tclassStatus").toString());
+            params.add("teacher", object.get("teacherFullName").toString());
+
+            params.add("numberOfExportedExecutionEvaluationForms", object.get("numberOfExportedExecutionEvaluationForms").toString());
+            params.add("numberOfFilledExecutionEvaluationForms", object.get("numberOfFilledExecutionEvaluationForms").toString());
+            params.add("numberOfInCompletedExecutionEvaluationForms", object.get("numberOfInCompletedExecutionEvaluationForms").toString());
+            params.add("percentOfFilledExecutionEvaluationForms", object.get("percentOfFilledExecutionEvaluationForms").toString());
+
+
+
+                params.add("executionEvaluationStatus", object.get("executionEvaluationStatus").toString());
+
+
+            if (!object.isNull("FEEGrade"))
+                params.add("FEEGrade", object.get("FEEGrade").toString());
+
+
+            else
+                params.add("FEEGrade", "");
+
+            if (!object.isNull("z9"))
+                params.add("z9", object.get("z9").toString());
+            else
+                params.add("z9", "");
+            if (!object.isNull("differ"))
+                params.add("differ", object.get("differ").toString());
+            else
+                params.add("differ", "");
+
+            if (!object.isNull("studentsGradeToTeacher"))
+                params.add("studentsGradeToTeacher", object.get("studentsGradeToTeacher").toString());
+            else
+                params.add("studentsGradeToTeacher", "");
+
+
+        }
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+        return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printExecutionEvaluation" , HttpMethod.POST, entity, byte[].class);
+    }
 
     @PostMapping("/printBehavioralEvaluation")
     public ResponseEntity<?> printBehavioralEvaluation(final HttpServletRequest request) {
@@ -252,5 +321,31 @@ public class EvaluationAnalysisFormController {
 
 
         return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printReactionEvaluationReport" , HttpMethod.POST, entity, byte[].class);
+    }
+
+    @PostMapping("/printExecutionEvaluationReport")
+    public ResponseEntity<?> printExecutionEvaluationReport(final HttpServletRequest request) {
+        String token = request.getParameter("token");
+        JSONObject object = new JSONObject(request.getParameter("data"));
+        MultiValueMap<String, String> params = new LinkedMultiValueMap();
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+
+        params.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        params.add("object", object.toString());
+
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(params, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+
+
+        return restTemplate.exchange(restApiUrl + "/api/evaluationAnalysis/printExecutionEvaluationReport" , HttpMethod.POST, entity, byte[].class);
     }
 }

@@ -43,6 +43,7 @@ public interface IEvaluationService {
 
     EvaluationDTO.Info getEvaluationByData(Long questionnaireTypeId, Long classId, Long evaluatorId, Long evaluatorTypeId, Long evaluatedId, Long evaluatedTypeId, Long evaluationLevelId);
 
+
     Boolean deleteEvaluation(@RequestBody HashMap req);
 
     void deleteAllReactionEvaluationForms(Long classId,Long evaluation);

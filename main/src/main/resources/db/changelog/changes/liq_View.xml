@@ -13647,4 +13647,211 @@ GROUP BY
     </changeSet>
 
 
+    <changeSet author="Montazeri" id="1658564166824">
+        <createView viewName="VIEW_LEARNING_EVALUATION_STUDENT_REPORT" replaceIfExists="true">
+            SELECT
+            ROWNUM AS id,
+            doreha.*,
+            concat(concat(tbl_student.first_name, ' '), tbl_student.last_name) AS student,
+            tbl_student.national_code         AS student_national_code,
+            tbl_student.emp_no,
+            tbl_student.personnel_no,
+            tbl_post.c_code                   AS student_post_code,
+            tbl_post.c_title_fa               AS student_post_title,
+            tbl_department.c_hoze_title       AS student_hoze,
+            tbl_department.c_omor_title       AS student_omor,
+            tbl_class_student.score * 5 AS nore_nahaii,
+            tbl_class_student.pre_test_score * 5 AS nore_pish,
+            tbl_department.c_ghesmat_title    AS ghesmat,
+            tbl_department.c_moavenat_title   AS moavenat,
+            tbl_department.c_vahed_title      AS vahed,
+            tbl_term.id                       AS term_id
+            FROM
+            tbl_class_student
+            INNER JOIN (
+            SELECT
+            tbl_class.c_code                           AS class_code,
+            view_complex.c_title                       AS complex,
+            tbl_class.c_start_date                     AS class_start_date,
+            tbl_class.c_end_date                       AS class_end_date,
+            CASE
+            WHEN tbl_class.c_status = 1 THEN
+            'برنامه ریزی'
+            WHEN tbl_class.c_status = 2 THEN
+            'در حال اجرا'
+            WHEN tbl_class.c_status = 3 THEN
+            'پایان یافته'
+            WHEN tbl_class.c_status = 4 THEN
+            'لغو شده'
+            WHEN tbl_class.c_status = 5 THEN
+            'اختتام'
+            END AS class_status,
+            CASE
+            WHEN tbl_teacher.b_personnel = 1 THEN
+            'پرسنل'
+            ELSE
+            'بیرونی'
+            END AS is_personnel,
+            concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher,
+            tbl_teacher.c_teacher_code                 AS teacher_national_code,
+            tbl_course.c_code                          AS course_code,
+            tbl_course.c_title_fa                      AS course_titlefa,
+            tbl_category.id                            AS category_id,
+            tbl_category.c_title_fa                    AS category_titlefa,
+            tbl_sub_category.c_title_fa                AS sub_category_titlefa,
+            tbl_sub_category.id                        AS sub_category_id,
+            clsstu.total_std                           AS total_std,
+            tbl_evaluation_analysis.c_learning_grade   AS learning,
+            tbl_class.id                               AS idd,
+            tbl_term.c_title_fa                        AS term_title,
+            tbl_term.c_code                            AS term_code,
+            tbl_parameter_value.c_title                AS teaching_method,
+            tbl_institute.c_title_fa                   AS institute,
+            tbl_teacher.id                             AS teacher_id
+            FROM
+            tbl_evaluation_analysis
+            INNER JOIN tbl_class ON tbl_evaluation_analysis.f_tclass = tbl_class.id
+            LEFT JOIN view_complex ON tbl_class.complex_id = view_complex.id
+            LEFT JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
+            LEFT JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+            LEFT JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+            LEFT JOIN tbl_sub_category ON tbl_course.subcategory_id = tbl_sub_category.id
+            LEFT JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+            LEFT JOIN (
+            SELECT DISTINCT
+            class_id AS classid,
+            total_std
+            FROM
+            (
+            SELECT
+            tbl_class_student.class_id,
+            tbl_class_student.student_id,
+            COUNT(*) OVER(
+            PARTITION BY tbl_class_student.class_id
+            ) total_std
+            FROM
+            tbl_class_student
+            )
+            WHERE
+            total_std > 0
+            ) clsstu ON tbl_class.id = clsstu.classid
+            LEFT JOIN (
+            SELECT
+            SUM(pre) AS mianginpre,
+            classid
+            FROM
+            (
+            SELECT
+            tbl_class_student.pre_test_score   AS pre,
+            tbl_class_student.class_id         AS classid
+            FROM
+            tbl_class_student
+            )
+            GROUP BY
+            classid
+            )                                      pre ON tbl_class.id = pre.classid
+            LEFT JOIN (
+            SELECT
+            SUM(asli) AS mianginasli,
+            classid
+            FROM
+            (
+            SELECT
+            tbl_class_student.score      AS asli,
+            tbl_class_student.class_id   AS classid
+            FROM
+            tbl_class_student
+            )
+            GROUP BY
+            classid
+            )                                            nahaii ON tbl_class.id = nahaii.classid
+            LEFT JOIN (
+            SELECT
+            MAX(asli) AS maxasli,
+            classid
+            FROM
+            (
+            SELECT
+            tbl_class_student.score      AS asli,
+            tbl_class_student.class_id   AS classid
+            FROM
+            tbl_class_student
+            )
+            GROUP BY
+            classid
+            )                                                maxnahaii ON tbl_class.id = maxnahaii.classid
+            LEFT JOIN (
+            SELECT
+            MIN(asli) AS minpre,
+            classid
+            FROM
+            (
+            SELECT
+            tbl_class_student.pre_test_score   AS asli,
+            tbl_class_student.class_id         AS classid
+            FROM
+            tbl_class_student
+            )
+            GROUP BY
+            classid
+            )                                        minpre ON tbl_class.id = minpre.classid
+            LEFT JOIN (
+            SELECT
+            COUNT(*) AS javabdade,
+            tbl_class_student.class_id AS classid
+            FROM
+            tbl_class_student
+            WHERE
+            tbl_class_student.score IS NOT NULL
+            GROUP BY
+            tbl_class_student.class_id
+            )                                         javabdadeasli ON tbl_class.id = javabdadeasli.classid
+            LEFT JOIN (
+            SELECT
+            COUNT(*) AS javabdade,
+            tbl_class_student.class_id AS classid
+            FROM
+            tbl_class_student
+            WHERE
+            tbl_class_student.pre_test_score IS NOT NULL
+            GROUP BY
+            tbl_class_student.class_id
+            )                                javabdadepre ON tbl_class.id = javabdadepre.classid
+            LEFT JOIN (
+            SELECT
+            COUNT(*) AS javabdade,
+            tbl_class_student.class_id AS classid
+            FROM
+            tbl_class_student
+            WHERE
+            ( tbl_class_student.scores_state_id = 400 )
+            OR ( tbl_class_student.scores_state_id = 401 )
+            GROUP BY
+            tbl_class_student.class_id
+            ) ghaboolasli ON tbl_class.id = ghaboolasli.classid
+            LEFT JOIN (
+            SELECT
+            COUNT(*) AS javabdade,
+            tbl_class_student.class_id AS classid
+            FROM
+            tbl_class_student
+            WHERE
+            tbl_class_student.scores_state_id = 403
+            GROUP BY
+            tbl_class_student.class_id
+            )                                     noghaboolasli ON tbl_class.id = noghaboolasli.classid
+            INNER JOIN tbl_term ON tbl_class.f_term = tbl_term.id
+            INNER JOIN tbl_parameter_value ON tbl_class.f_teaching_method_id = tbl_parameter_value.id
+            INNER JOIN tbl_institute ON tbl_class.f_institute_organizer = tbl_institute.id
+            ) doreha ON tbl_class_student.class_id = doreha.idd
+            LEFT JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+            LEFT JOIN tbl_post ON tbl_student.f_post_id = tbl_post.id
+            LEFT JOIN tbl_department ON tbl_student.f_department_id = tbl_department.id,
+            tbl_term
+            ORDER BY
+            doreha.class_code
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>

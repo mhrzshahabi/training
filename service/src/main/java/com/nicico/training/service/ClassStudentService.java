@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.dto.TestQuestionDTO;
@@ -537,8 +538,20 @@ public class ClassStudentService implements IClassStudentService {
     }
 
     @Override
-    public List<Long> getSessionConflictViaClassStudent(String sessionDate, String startHour, String endHour, String nationalCode) {
-        return classStudentDAO.getSessionsInterferencePerStudent(sessionDate,startHour,endHour,nationalCode);
+    public Boolean getSessionConflictViaClassStudent(String nationalCode, List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
+        final boolean[] flag = {false};
+        if(classStudentSessions!=null && classStudentSessions.size()>0){
+            for (int i = 0; i < classStudentSessions.size() && !flag[0]; i++) {
+
+                List<Long> conflicts = classStudentDAO.getSessionsInterferencePerStudent(classStudentSessions.get(i).getSessionDate(), classStudentSessions.get(i).getStartHour(), classStudentSessions.get(i).getEndHour(),nationalCode);
+                if (conflicts.size() > 0) {
+                    flag[0] = true;
+
+                }
+            }
+
+        }
+        return flag[0];
     }
 
 

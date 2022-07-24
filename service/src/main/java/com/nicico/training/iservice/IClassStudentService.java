@@ -1,6 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.model.ClassStudent;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,5 +70,7 @@ public interface IClassStudentService {
     List<String> getStudentBetWeenRangeTime(String startDate, String endDate,String personnelNos);
 
 
-    List<Long> getSessionConflictViaClassStudent(String sessionDate, String startHour, String endHour, String nationalCode);
+   Boolean getSessionConflictViaClassStudent(String nationalCode,List<ClassSessionDTO.ClassStudentSession> classStudentSessions);
+
+
 }

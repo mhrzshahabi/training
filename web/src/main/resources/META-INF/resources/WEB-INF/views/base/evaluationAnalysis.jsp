@@ -167,6 +167,7 @@
                     }
                 },
                 valueMap: {
+                    "o": "حین دوره",
                     "1": "واکنشی",
                     "2": "یادگیری",
                     "3": "رفتاری",
@@ -257,6 +258,13 @@
         enabled: false,
         showTabScroller: true,
         tabs: [
+            {
+                ID: "TabPane_Execution_Evaluation_Analysis",
+                enabled: false,
+                title: "<spring:message code="evaluation.execution"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "evaluationAnalysis/evaluationAnalysis-executionTab/show-form"})
+            }
+            ,
             {
                 ID: "TabPane_Reaction_Evaluation_Analysis",
                 enabled: false,
@@ -385,13 +393,21 @@
         let evaluationType = record.evaluation;
 
         Detail_Tab_Evaluation_Analysis.enable();
-        if (evaluationType === "1" || evaluationType === "واکنشی") {
+        if (evaluationType === "0" || evaluationType === "حین دوره") {
+            fill_execution_evaluation_result(record);
+            Detail_Tab_Evaluation_Analysis.enableTab(0);
+            Detail_Tab_Evaluation_Analysis.disableTab(1);
+            Detail_Tab_Evaluation_Analysis.disableTab(2);
+            Detail_Tab_Evaluation_Analysis.disableTab(3);
+        }else  if (evaluationType === "1" || evaluationType === "واکنشی") {
+            fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.disableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "2" || evaluationType === "یادگیری") {
+            fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
             evaluationAnalysist_learning(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
@@ -399,6 +415,7 @@
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "3" || evaluationType === "رفتاری") {
+            fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
             evaluationAnalysist_learning(record);
             fill_behavioral_evaluation_result(record);
@@ -407,6 +424,7 @@
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
         } else if (evaluationType === "4" || evaluationType === "نتایج") {
+
             fill_reaction_evaluation_result(record);
             evaluationAnalysist_learning(record);
             fill_behavioral_evaluation_result(record);
@@ -477,6 +495,55 @@
         ReactionEvaluationChart.setData(reaction_chartData);
         evalWait_JspEvaluationAnalysis.close();
     }
+    function load_execution_evaluation_analysis_data(record) {
+        let filledFormsInfoExecution = "";
+        execution_chartData=new Array();
+        let numberOfCompletedExecutionEvaluationForms = record.numberOfFilledExecutionEvaluationForms - record.numberOfInCompletedExecutionEvaluationForms;
+        filledFormsInfoExecution += record.numberOfFilledExecutionEvaluationForms + " - " +
+            record.numberOfInCompletedExecutionEvaluationForms+ "ناقص و " + numberOfCompletedExecutionEvaluationForms + " کامل ";
+        DynamicForm_Execution_EvaluationAnalysis_Header.getField("studentCount").setValue(record.studentCount);
+        DynamicForm_Execution_EvaluationAnalysis_Header.getField("numberOfInCompletedExecutionEvaluationForms").setValue(record.numberOfInCompletedExecutionEvaluationForms);
+        DynamicForm_Execution_EvaluationAnalysis_Header.getField("numberOfEmptyExecutionEvaluationForms").setValue(record.numberOfEmptyExecutionEvaluationForms);
+        DynamicForm_Execution_EvaluationAnalysis_Header.getField("numberOfEmptyExecutionEvaluationForms").setCellStyle('evaluation-code-fail-label');
+        DynamicForm_Execution_EvaluationAnalysis_Header.getField("percentOfFilledExecutionEvaluationForms").setValue(record.percentOfFilledExecutionEvaluationForms);
+        DynamicForm_Execution_EvaluationAnalysis_Header.getField("numberOfFilledExecutionEvaluationForms").setValue(record.numberOfFilledExecutionEvaluationForms);
+        DynamicForm_Execution_EvaluationAnalysis_Header.getField("numberOfExportedExecutionEvaluationForms").setValue(record.numberOfExportedExecutionEvaluationForms);
+        DynamicForm_Execution_EvaluationAnalysis_Header.getField("filledFormsInfoExecution").setValue(filledFormsInfoExecution);
+
+
+        DynamicForm_Execution_EvaluationAnalysis_Footer.getField("executionEvaluationStatus").setValue(record.executionEvaluationStatus);
+        DynamicForm_Execution_EvaluationAnalysis_Footer.getField("FEEGrade").setValue(record.feegrade);
+        DynamicForm_Execution_EvaluationAnalysis_Footer.getField("FEEPass").setValue(record.feepass);
+        DynamicForm_Execution_EvaluationAnalysis_Footer.getField("z9").setValue(record.z9);
+        DynamicForm_Execution_EvaluationAnalysis_Footer.getField("differ").setValue(record.differ);
+
+
+
+        studentsGradeToTeacher = record.studentsGradeToTeacher;
+
+        if (DynamicForm_Execution_EvaluationAnalysis_Footer.getField("FEEGrade").getValue() >= record.z9) {
+            DynamicForm_Execution_EvaluationAnalysis_Footer.getItem('FEEGrade').setCellStyle('evaluation-code-pass-label');
+        }
+        else if (DynamicForm_Execution_EvaluationAnalysis_Footer.getField("FEEGrade").getValue() < record.z9) {
+            DynamicForm_Execution_EvaluationAnalysis_Footer.getItem('FEEGrade').setCellStyle('evaluation-code-fail-label');
+        }
+
+
+
+
+
+
+            for(let i=0;i<record.questionnaireQuestions.size();i++){
+           execution_chartData.add( {question: record.questionnaireQuestions.get(i).questionOrder,
+               grade: record.questionnaireQuestions.get(i).aveGradeToQuestion,
+               questionTitle: record.questionnaireQuestions.get(i).questionTitle});
+
+          }
+
+
+        ExecutionEvaluationChart.setData(execution_chartData);
+        evalWait_JspEvaluationAnalysis.close();
+    }
 
     function load_behavioral_evluation_analysis_data(record) {
         behavioral_chartData1 = new Array();
@@ -508,8 +575,22 @@
             "callback: fill_reaction_evaluation_result_resp(rpcResponse)"));
     }
 
+    function fill_execution_evaluation_result(record) {
+        DynamicForm_Execution_EvaluationAnalysis_Header.show();
+        DynamicForm_Execution_EvaluationAnalysis_Footer.show();
+        IButton_Print_ExecutionEvaluation_Evaluation_Analysis.show();
+        ExecutionEvaluationChart.show();
+        classRecord_evaluationAnalysist_execution = record;
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "executionEvaluationResult/" + record.id , "GET", null,
+            "callback: fill_execution_evaluation_result_resp(rpcResponse)"));
+    }
+
+
     function fill_reaction_evaluation_result_resp(resp) {
         load_reaction_evluation_analysis_data(JSON.parse(resp.data));
+    }
+    function fill_execution_evaluation_result_resp(resp) {
+        load_execution_evaluation_analysis_data(JSON.parse(resp.data));
     }
 
     function fill_behavioral_evaluation_result(record) {

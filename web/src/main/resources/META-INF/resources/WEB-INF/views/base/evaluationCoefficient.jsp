@@ -15,17 +15,23 @@
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FER", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEB", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEL", "GET", null, setZ1Z2Data));
+    isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEE", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEC_R", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEC_L", "GET", null, setZ1Z2Data));
     isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEC_B", "GET", null, setZ1Z2Data));
+    isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FEC_E", "GET", null, setZ1Z2Data));
+
+
 
     function setZ1Z2Data(resp) {
+
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             z1z2Data = (JSON.parse(resp.data)).response.data;
             for (var j = 0; j < z1z2Data.length; j++) {
                 DynamicForm_Evaluation_Coefficient.setValue(z1z2Data[j].code, z1z2Data[j].value);
                 DynamicForm_Evaluation_Coefficient.getItem(z1z2Data[j].code).ID = z1z2Data[j].id + "_Coefficient";
             }
+
         } else {
 
         }
@@ -107,6 +113,7 @@
                 name: "z3",
                 title: "ضریب نمره ارزیابی فراگیران به محتوای دوره &nbsp;(Z1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
+                    debugger;
                     if (value > 100) {
                         item.setValue()
                     }
@@ -433,6 +440,41 @@
                     }
                 }
             },
+            // //======================================================================================
+            {type: "RowSpacerItem"},
+            {
+                type: "BlurbItem",
+                value: "<p style='font-size:14px;color:blue'> 8-فرمول ارزیابی حین اجرا کلاس </p>"
+            },
+
+
+
+
+            {
+                width: "200",
+                type: "integer",
+                // hint: "%",
+                mask: "###",
+                name: "z9",
+                title: "حد قبولی نمره حین اجرا",
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
+            },
+            {
+                width: "200",
+                ////  hint: "%",
+                mask: "###",
+                name: "minQusEE",
+                title: "حداقل تعداد پرسشنامه های تکمیل شده&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
+                change: function (form, item, value) {
+                    if (value > 100) {
+                        item.setValue()
+                    }
+                }
+            },
 
         ],
 
@@ -474,6 +516,7 @@
                                 "value": fields[i].getValue(),
                             });
                         }
+
                         if (parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z1")) + parseFloat(DynamicForm_Evaluation_Coefficient.getValue("z2")) != 100) {
                             var str1 = DynamicForm_Evaluation_Coefficient.getItem("z1").title
                             var str2 = DynamicForm_Evaluation_Coefficient.getItem("z2").title
