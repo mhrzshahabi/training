@@ -18,6 +18,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import java.io.IOException;
 import java.util.List;
@@ -39,7 +40,7 @@ public class QuestionBankRestController {
         return new ResponseEntity<>(iQuestionBankService.get(id), HttpStatus.OK);
     } @Loggable
 
-    @GetMapping(value = "children-question/{id}")
+    @GetMapping(value = "/children-question/{id}")
     public ResponseEntity<QuestionBankDTO.QuestionBankSpecRsFullInfo> getChildrenQuestions(@PathVariable Long id) {
         final QuestionBankDTO.SpecRsFullInfo specResponse = new QuestionBankDTO.SpecRsFullInfo();
         specResponse.setData(iQuestionBankService.getChildrenQuestions(id).stream().toList())
@@ -254,4 +255,36 @@ public class QuestionBankRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+
+
+    @Loggable
+    @PostMapping(value = "/delete-questions-group/{id}/{ids}")
+    public BaseResponse deleteQuestionsGroup(@PathVariable Long id, @PathVariable Set<Long> ids) {
+        BaseResponse response=new BaseResponse();
+        try {
+            if (!iQuestionBankTestQuestionService.usedQuestion(id)) {
+                QuestionBank qb = iQuestionBankService.getById(id);
+
+                if (qb == null) {
+                    response.setStatus(HttpStatus.NOT_FOUND.value());
+                    return response;
+                } else if (iQuestionBankService.isExist(id)) {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    return response;
+                } else {
+                    iQuestionBankService.deleteQuestionsGroup(id,ids);
+                    response.setStatus(HttpStatus.OK.value());
+                    return response;
+                }
+            } else {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                return response;
+            }
+
+
+        } catch (DataIntegrityViolationException e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return response;
+        }
+    }
 }

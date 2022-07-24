@@ -150,7 +150,7 @@
 
     Lable_ForQuestions_group_Question = isc.LgLabel.create({contents:"لیست سوالات برای این سوال گروهی", customEdges: ["R","L","T", "B"]});
 
-    var ListGrid_ForQuestions_questionBankJSP = isc.TrLG.create({
+    let ListGrid_ForQuestions_questionBankJSP = isc.TrLG.create({
         height: "45%",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
@@ -244,7 +244,7 @@
         gridComponents: [Lable_AllQuestions_questionBankJSP, "filterEditor", "header", "body"],
         dataArrived:function(){
             let lgIds = ListGrid_ForQuestions_questionBankJSP.data.getAllCachedRows().map(function(item) {
-                return item.questionBankId;
+                return item.id;
             });
 
             if(lgIds.length==0){
@@ -260,80 +260,80 @@
         filterEditorSubmit: function () {
             ListGrid_AllQuestions_questionBankJSP.invalidateCache();
         },
-        createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-            if (fieldName === "OnAdd") {
-                var recordCanvas = isc.HLayout.create({
-                    height: 20,
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-                var addIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "[SKIN]/actions/add.png",
-                    prompt: "اضافه کردن",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-                        let current = record;
-                        let selected = ListGrid_ForQuestions_questionBankJSP.data.getAllCachedRows().map(function(item) {return item.questionBankId;});
+        <%--createRecordComponent: function (record, colNum) {--%>
+        <%--    var fieldName = this.getFieldName(colNum);--%>
+        <%--    if (fieldName === "OnAdd") {--%>
+        <%--        var recordCanvas = isc.HLayout.create({--%>
+        <%--            height: 20,--%>
+        <%--            width: "100%",--%>
+        <%--            layoutMargin: 5,--%>
+        <%--            membersMargin: 10,--%>
+        <%--            align: "center"--%>
+        <%--        });--%>
+        <%--        var addIcon = isc.ImgButton.create({--%>
+        <%--            showDown: false,--%>
+        <%--            showRollOver: false,--%>
+        <%--            layoutAlign: "center",--%>
+        <%--            src: "[SKIN]/actions/add.png",--%>
+        <%--            prompt: "اضافه کردن",--%>
+        <%--            height: 16,--%>
+        <%--            width: 16,--%>
+        <%--            grid: this,--%>
+        <%--            click: function () {--%>
+        <%--                let current = record;--%>
+        <%--                let selected = ListGrid_ForQuestions_questionBankJSP.data.getAllCachedRows().map(function(item) {return item.id;});--%>
 
-                        let ids = [];
+        <%--                let ids = [];--%>
 
-                        let questionBankId=0;
+        <%--                let questionBankId=0;--%>
 
-                        if(!current.questionBank){
-                            questionBankId=current.id;
-                        }else{
-                            questionBankId=current.questionBank.id;
-                        }
-                        if ($.inArray(questionBankId, selected) === -1){
-                            ids.push(questionBankId);
-                        }
+        <%--                if(!current.questionBank){--%>
+        <%--                    questionBankId=current.id;--%>
+        <%--                }else{--%>
+        <%--                    questionBankId=current.questionBank.id;--%>
+        <%--                }--%>
+        <%--                if ($.inArray(questionBankId, selected) === -1){--%>
+        <%--                    ids.push(questionBankId);--%>
+        <%--                }--%>
 
-                        if(ids.length!==0){
-                            // let findRows=ListGrid_AllQuestions_questionBankJSP.findAll(({ id }) =>  [current.id].some(p=>p==id));
+        <%--                if(ids.length!==0){--%>
+        <%--                    // let findRows=ListGrid_AllQuestions_questionBankJSP.findAll(({ id }) =>  [current.id].some(p=>p==id));--%>
 
-                            let classRecord = FinalTestLG_finalTest.getSelectedRecord();
-                            let classId = classRecord.tclass.id;
+        <%--                    let classRecord = FinalTestLG_finalTest.getSelectedRecord();--%>
+        <%--                    let classId = classRecord.tclass.id;--%>
 
-                            let JSONObj = {"ids": ids};
-                            wait.show();
+        <%--                    let JSONObj = {"ids": ids};--%>
+        <%--                    wait.show();--%>
 
-                            isc.RPCManager.sendRequest({
-                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                useSimpleHttp: true,
-                                contentType: "application/json; charset=utf-8",
-                                actionURL: questionBankTestQuestionUrl + "/add-questions/test/" + classId + "/" + ids,
-                                httpMethod: "POST",
-                                data: JSON.stringify(JSONObj),
-                                serverOutputAsString: false,
-                                callback: function (resp) {
-                                    wait.close();
-                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                        ListGrid_AllQuestions_questionBankJSP.redraw();
+        <%--                    isc.RPCManager.sendRequest({--%>
+        <%--                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+        <%--                        useSimpleHttp: true,--%>
+        <%--                        contentType: "application/json; charset=utf-8",--%>
+        <%--                        actionURL: questionBankTestQuestionUrl + "/add-questions/test/" + classId + "/" + ids,--%>
+        <%--                        httpMethod: "POST",--%>
+        <%--                        data: JSON.stringify(JSONObj),--%>
+        <%--                        serverOutputAsString: false,--%>
+        <%--                        callback: function (resp) {--%>
+        <%--                            wait.close();--%>
+        <%--                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+        <%--                                ListGrid_AllQuestions_questionBankJSP.redraw();--%>
 
-                                        ListGrid_ForQuestions_questionBankJSP.invalidateCache();
-                                        ListGrid_ForQuestions_questionBankJSP.fetchData();
-                                    } else {
-                                        isc.say("خطا");
-                                    }
-                                }
-                            });
+        <%--                                ListGrid_ForQuestions_questionBankJSP.invalidateCache();--%>
+        <%--                                ListGrid_ForQuestions_questionBankJSP.fetchData();--%>
+        <%--                            } else {--%>
+        <%--                                isc.say("خطا");--%>
+        <%--                            }--%>
+        <%--                        }--%>
+        <%--                    });--%>
 
-                        }
-                    }
-                });
-                recordCanvas.addMember(addIcon);
-                return recordCanvas;
-            } else
-                return null;
-        }
+        <%--                }--%>
+        <%--            }--%>
+        <%--        });--%>
+        <%--        recordCanvas.addMember(addIcon);--%>
+        <%--        return recordCanvas;--%>
+        <%--    } else--%>
+        <%--        return null;--%>
+        <%--}--%>
     });
 
 
@@ -1005,52 +1005,59 @@
                 width:"100%",
                 height:25,
                 title:"حذف گروهی",
-                <%--click: function () {--%>
-                <%--    var ids = ListGrid_ForQuestions_questionBankJSP.getSelection().map(function(item) {return item.questionBank.id;});--%>
+                click: function () {
+                    let ids = ListGrid_ForQuestions_questionBankJSP.getSelection().map(function(item) {return item.id;});
 
-                <%--    if(ids && ids.length>0){--%>
-                <%--        let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");--%>
-                <%--        dialog.addProperties({--%>
-                <%--            buttonClick: function (button, index) {--%>
-                <%--                this.close();--%>
-                <%--                if (index === 0) {--%>
+                    if(ids && ids.length>0){
+                        let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+                        dialog.addProperties({
+                            buttonClick: function (button, index) {
+                                this.close();
+                                if (index === 0) {
 
-                <%--                    var activeClass = FinalTestLG_finalTest.getSelectedRecord();--%>
-                <%--                    var activeClassId = activeClass.tclass.id;--%>
-                <%--                    let JSONObj = {"ids": ids};--%>
-                <%--                    isc.RPCManager.sendRequest({--%>
-                <%--                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-                <%--                        useSimpleHttp: true,--%>
-                <%--                        contentType: "application/json; charset=utf-8",--%>
-                <%--                        actionURL: questionBankTestQuestionUrl + "/delete-questions/test/" + activeClassId + "/" + ids,--%>
-                <%--                        httpMethod: "DELETE",--%>
-                <%--                        data: JSON.stringify(JSONObj),--%>
-                <%--                        serverOutputAsString: false,--%>
-                <%--                        callback: function (resp) {--%>
-                <%--                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+                                     let id = QuestionBankLG_questionBank.getSelectedRecord().id;
+                                    let JSONObj = {"ids": ids};
+                                    isc.RPCManager.sendRequest({
+                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                        useSimpleHttp: true,
+                                        contentType: "application/json; charset=utf-8",
+                                        actionURL: questionBankUrl + "/delete-questions-group/"  + id+ "/" + ids,
+                                        httpMethod: "POST",
+                                        data: JSON.stringify(JSONObj),
+                                        serverOutputAsString: false,
+                                        callback: function (resp) {
+                                            let result =   JSON.parse(resp.httpResponseText).status;
+                                            if (result === 200) {
+
+                                                ListGrid_ForQuestions_questionBankJSP.invalidateCache();
+                                                for(let i=0;i<ids.length;i++)
+                                                {
+                                                    let row= ListGrid_AllQuestions_questionBankJSP.getData().localData.filter(p =>p.id===ids[i])
+                                                    row.setProperty("enabled", true);
+                                                    ListGrid_AllQuestions_questionBankJSP.redraw();
+                                                }
+
+                                                isc.say("عملیات با موفقیت انجام شد.");
 
 
-                <%--                                ListGrid_ForQuestions_questionBankJSP.invalidateCache();--%>
-                <%--                                for(let i=0;i<ids.length;i++)--%>
-                <%--                                {--%>
-                <%--                                    let row= ListGrid_AllQuestions_questionBankJSP.getData().localData.filter(p =>p.id===ids[i])--%>
-                <%--                                    row.setProperty("enabled", true);--%>
-                <%--                                    ListGrid_AllQuestions_questionBankJSP.redraw();--%>
-                <%--                                }--%>
+                                            } else if(result === 404){
+                                                createDialog("warning", "چنین سوالی وجود ندارد", "اخطار");
+                                            }else if(result === 406){
+                                                createDialog("warning", "بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف این سوال وجود ندارد.", "اخطار");
+                                            } else {
+                                                createDialog("warning", "خطا در حذف سوال", "اخطار");
+                                            }
 
-                <%--                                isc.say("عملیات با موفقیت انجام شد.");--%>
-                <%--                            } else {--%>
-                <%--                                isc.say("خطا در پاسخ سرویس دهنده");--%>
-                <%--                            }--%>
-                <%--                        }--%>
-                <%--                    });--%>
-                <%--                }--%>
-                <%--            }--%>
-                <%--        })--%>
-                <%--    }else{--%>
-                <%--        isc.say("سوالي انتخاب نشده است.");--%>
-                <%--    }--%>
-                <%--}--%>
+
+                                        }
+                                    });
+                                }
+                            }
+                        })
+                    }else{
+                        isc.say("سوالي انتخاب نشده است.");
+                    }
+                }
             })
         ]
     });

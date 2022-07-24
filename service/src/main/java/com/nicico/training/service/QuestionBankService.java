@@ -349,4 +349,15 @@ public class QuestionBankService implements IQuestionBankService {
 
     }
 
+    @Override
+    public void deleteQuestionsGroup(Long id, Set<Long> ids) {
+        final Optional<QuestionBank> cById = questionBankDAO.findById(id);
+        final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
+        Set<QuestionBank> questionGroupIds=model.getGroupQuestions();
+        Set<QuestionBank> removeQuestions=getListOfGroupQuestions(ids);
+        questionGroupIds.removeAll(removeQuestions);
+        model.setGroupQuestions(questionGroupIds);
+        questionBankDAO.save(model);
+    }
+
 }

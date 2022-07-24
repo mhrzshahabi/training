@@ -48,4 +48,6 @@ public interface IQuestionBankService {
     List<QuestionBank> findAllByCreateBy(String createBy);
 
     Set<QuestionBankDTO.FullInfo> getChildrenQuestions(Long id);
+
+    void deleteQuestionsGroup(Long id, Set<Long> ids);
 }
