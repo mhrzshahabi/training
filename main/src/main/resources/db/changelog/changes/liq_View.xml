@@ -4867,7 +4867,6 @@ FROM
         </createView>
     </changeSet>
 
-
     <changeSet author="NICICO" id="VIEW_STUDENTS_IN_CANCELED_CLASS_REPORT-001">
         <createView viewName="VIEW_STUDENTS_IN_CANCELED_CLASS_REPORT" replaceIfExists="true">
             <![CDATA[
