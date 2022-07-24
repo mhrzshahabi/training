@@ -1407,7 +1407,7 @@ if (pageQuestionDto.getPageQuestion()!=null){
     public ElsQuestionDto getQuestionBankById(HttpServletRequest header, @PathVariable long id) {
         ElsQuestionDto response = new ElsQuestionDto();
 
-//        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
+        if (Objects.requireNonNull(environment.getProperty("nicico.training.pass")).trim().equals(header.getHeader("X-Auth-Token"))) {
         try {
             QuestionBank questionBank = questionBankService.getById(id);
             ElsQuestionBankDto questionBankDto = questionBankBeanMapper.toElsQuestionBank(Collections.singletonList(questionBank), null);
@@ -1418,10 +1418,10 @@ if (pageQuestionDto.getPageQuestion()!=null){
             response.setStatus(HttpStatus.NOT_FOUND.value());
             response.setMessage("سوال یافت نشد");
         }
-//        } else {
-//            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-//            response.setMessage("خطای دسترسی");
-//        }
+        } else {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
+            response.setMessage("خطای دسترسی");
+        }
         return response;
 
     }
