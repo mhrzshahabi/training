@@ -69,4 +69,8 @@ public class ElsQuestionDto extends BaseResponse implements Serializable {
     private String createdDate;
     @ApiModelProperty
     private Double proposedPointValue;
+    @ApiModelProperty
+    private Boolean isChild;
+    @ApiModelProperty
+    private String childPriority;
 }

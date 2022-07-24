@@ -13,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ElsQuestionOptionDto {
+    private Long id;
     @ApiModelProperty(required = true, hidden = false)
     private String title;
     private Integer optionNumber;

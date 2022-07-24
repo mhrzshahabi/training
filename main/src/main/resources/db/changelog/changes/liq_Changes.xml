@@ -4978,6 +4978,16 @@ FROM
         </sql>
     </changeSet>
 
+
+    <changeSet author="namdari (generated)" id="1658554749000-1">
+        <addColumn tableName="tbl_question_bank">
+            <column name="is_child" type="number(1, 0)"/>
+        </addColumn>
+        <addColumn tableName="tbl_question_bank">
+            <column name="child_priority" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

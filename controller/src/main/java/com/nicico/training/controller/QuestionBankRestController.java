@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -36,7 +37,21 @@ public class QuestionBankRestController {
     @GetMapping(value = "/{id}")
     public ResponseEntity<QuestionBankDTO.FullInfo> get(@PathVariable Long id) {
         return new ResponseEntity<>(iQuestionBankService.get(id), HttpStatus.OK);
-    }
+    } @Loggable
+
+    @GetMapping(value = "children-question/{id}")
+    public ResponseEntity<QuestionBankDTO.QuestionBankSpecRsFullInfo> getChildrenQuestions(@PathVariable Long id) {
+        final QuestionBankDTO.SpecRsFullInfo specResponse = new QuestionBankDTO.SpecRsFullInfo();
+        specResponse.setData(iQuestionBankService.getChildrenQuestions(id).stream().toList())
+                .setStartRow(0)
+                .setEndRow(iQuestionBankService.getChildrenQuestions(id).stream().toList().size())
+                .setTotalRows(iQuestionBankService.getChildrenQuestions(id).stream().toList().size());
+
+        final QuestionBankDTO.QuestionBankSpecRsFullInfo specRs = new QuestionBankDTO.QuestionBankSpecRsFullInfo();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+     }
 
     @Loggable
     @GetMapping(value = "/max")

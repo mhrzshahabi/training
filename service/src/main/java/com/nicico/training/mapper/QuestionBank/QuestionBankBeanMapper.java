@@ -113,13 +113,13 @@ public abstract class QuestionBankBeanMapper {
             }
 
             if (questionBank.getOption1() != null)
-                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption1(), 1, option1HasAttachment, elsAttachmentDtoOption1Files));
+                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getId(),questionBank.getOption1(), 1, option1HasAttachment, elsAttachmentDtoOption1Files));
             if (questionBank.getOption2() != null)
-                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption2(), 2, option2HasAttachment, elsAttachmentDtoOption2Files));
+                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getId(),questionBank.getOption2(), 2, option2HasAttachment, elsAttachmentDtoOption2Files));
             if (questionBank.getOption3() != null)
-                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, option3HasAttachment, elsAttachmentDtoOption3Files));
+                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getId(),questionBank.getOption3(), 3, option3HasAttachment, elsAttachmentDtoOption3Files));
             if (questionBank.getOption4() != null)
-                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, option4HasAttachment, elsAttachmentDtoOption4Files));
+                elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getId(),questionBank.getOption4(), 4, option4HasAttachment, elsAttachmentDtoOption4Files));
 
             elsQuestionDto.setQuestionId(questionBank.getId());
             elsQuestionDto.setTitle(questionBank.getQuestion());
@@ -128,7 +128,22 @@ public abstract class QuestionBankBeanMapper {
                 questionBank.getGroupQuestions().forEach(item->{
                     GroupQuestionDto questionDto=new GroupQuestionDto();
                     questionDto.setQuestion(item.getQuestion());
+                    questionDto.setCorrectAnswer(item.getDescriptiveAnswer());
+                    questionDto.setType(item.getQuestionType().getTitle());
                     questionDto.setId(item.getId());
+                    /////
+                    List<ElsQuestionOptionDto> optionDtoList = new ArrayList<>();
+                    if (item.getOption1() != null)
+                        optionDtoList.add(new ElsQuestionOptionDto(item.getId(),item.getOption1(), 1, null, null));
+                    if (item.getOption2() != null)
+                        optionDtoList.add(new ElsQuestionOptionDto(item.getId(),item.getOption2(), 2, null, null));
+                    if (item.getOption3() != null)
+                        optionDtoList.add(new ElsQuestionOptionDto(item.getId(),item.getOption3(), 3, null, null));
+                    if (item.getOption4() != null)
+                        optionDtoList.add(new ElsQuestionOptionDto(item.getId(),item.getOption4(), 4, null, null));
+
+                    questionDto.setOptionList(optionDtoList);
+                    /////
                     groupQuestionDtos.add(questionDto);
                 });
             }
@@ -248,10 +263,10 @@ public abstract class QuestionBankBeanMapper {
                 });
             }
 
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption1(), 1, option1HasAttachment, elsAttachmentDtoOption1Files));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption2(), 2, option2HasAttachment, elsAttachmentDtoOption2Files));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, option3HasAttachment, elsAttachmentDtoOption3Files));
-            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, option4HasAttachment, elsAttachmentDtoOption4Files));
+            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getId(),questionBank.getOption1(), 1, option1HasAttachment, elsAttachmentDtoOption1Files));
+            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getId(),questionBank.getOption2(), 2, option2HasAttachment, elsAttachmentDtoOption2Files));
+            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getId(),questionBank.getOption3(), 3, option3HasAttachment, elsAttachmentDtoOption3Files));
+            elsQuestionOptionDtoList.add(new ElsQuestionOptionDto(questionBank.getId(),questionBank.getOption4(), 4, option4HasAttachment, elsAttachmentDtoOption4Files));
 
             elsQuestionDto.setQuestionId(questionBank.getId());
             elsQuestionDto.setTitle(questionBank.getQuestion());
@@ -349,6 +364,8 @@ public abstract class QuestionBankBeanMapper {
             create.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());
             create.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
             create.setHasAttachment(elsQuestionDto.getHasAttachment());
+            create.setIsChild(elsQuestionDto.getIsChild());
+            create.setChildPriority(elsQuestionDto.getChildPriority());
             create.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
             create.setTclassId(tClass.getId());
             create.setCourseId(tClass.getCourseId());
@@ -452,6 +469,8 @@ public abstract class QuestionBankBeanMapper {
         update.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());
         update.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
         update.setHasAttachment(elsQuestionDto.getHasAttachment());
+        update.setChildPriority(elsQuestionDto.getChildPriority());
+        update.setIsChild(elsQuestionDto.getIsChild());
         update.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
         update.setProposedPointValue(elsQuestionDto.getProposedPointValue());
 

@@ -15,6 +15,7 @@ import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -332,6 +333,20 @@ public class QuestionBankService implements IQuestionBankService {
     @Override
     public List<QuestionBank> findAllByCreateBy(String createBy) {
         return questionBankDAO.findAllByCreatedBy(createBy);
+    }
+
+    @Override
+    public Set<QuestionBankDTO.FullInfo> getChildrenQuestions(Long id) {
+        final Optional<QuestionBank> cById = questionBankDAO.findById(id);
+        final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
+        Set<QuestionBank> questionGroupIds;
+        if (model.getGroupQuestions() != null) {
+            questionGroupIds=model.getGroupQuestions();
+            return modelMapper.map(questionGroupIds, new TypeToken<Set<QuestionBankDTO.FullInfo>>() {
+            }.getType());
+        }else
+            return null;
+
     }
 
 }

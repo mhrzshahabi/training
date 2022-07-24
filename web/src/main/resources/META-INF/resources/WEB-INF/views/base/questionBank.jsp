@@ -1,12 +1,17 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
 // <script>
 
     let questionBankMethod_questionBank;
     let forceToCloseWindow=true;
+
     let oLoadAttachments_questionBank;
     // ------------------------------------------- Menu -------------------------------------------
     QuestionBankMenu_questionBank = isc.Menu.create({
@@ -93,6 +98,245 @@
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
+
+    let RestDataSource_ForThisClass_questionBank = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {
+                name: "question",
+                title: "<spring:message code='question.bank.question'/>",
+                align: "center",
+                filterOperator: "iContains",
+            }
+
+        ]
+
+
+    });
+    let RestDataSource_All_questionBank = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true,hidden:true
+            },
+            {
+                name: "question",
+                title: "<spring:message code='question.bank.question'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "questionType.title",
+                title: "<spring:message code='question.bank.question.type'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "displayType.title",
+                title: "<spring:message code='question.bank.display.type'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+
+        ],
+        implicitCriteria: {
+            _constructor:"AdvancedCriteria",
+            operator:"or",
+            criteria: [{fieldName: "isChild", operator: "equals", value: 1}]
+        },
+        fetchDataURL: questionBankUrl + "/with-filter/spec-list"
+    });
+
+
+    Lable_ForQuestions_group_Question = isc.LgLabel.create({contents:"لیست سوالات برای این سوال گروهی", customEdges: ["R","L","T", "B"]});
+
+    var ListGrid_ForQuestions_questionBankJSP = isc.TrLG.create({
+        height: "45%",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        gridComponents: [Lable_ForQuestions_group_Question, "filterEditor", "header", "body"],
+        dataSource: RestDataSource_ForThisClass_questionBank,
+        sortField: 0,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        fields: [
+            {name: "id", hidden:true},
+            {name: "question"},
+            {name: "OnDelete", title: " ", align: "center", width:30}
+        ],
+        dataArrived:function(){
+
+            ListGrid_AllQuestions_questionBankJSP.invalidateCache();
+            ListGrid_AllQuestions_questionBankJSP.fetchData();
+
+
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+
+            if (fieldName === "OnDelete") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+
+                var removeIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "حذف کردن",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        var activeId = record.questionBank.id;
+                        var activeClass = FinalTestLG_finalTest.getSelectedRecord();
+                        var activeClassId = activeClass.tclass.id;
+                        isc.RPCManager.sendRequest({
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            actionURL:  questionBankTestQuestionUrl + "/delete-questions/test/" + activeClassId + "/" + activeId,
+                            httpMethod: "DELETE",
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    ListGrid_ForQuestions_questionBankJSP.invalidateCache();
+
+                                    let row= ListGrid_AllQuestions_questionBankJSP.getData().localData.filter(p =>p.id===activeId)
+                                    row.setProperty("enabled", true);
+                                    ListGrid_AllQuestions_questionBankJSP.redraw();
+                                } else {
+                                    isc.say("خطا در پاسخ سرویس دهنده");
+                                }
+                            }
+                        });
+                    }
+                });
+                recordCanvas.addMember(removeIcon);
+                return recordCanvas;
+            } else
+                return null;
+        }
+    });
+
+    Lable_AllQuestions_questionBankJSP = isc.LgLabel.create({contents:"لیست سوالات از بانک سوال", customEdges: ["R","L","T", "B"]});
+
+
+    let ListGrid_AllQuestions_questionBankJSP = isc.TrLG.create({
+        height: "45%",
+        dataSource: RestDataSource_All_questionBank,
+        selectionAppearance: "checkbox",
+        selectionType: "simple",
+        initialSort: [
+            {property: "id", direction: "descending", primarySort: true}
+        ],
+        showRecordComponents: true,
+        canSort:true,
+        showRecordComponentsByCell: true,
+        filterOnKeypress: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        gridComponents: [Lable_AllQuestions_questionBankJSP, "filterEditor", "header", "body"],
+        dataArrived:function(){
+            let lgIds = ListGrid_ForQuestions_questionBankJSP.data.getAllCachedRows().map(function(item) {
+                return item.questionBankId;
+            });
+
+            if(lgIds.length==0){
+                return;
+            }
+            for(let i=0;i<lgIds.length;i++)
+            {
+                let row= ListGrid_AllQuestions_questionBankJSP.getData().localData.filter(p =>p.id===lgIds[i])
+                row.setProperty("enabled", false);
+                ListGrid_AllQuestions_questionBankJSP.redraw();
+            }
+        },
+        filterEditorSubmit: function () {
+            ListGrid_AllQuestions_questionBankJSP.invalidateCache();
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName === "OnAdd") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                var addIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/add.png",
+                    prompt: "اضافه کردن",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        let current = record;
+                        let selected = ListGrid_ForQuestions_questionBankJSP.data.getAllCachedRows().map(function(item) {return item.questionBankId;});
+
+                        let ids = [];
+
+                        let questionBankId=0;
+
+                        if(!current.questionBank){
+                            questionBankId=current.id;
+                        }else{
+                            questionBankId=current.questionBank.id;
+                        }
+                        if ($.inArray(questionBankId, selected) === -1){
+                            ids.push(questionBankId);
+                        }
+
+                        if(ids.length!==0){
+                            // let findRows=ListGrid_AllQuestions_questionBankJSP.findAll(({ id }) =>  [current.id].some(p=>p==id));
+
+                            let classRecord = FinalTestLG_finalTest.getSelectedRecord();
+                            let classId = classRecord.tclass.id;
+
+                            let JSONObj = {"ids": ids};
+                            wait.show();
+
+                            isc.RPCManager.sendRequest({
+                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                useSimpleHttp: true,
+                                contentType: "application/json; charset=utf-8",
+                                actionURL: questionBankTestQuestionUrl + "/add-questions/test/" + classId + "/" + ids,
+                                httpMethod: "POST",
+                                data: JSON.stringify(JSONObj),
+                                serverOutputAsString: false,
+                                callback: function (resp) {
+                                    wait.close();
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                        ListGrid_AllQuestions_questionBankJSP.redraw();
+
+                                        ListGrid_ForQuestions_questionBankJSP.invalidateCache();
+                                        ListGrid_ForQuestions_questionBankJSP.fetchData();
+                                    } else {
+                                        isc.say("خطا");
+                                    }
+                                }
+                            });
+
+                        }
+                    }
+                });
+                recordCanvas.addMember(addIcon);
+                return recordCanvas;
+            } else
+                return null;
+        }
+    });
+
+
     QuestionBankDS_questionBank = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -681,6 +925,150 @@
     }
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
+
+    var DynamicForm_Header_qroup_question = isc.DynamicForm.create({
+        height: "5%",
+        align: "center",
+        fields: [{name: "sgTitle", type: "staticText", title: "افزودن سوال زیرمجموعه ", wrapTitle: false}]
+    });
+
+
+    let VLayOut_Question_Bank_Jsp = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        border: "3px solid gray",
+        align:"center",
+        layoutLeftMargin: 5,
+        layoutRightMargin: 5,
+        members: [
+            DynamicForm_Header_qroup_question,
+            ListGrid_AllQuestions_questionBankJSP,
+            isc.ToolStripButtonAdd.create({
+                width:"100%",
+                height:25,
+                title:"اضافه کردن گروهی",
+                <%--click: function () {--%>
+                <%--    var ids = ListGrid_AllQuestions_questionBankJSP.getSelection().filter(function(x){return x.enabled!==false}).map(function(item) {return (!item.questionBank)?item.id:item.questionBank.id;});--%>
+                <%--    if(ids &&ids.length>0){--%>
+                <%--        let dialog = createDialog('ask', "<spring:message code="msg.record.adds.ask"/>");--%>
+                <%--        dialog.addProperties({--%>
+                <%--            buttonClick: function (button, index) {--%>
+                <%--                this.close();--%>
+                <%--                if (index === 0) {--%>
+                <%--                    var activeClass = FinalTestLG_finalTest.getSelectedRecord();--%>
+                <%--                    var activeClassId = activeClass.tclass.id;--%>
+                <%--                    let JSONObj = {"ids": ids};--%>
+                <%--                    wait.show();--%>
+
+                <%--                    isc.RPCManager.sendRequest({--%>
+                <%--                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                <%--                        useSimpleHttp: true,--%>
+                <%--                        contentType: "application/json; charset=utf-8",--%>
+                <%--                        actionURL: questionBankTestQuestionUrl + "/add-questions/test/" + activeClassId + "/" + ids,--%>
+                <%--                        httpMethod: "POST",--%>
+                <%--                        data: JSON.stringify(JSONObj),--%>
+                <%--                        serverOutputAsString: false,--%>
+                <%--                        callback: function (resp) {--%>
+                <%--                            wait.close();--%>
+
+                <%--                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+                <%--                                ListGrid_ForQuestions_questionBankJSP.invalidateCache();--%>
+
+                <%--                                // let findRows=ListGrid_AllQuestions_questionBankJSP.findAll(({ id,questionBank,questionBankId }) =>  ids.some(p=>(!questionBank)?p==id:p==questionBankId));--%>
+                <%--                                //--%>
+                <%--                                // if(findRows && findRows.length>0){--%>
+                <%--                                //--%>
+                <%--                                //     findRows.setProperty("enabled", false);--%>
+                <%--                                //     ListGrid_AllQuestions_questionBankJSP.redraw();--%>
+                <%--                                // }--%>
+                <%--                                ListGrid_AllQuestions_questionBankJSP.getSelectedRecords().setProperty("enabled", false);--%>
+                <%--                                ListGrid_AllQuestions_questionBankJSP.deselectAllRecords();--%>
+                <%--                                ListGrid_AllQuestions_questionBankJSP.redraw();--%>
+                <%--                                isc.say("عملیات با موفقیت انجام شد.");--%>
+
+                <%--                            } else {--%>
+                <%--                                isc.say("خطا در پاسخ سرویس دهنده");--%>
+                <%--                            }--%>
+                <%--                        }--%>
+                <%--                    });--%>
+                <%--                }--%>
+                <%--            }--%>
+                <%--        })--%>
+                <%--    }else{--%>
+                <%--        isc.say("سوالي انتخاب نشده است.");--%>
+                <%--    }--%>
+                <%--}--%>
+            }),
+            isc.LayoutSpacer.create({ID: "spacer", height: "5%"}),
+            ListGrid_ForQuestions_questionBankJSP,
+            isc.ToolStripButtonRemove.create({
+                width:"100%",
+                height:25,
+                title:"حذف گروهی",
+                <%--click: function () {--%>
+                <%--    var ids = ListGrid_ForQuestions_questionBankJSP.getSelection().map(function(item) {return item.questionBank.id;});--%>
+
+                <%--    if(ids && ids.length>0){--%>
+                <%--        let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");--%>
+                <%--        dialog.addProperties({--%>
+                <%--            buttonClick: function (button, index) {--%>
+                <%--                this.close();--%>
+                <%--                if (index === 0) {--%>
+
+                <%--                    var activeClass = FinalTestLG_finalTest.getSelectedRecord();--%>
+                <%--                    var activeClassId = activeClass.tclass.id;--%>
+                <%--                    let JSONObj = {"ids": ids};--%>
+                <%--                    isc.RPCManager.sendRequest({--%>
+                <%--                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                <%--                        useSimpleHttp: true,--%>
+                <%--                        contentType: "application/json; charset=utf-8",--%>
+                <%--                        actionURL: questionBankTestQuestionUrl + "/delete-questions/test/" + activeClassId + "/" + ids,--%>
+                <%--                        httpMethod: "DELETE",--%>
+                <%--                        data: JSON.stringify(JSONObj),--%>
+                <%--                        serverOutputAsString: false,--%>
+                <%--                        callback: function (resp) {--%>
+                <%--                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+
+
+                <%--                                ListGrid_ForQuestions_questionBankJSP.invalidateCache();--%>
+                <%--                                for(let i=0;i<ids.length;i++)--%>
+                <%--                                {--%>
+                <%--                                    let row= ListGrid_AllQuestions_questionBankJSP.getData().localData.filter(p =>p.id===ids[i])--%>
+                <%--                                    row.setProperty("enabled", true);--%>
+                <%--                                    ListGrid_AllQuestions_questionBankJSP.redraw();--%>
+                <%--                                }--%>
+
+                <%--                                isc.say("عملیات با موفقیت انجام شد.");--%>
+                <%--                            } else {--%>
+                <%--                                isc.say("خطا در پاسخ سرویس دهنده");--%>
+                <%--                            }--%>
+                <%--                        }--%>
+                <%--                    });--%>
+                <%--                }--%>
+                <%--            }--%>
+                <%--        })--%>
+                <%--    }else{--%>
+                <%--        isc.say("سوالي انتخاب نشده است.");--%>
+                <%--    }--%>
+                <%--}--%>
+            })
+        ]
+    });
+    let Window_QuestionBank_question_group = isc.Window.create({
+        title: "بانک سوال",
+        align: "center",
+        placement: "fillScreen",
+        minWidth: 1024,
+        closeClick: function () {
+            // ListGrid_FinalTest.invalidateCache();
+            this.hide();
+        },
+        items: [
+            VLayOut_Question_Bank_Jsp
+        ]
+    });
+
+
     let QuestionBankDF_questionBank = isc.DynamicForm.create({
         ID: "QuestionBankDF_questionBank",
         //width: 780,
@@ -1225,13 +1613,17 @@
                     }
                     if (value != 520 && value != 519){
                         //groupQuestions
-                        QuestionBankDF_questionBank.getItem("groupQuestions").enable();
-                        QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(true);
+                        // QuestionBankDF_questionBank.getItem("groupQuestions").enable();
+                        QuestionBankWin_questionBank.items[1].members[3].setVisibility(true);
+                        QuestionBankDF_questionBank.getItem("isChild").disable();
+                        // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(true);
 
                     }else {
                         //others
-                        QuestionBankDF_questionBank.getItem("groupQuestions").disable();
-                        QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
+                        QuestionBankDF_questionBank.getItem("isChild").enable();
+                        // QuestionBankDF_questionBank.getItem("groupQuestions").disable();
+                        // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
+                        QuestionBankWin_questionBank.items[1].members[3].setVisibility(false);
 
                     }
 
@@ -1272,6 +1664,13 @@
                 labelAsTitle: true
             },
             {
+                name: "isChild",
+                title: "آیا این سوال زیرمجوعه است؟",
+                type: "checkbox",
+                titleOrientation: "left",
+                labelAsTitle: true
+            },
+            {
                 name: "eQuestionLevel.id",
                 title: "درجه سختی سوال",
                 required: true,
@@ -1301,17 +1700,18 @@
             },
             {
                 name: "groupQuestions",
-                title: "انتخاب سوالات گروهی",
+                title: "انتخاب شمابرای سوالات گروهی",
                  type: "SelectItem",
                 multiple: true,
                 hidden: false,
+                disabled: true,
 
                 filterOnKeypress: true,
                 filterFields: ["question"],
                 textAlign: "center",
                 optionDataSource: QuestionBankDS_questionBank_with_filter,
                 valueField: "id",
-                displayField: "id",
+                displayField: "code",
                 sortField: ["id"],
                 sortDirection: "descending",
                 autoFetchData: false,
@@ -1322,11 +1722,13 @@
                 pickListFields: [
                     {
                         name: "question",
-                        title: "question",
+                        title: "سوال",
                         align: "center",
                         filterOperator: "iContains",
                         autoFitWidth: false
-                    }
+                    },
+                    {name: "code", title: "<spring:message code="code"/>"}
+
                 ],
                 pickListProperties: {
                     showFilterEditor: true
@@ -1482,7 +1884,6 @@
                 type: "TextAreaItem",
                 height: 100,
                 width: "100%",
-                length: 5000,
                 colSpan: 4,
                 wrap: "OFF",
             },
@@ -1519,7 +1920,8 @@
         showMaximizeButton: false,
         autoSize: false,
         canDragResize: false,
-        items: [QuestionBankDF_questionBank, isc.TrHLayoutButtons.create({
+        items: [QuestionBankDF_questionBank,
+            isc.TrHLayoutButtons.create({
             members: [
                 isc.TrSaveBtn.create({
                     click: function () {
@@ -1540,6 +1942,19 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
                         saveQuestionBank_questionBank();
                     }
                 }),
+                isc.TrSaveBtn.create({
+                    ID:"QuestionBankWin_group_questionBank",
+                    width: 200,
+                    title:"انتخاب سوالات گروهی",
+                    click: function () {
+
+                        RestDataSource_ForThisClass_questionBank.fetchDataURL= questionBankUrl + "/children-question/"+ QuestionBankLG_questionBank.getSelectedRecord().id
+                        ListGrid_ForQuestions_questionBankJSP.invalidateCache();
+                        ListGrid_ForQuestions_questionBankJSP.fetchData();
+                        // DynamicForm_Header_FinalTestJsp.setValue("sgTitle", getFormulaMessage(record.tclass.course.titleFa, "2", "red", "B"));
+                        Window_QuestionBank_question_group.show();
+                    }
+                })
             ]
         })]
     });
@@ -1627,8 +2042,11 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
         QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(false);
 
         QuestionBankDF_questionBank.clearErrors();
-        QuestionBankDF_questionBank.getItem("groupQuestions").disable();
-        QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
+        // QuestionBankDF_questionBank.getItem("groupQuestions").disable();
+        // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
+
+        QuestionBankWin_questionBank.items[1].members[3].setVisibility(false);
+
 
         QuestionBankDF_questionBank.getItem("option1").disable();
         QuestionBankDF_questionBank.getItem("option2").disable();
@@ -1791,13 +2209,19 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 }
                 if (record.questionTypeId != 520 && record.questionTypeId != 519){
                     //groupQuestions
-                    QuestionBankDF_questionBank.getItem("groupQuestions").enable();
-                    QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(true);
+                    // QuestionBankDF_questionBank.getItem("groupQuestions").enable();
+                    QuestionBankDF_questionBank.getItem("isChild").disable();
+                    // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(true);
+                    QuestionBankWin_questionBank.items[1].members[3].setVisibility(true);
+
 
                 }else {
                     //others
-                    QuestionBankDF_questionBank.getItem("groupQuestions").disable();
-                    QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
+                    QuestionBankDF_questionBank.getItem("isChild").enable();
+                    // QuestionBankDF_questionBank.getItem("groupQuestions").disable();
+                    // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
+                    QuestionBankWin_questionBank.items[1].members[3].setVisibility(false);
+
 
                 }
 

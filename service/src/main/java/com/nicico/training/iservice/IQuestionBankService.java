@@ -46,4 +46,6 @@ public interface IQuestionBankService {
     Set<QuestionBank> getListOfGroupQuestions(Set<Long> groupQuestions);
 
     List<QuestionBank> findAllByCreateBy(String createBy);
+
+    Set<QuestionBankDTO.FullInfo> getChildrenQuestions(Long id);
 }

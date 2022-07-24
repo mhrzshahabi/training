@@ -66,6 +66,8 @@ public class QuestionBankDTO {
         private Long tclassId;
         private Long teacherId;
         private Boolean hasAttachment;
+        private Boolean isChild;
+        private String childPriority;
         private Integer questionLevelId;
         private String questionDesigner;
         private Set<Long> groupQuestions;
@@ -147,6 +149,14 @@ public class QuestionBankDTO {
     public static class QuestionBankSpecRs {
         private SpecRs response;
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("QuestionBank-SpecRs")
+    public static class QuestionBankSpecRsFullInfo {
+        private SpecRsFullInfo response;
+    }
 
     @Getter
     @Setter
@@ -154,6 +164,18 @@ public class QuestionBankDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
         private List<QuestionBankDTO.Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRsFullInfo {
+        private List<QuestionBankDTO.FullInfo> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

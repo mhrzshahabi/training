@@ -145,5 +145,11 @@ public class QuestionBank extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_child_id", referencedColumnName = "id")})
 
     private Set<QuestionBank> groupQuestions;
+
+    @Column(name = "is_child")
+    private Boolean isChild;
+
+    @Column(name = "child_priority")
+    private String childPriority;
 }
 
