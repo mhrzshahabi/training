@@ -2804,30 +2804,7 @@
                             ) {
                                 inValidPersonnel.add(studentsDataArray[inx]);
                             }
-//zaza
 
-                            // if (result.length > 0) {
-                            //     let hasConflict = null;
-                            //     let flag = true;
-                            //        wait.show();
-                            //     for (let i = 0; i < result.length && flag; i++) {
-                            //
-                            //         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
-                            //
-                            //             if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
-                            //                 hasConflict = JSON.parse(response.data);
-                            //                 if (hasConflict.length > 0) {
-                            //                     if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
-                            //                         warnSameSessionStudents.add(studentsDataArray[inx]);
-                            //                         flag = false;
-                            //                     }
-                            //                 }
-                            //             }
-                            //         }));
-                            //     }
-                            //     wait.close();
-                            //
-                            // }
 
                             if (result.length > 0) {
                                 let hasConflict = null;
@@ -2845,16 +2822,12 @@
                                 }
 
                                    wait.show();
-
-                                   debugger;
-                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl +  "/getSessionConflict?" + "nationalCode=" + studentsDataArray[inx].nationalCode, "POST", JSON.stringify(data), function (response) {
+                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl +  "/getSessionConflict?" + "nationalCode=" + studentsDataArray[inx].nationalCode, "POST", JSON.stringify(data), function (response) {
                                         wait.close();
-                                      debugger;
+
                                         if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
-                                            debugger;
                                             hasConflict = JSON.parse(response.data);
                                             if (hasConflict) {
-                                                debugger;
                                                 if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
                                                     warnSameSessionStudents.add(studentsDataArray[inx]);
 
@@ -2862,8 +2835,6 @@
                                             }
                                         }
                                     }));
-
-
 
                             }
 
