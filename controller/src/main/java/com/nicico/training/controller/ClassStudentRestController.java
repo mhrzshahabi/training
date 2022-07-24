@@ -530,12 +530,16 @@ public class ClassStudentRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/getSessionConflict")
-    public ResponseEntity<List<Long>> getSessionConflictViaClassStudent(@RequestParam(value = "sessionDate") String sessionDate, @RequestParam(value = "startHour") String startHour, @RequestParam(value = "endHour") String endHour, @RequestParam(value = "nationalCode") String nationalCode) {
+    @PostMapping(value = "/getSessionConflict")
+    public ResponseEntity<String> getSessionConflictViaClassStudent(@RequestParam(value = "nationalCode") String nationalCode,@RequestBody List<ClassSessionDTO.ClassStudentSession> classStudentSessions) {
+       List<ClassSessionDTO.ClassStudentSession> classStudentSessionsMap=new ArrayList<>();
+        classStudentSessions.stream().forEach(classStudentSession -> {
+            classStudentSessionsMap.add( modelMapper.map(classStudentSession, ClassSessionDTO.ClassStudentSession.class));
+        });
 
-        List<Long> longs = iClassStudentService.getSessionConflictViaClassStudent(sessionDate, startHour, endHour, nationalCode);
+        Boolean  flag = iClassStudentService.getSessionConflictViaClassStudent(nationalCode,classStudentSessionsMap);
 
-            return new ResponseEntity<>(longs, HttpStatus.OK);
+            return new ResponseEntity<>(flag.toString(), HttpStatus.OK);
 
     }
 }

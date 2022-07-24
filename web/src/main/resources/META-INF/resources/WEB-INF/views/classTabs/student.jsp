@@ -2829,7 +2829,46 @@
                             //
                             // }
 
-                             wait.show();
+                            if (result.length > 0) {
+                                let hasConflict = null;
+                                let data = [];
+
+                                for (let i = 0; i <result.length ; i++) {
+                                    data.add({
+                                    "sessionDate"  : result[i].sessionDate,
+                                      "startHour" :  result[i].sessionStartHour,
+                                 "endHour" :    result[i].sessionEndHour
+
+
+                                    });
+
+                                }
+
+                                   wait.show();
+
+                                   debugger;
+                                    isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl +  "/getSessionConflict?" + "nationalCode=" + studentsDataArray[inx].nationalCode, "POST", JSON.stringify(data), function (response) {
+                                        wait.close();
+                                      debugger;
+                                        if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
+                                            debugger;
+                                            hasConflict = JSON.parse(response.data);
+                                            if (hasConflict) {
+                                                debugger;
+                                                if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
+                                                    warnSameSessionStudents.add(studentsDataArray[inx]);
+
+                                                }
+                                            }
+                                        }
+                                    }));
+
+
+
+                            }
+
+
+                            wait.show();
                             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
                                 studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
                                 wait.close();
