@@ -140,6 +140,16 @@ public class QuestionBankDTO {
     @ApiModel("QuestionBank-DeleteRq")
     public static class Delete {
     }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("priorityData")
+    public static class priorityData {
+        private Long id;
+        private String childPriority;
+//        private  List<Object> objects;
+
+    }
 
     @Getter
     @Setter

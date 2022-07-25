@@ -17,8 +17,10 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -357,7 +359,37 @@ public class QuestionBankService implements IQuestionBankService {
         Set<QuestionBank> removeQuestions=getListOfGroupQuestions(ids);
         questionGroupIds.removeAll(removeQuestions);
         model.setGroupQuestions(questionGroupIds);
+        for (QuestionBank questionBank :removeQuestions){
+            questionBank.setChildPriority("");
+            questionBankDAO.save(questionBank);
+        }
         questionBankDAO.save(model);
+    }
+    @Override
+    public BaseResponse addQuestionsGroup(Long id, Set<Long> ids, List<QuestionBankDTO.priorityData> priorityData) {
+        BaseResponse response=new BaseResponse() ;
+        final Optional<QuestionBank> cById = questionBankDAO.findById(id);
+        final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
+        Set<QuestionBank> questionGroupIds=model.getGroupQuestions();
+        Set<QuestionBank> addQuestions=getListOfGroupQuestions(ids);
+        questionGroupIds.addAll(addQuestions);
+        model.setGroupQuestions(questionGroupIds);
+        for (QuestionBank questionBank :addQuestions){
+            Optional<QuestionBankDTO.priorityData> dataOptional=priorityData.stream().filter(a->a.getId().equals(questionBank.getId())).findFirst();
+            if (dataOptional.isPresent()){
+                questionBank.setChildPriority(dataOptional.get().getChildPriority());
+            }else {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("ترتیب سوالات را وارد کنید");
+                return response;
+            }
+            questionBankDAO.save(questionBank);
+        }
+        questionBankDAO.save(model);
+        response.setStatus(200);
+        response.setMessage("ترتیب سوالات را وارد کنید");
+
+        return response;
     }
 
 }

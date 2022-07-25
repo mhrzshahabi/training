@@ -287,4 +287,42 @@ public class QuestionBankRestController {
             return response;
         }
     }
+
+    @Loggable
+    @PostMapping(value = "/add-questions-group/{id}/{ids}")
+    public BaseResponse addQuestionsGroup(@PathVariable Long id, @PathVariable Set<Long> ids
+            ,@RequestBody List<QuestionBankDTO.priorityData> priorityData
+    ) {
+        BaseResponse response=new BaseResponse();
+        try {
+            if (!iQuestionBankTestQuestionService.usedQuestion(id)) {
+                QuestionBank qb = iQuestionBankService.getById(id);
+
+                if (qb == null) {
+                    response.setStatus(HttpStatus.NOT_FOUND.value());
+                    response.setMessage("چنین سوالی وجود ندارد.");
+
+                    return response;
+                } else if (iQuestionBankService.isExist(id)) {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    response.setMessage("بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف این سوال وجود ندارد.");
+
+                    return response;
+                } else {
+                    return iQuestionBankService.addQuestionsGroup(id,ids,priorityData);
+                }
+            } else {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage("بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف این سوال وجود ندارد.");
+                return response;
+            }
+
+
+        } catch (DataIntegrityViolationException e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage("عملیات با موفقیت انجام شد");
+
+            return response;
+        }
+    }
 }

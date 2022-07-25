@@ -7,6 +7,7 @@ import com.nicico.training.dto.QuestionBankDTO;
 import com.nicico.training.model.QuestionBank;
 import com.nicico.training.model.Teacher;
 import org.springframework.data.domain.Page;
+import response.BaseResponse;
 
 import java.util.List;
 import java.util.Set;
@@ -50,4 +51,5 @@ public interface IQuestionBankService {
     Set<QuestionBankDTO.FullInfo> getChildrenQuestions(Long id);
 
     void deleteQuestionsGroup(Long id, Set<Long> ids);
+    BaseResponse addQuestionsGroup(Long id, Set<Long> ids, List<QuestionBankDTO.priorityData> priorityData);
 }
