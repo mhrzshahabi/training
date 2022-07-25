@@ -137,84 +137,84 @@
 
     /////////////////////////////////////
     ////////////////////////////////////
-    let ToolStripButton_Refresh_JspOperationalRole = isc.ToolStripButtonRefresh.create({
+    let ToolStripButton_Refresh_JspOperationalChart = isc.ToolStripButtonRefresh.create({
         click: function () {
-            refreshLG(ListGrid_JspOperationalRole);
+            refreshLG(ListGrid_JspOperationalChart);
         }
     });
 
-    let ToolStripButton_Edit_JspOperationalRole = isc.ToolStripButtonEdit.create({
+    let ToolStripButton_Edit_JspOperationalChart = isc.ToolStripButtonEdit.create({
         click: function () {
-            let record = ListGrid_JspOperationalRole.getSelectedRecord();
+            let record = ListGrid_JspOperationalChart.getSelectedRecord();
             selected_record = record;
             if (record == null || record.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
-                PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
-                ListGrid_OperationalRole_Edit(selected_record);
+                // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
+                ListGrid_OperationalChart_Edit(selected_record);
             }
         }
     });
-    let ToolStripButton_Add_JspOperationalRole = isc.ToolStripButtonCreate.create({
+    let ToolStripButton_Add_JspOperationalChart = isc.ToolStripButtonCreate.create({
         click: function () {
-            PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + 0;
-            ListGrid_OperationalRole_Add();
+            // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + 0;
+            ListGrid_OperationalChart_Add();
         }
     });
-    let ToolStripButton_Remove_JspOperationalRole = isc.ToolStripButtonRemove.create({
+    let ToolStripButton_Remove_JspOperationalChart = isc.ToolStripButtonRemove.create({
         click: function () {
-            ListGrid_OperationalRole_Remove();
+            ListGrid_OperationalChart_Remove();
         }
     });
 
-    let ToolStrip_Actions_JspOperationalRole = isc.ToolStrip.create({
+    let ToolStrip_Actions_JspOperationalChart = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
             [
-                ToolStripButton_Add_JspOperationalRole,
-                ToolStripButton_Edit_JspOperationalRole,
-                ToolStripButton_Remove_JspOperationalRole,
+                ToolStripButton_Add_JspOperationalChart,
+                ToolStripButton_Edit_JspOperationalChart,
+                ToolStripButton_Remove_JspOperationalChart,
                 // DynamicForm_departmentFilter_Filter,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Refresh_JspOperationalRole
+                        ToolStripButton_Refresh_JspOperationalChart
                     ]
                 })
             ]
     });
 
-    let Menu_JspOperationalRole = isc.Menu.create({
+    let Menu_JspOperationalChart = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
-                refreshLG(ListGrid_JspOperationalRole);
+                refreshLG(ListGrid_JspOperationalChart);
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
-                // PostDS_OperationalRole.fetchDataURL = viewPostUrl+"/rolePostList/0";
+                // PostDS_OperationalChart.fetchDataURL = viewPostUrl+"/rolePostList/0";
                 // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + 0;
-                ListGrid_OperationalRole_Add();
+                ListGrid_OperationalChart_Add();
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
-                let record = ListGrid_JspOperationalRole.getSelectedRecord();
+                let record = ListGrid_JspOperationalChart.getSelectedRecord();
                 selected_record = record;
                 // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
                 // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
-                ListGrid_OperationalRole_Edit(selected_record);
+                ListGrid_OperationalChart_Edit(selected_record);
             }
         }, {
             title: "<spring:message code='remove'/>", click: function () {
-                ListGrid_OperationalRole_Remove();
+                ListGrid_OperationalChart_Remove();
             }
         },
         ]
     });
 
-    let RestDataSource_JspOperationalRole = isc.TrDS.create({
+    let RestDataSource_JspOperationalChart = isc.TrDS.create({
         fields:
             [
                 {name: "id", primaryKey: true},
@@ -228,9 +228,9 @@
             ],
     });
 
-    let ListGrid_JspOperationalRole = isc.TrLG.create({
-        dataSource: RestDataSource_JspOperationalRole,
-        contextMenu: Menu_JspOperationalRole,
+    let ListGrid_JspOperationalChart = isc.TrLG.create({
+        dataSource: RestDataSource_JspOperationalChart,
+        contextMenu: Menu_JspOperationalChart,
         sortField: 0,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -309,72 +309,72 @@
         rowDoubleClick: function (record) {
             // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
             selected_record = record;
-            ListGrid_OperationalRole_Edit(selected_record);
+            ListGrid_OperationalChart_Edit(selected_record);
         },
         filterEditorSubmit: function () {
-            ListGrid_JspOperationalRole.invalidateCache();
+            ListGrid_JspOperationalChart.invalidateCache();
         }
     });
 
-    let VLayout_Body_JspOperationalRole = isc.TrVLayout.create({
+    let VLayout_Body_JspOperationalChart = isc.TrVLayout.create({
         height: "50%",
         showResizeBar: true,
         members: [
-            ToolStrip_Actions_JspOperationalRole,
-            ListGrid_JspOperationalRole,
+            ToolStrip_Actions_JspOperationalChart,
+            ListGrid_JspOperationalChart,
         ]
     });
 
 
-    function ListGrid_OperationalRole_Add() {
-        methodOperationalRole = "POST";
+    function ListGrid_OperationalChart_Add() {
+        methodOperationalChart = "POST";
         // ListGrid_Post_OperationalRole.invalidateCache();
         // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/";
-        saveActionUrlOperationalRole = operationalRoleUrl;
-        DynamicForm_JspOperationalRole.clearValues();
-        Window_JspOperationalRole.show();
+        saveActionUrlOperationalChart = operationalChartUrl;
+        DynamicForm_JspOperationalChart.clearValues();
+        Window_JspOperationalChart.show();
     }
 
-    function ListGrid_OperationalRole_Edit(record) {
+    function ListGrid_OperationalChart_Edit(record) {
         // ListGrid_Post_OperationalRole.invalidateCache();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            PostDS_just_Show_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleUsedPostList/" + record.id;
-            methodOperationalRole = "PUT";
+            // PostDS_just_Show_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleUsedPostList/" + record.id;
+            methodOperationalChart = "PUT";
             // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/iscList";
-            saveActionUrlOperationalRole = operationalRoleUrl + "/" + record.id;
-            DynamicForm_JspOperationalRole.clearValues();
-            DynamicForm_JspOperationalRole.editRecord(record);
+            saveActionUrlOperationalChart = operationalChartUrl + "/" + record.id;
+            DynamicForm_JspOperationalChart.clearValues();
+            DynamicForm_JspOperationalChart.editRecord(record);
             var categoryIds = selected_record.categories;
             var subCategoryIds = selected_record.subCategories;
             if (categoryIds === null || categoryIds.length === 0)
-                DynamicForm_JspOperationalRole.getField("subCategories").disable();
+                DynamicForm_JspOperationalChart.getField("subCategories").disable();
             else {
-                DynamicForm_JspOperationalRole.getField("subCategories").enable();
+                DynamicForm_JspOperationalChart.getField("subCategories").enable();
                 var catIds = [];
                 for (let i = 0; i < categoryIds.length; i++)
                     catIds.add(categoryIds[i].id);
-                DynamicForm_JspOperationalRole.getField("categories").setValue(catIds);
-                hasRoleCategoriesChanged = true;
-                DynamicForm_JspOperationalRole.getField("subCategories").focus(null, null);
+                DynamicForm_JspOperationalChart.getField("categories").setValue(catIds);
+                hasChartCategoriesChanged = true;
+                DynamicForm_JspOperationalChart.getField("subCategories").focus(null, null);
             }
             if (subCategoryIds != null && subCategoryIds.length > 0) {
                 var subCatIds = [];
                 for (let i = 0; i < subCategoryIds.length; i++)
                     subCatIds.add(subCategoryIds[i].id);
-                DynamicForm_JspOperationalRole.getField("subCategories").setValue(subCatIds);
+                DynamicForm_JspOperationalChart.getField("subCategories").setValue(subCatIds);
             }
-            Window_JspOperationalRole.show();
+            Window_JspOperationalChart.show();
         }
     }
 
-    function OperationalRole_save_result(resp) {
+    function OperationalChart_save_result(resp) {
         wait_Permission.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            refreshLG(ListGrid_JspOperationalRole);
-            Window_JspOperationalRole.close();
+            refreshLG(ListGrid_JspOperationalChart);
+            Window_JspOperationalChart.close();
             setTimeout(function () {
                 OK.close();
             }, 3000);
@@ -387,8 +387,8 @@
         }
     }
 
-    function ListGrid_OperationalRole_Remove() {
-        let recordIds = ListGrid_JspOperationalRole.getSelectedRecords().map(r => r.id);
+    function ListGrid_OperationalChart_Remove() {
+        let recordIds = ListGrid_JspOperationalChart.getSelectedRecords().map(r => r.id);
         if (recordIds == null || recordIds.length === 0) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -399,10 +399,10 @@
                     this.close();
                     if (index === 0) {
                         wait_Permission = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(operationalRoleUrl + "/" + recordIds,
+                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/" + recordIds,
                             "DELETE",
                             null,
-                            OperationalRole_remove_result));
+                            OperationalChart_remove_result));
                     }
                 }
             });
@@ -419,39 +419,39 @@
         fetchDataURL: operationalUnitUrl + "spec-list"
     });
 
-    var IButton_Save_JspOperationalRole = isc.IButtonSave.create({
+    var IButton_Save_JspOperationalChart = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspOperationalRole.validate())
+            if (!DynamicForm_JspOperationalChart.validate())
                 return;
-            if (!DynamicForm_JspOperationalRole.valuesHaveChanged()) {
-                Window_JspOperationalRole.close();
+            if (!DynamicForm_JspOperationalChart.valuesHaveChanged()) {
+                Window_JspOperationalChart.close();
                 return;
             }
             wait_Permission = createDialog("wait");
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalRole,
-                methodOperationalRole,
-                JSON.stringify(DynamicForm_JspOperationalRole.getValues()),
-                OperationalRole_save_result));
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
+                methodOperationalChart,
+                JSON.stringify(DynamicForm_JspOperationalChart.getValues()),
+                OperationalChart_save_result));
         }
     });
 
-    let IButton_Cancel_JspOperationalRole = isc.IButtonCancel.create({
+    let IButton_Cancel_JspOperationalChart = isc.IButtonCancel.create({
         click: function () {
-            DynamicForm_JspOperationalRole.clearValues();
-            Window_JspOperationalRole.close();
+            DynamicForm_JspOperationalChart.clearValues();
+            Window_JspOperationalChart.close();
         }
     });
 
-    let HLayout_SaveOrExit_JspOperationalRole = isc.TrHLayoutButtons.create({
+    let HLayout_SaveOrExit_JspOperationalChart = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_Save_JspOperationalRole, IButton_Cancel_JspOperationalRole]
+        members: [IButton_Save_JspOperationalChart, IButton_Cancel_JspOperationalChart]
     });
 
-    let DynamicForm_JspOperationalRole = isc.DynamicForm.create({
+    let DynamicForm_JspOperationalChart = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         titleAlign: "left",
@@ -518,13 +518,13 @@
                     showFilterEditor: false
                 },
                 changed: function () {
-                    hasRoleCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_JspOperationalRole.getField("subCategories");
+                    hasChartCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_JspOperationalChart.getField("subCategories");
                     subCategoryField.clearValue();
                     if (this.value === null || this.getValue() === null || this.getValue() === undefined || this.getValue() === "") {
-                        hasRoleCategoriesChanged = false;
+                        hasChartCategoriesChanged = false;
                         subCategoryField.clearValue();
-                        DynamicForm_JspOperationalRole.getField("subCategories").disable();
+                        DynamicForm_JspOperationalChart.getField("subCategories").disable();
                         return;
                     }
 
@@ -566,10 +566,10 @@
                     showFilterEditor: false
                 },
                 focus: function () {
-                    if (hasRoleCategoriesChanged) {
+                    if (hasChartCategoriesChanged) {
                         console.log("hasRoleCategoriesChanged", hasRoleCategoriesChanged);
                         hasRoleCategoriesChanged = false;
-                        var ids = DynamicForm_JspOperationalRole.getField("categories").getValue();
+                        var ids = DynamicForm_JspOperationalChart.getField("categories").getValue();
                         if (ids === []) {
                             // RestDataSource_SubCategories_OperationalRole.implicitCriteria = null;
                         } else {
@@ -654,7 +654,7 @@
                                         icon: "[SKIN]/actions/approve.png",
                                         title: "<spring:message code='select.all'/>",
                                         click: function () {
-                                            let fItem = DynamicForm_JspOperationalRole.getField("userIds");
+                                            let fItem = DynamicForm_JspOperationalChart.getField("userIds");
                                             fItem.setValue(fItem.comboBox.pickList.data.localData.map(user => user.id));
                                             fItem.comboBox.pickList.hide();
                                         }
@@ -664,7 +664,7 @@
                                         icon: "[SKIN]/actions/close.png",
                                         title: "<spring:message code='deselect.all'/>",
                                         click: function () {
-                                            let fItem = DynamicForm_JspOperationalRole.getField("userIds");
+                                            let fItem = DynamicForm_JspOperationalChart.getField("userIds");
                                             fItem.setValue([]);
                                             fItem.comboBox.pickList.hide();
                                         }
@@ -700,15 +700,15 @@
         ]
     });
 
-    let Window_JspOperationalRole = isc.Window.create({
+    let Window_JspOperationalChart = isc.Window.create({
         width: "550",
         minWidth: "550",
         align: "center",
         border: "1px solid gray",
-        title: "<spring:message code="operational.role"/>",
+        title: "<spring:message code="operational.chart"/>",
         items: [isc.TrVLayout.create({
-            members: [DynamicForm_JspOperationalRole,
-                HLayout_SaveOrExit_JspOperationalRole
+            members: [DynamicForm_JspOperationalChart,
+                HLayout_SaveOrExit_JspOperationalChart
             ]
         })]
     });
@@ -721,7 +721,7 @@
         // members: [search_bar, VLayout_operationalSearchTree, VLayout_operationalTree]
         members: [
             // Menu_JspOperationalRole,
-            VLayout_Body_JspOperationalRole, VLayout_operationalTree]
+            VLayout_Body_JspOperationalChart, VLayout_operationalTree]
     });
 
     var HLayout_Operational_Chart_Body = isc.TrHLayout.create({
@@ -737,7 +737,7 @@
 
     function getDepChildren(childeren, category, parentTitle) {
 
-        let url = operationalUrl + "/getDepChartChildren/" + category + "/" + parentTitle ;
+        let url = operationalChartUrl + "/getDepChartChildren/" + category + "/" + parentTitle ;
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(childeren),function(resp) {
             wait.close();
@@ -752,7 +752,7 @@
 
     function getTreeData() {
 
-        var url = operationalUrl + "/list";
+        var url = operationalChartUrl + "/list";
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             wait.close();
@@ -785,7 +785,7 @@ debugger
 
     function getSearchData(value) {
 
-        var url = operationalUrl + "/getSearchDepChartData/" + value;
+        var url = operationalChartUrl + "/getSearchDepChartData/" + value;
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
             wait.close();
