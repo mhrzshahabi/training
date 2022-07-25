@@ -15,6 +15,7 @@ import java.util.List;
 public class AgreementClassCostDTO implements Serializable {
 
     private Long teachingCostPerHour;
+    private Long teachingCostPerHourAuto;
     private Long classId;
     private Long agreementId;
 
