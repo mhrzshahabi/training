@@ -215,17 +215,26 @@
     });
 
     let RestDataSource_JspOperationalChart = isc.TrDS.create({
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            debugger
+            return this.Super("transformRequest", arguments);
+        },
+        dataArrived: function () {
+
+        },
         fields:
             [
                 {name: "id", primaryKey: true},
-                {name: "code"},
+                {name: "userName"},
+                {name: "roleId"},
                 {name: "title"},
-                {name: "description"},
-                {name: "operationalUnit.operationalUnit"},
-                {name: "userIds", title: "<spring:message code="post"/>", filterOperator: "inSet"},
-                {name: "postIds", title: "<spring:message code="users"/>", filterOperator: "inSet"},
-                {name: "complexId"}
+                {name: "code"},
+                {name: "parentId"}
+
             ],
+        fetchDataURL: operationalChartUrl + "/list",
+        autoFetchData:true
     });
 
     let ListGrid_JspOperationalChart = isc.TrLG.create({
@@ -244,67 +253,72 @@
         align: "center",
         fields: [
             {
+                name: "userName",
+                title: "نام کاربری",
+                filterOperator: "iContains"
+            },
+            {
+                name: "roleId",
+                title: "نوع تقش",
+                filterOperator: "iContains"
+            },
+            {
                 name: "title",
-                title: "<spring:message code="title"/>",
+                title: "عنوان",
                 filterOperator: "iContains"
             },
             {
                 name: "code",
-                title: "<spring:message code="code"/>",
+                title: "کد",
                 filterOperator: "iContains"
             },
             {
-                name: "operationalUnit.operationalUnit",
-                title: "<spring:message code="unitName"/>",
+                name: "parentId",
+                title: "سطح بالادست",
                 filterOperator: "iContains"
             },
-            {
-                name: "description",
-                title: "<spring:message code="description"/>",
-                filterOperator: "iContains"
-            },
-            {
-                name: "userIds",
-                type: "selectItem",
-                title: "<spring:message code="users"/>",
-                filterOperator: "inSet",
-                // optionDataSource: UserDS_JspOperationalRole,
-                valueField: "id",
-                displayField: "lastName",
-                filterField: "lastName",
-                filterOnKeypress: true,
-                multiple: true,
-                canSort: false,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "firstName",
-                        title: "<spring:message code="firstName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "lastName",
-                        title: "<spring:message code="lastName"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "username",
-                        title: "<spring:message code="username"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    },
-                    {
-                        name: "nationalCode",
-                        title: "<spring:message code="national.code"/>",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
-                    }
-                ]
-            }
+            <%--{--%>
+            <%--    name: "userName",--%>
+            <%--    type: "selectItem",--%>
+            <%--    title: "<spring:message code="users"/>",--%>
+            <%--    filterOperator: "inSet",--%>
+            <%--    // optionDataSource: UserDS_JspOperationalRole,--%>
+            <%--    valueField: "id",--%>
+            <%--    displayField: "lastName",--%>
+            <%--    filterField: "lastName",--%>
+            <%--    filterOnKeypress: true,--%>
+            <%--    multiple: true,--%>
+            <%--    canSort: false,--%>
+            <%--    pickListProperties: {--%>
+            <%--        showFilterEditor: true--%>
+            <%--    },--%>
+            <%--    pickListFields: [--%>
+            <%--        {--%>
+            <%--            name: "firstName",--%>
+            <%--            title: "<spring:message code="firstName"/>",--%>
+            <%--            filterOperator: "iContains",--%>
+            <%--            autoFitWidth: true--%>
+            <%--        },--%>
+            <%--        {--%>
+            <%--            name: "lastName",--%>
+            <%--            title: "<spring:message code="lastName"/>",--%>
+            <%--            filterOperator: "iContains",--%>
+            <%--            autoFitWidth: true--%>
+            <%--        },--%>
+            <%--        {--%>
+            <%--            name: "username",--%>
+            <%--            title: "<spring:message code="username"/>",--%>
+            <%--            filterOperator: "iContains",--%>
+            <%--            autoFitWidth: true--%>
+            <%--        },--%>
+            <%--        {--%>
+            <%--            name: "nationalCode",--%>
+            <%--            title: "<spring:message code="national.code"/>",--%>
+            <%--            filterOperator: "iContains",--%>
+            <%--            autoFitWidth: true--%>
+            <%--        }--%>
+            <%--    ]--%>
+            <%--}--%>
         ],
         rowDoubleClick: function (record) {
             // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
@@ -409,15 +423,15 @@
         }
     }
 
-    let RestDataSource_JspOperationalUnit = isc.TrDS.create({
-        fields:
-            [
-                {name: "id", primaryKey: true},
-                {name: "unitCode"},
-                {name: "operationalUnit"}
-            ],
-        fetchDataURL: operationalUnitUrl + "spec-list"
-    });
+    // let RestDataSource_JspOperationalUnit = isc.TrDS.create({
+    //     fields:
+    //         [
+    //             {name: "id", primaryKey: true},
+    //             {name: "unitCode"},
+    //             {name: "operationalUnit"}
+    //         ],
+    //     fetchDataURL: operationalUnitUrl + "spec-list"
+    // });
 
     var IButton_Save_JspOperationalChart = isc.IButtonSave.create({
         top: 260,
@@ -487,7 +501,7 @@
             {
                 name: "operationalUnitId",
                 title: "<spring:message code="unitName"/>",
-                optionDataSource: RestDataSource_JspOperationalUnit,
+                // optionDataSource: RestDataSource_JspOperationalUnit,
                 valueField: "id",
                 displayField: "operationalUnit",
                 required: true,
@@ -733,6 +747,9 @@
     $(document).ready(function () {
         if(batch)
             getTreeData();
+
+        getListGridData(); /////////////
+
     });
 
     function getDepChildren(childeren, category, parentTitle) {
@@ -760,25 +777,33 @@
                 return false;
             else {
                 let data = JSON.parse(resp.data);
-/*
-                let complexes = data.filter(q => q.category === "complex");
-                let assistants = data.filter(q => q.category === "assistant");
-                let affairs = data.filter(q => q.category === "affair");
-                let sections = data.filter(q => q.category === "section");
-                let units = data.filter(q => q.category === "unit");
-
-                sections.forEach(s => s.directReports = units.filter(u => u.parentTitle === s.title));
-                affairs.forEach(a => a.directReports = sections.filter(s => s.parentTitle === a.title));
-                assistants.forEach(a => a.directReports = affairs.filter(af => af.parentTitle === a.title));
-                complexes.forEach(c => c.directReports = assistants.filter(a => a.parentTitle === c.title));
-*/
 
                 let childs = data.filter(p=> p);
                 let chart = data.filter(p=> p);
                 chart.forEach(p=> p.directReports = childs.filter(c => c.parentId === p.id));
-debugger
                 let treeData = setTreeData(operationalTree, chart, false);
                 return treeData;
+            }
+        }));
+    }
+
+    function getListGridData() {
+
+        var url = operationalChartUrl + "/list";
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+            wait.close();
+            if (resp.httpResponseCode !== 200)
+                return false;
+            else {
+                let data = JSON.parse(resp.data);
+debugger
+                // let childs = data.filter(p=> p);
+                // let chart = data.filter(p=> p);
+                // chart.forEach(p=> p.directReports = childs.filter(c => c.parentId === p.id));
+                // let treeData = setTreeData(operationalTree, chart, false);
+                // return treeData;
+                return data;
             }
         }));
     }
@@ -853,8 +878,7 @@ debugger
             root: {parentTitle: "-", directReports: data}
         });
         tree.setData(treeData);
-        debugger
-        return treeData;
+         return treeData;
     }
 
     // </script>
