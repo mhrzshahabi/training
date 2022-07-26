@@ -129,6 +129,7 @@ public abstract class QuestionBankBeanMapper {
                     GroupQuestionDto questionDto=new GroupQuestionDto();
                     questionDto.setQuestion(item.getQuestion());
                     questionDto.setCorrectAnswer(item.getDescriptiveAnswer());
+                    questionDto.setPriority(item.getChildPriority());
                     questionDto.setType(parameterValueService.getInfo(item.getQuestionTypeId()).getTitle());
                     questionDto.setId(item.getId());
                     /////
