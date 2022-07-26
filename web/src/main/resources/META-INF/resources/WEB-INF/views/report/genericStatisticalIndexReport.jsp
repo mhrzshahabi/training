@@ -15,17 +15,13 @@
     //---------------------------------------------------- REST DataSources--------------------------------------------------------//
 
     RestDataSource_GSIR = isc.TrDS.create({
-        fields: [],
-        fetchDataURL: viewCoursesEvaluationStatisticalReportUrl + "/iscList?_endRow=10000"
-    });
-    RestDataSource_Class_GSIR = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleClass"},
-            {name: "code"},
-            {name: "course.titleFa"}
+            {name: "complex", title: "مجتمع"},
+            {name: "assistant", title: "معاونت"},
+            {name: "affairs", title: "امور"},
+            {name: "reportResult", title: "نتیجه"}
         ],
-        fetchDataURL: classUrl + "info-tuple-list"
+        fetchDataURL: genericStatisticalIndexReportUrl + "/iscList"
     });
 
     //---------------------------------------------------- Main Window--------------------------------------------------------------//
@@ -153,6 +149,13 @@
                         dateCheck_Order_GSIR = true;
                     }
                 }
+            },
+            {
+                name: "reportType",
+                title: "نوع شاخص",
+                valueMap: {
+                    "نسبت نیازهای آموزشی تخصصی": "نسبت نیازهای آموزشی تخصصی"
+                }
             }
         ]
     });
@@ -202,7 +205,7 @@
             {name: "complex", title: "مجتمع"},
             {name: "assistant", title: "معاونت"},
             {name: "affairs", title: "امور"},
-            {name: "reportResult", title: "نتیجه"},
+            {name: "reportResult", title: "نتیجه"}
         ]
     });
 
@@ -226,16 +229,18 @@
         data_values_GSIR = null;
         data_values_GSIR = DynamicForm_GSIR.getValuesAsAdvancedCriteria();
 
-        debugger;
         if (data_values_GSIR != null) {
             for (let i = 0; i < data_values_GSIR.criteria.size(); i++) {
 
                 if (data_values_GSIR.criteria[i].fieldName === "fromDate") {
-                    data_values_GSIR.criteria[i].fieldName = "classStartDate";
+                    data_values_GSIR.criteria[i].fieldName = "fromDate";
                     data_values_GSIR.criteria[i].operator = "greaterThan";
                 } else if (data_values_GSIR.criteria[i].fieldName === "toDate") {
-                    data_values_GSIR.criteria[i].fieldName = "classStartDate";
+                    data_values_GSIR.criteria[i].fieldName = "toDate";
                     data_values_GSIR.criteria[i].operator = "lessThan";
+                } else if (data_values_GSIR.criteria[i].fieldName === "reportType") {
+                    data_values_GSIR.criteria[i].fieldName = "reportType";
+                    data_values_GSIR.criteria[i].operator = "equals";
                 }
             }
         } else {
@@ -245,6 +250,7 @@
                 criteria: []
             };
         }
+        debugger;
 
         if (organSegmentFilter_GSIR.getCriteria() !== undefined) {
 
