@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.*;
 import response.BaseResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -43,10 +45,14 @@ public class QuestionBankRestController {
     @GetMapping(value = "/children-question/{id}")
     public ResponseEntity<QuestionBankDTO.QuestionBankSpecRsFullInfo> getChildrenQuestions(@PathVariable Long id) {
         final QuestionBankDTO.SpecRsFullInfo specResponse = new QuestionBankDTO.SpecRsFullInfo();
-        specResponse.setData(iQuestionBankService.getChildrenQuestions(id).stream().toList())
+        List<QuestionBankDTO.FullInfo> data=new ArrayList<>();
+        if (id!=-1L){
+            data=iQuestionBankService.getChildrenQuestions(id).stream().toList();
+        }
+        specResponse.setData(data)
                 .setStartRow(0)
-                .setEndRow(iQuestionBankService.getChildrenQuestions(id).stream().toList().size())
-                .setTotalRows(iQuestionBankService.getChildrenQuestions(id).stream().toList().size());
+                .setEndRow(data.size())
+                .setTotalRows(data.size());
 
         final QuestionBankDTO.QuestionBankSpecRsFullInfo specRs = new QuestionBankDTO.QuestionBankSpecRsFullInfo();
         specRs.setResponse(specResponse);
@@ -298,7 +304,7 @@ public class QuestionBankRestController {
             if (!iQuestionBankTestQuestionService.usedQuestion(id)) {
                 QuestionBank qb = iQuestionBankService.getById(id);
 
-                if (qb == null) {
+                if (qb == null && id!=-1L) {
                     response.setStatus(HttpStatus.NOT_FOUND.value());
                     response.setMessage("چنین سوالی وجود ندارد.");
 

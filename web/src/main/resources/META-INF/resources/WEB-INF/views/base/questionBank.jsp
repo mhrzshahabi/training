@@ -874,7 +874,7 @@
     var DynamicForm_Header_qroup_question = isc.DynamicForm.create({
         height: "5%",
         align: "center",
-        fields: [{name: "sgTitle", type: "staticText", title: "افزودن سوال زیرمجموعه به سوال  : ", wrapTitle: false}]
+        fields: [{name: "sgTitle", type: "staticText", title: "افزودن سوال زیرمجموعه به سوال", wrapTitle: false}]
     });
 
 
@@ -1559,16 +1559,12 @@
                     }
                     if (value != 520 && value != 519){
                         //groupQuestions
-                        // QuestionBankDF_questionBank.getItem("groupQuestions").enable();
                         QuestionBankWin_questionBank.items[1].members[3].setVisibility(true);
                         QuestionBankDF_questionBank.getItem("isChild").disable();
-                        // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(true);
 
                     }else {
                         //others
                         QuestionBankDF_questionBank.getItem("isChild").enable();
-                        // QuestionBankDF_questionBank.getItem("groupQuestions").disable();
-                        // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
                         QuestionBankWin_questionBank.items[1].members[3].setVisibility(false);
 
                     }
@@ -1645,7 +1641,7 @@
                 }
             },
             {
-                name: "groupQuestions",
+                name: "groupQuestionIds",
                 title: "انتخاب شمابرای سوالات گروهی",
                  type: "SelectItem",
                 multiple: true,
@@ -1893,12 +1889,13 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
                     width: 200,
                     title:"انتخاب سوالات گروهی",
                     click: function () {
+                        if (QuestionBankLG_questionBank.getSelectedRecord()!=null)
                         questionId =QuestionBankLG_questionBank.getSelectedRecord().id;
+                        else questionId=-1
                         priorityData=[];
-                        RestDataSource_ForThisClass_questionBank.fetchDataURL= questionBankUrl + "/children-question/"+ QuestionBankLG_questionBank.getSelectedRecord().id
+                        RestDataSource_ForThisClass_questionBank.fetchDataURL= questionBankUrl + "/children-question/"+questionId
                         ListGrid_ForQuestions_questionBankJSP.invalidateCache();
                         ListGrid_ForQuestions_questionBankJSP.fetchData();
-                        DynamicForm_Header_qroup_question.setValue("sgTitle", getFormulaMessage(QuestionBankLG_questionBank.getSelectedRecord().question, "2", "red", "B"));
                         Window_QuestionBank_question_group.show();
                     }
                 })
@@ -1989,9 +1986,6 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
         QuestionBankDF_questionBank.getItem("displayTypeId").setRequired(false);
 
         QuestionBankDF_questionBank.clearErrors();
-        // QuestionBankDF_questionBank.getItem("groupQuestions").disable();
-        // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
-
         QuestionBankWin_questionBank.items[1].members[3].setVisibility(false);
 
 
@@ -2156,17 +2150,13 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 }
                 if (record.questionTypeId != 520 && record.questionTypeId != 519){
                     //groupQuestions
-                    // QuestionBankDF_questionBank.getItem("groupQuestions").enable();
                     QuestionBankDF_questionBank.getItem("isChild").disable();
-                    // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(true);
                     QuestionBankWin_questionBank.items[1].members[3].setVisibility(true);
 
 
                 }else {
                     //others
                     QuestionBankDF_questionBank.getItem("isChild").enable();
-                    // QuestionBankDF_questionBank.getItem("groupQuestions").disable();
-                    // QuestionBankDF_questionBank.getItem("groupQuestions").setRequired(false);
                     QuestionBankWin_questionBank.items[1].members[3].setVisibility(false);
 
 
@@ -2276,19 +2266,11 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
 
         }
 
-        if (QuestionBankDF_questionBank.getItem("questionTypeId").getValue() !== 520 && QuestionBankDF_questionBank.getItem("questionTypeId").getValue() !== 519){
 
-            if (QuestionBankDF_questionBank.getField("groupQuestions").getValue() === undefined || QuestionBankDF_questionBank.getField("groupQuestions").getValue() === null
-      || QuestionBankDF_questionBank.getField("groupQuestions").getValue().length === 0){
-
-          createDialog("info", "سوالات گروهی را انتخاب کنید");
-                return;
-      }
-        }
 
         if (QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 520 || QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 519){
 
-            QuestionBankDF_questionBank.getField("groupQuestions").setValue();
+            QuestionBankDF_questionBank.getField("groupQuestionIds").setValue();
 
         }
 
@@ -2306,7 +2288,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         delete data["eQuestionLevel"];
         data.questionLevelId = QuestionBankDF_questionBank.getField("eQuestionLevel.id").getValue();
         data.questionTargets = QuestionBankDF_questionBank.getField("questionTargets").getValue();
-        data.groupQuestions = QuestionBankDF_questionBank.getField("groupQuestions").getValue();
+        data.groupQuestionIds = QuestionBankDF_questionBank.getField("groupQuestionIds").getValue();
 
         wait.show();
         isc.RPCManager.sendRequest(

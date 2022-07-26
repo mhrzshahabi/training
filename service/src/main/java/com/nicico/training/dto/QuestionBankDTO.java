@@ -72,6 +72,7 @@ public class QuestionBankDTO {
         private Integer questionLevelId;
         private String questionDesigner;
         private Set<GroupQuestionDto> groupQuestions;
+        private Set<Long> groupQuestionIds;
 
     }
 
@@ -125,6 +126,8 @@ public class QuestionBankDTO {
     @ApiModel("QuestionBank-CreateRq")
     public static class Create extends FullInfo {
         private Set<GroupQuestionDto> groupQuestions;
+        private Set<Long> groupQuestionIds;
+
     }
 
     @Getter
@@ -133,6 +136,7 @@ public class QuestionBankDTO {
     @ApiModel("QuestionBank-UpdateRq")
     public static class Update extends FullInfo {
         private Set<GroupQuestionDto> groupQuestions;
+        private Set<Long> groupQuestionIds;
     }
 
     @Getter

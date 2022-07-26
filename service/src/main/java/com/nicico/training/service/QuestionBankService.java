@@ -69,6 +69,7 @@ public class QuestionBankService implements IQuestionBankService {
         QuestionBankDTO.FullInfo map = modelMapper.map(model, QuestionBankDTO.FullInfo.class);
         map.setQuestionLevelId(model.getEQuestionLevel().getId());
         map.setGroupQuestions(getGroupQuestionDto(questionGroupIds));
+        map.setGroupQuestionIds(questionGroupIds);
         return map;
     }
 
