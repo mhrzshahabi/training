@@ -365,7 +365,6 @@ public abstract class QuestionBankBeanMapper {
             create.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
             create.setHasAttachment(elsQuestionDto.getHasAttachment());
             create.setIsChild(elsQuestionDto.getIsChild());
-            create.setChildPriority(elsQuestionDto.getChildPriority());
             create.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
             create.setTclassId(tClass.getId());
             create.setCourseId(tClass.getCourseId());
@@ -469,7 +468,6 @@ public abstract class QuestionBankBeanMapper {
         update.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());
         update.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
         update.setHasAttachment(elsQuestionDto.getHasAttachment());
-        update.setChildPriority(elsQuestionDto.getChildPriority());
         update.setIsChild(elsQuestionDto.getIsChild());
         update.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
         update.setProposedPointValue(elsQuestionDto.getProposedPointValue());
