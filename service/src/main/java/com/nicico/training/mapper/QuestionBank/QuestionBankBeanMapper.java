@@ -162,6 +162,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setHasAttachment(questionBank.getHasAttachment());
             elsQuestionDto.setFiles(elsAttachmentDtoFiles);
             elsQuestionDto.setQuestionCode(questionBank.getCode());
+            elsQuestionDto.setIsChild(questionBank.getIsChild());
             elsQuestionDto.setProposedPointValue(questionBank.getProposedPointValue());
             if(questionBank.getDisplayTypeId()!=null){
              Long id= questionBank.getDisplayTypeId();
