@@ -623,7 +623,7 @@
         ],
     });
 
-    var organSegmentFilter = init_OrganSegmentFilterDF(true,true, true , null, "complexTitle","assistant","affairs", "section", "unit")
+    var organSegmentFilter = init_OrganSegmentFilterDF(true, true, true, false, false, null, "complexTitle","assistant","affairs", "section", "unit")
 
     var initialLayoutStyle = "vertical";
 

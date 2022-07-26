@@ -366,6 +366,10 @@ public class MainFormController {
         return "report/viewClassCostReport";
     }
 
+    @RequestMapping("/genericStatisticalIndexReport")
+    public String showGenericStatisticalIndexReportForm() {
+        return "report/genericStatisticalIndexReport";
+    }
 
     @RequestMapping("/course-needs-assessment-reports")
     public String showCourseNAReportsForm() {

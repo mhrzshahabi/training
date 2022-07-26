@@ -218,7 +218,7 @@
         ]
     });
 
-    let organSegmentFilter_REFR_Learning = init_OrganSegmentFilterDF(true,true, true , null, "complexTitle","assistant","affairs", "section", "unit");
+    let organSegmentFilter_REFR_Learning = init_OrganSegmentFilterDF(true, true, true, false, false, null, "complexTitle","assistant","affairs", "section", "unit");
     let DynamicForm_CriteriaForm_REFR_learning = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
