@@ -1006,6 +1006,7 @@
         minWidth: 1024,
         closeClick: function () {
             priorityData=[];
+            if (questionId!==-1)
             isc.RPCManager.sendRequest(TrDSRequest(questionBankUrl + "/" + questionId, "GET", null, result_EditQuestionBank));
             this.hide();
         },
