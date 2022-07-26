@@ -179,6 +179,7 @@
 
     let ToolStripButton_Refresh_JspOperationalChart = isc.ToolStripButtonRefresh.create({
         click: function () {
+            DynamicForm_departmentFilter_Filter.clearValues();
             refreshLG(ListGrid_JspOperationalChart);
         }
     });
@@ -253,7 +254,7 @@
     let RestDataSource_JspOperationalChart = isc.TrDS.create({
         transformRequest: function (dsRequest) {
             transformCriteriaForLastModifiedDateNA(dsRequest);
-            debugger
+            // debugger
             return this.Super("transformRequest", arguments);
         },
         dataArrived: function (startRow, endRow, data) {
@@ -483,9 +484,11 @@
                 return;
             }
             wait_Permission = createDialog("wait");
+            let data = DynamicForm_JspOperationalChart.getValues();
+            debugger
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
-                JSON.stringify(DynamicForm_JspOperationalChart.getValues()),
+                JSON.stringify(data),
                 OperationalChart_save_result));
         }
     });
@@ -505,24 +508,56 @@
         members: [IButton_Save_JspOperationalChart, IButton_Cancel_JspOperationalChart]
     });
 
-    let DynamicForm_JspOperationalChart = isc.DynamicForm.create({
+    let UserDS_JspOperationalChart = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "username",
+                title: "<spring:message code="username"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "version", hidden: true}
+        ],
+        fetchDataURL: oauthUserUrl + "/spec-list"
+    });
+
+    let DynamicForm_JspOperationalChart= isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         titleAlign: "left",
         fields: [
             {name: "id", hidden: true},
-           {
-                name: "complex",
+            {  ////
+                name: "userIds",
                 type: "MultiComboBoxItem",
                 title: "<spring:message code="users"/>",
-                // optionDataSource: UserDS_JspOperationalRole,
+                optionDataSource: UserDS_JspOperationalChart,
                 valueField: "id",
                 displayField: "lastName",
                 filterOnKeypress: true,
                 multiple: true,
                 comboBoxProperties: {
                     hint: "",
-                    filterFields: ["username", "title","complex", "code", "nationalCode"],
+                    filterFields: ["firstName", "lastName", "username", "nationalCode"],
                     textMatchStyle: "substring",
                     pickListWidth: 335,
                     pickListProperties: {
@@ -533,26 +568,26 @@
                                 height: 30,
                                 width: "100%",
                                 members: [
-                                    isc.ToolStripButton.create({
-                                        width: "50%",
-                                        icon: "[SKIN]/actions/approve.png",
-                                        title: "<spring:message code='select.all'/>",
-                                        click: function () {
-                                            let fItem = DynamicForm_JspOperationalChart.getField("complex");
-                                            fItem.setValue(fItem.comboBox.pickList.data.localData.map(r => r.complex));
-                                            fItem.comboBox.pickList.hide();
-                                        }
-                                    }),
-                                    isc.ToolStripButton.create({
-                                        width: "50%",
-                                        icon: "[SKIN]/actions/close.png",
-                                        title: "<spring:message code='deselect.all'/>",
-                                        click: function () {
-                                            let fItem = DynamicForm_JspOperationalChart.getField("complex");
-                                            fItem.setValue([]);
-                                            fItem.comboBox.pickList.hide();
-                                        }
-                                    })
+                                    <%--isc.ToolStripButton.create({--%>
+                                    <%--    width: "50%",--%>
+                                    <%--    icon: "[SKIN]/actions/approve.png",--%>
+                                    <%--    title: "<spring:message code='select.all'/>",--%>
+                                    <%--    click: function () {--%>
+                                    <%--        let fItem = DynamicForm_JspOperationalChart.getField("userIds");--%>
+                                    <%--        fItem.setValue(fItem.comboBox.pickList.data.localData.map(user => user.id));--%>
+                                    <%--        fItem.comboBox.pickList.hide();--%>
+                                    <%--    }--%>
+                                    <%--}),--%>
+                                    <%--isc.ToolStripButton.create({--%>
+                                    <%--    width: "50%",--%>
+                                    <%--    icon: "[SKIN]/actions/close.png",--%>
+                                    <%--    title: "<spring:message code='deselect.all'/>",--%>
+                                    <%--    click: function () {--%>
+                                    <%--        let fItem = DynamicForm_JspOperationalRole.getField("userIds");--%>
+                                    <%--        fItem.setValue([]);--%>
+                                    <%--        fItem.comboBox.pickList.hide();--%>
+                                    <%--    }--%>
+                                    <%--})--%>
                                 ]
                             }),
                             "header", "body"
@@ -560,24 +595,15 @@
                     },
                     pickListFields: [
                         {
-                            name: "complex",
-                            title: "مجتمع",
+                            name: "firstName",
+                            title: "<spring:message code="firstName"/>",
                             filterOperator: "iContains",
                             autoFitWidth: true
                         },
+                        {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
                         {
                             name: "username",
-                            title: "نام کاربری ",
-                            filterOperator: "iContains",
-                            autoFitWidth: true
-                        },
-                        {name: "title",
-                            title: "عنوان",
-                            filterOperator: "iContains"
-                        },
-                        {
-                            name: "nationalCode",
-                            title: "کد ملی",
+                            title: "<spring:message code="username"/>",
                             filterOperator: "iContains",
                             autoFitWidth: true
                         },
@@ -589,7 +615,39 @@
                         }
                     ],
                 }
-            }
+            }, ///
+            {
+                name: "title",
+                title: "<spring:message code="title"/>",
+                required: true,
+                validateOnExit: true,
+                length: 255
+            },
+            {
+                name: "complexId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="complex"/>:",
+                pickListWidth: 200,
+                optionDataSource: RestDataSource_OperationalChart_Department_Filter,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+            },
+            {
+                name: "description",
+                title: "<spring:message code="description"/>",
+                length: 255
+            },
         ]
     });
 

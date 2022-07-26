@@ -522,7 +522,7 @@
                 title: "<spring:message code="description"/>",
                 length: 255
             },
-            {
+            {  ////
                 name: "userIds",
                 type: "MultiComboBoxItem",
                 title: "<spring:message code="users"/>",
@@ -591,7 +591,7 @@
                         }
                     ],
                 }
-            }
+            } ///
         ]
     });
 
