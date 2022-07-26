@@ -304,6 +304,11 @@ public class QuestionBankRestController {
     ) {
         BaseResponse response=new BaseResponse();
         try {
+            if (id==-1L){
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage(messageSource.getMessage("question.error.group-question-creation", null, LocaleContextHolder.getLocale()));
+                return response;
+            }
             if (!iQuestionBankTestQuestionService.usedQuestion(id)) {
                 QuestionBank qb = iQuestionBankService.getById(id);
 
@@ -331,7 +336,7 @@ public class QuestionBankRestController {
 
         } catch (DataIntegrityViolationException e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage(messageSource.getMessage("msg.operation.successful", null, LocaleContextHolder.getLocale()));
+            response.setMessage(messageSource.getMessage("msg.operation.error", null, LocaleContextHolder.getLocale()));
 
 
             return response;

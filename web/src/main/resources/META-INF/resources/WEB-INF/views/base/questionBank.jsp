@@ -1889,7 +1889,7 @@ ID:"QuestionBankWin_questionBank_TrSaveNextBtn",
                     width: 200,
                     title:"انتخاب سوالات گروهی",
                     click: function () {
-                        if (QuestionBankLG_questionBank.getSelectedRecord()!=null)
+                        if (QuestionBankLG_questionBank.getSelectedRecord()!=null &&  questionBankMethod_questionBank === "PUT")
                         questionId =QuestionBankLG_questionBank.getSelectedRecord().id;
                         else questionId=-1
                         priorityData=[];
