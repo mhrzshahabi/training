@@ -161,6 +161,20 @@
                 // valueField: "id",
                 valueField: "title",
                 textAlign: "center",
+                icons: [
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click: function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+                        }
+                    }
+                ],
                 pickListFields: [
                     {
                         name: "title",
@@ -549,11 +563,12 @@
             {  ////
                 name: "userIds",
                 type: "MultiComboBoxItem",
-                title: "<spring:message code="users"/>",
+                title: "نام کاربری",
                 optionDataSource: UserDS_JspOperationalChart,
                 valueField: "id",
                 displayField: "lastName",
                 filterOnKeypress: true,
+                required: true,
                 multiple: true,
                 comboBoxProperties: {
                     hint: "",
@@ -624,6 +639,13 @@
                 length: 255
             },
             {
+                name: "code",
+                title: "<spring:message code="code"/>",
+                required: true,
+                validateOnExit: true,
+                length: 255
+            },
+            {
                 name: "complexId",
                 editorType: "ComboBoxItem",
                 title: "<spring:message code="complex"/>:",
@@ -644,10 +666,20 @@
                 },
             },
             {
-                name: "description",
-                title: "<spring:message code="description"/>",
+                name: "roleId",
+                title: "نقش",
+                required: true,
+                validateOnExit: true,
                 length: 255
             },
+            {
+                name: "parentId",
+                title: "سطح بالادست",
+                required: true,
+                validateOnExit: true,
+                length: 255
+            },
+
         ]
     });
 
@@ -687,21 +719,6 @@
            debugger
     });
 
-    // function getDepChildren(childeren, category, parentTitle) {
-    //
-    //     let url = operationalChartUrl + "/getDepChartChildren/" + category + "/" + parentTitle ;
-    //     wait.show();
-    //     isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(childeren),function(resp) {
-    //         wait.close();
-    //         if (resp.httpResponseCode !== 200) {
-    //             return;
-    //         } else {
-    //             let data = operationalTree.data.concat(JSON.parse(resp.data));
-    //             setTreeData(operationalTree, data, false);
-    //         }
-    //     }))
-    // }
-
     function getTreeData() {
 
         var url = operationalChartUrl + "/list";
@@ -722,71 +739,6 @@
         }));
     }
 
-    function getListGridData() {
-
-        var url = operationalChartUrl + "/list";
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
-            wait.close();
-            if (resp.httpResponseCode !== 200)
-                return false;
-            else {
-                let data = JSON.parse(resp.data);
-// debugger
-                // let childs = data.filter(p=> p);
-                // let chart = data.filter(p=> p);
-                // chart.forEach(p=> p.directReports = childs.filter(c => c.parentId === p.id));
-                // let treeData = setTreeData(operationalTree, chart, false);
-                // return treeData;
-                return data;
-            }
-        }));
-    }
-
-    // function getSearchData(value) {
-    //
-    //     var url = operationalChartUrl + "/getSearchDepChartData/" + value;
-    //     wait.show();
-    //     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
-    //         wait.close();
-    //         if (resp.httpResponseCode !== 200)
-    //             return false;
-    //         else {
-    //             let data = JSON.parse(resp.data);
-    //
-    //             let complexes = data.filter(q => q.category === "complex");
-    //             let assistants = data.filter(q => q.category === "assistant");
-    //             let affairs = data.filter(q => q.category === "affair");
-    //             let sections = data.filter(q => q.category === "section");
-    //             let units = data.filter(q => q.category === "unit");
-    //
-    //             sections.forEach(s => s.directReports = units.filter(u => u.parentTitle === s.title));
-    //             affairs.forEach(a => a.directReports = sections.filter(s => s.parentTitle === a.title));
-    //             assistants.forEach(a => a.directReports = affairs.filter(af => af.parentTitle === a.title));
-    //             complexes.forEach(c => c.directReports = assistants.filter(a => a.parentTitle === c.title));
-    //             let treeData = setTreeData(operationalSearchTree, complexes, false);
-    //             return treeData;
-    //         }
-    //     }));
-    // }
-
-    // function rowClick(record) {
-    //
-    //     if(batch) {
-    //         if(record.isFolder === true || record.isFolder === false){
-    //             record.isOpen = true;
-    //             let childeren = [];
-    //             record.directReports.forEach(function (currentValue, index, arr) {
-    //                 if(currentValue.isFolder === undefined  && (currentValue.isFetched === undefined || currentValue.isFetched === false)){
-    //                     childeren.add(currentValue.id);
-    //                     currentValue.isFetched = true;
-    //                     }
-    //             });
-    //             // getchilderen(childeren);
-    //         }
-    //     }
-    // }
-
     function openDepFolder(tree) {
 
         if(batch) {
@@ -798,8 +750,7 @@
                     currentValue.isFetched = true;
                 }
             });
-            // getDepChildren(childeren, parent.category, parent.title);
-        }
+         }
     }
 
     function setTreeData(tree, data, open = false,) {
