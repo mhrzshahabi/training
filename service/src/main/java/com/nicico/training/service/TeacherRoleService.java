@@ -84,10 +84,15 @@ public class TeacherRoleService implements ITeacherRoleService {
         Role role = roleDAO.findByName(roleName).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
         );
+       Long id= teachersRoleDAO.findTeacherRoleByRoleId(role.getId(),teacher.getId());
+
+    if(id==null) {
         TeacherRole teacherRole = new TeacherRole();
         teacherRole.setTeacher(teacher);
         teacherRole.setRole(role);
         teachersRoleDAO.save(teacherRole);
+
+    }
         return true;
     }
 
@@ -219,7 +224,10 @@ public class TeacherRoleService implements ITeacherRoleService {
         TeacherRole teacherRole = teachersRoleDAO.findByTeacherAndRole(teacher, role).orElseThrow(
                 () -> new TrainingException(TrainingException.ErrorType.InvalidData)
         );
-        teachersRoleDAO.delete(teacherRole);
+        Long id= teachersRoleDAO.findTeacherRoleByRoleId(role.getId(),teacher.getId());
+        if(id!=null) {
+            teachersRoleDAO.delete(teacherRole);
+        }
         return true;
     }
 
