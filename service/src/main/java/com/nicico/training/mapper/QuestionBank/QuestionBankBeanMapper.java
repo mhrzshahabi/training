@@ -359,7 +359,7 @@ public abstract class QuestionBankBeanMapper {
 //            create.setSubCategoryId(elsQuestionDto.getSubCategory());
             create.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
             if (elsQuestionDto.getGroupQuestions()!=null)
-            create.setGroupQuestions(questionBankService.getListOfGroupQuestions(elsQuestionDto.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())).stream().map(QuestionBank::getId).collect(Collectors.toSet()));
+            create.setGroupQuestions(elsQuestionDto.getGroupQuestions());
             create.setTeacherId(teacherId);
             create.setLines(1);
             create.setDisplayTypeId(521L);
@@ -406,7 +406,6 @@ public abstract class QuestionBankBeanMapper {
                         option4Files.addAll(option4.get().getOptionFiles());
                 }
             }
-
             QuestionBankDTO.Info info = questionBankService.create(create);
             if (files.size() != 0) {
                 for (ElsAttachmentDto elsAttachmentDto : files) {
@@ -461,7 +460,7 @@ public abstract class QuestionBankBeanMapper {
         update.setSubCategoryId(tClass.getCourse().getSubCategoryId());
         update.setQuestionDesigner(teacherService.getTeacherFullName(teacherId));
         update.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
-        update.setGroupQuestions(elsQuestionDto.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet()));
+        update.setGroupQuestions(elsQuestionDto.getGroupQuestions());
         update.setLines(1);
         update.setTclassId(tClass.getId());
         update.setCourseId(tClass.getCourseId());

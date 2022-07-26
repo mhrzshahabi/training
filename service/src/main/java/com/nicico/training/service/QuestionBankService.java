@@ -21,6 +21,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
+import response.question.dto.ElsQuestionOptionDto;
+import response.question.dto.GroupQuestionDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -66,8 +68,38 @@ public class QuestionBankService implements IQuestionBankService {
         }
         QuestionBankDTO.FullInfo map = modelMapper.map(model, QuestionBankDTO.FullInfo.class);
         map.setQuestionLevelId(model.getEQuestionLevel().getId());
-        map.setGroupQuestions(questionGroupIds);
+        map.setGroupQuestions(getGroupQuestionDto(questionGroupIds));
         return map;
+    }
+
+    private Set<GroupQuestionDto> getGroupQuestionDto(Set<Long> questionGroupIds) {
+        Set<GroupQuestionDto> questionDtos=new HashSet<>();
+        questionGroupIds.forEach(id->{
+            final Optional<QuestionBank> cById = questionBankDAO.findById(id);
+            if (cById.isPresent()){
+                QuestionBank questionBank=cById.get();
+                GroupQuestionDto questionDto=new GroupQuestionDto();
+                questionDto.setQuestion(questionBank.getQuestion());
+
+                questionDto.setType(parameterValueService.getInfo(questionBank.getQuestionTypeId()).getTitle());
+                questionDto.setPriority(questionBank.getChildPriority());
+                questionDto.setId(questionBank.getId());
+                List<ElsQuestionOptionDto> optionDtoList = new ArrayList<>();
+                if (questionBank.getOption1() != null)
+                    optionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption1(), 1, null, null));
+                if (questionBank.getOption2() != null)
+                    optionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption2(), 2, null, null));
+                if (questionBank.getOption3() != null)
+                    optionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, null, null));
+                if (questionBank.getOption4() != null)
+                    optionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, null, null));
+
+                questionDto.setOptionList(optionDtoList);
+                questionDtos.add(questionDto);
+            }
+
+        });
+        return questionDtos;
     }
 
 
@@ -109,9 +141,34 @@ public class QuestionBankService implements IQuestionBankService {
         } else {
             model.setQuestionDesigner(SecurityUtil.getUsername());
         }
-        model.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions()));
+        Boolean isUpdate = updateAllGroupQuestions(request.getGroupQuestions());
+        if (isUpdate){
+            model.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())));
+            return save(model);
+        }
+        else return null;
+    }
 
-        return save(model);
+    private Boolean updateAllGroupQuestions(Set<GroupQuestionDto> groupQuestions) {
+        boolean isUpdateAllQuestions=false;
+        for (GroupQuestionDto questionDto : groupQuestions){
+            try {
+                Optional<QuestionBank>optionalQuestionBank = questionBankDAO.findById(questionDto.getId());
+                if (optionalQuestionBank.isPresent()){
+                    QuestionBank questionBank=optionalQuestionBank.get();
+                    questionBank.setChildPriority(questionDto.getPriority());
+                    questionBankDAO.save(questionBank);
+                }else {
+                    isUpdateAllQuestions=false;
+                     break;
+                }
+                isUpdateAllQuestions=true;
+            }catch (Exception e){
+                isUpdateAllQuestions=false;
+                break;
+            }
+        }
+        return isUpdateAllQuestions;
     }
 
 
@@ -135,10 +192,15 @@ public class QuestionBankService implements IQuestionBankService {
 
         updating.setId(id);
         updating.setQuestionTargets(request.getQuestionTargets());
-        updating.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions()));
-        QuestionBank save = questionBankDAO.save(updating);
 
-        return modelMapper.map(save, QuestionBankDTO.Info.class);
+        Boolean isUpdate = updateAllGroupQuestions(request.getGroupQuestions());
+        if (isUpdate){
+            updating.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())));
+            QuestionBank save = questionBankDAO.save(updating);
+            return modelMapper.map(save, QuestionBankDTO.Info.class);
+        }else {
+            return null;
+        }
     }
 
     @Override

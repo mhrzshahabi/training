@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import response.question.dto.GroupQuestionDto;
 
 import java.util.Date;
 import java.util.List;
@@ -70,7 +71,7 @@ public class QuestionBankDTO {
         private String childPriority;
         private Integer questionLevelId;
         private String questionDesigner;
-        private Set<Long> groupQuestions;
+        private Set<GroupQuestionDto> groupQuestions;
 
     }
 
@@ -123,7 +124,7 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("QuestionBank-CreateRq")
     public static class Create extends FullInfo {
-        private Set<Long> groupQuestions;
+        private Set<GroupQuestionDto> groupQuestions;
     }
 
     @Getter
@@ -131,7 +132,7 @@ public class QuestionBankDTO {
     @Accessors(chain = true)
     @ApiModel("QuestionBank-UpdateRq")
     public static class Update extends FullInfo {
-        private Set<Long> groupQuestions;
+        private Set<GroupQuestionDto> groupQuestions;
     }
 
     @Getter
