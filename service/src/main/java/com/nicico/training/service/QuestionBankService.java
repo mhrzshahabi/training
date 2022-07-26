@@ -16,6 +16,8 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -39,6 +41,7 @@ public class QuestionBankService implements IQuestionBankService {
     private final ICategoryService categoryService;
     private final ISubcategoryService subcategoryService;
     private final IParameterValueService parameterValueService;
+    private final MessageSource messageSource;
 
 
     @Transactional(readOnly = true)
@@ -145,12 +148,18 @@ public class QuestionBankService implements IQuestionBankService {
         Boolean isUpdate = updateAllGroupQuestions(request.getGroupQuestions());
         if (isUpdate){
             model.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())));
-            return save(model);
         }
-        else return null;
+        else {
+            model.setGroupQuestions(null);
+        }
+
+        return save(model);
     }
 
     private Boolean updateAllGroupQuestions(Set<GroupQuestionDto> groupQuestions) {
+        if (groupQuestions==null || groupQuestions.isEmpty())
+            return false;
+
         boolean isUpdateAllQuestions=false;
         for (GroupQuestionDto questionDto : groupQuestions){
             try {
@@ -169,10 +178,9 @@ public class QuestionBankService implements IQuestionBankService {
                 break;
             }
         }
-        if (!groupQuestions.isEmpty())
+
         return isUpdateAllQuestions;
-        else
-            return true;
+
     }
 
 
@@ -200,11 +208,12 @@ public class QuestionBankService implements IQuestionBankService {
         Boolean isUpdate = updateAllGroupQuestions(request.getGroupQuestions());
         if (isUpdate){
             updating.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())));
-            QuestionBank save = questionBankDAO.save(updating);
-            return modelMapper.map(save, QuestionBankDTO.Info.class);
         }else {
-            return null;
+            updating.setGroupQuestions( null);
         }
+        QuestionBank save = questionBankDAO.save(updating);
+        return modelMapper.map(save, QuestionBankDTO.Info.class);
+
     }
 
     @Override
@@ -445,14 +454,14 @@ public class QuestionBankService implements IQuestionBankService {
                 questionBank.setChildPriority(dataOptional.get().getChildPriority());
             }else {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                response.setMessage("ترتیب سوالات را وارد کنید");
+                response.setMessage(messageSource.getMessage("question.error.priority", null, LocaleContextHolder.getLocale()));
                 return response;
             }
             questionBankDAO.save(questionBank);
         }
         questionBankDAO.save(model);
         response.setStatus(200);
-        response.setMessage("ترتیب سوالات را وارد کنید");
+        response.setMessage(messageSource.getMessage("msg.operation.successful", null, LocaleContextHolder.getLocale()));
 
         return response;
     }

@@ -13,6 +13,8 @@ import com.nicico.training.model.QuestionBank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,6 +37,7 @@ public class QuestionBankRestController {
     private final IQuestionBankService iQuestionBankService;
     private final ObjectMapper objectMapper;
     private final IQuestionBankTestQuestionService iQuestionBankTestQuestionService;
+    private final MessageSource messageSource;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -306,12 +309,14 @@ public class QuestionBankRestController {
 
                 if (qb == null && id!=-1L) {
                     response.setStatus(HttpStatus.NOT_FOUND.value());
-                    response.setMessage("چنین سوالی وجود ندارد.");
+                    response.setMessage(messageSource.getMessage("question.error.notFound", null, LocaleContextHolder.getLocale()));
+
 
                     return response;
                 } else if (iQuestionBankService.isExist(id)) {
                     response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                    response.setMessage("بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف این سوال وجود ندارد.");
+                    response.setMessage(messageSource.getMessage("question.error.used", null, LocaleContextHolder.getLocale()));
+
 
                     return response;
                 } else {
@@ -319,14 +324,15 @@ public class QuestionBankRestController {
                 }
             } else {
                 response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
-                response.setMessage("بدلیل استفاده در سوالات «آزمون پایانی» یا «پیش آزمون» امکان حذف این سوال وجود ندارد.");
+                response.setMessage(messageSource.getMessage("question.error.used", null, LocaleContextHolder.getLocale()));
                 return response;
             }
 
 
         } catch (DataIntegrityViolationException e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
-            response.setMessage("عملیات با موفقیت انجام شد");
+            response.setMessage(messageSource.getMessage("msg.operation.successful", null, LocaleContextHolder.getLocale()));
+
 
             return response;
         }
