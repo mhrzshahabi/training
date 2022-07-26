@@ -268,8 +268,7 @@
     let RestDataSource_JspOperationalChart = isc.TrDS.create({
         transformRequest: function (dsRequest) {
             transformCriteriaForLastModifiedDateNA(dsRequest);
-            // debugger
-            return this.Super("transformRequest", arguments);
+             return this.Super("transformRequest", arguments);
         },
         dataArrived: function (startRow, endRow, data) {
            console.log(data);
@@ -406,7 +405,7 @@
         methodOperationalChart = "POST";
         // ListGrid_Post_OperationalRole.invalidateCache();
         // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/";
-        saveActionUrlOperationalChart = operationalChartUrl;
+        saveActionUrlOperationalChart = operationalChartUrl + "/create";
         DynamicForm_JspOperationalChart.clearValues();
         Window_JspOperationalChart.show();
     }
@@ -446,6 +445,7 @@
     }
 
     function OperationalChart_save_result(resp) {
+
         wait_Permission.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
@@ -488,18 +488,46 @@
 
 
 
-    var IButton_Save_JspOperationalChart = isc.IButtonSave.create({
+    let IButton_Save_JspOperationalChart = isc.IButtonSave.create({
         top: 260,
         click: function () {
+
             if (!DynamicForm_JspOperationalChart.validate())
                 return;
             if (!DynamicForm_JspOperationalChart.valuesHaveChanged()) {
                 Window_JspOperationalChart.close();
                 return;
             }
-            wait_Permission = createDialog("wait");
-            let data = DynamicForm_JspOperationalChart.getValues();
             debugger
+            wait_Permission = createDialog("wait");
+            /////////////////
+
+            let dataDynamicForm = DynamicForm_JspOperationalChart.getValues();
+            let finalData = DynamicForm_JspOperationalChart.getValues();
+
+            // let complex = DynamicForm_JspOperationalChart.getValues().getField( "complexId").getValues().getField("title").getValue();
+            let userIds= DynamicForm_JspOperationalChart.getField("userIds");
+           // let firstName = userIds.getField("firstName").getValue();
+           // let lastName = userIds.getField("lastName").getValue();
+           // let userName = firstName + lastName;
+           // let nationalCode = userIds.getField("nationalCode").getValue();
+            // let title = DynamicForm_JspOperationalChart.getField("title").getValue();
+            // let code = DynamicForm_JspOperationalChart.getField("code").getValue();
+
+           let data = {
+               "complex": "complex",
+               "nationalCode": "nationalCode",
+               "operationalCharParentChild": [
+                   null
+               ],
+               "parentId": null ,
+               "title": "title",
+               "userName": "userName",
+               "code": "code",
+               "version": 0
+           }
+
+           /////////////////////
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
                 JSON.stringify(data),
@@ -668,14 +696,14 @@
             {
                 name: "roleId",
                 title: "نقش",
-                required: true,
+                required: false,
                 validateOnExit: true,
                 length: 255
             },
             {
                 name: "parentId",
                 title: "سطح بالادست",
-                required: true,
+                required: false,
                 validateOnExit: true,
                 length: 255
             },
@@ -716,7 +744,6 @@
     $(document).ready(function () {
         if(batch)
             getTreeData();
-           debugger
     });
 
     function getTreeData() {
@@ -792,7 +819,6 @@
             let mainCriteria = createMainCriteriaInChart();
             ListGrid_JspOperationalChart.invalidateCache();
             ListGrid_JspOperationalChart.fetchData(mainCriteria);
-            debugger
         } else {
             createDialog("info", "<spring:message code="msg.select.complex.ask"/>", "<spring:message code="message"/>")
         }
