@@ -146,7 +146,7 @@ public class OperationalChartService implements IOperationalChartService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<OperationalChartDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(operationalChartDAO, request, operationalChart -> mapper.toInfoDTO(request));
+        return SearchUtil.search(operationalChartDAO, request, operationalChart -> mapper.toInfoDTO(operationalChart));
     }
     @Transactional
     OperationalChartDTO.Info save(OperationalChart operationalChart) {

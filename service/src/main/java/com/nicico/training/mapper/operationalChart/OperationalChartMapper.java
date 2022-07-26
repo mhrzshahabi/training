@@ -20,7 +20,7 @@ public interface OperationalChartMapper {
 
     OperationalChart toOperationalChart (OperationalChartDTO.Create create);
 
-    OperationalChartDTO.Info toInfoDTO(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<OperationalChartDTO.Info> toInfoDTO(SearchDTO.SearchRq request);
 
 
 

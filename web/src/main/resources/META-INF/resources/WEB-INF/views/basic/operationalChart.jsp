@@ -6,6 +6,7 @@
 // <script>
 
     let batch = true;
+    let departmentCriteriaChart = [];
 
     // <<----------------------------------------- Create - TreeGrid --------------------------------------------
 
@@ -65,62 +66,62 @@
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
 
-    var search_bar = isc.DynamicForm.create({
-        autoDraw: false,
-        numCols: 3,
-        items: [
-            {
-                name: "search",
-                title: "جستجو در عناوین",
-                width: 400,
-                suppressBrowserClearIcon: true,
-                icons: [
-                    {
-                        name: "view",
-                        src: "[SKINIMG]actions/view.png",
-                        hspace: 5,
-                        inline: true,
-                        baseStyle: "roundedTextItemIcon",
-                        showRTL: true,
-                        tabIndex: -1,
-                        click: function () {
-                            getSearchData(search_bar.getValues().search);
-                        }
-                    }, {
-                        name: "clear",
-                        src: "[SKINIMG]actions/close.png",
-                        width: 10,
-                        height: 10,
-                        inline: true,
-                        prompt: "Clear this field",
+    <%--var search_bar = isc.DynamicForm.create({--%>
+    <%--    autoDraw: false,--%>
+    <%--    numCols: 3,--%>
+    <%--    items: [--%>
+    <%--        {--%>
+    <%--            name: "search",--%>
+    <%--            title: "جستجو در عناوین",--%>
+    <%--            width: 400,--%>
+    <%--            suppressBrowserClearIcon: true,--%>
+    <%--            icons: [--%>
+    <%--                {--%>
+    <%--                    name: "view",--%>
+    <%--                    src: "[SKINIMG]actions/view.png",--%>
+    <%--                    hspace: 5,--%>
+    <%--                    inline: true,--%>
+    <%--                    baseStyle: "roundedTextItemIcon",--%>
+    <%--                    showRTL: true,--%>
+    <%--                    tabIndex: -1,--%>
+    <%--                    click: function () {--%>
+    <%--                        getSearchData(search_bar.getValues().search);--%>
+    <%--                    }--%>
+    <%--                }, {--%>
+    <%--                    name: "clear",--%>
+    <%--                    src: "[SKINIMG]actions/close.png",--%>
+    <%--                    width: 10,--%>
+    <%--                    height: 10,--%>
+    <%--                    inline: true,--%>
+    <%--                    prompt: "Clear this field",--%>
 
-                        click: function (form, item, icon) {
-                            item.clearValue();
-                            item.focusInItem();
-                        }
-                    }],
-                iconWidth: 16,
-                iconHeight: 16
-            },
-            {
-                type: "Button",
-                title: "<spring:message code="refresh"/>",
-                startRow: false,
-                align:"left",
-                click: function () {
-                    search_bar.getField("search").getIcon("clear").click(search_bar,search_bar.getField("search"));
-                    operationalSearchTree.setData([]);
-                    operationalTree.setData([]);
-                    getTreeData();
-                }
-            }
-        ],
-        itemKeyPress: function (item, keyName) {
-            if (keyName === "Enter") {
-                getSearchData(search_bar.getValues().search);
-            }
-        }
-    });
+    <%--                    click: function (form, item, icon) {--%>
+    <%--                        item.clearValue();--%>
+    <%--                        item.focusInItem();--%>
+    <%--                    }--%>
+    <%--                }],--%>
+    <%--            iconWidth: 16,--%>
+    <%--            iconHeight: 16--%>
+    <%--        },--%>
+    <%--        {--%>
+    <%--            type: "Button",--%>
+    <%--            title: "<spring:message code="refresh"/>",--%>
+    <%--            startRow: false,--%>
+    <%--            align:"left",--%>
+    <%--            click: function () {--%>
+    <%--                search_bar.getField("search").getIcon("clear").click(search_bar,search_bar.getField("search"));--%>
+    <%--                operationalSearchTree.setData([]);--%>
+    <%--                operationalTree.setData([]);--%>
+    <%--                getTreeData();--%>
+    <%--            }--%>
+    <%--        }--%>
+    <%--    ],--%>
+    <%--    itemKeyPress: function (item, keyName) {--%>
+    <%--        if (keyName === "Enter") {--%>
+    <%--            getSearchData(search_bar.getValues().search);--%>
+    <%--        }--%>
+    <%--    }--%>
+    <%--});--%>
 
     // <<------------------------------------------- Create - Layout ------------------------------------------
 
@@ -137,6 +138,45 @@
 
     /////////////////////////////////////
     ////////////////////////////////////
+    let RestDataSource_OperationalChart_Department_Filter = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
+
+    let DynamicForm_departmentFilter_Filter = isc.DynamicForm.create({
+        width: "600",
+        height: 30,
+        numCols: 6,
+        colWidths: ["2%", "28%", "2%", "68%"],
+        fields: [
+            {
+                name: "departmentFilter",
+                title: "<spring:message code='complex'/>",
+                width: "300",
+                height: 30,
+                optionDataSource: RestDataSource_OperationalChart_Department_Filter,
+                autoFetchData: false,
+                displayField: "title",
+                // valueField: "id",
+                valueField: "title",
+                textAlign: "center",
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code="title"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ],
+                changed: function (form, item, value) {
+                    load_chart_by_department(value);
+                    setTreeData(operationalTree, chart, false);
+                },
+            },
+        ]
+    });
+
     let ToolStripButton_Refresh_JspOperationalChart = isc.ToolStripButtonRefresh.create({
         click: function () {
             refreshLG(ListGrid_JspOperationalChart);
@@ -175,7 +215,7 @@
                 ToolStripButton_Add_JspOperationalChart,
                 ToolStripButton_Edit_JspOperationalChart,
                 ToolStripButton_Remove_JspOperationalChart,
-                // DynamicForm_departmentFilter_Filter,
+                DynamicForm_departmentFilter_Filter,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -194,16 +234,12 @@
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
-                // PostDS_OperationalChart.fetchDataURL = viewPostUrl+"/rolePostList/0";
-                // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + 0;
                 ListGrid_OperationalChart_Add();
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
                 let record = ListGrid_JspOperationalChart.getSelectedRecord();
                 selected_record = record;
-                // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/" + record.id;
-                // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
                 ListGrid_OperationalChart_Edit(selected_record);
             }
         }, {
@@ -220,21 +256,23 @@
             debugger
             return this.Super("transformRequest", arguments);
         },
-        dataArrived: function () {
-
+        dataArrived: function (startRow, endRow, data) {
+           console.log(data);
         },
+
         fields:
             [
                 {name: "id", primaryKey: true},
+                {name: "complex"},
                 {name: "userName"},
-                {name: "roleId"},
-                {name: "title"},
-                {name: "code"},
-                {name: "parentId"}
+                {name: "nationalCode"},
+                // {name: "roleId"},
+                 {name: "title"},
+                // {name: "code"},
+                // {name: "parentId"}
 
             ],
-        fetchDataURL: operationalChartUrl + "/list",
-        autoFetchData:true
+        fetchDataURL: operationalChartUrl + "/spec-list",
     });
 
     let ListGrid_JspOperationalChart = isc.TrLG.create({
@@ -242,8 +280,8 @@
         contextMenu: Menu_JspOperationalChart,
         sortField: 0,
         sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: false,
+        dataPageSize: 200,
+        autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
@@ -253,30 +291,41 @@
         align: "center",
         fields: [
             {
+                name: "complex",
+                title: "مجتمع",
+                filterOperator: "iContains"
+             },
+            {
                 name: "userName",
                 title: "نام کاربری",
                 filterOperator: "iContains"
             },
             {
-                name: "roleId",
-                title: "نوع تقش",
+                name: "nationalCode",
+                title: "کد ملی",
                 filterOperator: "iContains"
             },
+
+            // {
+            //     name: "roleId",
+            //     title: "نوع نقش",
+            //     filterOperator: "iContains"
+            // },
             {
                 name: "title",
                 title: "عنوان",
                 filterOperator: "iContains"
             },
-            {
-                name: "code",
-                title: "کد",
-                filterOperator: "iContains"
-            },
-            {
-                name: "parentId",
-                title: "سطح بالادست",
-                filterOperator: "iContains"
-            },
+            // {
+            //     name: "code",
+            //     title: "کد",
+            //     filterOperator: "iContains"
+            // },
+            // {
+            //     name: "parentId",
+            //     title: "سطح بالادست",
+            //     filterOperator: "iContains"
+            // },
             <%--{--%>
             <%--    name: "userName",--%>
             <%--    type: "selectItem",--%>
@@ -321,7 +370,6 @@
             <%--}--%>
         ],
         rowDoubleClick: function (record) {
-            // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
             selected_record = record;
             ListGrid_OperationalChart_Edit(selected_record);
         },
@@ -338,7 +386,6 @@
             ListGrid_JspOperationalChart,
         ]
     });
-
 
     function ListGrid_OperationalChart_Add() {
         methodOperationalChart = "POST";
@@ -357,7 +404,7 @@
             // PostDS_just_Show_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleUsedPostList/" + record.id;
             methodOperationalChart = "PUT";
             // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/iscList";
-            saveActionUrlOperationalChart = operationalChartUrl + "/" + record.id;
+            saveActionUrlOperationalChart = operationalChartUrl + "/update" + record.id;
             DynamicForm_JspOperationalChart.clearValues();
             DynamicForm_JspOperationalChart.editRecord(record);
             var categoryIds = selected_record.categories;
@@ -402,8 +449,9 @@
     }
 
     function ListGrid_OperationalChart_Remove() {
-        let recordIds = ListGrid_JspOperationalChart.getSelectedRecords().map(r => r.id);
-        if (recordIds == null || recordIds.length === 0) {
+        // let recordIds = ListGrid_JspOperationalChart.getSelectedRecords().map(r => r.id);
+        let recordId = ListGrid_JspOperationalChart.getSelectedRecord().getID();
+        if (recordId == null || recordId.length === 0) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
@@ -413,7 +461,7 @@
                     this.close();
                     if (index === 0) {
                         wait_Permission = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/" + recordIds,
+                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/delete" + recordId,
                             "DELETE",
                             null,
                             OperationalChart_remove_result));
@@ -423,15 +471,7 @@
         }
     }
 
-    // let RestDataSource_JspOperationalUnit = isc.TrDS.create({
-    //     fields:
-    //         [
-    //             {name: "id", primaryKey: true},
-    //             {name: "unitCode"},
-    //             {name: "operationalUnit"}
-    //         ],
-    //     fetchDataURL: operationalUnitUrl + "spec-list"
-    // });
+
 
     var IButton_Save_JspOperationalChart = isc.IButtonSave.create({
         top: 260,
@@ -471,178 +511,8 @@
         titleAlign: "left",
         fields: [
             {name: "id", hidden: true},
-            {
-                name: "title",
-                title: "<spring:message code="title"/>",
-                required: true,
-                validateOnExit: true,
-                length: 255
-            },
-            {
-                name: "complexId",
-                editorType: "ComboBoxItem",
-                title: "<spring:message code="complex"/>:",
-                pickListWidth: 200,
-                // optionDataSource: RestDataSource_OperationalRole_Department_Filter,
-                displayField: "title",
-                autoFetchData: true,
-                valueField: "id",
-                textAlign: "center",
-                required: true,
-                textMatchStyle: "substring",
-                pickListFields: [
-                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
-                ],
-                pickListProperties: {
-                    sortField: 0,
-                    showFilterEditor: false
-                },
-            },
-            {
-                name: "operationalUnitId",
-                title: "<spring:message code="unitName"/>",
-                // optionDataSource: RestDataSource_JspOperationalUnit,
-                valueField: "id",
-                displayField: "operationalUnit",
-                required: true,
-                validateOnExit: true,
-                length: 255,
-                canSort: false,
-            },
-            {
-                name: "categories",
-                title: "<spring:message code='educational.category'/>",
-                // editorType: "MultiComboBoxItem",
-                length: 255,
-                type: "SelectItem",
-
-                pickListWidth: 200,
-                multiple: true,
-                textAlign: "center",
-                autoFetchData: false,
-                // optionDataSource: RestDataSource_Categories_OperationalRole,
-                valueField: "id",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                operator: "inSet",
-                // filterOnKeypress: true,
-                autoFitButtons: true,
-                titleVAlign: "top",
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                changed: function () {
-                    hasChartCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_JspOperationalChart.getField("subCategories");
-                    subCategoryField.clearValue();
-                    if (this.value === null || this.getValue() === null || this.getValue() === undefined || this.getValue() === "") {
-                        hasChartCategoriesChanged = false;
-                        subCategoryField.clearValue();
-                        DynamicForm_JspOperationalChart.getField("subCategories").disable();
-                        return;
-                    }
-
-                    subCategoryField.enable();
-                    if (subCategoryField.getValue() === undefined)
-                        return;
-                    var subCategories = subCategoryField.getSelectedRecords();
-                    let categoryIds = this.getValue();
-                    var SubCats = [];
-                    for (var i = 0; i < subCategories.length; i++) {
-                        if (categoryIds.contains(subCategories[i].categoryId))
-                            SubCats.add(subCategories[i].id);
-                    }
-                    subCategoryField.setValue(SubCats);
-                    subCategoryField.focus(this.form, subCategoryField);
-                }
-            },
-            {
-                name: "subCategories",
-                title: "<spring:message code='educational.sub.category'/>",
-                // editorType: "MultiComboBoxItem",
-                length: 255,
-                type: "SelectItem",
-
-                operator: "inSet",
-                filterOnKeypress: true,
-                autoFitButtons: true,
-                titleVAlign: "top",
-
-                pickListWidth: 200,
-                multiple: true, textAlign: "center",
-                autoFetchData: true,
-                disabled: true,
-                // optionDataSource: RestDataSource_SubCategories_OperationalRole,
-                valueField: "id",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                focus: function () {
-                    if (hasChartCategoriesChanged) {
-                        console.log("hasRoleCategoriesChanged", hasRoleCategoriesChanged);
-                        hasRoleCategoriesChanged = false;
-                        var ids = DynamicForm_JspOperationalChart.getField("categories").getValue();
-                        if (ids === []) {
-                            // RestDataSource_SubCategories_OperationalRole.implicitCriteria = null;
-                        } else {
-                            console.log("ids in subCategories :", ids);
-                            // RestDataSource_SubCategories_OperationalRole.implicitCriteria = {
-                            //     _constructor: "AdvancedCriteria",
-                            //     operator: "and",
-                            //     criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
-                            // };
-                        }
-                        this.fetchData();
-                    }
-                }
-            },
-            {
-                name: "postIds",
-                hidden: true,
-                // type: "MultiComboBoxItem",
-                title: "<spring:message code="post"/>",
-                // optionDataSource: PostDS_OperationalRole,
-                valueField: "id",
-                displayField: "titleFa",
-                filterOnKeypress: true,
-                multiple: true,
-                comboBoxProperties: {
-                    hint: "",
-                    filterFields: ["code", "titleFa", "jobTitleFa", "postGradeTitleFa"],
-                    textMatchStyle: "substring",
-                    pickListWidth: 450,
-                    pickListProperties: {
-                        autoFitWidthApproach: "both",
-                    },
-                    pickListFields: [
-                        {
-                            name: "code",
-                            filterOperator: "iContains",
-                            autoFitWidth: true
-                        },
-                        {name: "titleFa",  filterOperator: "iContains"},
-                        {
-                            name: "jobTitleFa",
-                            filterOperator: "iContains",
-                            autoFitWidth: true
-                        },
-                        {
-                            name: "postGradeTitleFa",
-                            filterOperator: "iContains",
-                            autoFitWidth: true
-                        }
-                    ],
-                }
-            },
-            {
-                name: "description",
-                title: "<spring:message code="description"/>",
-                length: 255
-            },
-            {
-                name: "userIds",
+           {
+                name: "complex",
                 type: "MultiComboBoxItem",
                 title: "<spring:message code="users"/>",
                 // optionDataSource: UserDS_JspOperationalRole,
@@ -652,7 +522,7 @@
                 multiple: true,
                 comboBoxProperties: {
                     hint: "",
-                    filterFields: ["firstName", "lastName", "username", "nationalCode"],
+                    filterFields: ["username", "title","complex", "code", "nationalCode"],
                     textMatchStyle: "substring",
                     pickListWidth: 335,
                     pickListProperties: {
@@ -668,8 +538,8 @@
                                         icon: "[SKIN]/actions/approve.png",
                                         title: "<spring:message code='select.all'/>",
                                         click: function () {
-                                            let fItem = DynamicForm_JspOperationalChart.getField("userIds");
-                                            fItem.setValue(fItem.comboBox.pickList.data.localData.map(user => user.id));
+                                            let fItem = DynamicForm_JspOperationalChart.getField("complex");
+                                            fItem.setValue(fItem.comboBox.pickList.data.localData.map(r => r.complex));
                                             fItem.comboBox.pickList.hide();
                                         }
                                     }),
@@ -678,7 +548,7 @@
                                         icon: "[SKIN]/actions/close.png",
                                         title: "<spring:message code='deselect.all'/>",
                                         click: function () {
-                                            let fItem = DynamicForm_JspOperationalChart.getField("userIds");
+                                            let fItem = DynamicForm_JspOperationalChart.getField("complex");
                                             fItem.setValue([]);
                                             fItem.comboBox.pickList.hide();
                                         }
@@ -690,15 +560,24 @@
                     },
                     pickListFields: [
                         {
-                            name: "firstName",
-                            title: "<spring:message code="firstName"/>",
+                            name: "complex",
+                            title: "مجتمع",
                             filterOperator: "iContains",
                             autoFitWidth: true
                         },
-                        {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
                         {
                             name: "username",
-                            title: "<spring:message code="username"/>",
+                            title: "نام کاربری ",
+                            filterOperator: "iContains",
+                            autoFitWidth: true
+                        },
+                        {name: "title",
+                            title: "عنوان",
+                            filterOperator: "iContains"
+                        },
+                        {
+                            name: "nationalCode",
+                            title: "کد ملی",
                             filterOperator: "iContains",
                             autoFitWidth: true
                         },
@@ -747,25 +626,23 @@
     $(document).ready(function () {
         if(batch)
             getTreeData();
-
-        getListGridData(); /////////////
-
+           debugger
     });
 
-    function getDepChildren(childeren, category, parentTitle) {
-
-        let url = operationalChartUrl + "/getDepChartChildren/" + category + "/" + parentTitle ;
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(childeren),function(resp) {
-            wait.close();
-            if (resp.httpResponseCode !== 200) {
-                return;
-            } else {
-                let data = operationalTree.data.concat(JSON.parse(resp.data));
-                setTreeData(operationalTree, data, false);
-            }
-        }))
-    }
+    // function getDepChildren(childeren, category, parentTitle) {
+    //
+    //     let url = operationalChartUrl + "/getDepChartChildren/" + category + "/" + parentTitle ;
+    //     wait.show();
+    //     isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(childeren),function(resp) {
+    //         wait.close();
+    //         if (resp.httpResponseCode !== 200) {
+    //             return;
+    //         } else {
+    //             let data = operationalTree.data.concat(JSON.parse(resp.data));
+    //             setTreeData(operationalTree, data, false);
+    //         }
+    //     }))
+    // }
 
     function getTreeData() {
 
@@ -797,7 +674,7 @@
                 return false;
             else {
                 let data = JSON.parse(resp.data);
-debugger
+// debugger
                 // let childs = data.filter(p=> p);
                 // let chart = data.filter(p=> p);
                 // chart.forEach(p=> p.directReports = childs.filter(c => c.parentId === p.id));
@@ -808,32 +685,32 @@ debugger
         }));
     }
 
-    function getSearchData(value) {
-
-        var url = operationalChartUrl + "/getSearchDepChartData/" + value;
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
-            wait.close();
-            if (resp.httpResponseCode !== 200)
-                return false;
-            else {
-                let data = JSON.parse(resp.data);
-
-                let complexes = data.filter(q => q.category === "complex");
-                let assistants = data.filter(q => q.category === "assistant");
-                let affairs = data.filter(q => q.category === "affair");
-                let sections = data.filter(q => q.category === "section");
-                let units = data.filter(q => q.category === "unit");
-
-                sections.forEach(s => s.directReports = units.filter(u => u.parentTitle === s.title));
-                affairs.forEach(a => a.directReports = sections.filter(s => s.parentTitle === a.title));
-                assistants.forEach(a => a.directReports = affairs.filter(af => af.parentTitle === a.title));
-                complexes.forEach(c => c.directReports = assistants.filter(a => a.parentTitle === c.title));
-                let treeData = setTreeData(operationalSearchTree, complexes, false);
-                return treeData;
-            }
-        }));
-    }
+    // function getSearchData(value) {
+    //
+    //     var url = operationalChartUrl + "/getSearchDepChartData/" + value;
+    //     wait.show();
+    //     isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
+    //         wait.close();
+    //         if (resp.httpResponseCode !== 200)
+    //             return false;
+    //         else {
+    //             let data = JSON.parse(resp.data);
+    //
+    //             let complexes = data.filter(q => q.category === "complex");
+    //             let assistants = data.filter(q => q.category === "assistant");
+    //             let affairs = data.filter(q => q.category === "affair");
+    //             let sections = data.filter(q => q.category === "section");
+    //             let units = data.filter(q => q.category === "unit");
+    //
+    //             sections.forEach(s => s.directReports = units.filter(u => u.parentTitle === s.title));
+    //             affairs.forEach(a => a.directReports = sections.filter(s => s.parentTitle === a.title));
+    //             assistants.forEach(a => a.directReports = affairs.filter(af => af.parentTitle === a.title));
+    //             complexes.forEach(c => c.directReports = assistants.filter(a => a.parentTitle === c.title));
+    //             let treeData = setTreeData(operationalSearchTree, complexes, false);
+    //             return treeData;
+    //         }
+    //     }));
+    // }
 
     // function rowClick(record) {
     //
@@ -879,6 +756,38 @@ debugger
         });
         tree.setData(treeData);
          return treeData;
+    }
+
+    function createMainCriteriaInChart() {
+        let mainCriteria = {};
+        mainCriteria._constructor = "AdvancedCriteria";
+        mainCriteria.operator = "and";
+        mainCriteria.criteria = [];
+        mainCriteria.criteria.add(departmentCriteriaChart);
+        return mainCriteria;
+    }
+
+    function load_chart_by_department(value) {
+        if (value !== undefined) {
+            let criteria = {
+                _constructor: "AdvancedCriteria",
+                operator: "and",
+                criteria: [
+                    {
+                        fieldName: "complex", operator: "inSet", value: value
+                    }
+                ]
+            };
+            RestDataSource_JspOperationalChart.fetchDataURL = operationalChartUrl + "/spec-list";
+            departmentCriteriaChart = criteria;
+            let mainCriteria = createMainCriteriaInChart();
+            ListGrid_JspOperationalChart.invalidateCache();
+            ListGrid_JspOperationalChart.fetchData(mainCriteria);
+            debugger
+        } else {
+            createDialog("info", "<spring:message code="msg.select.complex.ask"/>", "<spring:message code="message"/>")
+        }
+
     }
 
     // </script>
