@@ -223,8 +223,7 @@ public class QuestionBankService implements IQuestionBankService {
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
         if (isFilterForGroupQuestion){
-            Long groupQuestionId= parameterValueService.getId("GroupQuestion");
-            list.add(makeNewCriteria("questionTypeId", groupQuestionId, EOperator.notEqual, null));
+            list.add(makeNewCriteria("isChild", true, EOperator.equals, null));
         }
 
         if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
