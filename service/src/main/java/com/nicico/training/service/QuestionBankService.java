@@ -168,7 +168,10 @@ public class QuestionBankService implements IQuestionBankService {
                 break;
             }
         }
+        if (!groupQuestions.isEmpty())
         return isUpdateAllQuestions;
+        else
+            return true;
     }
 
 

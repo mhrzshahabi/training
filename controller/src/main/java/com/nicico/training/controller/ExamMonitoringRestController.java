@@ -109,6 +109,8 @@ public class ExamMonitoringRestController {
                 questionTypeData.setTitle(parameterValueService.getInfo(questionBank.getQuestionTypeId()).getTitle());
 
                 questionBankData.setQuestion(questionBank.getQuestion());
+                questionBankData.setIsChild(questionBank.getIsChild());
+                questionBankData.setChildPriority(questionBank.getChildPriority());
                 questionBankData.setQuestionType(questionTypeData);
                 questionBankData.setId(questionBank.getId());
 

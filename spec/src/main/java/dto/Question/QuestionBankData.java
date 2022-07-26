@@ -9,6 +9,8 @@ import lombok.ToString;
 @ToString
 public class QuestionBankData {
     private String question;
+    private String childPriority;
+    private Boolean isChild;
     private Double proposedPointValue;
     private Long questionBankId;
     private Long id;
