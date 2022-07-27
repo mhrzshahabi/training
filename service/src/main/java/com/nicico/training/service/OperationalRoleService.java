@@ -127,6 +127,11 @@ public class OperationalRoleService implements IOperationalRoleService {
         return operationalRoleDAO.findAllById(ids).stream().map(OperationalRole::getTitle).collect(Collectors.toList());
     }
 
+    @Override
+    public List<Long> getOperationalRoleUserIdsByIds(List<Long> ids) {
+        return operationalRoleDAO.findAllById(ids).stream().map(OperationalRole::getUserIds).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
     public Set<Long> getAllUserIdsByIds(List<Long> ids) {
         Set<Long> userIds = new HashSet<>();
         List<OperationalRole> operationalRoles = operationalRoleDAO.findAllById(ids);
@@ -134,6 +139,15 @@ public class OperationalRoleService implements IOperationalRoleService {
             userIds.addAll(operationalRole.getUserIds());
         }
         return userIds;
+    }
+
+    @Override
+    public List<Long> getAllUserIdsByComplexAndCategoryAndSubCategory(Long complexId, String objectType, Long categoryId, Long subCategoryId) {
+        List<Long> operationalRoleIds = operationalRoleDAO.getOperationalRoleIdsByComplexIdAndSubCategoryId(complexId, objectType, subCategoryId);
+        if (operationalRoleIds.size() == 0) {
+            operationalRoleIds = operationalRoleDAO.getOperationalRoleIdsByComplexIdAndCategoryId(complexId, objectType, categoryId);
+        }
+        return operationalRoleIds;
     }
 
     @Transactional(readOnly = true)
@@ -202,8 +216,6 @@ public class OperationalRoleService implements IOperationalRoleService {
         postIds.forEach(id -> {
             if (!savedPostIds.stream().toList().contains(id)) {
                 savedPostIds.add(id);
-            } else {
-                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
             }
         });
 

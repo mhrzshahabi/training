@@ -6,6 +6,8 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.controller.util.CriteriaUtil;
+import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.*;
@@ -13,6 +15,7 @@ import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.RequestItemProcessDetail;
 import com.nicico.training.model.SynonymPersonnel;
+import com.nicico.training.service.BaseService;
 import dto.bpms.BPMSReqItemExpertsDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Slf4j
@@ -39,6 +43,8 @@ public class RequestItemRestController {
 
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
+    private final CriteriaUtil criteriaUtil;
+    private final ICourseService courseService;
     private final IRequestItemService requestItemService;
     private final RequestItemBeanMapper requestItemBeanMapper;
     private final IParameterValueService parameterValueService;
@@ -222,6 +228,68 @@ public class RequestItemRestController {
         response.setData(requestItemCoursesDetails);
         ISC<RequestItemCoursesDetailDTO.Info> infoISC = new ISC<>(response);
         return new ResponseEntity<>(infoISC, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/planning-chief-opinion/{requestItemId}")
+    public ResponseEntity<RequestItemCoursesDetailDTO.OpinionInfo> getPlanningChiefOpinion(@PathVariable Long requestItemId) {
+
+        String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
+        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
+        RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(),
+                parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle());
+        return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/related-courses-to-run/{requestItemId}")
+    public ResponseEntity<RequestItemCoursesDetailDTO.OpinionInfo> getCoursesRelatedToRunSupervisor(@PathVariable Long requestItemId) {
+
+        List<RequestItemCoursesDetailDTO.Info> userCourses = new ArrayList<>();
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq categoryCriteriaRq = criteriaUtil.addPermissionToCriteria("Category", "categoryId");
+        SearchDTO.CriteriaRq subCategoryCriteriaRq = criteriaUtil.addPermissionToCriteria("SubCategory", "subCategoryId");
+
+        List<SearchDTO.CriteriaRq> catAndSubCatCriteriaList = new ArrayList<>();
+        catAndSubCatCriteriaList.add(categoryCriteriaRq);
+        catAndSubCatCriteriaList.add(subCategoryCriteriaRq);
+
+        SearchDTO.CriteriaRq catAndSubCatCriteria = BaseService.makeNewCriteria(null, null, EOperator.or, catAndSubCatCriteriaList);
+        BaseService.setCriteria(request, catAndSubCatCriteria);
+        List<String> userAccessCourses = courseService.search(request).getList().stream().map(CourseDTO::getCode).collect(Collectors.toList());
+
+        String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
+        RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
+        RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(),
+                parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle());
+        List<RequestItemCoursesDetailDTO.Info> verifiedCoursesByPlanningChief = opinionInfo.getCourses();
+
+        for (RequestItemCoursesDetailDTO.Info requestItemCoursesDetailDTO : verifiedCoursesByPlanningChief) {
+            if (userAccessCourses.contains(requestItemCoursesDetailDTO.getCourseCode()))
+                userCourses.add(requestItemCoursesDetailDTO);
+        }
+        opinionInfo.setCourses(userCourses);
+        return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/update-status/run-supervisor-to-experts")
+    public ResponseEntity updateProcessStatusToRunExperts(@RequestParam Long requestItemId) {
+        requestItemService.updateProcessStatus(requestItemId, "waitingReviewByRunExpertToHoldingCourses");
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/update-status/run-experts-to-supervisor-approval")
+    public ResponseEntity updateProcessStatusToSupervisorFinalApproval(@RequestParam Long requestItemId) {
+        requestItemService.updateProcessStatus(requestItemId, "waitingFinalApprovalByRunSupervisor");
+        return new ResponseEntity<>(null, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping(value = "/update-status/run-supervisor-to-chief")
+    public ResponseEntity updateProcessStatusToRunChief(@RequestParam Long requestItemId) {
+        requestItemService.updateProcessStatus(requestItemId, "waitingFinalApprovalByRunChief");
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
 }

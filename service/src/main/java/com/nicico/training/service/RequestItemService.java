@@ -8,7 +8,6 @@ import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
-import com.nicico.copper.oauth.common.iservice.IOAUserService;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentReportsDTO;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
@@ -19,8 +18,8 @@ import com.nicico.training.iservice.ICompetenceRequestService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
+import com.nicico.training.mapper.requestItem.RequestItemCoursesDetailBeanMapper;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.model.enums.RequestItemState;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.RequestItemDAO;
@@ -30,6 +29,7 @@ import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
@@ -47,21 +47,20 @@ public class RequestItemService implements IRequestItemService {
     private final ModelMapper modelMapper;
     private final PersonnelDAO personnelDAO;
     private final IBpmsService iBpmsService;
-    private final IOAUserService oaUserService;
     private final RequestItemDAO requestItemDAO;
     private final IPersonnelService personnelService;
     private final BpmsClientService bpmsClientService;
     private final ITrainingPostService trainingPostService;
+    private final ISynonymOAUserService synonymOAUserService;
     private final RequestItemBeanMapper requestItemBeanMapper;
     private final IParameterValueService parameterValueService;
-    private final IOperationalRoleService iOperationalRoleService;
+    private final IOperationalRoleService operationalRoleService;
     private final ISynonymPersonnelService synonymPersonnelService;
     private final ICompetenceRequestService competenceRequestService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
     private final IRequestItemProcessDetailService requestItemProcessDetailService;
     private final IRequestItemCoursesDetailService requestItemCoursesDetailService;
-    private final EnumsConverter.RequestItemStateTypeConverter stateTypeConverter = new EnumsConverter.RequestItemStateTypeConverter();
-
+    private final RequestItemCoursesDetailBeanMapper requestItemCoursesDetailBeanMapper;
 
     @Override
     @Transactional
@@ -83,11 +82,9 @@ public class RequestItemService implements IRequestItemService {
         requestItem.setCompetenceReqId(newData.getCompetenceReqId());
         requestItem.setLastName(newData.getLastName());
         requestItem.setName(newData.getName());
-        requestItem.setWorkGroupCode(newData.getWorkGroupCode());
         requestItem.setPersonnelNumber(newData.getPersonnelNumber());
         requestItem.setPersonnelNo2(newData.getPersonnelNo2());
         requestItem.setPost(newData.getPost());
-        requestItem.setState(newData.getState());
         requestItem.setNationalCode(newData.getNationalCode());
         return getRequestDiff(requestItem);
     }
@@ -172,13 +169,13 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
-    public List<RequestItemDTO.Info> getItemListWithCompetenceRequest(Long id) {
+    public List<RequestItemDTO.ExcelOutputInfo> getItemListWithCompetenceRequest(Long id) {
 
-        List<RequestItemDTO.Info> infoList = new ArrayList<>();
+        List<RequestItemDTO.ExcelOutputInfo> infoList = new ArrayList<>();
         List<RequestItem> requestItems = requestItemDAO.findAllByCompetenceReqId(id);
         requestItems.forEach(item -> {
-            RequestItemDTO.Info info = requestItemBeanMapper.toRequestItemDto(item);
-            infoList.add(info);
+            RequestItemDTO.ExcelOutputInfo excelOutputInfo = requestItemBeanMapper.toRequestItemExcelOutputDto(item);
+            infoList.add(excelOutputInfo);
         });
         return infoList;
     }
@@ -206,7 +203,7 @@ public class RequestItemService implements IRequestItemService {
         Optional<TrainingPost> optionalTrainingPost = trainingPostService.isTrainingPostExist(requestItem.getPost());
         TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         try {
-            List<OperationalRole> operationalRoles = iOperationalRoleService.getOperationalRolesByPostId(trainingPost.getId());
+            List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByPostId(trainingPost.getId());
             List<Long> operationalRoleIds = operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList());
             requestItem.setOperationalRoleIds(new ArrayList<>());
             requestItem.setOperationalRoleIds(operationalRoleIds);
@@ -230,26 +227,18 @@ public class RequestItemService implements IRequestItemService {
 
         Collection<String> assigneeList = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
-        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
-//        String mainConfirmBoss = "ahmadi_z";
-        String mainConfirmBoss = "3621296476";
-        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-//            mainConfirmBoss = "pourfathian_a";
-            mainConfirmBoss = "3149622123";
-//            mainConfirmBoss = "hajizadeh_mh";
-        }
 
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findById(requestItemId);
         if (optionalRequestItem.isPresent()) {
             RequestItem requestItem = optionalRequestItem.get();
             List<Long> operationalRoleIds = requestItem.getOperationalRoleIds();
-            Set<Long> userIds = iOperationalRoleService.getAllUserIdsByIds(operationalRoleIds);
+            Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
             for (Long userId : userIds) {
-                assigneeList.add(oaUserService.get(userId, "Training").getNationalCode());
+                assigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
             }
 
             map.put("assigneeList", assigneeList);
-            map.put("assignTo", mainConfirmBoss);
+            map.put("assignTo", getPlanningChiefNationalCode());
             map.put("userId", SecurityUtil.getUserId());
             map.put("assignFrom", SecurityUtil.getNationalCode());
             map.put("tenantId", tenantId);
@@ -295,17 +284,9 @@ public class RequestItemService implements IRequestItemService {
     public void reAssignRequestItemProcess(ReviewTaskRequest reviewTaskRequest) {
 
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
-        Map<String, Object> map=reviewTaskRequest.getVariables();
-        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
-//        String mainConfirmBoss = "ahmadi_z";
-        String mainConfirmBoss = "3621296476";
-        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-//            mainConfirmBoss = "pourfathian_a";
-            mainConfirmBoss = "3149622123";
-//            mainConfirmBoss = "hajizadeh_mh";
-        }
+        Map<String, Object> map = reviewTaskRequest.getVariables();
 
-        map.put("assignTo", mainConfirmBoss);
+        map.put("assignTo", getPlanningChiefNationalCode());
         map.put("approved", true);
 
         if (optionalRequestItem.isPresent()) {
@@ -410,15 +391,18 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    public BaseResponse reviewRequestItemTaskToDetermineStatus(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, Long chiefOpinionId, String userNationalCode) {
+    public BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, Long chiefOpinionId, String userNationalCode) {
 
         BaseResponse response = new BaseResponse();
-        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(bpmsReqItemCoursesDto.getReviewTaskRequest().getProcessInstanceId());
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
 
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
             RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
+
+
             if (requestItemProcessDetail == null) {
                 RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
                 requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
@@ -427,20 +411,20 @@ public class RequestItemService implements IRequestItemService {
                 requestItemProcessDetail = requestItemProcessDetailService.create(requestItemProcessDetailDTO);
             }
 
-            if (bpmsReqItemCoursesDto.getCourses().size() != 0) {
-                for (BPMSReqItemCoursesDetailDto reqItemCoursesDetailDto : bpmsReqItemCoursesDto.getCourses()) {
-                    reqItemCoursesDetailDto.setRequestItemProcessDetailId(requestItemProcessDetail.getId());
-                    RequestItemCoursesDetailDTO.Create create = modelMapper.map(reqItemCoursesDetailDto, RequestItemCoursesDetailDTO.Create.class);
+            if (courses.size() != 0) {
+                for (RequestItemCoursesDetailDTO.Info requestItemCoursesDetailDTO : courses) {
+                    RequestItemCoursesDetailDTO.Create create = modelMapper.map(requestItemCoursesDetailDTO, RequestItemCoursesDetailDTO.Create.class);
+                    create.setRequestItemProcessDetailId(requestItemProcessDetail.getId());
                     requestItemCoursesDetailService.create(create);
                 }
             }
 
-            Map<String, Object> variables = bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables();
+            Map<String, Object> variables = reviewTaskRequest.getVariables();
             String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
-//            String mainRunChief = "ابراهیم نژاد";
-            String mainRunChief = "0965399435";
+            // String mainRunChief = "ابراهیم نژاد";
+            String mainRunChief = "0938091972";
             if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
-//                mainRunChief = "hajizadeh_mh";
+                // mainRunChief = "hajizadeh_mh";
                 mainRunChief = "3149622123";
             }
 
@@ -451,19 +435,19 @@ public class RequestItemService implements IRequestItemService {
                 variables.put("assignTo", mainRunChief);
             } else {
                 // بلامانع
-                if (bpmsReqItemCoursesDto.getCourses().stream().filter(item -> item.getPriority().contains("ضمن خدمت")).collect(Collectors.toList()).size() != 0) {
+                if (courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() != 0) {
                     // دارای ضمن خدمت
                     // رییس اجرا و کارشناس انتصاب سمت
                     variables.put("finalOpinion", "noObjection");
                     variables.put("haveWhileServing", true);
                     variables.put("assignTo", mainRunChief);
-                    variables.put("assignToAnother", bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables().get("assignFrom"));
+                    variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
                 } else {
                     // بدون ضمن خدمت
                     // کارشناس انتصاب سمت
                     variables.put("finalOpinion", "noObjection");
                     variables.put("haveWhileServing", false);
-                    variables.put("assignToAnother", bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables().get("assignFrom"));
+                    variables.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
                 }
             }
 
@@ -476,7 +460,7 @@ public class RequestItemService implements IRequestItemService {
 
         if (response.getStatus() == 200) {
             try {
-                bpmsClientService.reviewTask(bpmsReqItemCoursesDto.getReviewTaskRequest());
+                bpmsClientService.reviewTask(reviewTaskRequest);
                 response.setMessage("عملیات موفقیت آمیز به پایان رسید");
             } catch (Exception e) {
                 response.setStatus(404);
@@ -487,6 +471,379 @@ public class RequestItemService implements IRequestItemService {
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
         }
         return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewRequestItemTaskByRunChief(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
+
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> coursesAssigneeList = getSupervisorAssigneeList(courseCategoryInfos);
+            if (coursesAssigneeList.stream().anyMatch(item -> item.getSupervisorAssigneeList().size() == 0)) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+            } else {
+                Collection<String> supervisorAssigneeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getSupervisorAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
+                Map<String, Object> map = reviewTaskRequest.getVariables();
+                map.put("supervisorAssigneeList", supervisorAssigneeList);
+                requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByRunSupervisorToHoldingCourses"));
+                requestItemDAO.saveAndFlush(requestItem);
+                response.setStatus(200);
+            }
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else if (response.getStatus() == 400) {
+            response.setMessage("برای بعضی از دوره ها سرپرست اجرا تعریف نشده است");
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    public BaseResponse reviewRequestItemTaskByRunSupervisor(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
+
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> coursesAssigneeList = getExpertsAssigneeList(courseCategoryInfos);
+            if (coursesAssigneeList.stream().anyMatch(item -> item.getExpertsAssigneeList().size() == 0)) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+            } else {
+                Collection<String> expertsAssigneeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getExpertsAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
+                Map<String, Object> map = reviewTaskRequest.getVariables();
+                map.put("expertsAssigneeList", expertsAssigneeList);
+                map.put("requestItemId", requestItem.getId());
+                response.setStatus(200);
+            }
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else if (response.getStatus() == 400) {
+            response.setMessage("برای بعضی از دوره ها کارشناس اجرا تعریف نشده است");
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewRequestItemTaskByRunExperts(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItemProcessDetailId(requestItemProcessDetail.getId());
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos = requestItemCoursesDetailBeanMapper.toCourseCategoryInfoDTOList(courses);
+
+            List<RequestItemCoursesDetailDTO.CourseCategoryInfo> coursesAssigneeList = getSupervisorAssigneeList(courseCategoryInfos);
+            if (coursesAssigneeList.stream().anyMatch(item -> item.getSupervisorAssigneeList().size() == 0)) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+            } else {
+                Collection<String> supervisorAssigneeList = coursesAssigneeList.stream().map(RequestItemCoursesDetailDTO.CourseCategoryInfo::getSupervisorAssigneeList).flatMap(Collection::stream).collect(Collectors.toSet());
+                Map<String, Object> map = reviewTaskRequest.getVariables();
+                map.put("supervisorAssigneeList", supervisorAssigneeList);
+                map.put("requestItemId", requestItem.getId());
+                response.setStatus(200);
+            }
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else if (response.getStatus() == 400) {
+            response.setMessage("برای بعضی از دوره ها سرپرست اجرا تعریف نشده است");
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+            // String mainRunChief = "ابراهیم نژاد";
+            String mainRunChief = "0938091972";
+            if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
+                // mainRunChief = "hajizadeh_mh";
+                mainRunChief = "3149622123";
+            }
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("assignTo", mainRunChief);
+            response.setStatus(200);
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewRequestItemTaskByRunChiefForApproval(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("assignTo", getPlanningChiefNationalCode());
+            requestItem.setProcessStatusId(parameterValueService.getId("waitingFinalApprovalByPlanningChief(AfterRun)"));
+            requestItemDAO.saveAndFlush(requestItem);
+            response.setStatus(200);
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(ReviewTaskRequest reviewTaskRequest) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
+
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
+            Map<String, Object> map = reviewTaskRequest.getVariables();
+            map.put("assignToAnother", reviewTaskRequest.getVariables().get("assignFrom"));
+            if (!requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) &&
+                    courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() != 0)
+                requestItem.setProcessStatusId(parameterValueService.getId("terminationOfTheProcess"));
+            else
+                requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPositionAppointmentExpert"));
+            requestItemDAO.saveAndFlush(requestItem);
+            response.setStatus(200);
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequest);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    @Transactional
+    public BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequestDto, String letterNumberSent) {
+
+        BaseResponse response = new BaseResponse();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequestDto.getProcessInstanceId());
+        if (optionalRequestItem.isPresent()) {
+
+            RequestItem requestItem = optionalRequestItem.get();
+            RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
+            List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
+            requestItem.setLetterNumberSent(letterNumberSent);
+            if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) ||
+                    (!requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) &&
+                    courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() == 0)) {
+                requestItem.setProcessStatusId(parameterValueService.getId("terminationOfTheProcess"));
+            }
+            requestItemDAO.saveAndFlush(requestItem);
+            response.setStatus(200);
+        } else {
+            response.setStatus(404);
+        }
+
+        if (response.getStatus() == 200) {
+            try {
+                bpmsClientService.reviewTask(reviewTaskRequestDto);
+                response.setMessage("عملیات موفقیت آمیز به پایان رسید");
+            } catch (Exception e) {
+                response.setStatus(404);
+                response.setMessage("عملیات bpms انجام نشد");
+            }
+        } else {
+            response.setStatus(406);
+            response.setMessage("تغییر وضعیت درخواست انجام نشد");
+        }
+        return response;
+    }
+
+    @Override
+    public String getPlanningChiefNationalCode() {
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+//        String mainConfirmBoss = "ahmadi_z";
+        String mainConfirmBoss = "3621296476";
+        if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
+//            mainConfirmBoss = "pourfathian_a";
+            mainConfirmBoss = "3149622123";
+//            mainConfirmBoss = "hajizadeh_mh";
+        }
+        return mainConfirmBoss;
+    }
+
+    @Override
+    public List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getSupervisorAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos) {
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+        Long complexId;
+        if (complexTitle != null) {
+            if (complexTitle.contains("حوزه مدیرعامل"))
+                complexId = 58910L;
+            else if (complexTitle.contains("استان کرمان"))
+                complexId = 24740L;
+            else if (complexTitle.contains("آذربایجان"))
+                complexId = 22190L;
+            else if (complexTitle.contains("شهربابک"))
+                complexId = 66470L;
+            else if (complexTitle.contains("سرچشمه"))
+                complexId = 85930L;
+            else
+                complexId = 38060L; // صندوق بازنشستگی
+        } else
+            complexId = 85930L;
+
+        courseCategoryInfos.forEach(item -> {
+            List<String> supervisorAssigneeList = new ArrayList<>();
+            List<Long> operationalRoleIds = operationalRoleService.getAllUserIdsByComplexAndCategoryAndSubCategory(complexId, "EXECUTIVE_SUPERVISOR", item.getCategoryId(), item.getSubCategoryId());
+            Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
+            for (Long userId : userIds) {
+                supervisorAssigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
+            }
+            item.setSupervisorAssigneeList(supervisorAssigneeList);
+        });
+        return courseCategoryInfos;
+    }
+
+    @Override
+    public List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos) {
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+        Long complexId;
+        if (complexTitle != null) {
+            if (complexTitle.contains("حوزه مدیرعامل"))
+                complexId = 58910L;
+            else if (complexTitle.contains("استان کرمان"))
+                complexId = 24740L;
+            else if (complexTitle.contains("آذربایجان"))
+                complexId = 22190L;
+            else if (complexTitle.contains("شهربابک"))
+                complexId = 66470L;
+            else if (complexTitle.contains("سرچشمه"))
+                complexId = 85930L;
+            else
+                complexId = 38060L; // صندوق بازنشستگی
+        } else
+            complexId = 85930L;
+
+        courseCategoryInfos.forEach(item -> {
+            List<String> expertsAssigneeList = new ArrayList<>();
+            List<Long> operationalRoleIds = operationalRoleService.getAllUserIdsByComplexAndCategoryAndSubCategory(complexId, "EXECUTION_EXPERT", item.getCategoryId(), item.getSubCategoryId());
+            Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
+            for (Long userId : userIds) {
+                expertsAssigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
+            }
+            item.setExpertsAssigneeList(expertsAssigneeList);
+        });
+        return courseCategoryInfos;
+    }
+
+    @Override
+    public void updateProcessStatus(Long requestItemId, String processStatus) {
+
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findById(requestItemId);
+        if (optionalRequestItem.isPresent()) {
+            RequestItem requestItem = optionalRequestItem.get();
+            requestItem.setProcessStatusId(parameterValueService.getId(processStatus));
+            requestItemDAO.saveAndFlush(requestItem);
+        }
     }
 
     private int getWrongCount(List<RequestItemWithDiff> list) {
@@ -501,7 +858,7 @@ public class RequestItemService implements IRequestItemService {
 
     private RequestItemWithDiff getRequestDiff(RequestItem requestItem) {
 
-        SynonymPersonnel synonymPersonnel;
+        SynonymPersonnel synonymPersonnel = null;
         RequestItemWithDiff requestItemWithDiff = new RequestItemWithDiff();
 
         SynonymPersonnel synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
@@ -519,7 +876,7 @@ public class RequestItemService implements IRequestItemService {
                 requestItemWithDiff.setPersonnelNo2(requestItem.getPersonnelNo2());
                 requestItemWithDiff.setCorrectPersonnelNo2(synonymPersonnel.getPersonnelNo2());
             }
-        } else {
+        } else if (synonymPersonnelByPersonnelNo2 != null) {
             synonymPersonnel = synonymPersonnelByPersonnelNo2;
             requestItemWithDiff.setPersonnelNo2Correct(true);
             requestItemWithDiff.setPersonnelNo2(synonymPersonnel.getPersonnelNo2());
@@ -539,23 +896,18 @@ public class RequestItemService implements IRequestItemService {
             requestItemWithDiff.setPost(requestItem.getPost());
             requestItemWithDiff.setPostTitle(requestItem.getPostTitle());
             requestItemWithDiff.setAffairs(requestItem.getAffairs());
-            requestItemWithDiff.setState(requestItem.getState() != null ? stateTypeConverter.requestItemStateToStr(requestItem.getState()) : null);
             Optional<TrainingPost> optionalTrainingPost = trainingPostService.isTrainingPostExist(requestItem.getPost());
 
             if (!optionalTrainingPost.isPresent()) {
                 requestItemWithDiff.setOperationalRoleIds(null);
                 requestItem.setOperationalRoleIds(null);
-//                requestItemWithDiff.setWorkGroupCode("پست وجود ندارد");
-                requestItem.setWorkGroupCode("پست وجود ندارد");
             } else {
-                List<OperationalRole> operationalRoles = iOperationalRoleService.getOperationalRolesByPostId(optionalTrainingPost.get().getId());
+                List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByPostId(optionalTrainingPost.get().getId());
                 List<Long> operationalRoleIds = operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList());
-//                String workGroupCode = iOperationalRoleService.getWorkGroup(optionalTrainingPost.get().getId());
                 requestItemWithDiff.setOperationalRoleIds(operationalRoleIds);
                 requestItemWithDiff.setOperationalRoleTitles(operationalRoles.stream().map(OperationalRole::getTitle).collect(Collectors.toList()));
+                requestItemWithDiff.setOperationalRoleUsers(operationalRoleIds.size() != 0 ? operationalRoleService.getOperationalRoleUserIdsByIds(operationalRoleIds) : new ArrayList<>());
                 requestItem.setOperationalRoleIds(operationalRoleIds);
-//                requestItemWithDiff.setWorkGroupCode("گروه کاری");
-                requestItem.setWorkGroupCode("گروه کاری");
             }
 
             if (synonymPersonnel.getPersonnelNo() != null && requestItem.getPersonnelNumber() != null && synonymPersonnel.getPersonnelNo().trim().equals(requestItem.getPersonnelNumber().trim())) {

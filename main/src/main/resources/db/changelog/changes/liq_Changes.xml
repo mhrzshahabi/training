@@ -4719,6 +4719,276 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari" id="1656221511111-01">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code)
+            VALUES (l_parameter_id,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'نوع شایستگی (گپ شایستگی)',
+                    'gapCompetenceType');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'فردی (پستی)',
+                    'personalCompetence');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'namdari',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'تيمی , گروهی (سازمانی)',
+                    'groupCompetence');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1656221511111-02">
+        <addColumn tableName="tbl_competence">
+            <column name="complex" type="VARCHAR2(255 CHAR)"/>
+            <column name="competence_priority_id" type="NUMBER(19, 0)"/>
+            <column name="competence_level_id" type="NUMBER(19, 0)"/>
+        </addColumn>
+
+
+
+    </changeSet>
+
+    <changeSet author="namdari" id="1656221511111-03">
+        <addColumn tableName="tbl_competence">
+            <column name="active" type="NUMBER(10, 0)"/>
+
+        </addColumn>
+
+    </changeSet>
+    <changeSet author="namdari" id="1656832784000-01">
+        <addColumn tableName="tbl_educational_decision">
+            <column name="teaching_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="course_type_teaching_method" type="VARCHAR2(255 CHAR)"/>
+            <column name="coefficient_of_teaching_method" type="VARCHAR2(255 CHAR)"/>
+
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="Montazeri" id="1656221511000-03">
+        <addColumn tableName="tbl_operational_role">
+            <column name="object_type" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-084">
+        <addColumn tableName="tbl_request_item">
+            <column name="c_letter_number_sent" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1656832784000-02">
+        <addColumn tableName="tbl_educational_decision">
+            <column name="type_of_specialization_course_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="course_level_course_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="course_for_course_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="coefficient_of_course_type" type="VARCHAR2(255 CHAR)"/>
+
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1656832784000-03">
+        <addColumn tableName="tbl_needs_assessment_temp">
+            <column name="limit_sufficiency" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1656832784000-04">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="limit_sufficiency" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-085">
+        <dropColumn columnName="work_group_code" tableName="tbl_request_item"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-086">
+        <dropColumn columnName="work_group_code" tableName="tbl_request_item_aud"/>
+    </changeSet>
+    <changeSet id="2799887766557-21" author="ZPakdaman">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_role_id NUMBER;
+            BEGIN
+            BEGIN
+            l_role_id
+            := seq_role_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_role (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                      description ,
+                                       name)
+            VALUES (l_role_id,
+                    'ZPakdaman',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'ادمین'
+                    ,'SYSADMIN');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1658205590000-01">
+        <addColumn tableName="tbl_teacher">
+            <column name="residence" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="namdari" id="1658205590000-02">
+        <addColumn tableName="tbl_educational_decision">
+            <column name="distance" type="VARCHAR2(255 CHAR)"/>
+            <column name="residence" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="namdari" id="1658205590000-04">
+        <addColumn tableName="tbl_question_bank">
+            <column name="c_question_v2" type="CLOB"/>
+        </addColumn>
+        <sql>
+            <![CDATA[
+            UPDATE tbl_question_bank SET c_question_v2 = c_question;
+              ]]>
+        </sql>
+    </changeSet>
+    <changeSet author="namdari" id="1658205590000-05">
+        <sql>
+            <![CDATA[
+            ALTER TABLE tbl_question_bank
+            DROP COLUMN c_question;
+              ]]>
+        </sql>
+    </changeSet>
+    <changeSet author="namdari" id="1658205590000-06">
+        <sql>
+            <![CDATA[
+            ALTER TABLE tbl_question_bank
+                RENAME COLUMN c_question_v2 TO c_question;
+              ]]>
+        </sql>
+    </changeSet>
+
+
+
+    <changeSet author="namdari" id="1658205590000-07">
+        <addColumn tableName="tbl_question_bank">
+            <column name="c_descriptive_answer_v2" type="CLOB"/>
+        </addColumn>
+        <sql>
+            <![CDATA[
+            UPDATE tbl_question_bank SET c_descriptive_answer_v2 = c_descriptive_answer;
+            ALTER TABLE tbl_question_bank
+            DROP COLUMN c_descriptive_answer;
+            ALTER TABLE tbl_question_bank
+                RENAME COLUMN c_descriptive_answer_v2 TO c_descriptive_answer;
+            ]]>
+        </sql>
+    </changeSet>
+
+
+
+    <changeSet author="namdari" id="1658205590000-08">
+        <addColumn tableName="tbl_question_bank">
+            <column name="c_descriptive_answer_v2" type="CLOB"/>
+        </addColumn>
+        <sql>
+            <![CDATA[
+            UPDATE tbl_question_bank SET c_descriptive_answer_v2 = c_descriptive_answer;
+            ALTER TABLE tbl_question_bank
+            DROP COLUMN c_descriptive_answer;
+            ALTER TABLE tbl_question_bank
+                RENAME COLUMN c_descriptive_answer_v2 TO c_descriptive_answer;
+            ]]>
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
 
 

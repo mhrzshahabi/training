@@ -1,3 +1,4 @@
+<%@ page import="static com.nicico.copper.core.SecurityUtil.hasAuthority" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
@@ -35,41 +36,41 @@
     });
 
     // ------------------------------------------- forms -------------------------------------------
-    var DynamicForm_PostAlarmSelection = isc.DynamicForm.create({
-        width: "85%",
-        height: "100%",
-        fields: [
-            {
-
-                name: "loadTypeSelect",
-                title: "",
-                type: "radioGroup",
-                defaultValue: "1",
-                valueMap: {
-                    "1": "لیست تمامی پست ها",
-                    "2": "لیست پست های عملیاتی",
-                },
-                vertical: false,
-                changed: function (form, item, value) {
-                    if (value === "1") {
-                        LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
-                        objectIdAttachment=null
-                        PostDS_Url = viewPostUrl + "/iscList" ;
-                        PostDS_post.fetchDataURL = PostDS_Url ;
-                        PostLG_post.invalidateCache();
-                        closeToShowUnGroupedPosts_POST();
-                    } else if(value === "2"){
-                        objectIdAttachment=null
-                        LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
-                        PostDS_Url = viewPostUrl + "/roleIndPostIscList" ;
-                        PostDS_post.fetchDataURL = PostDS_Url ;
-                        PostLG_post.invalidateCache();
-                    }
-
-                },
-            }
-        ]
-    });
+    // var DynamicForm_PostAlarmSelection = isc.DynamicForm.create({
+    //     width: "85%",
+    //     height: "100%",
+    //     fields: [
+    //         {
+    //
+    //             name: "loadTypeSelect",
+    //             title: "",
+    //             type: "radioGroup",
+    //             defaultValue: "1",
+    //             valueMap: {
+    //                 "1": "لیست تمامی پست ها",
+    //                 "2": "لیست پست های عملیاتی",
+    //             },
+    //             vertical: false,
+    //             changed: function (form, item, value) {
+    //                 if (value === "1") {
+    //                     LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
+    //                     objectIdAttachment=null
+    //                     PostDS_Url = viewPostUrl + "/iscList" ;
+    //                     PostDS_post.fetchDataURL = PostDS_Url ;
+    //                     PostLG_post.invalidateCache();
+    //                     closeToShowUnGroupedPosts_POST();
+    //                 } else if(value === "2"){
+    //                     objectIdAttachment=null
+    //                     LoadAttachments_Post.ListGrid_JspAttachment.setData([]);
+    //                     PostDS_Url = viewPostUrl + "/roleIndPostIscList" ;
+    //                     PostDS_post.fetchDataURL = PostDS_Url ;
+    //                     PostLG_post.invalidateCache();
+    //                 }
+    //
+    //             },
+    //         }
+    //     ]
+    // });
 
 
     // ------------------------------------------- ToolStrip -------------------------------------------
@@ -80,7 +81,17 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post");
+            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post",false);
+        }
+    });
+    ToolStripButton_EditNA_POSTGap = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی (گپ)",
+        click: function () {
+            if (PostLG_post.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post",true);
         }
     });
     ToolStripButton_TreeNA_JspPost = isc.ToolStripButton.create({
@@ -116,6 +127,9 @@
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_T')">
             ToolStripButton_TreeNA_JspPost,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_POSTGap,
             </sec:authorize>
             <sec:authorize access="hasAuthority('Post_P')">
             ToolStrip_Post_Export2EXcel
@@ -159,7 +173,7 @@
             //         Window_PostWebService_Post.show();
             //     }
             // }),
-            DynamicForm_PostAlarmSelection,
+            // DynamicForm_PostAlarmSelection,
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -288,10 +302,18 @@
             },
         ],
         transformRequest: function (dsRequest) {
+            if (postAdmin !== undefined && postAdmin != null) {
+
+                if (postAdmin === "true") {
+                    PostDS_post.fetchDataURL = viewPostUrl + "/iscList";
+                } else {
+                    PostDS_post.fetchDataURL = viewPostUrl + "/roleIndPostIscList";
+                }
+            }
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: PostDS_Url
+        // fetchDataURL: PostDS_Url_User_posts
     });
 
     DepartmentWebserviceDS_post = isc.TrDS.create({

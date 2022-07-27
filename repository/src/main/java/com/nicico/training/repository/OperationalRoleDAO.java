@@ -77,4 +77,13 @@ public interface OperationalRoleDAO extends JpaRepository<OperationalRole, Long>
             "         inner join TBL_OPERATIONAL_ROLE role on role.ID = ouser.F_OPERATIONAL_ROLE " +
             "where role.C_CODE = :roleCode " , nativeQuery = true)
     Long findRoleByCode(@Param("roleCode") String roleCode);
+
+    @Query(value = "SELECT opr.id FROM (SELECT id FROM tbl_operational_role WHERE complex_id =:complexId AND object_type =:objectType) opr " +
+            "INNER JOIN tbl_operational_role_subcategory orsc ON orsc.f_operational_role = opr.id WHERE orsc.f_subcategory =:subCategoryId", nativeQuery = true)
+    List<Long> getOperationalRoleIdsByComplexIdAndSubCategoryId(Long complexId, String objectType, Long subCategoryId);
+
+    @Query(value = "SELECT opr.id FROM (SELECT id FROM tbl_operational_role WHERE complex_id =:complexId AND object_type =:objectType) opr " +
+            "INNER JOIN tbl_operational_role_category orc ON orc.f_operational_role = opr.id WHERE orc.f_category =:categoryId", nativeQuery = true)
+    List<Long> getOperationalRoleIdsByComplexIdAndCategoryId(Long complexId, String objectType, Long categoryId);
+
 }

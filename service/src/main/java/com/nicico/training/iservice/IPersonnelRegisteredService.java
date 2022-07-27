@@ -51,4 +51,6 @@ public interface IPersonnelRegisteredService {
     List<Map<String,Object>> findByNationalCodeAndMobileNumber(String nationalCode, String mobileNumber);
 
     Map<String, String> getReapeatlyPhones();
+
+    void editNationalCode(Long id,String nationalCode);
 }

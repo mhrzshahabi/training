@@ -191,6 +191,7 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "limitSufficiency", title: "حد بسندگی"},
         ],
         testData: competenceTopData,
         // fetchDataURL: competenceUrl + "/iscList",
@@ -201,6 +202,8 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", filterOperator: "iContains",},
+            {name: "limitSufficiency", title: "حد بسندگی"},
+
         ],
         testData: competenceBottomData,
         // fetchDataURL: competenceUrl + "/iscList",
@@ -672,7 +675,9 @@
         showHeaderContextMenu: false,
         showRowNumbers: false,
         border: "1px solid",
-        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"}],
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"}
+        ,            {name: "limitSufficiency", title: "حد بسندگی"}
+        ],
         headerHeight: 50,
         headerSpans: [
             {
@@ -979,7 +984,10 @@
                 fields: ["title", "competenceType.title"],
                 title: "<spring:message code="competence.list"/>"
             }],
-        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"}],
+        fields: [{name: "title", title: "<spring:message code="title"/>"}, {name: "competenceType.title", title: "<spring:message code="type"/>"},
+            {name: "limitSufficiency", title: "حد بسندگی"},
+
+        ],
         gridComponents: [
             isc.LgLabel.create({contents: "<span><h3><b>" + "نیازسنجی موجود سیستم" + "</b></h3></span>", customEdges: ["B"]}),
             "header", "body"
@@ -1587,6 +1595,7 @@
                 // outPut.push(data[i].competenceId);
                 competence.id = data[i].competenceId;
                 competence.title = data[i].competence.title;
+                competence.limitSufficiency = data[i].limitSufficiency;
                 competence.competenceType = data[i].competence.competenceType;
                 DataSource_Competence_Bottom_JspDiffNeedsAssessment.addData(competence, ()=>{ListGridBottom_Competence_JspDiffNeedsAssessment.selectRecord(0)});
             }
@@ -1628,6 +1637,7 @@
                     // outPut.push(data[i].competenceId);
                     competence.id = data[i].competenceId;
                     competence.title = data[i].competence.title;
+                    competence.limitSufficiency = data[i].limitSufficiency;
                     competence.competenceType = data[i].competence.competenceType;
                     DataSource_Competence_Top_JspDiffNeedsAssessment.addData(competence, ()=>{ListGridBottom_Competence_JspDiffNeedsAssessment.selectRecord(0)});
                 }

@@ -1581,7 +1581,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup");
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup",false);
             // Window_NeedsAssessment_Edit.setProperties({
             //     close() {
             //         ListGrid_Post_Group_Jsp.invalidateCache()
@@ -1592,6 +1592,19 @@
             // Window_NeedsAssessment_Edit.show();
         }
     });
+
+    ToolStripButton_EditNA_JspGroupGap = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی (گپ)",
+        click: function () {
+            if (ListGrid_Post_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup",true);
+        }
+    });
+
+
     ToolStripButton_TreeNA_JspPostGroup = isc.ToolStripButton.create({
         title: "درخت نیازسنجی",
         click: function () {
@@ -1616,7 +1629,10 @@
             ToolStripButton_EditNA_Jsp,
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_T')">
-            ToolStripButton_TreeNA_JspPostGroup
+            ToolStripButton_TreeNA_JspPostGroup,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_JspGroupGap
             </sec:authorize>
         ]
     });

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
 
@@ -151,8 +152,14 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
 
     @Override
     public List<NeedsAssessmentDTO.CourseDetail> findCoursesByTrainingPostCode(String trainingPostCode) {
+        List<NeedsAssessmentDTO.CourseDetail> courseDetailDistinctList = new ArrayList<>();
         List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCode("TrainingPost", trainingPostCode);
-        return needAssessmentBeanMapper.toNeedsAssessmentCourseDetailDTOList(needsAssessmentList);
+        List<NeedsAssessmentDTO.CourseDetail> courseDetailList = needAssessmentBeanMapper.toNeedsAssessmentCourseDetailDTOList(needsAssessmentList);
+        for (NeedsAssessmentDTO.CourseDetail courseDetail : courseDetailList) {
+            if (!courseDetailDistinctList.stream().map(NeedsAssessmentDTO.CourseDetail::getCourseCode).collect(Collectors.toList()).contains(courseDetail.getCourseCode()))
+                courseDetailDistinctList.add(courseDetail);
+        }
+        return courseDetailDistinctList;
     }
 
     private List<NeedsAssessmentDTO.Tree> findGenerations(List<NeedsAssessmentDTO.Tree> tree) {

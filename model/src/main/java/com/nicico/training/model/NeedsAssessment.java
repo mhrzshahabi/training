@@ -58,6 +58,9 @@ public class NeedsAssessment<E> extends Auditable {
     @Column(name = "f_competence", nullable = false)
     private Long competenceId;
 
+    @Column(name = "limit_sufficiency")
+    private Long limitSufficiency;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_skill", nullable = false, insertable = false, updatable = false)
     private Skill skill;

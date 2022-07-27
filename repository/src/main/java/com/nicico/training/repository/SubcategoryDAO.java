@@ -44,4 +44,6 @@ public interface SubcategoryDAO extends JpaRepository<Subcategory, Long>, JpaSpe
             "where \n" +
             "rell.user_ids = :userId" , nativeQuery = true)
     Set<Subcategory> findAllByUserId (@Param("userId") Long userId);
+
+    Subcategory findByCategoryIdAndTitleFa(Long categoryId, String titleFa);
 }

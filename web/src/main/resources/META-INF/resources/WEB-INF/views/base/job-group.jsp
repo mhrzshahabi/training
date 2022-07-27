@@ -951,9 +951,20 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup");
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup",false);
         }
     });
+    let ToolStripButton_EditNA_JobGroupGap = isc.ToolStripButton.create({
+        title: "ویرایش نیازسنجی (گپ)",
+        click: function () {
+            if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null){
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup",true);
+        }
+    });
+
     let ToolStripButton_TreeNA_JobGroup = isc.ToolStripButton.create({
         title: "درخت نیازسنجی",
         click: function () {
@@ -972,7 +983,10 @@
             ToolStripButton_EditNA_JobGroup,
             </sec:authorize>
             <sec:authorize access="hasAuthority('NeedAssessment_T')">
-            ToolStripButton_TreeNA_JobGroup
+            ToolStripButton_TreeNA_JobGroup,
+            </sec:authorize>
+            <sec:authorize access="hasAuthority('NeedAssessment_U')">
+            ToolStripButton_EditNA_JobGroupGap,
             </sec:authorize>
         ]
     });

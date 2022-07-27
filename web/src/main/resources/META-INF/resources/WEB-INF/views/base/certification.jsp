@@ -41,16 +41,9 @@
             {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            // {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
             {name: "operationalRoleTitles", title: "گروه های کاری"},
+            {name: "planningChiefOpinion", title: "نظر رئیس برنامه ریزی"},
             {name: "processStatusTitle", title: "وضعیت فرایند در گردش کار"},
-            {name: "state", title: "وضعیت", filterOperator: "iContains",
-                valueMap: {
-                    "نیاز به گذراندن دوره": "نیاز به گذراندن دوره",
-                    "بلامانع": "بلامانع",
-                    "پست موجود نیست": "پست موجود نیست"
-                }
-            },
             {name: "competenceReqId", hidden: true}
         ],
         fetchDataURL: requestItemUrl + "/spec-list"
@@ -65,7 +58,6 @@
             {name: "lastName", title: "نام خانوادگی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
             {name: "state.titleFa", title: "وضعیت", filterOperator: "iContains"},
             {name: "lastModifiedDate", title: "تغییر داده شده درتاریخ"},
             {name: "lastModifiedBy", title: "تغییر داده شده توسط"},
@@ -85,14 +77,6 @@
             {name: "postTitle", title: "پست پیشنهادی", filterOperator: "iContains"},
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
-            // {name: "workGroupCode", title: "گروه کاری", filterOperator: "iContains"},
-            {name: "state", title: "وضعیت", filterOperator: "iContains",
-                valueMap: {
-                    "نیاز به گذراندن دوره": "نیاز به گذراندن دوره",
-                    "بلامانع": "بلامانع",
-                    "پست موجود نیست": "پست موجود نیست"
-                }
-            },
             {name: "competenceReqId", hidden: true}
         ],
     });
@@ -185,15 +169,9 @@
         title: "دریافت فایل خام اکسل",
         icon: "<spring:url value="excel.png"/>",
         click: function () {
-
-            // let record = ListGrid_Competence_Request.getRecord(0);
-            // ListGrid_Competence_Request.expandRecord(record);
-            // let headers = ListGrid_Competence_Request_Items.getFields().slice(1, 6).map(q => q.title);
-            // let fieldNames = ListGrid_Competence_Request_Items.getFields().slice(1, 6).map(q => q.name);
-
-            let headers = ["کدملی", "شماره پرسنلی قدیم", "شماره پرسنلی جدید", "نام", "نام خانوادگی", "مدرک تحصیلی", "رشته", "پست فعلی", "پست پیشنهادی", "امور", "کدپست پیشنهادی"];
-            let fieldNames = ["nationalCode", "personnelNo2", "personnelNumber", "name", "lastName", "educationLevel", "educationMajor", "currentPostTitle", "postTitle", "affairs", "post" ];
-            window.open("${contextPath}/training/reportsToExcel/export?headers=" + headers + "&fieldNames=" + fieldNames);
+            // let headers = ["کدملی", "شماره پرسنلی قدیم", "شماره پرسنلی جدید", "نام", "نام خانوادگی", "مدرک تحصیلی", "رشته", "پست فعلی", "پست پیشنهادی", "امور", "کدپست پیشنهادی"];
+            // let fieldNames = ["nationalCode", "personnelNo2", "personnelNumber", "name", "lastName", "educationLevel", "educationMajor", "currentPostTitle", "postTitle", "affairs", "post" ];
+            window.open("excel/certification-input.xlsx");
         }
     });
     ToolStripButton_Refresh_Competence_Request = isc.ToolStripButtonRefresh.create({
@@ -716,18 +694,16 @@
                 width: "10%",
                 align: "center"
             },
-            // {
-            //     name: "workGroupCode",
-            //     width: "10%",
-            //     align: "center",
-            //     canFilter: false,
-            //     hidden: true
-            // },
             {
                 name: "operationalRoleTitles",
                 width: "10%",
                 align: "center",
                 canFilter: false
+            },
+            {
+                name: "planningChiefOpinion",
+                width: "10%",
+                align: "center"
             },
             {
                 name: "state",
@@ -1408,7 +1384,8 @@
                 {
                     name: "postTitle",
                     width: "10%",
-                    align: "center"
+                    align: "center",
+                    hidden: true
                 },
                 {
                     name: "affairs",
@@ -1425,19 +1402,6 @@
                     name: "post",
                     width: "10%",
                     align: "center"
-                },
-                // {
-                //     name: "workGroupCode",
-                //     width: "10%",
-                //     align: "center",
-                //     canEdit: false
-                // },
-                {
-                    name: "state",
-                    width: "10%",
-                    align: "center",
-                    hidden: true,
-                    canEdit: false
                 },
                 {
                     name: "competenceReqId",
@@ -1499,32 +1463,57 @@
         let cellNum = 11;
         ListGrid_Competence_Request_Items.startEditing(rowNum, cellNum);
     }
+
+    function refreshRequestItem() {
+        ListGrid_Competence_Request_Items.invalidateCache();
+        let record = ListGrid_Competence_Request.getSelectedRecord();
+        if (record == null || record.id == null)
+            return;
+        let criteriaReq = {
+            _constructor: "AdvancedCriteria",
+            operator: "and",
+            criteria: [{fieldName: "competenceReqId", operator: "equals", value: record.id}]
+        };
+        ListGrid_Competence_Request_Items.fetchData(criteriaReq, function (dsResponse, data, dsRequest) {
+            if (data.length == 0) {
+                ListGrid_Competence_Request_Items.setData([]);
+                ListGrid_Competence_Request_Items.show();
+            } else {
+                ListGrid_Competence_Request_Items.setData(data);
+                ListGrid_Competence_Request_Items.setAutoFitMaxRecords(1);
+                ListGrid_Competence_Request_Items.show();
+            }
+        }, {operationId: "00"});
+    }
     function deleteRequestItem(record) {
 
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            let Dialog_Competence_Request_Item_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code="verify.delete"/>");
-            Dialog_Competence_Request_Item_remove.addProperties({
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index === 0) {
-                        wait.show();
-                        isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/" + record.id, "DELETE", null, function (resp) {
-                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                wait.close();
-                                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                                ListGrid_Competence_Request.invalidateCache();
-
-                            } else {
-                                wait.close();
-                                createDialog("info", "خطایی رخ داده است");
-                            }
-                        }));
+            if (record.processInstanceId === undefined || record.processInstanceId === null) {
+                let Dialog_Competence_Request_Item_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                    "<spring:message code="verify.delete"/>");
+                Dialog_Competence_Request_Item_remove.addProperties({
+                    buttonClick: function (button, index) {
+                        this.close();
+                        if (index === 0) {
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/" + record.id, "DELETE", null, function (resp) {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    wait.close();
+                                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                                    refreshRequestItem();
+                                } else {
+                                    wait.close();
+                                    createDialog("info", "خطایی رخ داده است");
+                                }
+                            }));
+                        }
                     }
-                }
-            });
+                });
+            } else {
+                createDialog("info", "درخواست تایید صلاحیت به گردش کار ارسال شده است و امکان حذف آن وجود ندارد");
+            }
         }
     }
     function setRequestItemData(result) {
@@ -1544,6 +1533,9 @@
             return;
         } else if (record.operationalRoleTitles.size() === 0 || record.operationalRoleTitles == null) {
             isc.say("پست پیشنهادی در هیچ گروه کاری ای ثبت نشده است.");
+            return;
+        } else if (record.operationalRoleUsers.size() === 0 || record.operationalRoleUsers == null) {
+            isc.say("کاربری برای گروه های کاری پست پیشنهادی تعریف نشده است.");
             return;
         } else {
             isc.MyYesNoDialog.create({
@@ -1572,7 +1564,7 @@
         wait.close()
         if (resp.httpResponseCode === 200) {
             isc.say("<spring:message code='course.set.on.workflow.engine'/>");
-            ListGrid_Class_refresh();
+            refreshRequestItem();
         } else if (resp.httpResponseCode === 404) {
             isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
         } else {
@@ -1585,23 +1577,8 @@
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/operational-roles/" + record.id, "PUT", null, function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
                 wait.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                let criteriaReq = {
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "competenceReqId", operator: "equals", value: record.id}]
-                };
-                ListGrid_Competence_Request_Items.fetchData(criteriaReq, function (dsResponse, data, dsRequest) {
-                    if (data.length == 0) {
-                        ListGrid_Competence_Request_Items.setData([]);
-                    } else {
-                        ListGrid_Competence_Request_Items.setData(data);
-                        ListGrid_Competence_Request_Items.setAutoFitMaxRecords(1);
-                    }
-                    ListGrid_Competence_Request.invalidateCache();
-                }, {operationId: "00"});
+                refreshRequestItem();
             } else {
                 wait.close();
                 createDialog("info", "خطایی رخ داده است");
@@ -1719,11 +1696,6 @@
                     align: "center"
                 },
                 {
-                    name: "workGroupCode",
-                    width: "10%",
-                    align: "center"
-                },
-                {
                     name: "state.titleFa",
                     width: "10%",
                     align: "center",
@@ -1826,30 +1798,96 @@
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else {
 
-            let itemFields = ListGrid_Competence_Request_Items.getFields().slice(1, 12).map(q => q.name);
-            let itemHeaders = ListGrid_Competence_Request_Items.getFields().slice(1, 12).map(q => q.title);
-            let title = "درخواست با شماره " + competenceRequest.id + " - درخواست دهنده " + competenceRequest.applicant;
-
-            let downloadForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "/training/reportsToExcel/competenceRequestWithItems",
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "fieldNames", type: "hidden"},
-                        {name: "headers", type: "hidden"},
-                        {name: "compReqId", type: "hidden"},
-                        {name: "title", type: "hidden"}
-                    ]
+            let DynamicForm_Select_Status = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "15%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "state",
+                        title: "وضعیت آموزشی",
+                        width: "100%",
+                        align: "center",
+                        required: true,
+                        valueMap: {
+                            "نیاز به گذراندن دوره": "نیاز به گذراندن دوره",
+                            "بلا مانع": "بلا مانع",
+                            "همه": "همه"
+                        }
+                    }
+                ]
             });
+            let Button_Select_Status_Excel = isc.IButton.create({
+                title: "ارسال به اکسل",
+                align: "center",
+                width: "120",
+                click: function () {
 
-            downloadForm.setValue("fieldNames", itemFields);
-            downloadForm.setValue("headers", itemHeaders);
-            downloadForm.setValue("compReqId", competenceRequest.id);
-            downloadForm.setValue("title", title);
-            downloadForm.show();
-            downloadForm.submitForm();
+                    let itemFields = ["personnelNo2", "name", "lastName", "affairs", "currentPostTitle", "postTitle", "post", "planningChiefOpinion"];
+                    let itemHeaders = ["شماره کار", "نام شرکت کننده", "نام خانوادگی", "امور", "پست قدیم", "پست پیشنهادی", "کدپست پیشنهادی", "وضعیت آموزشی"];
+                    let state = DynamicForm_Select_Status.getValue("state");
+
+                    let downloadForm = isc.DynamicForm.create({
+                        method: "POST",
+                        action: "/training/reportsToExcel/competenceRequestWithItems",
+                        target: "_Blank",
+                        canSubmit: true,
+                        fields:
+                            [
+                                {name: "fieldNames", type: "hidden"},
+                                {name: "headers", type: "hidden"},
+                                {name: "compReqId", type: "hidden"},
+                                {name: "state", type: "hidden"},
+                            ]
+                    });
+
+                    downloadForm.setValue("fieldNames", itemFields);
+                    downloadForm.setValue("headers", itemHeaders);
+                    downloadForm.setValue("compReqId", competenceRequest.id);
+                    downloadForm.setValue("state", state);
+                    downloadForm.show();
+                    downloadForm.submitForm();
+
+                    Window_Select_Status.close();
+                }
+            });
+            let Button_Select_Status_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "120",
+                click: function () {
+                    Window_Select_Status.close();
+                }
+            });
+            let HLayout_Select_Status = isc.HLayout.create({
+                width: "100%",
+                height: "5%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_Select_Status_Excel,
+                    Button_Select_Status_Close
+                ]
+            });
+            let Window_Select_Status = isc.Window.create({
+                title: "انتخاب رکوردها براساس وضعیت آموزشی",
+                autoSize: false,
+                width: "30%",
+                height: "15%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_Select_Status,
+                    HLayout_Select_Status
+                ]
+            });
+            Window_Select_Status.show();
         }
     }
     function exportToExcelPersonnelJobHistory() {

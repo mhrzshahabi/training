@@ -1392,4 +1392,18 @@
         <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="tbl_operational_chart_parent_child" constraintName="FK_parent_id_operational_chart" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_chart" validate="true"/>
     </changeSet>
 
+    <changeSet author="namdari" id="1656131979000-05">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_of_experts_personnel" constraintName="FKCommitteeOfExpertsPersonnel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1656131979000-12">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_of_experts_post" constraintName="FKCommitteeOfExpertsPost" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
+    </changeSet>
+
+
+    <changeSet author="namdari (generated)" id="1656131979000-15">
+    <addForeignKeyConstraint baseColumnNames="committee_of_experts_id" baseTableName="tbl_committee_of_experts_complex" constraintName="FKcommittee_of_experts_complex" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
+</changeSet>
+
 </databaseChangeLog>

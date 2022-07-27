@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonnelService;
+import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.iservice.ITrainingPostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,7 @@ import static com.nicico.training.service.BaseService.makeNewCriteria;
 public class TrainingPostRestController {
 
     private final ITrainingPostService trainingPostService;
+    private final IRequestItemService requestItemService;
     private final IPersonnelService personnelService;
     private final ObjectMapper objectMapper;
 
@@ -175,6 +177,15 @@ public class TrainingPostRestController {
     public ResponseEntity getNeedAssessmentInfo(@RequestParam String trainingPostCode) {
         try {
             return new ResponseEntity<>(trainingPostService.getNeedAssessmentInfo(trainingPostCode), HttpStatus.OK);
+        } catch (TrainingException e) {
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/getNeedAssessmentInfo/byRequestItemId")
+    public ResponseEntity getNeedAssessmentInfoByRequestItemId(@RequestParam String requestItemId) {
+        try {
+            return new ResponseEntity<>(trainingPostService.getNeedAssessmentInfo(requestItemService.get(Long.valueOf(requestItemId)).getPost()), HttpStatus.OK);
         } catch (TrainingException e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
         }

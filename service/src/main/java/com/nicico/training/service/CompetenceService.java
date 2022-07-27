@@ -1,7 +1,7 @@
 package com.nicico.training.service;
 
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
-import com.nicico.copper.core.SecurityUtil;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
@@ -11,16 +11,23 @@ import com.nicico.training.mapper.bpmsNeedAssessment.CompetenceBeanMapper;
 import com.nicico.training.model.Competence;
 import com.nicico.training.model.NeedsAssessment;
 import com.nicico.training.model.NeedsAssessmentTemp;
+import com.nicico.training.model.Skill;
 import com.nicico.training.repository.CompetenceDAO;
 import com.nicico.training.repository.NeedsAssessmentDAO;
 import com.nicico.training.repository.NeedsAssessmentTempDAO;
+import com.nicico.training.repository.SkillDAO;
 import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import response.BaseResponse;
@@ -37,6 +44,7 @@ import java.util.Optional;
 public class CompetenceService extends BaseService<Competence, Long, CompetenceDTO.Info, CompetenceDTO.Create, CompetenceDTO.Update, CompetenceDTO.Delete, CompetenceDAO> implements ICompetenceService {
 
     @Autowired
+    @Lazy
     private IBpmsService bPMSService;
     @Autowired
     private MessageSource messageSource;
@@ -44,6 +52,8 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     private CompetenceDAO competenceDAO;
     @Autowired
     private NeedsAssessmentDAO needsAssessmentDAO;
+    @Autowired
+    private SkillDAO skillDAO;
     @Autowired
     private CompetenceBeanMapper competenceBeanMapper;
     @Autowired
@@ -107,9 +117,10 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     public CompetenceDTO.Info delete(Long id) {
         final Optional<Competence> optional = dao.findById(id);
         final Competence entity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        if (!entity.getCreatedBy().equals(SecurityUtil.getUsername()))
-            throw new TrainingException(TrainingException.ErrorType.Unauthorized);
+
         try {
+            needsAssessmentDAO.deleteByCompetenceId(id);
+            needsAssessmentTempDAO.deleteByCompetenceId(id);
             dao.deleteById(id);
             return modelMapper.map(entity, CompetenceDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -117,6 +128,90 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         }
     }
 
+    @Override
+    public SearchDTO.SearchRs<CompetenceDTO.Posts> searchPosts(Long id, Integer startRow, Integer endRow) {
+        List<CompetenceDTO.Posts> list =new ArrayList<>();
+        SearchDTO.SearchRs<CompetenceDTO.Posts> data= new SearchDTO.SearchRs<CompetenceDTO.Posts>();
+        int page=0;
+        int mode =((75-startRow)%75);
+        if (mode==0)
+            page =((75-startRow)/75)-1;
+        else
+            page =((75-startRow)/75);
+
+        Pageable pageable = PageRequest.of(page, 75-startRow, Sort.by(
+                Sort.Order.desc("id")
+        ));
+        Page<NeedsAssessment> needsAssessments = needsAssessmentDAO.findAllByCompetenceId(id,pageable);
+
+        for (NeedsAssessment needsAssessment :needsAssessments){
+            CompetenceDTO.Posts  item = new CompetenceDTO.Posts();
+            item.setCode(needsAssessment.getObjectCode());
+            item.setTitle(needsAssessment.getObjectName());
+            item.setId(needsAssessment.getId());
+            item.setType(getType(needsAssessment.getObjectType()));
+            Optional<Skill> skill=skillDAO.findById(needsAssessment.getSkillId());
+            skill.ifPresent(value -> item.setSkill(value.getTitleFa()));
+
+            list.add(item);
+        }
+
+        data.setList(list);
+
+            data.setTotalCount(needsAssessments.getTotalElements());
+
+        return data;
+    }
+
+    @Override
+    public  SearchDTO.SearchRs<CompetenceDTO.Posts>  searchTempPosts(Long competenceId, Integer startRow, Integer endRow) {
+        List<CompetenceDTO.Posts> list =new ArrayList<>();
+        SearchDTO.SearchRs<CompetenceDTO.Posts> data= new SearchDTO.SearchRs<CompetenceDTO.Posts>();
+        int page=0;
+        int mode =((75-startRow)%75);
+        if (mode==0)
+            page =((75-startRow)/75)-1;
+        else
+            page =((75-startRow)/75);
+
+        Pageable pageable = PageRequest.of(page, 75-startRow, Sort.by(
+                Sort.Order.desc("id")
+        ));
+        Page<NeedsAssessmentTemp> needsAssessments = needsAssessmentTempDAO.findAllByCompetenceId(competenceId,pageable);
+
+        for (NeedsAssessmentTemp needsAssessment :needsAssessments){
+            CompetenceDTO.Posts  item = new CompetenceDTO.Posts();
+            item.setCode(needsAssessment.getObjectCode());
+            item.setTitle(needsAssessment.getObjectName());
+            item.setId(needsAssessment.getId());
+            item.setType(getType(needsAssessment.getObjectType()));
+           Optional<Skill> skill=skillDAO.findById(needsAssessment.getSkillId());
+            skill.ifPresent(value -> item.setSkill(value.getTitleFa()));
+
+            list.add(item);
+        }
+
+        data.setList(list);
+        data.setTotalCount(needsAssessments.getTotalElements());
+
+        return data;
+    }
+    public String getType(String type) {
+        switch (type) {
+            case "TrainingPost":
+                return "پست";
+            case "Post":
+                return "پست انفرادی";
+            case "PostGrade":
+                return "رده پستی ";
+            case "PostGroup":
+                return "پست گروهی";
+            case "Job":
+                return "شغل";
+            default:
+                return type;
+        }
+    }
     @Transactional
     public CompetenceDTO.Info checkAndUpdate(Long id, CompetenceDTO.Update rq, HttpServletResponse response) {
         try {
@@ -152,7 +247,7 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
     }
 
     @Transactional
-    public List<NeedsAssessmentDTO.Info> checkUsed(Long competenceId) {
+    public List<NeedsAssessmentDTO.Info> getUsedList(Long competenceId) {
         final ArrayList<NeedsAssessmentDTO.Info> needsAssessmentList = new ArrayList<>();
         Optional<NeedsAssessment> needsAssessment = needsAssessmentDAO.findFirstByCompetenceId(competenceId);
         if (needsAssessment.isPresent()) {
@@ -165,9 +260,29 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         return needsAssessmentList;
     }
 
+    @Override
+    public Boolean checkUsed(Long competenceId) {
+        Optional<NeedsAssessment> needsAssessment = needsAssessmentDAO.findFirstByCompetenceId(competenceId);
+        if (needsAssessment.isPresent()) {
+            return true;
+        }
+        Optional<NeedsAssessmentTemp> needsAssessmentTemp = needsAssessmentTempDAO.findFirstByCompetenceId(competenceId);
+        if (needsAssessmentTemp.isPresent()) {
+            return true;
+        }
+        return false;
+    }
+
     public CompetenceDTO.Info getProcessDetailByProcessInstanceId(String processInstanceId) {
         Optional<Competence> competenceOptional = competenceDAO.findByProcessInstanceId(processInstanceId);
-        return competenceOptional.map(competence -> modelMapper.map(competence, CompetenceDTO.Info.class)).orElse(null);
+        CompetenceDTO.Info  data= competenceOptional.map(competence -> modelMapper.map(competence, CompetenceDTO.Info.class)).orElse(null);
+
+        if (data != null) {
+            data.setCompetenceLevel(parameterValueService.getParameterTitleCodeById(data.getCompetenceLevelId()));
+            data.setCompetencePriority(parameterValueService.getParameterTitleCodeById(data.getCompetencePriorityId()));
+
+        }
+    return data;
     }
 
 
@@ -188,4 +303,16 @@ public class CompetenceService extends BaseService<Competence, Long, CompetenceD
         return response;
 
     }
+
+
+    @Override
+    public Competence getCompetence(Long id) {
+        Optional<Competence> optionalCompetence = competenceDAO.findById(id);
+        if (optionalCompetence.isPresent()) {
+            return optionalCompetence.get();
+        }else {
+            throw new TrainingException(TrainingException.ErrorType.CompetenceTypeNotFound);
+        }
+    }
+
 }

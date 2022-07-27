@@ -226,7 +226,7 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
 
     @Override
     public Optional<PersonnelRegistered> getByNationalCode(String nationalCode) {
-        return personnelRegisteredDAO.findOneByNationalCode(nationalCode);
+        return personnelRegisteredDAO.findByNationalCodeAndDeleted(nationalCode,null);
     }
 
     @Override
@@ -269,5 +269,11 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         }
 
         return map;
+    }
+
+    @Override
+    @Transactional
+    public void editNationalCode(Long id,String nationalCode) {
+        personnelRegisteredDAO.editNationalCode(id,nationalCode);
     }
 }

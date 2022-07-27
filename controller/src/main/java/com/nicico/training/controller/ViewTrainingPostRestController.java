@@ -63,8 +63,22 @@ public class ViewTrainingPostRestController {
         userAccessPostIds.addAll(userAccessTrainingPostIds);
         if (userAccessPostIds != null && userAccessPostIds.size() > 0) {
             List<SearchDTO.CriteriaRq> criteriaList = new ArrayList<>();
-            criteriaList.add(makeNewCriteria("id", userAccessPostIds, EOperator.inSet, null));
-            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, criteriaList);
+
+
+            if (userAccessPostIds.size()>999){
+                int page = 0;
+                while (page * 1000 < userAccessPostIds.size()) {
+                    page++;
+                    criteriaList.add(makeNewCriteria("id", userAccessPostIds.subList((page - 1) * 1000, Math.min((page * 1000), userAccessPostIds.size())), EOperator.inSet, null));
+
+                }
+
+            }else {
+                criteriaList.add(makeNewCriteria("id", userAccessPostIds, EOperator.inSet, null));
+
+            }
+
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, criteriaList);
             if (searchRq.getCriteria() != null) {
                 if (searchRq.getCriteria().getCriteria() != null)
                     searchRq.getCriteria().getCriteria().add(criteriaRq);
@@ -235,14 +249,14 @@ public class ViewTrainingPostRestController {
     @PostMapping("/add/{roleId}")
     public ResponseEntity<BaseResponse> addIndividualPost(@PathVariable Long roleId, @RequestBody List<Long> postIds) {
         BaseResponse response = new BaseResponse();
-        try {
+//        try {
             iOperationalRoleService.addIndividualPost(roleId, postIds);
             response.setStatus(HttpStatus.OK.value());
             response.setMessage("پست انفرادی با موفقیت اضافه شد");
-        } catch (Exception e) {
-            response.setStatus(HttpStatus.CONFLICT.value());
-            response.setMessage("پست انفرادی تکراری می باشد");
-        }
+//        } catch (Exception e) {
+//            response.setStatus(HttpStatus.CONFLICT.value());
+//            response.setMessage("پست انفرادی تکراری می باشد");
+//        }
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

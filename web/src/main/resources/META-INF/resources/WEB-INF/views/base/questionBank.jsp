@@ -724,7 +724,7 @@
                 type: "TextAreaItem",
                 height: 100,
                 width: "100%",
-                length: 1000,
+                // length: 1000,
                 colSpan: 4,
                 startRow: true,
                 showRTL: true,

@@ -164,4 +164,9 @@ public class SubcategoryService implements ISubcategoryService {
     public Set<Subcategory> findAllByUserId(Long userId) {
         return subCategoryDAO.findAllByUserId(userId);
     }
+
+    @Override
+    public Subcategory findByCategoryIdAndTitleFa(Long categoryId, String titleFa) {
+        return subCategoryDAO.findByCategoryIdAndTitleFa(categoryId, titleFa);
+    }
 }

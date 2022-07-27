@@ -48,9 +48,6 @@ public class RequestItemAudit implements Serializable {
     @Column(name = "post")
     private String post;
 
-    @Column(name = "work_group_code")
-    private String workGroupCode;
-
     @Column(name = "national_code")
     private String nationalCode;
 

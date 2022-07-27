@@ -24,12 +24,26 @@ public class EducationalDecisionDTO {
     private Double educationalHistoryCoefficient;
     private String educationalHistoryFrom;
     private String educationalHistoryTo;
+    /////////////////////////////////
     private String baseTuitionFee;
     private String professorTuitionFee;
     private String knowledgeAssistantTuitionFee;
     private String teacherAssistantTuitionFee;
     private String instructorTuitionFee;
     private String educationalAssistantTuitionFee;
+    ///////////////////////////////////
+    private String teachingMethod;
+    private String courseTypeTeachingMethod;
+    private String coefficientOfTeachingMethod;
+
+    /////////////////////////////////////
+    private String coefficientOfCourseType;
+    private String courseForCourseType;
+    private String courseLevelCourseType;
+    private String typeOfSpecializationCourseType;
+    ////////////////////////////////////
+    private String distance;
+    private String residence;
 
 
     @Getter

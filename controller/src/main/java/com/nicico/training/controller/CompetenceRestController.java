@@ -13,6 +13,7 @@ import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.iservice.ICompetenceService;
 import com.nicico.training.iservice.IWorkGroupService;
+import com.nicico.training.model.Competence;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -91,6 +92,10 @@ public class CompetenceRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
         SearchDTO.SearchRs<CompetenceDTO.Info> response = competenceService.search(request);
+        for (CompetenceDTO.Info  row:response.getList()){
+            Boolean used=competenceService.checkUsed(row.getId());
+            row.setIsUsed(used);
+        }
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs<>();
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specResponse.setData(response.getList())
@@ -100,6 +105,90 @@ public class CompetenceRestController {
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+
+    @Loggable
+    @GetMapping(value = "/show-posts/spec-list")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<Object> showNeedsAssessmentPosts(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                       @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "id", required = false) Long id,
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<CompetenceDTO.Posts> response = competenceService.searchPosts(id,startRow,endRow);
+
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs<>();
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(Math.toIntExact(response.getTotalCount()));
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+
+    @Loggable
+    @GetMapping(value = "/show-posts-temp/spec-list")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<Object> showTempPosts(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                           @RequestParam(value = "_endRow", defaultValue = "75") Integer endRow,
+                                                           @RequestParam(value = "_constructor", required = false) String constructor,
+                                                           @RequestParam(value = "operator", required = false) String operator,
+                                                           @RequestParam(value = "criteria", required = false) String criteria,
+                                                           @RequestParam(value = "id", required = false) Long id,
+                                                           @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException, NoSuchFieldException, IllegalAccessException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<CompetenceDTO.Posts> response = competenceService.searchTempPosts(id,startRow,endRow);
+
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs<>();
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getList().size())
+                .setTotalRows(Math.toIntExact(response.getTotalCount()));
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+
 
     @Loggable
     @PostMapping
@@ -111,7 +200,7 @@ public class CompetenceRestController {
     @Loggable
     @PutMapping("/{id}")
     public ResponseEntity update(@PathVariable Long id, @RequestBody Object rq, HttpServletResponse response) {
-        final List<NeedsAssessmentDTO.Info> list = competenceService.checkUsed(id);
+        final List<NeedsAssessmentDTO.Info> list = competenceService.getUsedList(id);
         if(!list.isEmpty()){
             return new ResponseEntity<>(list, HttpStatus.IM_USED);
         }
@@ -122,10 +211,6 @@ public class CompetenceRestController {
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-        final List<NeedsAssessmentDTO.Info> list = competenceService.checkUsed(id);
-        if(!list.isEmpty()){
-            return new ResponseEntity<>(list, HttpStatus.IM_USED);
-        }
         try {
             return new ResponseEntity<>(competenceService.delete(id), HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -139,10 +224,16 @@ public class CompetenceRestController {
     @Loggable
     @GetMapping("/{id}")
     public ResponseEntity checkUsed(@PathVariable Long id) {
-        final List<NeedsAssessmentDTO.Info> list = competenceService.checkUsed(id);
-        if(!list.isEmpty()){
-            return new ResponseEntity<>(list, HttpStatus.IM_USED);
+        Competence competence=competenceService.getCompetence(id);
+        if (competence.getWorkFlowStatusCode().equals(0L) || competence.getWorkFlowStatusCode().equals(4L) ){
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
+        }else {
+            final List<NeedsAssessmentDTO.Info> list = competenceService.getUsedList(id);
+            if(!list.isEmpty()){
+                return new ResponseEntity<>(list, HttpStatus.IM_USED);
+            }
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-        return new ResponseEntity<>(HttpStatus.OK);
+
     }
 }

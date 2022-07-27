@@ -3,6 +3,7 @@ package com.nicico.training.repository;
 import com.nicico.training.model.PersonnelRegistered;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -16,7 +17,7 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
 
     Optional<PersonnelRegistered> findOneByPersonnelNo(String personnelNo);
 
-    Optional<PersonnelRegistered> findOneByNationalCode(String nationalCode);
+    Optional<PersonnelRegistered> findByNationalCodeAndDeleted(String nationalCode,Long  deleted);
 
     PersonnelRegistered[] findAllByNationalCode(String nationalCode);
 
@@ -56,6 +57,10 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
             "    HAVING \n" +
             "    COUNT(*) > 1" , nativeQuery = true)
     List<Object> getReapeatlyPhones();
+
+    @Modifying
+    @Query(value = "update  tbl_personnel_registered set national_code = :nationalCode ,  e_deleted = null where id =:id ", nativeQuery = true)
+    void editNationalCode(@Param("id") Long id,@Param("nationalCode") String nationalCode);
 }
 
 

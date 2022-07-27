@@ -80,6 +80,10 @@
       "title": "منوی نیازسنجی - پست"
     },
     {
+      "code": "Menu_NeedAssessment_Committee_Of_Experts",
+      "title": "منوی نیازسنجی - کمیته خبرگان"
+    },
+    {
       "code": "Menu_NeedAssessment_CompetenceRequest",
       "title": "منوی نیازسنجی - تایید صلاحیت علمی و فنی"
     },
@@ -844,7 +848,10 @@
 
     {"code": "remove.uncertainty.needAssessment.changes",
       "title": "حذف تغییرات نیازسنجی بلاتکلیف"
-    }
+    },
+
+    {"code": "Admin_Post_Access", "title": "مشاهده تمامی پست ها"}
+
   ]
 }
 

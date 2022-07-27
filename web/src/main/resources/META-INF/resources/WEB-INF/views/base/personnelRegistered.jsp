@@ -1551,6 +1551,13 @@
                 title: "<spring:message code='personnelReg.educationLevelTitle'/>",
                 align: "center",
                 filterOperator: "iContains"
+            },
+            {
+                hidden: true,
+                name: "contactInfo.mobile",
+                title: "موبایل",
+                align: "center",
+                filterOperator: "iContains"
             }
 
         ],

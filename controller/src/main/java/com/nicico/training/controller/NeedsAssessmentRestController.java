@@ -8,10 +8,11 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.NeedAssessmentTempDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
-import com.nicico.training.iservice.INeedsAssessmentService;
-import com.nicico.training.iservice.INeedsAssessmentTempService;
-import com.nicico.training.iservice.IRequestItemService;
+import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.needsassessment.NeedsAssessmentBeanMapper;
+import com.nicico.training.model.RequestItem;
+import com.nicico.training.model.SynonymPersonnel;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -26,6 +27,7 @@ import request.needsassessment.NeedsAssessmentUpdateRequest;
 import response.needsassessment.NeedsAssessmentUpdateResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,12 +36,14 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/needsAssessment")
 public class NeedsAssessmentRestController {
 
-    private final INeedsAssessmentService iNeedsAssessmentService;
-    private final INeedsAssessmentTempService iNeedsAssessmentTempService;
-    private final IRequestItemService requestItemService;
-    private final MessageSource messageSource;
     private final ModelMapper modelMapper;
+    private final MessageSource messageSource;
+    private final ITclassService classService;
     private final NeedsAssessmentBeanMapper mapper;
+    private final IRequestItemService requestItemService;
+    private final INeedsAssessmentService iNeedsAssessmentService;
+    private final ISynonymPersonnelService synonymPersonnelService;
+    private final INeedsAssessmentTempService iNeedsAssessmentTempService;
     private final com.nicico.training.service.needsassessment.NeedsAssessmentTempService tempService;
 
 
@@ -160,6 +164,22 @@ public class NeedsAssessmentRestController {
         response.setMessage("ویرایش موفقیت آمیز");
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
+    @Loggable
+    @PutMapping("update-limitSufficiency/{id}/{limitSufficiency}")
+    public ResponseEntity<NeedsAssessmentUpdateResponse> updateLimitSufficiency(@PathVariable Long id, @PathVariable Long limitSufficiency,@RequestBody NeedsAssessmentUpdateRequest rq) {
+        NeedsAssessmentUpdateResponse response = new NeedsAssessmentUpdateResponse();
+
+        if (!iNeedsAssessmentTempService.isEditable(rq.getObjectType(), rq.getObjectId())) {
+            response.setMessage(messageSource.getMessage("read.only.na.message", null, LocaleContextHolder.getLocale()));
+            response.setStatus(HttpStatus.CONFLICT.value());
+            return new ResponseEntity<>(response, HttpStatus.CONFLICT);
+        }
+
+        tempService.updateLimitSufficiency(rq.getObjectType(), rq.getObjectId(),id,limitSufficiency);
+        response.setStatus(HttpStatus.OK.value());
+        response.setMessage("ویرایش موفقیت آمیز");
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
 
     @Loggable
     @DeleteMapping("/{id}/{objectType}/{objectId}")
@@ -257,17 +277,39 @@ public class NeedsAssessmentRestController {
     @GetMapping(value = "by-training-post-code/spec-list/{requestItemId}")
     public ResponseEntity<ISC<NeedsAssessmentDTO.CourseDetail>> byTrainingPostCodeList(
             @RequestParam(value = "_startRow", required = false) Integer startRow,
-            @RequestParam(value = "_endRow", required = false) Integer endRow, @PathVariable String requestItemId) {
+            @RequestParam(value = "_endRow", required = false) Integer endRow,
+            @PathVariable String requestItemId) {
 
-        List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = iNeedsAssessmentService.findCoursesByTrainingPostCode(requestItemService.get(Long.valueOf(requestItemId)).getPost()).stream()
-                .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
-        ISC.Response<NeedsAssessmentDTO.CourseDetail> response = new ISC.Response<>();
-        response.setStartRow(startRow);
-        response.setEndRow(startRow + needsAssessmentDTOList.size());
-        response.setTotalRows(needsAssessmentDTOList.size());
-        response.setData(needsAssessmentDTOList);
-        ISC<NeedsAssessmentDTO.CourseDetail> infoISC = new ISC<>(response);
-        return new ResponseEntity<>(infoISC, HttpStatus.OK);
+        SynonymPersonnel synonymPersonnel;
+        RequestItem requestItem = requestItemService.get(Long.valueOf(requestItemId));
+
+        if (requestItem != null) {
+            SynonymPersonnel synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+            SynonymPersonnel synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+            if (synonymPersonnelByNationalCode != null)
+                synonymPersonnel = synonymPersonnelByNationalCode;
+            else
+                synonymPersonnel = synonymPersonnelByPersonnelNo2;
+
+            List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = iNeedsAssessmentService.findCoursesByTrainingPostCode(requestItem.getPost()).stream()
+                        .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
+
+            List<NeedsAssessmentDTO.CourseDetail> courseNotPassedList = new ArrayList<>();
+            List<String> list = classService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
+                    .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
+            for (NeedsAssessmentDTO.CourseDetail courseDetail : needsAssessmentDTOList) {
+                if (!list.contains(courseDetail.getCourseCode()))
+                    courseNotPassedList.add(courseDetail);
+            }
+
+            ISC.Response<NeedsAssessmentDTO.CourseDetail> response = new ISC.Response<>();
+            response.setStartRow(startRow);
+            response.setEndRow(startRow + courseNotPassedList.size());
+            response.setTotalRows(courseNotPassedList.size());
+            response.setData(courseNotPassedList);
+            ISC<NeedsAssessmentDTO.CourseDetail> infoISC = new ISC<>(response);
+            return new ResponseEntity<>(infoISC, HttpStatus.OK);
+        } else return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
     }
 
 }

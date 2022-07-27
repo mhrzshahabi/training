@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 import response.event.EventListDto;
 import response.tclass.ElsSessionAttendanceResponse;
+import response.tclass.dto.ElsSessionDetailsResponse;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -64,5 +65,5 @@ public interface IClassSessionService {
     List<ClassSessionDTO.AttendanceClearForm> loadSessionsForClearAttendance(Long classId);
 
 
-
+    ElsSessionDetailsResponse getSessionDetails(Long sessionId);
 }

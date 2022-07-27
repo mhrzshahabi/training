@@ -13403,4 +13403,248 @@ FROM
     </changeSet>
 
 
+    <changeSet author="namdari" id="1642424354000-03">
+        <createView viewName="VIEW_TRAINING_POST" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+    tr_post.id,
+    tr_post.c_created_by,
+    tr_post.d_created_date,
+    tr_post.e_deleted,
+    tr_post.e_enabled,
+    tr_post.c_last_modified_by,
+    tr_post.d_last_modified_date,
+    tr_post.n_version,
+    tr_post.c_code,
+    tr_post.c_title_fa,
+    tr_post.c_affairs,
+    tr_post.c_area,
+    tr_post.c_assistance,
+    tr_post.c_cost_center_title_fa,
+    tr_post.c_cost_center_code,
+    tr_post.c_section,
+    tr_post.c_unit,
+    tr_post.f_department_id,
+    tr_post.f_post_grade_id,
+    tr_post.f_job_id,
+    tr_post.d_last_modified_date_na,
+    tr_post.c_modified_by_na,
+    tr_post.c_people_type,
+    j.c_title_fa                        AS job_c_title_fa,
+    j.c_code                            AS job_c_code,
+    pg.c_title_fa                       AS post_grade_c_title_fa,
+    pg.c_code                           AS post_grade_c_code,
+    nvl(na.n_competence_count, 0)       AS n_competence_count,
+    nvl(prs_count.n_personnel_count, 0) AS n_personnel_count,
+    tbl_department.c_mojtame_title,
+    tbl_committee_of_experts.title as committee ,
+        case when tbl_committee_of_experts.title IS NOT NULL THEN 1 else 0 end as has_committee
+
+FROM
+    tbl_training_post tr_post
+    LEFT JOIN tbl_job           j ON j.id = tr_post.f_job_id
+    LEFT JOIN tbl_post_grade    pg ON pg.id = tr_post.f_post_grade_id
+    LEFT JOIN (
+        SELECT
+            f_training_post_id,
+            COUNT(*) AS n_personnel_count
+        FROM
+            (
+                SELECT
+                    post.id                AS post_id,
+                    prs.id                 AS prs_id,
+                    ptp.f_training_post_id AS f_training_post_id
+                FROM
+                         tbl_post_training_post ptp
+                    INNER JOIN tbl_post      post ON post.id = ptp.f_post_id
+                    INNER JOIN tbl_personnel prs ON post.id = prs.f_post_id
+                                                    AND prs.deleted = 0
+            )
+        GROUP BY
+            f_training_post_id
+    )                 prs_count ON prs_count.f_training_post_id = tr_post.id
+    LEFT JOIN (
+        SELECT
+            f_object                     AS tr_post_id,
+            COUNT(DISTINCT f_competence) AS n_competence_count
+        FROM
+            (
+                SELECT
+                    tbl_needs_assessment.c_object_type,
+                    tbl_needs_assessment.f_object,
+                    tbl_needs_assessment.f_competence
+                FROM
+                    tbl_needs_assessment
+                WHERE
+                        tbl_needs_assessment.c_object_type = 'TrainingPost'
+                    AND tbl_needs_assessment.e_enabled IS NULL
+                    AND tbl_needs_assessment.e_deleted IS NULL
+            )
+        GROUP BY
+            f_object
+    )                 na ON na.tr_post_id = tr_post.id
+    LEFT JOIN tbl_department ON tr_post.f_department_id = tbl_department.id
+    LEFT JOIN tbl_committee_of_experts_post ON tr_post.id = tbl_committee_of_experts_post.object_id
+    LEFT JOIN tbl_committee_of_experts ON tbl_committee_of_experts_post.f_committee_id = tbl_committee_of_experts.
+    id
+             ]]>
+        </createView>
+    </changeSet>
+
+
+     <changeSet author="namdari" id="1642424354000-04">
+        <createView viewName="VIEW_POST" replaceIfExists="true">
+            <![CDATA[
+               SELECT
+    p.id,
+    p.c_created_by,
+    p.d_created_date,
+    p.e_deleted,
+    p.e_enabled,
+    p.c_last_modified_by,
+    p.d_last_modified_date,
+    p.n_version,
+    p.c_code,
+    p.c_title_fa,
+    p.c_affairs,
+    p.c_area,
+    p.c_mojtame_title,
+    p.c_assistance,
+    p.c_cost_center_title_fa,
+    p.c_cost_center_code,
+    p.c_section,
+    p.c_unit,
+    p.f_post_grade_id,
+    p.f_job_id,
+    p.d_last_modified_date_na,
+    p.c_modified_by_na,
+    p.c_people_type,
+    j.c_title_fa                    AS job_c_title_fa,
+    j.c_code                        AS job_c_code,
+    pg.c_title_fa                   AS post_grade_c_title_fa,
+    pg.c_code                       AS post_grade_c_code,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+    COUNT(DISTINCT prs.id)          AS n_personnel_count,
+    tbl_committee_of_experts.title as committee ,
+        case when tbl_committee_of_experts.title IS NOT NULL THEN 1 else 0 end as has_committee
+
+FROM
+    tbl_post              p
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+                tbl_needs_assessment.c_object_type = 'Post'
+            AND tbl_needs_assessment.e_deleted IS NULL
+            AND tbl_needs_assessment.e_enabled IS NULL
+    )                     na ON p.id = na.f_object
+    LEFT JOIN view_active_personnel prs ON p.id = prs.f_post_id
+    INNER JOIN tbl_job               j ON j.id = p.f_job_id
+    INNER JOIN tbl_post_grade        pg ON pg.id = p.f_post_grade_id
+    left JOIN tbl_committee_of_experts_post ON p.id = tbl_committee_of_experts_post.object_id
+    left JOIN tbl_committee_of_experts ON tbl_committee_of_experts_post.f_committee_id = tbl_committee_of_experts.
+    id
+GROUP BY
+    p.id,
+    p.c_created_by,
+    p.d_created_date,
+    p.e_deleted,
+    p.e_enabled,
+    p.c_last_modified_by,
+    p.d_last_modified_date,
+    p.n_version,
+    p.c_code,
+    p.c_title_fa,
+    p.c_affairs,
+    p.c_area,
+    p.c_mojtame_title,
+    p.c_assistance,
+    p.c_cost_center_title_fa,
+    p.c_cost_center_code,
+    p.c_section,
+    p.c_unit,
+    p.f_post_grade_id,
+    p.f_job_id,
+    p.d_last_modified_date_na,
+    p.c_modified_by_na,
+    p.c_people_type,
+    j.c_title_fa,
+    j.c_code,
+    pg.c_title_fa,
+    pg.c_code,
+    tbl_committee_of_experts.title
+            ]]>
+        </createView>
+    </changeSet>
+
+
+    <changeSet author="namdari" id="1642424354000-05">
+        <createView viewName="VIEW_POST_GROUP" replaceIfExists="true">
+            <![CDATA[
+    SELECT
+    pg.id,
+    pg.c_created_by,
+    pg.d_created_date,
+    pg.e_deleted,
+    pg.e_enabled,
+    pg.c_last_modified_by,
+    pg.d_last_modified_date,
+    pg.n_version,
+    pg.c_description,
+    pg.c_title_fa,
+    pg.c_title_en,
+    pg.c_code,
+    pg.d_last_modified_date_na,
+    pg.c_modified_by_na,
+    COUNT(DISTINCT na.f_competence) AS n_competence_count,
+    COUNT(DISTINCT prs.id)          AS n_personnel_count,
+    tbl_committee_of_experts.title as committee ,
+    case when tbl_committee_of_experts.title IS NOT NULL THEN 1 else 0 end as has_committee
+FROM
+    tbl_post_group        pg
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            tbl_needs_assessment
+        WHERE
+                tbl_needs_assessment.c_object_type = 'PostGroup'
+            AND tbl_needs_assessment.e_deleted IS NULL
+            AND tbl_needs_assessment.e_enabled IS NULL
+    )                     na ON pg.id = na.f_object
+    LEFT JOIN (
+        SELECT
+            *
+        FROM
+            view_all_posts
+        WHERE
+            view_all_posts.e_deleted IS NULL
+    )                     p ON p.groupid = pg.id
+    LEFT JOIN view_active_personnel prs ON p.postid = prs.f_post_id
+    LEFT JOIN tbl_committee_of_experts_post ON pg.id = tbl_committee_of_experts_post.object_id
+    LEFT JOIN tbl_committee_of_experts ON tbl_committee_of_experts_post.f_committee_id = tbl_committee_of_experts.
+    id
+GROUP BY
+    pg.id,
+    pg.c_created_by,
+    pg.d_created_date,
+    pg.e_deleted,
+    pg.e_enabled,
+    pg.c_last_modified_by,
+    pg.d_last_modified_date,
+    pg.n_version,
+    pg.c_description,
+    pg.c_title_fa,
+    pg.c_title_en,
+    pg.c_code,
+    pg.d_last_modified_date_na,
+    pg.c_modified_by_na,
+    tbl_committee_of_experts.title
+            ]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>

@@ -13,6 +13,7 @@
         var selectedRecord_addStudent_class = '';
         var checkRefresh = 0;
         var selectedRow = {};
+        let result = [];
         var listGridType = null;
         let previousSelectedRow = {};
         let previousSelectedRowReg = {};
@@ -37,7 +38,17 @@
                     title: "<spring:message code="add"/>",
                     icon: "<spring:url value="create.png"/>",
                     click: function () {
-                        addStudent_student();
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/"+ ListGrid_Class_JspClass.getSelectedRecord().id ,"GET",null,function(resp){
+                            wait.close();
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                result  = JSON.parse(resp.data);
+                                addStudent_student();
+                            }else {
+                                result=[]
+                            }
+
+                        }));
                     }
                 },
                 </sec:authorize>
@@ -67,7 +78,17 @@
         // ------------------------------------------- ToolStrip -------------------------------------------
         let btnAdd_student_class = isc.ToolStripButtonAdd.create({
             click: function () {
-                addStudent_student();
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/"+ ListGrid_Class_JspClass.getSelectedRecord().id ,"GET",null,function(resp){
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        result  = JSON.parse(resp.data);
+                        addStudent_student();
+                    }else {
+                        result=[]
+                    }
+
+                }));
             }
         });
 
@@ -1193,6 +1214,8 @@
                 let nationalCode = SelectedPersonnelsLG_student.data[rowNum].nationalCode;
 
                 studentSelection = true;
+
+  /////
                 let list = PersonnelsLG_student.getSelection();
                 let current = list.filter(function (x) {
                     return x.nationalCode == nationalCode
@@ -1204,7 +1227,7 @@
                 }
                 PersonnelsLG_student.deselectRecord(current)
 
-
+///////////////////////////////////////////////////////////////
                 list = PersonnelsRegLG_student.getSelection();
                 current = list.filter(function (x) {
                     return x.nationalCode == nationalCode
@@ -1215,6 +1238,21 @@
                     current[0].isClicked = false
                 }
                 PersonnelsRegLG_student.deselectRecord(current);
+///////////
+
+                list = SynonymPersonnelsLG_student.getSelection();
+                current = list.filter(function (x) {
+                    return x.nationalCode == nationalCode
+                });
+                current.setProperty("enabled", true);
+                if (current && current[0]) {
+                    current[0].isChecked = false;
+                    current[0].isClicked = false
+                }
+                SynonymPersonnelsLG_student.deselectRecord(current);
+
+
+                //////////
 
                 studentSelection = false;
 
@@ -1513,29 +1551,6 @@
             ],
             gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
             selectionAppearance: "checkbox",
-            dataArrived: function (startRow, endRow) {
-                let lgNationalCodes = StudentsLG_student.data.localData.map(function (item) {
-                    return item.student.nationalCode;
-                });
-                let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function (item) {
-                    return item['nationalCode'];
-                });
-
-                let nationals = lgNationalCodes.concat(selectedNationalCodes);
-
-                let findRows = PersonnelsLG_student.findAll({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
-                });
-                studentSelection = true;
-                findRows.forEach(current => current.isChecked = true);
-
-                PersonnelsLG_student.setSelectedState(findRows);
-                findRows.setProperty("enabled", false);
-
-                studentSelection = false;
-            },
             getCellCSSText: rowStyle,
             rowClick: function (record, recordNum, fieldNum) {
                 if (Object.keys(previousSelectedRow).length > 1) {
@@ -1590,7 +1605,6 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        //personel zaza
                         if (studentForceToHasPhone && ( current.mobile===undefined
                             || current.mobile==null)){
                             isc.Dialog.create({
@@ -1725,29 +1739,6 @@
             ],
             gridComponents: [SynonymPersonnelsTS_student, "filterEditor", "header", "body"],
             selectionAppearance: "checkbox",
-            dataArrived: function (startRow, endRow) {
-                let lgNationalCodes = StudentsLG_student.data.localData.map(function (item) {
-                    return item.student.nationalCode;
-                });
-                let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function (item) {
-                    return item['nationalCode'];
-                });
-
-                let nationals = lgNationalCodes.concat(selectedNationalCodes);
-
-                let findRows = SynonymPersonnelsLG_student.findAll({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
-                });
-                studentSelection = true;
-                findRows.forEach(current => current.isChecked = true);
-
-                SynonymPersonnelsLG_student.setSelectedState(findRows);
-                findRows.setProperty("enabled", false);
-
-                studentSelection = false;
-            },
             getCellCSSText: rowStyle,
             rowClick: function (record, recordNum, fieldNum) {
                 if (Object.keys(previousSelectedRow).length > 1) {
@@ -1802,23 +1793,22 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        if (studentForceToHasPhone && ( current.mobile===undefined
-                            || current.mobile==null)){
-                            isc.Dialog.create({
-                                message: "اطلاعات شخص مورد نظر با کد ملی " +current.nationalCode +"  ناقص است. شماره تلفن برای این شخص وارد نشده است.",
-                                icon: "[SKIN]stop.png",
-                                title: "<spring:message code="message"/>",
-                                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                                buttonClick: function (button, index) {
-                                    this.close();
-                                }
+                        <%--if (studentForceToHasPhone){--%>
+                        <%--    isc.Dialog.create({--%>
+                        <%--        message: "اطلاعات شخص مورد نظر با کد ملی " +current.nationalCode +"  ناقص است. شماره تلفن برای این شخص وارد نشده است.",--%>
+                        <%--        icon: "[SKIN]stop.png",--%>
+                        <%--        title: "<spring:message code="message"/>",--%>
+                        <%--        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],--%>
+                        <%--        buttonClick: function (button, index) {--%>
+                        <%--            this.close();--%>
+                        <%--        }--%>
 
-                            });
+                        <%--    });--%>
 
-                            studentSelection = true;
-                            SynonymPersonnelsLG_student.deselectRecord(current)
-                            studentSelection = false;
-                        }else {
+                        <%--    studentSelection = true;--%>
+                        <%--    SynonymPersonnelsLG_student.deselectRecord(current)--%>
+                        <%--    studentSelection = false;--%>
+                        <%--}else {--%>
                             current.applicantCompanyName = current.companyName;
                             current.presenceTypeId = studentDefaultPresenceId;
                             current.registerTypeId = 1;
@@ -1834,7 +1824,7 @@
                             current.isChecked = true;
 
                             SynonymPersonnelsLG_student.redraw();
-                        }
+                        // }
                     }
 
                     function checkIfAlreadyExist(currentVal) {
@@ -2022,28 +2012,6 @@
                 {name: "ccpUnit", hidden: true},
             ],
             gridComponents: [RegisteredTS_student, "filterEditor", "header", "body"],
-            dataArrived: function (startRow, endRow) {
-                let lgNationalCodes = StudentsLG_student.data.localData.map(function (item) {
-                    return item.student.nationalCode;
-                });
-                let selectedNationalCodes = SelectedPersonnelsLG_student.data.map(function (item) {
-                    return item['nationalCode'];
-                });
-
-                let nationals = lgNationalCodes.concat(selectedNationalCodes);
-
-                let findRows = PersonnelsRegLG_student.findAll({
-                    _constructor: "AdvancedCriteria",
-                    operator: "and",
-                    criteria: [{fieldName: "nationalCode", operator: "inSet", value: nationals}]
-                });
-                studentSelection = true;
-                findRows.forEach(current => current.isChecked = true);
-                PersonnelsRegLG_student.setSelectedState(findRows);
-                findRows.setProperty("enabled", false);
-
-                studentSelection = false;
-            },
             getCellCSSText: rowStyle,
             rowClick: function (record, recordNum, fieldNum) {
                 if (Object.keys(previousSelectedRowReg).length > 1) {
@@ -2098,7 +2066,6 @@
                     if (checkIfAlreadyExist(current)) {
                         return '';
                     } else {
-                        //reg zaza
                         if (studentForceToHasPhone && ( current.contactInfo===undefined ||  current.contactInfo==null || current.contactInfo.mobile===undefined
                             || current.contactInfo.mobile==null)){
                             isc.Dialog.create({
@@ -2370,8 +2337,10 @@
                                             if (SelectedPersonnelsLG_student.data.toArray().getLength() > 0) {
 
                                                 addValidStudents(classId, courseId, equalCourseIds, SelectedPersonnelsLG_student.data.toArray());
+
                                             }
                                             // SelectedPersonnelsLG_student.data.clearAll();
+
                                         }
                                     }),
                                     isc.IButtonCancel.create({
@@ -2801,23 +2770,21 @@
             <%--}--%>
         }
 
-        function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
+        async function addValidStudents(classId, courseId, equalCourseIds, studentsDataArray) {
             let warnStudents = [];
             let inValidPersonnel = [];
             let warnPreCourseStudents = [];
-            let warnSameSessionStudents=[];
-            let interfrence=[];
+            let warnSameSessionStudents = [];
 
 
-            let result= getSessionPerClass(classId);
-
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "equalCourseIds/" + courseId, "GET", null, function (response) {
-
+                wait.close();
                 JSON.parse(response.data).forEach(q => equalCourseIds.add(q));
                 let checkAll = 0;
-
+                 wait.show();
                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "preCourse/" + courseId, "GET", null, function (resp) {
-
+                    wait.close();
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                         let preCourseIds = JSON.parse(resp.httpResponseText).map(q => q.id);
@@ -2837,33 +2804,35 @@
                             ) {
                                 inValidPersonnel.add(studentsDataArray[inx]);
                             }
+//zaza
 
-                            if(result.length > 0) {
-                                let hasConflict = null;
-                                let flag = true;
-                                for (let i = 0; i < result.length && flag; i++){
-                                    wait.show();
-                                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
-                                    wait.close();
-                                    debugger;
-                                    if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
-                                        hasConflict = JSON.parse(response.data);
-                                        if (hasConflict.length > 0) {
-                                            if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
-                                                warnSameSessionStudents.add(studentsDataArray[inx]);
-                                                flag = false;
-                                            }
-                                        }
-                                    }
-                                }));
-                            }
-                        }
+                            // if (result.length > 0) {
+                            //     let hasConflict = null;
+                            //     let flag = true;
+                            //        wait.show();
+                            //     for (let i = 0; i < result.length && flag; i++) {
+                            //
+                            //         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/getSessionConflict?" + "sessionDate=" + result[i].sessionDate + "&startHour=" + result[i].sessionStartHour + "&endHour=" + result[i].sessionEndHour + "&nationalCode=" + studentsDataArray[inx].nationalCode, "GET", null, function (response) {
+                            //
+                            //             if (response.httpResponseCode === 200 || response.httpResponseCode === 201) {
+                            //                 hasConflict = JSON.parse(response.data);
+                            //                 if (hasConflict.length > 0) {
+                            //                     if (!warnSameSessionStudents.contains(studentsDataArray[inx])) {
+                            //                         warnSameSessionStudents.add(studentsDataArray[inx]);
+                            //                         flag = false;
+                            //                     }
+                            //                 }
+                            //             }
+                            //         }));
+                            //     }
+                            //     wait.close();
+                            //
+                            // }
 
-
-
+                             wait.show();
                             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "personnel-training/" + studentsDataArray[inx].nationalCode + "/" +
                                 studentsDataArray[inx].personnelNo, "GET", null, function (resp) {
-
+                                wait.close();
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                                     let personnelCourses = (JSON.parse(resp.httpResponseText).response.data).map(q => q.courseId);
@@ -2882,7 +2851,7 @@
                                         var uniqueWarnStudents = warnStudents.filter((nationalCode, index, arr) => arr.indexOf(nationalCode) === index).sort();
                                         studentsDataArray.removeList(warnPreCourseStudents);
 
-                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents);
+                                        validateStudents(uniqueWarnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel, warnSameSessionStudents);
                                     }
 
                                 } else {
@@ -2905,7 +2874,6 @@
                     }
                 }));
             }));
-
         }
 
         function validateStudents(warnStudents, warnPreCourseStudents, classId, studentsDataArray, inValidPersonnel,warnSameSessionStudents) {
@@ -3477,16 +3445,6 @@
             })
         );
     }
-   function getSessionPerClass(classId){
-
-       isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl + "sessions/"+ classId ,"GET",null,function(resp){
-           if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-               interfrence  = JSON.parse(resp.data);
-           }
-
-       }));
-       return interfrence;
-   }
 
 
 

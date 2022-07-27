@@ -11,5 +11,6 @@ import java.util.Optional;
 public interface NeedsAssessmentTempRepo extends JpaRepository<NeedsAssessmentTemp, Long> {
 
     List<NeedsAssessmentTemp> findAllByObjectCodeAndMainWorkflowStatus(String code, String status);
+    List<NeedsAssessmentTemp> findAllByObjectTypeAndObjectIdAndCompetenceId(String type,Long id,Long competenceId);
     List<NeedsAssessmentTemp> findByObjectCode(String code);
 }

@@ -821,7 +821,7 @@
                                     }
                                 }
 
-                                ExportToFile.downloadExcelRestUrl(null, PersonnelInfoListGrid_PersonnelList, personnelUrl + "/iscList", 0, null, '', "گزارش پرسنل شرکتي", implicitCriteria, null);
+                                ExportToFile.downloadExcelRestUrl(null, PersonnelInfoListGrid_PersonnelList, personnelUrl + "/iscList", 0, null, '', "گزارش پرسنل شرکتي", criteria, null);
                             } else if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_RegisteredPersonnel"){
                                 ExportToFile.downloadExcel(null, PersonnelInfoListGrid_RegisteredPersonnelList, 'registeredPersonnelInformationReport', 0, null, '', "گزارش پرسنل افراد متفرقه", PersonnelInfoListGrid_RegisteredPersonnelList.data.criteria, null);
                             } else  if (PersonnelList_Tab.getSelectedTab().id === "PersonnelList_Tab_synonym_Personnel") {
@@ -835,7 +835,7 @@
                                     }
                                 }
 
-                                ExportToFile.downloadExcelRestUrl(null, synonmPersonnelInfoListGrid_PersonnelList, personnelUrl + "/Synonym/iscList", 0, null, '', "گزارش پرسنل کل سازمان", implicitCriteria, null);
+                                ExportToFile.downloadExcelRestUrl(null, synonmPersonnelInfoListGrid_PersonnelList, personnelUrl + "/Synonym/iscList", 0, null, '', "گزارش پرسنل کل سازمان", criteria, null);
                             }
                         }
                     }),

@@ -27,6 +27,10 @@ public class RoleRestController {
 
         SearchDTO.SearchRs<Role> searchRs = new SearchDTO.SearchRs<>();
         List<Role> roleList = iRoleService.findAll();
+        if (roleList.size()>0 && roleList.stream().anyMatch(a->a.getName().contains("ADMIN"))){
+            Role admin=roleList.stream().filter(a->a.getName().contains("ADMIN")).findFirst().get();
+            roleList.remove(admin);
+        }
         searchRs.setList(roleList);
         searchRs.setTotalCount((long) roleList.size());
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);

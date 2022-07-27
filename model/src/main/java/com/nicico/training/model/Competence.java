@@ -59,4 +59,17 @@ public class Competence extends Auditable {
 
     @Column(name = "return_detail")
     private String returnDetail;
+
+
+    @Column(name = "competence_level_id")
+    private Long competenceLevelId;
+
+    @Column(name = "competence_priority_id")
+    private Long competencePriorityId;
+
+    @Column(name = "complex")
+    private String complex;
+
+    @Column(name = "active")
+    private Boolean active;
 }

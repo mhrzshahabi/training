@@ -1,14 +1,10 @@
 package com.nicico.training.controller.client.bpms;
 
-import com.nicico.bpmsclient.model.flowable.process.ProcessDefinitionRequestDTO;
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
-import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.controller.util.AppUtils;
-import com.nicico.training.iservice.IBpmsService;
 import com.nicico.training.iservice.IRequestItemService;
-import com.nicico.training.service.CompetenceService;
 import dto.bpms.BPMSReqItemCoursesDto;
 import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsStartParamsDto;
@@ -27,41 +23,11 @@ import javax.servlet.http.HttpServletResponse;
 @RequiredArgsConstructor
 public class RequestItemBPMSRestController {
 
-    private final IBpmsService service;
-    private final BpmsClientService client;
-    private final CompetenceService competenceService;
     private final IRequestItemService requestItemService;
-
-
-    @Loggable
-    @PostMapping({"/processes/definition-search"})
-    public Object searchProcess(@RequestBody ProcessDefinitionRequestDTO processDefinitionRequestDTO, @RequestParam int page, @RequestParam int size) {
-        return client.searchProcess(processDefinitionRequestDTO, page, size);
-    }
-
-    @Loggable
-    @PostMapping({"needAssessment/tasks/review"})
-    public ResponseEntity<BaseResponse> reviewNeedAssessmentTask(@RequestBody ReviewTaskRequest reviewTaskRequestDto) {
-        BaseResponse baseResponse= service.reviewNeedAssessmentTask(reviewTaskRequestDto);
-        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
-    }
-
-    @Loggable
-    @PostMapping({"/processes/definition-search/{page}/{size}"})
-    public BaseResponse getProcessDefinitionKey(@RequestBody String definitionName, @PathVariable int page, @PathVariable int size) {
-        return service.getDefinitionKey(definitionName, AppUtils.getTenantId(), page, size);
-    }
-
-    @Loggable
-    @PostMapping({"/processes/start-data-validation"})
-    public ResponseEntity<BaseResponse> startProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
-        BaseResponse baseResponse = competenceService.checkAndCreateInBPMS(params, response);
-        return new ResponseEntity<>(baseResponse, HttpStatus.valueOf(baseResponse.getStatus()));
-    }
 
     @Loggable
     @PostMapping({"/processes/request-item/start-data-validation"})
-    public ResponseEntity<BaseResponse> startNeedAssessmentProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
+    public ResponseEntity<BaseResponse> startRequestItemProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
         BaseResponse res = new BaseResponse();
         Long requestItemId = Long.valueOf(params.getData().get("requestItemId").toString());
         try {
@@ -106,8 +72,50 @@ public class RequestItemBPMSRestController {
 
     @Loggable
     @PostMapping({"/tasks/determine-status/request-item/review/{chiefOpinionId}/{chiefNationalCode}"})
-    public BaseResponse reviewDetermineStatusRequestItemTask(@RequestBody BPMSReqItemCoursesDto bpmsReqItemCoursesDto, @PathVariable Long chiefOpinionId, @PathVariable String chiefNationalCode) {
-        return requestItemService.reviewRequestItemTaskToDetermineStatus(bpmsReqItemCoursesDto, chiefOpinionId, chiefNationalCode);
+    public BaseResponse reviewDetermineStatusRequestItemTask(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable Long chiefOpinionId, @PathVariable String chiefNationalCode) {
+        return requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, chiefOpinionId, chiefNationalCode);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-chief/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunChief(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunChief(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-supervisor/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunSupervisor(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunSupervisor(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-experts/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunExperts(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunExperts(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-supervisor-for-approval/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunSupervisorForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunSupervisorForApproval(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/run-chief-for-approval/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByRunChiefForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByRunChiefForApproval(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/planning-chief-for-approval/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(@RequestBody ReviewTaskRequest reviewTaskRequest) {
+        return requestItemService.reviewRequestItemTaskByPlanningChiefForApproval(reviewTaskRequest);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/appointment-expert/request-item/review/{letterNumberSent}"})
+    public BaseResponse reviewRequestItemTaskByAppointmentExpert(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String letterNumberSent) {
+        return requestItemService.reviewRequestItemTaskByAppointmentExpert(reviewTaskRequest, letterNumberSent);
     }
 
 }

@@ -45,4 +45,11 @@ public class ViewPostGroup extends Auditable {
 
     @Column(name = "c_modified_by_na")
     private String modifiedByNA;
+
+    @Column(name = "committee")
+    private String committee;
+
+
+    @Column(name = "has_committee")
+    private Boolean hasCommittee;
 }

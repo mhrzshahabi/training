@@ -249,7 +249,10 @@ public class QuestionBankService implements IQuestionBankService {
 
 
         PageQuestionDto pageQuestionDto = new PageQuestionDto();
-        pageQuestionDto.setPageQuestion(questionBanks);
+        if (((long) page *size) < totalModelsCount){
+            pageQuestionDto.setPageQuestion(questionBanks);
+        }
+
         pageQuestionDto.setTotalSpecCount(totalModelsCount);
         return pageQuestionDto;
     }

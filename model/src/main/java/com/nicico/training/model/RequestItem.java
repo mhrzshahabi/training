@@ -56,9 +56,6 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "current_post_title")
     private String currentPostTitle;
 
-    @Column(name = "work_group_code")
-    private String workGroupCode;
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "TBL_REQUEST_ITEM_OPERATIONAL_ROLE_IDS", joinColumns = @JoinColumn(name = "F_REQUEST_ITEM"))
     @Column(name = "OPERATIONAL_ROLE_IDS")
@@ -104,4 +101,8 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "c_return_detail")
     @NotAudited
     private String returnDetail;
+
+    @Column(name = "c_letter_number_sent")
+    @NotAudited
+    private String letterNumberSent;
 }

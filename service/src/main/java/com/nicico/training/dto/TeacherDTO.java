@@ -28,6 +28,7 @@ public class TeacherDTO {
     private String economicalCode;
     private String economicalRecordNumber;
     private String otherActivities;
+    private String residence;
     private Long personalityId;
     private Long majorCategoryId;
     private Long majorSubCategoryId;

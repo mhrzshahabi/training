@@ -37,11 +37,15 @@ public interface IOperationalRoleService {
 
     void deleteIndividualPost(Long roleId, List<Long> postIds);
 
+    List<Long> getAllUserIdsByComplexAndCategoryAndSubCategory(Long complexId, String objectType, Long categoryId, Long subCategoryId);
+
     OperationalRole addIndividualPost(Long roleId, List<Long> postIds);
 
     List<OperationalRole> getOperationalRolesByPostId(Long postId);
 
     List<String> getOperationalRoleTitlesByIds(List<Long> ids);
+
+    List<Long> getOperationalRoleUserIdsByIds(List<Long> ids);
 
     Set<Long> getAllUserIdsByIds(List<Long> ids);
 

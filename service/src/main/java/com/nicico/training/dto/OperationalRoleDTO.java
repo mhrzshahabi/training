@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
 import java.util.List;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ public class OperationalRoleDTO {
     private Set<Long> userIds;
     private Set<Long> postIds;
     private Long complexId;
+    private String objectType;
 
     @Getter
     @Setter

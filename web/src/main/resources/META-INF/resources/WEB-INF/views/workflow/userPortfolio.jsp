@@ -86,6 +86,9 @@
                 }
             },
             {name: "description", title: "توضیحات", type: "staticText"},
+            {name: "complex", title: "مجتمع", type: "staticText"},
+            {name: "competencePriority", title: "اولویت شایستگی", type: "staticText"},
+            {name: "competenceLevel", title: "سطح شایستگی", type: "staticText"},
             {name: "processInstanceId", hidden: true}
         ]
     });
@@ -164,6 +167,20 @@
                 showParallelRequestItemProcessAndCompletion(record);
             else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس برنامه ریزی جهت تعیین وضعیت"))
                 showRequestItemProcessToDetermineStatus(record);
+            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس اجرا"))
+                showRequestItemProcessStatusToRunChief(record);
+            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی سرپرست اجرا"))
+                showRequestItemProcessStatusToRunSupervisor(record);
+            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس اجرا"))
+                showRequestItemProcessStatusToRunExperts(record);
+            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید سرپرست اجرا"))
+                showRequestItemProcessStatusToRunSupervisorForApproval(record);
+            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید رئیس اجرا"))
+                showRequestItemProcessStatusToRunChiefForApproval(record);
+            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی / تایید رئیس برنامه ریزی"))
+                showRequestItemProcessStatusToPlanningChiefForApproval(record);
+            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس انتصاب"))
+                showRequestItemProcessToAppointmentExpert(record);
             else
                 showProcessAndCompletion(record);
         }
@@ -494,7 +511,7 @@
                         buttonClick: function (button, index) {
 
                             if (index == 0) {
-                                confirmProcess(record.taskId, record.processInstanceId, Window_Completion_UserPortfolio);
+                                confirmProcess(record, Window_Completion_UserPortfolio);
                             }
                             this.hide();
                         }
@@ -594,8 +611,14 @@
                         type: "staticText"
                     },
                     {
+                        name: "postUpdateStatus",
+                        title: "وضعیت نیازسنجی پست",
+                        type: "staticText",
+                        width: "100%"
+                    },
+                    {
                         name: "expertOpinion",
-                        title: "نظر کارشناس",
+                        title: "نظر کارشناس ارشد",
                         width: "100%",
                         optionDataSource: RestDataSource_Request_Item_Experts_Opinion,
                         displayField: "title",
@@ -611,14 +634,38 @@
                             sortField: 0,
                             showFilterEditor: false
                         }
+                    },
+                    {
+                        name: "priorities",
+                        title: "انتخاب اولویت ها",
+                        type: "selectItem",
+                        multiple: true,
+                        valueMap: {
+                            "ضروری ضمن خدمت": "ضروری ضمن خدمت",
+                            "ضروری انتصاب سمت": "ضروری انتصاب سمت",
+                            "عملکردی بهبود": "عملکردی بهبود",
+                            "عملکردی توسعه": "عملکردی توسعه",
+                        },
+                        vertical: false,
+                        changed: function (form, item, value) {
+                            let allRecords = ListGrid_Parallel_RequestItem_Courses.getData().localData;
+                            if (value) {
+                                let selectRecords = ListGrid_Parallel_RequestItem_Courses.getData().localData.filter(item => value.includes(item.priority));
+                                ListGrid_Parallel_RequestItem_Courses.deselectRecords(allRecords);
+                                ListGrid_Parallel_RequestItem_Courses.selectRecords(selectRecords);
+                            } else {
+                                ListGrid_Parallel_RequestItem_Courses.deselectRecords(allRecords);
+                            }
+                        }
                     }
                 ]
             });
             let ListGrid_Parallel_RequestItem_Courses = isc.ListGrid.create({
                 width: "100%",
-                height: "70%",
+                height: "75%",
                 autoFetchData: true,
-                autoFitFieldWidths: true,
+                selectionType: "simple",
+                selectionAppearance: "checkbox",
                 dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
                 fields: [
@@ -668,7 +715,7 @@
 
                             if (index == 0) {
                                 let expertOpinion = DynamicForm_Parallel_RequestItem_Completion.getValue("expertOpinion");
-                                confirmParallelRequestItemProcess(record.taskId, record.processInstanceId, expertOpinion, ListGrid_Parallel_RequestItem_Courses, Window_Parallel_RequestItem_Completion);
+                                confirmParallelRequestItemProcess(record, expertOpinion, ListGrid_Parallel_RequestItem_Courses, Window_Parallel_RequestItem_Completion);
                             }
                             this.hide();
                         }
@@ -715,10 +762,20 @@
             DynamicForm_Parallel_RequestItem_Completion.setValue("createBy", record.createBy);
             DynamicForm_Parallel_RequestItem_Completion.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
 
-            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = needsAssessmentUrl + "/by-training-post-code/spec-list/" + record.requestItemId;
-            ListGrid_Parallel_RequestItem_Courses.invalidateCache();
-            ListGrid_Parallel_RequestItem_Courses.fetchData();
-            Window_Parallel_RequestItem_Completion.show();
+            isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/getNeedAssessmentInfo/byRequestItemId?requestItemId=" + record.requestItemId, "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let data = JSON.parse(resp.httpResponseText);
+                    let lastModifiedDate = data.lastModifiedDateNA !== undefined ? data.lastModifiedDateNA : "";
+                    let modifiedBy = data.modifiedByNA !== undefined ? data.modifiedByNA : "";
+                    DynamicForm_Parallel_RequestItem_Completion.setValue("postUpdateStatus", "تاریخ بروزرسانی: " + lastModifiedDate + " - بروزرسانی کننده: " + modifiedBy);
+                } else {
+                    DynamicForm_Parallel_RequestItem_Completion.setValue("postUpdateStatus", "پست وجود ندارد");
+                }
+                RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = needsAssessmentUrl + "/by-training-post-code/spec-list/" + record.requestItemId;
+                ListGrid_Parallel_RequestItem_Courses.invalidateCache();
+                ListGrid_Parallel_RequestItem_Courses.fetchData();
+                Window_Parallel_RequestItem_Completion.show();
+            }));
         }
     }
     function showRequestItemProcessToDetermineStatus(record) {
@@ -730,7 +787,7 @@
             let DynamicForm_RequestItem_Determine_Status = isc.DynamicForm.create({
                 colWidths: ["25%", "75%"],
                 width: "100%",
-                height: "15%",
+                height: "75%",
                 numCols: "2",
                 autoFocus: "true",
                 cellPadding: 5,
@@ -771,32 +828,6 @@
                     }
                 ]
             });
-            let ListGrid_RequestItem_Determine_Status_Courses = isc.ListGrid.create({
-                width: "100%",
-                height: "70%",
-                autoFetchData: true,
-                autoFitFieldWidths: true,
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
-                sortDirection: "descending",
-                fields: [
-                    {name: "courseCode"},
-                    {name: "courseTitle", showHover: true},
-                    {name: "categoryTitle", showHover: true},
-                    {name: "subCategoryTitle", showHover: true},
-                    {name: "priority"},
-                    {name: "requestItemProcessDetailId", hidden: true}
-                ],
-                showHoverComponents: true,
-                showFilterEditor: true,
-                filterOnKeypress: true,
-                gridComponents: [
-                    isc.Label.create({
-                        contents: "<span style='color: #b30e0e; font-weight: bold'>دوره هایی که نیاز به گذراندن دارند از لیست زیر انتخاب کنید</span>",
-                        align: "center",
-                        height: 15,
-                    }), "filterEditor", "header", "body"
-                ]
-            });
             let Button_RequestItem_Determine_Status_Experts_Opinion = isc.IButton.create({
                 title: "مشاهده نظر کارشناسان",
                 align: "center",
@@ -833,7 +864,7 @@
 
                             if (index == 0) {
                                 let chiefOpinion = DynamicForm_RequestItem_Determine_Status.getValue("chiefOpinion");
-                                confirmRequestItemProcessToDetermineStatus(record.taskId, record.processInstanceId, chiefOpinion, ListGrid_RequestItem_Determine_Status_Courses, Window_RequestItem_Determine_Status_Completion);
+                                confirmRequestItemProcessToDetermineStatus(record, chiefOpinion, Window_RequestItem_Determine_Status_Completion);
                             }
                             this.hide();
                         }
@@ -850,7 +881,7 @@
             });
             let HLayout_RequestItem_Determine_Status_Completion = isc.HLayout.create({
                 width: "100%",
-                height: "5%",
+                height: "25%",
                 align: "center",
                 membersMargin: 10,
                 members: [
@@ -864,7 +895,7 @@
                 title: "نمایش جزییات و تکمیل فرایند",
                 autoSize: false,
                 width: "50%",
-                height: "70%",
+                height: "25%",
                 canDragReposition: true,
                 canDragResize: true,
                 autoDraw: false,
@@ -872,7 +903,6 @@
                 isModal: false,
                 items: [
                     DynamicForm_RequestItem_Determine_Status,
-                    ListGrid_RequestItem_Determine_Status_Courses,
                     HLayout_RequestItem_Determine_Status_Completion
                 ]
             });
@@ -881,72 +911,1365 @@
             DynamicForm_RequestItem_Determine_Status.setValue("createBy", record.createBy);
             DynamicForm_RequestItem_Determine_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
 
-            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = needsAssessmentUrl + "/by-training-post-code/spec-list/" + record.requestItemId;
-            ListGrid_RequestItem_Determine_Status_Courses.invalidateCache();
-            ListGrid_RequestItem_Determine_Status_Courses.fetchData();
             Window_RequestItem_Determine_Status_Completion.show();
         }
     }
-    function showProcessHistory(processInstanceId) {
+    function showRequestItemProcessStatusToRunChief(record) {
 
-        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/process-instance-history/details/" + processInstanceId , "GET", null, function (resp) {
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_RequestItem_Show_Status = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "15%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    },
+                    {
+                        name: "description",
+                        title: "توضیحات",
+                        type: "staticText"
+                    },
+                    {
+                        name: "certificationStatus",
+                        title: "وضعیت آموزشی",
+                        width: "100%",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
+                width: "100%",
+                height: "70%",
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
+                sortDirection: "descending",
+                fields: [
+                    {name: "courseCode"},
+                    {name: "courseTitle", showHover: true},
+                    {name: "categoryTitle", showHover: true},
+                    {name: "subCategoryTitle", showHover: true},
+                    {name: "priority"},
+                    {name: "requestItemProcessDetailId", hidden: true}
+                ],
+                showHoverComponents: true,
+                showFilterEditor: true,
+                filterOnKeypress: true,
+                gridComponents: [
+                    isc.Label.create({
+                        contents: "<span style='color: #b30e0e; font-weight: bold'>دوره هایی که نیاز به گذراندن دارند</span>",
+                        align: "center",
+                        height: 15,
+                    }), "filterEditor", "header", "body"
+                ]
+            });
+            let Button_RequestItem_Show_Status_Detail = isc.IButton.create({
+                title: "مشاهده جزییات",
+                align: "center",
+                width: "140",
+                click: function () {
+                    showProcessDetail(record.name, record.processInstanceId);
+                }
+            });
+            let Button_RequestItem_Show_Status_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index == 0) {
+                                confirmRequestItemProcessByRunChief(record, Window_RequestItem_Show_Status_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_RequestItem_Show_Status_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_RequestItem_Show_Status_Completion.close();
+                }
+            });
+            let HLayout_RequestItem_Show_Status_Completion = isc.HLayout.create({
+                width: "100%",
+                height: "5%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_RequestItem_Show_Status_Detail,
+                    Button_RequestItem_Show_Status_Confirm,
+                    Button_RequestItem_Show_Status_Close
+                ]
+            });
+            let Window_RequestItem_Show_Status_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "50%",
+                height: "70%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_RequestItem_Show_Status,
+                    ListGrid_RequestItem_Show_Courses,
+                    HLayout_RequestItem_Show_Status_Completion
+                ]
+            });
+
+            DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
+            DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+
+
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/planning-chief-opinion/" + record.requestItemId;
+            ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
+
+                if (dsResponse.httpResponseCode === 200) {
+                    let resp = JSON.parse(dsResponse.httpResponseText);
+                    DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
+                    if (resp.courses.length !== 0)
+                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    else
+                        ListGrid_RequestItem_Show_Courses.setData([]);
+                    Window_RequestItem_Show_Status_Completion.show();
+                }
+            });
+        }
+    }
+    function showRequestItemProcessStatusToRunSupervisor(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_RequestItem_Show_Status = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "15%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    },
+                    {
+                        name: "description",
+                        title: "توضیحات",
+                        type: "staticText"
+                    },
+                    {
+                        name: "certificationStatus",
+                        title: "وضعیت آموزشی",
+                        width: "100%",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
+                width: "100%",
+                height: "70%",
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
+                sortDirection: "descending",
+                fields: [
+                    {name: "courseCode"},
+                    {name: "courseTitle", showHover: true},
+                    {name: "categoryTitle", showHover: true},
+                    {name: "subCategoryTitle", showHover: true},
+                    {name: "priority"},
+                    {name: "requestItemProcessDetailId", hidden: true}
+                ],
+                showHoverComponents: true,
+                showFilterEditor: true,
+                filterOnKeypress: true,
+                gridComponents: [
+                    isc.Label.create({
+                        contents: "<span style='color: #b30e0e; font-weight: bold'>دوره هایی که نیاز به گذراندن دارند</span>",
+                        align: "center",
+                        height: 15,
+                    }), "filterEditor", "header", "body"
+                ]
+            });
+            let Button_RequestItem_Show_Status_Detail = isc.IButton.create({
+                title: "مشاهده جزییات",
+                align: "center",
+                width: "140",
+                click: function () {
+                    showProcessDetail(record.name, record.processInstanceId);
+                }
+            });
+            let Button_RequestItem_Show_Status_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index == 0) {
+                                confirmRequestItemProcessByRunSupervisor(record, Window_RequestItem_Show_Status_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_RequestItem_Show_Status_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_RequestItem_Show_Status_Completion.close();
+                }
+            });
+            let HLayout_RequestItem_Show_Status_Completion = isc.HLayout.create({
+                width: "100%",
+                height: "5%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_RequestItem_Show_Status_Detail,
+                    Button_RequestItem_Show_Status_Confirm,
+                    Button_RequestItem_Show_Status_Close
+                ]
+            });
+            let Window_RequestItem_Show_Status_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "50%",
+                height: "70%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_RequestItem_Show_Status,
+                    ListGrid_RequestItem_Show_Courses,
+                    HLayout_RequestItem_Show_Status_Completion
+                ]
+            });
+
+            DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
+            DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+
+
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            wait.show();
+            ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
+                wait.close();
+                if (dsResponse.httpResponseCode === 200) {
+                    let resp = JSON.parse(dsResponse.httpResponseText);
+                    DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
+                    if (resp.courses.length !== 0)
+                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    else
+                        ListGrid_RequestItem_Show_Courses.setData([]);
+                    Window_RequestItem_Show_Status_Completion.show();
+                }
+            });
+        }
+    }
+    function showRequestItemProcessStatusToRunExperts(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_RequestItem_Show_Status = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "15%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    },
+                    {
+                        name: "description",
+                        title: "توضیحات",
+                        type: "staticText"
+                    },
+                    {
+                        name: "certificationStatus",
+                        title: "وضعیت آموزشی",
+                        width: "100%",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
+                width: "100%",
+                height: "70%",
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
+                sortDirection: "descending",
+                fields: [
+                    {name: "courseCode"},
+                    {name: "courseTitle", showHover: true},
+                    {name: "categoryTitle", showHover: true},
+                    {name: "subCategoryTitle", showHover: true},
+                    {name: "priority"},
+                    {name: "requestItemProcessDetailId", hidden: true}
+                ],
+                showHoverComponents: true,
+                showFilterEditor: true,
+                filterOnKeypress: true,
+                gridComponents: [
+                    isc.Label.create({
+                        contents: "<span style='color: #b30e0e; font-weight: bold'>دوره هایی که نیاز به گذراندن دارند</span>",
+                        align: "center",
+                        height: 15,
+                    }), "filterEditor", "header", "body"
+                ]
+            });
+            let Button_RequestItem_Show_Status_Detail = isc.IButton.create({
+                title: "مشاهده جزییات",
+                align: "center",
+                width: "140",
+                click: function () {
+                    showProcessDetail(record.name, record.processInstanceId);
+                }
+            });
+            let Button_RequestItem_Show_Status_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index == 0) {
+                                confirmRequestItemProcessByRunExperts(record, Window_RequestItem_Show_Status_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_RequestItem_Show_Status_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_RequestItem_Show_Status_Completion.close();
+                }
+            });
+            let HLayout_RequestItem_Show_Status_Completion = isc.HLayout.create({
+                width: "100%",
+                height: "5%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_RequestItem_Show_Status_Detail,
+                    Button_RequestItem_Show_Status_Confirm,
+                    Button_RequestItem_Show_Status_Close
+                ]
+            });
+            let Window_RequestItem_Show_Status_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "50%",
+                height: "70%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_RequestItem_Show_Status,
+                    ListGrid_RequestItem_Show_Courses,
+                    HLayout_RequestItem_Show_Status_Completion
+                ]
+            });
+
+            DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
+            DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+
+
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            wait.show();
+            ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
+                wait.close();
+                if (dsResponse.httpResponseCode === 200) {
+                    let resp = JSON.parse(dsResponse.httpResponseText);
+                    DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
+                    if (resp.courses.length !== 0)
+                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    else
+                        ListGrid_RequestItem_Show_Courses.setData([]);
+                    Window_RequestItem_Show_Status_Completion.show();
+                }
+            });
+        }
+    }
+    function showRequestItemProcessStatusToRunSupervisorForApproval(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_RequestItem_Show_Status = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "15%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    },
+                    {
+                        name: "description",
+                        title: "توضیحات",
+                        type: "staticText"
+                    },
+                    {
+                        name: "certificationStatus",
+                        title: "وضعیت آموزشی",
+                        width: "100%",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
+                width: "100%",
+                height: "70%",
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
+                sortDirection: "descending",
+                fields: [
+                    {name: "courseCode"},
+                    {name: "courseTitle", showHover: true},
+                    {name: "categoryTitle", showHover: true},
+                    {name: "subCategoryTitle", showHover: true},
+                    {name: "priority"},
+                    {name: "requestItemProcessDetailId", hidden: true}
+                ],
+                showHoverComponents: true,
+                showFilterEditor: true,
+                filterOnKeypress: true,
+                gridComponents: [
+                    isc.Label.create({
+                        contents: "<span style='color: #b30e0e; font-weight: bold'>دوره هایی که نیاز به گذراندن دارند</span>",
+                        align: "center",
+                        height: 15,
+                    }), "filterEditor", "header", "body"
+                ]
+            });
+            let Button_RequestItem_Show_Status_Detail = isc.IButton.create({
+                title: "مشاهده جزییات",
+                align: "center",
+                width: "140",
+                click: function () {
+                    showProcessDetail(record.name, record.processInstanceId);
+                }
+            });
+            let Button_RequestItem_Show_Status_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index == 0) {
+                                confirmRequestItemProcessByRunSupervisorForApproval(record, Window_RequestItem_Show_Status_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_RequestItem_Show_Status_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_RequestItem_Show_Status_Completion.close();
+                }
+            });
+            let HLayout_RequestItem_Show_Status_Completion = isc.HLayout.create({
+                width: "100%",
+                height: "5%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_RequestItem_Show_Status_Detail,
+                    Button_RequestItem_Show_Status_Confirm,
+                    Button_RequestItem_Show_Status_Close
+                ]
+            });
+            let Window_RequestItem_Show_Status_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "50%",
+                height: "70%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_RequestItem_Show_Status,
+                    ListGrid_RequestItem_Show_Courses,
+                    HLayout_RequestItem_Show_Status_Completion
+                ]
+            });
+
+            DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
+            DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+
+
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            wait.show();
+            ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
+                wait.close();
+                if (dsResponse.httpResponseCode === 200) {
+                    let resp = JSON.parse(dsResponse.httpResponseText);
+                    DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
+                    if (resp.courses.length !== 0)
+                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    else
+                        ListGrid_RequestItem_Show_Courses.setData([]);
+                    Window_RequestItem_Show_Status_Completion.show();
+                }
+            });
+        }
+    }
+    function showRequestItemProcessStatusToRunChiefForApproval(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_RequestItem_Show_Status = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "15%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    },
+                    {
+                        name: "description",
+                        title: "توضیحات",
+                        type: "staticText"
+                    },
+                    {
+                        name: "certificationStatus",
+                        title: "وضعیت آموزشی",
+                        width: "100%",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
+                width: "100%",
+                height: "70%",
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
+                sortDirection: "descending",
+                fields: [
+                    {name: "courseCode"},
+                    {name: "courseTitle", showHover: true},
+                    {name: "categoryTitle", showHover: true},
+                    {name: "subCategoryTitle", showHover: true},
+                    {name: "priority"},
+                    {name: "requestItemProcessDetailId", hidden: true}
+                ],
+                showHoverComponents: true,
+                showFilterEditor: true,
+                filterOnKeypress: true,
+                gridComponents: [
+                    isc.Label.create({
+                        contents: "<span style='color: #b30e0e; font-weight: bold'>دوره هایی که نیاز به گذراندن دارند</span>",
+                        align: "center",
+                        height: 15,
+                    }), "filterEditor", "header", "body"
+                ]
+            });
+            let Button_RequestItem_Show_Status_Detail = isc.IButton.create({
+                title: "مشاهده جزییات",
+                align: "center",
+                width: "140",
+                click: function () {
+                    showProcessDetail(record.name, record.processInstanceId);
+                }
+            });
+            let Button_RequestItem_Show_Status_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index == 0) {
+                                confirmRequestItemProcessByRunChiefForApproval(record, Window_RequestItem_Show_Status_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_RequestItem_Show_Status_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_RequestItem_Show_Status_Completion.close();
+                }
+            });
+            let HLayout_RequestItem_Show_Status_Completion = isc.HLayout.create({
+                width: "100%",
+                height: "5%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_RequestItem_Show_Status_Detail,
+                    Button_RequestItem_Show_Status_Confirm,
+                    Button_RequestItem_Show_Status_Close
+                ]
+            });
+            let Window_RequestItem_Show_Status_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "50%",
+                height: "70%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_RequestItem_Show_Status,
+                    ListGrid_RequestItem_Show_Courses,
+                    HLayout_RequestItem_Show_Status_Completion
+                ]
+            });
+
+            DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
+            DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+
+
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/planning-chief-opinion/" + record.requestItemId;
+            wait.show();
+            ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
+                wait.close();
+                if (dsResponse.httpResponseCode === 200) {
+                    let resp = JSON.parse(dsResponse.httpResponseText);
+                    DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
+                    if (resp.courses.length !== 0)
+                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    else
+                        ListGrid_RequestItem_Show_Courses.setData([]);
+                    Window_RequestItem_Show_Status_Completion.show();
+                }
+            });
+        }
+    }
+    function showRequestItemProcessStatusToPlanningChiefForApproval(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_RequestItem_Show_Status = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "15%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    },
+                    {
+                        name: "description",
+                        title: "توضیحات",
+                        type: "staticText"
+                    },
+                    {
+                        name: "certificationStatus",
+                        title: "وضعیت آموزشی",
+                        width: "100%",
+                        type: "staticText"
+                    }
+                ]
+            });
+            let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
+                width: "100%",
+                height: "70%",
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
+                sortDirection: "descending",
+                fields: [
+                    {name: "courseCode"},
+                    {name: "courseTitle", showHover: true},
+                    {name: "categoryTitle", showHover: true},
+                    {name: "subCategoryTitle", showHover: true},
+                    {name: "priority"},
+                    {name: "requestItemProcessDetailId", hidden: true}
+                ],
+                showHoverComponents: true,
+                showFilterEditor: true,
+                filterOnKeypress: true,
+                gridComponents: [
+                    isc.Label.create({
+                        contents: "<span style='color: #b30e0e; font-weight: bold'>دوره هایی که نیاز به گذراندن دارند</span>",
+                        align: "center",
+                        height: 15,
+                    }), "filterEditor", "header", "body"
+                ]
+            });
+            let Button_RequestItem_Show_Status_Detail = isc.IButton.create({
+                title: "مشاهده جزییات",
+                align: "center",
+                width: "140",
+                click: function () {
+                    showProcessDetail(record.name, record.processInstanceId);
+                }
+            });
+            let Button_RequestItem_Show_Status_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index == 0) {
+                                confirmRequestItemProcessByPlanningChiefForApproval(record, Window_RequestItem_Show_Status_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_RequestItem_Show_Status_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_RequestItem_Show_Status_Completion.close();
+                }
+            });
+            let HLayout_RequestItem_Show_Status_Completion = isc.HLayout.create({
+                width: "100%",
+                height: "5%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_RequestItem_Show_Status_Detail,
+                    Button_RequestItem_Show_Status_Confirm,
+                    Button_RequestItem_Show_Status_Close
+                ]
+            });
+            let Window_RequestItem_Show_Status_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "50%",
+                height: "70%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_RequestItem_Show_Status,
+                    ListGrid_RequestItem_Show_Courses,
+                    HLayout_RequestItem_Show_Status_Completion
+                ]
+            });
+
+            DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
+            DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+
+
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/planning-chief-opinion/" + record.requestItemId;
+            wait.show()
+            ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
+                wait.close();
+                if (dsResponse.httpResponseCode === 200) {
+                    let resp = JSON.parse(dsResponse.httpResponseText);
+                    DynamicForm_RequestItem_Show_Status.setValue("certificationStatus", resp.finalOpinion);
+                    if (resp.courses.length !== 0)
+                        ListGrid_RequestItem_Show_Courses.setData(resp.courses);
+                    else
+                        ListGrid_RequestItem_Show_Courses.setData([]);
+                    Window_RequestItem_Show_Status_Completion.show();
+                }
+            });
+        }
+    }
+    function showRequestItemProcessToAppointmentExpert(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+
+            let DynamicForm_RequestItem_Appointment_Expert = isc.DynamicForm.create({
+                colWidths: ["25%", "75%"],
+                width: "100%",
+                height: "85%",
+                numCols: "2",
+                autoFocus: "true",
+                cellPadding: 5,
+                fields: [
+                    {
+                        name: "title",
+                        title: "عنوان",
+                        type: "staticText"
+                    },
+                    {
+                        name: "createBy",
+                        title: "ایجاد کننده فرایند",
+                        type: "staticText"
+                    },
+                    {
+                        name: "description",
+                        title: "توضیحات",
+                        type: "staticText"
+                    },
+                    {
+                        name: "letterNumberSent",
+                        title: "شماره نامه ارسالی به کارگزینی",
+                        required: true
+                    }
+                ]
+            });
+            let Button_RequestItem_Appointment_Expert_Detail = isc.IButton.create({
+                title: "مشاهده جزییات",
+                align: "center",
+                width: "140",
+                click: function () {
+                    showProcessDetail(record.name, record.processInstanceId);
+                }
+            });
+            let Button_RequestItem_Appointment_Expert_Confirm = isc.IButton.create({
+                title: "تایید فرایند",
+                align: "center",
+                width: "140",
+                click: function () {
+
+                    if (!DynamicForm_RequestItem_Appointment_Expert.validate())
+                        return;
+
+                    isc.Dialog.create({
+                        message: "آیا اطمینان دارید؟",
+                        icon: "[SKIN]ask.png",
+                        buttons: [
+                            isc.Button.create({title: "<spring:message code="yes"/>"}),
+                            isc.Button.create({title: "<spring:message code="global.no"/>"})
+                        ],
+                        buttonClick: function (button, index) {
+
+                            if (index == 0) {
+                                let letterNumberSent = DynamicForm_RequestItem_Appointment_Expert.getValue("letterNumberSent");
+                                confirmRequestItemProcessByAppointmentExpert(record, letterNumberSent, Window_RequestItem_Appointment_Expert_Completion);
+                            }
+                            this.hide();
+                        }
+                    });
+                }
+            });
+            let Button_RequestItem_Appointment_Expert_Close = isc.IButton.create({
+                title: "بستن",
+                align: "center",
+                width: "140",
+                click: function () {
+                    Window_RequestItem_Appointment_Expert_Completion.close();
+                }
+            });
+            let HLayout_RequestItem_Appointment_Expert = isc.HLayout.create({
+                width: "100%",
+                height: "15%",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    Button_RequestItem_Appointment_Expert_Detail,
+                    Button_RequestItem_Appointment_Expert_Confirm,
+                    Button_RequestItem_Appointment_Expert_Close
+                ]
+            });
+            let Window_RequestItem_Appointment_Expert_Completion = isc.Window.create({
+                title: "نمایش جزییات و تکمیل فرایند",
+                autoSize: false,
+                width: "50%",
+                height: "25%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    DynamicForm_RequestItem_Appointment_Expert,
+                    HLayout_RequestItem_Appointment_Expert
+                ]
+            });
+
+            DynamicForm_RequestItem_Appointment_Expert.setValue("title", record.title);
+            DynamicForm_RequestItem_Appointment_Expert.setValue("createBy", record.createBy);
+            DynamicForm_RequestItem_Appointment_Expert.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+
+            Window_RequestItem_Appointment_Expert_Completion.show();
+        }
+    }
+
+    function confirmProcess(record, window) {
+
+        let baseUrl = "";
+        let url = "";
+        let reviewTaskRequest = {}
+
+        if (record.title.includes("نیازسنجی")) {
+            let map_data = {
+                "objectId": record.objectId,
+                "objectType": record.objectType
+            };
+            baseUrl = bpmsUrl;
+            url = "/needAssessment/tasks/review";
+            reviewTaskRequest = {
+                taskId: record.taskId,
+                approve: true,
+                userName: userUserName,
+                processInstanceId: record.processInstanceId,
+                variables: map_data
+            };
+        } else if (record.title.includes("شایستگی")) {
+            baseUrl = bpmsUrl;
+            url = "/tasks/review";
+            reviewTaskRequest = {
+                taskId: record.taskId,
+                approve: true,
+                userName: userUserName,
+                processInstanceId: record.processInstanceId
+            };
+        } else if (record.title.includes("صلاحیت علمی و فنی")) {
+            let ass_data = {
+                "assigneeList": record.assigneeList,
+            };
+            baseUrl = requestItemBPMSUrl;
+            url = "/tasks/request-item/review";
+            reviewTaskRequest = {
+                taskId: record.taskId,
+                approve: true,
+                userName: userUserName,
+                processInstanceId: record.processInstanceId,
+                variables: ass_data
+            };
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url , "POST", JSON.stringify(reviewTaskRequest), function (resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                let taskHistory = JSON.parse(resp.httpResponseText);
-                ListGrid_Processes_History_UserPortfolio.setData(taskHistory);
+                window.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                ToolStripButton_Refresh_Processes_UserPortfolio.click();
             } else {
-                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                window.close();
+                createDialog("info", "عملیات انجام نشد");
             }
         }));
     }
-    function showProcessDetail(bPMSProcessName, processInstanceId) {
+    function confirmParallelRequestItemProcess(record, expertOpinion, coursesListGrid, window) {
 
-        let DynamicForm_Processes_Detail = isc.DynamicForm.create({
-            colWidths: ["40%", "60%"],
-            width: "100%",
-            height: "100%",
-            numCols: 2,
-            autoFocus: "true",
-            cellPadding: 5
-        });
-        let Window_Processes_Detail = isc.Window.create({
-            title: "نمایش جزییات",
-            autoSize: false,
-            width: "25%",
-            height: "30%",
-            canDragReposition: true,
-            canDragResize: true,
-            autoDraw: false,
-            autoCenter: true,
-            isModal: false,
-            items: [
-                DynamicForm_Processes_Detail
-            ]
-        });
+        let coursesRecord = coursesListGrid.getSelectedRecords();
 
-        if (bPMSProcessName.contains('شایستگی')) {
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/parallel/request-item/review";
+        let ass_data = {
+            "assigneeList": record.assigneeList,
+        };
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: ass_data
+        };
+        let reqItemCourses = {
+            courses: coursesRecord,
+            reviewTaskRequest: reviewTaskRequest
+        };
 
-            isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/details/" + processInstanceId, "GET", null, function (resp) {
-                wait.close();
-                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                    let detail = JSON.parse(resp.httpResponseText);
-                    DynamicForm_Processes_Detail.setDataSource(RestDataSource_Processes_Detail_Competence_UserPortfolio);
-                    DynamicForm_Processes_Detail.setValues(detail);
-                    Window_Processes_Detail.show();
-                } else {
-                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
-                }
-            }));
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + expertOpinion + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reqItemCourses), function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                window.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                ToolStripButton_Refresh_Processes_UserPortfolio.click();
+            } else {
+                window.close();
+                createDialog("info", "عملیات انجام نشد");
+            }
+        }));
+    }
+    function confirmRequestItemProcessToDetermineStatus(record, chiefOpinion, window) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/determine-status/request-item/review";
+        let ass_data = {
+            "assignFrom": record.assignFrom,
+        };
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: ass_data
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + chiefOpinion + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                window.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                ToolStripButton_Refresh_Processes_UserPortfolio.click();
+            } else {
+                window.close();
+                createDialog("info", "عملیات انجام نشد");
+            }
+        }));
+    }
+    function confirmRequestItemProcessByRunChief(record, window) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/run-chief/request-item/review";
+
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmRequestItemProcessByRunSupervisor(record, window) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/run-supervisor/request-item/review";
+
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmRequestItemProcessByRunExperts(record, window) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/run-experts/request-item/review";
+
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmRequestItemProcessByRunSupervisorForApproval(record, window) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/run-supervisor-for-approval/request-item/review";
+
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmRequestItemProcessByRunChiefForApproval(record, window) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/run-chief-for-approval/request-item/review";
+
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: {}
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmRequestItemProcessByPlanningChiefForApproval(record, window) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/planning-chief-for-approval/request-item/review";
+        let ass_data = {
+            "assignFrom": record.assignFrom,
+        };
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+            variables: ass_data
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmRequestItemProcessByAppointmentExpert(record, letterNumberSent, window) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/appointment-expert/request-item/review";
+
+        let reviewTaskRequest = {
+            taskId: record.taskId,
+            approve: true,
+            userName: userUserName,
+            processInstanceId: record.processInstanceId,
+        };
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + letterNumberSent, "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                window.close();
+                createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                ToolStripButton_Refresh_Processes_UserPortfolio.click();
+            } else {
+                window.close();
+                createDialog("info", "عملیات انجام نشد");
+            }
+        }));
+    }
+
+    function setTitle(name) {
+        switch (name) {
+
+            case "Job":
+                return "<spring:message code="job"/>";
+            case "Post":
+                return "پست انفرادی";
+            case "PostGrade":
+                return "<spring:message code="post.grade"/>";
+            case "PostGroup":
+                return "<spring:message code="post.group"/>";
+            case "JobGroup":
+                return "<spring:message code="job.group"/>";
+            case "PostGradeGroup":
+                return "<spring:message code="post.grade.group"/>";
+            case "TrainingPost":
+                return "پست";
+
+            default:
+                return name.split('_').last();
+        }
+    }
+    function reAssignTask(record) {
+
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
+            let baseUrl = "";
+            let url = ""
+            let map_data = {};
+            let reviewTaskRequest = {}
+            let data = {}
 
-            isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/details/" + processInstanceId, "GET", null, function (resp) {
+            if (record.title.includes("نیازسنجی")) {
+                baseUrl = bpmsUrl;
+                url = "/needAssessment/processes/reAssign-process/";
+                map_data = {
+                    "objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId,
+                    "returnReason": null,
+                    "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType
+                };
+            } else if (record.title.includes("صلاحیت علمی و فنی")) {
+                baseUrl = requestItemBPMSUrl;
+                url = "/processes/request-item/reAssign-process/";
+                map_data = {
+                    "returnReason": null,
+                };
+            }
+
+            reviewTaskRequest = {
+                variables: map_data,
+                processInstanceId: record.processInstanceId,
+                taskId: record.taskId,
+                approve: false,
+                userName: userUserName,
+            };
+            data = {
+                reviewTaskRequest: reviewTaskRequest,
+                reason: null,
+            }
+
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
                 wait.close();
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                    let detail = JSON.parse(resp.httpResponseText);
-                    DynamicForm_Processes_Detail.setDataSource(RestDataSource_Processes_Detail_Certification_UserPortfolio);
-                    DynamicForm_Processes_Detail.setValues(detail);
-                    Window_Processes_Detail.show();
+                    window.close();
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    ToolStripButton_Refresh_Processes_UserPortfolio.click();
                 } else {
+                    window.close();
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }
             }));
@@ -1029,204 +2352,64 @@
         ListGrid_Experts.fetchData();
         Window_Experts_Opinion.show();
     }
-    function confirmProcess(taskId, processInstanceId, window) {
+    function showProcessHistory(processInstanceId) {
 
-        let baseUrl = "";
-        let url = "";
-        let reviewTaskRequest = {}
-
-        let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
-        if (record.title.includes("نیازسنجی")) {
-            let map_data = {
-                "objectId": record.objectId,
-                "objectType": record.objectType
-            };
-            baseUrl = bpmsUrl;
-            url = "/needAssessment/tasks/review";
-            reviewTaskRequest = {
-                taskId: taskId,
-                approve: true,
-                userName: userUserName,
-                processInstanceId: processInstanceId,
-                variables:map_data
-            };
-        } else if (record.title.includes("شایستگی")) {
-            baseUrl = bpmsUrl;
-            url = "/tasks/review";
-            reviewTaskRequest = {
-                taskId: taskId,
-                approve: true,
-                userName: userUserName,
-                processInstanceId: processInstanceId
-            };
-        } else if (record.title.includes("صلاحیت علمی و فنی")) {
-            let ass_data = {
-                "assigneeList": record.assigneeList,
-            };
-            baseUrl = requestItemBPMSUrl;
-            url = "/tasks/request-item/review";
-            reviewTaskRequest = {
-                taskId: taskId,
-                approve: true,
-                userName: userUserName,
-                processInstanceId: processInstanceId,
-                variables: ass_data
-            };
-        }
-
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url , "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/process-instance-history/details/" + processInstanceId , "GET", null, function (resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                window.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                ToolStripButton_Refresh_Processes_UserPortfolio.click();
+                let taskHistory = JSON.parse(resp.httpResponseText);
+                ListGrid_Processes_History_UserPortfolio.setData(taskHistory);
             } else {
-                window.close();
-                createDialog("info", "عملیات انجام نشد");
+                createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
             }
         }));
     }
-    function confirmParallelRequestItemProcess(taskId, processInstanceId, expertOpinion, coursesListGrid, window) {
+    function showProcessDetail(bPMSProcessName, processInstanceId) {
 
-        let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
-        let coursesRecord = coursesListGrid.getSelectedRecords();
+        let DynamicForm_Processes_Detail = isc.DynamicForm.create({
+            colWidths: ["40%", "60%"],
+            width: "100%",
+            height: "100%",
+            numCols: 2,
+            autoFocus: "true",
+            cellPadding: 5
+        });
+        let Window_Processes_Detail = isc.Window.create({
+            title: "نمایش جزییات",
+            autoSize: false,
+            width: "25%",
+            height: "30%",
+            canDragReposition: true,
+            canDragResize: true,
+            autoDraw: false,
+            autoCenter: true,
+            isModal: false,
+            items: [
+                DynamicForm_Processes_Detail
+            ]
+        });
 
-        let baseUrl = requestItemBPMSUrl;
-        let url = "/tasks/parallel/request-item/review";
-        let ass_data = {
-            "assigneeList": record.assigneeList,
-        };
-        let reviewTaskRequest = {
-            taskId: taskId,
-            approve: true,
-            userName: userUserName,
-            processInstanceId: processInstanceId,
-            variables: ass_data
-        };
-        let reqItemCourses = {
-            courses: coursesRecord,
-            reviewTaskRequest: reviewTaskRequest
-        };
+        if (bPMSProcessName.contains('شایستگی')) {
 
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + expertOpinion + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reqItemCourses), function (resp) {
-            wait.close();
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                window.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                ToolStripButton_Refresh_Processes_UserPortfolio.click();
-            } else {
-                window.close();
-                createDialog("info", "عملیات انجام نشد");
-            }
-        }));
-    }
-    function confirmRequestItemProcessToDetermineStatus(taskId, processInstanceId, chiefOpinion, coursesListGrid, window) {
-
-        let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
-        let coursesRecord = coursesListGrid.getSelectedRecords();
-
-        let baseUrl = requestItemBPMSUrl;
-        let url = "/tasks/determine-status/request-item/review";
-        let ass_data = {
-            "assignFrom": record.assignFrom,
-        };
-        let reviewTaskRequest = {
-            taskId: taskId,
-            approve: true,
-            userName: userUserName,
-            processInstanceId: processInstanceId,
-            variables: ass_data
-        };
-        let reqItemCourses = {
-            courses: coursesRecord,
-            reviewTaskRequest: reviewTaskRequest
-        };
-
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + chiefOpinion + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reqItemCourses), function (resp) {
-            wait.close();
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                window.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                ToolStripButton_Refresh_Processes_UserPortfolio.click();
-            } else {
-                window.close();
-                createDialog("info", "عملیات انجام نشد");
-            }
-        }));
-    }
-    function setTitle(name) {
-        switch (name) {
-
-            case "Job":
-                return "<spring:message code="job"/>";
-            case "Post":
-                return "پست انفرادی";
-            case "PostGrade":
-                return "<spring:message code="post.grade"/>";
-            case "PostGroup":
-                return "<spring:message code="post.group"/>";
-            case "JobGroup":
-                return "<spring:message code="job.group"/>";
-            case "PostGradeGroup":
-                return "<spring:message code="post.grade.group"/>";
-            case "TrainingPost":
-                return "پست";
-
-            default:
-                return name.split('_').last();
-        }
-    }
-    function reAssignTask(record) {
-
-        if (record == null) {
-            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
-            let baseUrl = "";
-            let url = ""
-            let map_data = {};
-            let reviewTaskRequest = {}
-            let data = {}
-
-            if (record.title.includes("نیازسنجی")) {
-                baseUrl = bpmsUrl;
-                url = "/needAssessment/processes/reAssign-process/";
-                map_data = {
-                    "objectId": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectId,
-                    "returnReason": null,
-                    "objectType": ListGrid_Processes_UserPortfolio.getSelectedRecord().objectType
-                };
-            } else if (record.title.includes("صلاحیت علمی و فنی")) {
-                baseUrl = requestItemBPMSUrl;
-                url = "/processes/request-item/reAssign-process/";
-                map_data = {
-                    "returnReason": null,
-                };
-            }
-
-            reviewTaskRequest = {
-                variables: map_data,
-                processInstanceId: record.processInstanceId,
-                taskId: record.taskId,
-                approve: false,
-                userName: userUserName,
-            };
-            data = {
-                reviewTaskRequest: reviewTaskRequest,
-                reason: null,
-            }
-
-            wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(data), function (resp) {
-                wait.close();
+            isc.RPCManager.sendRequest(TrDSRequest(bpmsUrl + "/processes/details/" + processInstanceId, "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                    window.close();
-                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                    ToolStripButton_Refresh_Processes_UserPortfolio.click();
+                    let detail = JSON.parse(resp.httpResponseText);
+                    DynamicForm_Processes_Detail.setDataSource(RestDataSource_Processes_Detail_Competence_UserPortfolio);
+                    DynamicForm_Processes_Detail.setValues(detail);
+                    Window_Processes_Detail.show();
                 } else {
-                    window.close();
+                    createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
+                }
+            }));
+        } else {
+
+            isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/details/" + processInstanceId, "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    let detail = JSON.parse(resp.httpResponseText);
+                    DynamicForm_Processes_Detail.setDataSource(RestDataSource_Processes_Detail_Certification_UserPortfolio);
+                    DynamicForm_Processes_Detail.setValues(detail);
+                    Window_Processes_Detail.show();
+                } else {
                     createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>", "<spring:message code="error"/>");
                 }
             }));

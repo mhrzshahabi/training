@@ -44,6 +44,7 @@ import response.evaluation.dto.EvaluationAnswerObject;
 import response.evaluation.dto.TeacherEvaluationAnswer;
 import response.tclass.ElsClassDetailResponse;
 import response.tclass.ElsSessionResponse;
+import response.tclass.dto.ElsSessionDetailsResponse;
 import response.tclass.dto.TclassDto;
 
 import javax.servlet.http.HttpServletResponse;
@@ -2109,6 +2110,7 @@ public class TclassService implements ITclassService {
     @Override
     public ElsClassDetailResponse getClassDetail(String classCode) {
         Tclass tclass= getClassByCode(classCode);
+        ElsClassDetailResponse elsClassDto=new ElsClassDetailResponse();
         if (tclass != null) {
             Optional<Course> course= courseDAO.findById(tclass.getCourseId());
             StringBuilder courseTitle= new StringBuilder("");
@@ -2117,6 +2119,13 @@ public class TclassService implements ITclassService {
             if (tclass.getComplexId()!=null){
                 Optional<Complex> complex = complexDAO.findById(tclass.getComplexId());
                 complex.ifPresent(value -> complexTitle.append(value.getTitle()));
+            }
+
+          List<ClassStudent> classStudents=  classStudentDAO.findByTclassId(tclass.getId());
+            if(classStudents!=null){
+                List<String> studentsNationalCodes=new ArrayList<>();
+                classStudents.stream().forEach(classStudent -> studentsNationalCodes.add(classStudent.getStudent().getNationalCode()));
+                elsClassDto.setStudentsNationalCodes(studentsNationalCodes);
             }
 
             StringBuilder teacherFullName= new StringBuilder("");
@@ -2132,21 +2141,21 @@ public class TclassService implements ITclassService {
             course.ifPresent(value -> courseTitle.append(value.getTitleFa()));
 
 
-            ElsClassDetailResponse elsClassDto=new ElsClassDetailResponse();
+
             elsClassDto.setId(tclass.getId());
             if (tclass.getSupervisor()!=null){
-                elsClassDto.setSupervisor(tclass.getSupervisor().getFirstName() + " "+tclass.getSupervisor().getLastName());
+//                elsClassDto.setSupervisor(tclass.getSupervisor().getFirstName() + " "+tclass.getSupervisor().getLastName());
             }
             elsClassDto.setCode(tclass.getCode());
             elsClassDto.setTitle(tclass.getTitleClass());
             elsClassDto.setName(courseTitle.toString());
-            elsClassDto.setCapacity(tclass.getMaxCapacity() == null ? null : Integer.valueOf(tclass.getMaxCapacity().toString()));
-            elsClassDto.setDuration(tclass.getHDuration() == null ? null : Integer.valueOf(tclass.getHDuration().toString()));
+//            elsClassDto.setCapacity(tclass.getMaxCapacity() == null ? null : Integer.valueOf(tclass.getMaxCapacity().toString()));
+//            elsClassDto.setDuration(tclass.getHDuration() == null ? null : Integer.valueOf(tclass.getHDuration().toString()));
             elsClassDto.setLocation(complexTitle.toString());
-            elsClassDto.setCourseStatus(tclass.getClassStatus() == null ? null : getCourseStatus(Integer.parseInt(tclass.getClassStatus())));
-            elsClassDto.setClassType(tclass.getTeachingMethodId() == null ? null : getClassType(Integer.parseInt(tclass.getTeachingMethodId().toString())));
+//            elsClassDto.setCourseStatus(tclass.getClassStatus() == null ? null : getCourseStatus(Integer.parseInt(tclass.getClassStatus())));
+//            elsClassDto.setClassType(tclass.getTeachingMethodId() == null ? null : getClassType(Integer.parseInt(tclass.getTeachingMethodId().toString())));
             //todo this property must be remove in els
-            elsClassDto.setCourseType(null);
+//            elsClassDto.setCourseType(null);
             elsClassDto.setCoursePrograms(getPrograms2(tclass));
 
             Date startDate = getEpochDate(tclass.getStartDate(), "08:00");
@@ -2159,7 +2168,7 @@ public class TclassService implements ITclassService {
             elsClassDto.setInstructorNationalCode(teacherNationalCode.toString());
             elsClassDto.setEvaluationId(null);
             EvalAverageResult evaluationAverageResultToInstructor = getEvaluationAverageResultToTeacher(tclass.getId());
-            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage() == null ? null :evaluationAverageResultToInstructor.getTotalAverage());
+//            elsClassDto.setEvaluationRate(evaluationAverageResultToInstructor.getTotalAverage() == null ? null :evaluationAverageResultToInstructor.getTotalAverage());
             return elsClassDto;
         } else
             throw new TrainingException(TrainingException.ErrorType.TclassNotFound);
@@ -2296,6 +2305,28 @@ public class TclassService implements ITclassService {
     @Override
     public void updateAllSetToNullByEducationalCalenderId(Long id) {
         tclassDAO.updateAllSetToNullByEducationalCalenderId(id);
+    }
+
+    @Override
+    public ElsSessionDetailsResponse getClassUsersDetail(String classCode) {
+        Tclass tclass = getClassByCode(classCode);
+        ElsSessionDetailsResponse elsClassDto = new ElsSessionDetailsResponse();
+
+        List<ClassStudent> classStudents = classStudentDAO.findByTclassId(tclass.getId());
+        if (classStudents != null) {
+            List<String> studentsNationalCodes = new ArrayList<>();
+            classStudents.stream().forEach(classStudent -> studentsNationalCodes.add(classStudent.getStudent().getNationalCode()));
+            elsClassDto.setStudentsNationalCodes(studentsNationalCodes);
+        }
+
+
+        Optional<Teacher> teacher = teacherDAO.findById(tclass.getTeacherId());
+        if (teacher.isPresent()) {
+            String teacherNationalCode = teacher.get().getTeacherCode();
+            elsClassDto.setInstructorNationalCode(teacherNationalCode);
+        }
+
+        return elsClassDto;
     }
 
 

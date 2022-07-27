@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -18,4 +19,9 @@ public interface SynonymPersonnelDAO extends JpaRepository<SynonymPersonnel, Lon
     SynonymPersonnel findSynonymPersonnelDataByPersonnelNo2(String personnelNo2);
 
     Optional<SynonymPersonnel> findByPersonnelNoAndDeleted(String nationalCode, Integer deleted);
+
+    Optional<SynonymPersonnel> findFirstByPostCode(String postCode);
+
+    List<SynonymPersonnel> findAllByPersonnelNoOrderByIdDesc(String personnelNo);
+
 }
