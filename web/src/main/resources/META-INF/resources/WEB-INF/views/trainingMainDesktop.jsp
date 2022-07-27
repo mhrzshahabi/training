@@ -2794,6 +2794,13 @@
                                     createTab(this.title, "<spring:url value="web/manHourStatisticsByClassCategoryReport/"/>");
                                 }
                             },
+                            {isSeparator: true},
+                            {
+                                title: "<spring:message code="class.final.status.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/classFinalStatusReport/"/>");
+                                }
+                            },
                         ]
                 },
                 </sec:authorize>
@@ -4094,8 +4101,6 @@
             filterDF.getFields()[4].disable();
             filterDF.getFields()[5].disable();
         }
-
-
 
         filterDF.getFields()[0].criteriaField = companyFieldName;
         filterDF.getFields()[1].criteriaField = mojtameFieldName;
