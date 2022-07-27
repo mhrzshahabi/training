@@ -1409,15 +1409,8 @@ public class ExportController {
             affairList.add("");
         }
 
-        if (plannerSectionList == null) {
-            plannerSectionList = new ArrayList<>();
-            plannerSectionList.add("");
-        }
 
-        if (plannerUnitList == null) {
-            plannerUnitList = new ArrayList<>();
-            plannerUnitList.add("");
-        }
+
 
         if (classCodeList == null) {
             classCodeList = new ArrayList<>();
