@@ -22,7 +22,7 @@ public class OperationalChartDTO {
     @ApiModelProperty(required = true)
     private String title;
 
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(required = false)
     private Long parentId;
 
     @NotEmpty
@@ -37,7 +37,7 @@ public class OperationalChartDTO {
     @ApiModelProperty(required = true)
     private String nationalCode;
 
-    @ApiModelProperty(required = true)
+    @ApiModelProperty(required = false)
     private Long roleId;
 
     @ApiModelProperty(required = true)
@@ -65,6 +65,9 @@ public class OperationalChartDTO {
     @Accessors(chain = true)
     @ApiModel("OperationalCharCreateRq")
     public static class Create extends OperationalChartDTO {
+
+        @ApiModelProperty(required = true)
+        private Long userId;
     }
 
     @Getter
@@ -76,15 +79,9 @@ public class OperationalChartDTO {
         @ApiModelProperty(required = true)
         private String title;
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private String complex;
-
-        @NotEmpty
         @ApiModelProperty(required = true)
         private String userName;
 
-        @NotEmpty
         @ApiModelProperty(required = true)
         private String nationalCode;
 
@@ -92,10 +89,10 @@ public class OperationalChartDTO {
         private Long roleId;
 
         @ApiModelProperty(required = true)
-        private String code;
+        private Long userId;
 
-//        @ApiModelProperty(required = true)
-//        private List<OperationalChart> operationalChartParentChild;
+        @ApiModelProperty(required = true)
+        private String code;
 
         @NotNull
         @ApiModelProperty(required = true)

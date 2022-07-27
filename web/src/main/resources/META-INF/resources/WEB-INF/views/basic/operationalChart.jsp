@@ -200,7 +200,7 @@
 
     let ToolStripButton_Edit_JspOperationalChart = isc.ToolStripButtonEdit.create({
         click: function () {
-            let record = ListGrid_JspOperationalChart.getSelectedRecord();
+             let record = ListGrid_JspOperationalChart.getSelectedRecord();
             selected_record = record;
             if (record == null || record.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
@@ -419,30 +419,14 @@
             methodOperationalChart = "PUT";
             // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/iscList";
             saveActionUrlOperationalChart = operationalChartUrl + "/update" + record.id;
+            debugger
             DynamicForm_JspOperationalChart.clearValues();
             DynamicForm_JspOperationalChart.editRecord(record);
-            var categoryIds = selected_record.categories;
-            var subCategoryIds = selected_record.subCategories;
-            if (categoryIds === null || categoryIds.length === 0)
-                DynamicForm_JspOperationalChart.getField("subCategories").disable();
-            else {
-                DynamicForm_JspOperationalChart.getField("subCategories").enable();
-                var catIds = [];
-                for (let i = 0; i < categoryIds.length; i++)
-                    catIds.add(categoryIds[i].id);
-                DynamicForm_JspOperationalChart.getField("categories").setValue(catIds);
-                hasChartCategoriesChanged = true;
-                DynamicForm_JspOperationalChart.getField("subCategories").focus(null, null);
             }
-            if (subCategoryIds != null && subCategoryIds.length > 0) {
-                var subCatIds = [];
-                for (let i = 0; i < subCategoryIds.length; i++)
-                    subCatIds.add(subCategoryIds[i].id);
-                DynamicForm_JspOperationalChart.getField("subCategories").setValue(subCatIds);
-            }
+
             Window_JspOperationalChart.show();
         }
-    }
+
 
     function OperationalChart_save_result(resp) {
 
@@ -498,35 +482,33 @@
                 Window_JspOperationalChart.close();
                 return;
             }
-            debugger
             wait_Permission = createDialog("wait");
             /////////////////
-
             let dataDynamicForm = DynamicForm_JspOperationalChart.getValues();
-            let finalData = DynamicForm_JspOperationalChart.getValues();
 
-            // let complex = DynamicForm_JspOperationalChart.getValues().getField( "complexId").getValues().getField("title").getValue();
-            let userIds= DynamicForm_JspOperationalChart.getField("userIds");
-           // let firstName = userIds.getField("firstName").getValue();
-           // let lastName = userIds.getField("lastName").getValue();
-           // let userName = firstName + lastName;
-           // let nationalCode = userIds.getField("nationalCode").getValue();
-            // let title = DynamicForm_JspOperationalChart.getField("title").getValue();
-            // let code = DynamicForm_JspOperationalChart.getField("code").getValue();
 
-           let data = {
-               "complex": "complex",
-               "nationalCode": "nationalCode",
-               "operationalCharParentChild": [
-                   null
-               ],
-               "parentId": null ,
-               "title": "title",
-               "userName": "userName",
-               "code": "code",
-               "version": 0
-           }
+            let complex = DynamicForm_JspOperationalChart.getField( "complexId").getValue();
+            let userId= DynamicForm_JspOperationalChart.getField("userIds").getValue();
+            let title = DynamicForm_JspOperationalChart.getField("title").getValue();
+            let code = DynamicForm_JspOperationalChart.getField("code").getValue();
 
+
+            let data = {
+
+                "nationalCode": "nationalCode1",
+                "userName": "userName",
+
+                "operationalCharParentChild": [
+                    null
+                ],
+                "parentId": null ,
+                "complex":complex,
+                "title": title,
+                "code": code,
+                "userId" : userId,
+                "version": 0
+            }
+            debugger
            /////////////////////
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
@@ -577,7 +559,8 @@
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            {name: "version", hidden: true}
+            {name: "version", hidden: true},
+            // {name: "fullName"}
         ],
         fetchDataURL: oauthUserUrl + "/spec-list"
     });
@@ -590,14 +573,14 @@
             {name: "id", hidden: true},
             {  ////
                 name: "userIds",
-                type: "MultiComboBoxItem",
+                type: "ComboBoxItem",
                 title: "نام کاربری",
                 optionDataSource: UserDS_JspOperationalChart,
                 valueField: "id",
                 displayField: "lastName",
                 filterOnKeypress: true,
                 required: true,
-                multiple: true,
+                multiple: false,
                 comboBoxProperties: {
                     hint: "",
                     filterFields: ["firstName", "lastName", "username", "nationalCode"],
@@ -610,28 +593,7 @@
                                 autoDraw: false,
                                 height: 30,
                                 width: "100%",
-                                members: [
-                                    <%--isc.ToolStripButton.create({--%>
-                                    <%--    width: "50%",--%>
-                                    <%--    icon: "[SKIN]/actions/approve.png",--%>
-                                    <%--    title: "<spring:message code='select.all'/>",--%>
-                                    <%--    click: function () {--%>
-                                    <%--        let fItem = DynamicForm_JspOperationalChart.getField("userIds");--%>
-                                    <%--        fItem.setValue(fItem.comboBox.pickList.data.localData.map(user => user.id));--%>
-                                    <%--        fItem.comboBox.pickList.hide();--%>
-                                    <%--    }--%>
-                                    <%--}),--%>
-                                    <%--isc.ToolStripButton.create({--%>
-                                    <%--    width: "50%",--%>
-                                    <%--    icon: "[SKIN]/actions/close.png",--%>
-                                    <%--    title: "<spring:message code='deselect.all'/>",--%>
-                                    <%--    click: function () {--%>
-                                    <%--        let fItem = DynamicForm_JspOperationalRole.getField("userIds");--%>
-                                    <%--        fItem.setValue([]);--%>
-                                    <%--        fItem.comboBox.pickList.hide();--%>
-                                    <%--    }--%>
-                                    <%--})--%>
-                                ]
+                                members: [ ]
                             }),
                             "header", "body"
                         ]
@@ -681,7 +643,7 @@
                 optionDataSource: RestDataSource_OperationalChart_Department_Filter,
                 displayField: "title",
                 autoFetchData: true,
-                valueField: "id",
+                valueField: "title",
                 textAlign: "center",
                 required: true,
                 textMatchStyle: "substring",
@@ -690,7 +652,7 @@
                 ],
                 pickListProperties: {
                     sortField: 0,
-                    showFilterEditor: false
+                    showFilterEditor: true
                 },
             },
             {

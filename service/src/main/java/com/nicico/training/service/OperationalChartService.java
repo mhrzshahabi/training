@@ -2,7 +2,9 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.oauth.common.dto.OAUserDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.client.oauth.OauthClient;
 import com.nicico.training.dto.OperationalChartDTO;
 import com.nicico.training.iservice.IOperationalChartService;
 import com.nicico.training.mapper.operationalChart.OperationalChartMapper;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +26,8 @@ import java.util.*;
 public class OperationalChartService implements IOperationalChartService {
      private final OperationalChartDAO operationalChartDAO;
      private final OperationalChartMapper mapper;
+    private final OauthClient oauthClient;
+
     @Autowired
     private MessageSource messageSource;
 
@@ -46,6 +51,13 @@ public class OperationalChartService implements IOperationalChartService {
     @Override
     public OperationalChartDTO.Info create(OperationalChartDTO.Create request)  {
         final OperationalChart operationalChart = mapper.toOperationalChart(request);
+
+
+        request.getUserId();
+
+//        public String getFullName() {
+//            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
+//        }
 
         final List<OperationalChart> allOperationalChart = operationalChartDAO.findAll();
 
