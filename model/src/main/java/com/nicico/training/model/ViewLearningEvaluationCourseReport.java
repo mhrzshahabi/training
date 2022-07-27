@@ -43,6 +43,9 @@ public class ViewLearningEvaluationCourseReport implements Serializable {
     @Column(name = "course_titlefa")
     private String course_titlefa;
 
+    @Column(name = "category_id")
+    private Long categoryId;
+
     @Column(name = "category_titlefa")
     private String category_titlefa;
 
@@ -60,6 +63,9 @@ public class ViewLearningEvaluationCourseReport implements Serializable {
 
     @Column(name = "teacher_national_code")
     private String teacher_national_code;
+
+    @Column(name = "teacher_id")
+    private Long teacherId;
 
     @Column(name = "teacher")
     private String teacher;
@@ -99,4 +105,24 @@ public class ViewLearningEvaluationCourseReport implements Serializable {
 
     @Column(name = "pishraft")
     private String pishraft;
+
+    @Column(name = "omor")
+    private String omor;
+
+
+    @Column(name = "moavenat")
+    private String moavenat;
+
+    @Column(name = "term_id")
+    private Long termId;
+
+    @Column(name = "term_code")
+    private String termCode;
+
+    @Column(name = "institute")
+    private String institute;
+
+    @Column(name = "teaching_method")
+    private String teachingMethod;
+
 }
