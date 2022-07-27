@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,8 +28,12 @@ public class GenericStatisticalIndexReportRestController {
     public ResponseEntity<ISC<GenericStatisticalIndexReportDTO>> iscList(HttpServletRequest iscRq) throws IOException {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        List<GenericStatisticalIndexReportDTO> reportDTOList = genericStatisticalIndexReportService.getQueryResult("", "", "");
+        List<SearchDTO.CriteriaRq> criteriaRqList = searchRq.getCriteria().getCriteria();
+        String reportType = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("reportType")).collect(Collectors.toList()).get(0).getValue().get(0);
+        String fromDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("fromDate")).collect(Collectors.toList()).get(0).getValue().get(0);
+        String toDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("toDate")).collect(Collectors.toList()).get(0).getValue().get(0);
 
+        List<GenericStatisticalIndexReportDTO> reportDTOList = genericStatisticalIndexReportService.getQueryResult(reportType, fromDate, toDate);
         ISC.Response<GenericStatisticalIndexReportDTO> response = new ISC.Response<>();
         response.setData(reportDTOList)
                 .setStartRow(0)

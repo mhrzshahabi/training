@@ -1,5 +1,6 @@
 package com.nicico.training.repository;
 
+import com.nicico.training.model.GenericStatisticalIndexReport;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -8,10 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface GenericStatisticalIndexReportDAO extends JpaRepository<Object, Long>, JpaSpecificationExecutor<Object> {
+public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericStatisticalIndexReport, Long>, JpaSpecificationExecutor<GenericStatisticalIndexReport> {
 
 
     @Query(value = "SELECT DISTINCT\n" +
+            "    ROWNUM   AS id,\n" +
             "    complex   AS مجتمع,\n" +
             "    complex_id,\n" +
             "    CASE\n" +
@@ -191,5 +193,5 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<Object, 
             "    WHERE\n" +
             "            tbl_skill.e_deleted IS NULL\n" +
             ")", nativeQuery = true)
-    List<Object> getTechnicalTrainingNeeds(String fromDate, String toDate);
+    List<GenericStatisticalIndexReport> getTechnicalTrainingNeeds(String fromDate, String toDate);
 }

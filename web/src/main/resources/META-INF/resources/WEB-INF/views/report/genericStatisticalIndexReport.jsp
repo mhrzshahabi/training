@@ -68,9 +68,10 @@
                 ID: "fromDate_GSIR",
                 title: "از تاریخ",
                 hint: todayDate,
+                required: true,
                 keyPressFilter: "[0-9/]",
-                length: 10,
                 showHintInField: true,
+                length: 10,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
@@ -112,6 +113,7 @@
                 ID: "toDate_GSIR",
                 title: "تا تاریخ",
                 hint: todayDate,
+                required: true,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 length: 10,
@@ -153,6 +155,7 @@
             {
                 name: "reportType",
                 title: "نوع شاخص",
+                required: true,
                 valueMap: {
                     "نسبت نیازهای آموزشی تخصصی": "نسبت نیازهای آموزشی تخصصی"
                 }
@@ -234,13 +237,13 @@
 
                 if (data_values_GSIR.criteria[i].fieldName === "fromDate") {
                     data_values_GSIR.criteria[i].fieldName = "fromDate";
-                    data_values_GSIR.criteria[i].operator = "greaterThan";
+                    // data_values_GSIR.criteria[i].operator = "greaterThan";
                 } else if (data_values_GSIR.criteria[i].fieldName === "toDate") {
                     data_values_GSIR.criteria[i].fieldName = "toDate";
-                    data_values_GSIR.criteria[i].operator = "lessThan";
+                    // data_values_GSIR.criteria[i].operator = "lessThan";
                 } else if (data_values_GSIR.criteria[i].fieldName === "reportType") {
                     data_values_GSIR.criteria[i].fieldName = "reportType";
-                    data_values_GSIR.criteria[i].operator = "equals";
+                    // data_values_GSIR.criteria[i].operator = "equals";
                 }
             }
         } else {
