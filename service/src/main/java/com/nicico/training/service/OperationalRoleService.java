@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
@@ -11,10 +12,7 @@ import com.nicico.training.model.Complex;
 import com.nicico.training.model.OperationalRole;
 import com.nicico.training.model.OperationalUnit;
 import com.nicico.training.model.ViewTrainingPost;
-import com.nicico.training.repository.ComplexDAO;
-import com.nicico.training.repository.OperationalRoleDAO;
-import com.nicico.training.repository.OperationalUnitDAO;
-import com.nicico.training.repository.ViewTrainingPostDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
@@ -31,11 +29,12 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class OperationalRoleService implements IOperationalRoleService {
 
-    private final OperationalRoleDAO operationalRoleDAO;
-    private final ViewTrainingPostDAO viewTrainingPostDAO;
-    private final OperationalUnitDAO operationalUnitDAO;
     private final ComplexDAO complexDAO;
     private final ModelMapper modelMapper;
+    private final PersonnelDAO personnelDAO;
+    private final OperationalUnitDAO operationalUnitDAO;
+    private final OperationalRoleDAO operationalRoleDAO;
+    private final ViewTrainingPostDAO viewTrainingPostDAO;
     private final ViewTrainingPostMapper viewTrainingPostMapper;
 
     @Transactional
@@ -115,8 +114,26 @@ public class OperationalRoleService implements IOperationalRoleService {
     }
 
     @Override
-    public List<OperationalRole> getOperationalRolesByPostId(Long postId) {
-        List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByPostIds(postId);
+    public List<OperationalRole> getOperationalRolesByByPostIdsAndComplexIdAndObjectType(Long postId, String objectType) {
+        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+        Long complexId;
+        if (complexTitle != null) {
+            if (complexTitle.contains("حوزه مدیرعامل"))
+                complexId = 58910L;
+            else if (complexTitle.contains("استان کرمان"))
+                complexId = 24740L;
+            else if (complexTitle.contains("آذربایجان"))
+                complexId = 22190L;
+            else if (complexTitle.contains("شهربابک"))
+                complexId = 66470L;
+            else if (complexTitle.contains("سرچشمه"))
+                complexId = 85930L;
+            else
+                complexId = 38060L; // صندوق بازنشستگی
+        } else
+            complexId = 85930L;
+
+        List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByPostIdsAndComplexIdAndObjectType(postId, complexId, objectType);
         if (operationalRoles.size() != 0)
             return operationalRoles;
         else return new ArrayList<>();

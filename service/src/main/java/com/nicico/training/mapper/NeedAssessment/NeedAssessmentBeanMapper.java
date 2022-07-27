@@ -36,8 +36,8 @@ public abstract class NeedAssessmentBeanMapper {
     @Named("toCourseCode")
     protected String toCourseCode(Long skillId) {
         if (skillId != null) {
-            if (skillService.get(skillId).getCourseMainObjectiveId() != null)
-                return courseService.get(skillService.get(skillId).getCourseMainObjectiveId()).getCode();
+            if (skillService.get(skillId).getCourseId() != null)
+                return courseService.get(skillService.get(skillId).getCourseId()).getCode();
             else return null;
         }
         else return null;
@@ -46,8 +46,8 @@ public abstract class NeedAssessmentBeanMapper {
     @Named("toCourseTitle")
     protected String toCourseTitle(Long skillId) {
         if (skillId != null) {
-            if (skillService.get(skillId).getCourseMainObjectiveId() != null)
-                return courseService.get(skillService.get(skillId).getCourseMainObjectiveId()).getTitleFa();
+            if (skillService.get(skillId).getCourseId() != null)
+                return courseService.get(skillService.get(skillId).getCourseId()).getTitleFa();
             else return null;
         }
         else return null;
@@ -55,15 +55,21 @@ public abstract class NeedAssessmentBeanMapper {
 
     @Named("toCategoryTitle")
     protected String toCategoryTitle(Long skillId) {
-        if (skillId != null)
-            return categoryService.get(skillService.get(skillId).getCategoryId()).getTitleFa();
+        if (skillId != null) {
+            if (skillService.get(skillId).getCourseId() != null)
+                return courseService.get(skillService.get(skillId).getCourseId()).getCategory().getTitleFa();
+            else return null;
+        }
         else return null;
     }
 
     @Named("toSubCategoryTitle")
     protected String toSubCategoryTitle(Long skillId) {
-        if (skillId != null)
-            return subcategoryService.get(skillService.get(skillId).getSubCategoryId()).getTitleFa();
+        if (skillId != null) {
+            if (skillService.get(skillId).getCourseId() != null)
+                return courseService.get(skillService.get(skillId).getCourseId()).getSubCategory().getTitleFa();
+            else return null;
+        }
         else return null;
     }
 

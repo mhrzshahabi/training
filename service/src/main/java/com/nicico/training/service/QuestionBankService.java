@@ -16,9 +16,15 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.data.domain.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import response.BaseResponse;
+import response.question.dto.ElsQuestionOptionDto;
+import response.question.dto.GroupQuestionDto;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -35,6 +41,7 @@ public class QuestionBankService implements IQuestionBankService {
     private final ICategoryService categoryService;
     private final ISubcategoryService subcategoryService;
     private final IParameterValueService parameterValueService;
+    private final MessageSource messageSource;
 
 
     @Transactional(readOnly = true)
@@ -64,8 +71,39 @@ public class QuestionBankService implements IQuestionBankService {
         }
         QuestionBankDTO.FullInfo map = modelMapper.map(model, QuestionBankDTO.FullInfo.class);
         map.setQuestionLevelId(model.getEQuestionLevel().getId());
-        map.setGroupQuestions(questionGroupIds);
+        map.setGroupQuestions(getGroupQuestionDto(questionGroupIds));
+        map.setGroupQuestionIds(questionGroupIds);
         return map;
+    }
+
+    private Set<GroupQuestionDto> getGroupQuestionDto(Set<Long> questionGroupIds) {
+        Set<GroupQuestionDto> questionDtos=new HashSet<>();
+        questionGroupIds.forEach(id->{
+            final Optional<QuestionBank> cById = questionBankDAO.findById(id);
+            if (cById.isPresent()){
+                QuestionBank questionBank=cById.get();
+                GroupQuestionDto questionDto=new GroupQuestionDto();
+                questionDto.setQuestion(questionBank.getQuestion());
+
+                questionDto.setType(parameterValueService.getInfo(questionBank.getQuestionTypeId()).getTitle());
+                questionDto.setPriority(questionBank.getChildPriority());
+                questionDto.setId(questionBank.getId());
+                List<ElsQuestionOptionDto> optionDtoList = new ArrayList<>();
+                if (questionBank.getOption1() != null)
+                    optionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption1(), 1, null, null));
+                if (questionBank.getOption2() != null)
+                    optionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption2(), 2, null, null));
+                if (questionBank.getOption3() != null)
+                    optionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption3(), 3, null, null));
+                if (questionBank.getOption4() != null)
+                    optionDtoList.add(new ElsQuestionOptionDto(questionBank.getOption4(), 4, null, null));
+
+                questionDto.setOptionList(optionDtoList);
+                questionDtos.add(questionDto);
+            }
+
+        });
+        return questionDtos;
     }
 
 
@@ -107,9 +145,42 @@ public class QuestionBankService implements IQuestionBankService {
         } else {
             model.setQuestionDesigner(SecurityUtil.getUsername());
         }
-        model.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions()));
+        Boolean isUpdate = updateAllGroupQuestions(request.getGroupQuestions());
+        if (isUpdate){
+            model.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())));
+        }
+        else {
+            model.setGroupQuestions(null);
+        }
 
         return save(model);
+    }
+
+    private Boolean updateAllGroupQuestions(Set<GroupQuestionDto> groupQuestions) {
+        if (groupQuestions==null || groupQuestions.isEmpty())
+            return false;
+
+        boolean isUpdateAllQuestions=false;
+        for (GroupQuestionDto questionDto : groupQuestions){
+            try {
+                Optional<QuestionBank>optionalQuestionBank = questionBankDAO.findById(questionDto.getId());
+                if (optionalQuestionBank.isPresent()){
+                    QuestionBank questionBank=optionalQuestionBank.get();
+                    questionBank.setChildPriority(questionDto.getPriority());
+                    questionBankDAO.save(questionBank);
+                }else {
+                    isUpdateAllQuestions=false;
+                     break;
+                }
+                isUpdateAllQuestions=true;
+            }catch (Exception e){
+                isUpdateAllQuestions=false;
+                break;
+            }
+        }
+
+        return isUpdateAllQuestions;
+
     }
 
 
@@ -133,10 +204,16 @@ public class QuestionBankService implements IQuestionBankService {
 
         updating.setId(id);
         updating.setQuestionTargets(request.getQuestionTargets());
-        updating.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions()));
-        QuestionBank save = questionBankDAO.save(updating);
 
+        Boolean isUpdate = updateAllGroupQuestions(request.getGroupQuestions());
+        if (isUpdate){
+            updating.setGroupQuestions(getListOfGroupQuestions(request.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())));
+        }else {
+            updating.setGroupQuestions( null);
+        }
+        QuestionBank save = questionBankDAO.save(updating);
         return modelMapper.map(save, QuestionBankDTO.Info.class);
+
     }
 
     @Override
@@ -221,8 +298,7 @@ public class QuestionBankService implements IQuestionBankService {
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
         if (isFilterForGroupQuestion){
-            Long groupQuestionId= parameterValueService.getId("GroupQuestion");
-            list.add(makeNewCriteria("questionTypeId", groupQuestionId, EOperator.notEqual, null));
+            list.add(makeNewCriteria("isChild", true, EOperator.equals, null));
         }
 
         if (elsSearchDTO.getElsSearchList() != null && elsSearchDTO.getElsSearchList().size() > 0) {
@@ -357,7 +433,37 @@ public class QuestionBankService implements IQuestionBankService {
         Set<QuestionBank> removeQuestions=getListOfGroupQuestions(ids);
         questionGroupIds.removeAll(removeQuestions);
         model.setGroupQuestions(questionGroupIds);
+        for (QuestionBank questionBank :removeQuestions){
+            questionBank.setChildPriority("");
+            questionBankDAO.save(questionBank);
+        }
         questionBankDAO.save(model);
+    }
+    @Override
+    public BaseResponse addQuestionsGroup(Long id, Set<Long> ids, List<QuestionBankDTO.priorityData> priorityData) {
+        BaseResponse response=new BaseResponse() ;
+        final Optional<QuestionBank> cById = questionBankDAO.findById(id);
+        final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
+        Set<QuestionBank> questionGroupIds=model.getGroupQuestions();
+        Set<QuestionBank> addQuestions=getListOfGroupQuestions(ids);
+        questionGroupIds.addAll(addQuestions);
+        model.setGroupQuestions(questionGroupIds);
+        for (QuestionBank questionBank :addQuestions){
+            Optional<QuestionBankDTO.priorityData> dataOptional=priorityData.stream().filter(a->a.getId().equals(questionBank.getId())).findFirst();
+            if (dataOptional.isPresent()){
+                questionBank.setChildPriority(dataOptional.get().getChildPriority());
+            }else {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage(messageSource.getMessage("question.error.priority", null, LocaleContextHolder.getLocale()));
+                return response;
+            }
+            questionBankDAO.save(questionBank);
+        }
+        questionBankDAO.save(model);
+        response.setStatus(200);
+        response.setMessage(messageSource.getMessage("msg.operation.successful", null, LocaleContextHolder.getLocale()));
+
+        return response;
     }
 
 }

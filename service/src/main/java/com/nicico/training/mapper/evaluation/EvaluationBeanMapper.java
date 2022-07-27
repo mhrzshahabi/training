@@ -44,7 +44,6 @@ import response.question.dto.ElsQuestionTargetDto;
 
 import java.math.BigDecimal;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -694,6 +693,8 @@ public abstract class EvaluationBeanMapper {
 
 
                     questionProtocol.setQuestion(question);
+                    questionProtocol.setIsChild(questionData.getQuestionBank().getIsChild());
+                    questionProtocol.setChildPriority(questionData.getQuestionBank().getChildPriority());
                     questionProtocols.add(questionProtocol);
                 }
 
@@ -820,6 +821,8 @@ public abstract class EvaluationBeanMapper {
 
                         questionProtocol.setTime(timeQues);
                         questionProtocol.setQuestion(question);
+                        questionProtocol.setIsChild(questionData.getQuestionBank().getIsChild());
+                        questionProtocol.setChildPriority(questionData.getQuestionBank().getChildPriority());
                         questionProtocols.add(questionProtocol);
                     }
 
@@ -2253,6 +2256,8 @@ public abstract class EvaluationBeanMapper {
 
 
         }
+        groupQuestionProtocol.setIsChild(groupQuestionBank.getIsChild());
+        groupQuestionProtocol.setChildPriority(groupQuestionBank.getChildPriority());
         groupQuestionProtocol.setQuestion(groupQuestion);
         return groupQuestionProtocol;
     }
@@ -2354,6 +2359,8 @@ public abstract class EvaluationBeanMapper {
 
         questionProtocol.setTime(timeQues);
         questionProtocol.setQuestion(question);
+        questionProtocol.setIsChild(groupQuestionBank.getIsChild());
+        questionProtocol.setChildPriority(groupQuestionBank.getChildPriority());
         return questionProtocol;
 
 

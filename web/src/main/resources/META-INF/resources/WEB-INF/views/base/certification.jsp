@@ -1531,11 +1531,8 @@
         if (record.processInstanceId != null) {
             createDialog("info", "فرایند پیش تر به موتور گردش کار ارسال شده است");
             return;
-        } else if (record.operationalRoleTitles.size() === 0 || record.operationalRoleTitles == null) {
-            createDialog("info", "پست پیشنهادی در هیچ گروه کاری ای ثبت نشده است.");
-            return;
         } else if (record.operationalRoleUsers.size() === 0 || record.operationalRoleUsers == null) {
-            createDialog("info", "کاربری برای گروه های کاری پست پیشنهادی تعریف نشده است.");
+            createDialog("info", "کارشناس ارشد برنامه ریزی برای پست پیشنهادی تعریف نشده است.");
             return;
         } else {
             isc.MyYesNoDialog.create({
