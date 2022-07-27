@@ -79,6 +79,8 @@ public interface IRequestItemService {
 
     String getPlanningChiefNationalCode();
 
+    List<String> getPlanningExpertsAssigneeList(String post);
+
     List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getSupervisorAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
 
     List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);

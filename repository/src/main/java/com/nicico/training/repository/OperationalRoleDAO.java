@@ -21,16 +21,8 @@ public interface OperationalRoleDAO extends JpaRepository<OperationalRole, Long>
 
    Optional<OperationalRole> findByPostIds(Long postId);
 
-   List<OperationalRole> findAllByPostIds(Long postId);
+   List<OperationalRole> findAllByPostIdsAndComplexIdAndObjectType(Long postId, Long complexId, String objectType);
 
-    /**
-     * it returns the id of posts which user has access to them in operational role
-     *
-     * @param userId
-     * @return
-     */
-//    @Query(value = "SELECT postIds.POST_IDS FROM TBL_OPERATIONAL_ROLE role LEFT JOIN TBL_OPERATIONAL_ROLE_USER_IDS userIds ON role.ID = userIds.F_OPERATIONAL_ROLE " +
-//            " LEFT JOIN TBL_OPERATIONAL_ROLE_POST_IDS postIds ON role.ID = postIds.F_OPERATIONAL_ROLE WHERE userIds.USER_IDS = :userId ", nativeQuery = true)
     @Query(value = "SELECT post.ID " +
             " FROM TBL_POST post " +
             "          LEFT JOIN TBL_POST_TRAINING_POST TPTP ON post.ID = TPTP.F_POST_ID " +
