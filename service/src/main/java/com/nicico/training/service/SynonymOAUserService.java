@@ -19,4 +19,22 @@ public class SynonymOAUserService implements ISynonymOAUserService {
         Optional<SynonymOAUser> optionalSynonymOAUser = synonymOAUserDAO.findById(userId);
         return optionalSynonymOAUser.map(SynonymOAUser::getNationalCode).orElse(null);
     }
+
+    @Override
+    public String getFullNameByUserId(Long userId) {
+        Optional<SynonymOAUser> optionalSynonymOAUser = synonymOAUserDAO.findById(userId);
+
+           String firstName = optionalSynonymOAUser.map(SynonymOAUser::getFirstName).orElse(null);
+           String lastName = optionalSynonymOAUser.map(SynonymOAUser::getLastName).orElse(null);
+
+           if (firstName !=null && lastName ==null) {
+               return firstName;
+           }
+        if (firstName ==null && lastName !=null) {
+            return lastName;
+        }
+
+        return  (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
+    }
+
 }

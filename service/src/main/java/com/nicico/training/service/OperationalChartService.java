@@ -2,11 +2,10 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.oauth.common.dto.OAUserDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.client.oauth.OauthClient;
 import com.nicico.training.dto.OperationalChartDTO;
 import com.nicico.training.iservice.IOperationalChartService;
+import com.nicico.training.iservice.ISynonymOAUserService;
 import com.nicico.training.mapper.operationalChart.OperationalChartMapper;
 import com.nicico.training.model.OperationalChart;
 import com.nicico.training.repository.OperationalChartDAO;
@@ -14,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,7 +24,7 @@ import java.util.*;
 public class OperationalChartService implements IOperationalChartService {
      private final OperationalChartDAO operationalChartDAO;
      private final OperationalChartMapper mapper;
-    private final OauthClient oauthClient;
+    private final ISynonymOAUserService synonymOAUserService;
 
     @Autowired
     private MessageSource messageSource;
@@ -52,18 +50,14 @@ public class OperationalChartService implements IOperationalChartService {
     public OperationalChartDTO.Info create(OperationalChartDTO.Create request)  {
         final OperationalChart operationalChart = mapper.toOperationalChart(request);
 
-
-        request.getUserId();
-
-//        public String getFullName() {
-//            return (firstName + " " + lastName).compareTo("null null") == 0 ? null : firstName + " " + lastName;
-//        }
+        String fullName = synonymOAUserService.getFullNameByUserId(request.getUserId());
+        String nationalCode = synonymOAUserService.getNationalCodeByUserId(request.getUserId());
 
         final List<OperationalChart> allOperationalChart = operationalChartDAO.findAll();
 
         Set<OperationalChart> set = new HashSet<>();
         allOperationalChart.forEach(one -> {
-                    if (one.getNationalCode().contains(operationalChart.getNationalCode())) {
+                    if (one.getNationalCode().contains(nationalCode)) {
                         set.add(one);
                     }
                 }
@@ -72,6 +66,10 @@ public class OperationalChartService implements IOperationalChartService {
         if (set.stream().toList().size() != 0) {
             throw new TrainingException(TrainingException.ErrorType.OperationalChartIsDuplicated, messageSource.getMessage("exception.duplicate.information", null, LocaleContextHolder.getLocale()));
         }
+
+        operationalChart.setNationalCode(nationalCode);
+        operationalChart.setUserName(fullName);
+
         return save(operationalChart);
 
     }
