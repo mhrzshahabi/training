@@ -36,7 +36,6 @@
             {name: "processStartTime", title: "تاریخ شروع فرایند"},
             {name: "taskDefinitionKey"},
             {name: "processDefinitionKey"},
-            {name: "assigneeList"},
             {name: "returnReason",title: "توضیحات",
                 showHover:true,
                 hoverWidth: 250,
@@ -1959,9 +1958,7 @@
                 processInstanceId: record.processInstanceId
             };
         } else if (record.title.includes("صلاحیت علمی و فنی")) {
-            let ass_data = {
-                "assigneeList": record.assigneeList,
-            };
+            let ass_data = {};
             baseUrl = requestItemBPMSUrl;
             url = "/tasks/request-item/review";
             reviewTaskRequest = {

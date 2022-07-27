@@ -203,7 +203,7 @@ public class RequestItemService implements IRequestItemService {
         Optional<TrainingPost> optionalTrainingPost = trainingPostService.isTrainingPostExist(requestItem.getPost());
         TrainingPost trainingPost = optionalTrainingPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         try {
-            List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByPostId(trainingPost.getId());
+            List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByByPostIdsAndComplexIdAndObjectType(trainingPost.getId(), "MASTER_OF_PLANNING");
             List<Long> operationalRoleIds = operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList());
             requestItem.setOperationalRoleIds(new ArrayList<>());
             requestItem.setOperationalRoleIds(operationalRoleIds);
@@ -224,20 +224,9 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     public StartProcessWithDataDTO getRequestItemStartProcessDto(Long requestItemId, BpmsStartParamsDto params, String tenantId) {
-
-        Collection<String> assigneeList = new ArrayList<>();
         Map<String, Object> map = new HashMap<>();
-
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findById(requestItemId);
         if (optionalRequestItem.isPresent()) {
-            RequestItem requestItem = optionalRequestItem.get();
-            List<Long> operationalRoleIds = requestItem.getOperationalRoleIds();
-            Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
-            for (Long userId : userIds) {
-                assigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
-            }
-
-            map.put("assigneeList", assigneeList);
             map.put("assignTo", getPlanningChiefNationalCode());
             map.put("userId", SecurityUtil.getUserId());
             map.put("assignFrom", SecurityUtil.getNationalCode());
@@ -306,6 +295,9 @@ public class RequestItemService implements IRequestItemService {
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequestDto.getProcessInstanceId());
         if (optionalRequestItem.isPresent()) {
             RequestItem requestItem = optionalRequestItem.get();
+            List<String> assigneeList = getPlanningExpertsAssigneeList(requestItem.getPost());
+            Map<String, Object> map = reviewTaskRequestDto.getVariables();
+            map.put("assigneeList", assigneeList);
             String processStatus = parameterValueService.getInfo(requestItem.getProcessStatusId()).getCode();
             if (processStatus.equals("waitingReviewByPlanningChief")) {
                 requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningExperts"));
@@ -772,6 +764,19 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
+    public List<String> getPlanningExpertsAssigneeList(String post) {
+        List<String> assigneeList = new ArrayList<>();
+        Optional<TrainingPost> optionalTrainingPost = trainingPostService.isTrainingPostExist(post);
+        List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByByPostIdsAndComplexIdAndObjectType(optionalTrainingPost.get().getId(), "MASTER_OF_PLANNING");
+        List<Long> operationalRoleIds = operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList());
+        Set<Long> userIds = operationalRoleService.getAllUserIdsByIds(operationalRoleIds);
+        for (Long userId : userIds) {
+            assigneeList.add(synonymOAUserService.getNationalCodeByUserId(userId));
+        }
+        return assigneeList;
+    }
+
+    @Override
     public List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getSupervisorAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos) {
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
         Long complexId;
@@ -902,7 +907,7 @@ public class RequestItemService implements IRequestItemService {
                 requestItemWithDiff.setOperationalRoleIds(null);
                 requestItem.setOperationalRoleIds(null);
             } else {
-                List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByPostId(optionalTrainingPost.get().getId());
+                List<OperationalRole> operationalRoles = operationalRoleService.getOperationalRolesByByPostIdsAndComplexIdAndObjectType(optionalTrainingPost.get().getId(), "MASTER_OF_PLANNING");
                 List<Long> operationalRoleIds = operationalRoles.stream().map(OperationalRole::getId).collect(Collectors.toList());
                 requestItemWithDiff.setOperationalRoleIds(operationalRoleIds);
                 requestItemWithDiff.setOperationalRoleTitles(operationalRoles.stream().map(OperationalRole::getTitle).collect(Collectors.toList()));
