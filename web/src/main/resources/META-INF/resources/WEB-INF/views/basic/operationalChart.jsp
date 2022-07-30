@@ -221,8 +221,30 @@
                 {name: "userName"},
                 {name: "nationalCode"},
                 {name: "title"},
+                {name: "title"},
+                {name: "parentId"},
                  ],
         fetchDataURL: operationalChartUrl + "/spec-list",
+    });
+    let RestDataSource_Parent = isc.TrDS.create({
+        transformRequest: function (dsRequest) {
+            transformCriteriaForLastModifiedDateNA(dsRequest);
+            return this.Super("transformRequest", arguments);
+        },
+        dataArrived: function (startRow, endRow, data) {
+            console.log(data);
+        },
+
+        fields:
+            [
+                {name: "id", primaryKey: true},
+                {name: "complex"},
+                {name: "userName"},
+                {name: "nationalCode"},
+                {name: "title"},
+            ],
+        fetchDataURL:  operationalChartUrl + "/spec-list" ,
+        autoFetchData: true
     });
 
     let ListGrid_JspOperationalChart = isc.TrLG.create({
@@ -261,6 +283,18 @@
                 title: "عنوان",
                 filterOperator: "iContains"
             },
+            {
+                name: "parentId",
+                title: "سطح بالادست",
+                optionDataSource: RestDataSource_Parent,
+                displayField: "userName",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                required: false,
+                validateOnExit: true,
+                length: 255,
+            },
 
         ],
         rowDoubleClick: function (record) {
@@ -271,6 +305,8 @@
             ListGrid_JspOperationalChart.invalidateCache();
         }
     });
+
+
 
     let VLayout_Body_JspOperationalChart = isc.TrVLayout.create({
         height: "50%",
@@ -378,7 +414,8 @@
             let userId= DynamicForm_JspOperationalChart.getField("userIds").getValue();
             let title = DynamicForm_JspOperationalChart.getField("title").getValue();
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
-
+            let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue();
+debugger
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
@@ -386,7 +423,7 @@
                 "operationalCharParentChild": [
                     null
                 ],
-                "parentId": null ,
+                "parentId": parentId ,
                 "complex":complex,
                 "title": title,
                 "code": code,
@@ -548,9 +585,23 @@
             {
                 name: "parentId",
                 title: "سطح بالادست",
+                optionDataSource: RestDataSource_Parent,
+                displayField: "userName",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
                 required: false,
                 validateOnExit: true,
-                length: 255
+                length: 255,
+                pickListFields: [
+                    {
+                        name: "userName",
+                        title: "<spring:message code="username"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"}
+                ],
             },
 
         ]
