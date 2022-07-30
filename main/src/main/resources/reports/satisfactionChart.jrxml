@@ -20,6 +20,7 @@
 		<defaultValueExpression><![CDATA[$P{CHART_TITLE}]]></defaultValueExpression>
 	</parameter>
 	<parameter name="label" class="java.lang.String"/>
+	<parameter name="chart_caption" class="java.lang.String"/>
 	<queryString language="SQL">
 		<![CDATA[]]>
 	</queryString>
@@ -30,16 +31,7 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch">
-			<textField>
-				<reportElement isPrintRepeatedValues="false" x="50" y="50" width="445" height="29" uuid="4bbaace7-2932-41bd-855f-7a1b64c6e6f3"/>
-				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{CHART_TITLE}]]></textFieldExpression>
-			</textField>
-		</band>
+		<band height="79" splitType="Stretch"/>
 	</title>
 	<pageHeader>
 		<band height="35" splitType="Stretch"/>
@@ -48,10 +40,10 @@
 		<band height="61" splitType="Stretch"/>
 	</columnHeader>
 	<detail>
-		<band height="350" splitType="Stretch">
+		<band height="435" splitType="Stretch">
 			<xyLineChart>
-				<chart evaluationTime="Report">
-					<reportElement x="50" y="-95" width="445" height="416" uuid="9335145f-8407-40ed-9dae-792bda7df189">
+				<chart isShowLegend="false" evaluationTime="Report">
+					<reportElement x="50" y="29" width="445" height="326" uuid="9335145f-8407-40ed-9dae-792bda7df189">
 						<property name="net.sf.jasperreports.chart.domain.axis.integer.unit" value="true"/>
 						<propertyExpression name="com.jaspersoft.studio.unit.x"><![CDATA[]]></propertyExpression>
 						<propertyExpression name="net.sf.jasperreports.chart.dial.label"><![CDATA[]]></propertyExpression>
@@ -93,23 +85,7 @@
 				</linePlot>
 			</xyLineChart>
 			<staticText>
-				<reportElement x="50" y="300" width="445" height="20" uuid="e1378127-f7d6-4b2c-96a3-55cecdff917d">
-					<property name="com.jaspersoft.studio.unit.y" value="px"/>
-				</reportElement>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[شماره دوره]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="30" y="-96" width="20" height="415" uuid="f0c1bd71-a024-4b47-907d-bbb4eff05e5d">
+				<reportElement x="30" y="29" width="20" height="323" uuid="f0c1bd71-a024-4b47-907d-bbb4eff05e5d">
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
 				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0">
@@ -124,6 +100,34 @@
 				</textElement>
 				<text><![CDATA[نمره ارزیابی فراگیر]]></text>
 			</staticText>
+			<textField>
+				<reportElement isPrintRepeatedValues="false" x="50" y="0" width="445" height="29" uuid="4bbaace7-2932-41bd-855f-7a1b64c6e6f3"/>
+				<box topPadding="0" leftPadding="0" bottomPadding="0" rightPadding="0"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{CHART_TITLE}]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement x="50" y="355" width="445" height="20" uuid="e1378127-f7d6-4b2c-96a3-55cecdff917d">
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+				</box>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<text><![CDATA[شماره دوره]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="50" y="375" width="445" height="60" uuid="97eec11e-02e7-40e1-80fd-fdb3f276e1a8"/>
+				<textFieldExpression><![CDATA[$P{chart_caption}]]></textFieldExpression>
+			</textField>
 		</band>
 	</detail>
 	<columnFooter>

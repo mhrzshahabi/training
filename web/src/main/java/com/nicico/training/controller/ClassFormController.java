@@ -248,7 +248,7 @@ public class ClassFormController {
        xyData.stream().forEach(xy->{
            parameters.put("horizontal",xy.getHorizontal());
            parameters.put("vertical",xy.getVertical());
-           parameters.put("seriesName",xy.getSeriesName());
+           parameters.put("chart_caption",xy.getSeriesName());
        });
 
         parameters.put(ConstantVARs.REPORT_TYPE, type);
