@@ -26,23 +26,25 @@
     let endDateCheck_Order_csfr = true;
 
     //----------------------------------------------------Default Rest--------------------------------------------------
-    isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FER", "GET", null, function (resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-
-            let result = (JSON.parse(resp.data)).response.data;
-            minScoreER_csfr = Number(result.filter(q => q.code === "minScoreER").first().value);
-            minQusER_csfr = Number(result.filter(q => q.code === "minQusER").first().value);
-            stdToContent_csfr = Number(result.filter(q => q.code === "z3").first().value);
-            stdToTeacher_csfr = Number(result.filter(q => q.code === "z4").first().value);
-            stdToFacility_csfr = Number(result.filter(q => q.code === "z6").first().value);
-            teachToClass_csfr = Number(result.filter(q => q.code === "z5").first().value);
-
-        }
-    }));
+    // isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/iscList/FER", "GET", null, function (resp) {
+    //     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+    //
+    //         let result = (JSON.parse(resp.data)).response.data;
+    //         minScoreER_csfr = Number(result.filter(q => q.code === "minScoreER").first().value);
+    //         minQusER_csfr = Number(result.filter(q => q.code === "minQusER").first().value);
+    //         stdToContent_csfr = Number(result.filter(q => q.code === "z3").first().value);
+    //         stdToTeacher_csfr = Number(result.filter(q => q.code === "z4").first().value);
+    //         stdToFacility_csfr = Number(result.filter(q => q.code === "z6").first().value);
+    //         teachToClass_csfr = Number(result.filter(q => q.code === "z5").first().value);
+    //     }
+    // }));
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     let RestDataSource_Category_csfr = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [
+            {name: "id"},
+            {name: "titleFa"}
+        ],
         fetchDataURL: categoryUrl + "spec-list"
     });
     let RestDataSource_SubCategory_csfr = isc.TrDS.create({
@@ -114,26 +116,20 @@
             {name: "group"},
             {name: "hduration",canFilter: false},
             {name: "classCancelReasonId"},
-            {name: "titleClass", },
-            {name: "startDate", },
-            {name: "endDate", },
+            {name: "titleClass"},
+            {name: "startDate"},
+            {name: "endDate"},
             {name: "studentCount", canFilter: false, canSort: false},
-            {name: "code", },
-            {name: "term.titleFa", },
-            {name: "courseId", },
-            {name: "course.titleFa", },
-            {name: "course.id", },
-            {name: "teacherId", },
-            {
-                name: "teacher",
-
-            },
-            {
-                name: "teacher.personality.lastNameFa",
-
-            },
-            {name: "reason" , },
-            {name: "classStatus" , },
+            {name: "code"},
+            {name: "term.titleFa"},
+            {name: "courseId"},
+            {name: "course.titleFa"},
+            {name: "course.id"},
+            {name: "teacherId"},
+            {name: "teacher"},
+            {name: "teacher.personality.lastNameFa"},
+            {name: "reason"},
+            {name: "classStatus"},
             {name: "topology"},
             {name: "targetPopulationTypeId"},
             {name: "holdingClassTypeId"},
@@ -296,15 +292,15 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
-                    if(value == undefined || value ==null){
+                    if(value === undefined || value == null){
                         form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
                         form.clearFieldErrors("startDate1", true);
                         startDateCheck_Order_csfr = true;
                         startDate1Check_csfr = true;
                         return;
                     }
-                    var dateCheck;
-                    var endDate = form.getValue("startDate2");
+                    let dateCheck;
+                    let endDate = form.getValue("startDate2");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
                         startDate1Check_csfr = false;
@@ -341,22 +337,22 @@
                     }
                 }],
                 editorExit: function (form, item, value) {
-                    if(value == undefined || value ==null){
+                    if(value === undefined || value == null){
                         form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
                         form.clearFieldErrors("startDate2", true);
                         startDateCheck_Order_csfr = true;
                         startDate2Check_csfr = true;
                         return;
                     }
-                    var dateCheck;
+                    let dateCheck;
                     dateCheck = checkDate(value);
-                    var startDate = form.getValue("startDate1");
+                    let startDate = form.getValue("startDate1");
                     if (dateCheck === false) {
                         startDate2Check_csfr = false;
                         startDateCheck_Order_csfr = true;
                         form.clearFieldErrors("startDate2", true);
                         form.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
-                    } else if (startDate != undefined && value < startDate) {
+                    } else if (startDate !== undefined && value < startDate) {
                         form.clearFieldErrors("startDate2", true);
                         form.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
                         startDate2Check_csfr = true;
@@ -413,7 +409,6 @@
                                     icon: "[SKIN]/actions/approve.png",
                                     title: "انتخاب همه",
                                     click: function () {
-                                        debugger
                                         let item = DynamicForm_CriteriaForm_csfr.getField("termId"),
                                             fullData = item.pickList.data,
                                             cache = fullData.localData,
@@ -474,53 +469,52 @@
                 // filterOperator: "equals",
                 disabled: true,
                 valueField: "id",
-                displayField: "titleFa",
+                // displayField: "titleFa",
                 // filterLocally: true,
                 valueMap: {
                     "WITH_SCORE": "با نمره",
                     "WITHOUT_SCORE": "بدون نمره",
                 },
-                pickListProperties: {
-                    gridComponents: [
-                        isc.ToolStrip.create({
-                            autoDraw: false,
-                            height: 30,
-                            width: "100%",
-                            members: [
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/approve.png",
-                                    title: "انتخاب همه",
-                                    click: function () {
-                                        debugger
-                                        let item = DynamicForm_CriteriaForm_csfr.getField("classScore"),
-                                            fullData = item.pickList.data,
-                                            cache = fullData.localData,
-                                            values = [];
-
-                                        for (let i = 0; i < cache.length; i++) {
-                                            values[i] = cache[i].id;
-                                        }
-                                        item.setValue(values);
-                                        item.pickList.hide();
-                                        debugger
-                                    }
-                                }),
-                                isc.ToolStripButton.create({
-                                    width: "50%",
-                                    icon: "[SKIN]/actions/close.png",
-                                    title: "حذف همه",
-                                    click: function () {
-                                        let item = DynamicForm_CriteriaForm_csfr.getField("classScore");
-                                        item.setValue([]);
-                                        item.pickList.hide();
-                                    }
-                                })
-                            ]
-                        }),
-                        "header", "body"
-                    ]
-                }
+                // pickListProperties: {
+                //     gridComponents: [
+                //         isc.ToolStrip.create({
+                //             autoDraw: false,
+                //             height: 30,
+                //             width: "100%",
+                //             members: [
+                //                 isc.ToolStripButton.create({
+                //                     width: "50%",
+                //                     icon: "[SKIN]/actions/approve.png",
+                //                     title: "انتخاب همه",
+                //                     click: function () {
+                //                         let item = DynamicForm_CriteriaForm_csfr.getField("classScore"),
+                //                             fullData = item.pickList.data,
+                //                             cache = fullData.localData,
+                //                             values = [];
+                //
+                //                         for (let i = 0; i < cache.length; i++) {
+                //                             values[i] = cache[i].id;
+                //                         }
+                //                         item.setValue(values);
+                //                         item.pickList.hide();
+                //                         debugger
+                //                     }
+                //                 }),
+                //                 isc.ToolStripButton.create({
+                //                     width: "50%",
+                //                     icon: "[SKIN]/actions/close.png",
+                //                     title: "حذف همه",
+                //                     click: function () {
+                //                         let item = DynamicForm_CriteriaForm_csfr.getField("classScore");
+                //                         item.setValue([]);
+                //                         item.pickList.hide();
+                //                     }
+                //                 })
+                //             ]
+                //         }),
+                //         "header", "body"
+                //     ]
+                // }
             },
             {
                 name: "studentId",
@@ -531,7 +525,7 @@
                 // dataPageSize: 50,
                 valueField: "id",
                 displayField: "fullName",
-                filterFields: ["personality.firstNameFa", "personality.lastNameFa", "personality.nationalCode"],
+                filterFields: ["firstName", "lastName", "nationalCode"],
                 pickListFields: [
                     {name: "firstName", title: "نام"},
                     {name: "lastName", title: "نام خانوادگی"},
@@ -559,56 +553,24 @@
         ]
     });
 
-    let IButton_student_csfr = isc.IButtonSave.create({
-        top: 260,
-        title: "استخراج بر اساس فراگیر",
-        width: 300,
-        height: "100%",
-        click: function () {
-
-        }
-    });
-    let IButton_course_csfr = isc.IButtonSave.create({
-        top: 260,
-        title: "استخراج بر اساس دوره",
-        width: 300,
-        height: "100%",
-        click: function () {
-
-        }
-    });
-
-
     //----------------------------------- layOut -----------------------------------------------------------------------
-    let HLayOut_buttons_csfr = isc.TrHLayoutButtons.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        // height: "100%",
-        alignLayout: "center",
-        padding: 10,
-        members: [
-            IButton_student_csfr, IButton_course_csfr
-        ]
-    });
 
-    let ListGrid_CSFR_Student = isc.TrLG.create({
+    let ListGrid_CFSR_Student = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        // dataSource: RestDataSource_Class_cfsr,
-        dataPageSize: 50,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        showRollOver:false,
-        selectionType: "single",
-        autoFetchData: false,
-        autoFitWidth: true,
-        initialSort: [
-            {property: "startDate", direction: "descending", primarySort: true}
-        ],
+        dataSource: RestDataSource_Class_cfsr,
+        // dataPageSize: 50,
+        // allowAdvancedCriteria: true,
+        // allowFilterExpressions: true,
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
+        // showRollOver:false,
+        // selectionType: "single",
+        // autoFetchData: false,
+        // autoFitWidth: true,
+        // initialSort: [
+        //     {property: "startDate", direction: "descending", primarySort: true}
+        // ],
         // selectionUpdated: function (record) {
         //
         //     ToolStrip_SendForms_JspClass.getField("sendButtonTraining").showIcon("ok");
@@ -705,72 +667,25 @@
             {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
             {name: "acceptance.limit", title: "<spring:message code="acceptance.limit"/>", filterOperator: "iContains"},
             {name: "executor", title: "<spring:message code="executer"/>", filterOperator: "iContains"},
-        ],
-        // getCellCSSText: function (record, rowNum, colNum) {
-        //     let style;
-        //     if (this.isSelected(record)) {
-        //         style =  "background-color:" + "#fe9d2a;";
-        //     } else if (record.workflowEndingStatusCode === 2) {
-        //         style =  "background-color:" + "#bef5b8;";
-        //     } else {
-        //         if (record.classStatus === "1")
-        //             style =  "background-color:" + "#ffffff;";
-        //         else if (record.classStatus === "2")
-        //             style =  "background-color:" + "#fff9c4;";
-        //         else if (record.classStatus === "3")
-        //             style =  "background-color:" + "#cdedf5;";
-        //         else if (record.classStatus === "4")
-        //             style =  "color:" + "#d6d6d7;";
-        //     }
-        //     if (this.getFieldName(colNum) == "teacher") {
-        //         style +=  "color: #0066cc;text-decoration: underline !important;cursor: pointer !important;}"
-        //     }
-        //     return style;
-        // },
-        // cellClick: function (record, rowNum, colNum) {
-        //     if (this.getFieldName(colNum) == "teacher") {
-        //         ListGrid_teacher_edit(record.teacherId,"class")
-        //     }
-        // },
-        // dataArrived: function () {
-        //     wait.close();
-        //     selectWorkflowRecord();
-        // },
-        // createRecordComponent: function (record, colNum) {
-        //     var fieldName = this.getFieldName(colNum);
-        //     if (fieldName == "sendClassToOnlineBtn") {
-        //         let sendBtn = isc.IButton.create({
-        //             layoutAlign: "center",
-        //             disabled: (record.classToOnlineStatus == true) || (record.classStatus === "1"),
-        //             title: "ارسال به آزمون آنلاین",
-        //             width: "145",
-        //             margin: 3,
-        //             click: function () {
-        //                 sendClassToOnline(record.id)
-        //             }
-        //         });
-        //         return sendBtn;
-        //     } else {
-        //         return null;
-        //     }
-        // }
+        ]
     });
-    let ListGrid_CSFR_Course = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
-        // dataSource: RestDataSource_Class_cfsr,
-        dataPageSize: 50,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        showRollOver:false,
+
+    let ListGrid_CFSR_Course = isc.TrLG.create({
+        // width: "100%",
+        // height: "100%",
+        dataSource: RestDataSource_ListGrid_Course_csfr,
+        // dataPageSize: 50,
+        // allowAdvancedCriteria: true,
+        // allowFilterExpressions: true,
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
+        // showRollOver:false,
         selectionType: "single",
         autoFetchData: false,
         autoFitWidth: true,
-        initialSort: [
-            {property: "startDate", direction: "descending", primarySort: true}
-        ],
+        // initialSort: [
+        //     {property: "startDate", direction: "descending", primarySort: true}
+        // ],
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
@@ -834,15 +749,75 @@
         ]
     });
 
-    let VLayout_ListGrid_CSFR_Result = isc.VLayout.create({
+    let Window_Show_Student_Report = isc.Window.create({
+        placement: "center",
+        width: "90%",
+        height: "80%",
+        autoSize:false,
+        border: "1px solid gray",
+        title: "وضعیت نهایی کلاس بر اساس فراگیر",
+        items: [isc.TrVLayout.create({
+            align: "center",
+            members: [
+                ListGrid_CFSR_Student
+            ]
+        })]
+    });
+    let Window_Show_Course_Report = isc.Window.create({
+        placement: "center",
+        width: "90%",
+        height: "80%",
+        autoSize:false,
+        border: "1px solid gray",
+        title: "وضعیت نهایی کلاس بر اساس دوره",
+        items: [isc.TrVLayout.create({
+            align: "center",
+            members: [
+                ListGrid_CFSR_Course
+            ]
+        })]
+    });
+
+    let IButton_student_csfr = isc.IButtonSave.create({
+        top: 260,
+        title: "استخراج بر اساس فراگیر",
+        width: 300,
+        height: "100%",
+        click: function () {
+            Window_Show_Student_Report.show();
+        }
+    });
+    let IButton_course_csfr = isc.IButtonSave.create({
+        top: 260,
+        title: "استخراج بر اساس دوره",
+        width: 300,
+        height: "100%",
+        click: function () {
+            Window_Show_Course_Report.show();
+        }
+    });
+    let HLayOut_buttons_csfr = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         width: "100%",
-        height: "65%",
+        // height: "100%",
         alignLayout: "center",
-        layoutTopMargin: 5,
-        members: [ListGrid_CSFR_Course]
+        padding: 10,
+        members: [
+            IButton_student_csfr, IButton_course_csfr
+        ]
     });
+
+    // let VLayout_ListGrid_CFSR_Result = isc.VLayout.create({
+    //     showEdges: false,
+    //     edgeImage: "",
+    //     width: "100%",
+    //     height: "65%",
+    //     alignLayout: "center",
+    //     layoutTopMargin: 5,
+    //     members: [ListGrid_CFSR_Course]
+    // });
 
     let organSegmentFilter_cfsr = init_OrganSegmentFilterDF(true,true, true , null, "complexTitle","assistant","affairs", "section", "unit");
 
@@ -850,7 +825,7 @@
         showEdges: false,
         edgeImage: "",
         width: "100%",
-        height: "35%",
+        height: "100%",
         alignLayout: "center",
         members: [
             organSegmentFilter_cfsr,
@@ -862,9 +837,13 @@
     let VLayout_Body_csfr = isc.TrVLayout.create({
         border: "2px solid blue",
         align: "center",
-        padding: 10,
+        padding: 32,
         members: [
-            VLayOut_CriteriaForm_csfr, VLayout_ListGrid_CSFR_Result
+            organSegmentFilter_cfsr,
+            DynamicForm_CriteriaForm_csfr,
+            HLayOut_buttons_csfr,
+            // VLayOut_CriteriaForm_csfr,
+            // VLayout_ListGrid_CFSR_Result
         ]
     });
 
