@@ -38,7 +38,7 @@ public interface NeedsAssessmentDAO extends BaseDAO<NeedsAssessment, Long> {
     @Query(value = "update TBL_NEEDS_ASSESSMENT SET e_deleted = :deleted WHERE id = :id", nativeQuery = true)
     public void updateDeleted(Long id, Long deleted);
 
-    List<NeedsAssessment> findAllByObjectTypeAndObjectCode(String objectType, String objectCode);
+    List<NeedsAssessment> findAllByObjectTypeAndObjectCodeAndDeleted(String objectType, String objectCode, Long deleted);
 
     @Modifying
     @Query(value = "delete from TBL_NEEDS_ASSESSMENT where f_competence = :id", nativeQuery = true)
