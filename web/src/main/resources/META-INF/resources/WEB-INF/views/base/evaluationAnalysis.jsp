@@ -394,6 +394,7 @@
 
         Detail_Tab_Evaluation_Analysis.enable();
         if (evaluationType === "1" || evaluationType === "واکنشی") {
+            fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
