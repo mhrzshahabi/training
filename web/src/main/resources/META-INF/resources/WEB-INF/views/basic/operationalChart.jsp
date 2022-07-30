@@ -418,8 +418,8 @@
             // PostDS_just_Show_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleUsedPostList/" + record.id;
             methodOperationalChart = "PUT";
             // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/iscList";
-            saveActionUrlOperationalChart = operationalChartUrl + "/update" + record.id;
-            debugger
+            saveActionUrlOperationalChart = operationalChartUrl + "/update/" + record.id;
+
             DynamicForm_JspOperationalChart.clearValues();
             DynamicForm_JspOperationalChart.editRecord(record);
             }
@@ -448,9 +448,8 @@
     }
 
     function ListGrid_OperationalChart_Remove() {
-        // let recordIds = ListGrid_JspOperationalChart.getSelectedRecords().map(r => r.id);
-        let recordId = ListGrid_JspOperationalChart.getSelectedRecord().getID();
-        if (recordId == null || recordId.length === 0) {
+        let recordIds = ListGrid_JspOperationalChart.getSelectedRecords().map(r => r.id);
+        if (recordIds == null || recordIds.length === 0) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
@@ -460,7 +459,7 @@
                     this.close();
                     if (index === 0) {
                         wait_Permission = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/delete" + recordId,
+                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/delete/" + recordIds,
                             "DELETE",
                             null,
                             OperationalChart_remove_result));
@@ -470,7 +469,23 @@
         }
     }
 
-
+    function OperationalChart_remove_result(resp) {
+        wait_Permission.close();
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            refreshLG(ListGrid_JspOperationalChart);
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
+        }
+    }
 
     let IButton_Save_JspOperationalChart = isc.IButtonSave.create({
         top: 260,
@@ -483,19 +498,14 @@
                 return;
             }
             wait_Permission = createDialog("wait");
-            /////////////////
-            let dataDynamicForm = DynamicForm_JspOperationalChart.getValues();
-
 
             let complex = DynamicForm_JspOperationalChart.getField( "complexId").getValue();
             let userId= DynamicForm_JspOperationalChart.getField("userIds").getValue();
             let title = DynamicForm_JspOperationalChart.getField("title").getValue();
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
 
-
             let data = {
-
-                "nationalCode": "nationalCode1",
+                "nationalCode": "nationalCode",
                 "userName": "userName",
 
                 "operationalCharParentChild": [
@@ -508,8 +518,7 @@
                 "userId" : userId,
                 "version": 0
             }
-            debugger
-           /////////////////////
+
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
                 JSON.stringify(data),

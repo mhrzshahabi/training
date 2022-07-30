@@ -106,7 +106,8 @@ public class OperationalChartService implements IOperationalChartService {
         } else {
             OperationalChart parent = operationalParent.get();
             OperationalChart child = operationalChild.get();
-            if (parent.getParentId().equals(child.getId()) || parent.getId().equals(child.getId()) || operationalChild.get().getParentId() !=null ) {
+
+            if ((parent.getParentId() !=null &&  parent.getParentId().equals(child.getId())) || parent.getId().equals(child.getId())  ) {  // || operationalChild.get().getParentId() !=null
                 throw new TrainingException(TrainingException.ErrorType.Forbidden, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
             } else {
                 Set<OperationalChart> lastChilds = new HashSet<>(operationalChartDAO.findAllByParentId(parentId));
@@ -130,6 +131,11 @@ public class OperationalChartService implements IOperationalChartService {
 
         OperationalChart toUpdate= mapper.toUpdate(operationalChart,request);
 
+        String fullName = synonymOAUserService.getFullNameByUserId(request.getUserId());
+        String nationalCode = synonymOAUserService.getNationalCodeByUserId(request.getUserId());
+        toUpdate.setNationalCode(nationalCode);
+        toUpdate.setUserName(fullName);
+
       return save(toUpdate) ;
     }
 
@@ -139,6 +145,10 @@ public class OperationalChartService implements IOperationalChartService {
         final Optional<OperationalChart> one = operationalChartDAO.findById(id);
         final OperationalChart OperationalToDelete = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
 
+        if (OperationalToDelete.getParentId() == null){
+            operationalChartDAO.delete(OperationalToDelete);
+            return;
+        }
         Optional<OperationalChart> findOperationalParent=  operationalChartDAO.findById(OperationalToDelete.getParentId());
         Optional<OperationalChart> operationalParent= Optional.ofNullable(findOperationalParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
 

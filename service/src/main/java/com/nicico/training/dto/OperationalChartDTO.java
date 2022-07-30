@@ -74,29 +74,33 @@ public class OperationalChartDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("OperationalCharUpdateRq")
-    public static class Update  {
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private String title;
-
-        @ApiModelProperty(required = true)
-        private String userName;
-
-        @ApiModelProperty(required = true)
-        private String nationalCode;
-
-        @ApiModelProperty(required = true)
-        private Long roleId;
+    public static class Update extends OperationalChartDTO {
 
         @ApiModelProperty(required = true)
         private Long userId;
 
-        @ApiModelProperty(required = true)
-        private String code;
-
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private String title;
+//
+//        @ApiModelProperty(required = true)
+//        private String userName;
+//
+//        @ApiModelProperty(required = true)
+//        private String nationalCode;
+//
+//        @ApiModelProperty(required = true)
+//        private Long roleId;
+//
+//        @ApiModelProperty(required = true)
+//        private Long userId;
+//
+//        @ApiModelProperty(required = true)
+//        private String code;
+//
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private Integer version;
     }
 
     @Getter
