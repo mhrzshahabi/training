@@ -63,7 +63,7 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
             "INNER JOIN TBL_TEACHER_ROLES ttr ON ttr.ROLE_ID = tr.ID \n" +
             "INNER JOIN TBL_TEACHER tt ON tt.ID = ttr.TEACHER_ID \n" +
             "LEFT JOIN TBL_PERSONAL_INFO tpi ON tpi.ID = tt.F_PERSONALITY \n" +
-            "WHERE tpi.C_NATIONAL_CODE = :nationalCode AND tt.B_ENABLED=1",nativeQuery = true)
+            "WHERE tpi.C_NATIONAL_CODE = :nationalCode AND  (tt.e_enabled = 1 OR tt.e_enabled is null) ",nativeQuery = true)
     List<Map<String,Object>> findAllTeacherRoleByNationalCode(@Param("nationalCode") String nationalCode);
 
     Optional<Teacher> findByPersonality(PersonalInfo personalInfo);
