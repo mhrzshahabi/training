@@ -5075,7 +5075,22 @@ FROM
             <column name="child_priority" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-
+    <changeSet id="1658896976000-4" author="ZPakdaman">
+        <dropColumn tableName="tbl_teacher_experience_info" columnName="salary_base"></dropColumn>
+    </changeSet>
+    <changeSet id="1658896976000-5" author="ZPakdaman">
+        <dropColumn tableName="tbl_teacher_experience_info" columnName="teaching_experience"></dropColumn>
+    </changeSet>
+    <changeSet id="1658896976000-6" author="ZPakdaman">
+       <addColumn tableName="tbl_teacher_experience_info">
+           <column name="salary_base" type="number(19, 0)"></column>
+       </addColumn>
+    </changeSet>
+    <changeSet id="1658896976000-7" author="ZPakdaman">
+        <addColumn tableName="tbl_teacher_experience_info">
+            <column name="teaching_experience" type="number(19, 0)"></column>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
 
 

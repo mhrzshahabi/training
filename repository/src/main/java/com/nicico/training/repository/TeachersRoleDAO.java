@@ -20,4 +20,5 @@ public interface TeachersRoleDAO extends JpaRepository<TeacherRole, Long> {
     @Query(value = "SELECT" +
             "   1 FROM tbl_teacher_roles where role_id= :roleId AND teacher_id= :teacherId",nativeQuery = true)
     Long findTeacherRoleByRoleId(Long roleId,Long teacherId);
+
 }

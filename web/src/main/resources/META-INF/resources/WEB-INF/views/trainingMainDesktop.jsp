@@ -1239,6 +1239,7 @@
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
+    const agreementFurtherInfoUrl=rootUrl + "/teacherExperienceInfo"
     const foreignLangKnowledgeUrl = rootUrl + "/foreignLangKnowledge";
     const publicationUrl = rootUrl + "/publication";
     const configQuestionnaireUrl = rootUrl + "/config-questionnaire";

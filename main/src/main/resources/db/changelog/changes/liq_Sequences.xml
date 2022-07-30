@@ -378,6 +378,7 @@
         <createSequence sequenceName="seq_committee_post_id"/>
     </changeSet>
 
-
-
+    <changeSet author="ZPakdaman" id="1658896976000-02">
+        <createSequence sequenceName="seq_teacher_experience_info_id"/>
+    </changeSet>
 </databaseChangeLog>

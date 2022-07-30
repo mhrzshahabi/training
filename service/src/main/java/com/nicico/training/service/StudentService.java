@@ -272,7 +272,7 @@ public class StudentService implements IStudentService {
     @Cacheable(value = "findAllRoleByNationalCode-IStudentService", key = "{#nationalCode}")
     public Set<String> findAllRoleByNationalCode(String nationalCode) {
         Set<String> roleList = new HashSet<>();
-        List<String> role = iTeacherRoleService.findAllTeacherRoleByNationalCode(nationalCode);
+        List<String> role = iTeacherRoleService.findAllTeacherRoleByNationalCodeEls(nationalCode);
         if (!role.isEmpty())
             roleList.addAll(role);
         if (personnelService.isPresent(nationalCode))

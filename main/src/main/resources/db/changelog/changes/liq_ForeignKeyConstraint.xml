@@ -1399,4 +1399,7 @@
     <addForeignKeyConstraint baseColumnNames="committee_of_experts_id" baseTableName="tbl_committee_of_experts_complex" constraintName="FKcommittee_of_experts_complex" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
 </changeSet>
 
+    <changeSet author="ZPakdaman" id="1658896976000-03">
+        <addForeignKeyConstraint baseColumnNames="teacher" baseTableName="tbl_teacher_experience_info" constraintName="FKteacher_experience_info" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
