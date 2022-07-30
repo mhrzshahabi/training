@@ -9,4 +9,5 @@ public interface QuestionnaireDAO extends BaseDAO<Questionnaire, Long> {
     Integer isLocked(Long id);
 
     Questionnaire findFirstById(Long questionnarieId);
+
 }
