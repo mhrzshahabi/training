@@ -34,9 +34,9 @@ public class OperationalChartRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/list")
-    public ResponseEntity<List<OperationalChartDTO.Info>> list() {
-        return new ResponseEntity<>(operationalChartService.list(), HttpStatus.OK);
+    @PostMapping(value = "/list")
+    public ResponseEntity<List<OperationalChartDTO.Info>> list(@RequestBody String complexTitle) {
+        return new ResponseEntity<>(operationalChartService.list(complexTitle), HttpStatus.OK);
     }
 
     @Loggable

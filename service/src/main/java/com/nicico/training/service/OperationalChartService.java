@@ -39,9 +39,18 @@ public class OperationalChartService implements IOperationalChartService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<OperationalChartDTO.Info> list() {
+    public List<OperationalChartDTO.Info> list(String complexTitle) {
         final List<OperationalChart> gAll = operationalChartDAO.findAll();
-        return mapper.toInfoDTOList(gAll);
+
+        Set<OperationalChart> set = new HashSet<>();
+        gAll.forEach(one -> {
+                    if (one.getComplex().equals(complexTitle.replace("\"",""))) {
+                        set.add(one);
+                    }
+        }
+        );
+        List<OperationalChart> listByComplex = set.stream().toList();
+        return mapper.toInfoDTOList(listByComplex);
 
     }
 

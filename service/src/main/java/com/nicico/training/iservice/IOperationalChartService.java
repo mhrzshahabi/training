@@ -9,7 +9,7 @@ import java.util.List;
 public interface IOperationalChartService {
     OperationalChartDTO.Info get(Long id);
 
-    List<OperationalChartDTO.Info> list();
+    List<OperationalChartDTO.Info> list(String complexTitle);
 
     OperationalChartDTO.Info create(OperationalChartDTO.Create request);
 

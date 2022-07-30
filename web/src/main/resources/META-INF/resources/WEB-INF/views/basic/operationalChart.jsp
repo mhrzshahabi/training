@@ -66,62 +66,6 @@
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
 
-    <%--var search_bar = isc.DynamicForm.create({--%>
-    <%--    autoDraw: false,--%>
-    <%--    numCols: 3,--%>
-    <%--    items: [--%>
-    <%--        {--%>
-    <%--            name: "search",--%>
-    <%--            title: "جستجو در عناوین",--%>
-    <%--            width: 400,--%>
-    <%--            suppressBrowserClearIcon: true,--%>
-    <%--            icons: [--%>
-    <%--                {--%>
-    <%--                    name: "view",--%>
-    <%--                    src: "[SKINIMG]actions/view.png",--%>
-    <%--                    hspace: 5,--%>
-    <%--                    inline: true,--%>
-    <%--                    baseStyle: "roundedTextItemIcon",--%>
-    <%--                    showRTL: true,--%>
-    <%--                    tabIndex: -1,--%>
-    <%--                    click: function () {--%>
-    <%--                        getSearchData(search_bar.getValues().search);--%>
-    <%--                    }--%>
-    <%--                }, {--%>
-    <%--                    name: "clear",--%>
-    <%--                    src: "[SKINIMG]actions/close.png",--%>
-    <%--                    width: 10,--%>
-    <%--                    height: 10,--%>
-    <%--                    inline: true,--%>
-    <%--                    prompt: "Clear this field",--%>
-
-    <%--                    click: function (form, item, icon) {--%>
-    <%--                        item.clearValue();--%>
-    <%--                        item.focusInItem();--%>
-    <%--                    }--%>
-    <%--                }],--%>
-    <%--            iconWidth: 16,--%>
-    <%--            iconHeight: 16--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            type: "Button",--%>
-    <%--            title: "<spring:message code="refresh"/>",--%>
-    <%--            startRow: false,--%>
-    <%--            align:"left",--%>
-    <%--            click: function () {--%>
-    <%--                search_bar.getField("search").getIcon("clear").click(search_bar,search_bar.getField("search"));--%>
-    <%--                operationalSearchTree.setData([]);--%>
-    <%--                operationalTree.setData([]);--%>
-    <%--                getTreeData();--%>
-    <%--            }--%>
-    <%--        }--%>
-    <%--    ],--%>
-    <%--    itemKeyPress: function (item, keyName) {--%>
-    <%--        if (keyName === "Enter") {--%>
-    <%--            getSearchData(search_bar.getValues().search);--%>
-    <%--        }--%>
-    <%--    }--%>
-    <%--});--%>
 
     // <<------------------------------------------- Create - Layout ------------------------------------------
 
@@ -136,8 +80,6 @@
         members: [operationalSearchTree]
     });
 
-    /////////////////////////////////////
-    ////////////////////////////////////
     let RestDataSource_OperationalChart_Department_Filter = isc.TrDS.create({
         fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
         cacheAllData: true,
@@ -184,8 +126,8 @@
                     }
                 ],
                 changed: function (form, item, value) {
-                    load_chart_by_department(value);
-                    setTreeData(operationalTree, chart, false);
+                    load_chart_by_complex(value);
+                    getTreeData(value);
                 },
             },
         ]
@@ -205,15 +147,13 @@
             if (record == null || record.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
-                // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + record.id;
                 ListGrid_OperationalChart_Edit(selected_record);
             }
         }
     });
     let ToolStripButton_Add_JspOperationalChart = isc.ToolStripButtonCreate.create({
         click: function () {
-            // PostDS_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/rolePostList/" + 0;
-            ListGrid_OperationalChart_Add();
+           ListGrid_OperationalChart_Add();
         }
     });
     let ToolStripButton_Remove_JspOperationalChart = isc.ToolStripButtonRemove.create({
@@ -280,12 +220,8 @@
                 {name: "complex"},
                 {name: "userName"},
                 {name: "nationalCode"},
-                // {name: "roleId"},
-                 {name: "title"},
-                // {name: "code"},
-                // {name: "parentId"}
-
-            ],
+                {name: "title"},
+                 ],
         fetchDataURL: operationalChartUrl + "/spec-list",
     });
 
@@ -295,7 +231,7 @@
         sortField: 0,
         sortDirection: "descending",
         dataPageSize: 200,
-        autoFetchData: true,
+        autoFetchData: false,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
@@ -320,68 +256,12 @@
                 filterOperator: "iContains"
             },
 
-            // {
-            //     name: "roleId",
-            //     title: "نوع نقش",
-            //     filterOperator: "iContains"
-            // },
             {
                 name: "title",
                 title: "عنوان",
                 filterOperator: "iContains"
             },
-            // {
-            //     name: "code",
-            //     title: "کد",
-            //     filterOperator: "iContains"
-            // },
-            // {
-            //     name: "parentId",
-            //     title: "سطح بالادست",
-            //     filterOperator: "iContains"
-            // },
-            <%--{--%>
-            <%--    name: "userName",--%>
-            <%--    type: "selectItem",--%>
-            <%--    title: "<spring:message code="users"/>",--%>
-            <%--    filterOperator: "inSet",--%>
-            <%--    // optionDataSource: UserDS_JspOperationalRole,--%>
-            <%--    valueField: "id",--%>
-            <%--    displayField: "lastName",--%>
-            <%--    filterField: "lastName",--%>
-            <%--    filterOnKeypress: true,--%>
-            <%--    multiple: true,--%>
-            <%--    canSort: false,--%>
-            <%--    pickListProperties: {--%>
-            <%--        showFilterEditor: true--%>
-            <%--    },--%>
-            <%--    pickListFields: [--%>
-            <%--        {--%>
-            <%--            name: "firstName",--%>
-            <%--            title: "<spring:message code="firstName"/>",--%>
-            <%--            filterOperator: "iContains",--%>
-            <%--            autoFitWidth: true--%>
-            <%--        },--%>
-            <%--        {--%>
-            <%--            name: "lastName",--%>
-            <%--            title: "<spring:message code="lastName"/>",--%>
-            <%--            filterOperator: "iContains",--%>
-            <%--            autoFitWidth: true--%>
-            <%--        },--%>
-            <%--        {--%>
-            <%--            name: "username",--%>
-            <%--            title: "<spring:message code="username"/>",--%>
-            <%--            filterOperator: "iContains",--%>
-            <%--            autoFitWidth: true--%>
-            <%--        },--%>
-            <%--        {--%>
-            <%--            name: "nationalCode",--%>
-            <%--            title: "<spring:message code="national.code"/>",--%>
-            <%--            filterOperator: "iContains",--%>
-            <%--            autoFitWidth: true--%>
-            <%--        }--%>
-            <%--    ]--%>
-            <%--}--%>
+
         ],
         rowDoubleClick: function (record) {
             selected_record = record;
@@ -403,22 +283,17 @@
 
     function ListGrid_OperationalChart_Add() {
         methodOperationalChart = "POST";
-        // ListGrid_Post_OperationalRole.invalidateCache();
-        // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/rolePostList/";
         saveActionUrlOperationalChart = operationalChartUrl + "/create";
         DynamicForm_JspOperationalChart.clearValues();
         Window_JspOperationalChart.show();
     }
 
     function ListGrid_OperationalChart_Edit(record) {
-        // ListGrid_Post_OperationalRole.invalidateCache();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            // PostDS_just_Show_OperationalRole.fetchDataURL = viewTrainingPostUrl + "/roleUsedPostList/" + record.id;
-            methodOperationalChart = "PUT";
-            // PostDS_OperationalRole.fetchDataURL = viewPostUrl + "/iscList";
-            saveActionUrlOperationalChart = operationalChartUrl + "/update/" + record.id;
+             methodOperationalChart = "PUT";
+             saveActionUrlOperationalChart = operationalChartUrl + "/update/" + record.id;
 
             DynamicForm_JspOperationalChart.clearValues();
             DynamicForm_JspOperationalChart.editRecord(record);
@@ -569,7 +444,6 @@
                 autoFitWidth: true
             },
             {name: "version", hidden: true},
-            // {name: "fullName"}
         ],
         fetchDataURL: oauthUserUrl + "/spec-list"
     });
@@ -580,7 +454,7 @@
         titleAlign: "left",
         fields: [
             {name: "id", hidden: true},
-            {  ////
+            {
                 name: "userIds",
                 type: "ComboBoxItem",
                 title: "نام کاربری",
@@ -629,7 +503,7 @@
                         }
                     ],
                 }
-            }, ///
+            },
             {
                 name: "title",
                 title: "<spring:message code="title"/>",
@@ -696,15 +570,9 @@
     });
 
 
-    ////////////////////////////////////////
-    ////////////////////////////////////////
-
     var VLayout_Operational_Chart_Body = isc.VLayout.create({
-        // members: [search_bar, VLayout_operationalSearchTree, VLayout_operationalTree]
-        members: [
-            // Menu_JspOperationalRole,
-            VLayout_Body_JspOperationalChart, VLayout_operationalTree]
-    });
+            members: [VLayout_Body_JspOperationalChart, VLayout_operationalTree]
+     });
 
     var HLayout_Operational_Chart_Body = isc.TrHLayout.create({
         members: [VLayout_Operational_Chart_Body]
@@ -712,29 +580,31 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
 
-    $(document).ready(function () {
-        if(batch)
-            getTreeData();
-    });
+    // $(document).ready(function () {
+    //     if(batch)
+    //         getTreeData();
+    // });
 
-    function getTreeData() {
+    function getTreeData(complexTitle) {
 
-        var url = operationalChartUrl + "/list";
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(url, "GET", null, function (resp) {
-            wait.close();
-            if (resp.httpResponseCode !== 200)
-                return false;
-            else {
-                let data = JSON.parse(resp.data);
+        if (complexTitle !== undefined) {
+            var url = operationalChartUrl + "/list";
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(url, "POST",  JSON.stringify(complexTitle), function (resp) {
+                wait.close();
+                if (resp.httpResponseCode !== 200)
+                    return false;
+                else {
+                    let data = JSON.parse(resp.data);
 
-                let childs = data.filter(p=> p);
-                let chart = data.filter(p=> p);
-                chart.forEach(p=> p.directReports = childs.filter(c => c.parentId === p.id));
-                let treeData = setTreeData(operationalTree, chart, false);
-                return treeData;
-            }
-        }));
+                    let childs = data.filter(p => p);
+                    let chart = data.filter(p => p);
+                    chart.forEach(p => p.directReports = childs.filter(c => c.parentId === p.id));
+                    let treeData = setTreeData(operationalTree, chart, false);
+                    return treeData;
+                }
+            }));
+        }
     }
 
     function openDepFolder(tree) {
@@ -774,7 +644,7 @@
         return mainCriteria;
     }
 
-    function load_chart_by_department(value) {
+    function load_chart_by_complex(value) {
         if (value !== undefined) {
             let criteria = {
                 _constructor: "AdvancedCriteria",
@@ -790,6 +660,7 @@
             let mainCriteria = createMainCriteriaInChart();
             ListGrid_JspOperationalChart.invalidateCache();
             ListGrid_JspOperationalChart.fetchData(mainCriteria);
+
         } else {
             createDialog("info", "<spring:message code="msg.select.complex.ask"/>", "<spring:message code="message"/>")
         }
