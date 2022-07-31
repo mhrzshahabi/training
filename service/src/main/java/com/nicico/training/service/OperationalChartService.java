@@ -100,11 +100,10 @@ public class OperationalChartService implements IOperationalChartService {
             OperationalChart OldParent = operationalOldParent.get();
             OldParent.getOperationalChartParentChild().remove(operationalChart);
             operationalChart.setParentId(null);
-//            return save(OldParent);
+
             return mapper.toInfoDTO(operationalChart);
         } else {
-            return mapper.toInfoDTO(operationalChart);
-//               return mapper.toInfoDTO(operationalChart) ; // if it don't have parent,just return itself.
+              return mapper.toInfoDTO(operationalChart) ; // if it don't have parent,just return itself.
 //            throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));
         }
 

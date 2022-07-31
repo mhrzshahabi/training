@@ -439,11 +439,6 @@ debugger
                 "version": 0
             }
 
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
-                methodOperationalChart,
-                JSON.stringify(data),
-                OperationalChart_save_result));
-
             if (parentId != null || parentId != undefined ) {
                 let record = ListGrid_JspOperationalChart.getSelectedRecord();
                 if (record.parentId != undefined) {
@@ -469,7 +464,6 @@ debugger
                                 }
                             }
                         }));
-
                 }
 
 // debugger
@@ -496,6 +490,10 @@ debugger
                     }));
             }
 
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
+                methodOperationalChart,
+                JSON.stringify(data),
+                OperationalChart_save_result));
         }
     });
 
