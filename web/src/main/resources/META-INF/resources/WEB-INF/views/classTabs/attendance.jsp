@@ -372,7 +372,11 @@
                     params.code = classGridRecordInAttendanceJsp.code;
                     params.titleClass = classGridRecordInAttendanceJsp.titleClass;
                     params.teacher = classGridRecordInAttendanceJsp.teacher;
-                    params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
+                    if (classGridRecordInAttendanceJsp.institute!==undefined && classGridRecordInAttendanceJsp.institute.titleFa!==undefined){
+                        params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
+                    }else
+                        params.institute ="ثبت نشده"
+
                     params.startDate = classGridRecordInAttendanceJsp.startDate;
                     let localData = ListGrid_Attendance_AttendanceJSP.getData().localData.toArray();
                     let data = [];

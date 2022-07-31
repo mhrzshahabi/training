@@ -1285,7 +1285,9 @@
         icon: "[SKIN]/actions/save.png",
         click: async function () {
             DynamicForm_PersonnelReg_BaseInfo.clearErrors();
-            if (codeMeliCheckPerReg === false) {
+            if (checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value
+                ,DynamicForm_PersonnelReg_BaseInfo.getField("nationality")._value
+            ) === false) {
                 DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message  code='msg.national.code.validation'/>", true);
                 return;
             }
@@ -2052,6 +2054,9 @@
         if (code === undefined || code === null || code === "")
             return false;
         var L = code.length;
+
+        if (L>10)
+            return false;
 
         if (L < 8 || parseFloat(code, 10) === 0)
             return false;
