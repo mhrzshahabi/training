@@ -20,12 +20,20 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
     private final GenericStatisticalIndexReportDAO genericStatisticalIndexReportDAO;
 
     @Override
-    public List<GenericStatisticalIndexReportDTO> getQueryResult(String reportName, String fromDate, String toDate) {
+    public List<GenericStatisticalIndexReportDTO>  getQueryResult(String reportName,
+                                                                 String fromDate,
+                                                                 String toDate,
+                                                                 List<Object> complex,
+                                                                 int complexNull,
+                                                                 List<Object> assistant,
+                                                                 int assistantNull,
+                                                                 List<Object> affairs,
+                                                                 int affairsNull) {
 
         List<GenericStatisticalIndexReport> result = new ArrayList<>();
 
-        if (reportName.equals("نسبت نیازهای آموزشی تخصصی")) {
-            result = genericStatisticalIndexReportDAO.getTechnicalTrainingNeeds(fromDate, toDate);
+        if (reportName.equals("report01")) {
+            result = genericStatisticalIndexReportDAO.getTechnicalTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
         }
         return modelMapper.map(result, new TypeToken<List<GenericStatisticalIndexReportDTO>>() {
         }.getType());

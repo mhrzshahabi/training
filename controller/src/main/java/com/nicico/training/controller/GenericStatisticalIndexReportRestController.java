@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +30,37 @@ public class GenericStatisticalIndexReportRestController {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         List<SearchDTO.CriteriaRq> criteriaRqList = searchRq.getCriteria().getCriteria();
+
         String reportType = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("reportType")).collect(Collectors.toList()).get(0).getValue().get(0);
         String fromDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("fromDate")).collect(Collectors.toList()).get(0).getValue().get(0);
         String toDate = (String) criteriaRqList.stream().filter(item -> item.getFieldName().equals("toDate")).collect(Collectors.toList()).get(0).getValue().get(0);
 
-        List<GenericStatisticalIndexReportDTO> reportDTOList = genericStatisticalIndexReportService.getQueryResult(reportType, fromDate, toDate);
+        List<Object> complex = new ArrayList<>();
+        List<Object> assistant = new ArrayList<>();
+        List<Object> affairs = new ArrayList<>();
+
+        int complexNull = 1;
+        int assistantNull = 1;
+        int affairsNull = 1;
+
+        List<Object> complexList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("complex")).collect(Collectors.toList());
+        if (complexList.size() != 0) {
+            complexNull = 0;
+            complex = ((SearchDTO.CriteriaRq) complexList.get(0)).getValue();
+        }
+        List<Object> assistantList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("assistant")).collect(Collectors.toList());
+        if (assistantList.size() != 0) {
+            assistantNull = 0;
+            assistant = ((SearchDTO.CriteriaRq) assistantList.get(0)).getValue();
+        }
+        List<Object> affairsList = criteriaRqList.stream().filter(item -> item.getFieldName().equals("affairs")).collect(Collectors.toList());
+        if (affairsList.size() != 0) {
+            affairsNull = 0;
+            affairs = ((SearchDTO.CriteriaRq) affairsList.get(0)).getValue();
+        }
+
+        List<GenericStatisticalIndexReportDTO> reportDTOList = genericStatisticalIndexReportService.getQueryResult(reportType, fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+
         ISC.Response<GenericStatisticalIndexReportDTO> response = new ISC.Response<>();
         response.setData(reportDTOList)
                 .setStartRow(0)

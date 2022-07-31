@@ -10,29 +10,27 @@
     let dateCheck_Order_GSIR = true;
     let reportCriteria_GSIR;
     let data_values_GSIR = null;
-    let isCriteriaCategoriesChanged_GSIR = false;
 
     //---------------------------------------------------- REST DataSources--------------------------------------------------------//
-
     RestDataSource_GSIR = isc.TrDS.create({
         fields: [
             {name: "complex", title: "مجتمع"},
             {name: "assistant", title: "معاونت"},
             {name: "affairs", title: "امور"},
-            {name: "reportResult", title: "نتیجه"}
+            {name: "baseOnComplex", title: "نتیجه براساس مجتمع"},
+            {name: "baseOnAssistant", title: "نتیجه براساس معاونت"},
+            {name: "baseOnAffairs", title: "نتیجه براساس امور"}
         ],
         fetchDataURL: genericStatisticalIndexReportUrl + "/iscList"
     });
 
     //---------------------------------------------------- Main Window--------------------------------------------------------------//
-
     ToolStripButton_Excel_GSIR = isc.ToolStripButtonExcel.create({
         click: function () {
-        }
-    });
-    ToolStripButton_Refresh_GSIR = isc.ToolStripButtonRefresh.create({
-        click: function () {
-            ListGrid_GSIR.invalidateCache();
+            if (ListGrid_GSIR.getOriginalData().localData === undefined)
+                createDialog("info", "ابتدا نمایش گزارش را انتخاب کنید");
+            else
+                ExportToFile.downloadExcelFromClient(ListGrid_GSIR, null, '', "گزارش شاخص های آماری");
         }
     });
     ToolStrip_Actions_GSIR = isc.ToolStrip.create({
@@ -45,15 +43,13 @@
                     align: "left",
                     border: '0px',
                     members: [
-                        // ToolStripButton_Refresh_GSIR,
-                        // ToolStripButton_Excel_GSIR
+                        ToolStripButton_Excel_GSIR
                     ]
                 })
             ]
     });
 
     organSegmentFilter_GSIR = init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistant","affairs", "section", "unit");
-
     DynamicForm_GSIR = isc.DynamicForm.create({
         align: "right",
         titleWidth: 0,
@@ -157,7 +153,7 @@
                 title: "نوع شاخص",
                 required: true,
                 valueMap: {
-                    "نسبت نیازهای آموزشی تخصصی": "نسبت نیازهای آموزشی تخصصی"
+                    "report01": "نسبت نیازهای آموزشی تخصصی"
                 }
             }
         ]
@@ -168,8 +164,7 @@
         title: "نمایش گزارش",
         width: 300,
         click: function () {
-            DynamicForm_GSIR.validate();
-            if (DynamicForm_GSIR.hasErrors())
+            if (!DynamicForm_GSIR.validate())
                 return;
             ListGrid_GSIR.setData([]);
             Reporting_GSIR();
@@ -203,12 +198,15 @@
     ListGrid_GSIR = isc.TrLG.create({
         filterOnKeypress: false,
         showFilterEditor: false,
+        dataSource: RestDataSource_GSIR,
         gridComponents: ["filterEditor", "header", "body"],
         fields: [
             {name: "complex", title: "مجتمع"},
             {name: "assistant", title: "معاونت"},
             {name: "affairs", title: "امور"},
-            {name: "reportResult", title: "نتیجه"}
+            {name: "baseOnComplex", title: "نتیجه براساس مجتمع"},
+            {name: "baseOnAssistant", title: "نتیجه براساس معاونت"},
+            {name: "baseOnAffairs", title: "نتیجه براساس امور"}
         ]
     });
 
@@ -226,75 +224,28 @@
     });
 
     //---------------------------------------------------- Functions --------------------------------------------------------------//
-
     function Reporting_GSIR() {
 
         data_values_GSIR = null;
         data_values_GSIR = DynamicForm_GSIR.getValuesAsAdvancedCriteria();
 
-        if (data_values_GSIR != null) {
-            for (let i = 0; i < data_values_GSIR.criteria.size(); i++) {
-
-                if (data_values_GSIR.criteria[i].fieldName === "fromDate") {
-                    data_values_GSIR.criteria[i].fieldName = "fromDate";
-                    // data_values_GSIR.criteria[i].operator = "greaterThan";
-                } else if (data_values_GSIR.criteria[i].fieldName === "toDate") {
-                    data_values_GSIR.criteria[i].fieldName = "toDate";
-                    // data_values_GSIR.criteria[i].operator = "lessThan";
-                } else if (data_values_GSIR.criteria[i].fieldName === "reportType") {
-                    data_values_GSIR.criteria[i].fieldName = "reportType";
-                    // data_values_GSIR.criteria[i].operator = "equals";
-                }
-            }
-        } else {
-            data_values_GSIR = {
-                operator: "and",
-                _constructor: "AdvancedCriteria",
-                criteria: []
-            };
-        }
-        debugger;
-
         if (organSegmentFilter_GSIR.getCriteria() !== undefined) {
-
             reportCriteria_GSIR = organSegmentFilter_GSIR.getCriteria();
             for (let i = 0; i < reportCriteria_GSIR.criteria.size(); i++) {
-
                 if (reportCriteria_GSIR.criteria[i].fieldName === "complexTitle") {
-
                     reportCriteria_GSIR.criteria[i].fieldName = "complex";
-                    reportCriteria_GSIR.criteria[i].operator = "iContains";
                     data_values_GSIR.criteria.add(reportCriteria_GSIR.criteria[i]);
-
                 } else if (reportCriteria_GSIR.criteria[i].fieldName === "assistant") {
-
                     reportCriteria_GSIR.criteria[i].fieldName = "assistant";
-                    reportCriteria_GSIR.criteria[i].operator = "iContains";
                     data_values_GSIR.criteria.add(reportCriteria_GSIR.criteria[i]);
-
                 } else if (reportCriteria_GSIR.criteria[i].fieldName === "affairs") {
-
                     reportCriteria_GSIR.criteria[i].fieldName = "affairs";
-                    reportCriteria_GSIR.criteria[i].operator = "iContains";
                     data_values_GSIR.criteria.add(reportCriteria_GSIR.criteria[i]);
-
                 }
             }
         }
 
-        debugger;
-        if (data_values_GSIR.criteria.length === 0) {
-            createDialog("info", "فیلتری انتخاب نشده است");
-        } else {
-            wait.show();
-            RestDataSource_GSIR.fetchData(data_values_GSIR, function (dsResponse, data, dsRequest) {
-                wait.close();
-                if (data.length)
-                    ListGrid_GSIR.setData(data);
-                else
-                    ListGrid_GSIR.setData([]);
-            });
-        }
+        ListGrid_GSIR.fetchData(data_values_GSIR);
     }
 
     //</script>
