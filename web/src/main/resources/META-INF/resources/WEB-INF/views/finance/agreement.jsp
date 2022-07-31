@@ -827,7 +827,15 @@
                     };
                     selectedClasses.add(object);
                 });
-                ListGrid_Class_Teaching_Cost.setData(selectedClasses);
+
+                let addedClasses = ListGrid_Class_Teaching_Cost.getData();
+                let addedClassesId = ListGrid_Class_Teaching_Cost.getData().map(item => item.classId);
+                selectedClasses.forEach(item => {
+                    if (addedClassesId.contains(item.classId))
+                        selectedClasses.splice(selectedClasses.indexOf(item), 1);
+                });
+                // debugger;
+                ListGrid_Class_Teaching_Cost.setData(selectedClasses.concat(addedClasses));
                 Window_Select_Class.close();
             }
         });
@@ -887,13 +895,11 @@
         // } else
         //     Window_Select_Class.show();
 
-        debugger;
         // ListGrid_Class_Teaching_Cost.
         Window_Select_Class.show();
     }
     function calculateTeachingCost() {
 
-        debugger;
         let records = ListGrid_Class_Teaching_Cost.getData();
         if (records.size() !== 0) {
 
