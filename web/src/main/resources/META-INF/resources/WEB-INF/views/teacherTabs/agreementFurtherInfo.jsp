@@ -20,7 +20,8 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "salaryBase", filterOperator: "iContains"},
-            {name: "teachingExperience", filterOperator: "equals"},
+            {name: "teachingExperience", filterOperator: "iContains"},
+            {name: "currency.title", title: "واحد", filterOperator: "iContains"},
             {name: "personnelStatus",
                 valueMap: {
                     "1":  "<spring:message code='teacher'/>",
@@ -34,7 +35,16 @@
         ]
     });
 
-
+    RestDataSource_Currency_AgreementFurtherInfo = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "title", title: "<spring:message code="title"/>"},
+                {name: "code", title: "<spring:message code="code"/>"}
+            ],
+        autoCacheAllData: true,
+        fetchDataURL: parameterUrl + "/iscList/currency"
+    });
 
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -53,9 +63,38 @@
                 required: true
             },
             {
+                name: "currencyId",
+                title: "واحد",
+                required: true,
+                colSpan: 4,
+                type: "selectItem",
+                autoFetchData: false,
+                optionDataSource: RestDataSource_Currency_AgreementFurtherInfo,
+                displayField: "title",
+                valueField: "id",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                click: function (form, item) {
+                    item.fetchData();
+                },
+                change: function (form, item, value) {
+                    let salaryBase = form.getItem("salaryBase").getValue();
+                    if (salaryBase != null) {
+                        if (value === rialId) {
+                            let salaryBaseT = salaryBase / 10;
+                            form.getItem("salaryBase").show();
+
+                        } else
+                            form.getItem("salaryBase").hide();
+                    }
+                }
+            },
+            {
                 name: "teachingExperience",
                 title: "<spring:message code='teachingExperience'/>"
             },
+
             {
                 name: "teacherRank",
                 title: "<spring:message code='teacherRank'/>",
@@ -77,6 +116,7 @@
 
 
         ]
+
     });
 
     IButton_Save_JspAgreementFurtherInfo = isc.TrSaveBtn.create({
@@ -158,14 +198,24 @@
         dataSource: RestDataSource_JspAgreementFurtherInfo,
         contextMenu: Menu_JspAgreementFurtherInfo,
         fields: [
+
             {
+
                 name: "salaryBase",
                 title: "<spring:message code='salaryBase'/>",
             },
             {
-                name: "teacherExperience",
+                name: "currency.title",
+                canFilter: false,
+                sortNormalizer: function (record) {
+                    return record.currency.title;
+                }
+            },
+            {
+                name: "teachingExperience",
                 title: "<spring:message code='teachingExperience'/>",
             },
+
 
             {
                 name: "teacherRank",
@@ -177,7 +227,7 @@
                         showFilterEditor: false
                     }
                 },
-                filterOperator: "iContains",
+                filterOperator: "equals",
                 valueMap: {
                     "1":  "<spring:message code='teacher'/>",
                     "2": "<spring:message code='associateProfessor'/>",

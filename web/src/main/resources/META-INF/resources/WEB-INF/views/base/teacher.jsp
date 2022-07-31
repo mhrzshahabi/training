@@ -644,6 +644,7 @@
                     loadPage_Publication(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'employmentHistory')
                     loadPage_EmploymentHistory(teacherId);
+                debugger;
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "agreementFurtherInfo")
                     loadPage_AgreementFurtherInfo(teacherId);
             }

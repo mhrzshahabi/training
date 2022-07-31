@@ -13,7 +13,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_teacher_exprience_info")
+@Table(name = "tbl_teacher_experience_info")
 public class TeacherExperienceInfo extends Auditable {
 
     @Id
@@ -36,5 +36,12 @@ public class TeacherExperienceInfo extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher", insertable = false, updatable = false)
     private Teacher teacher;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "t_currency_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue currency;
+
+    @Column(name = "t_currency_id")
+    private Long currencyId;
 
 }
