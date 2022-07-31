@@ -872,14 +872,15 @@ public class TclassService implements ITclassService {
    ExecutionResultDTO executionResultDTO = calculateStudentsExecutionEvaluationResult(classStudents);
         Map<String, Double> executionEvaluationResultMap=executionResultDTO.getStringDoubleMap();
         List<Long> evaluationIds=executionResultDTO.getEvaluationIds();
-        if (executionEvaluationResultMap.get("studentsGradeToTeacher") != null)
-            studentsGradeToTeacher = (Double) executionEvaluationResultMap.get("studentsGradeToTeacher");
-        if (executionEvaluationResultMap.get("studentsGradeToGoals") != null)
-            studentsGradeToGoals = (Double) executionEvaluationResultMap.get("studentsGradeToGoals");
-        if (executionEvaluationResultMap.get("studentsGradeToFacility") != null)
-            studentsGradeToFacility = (Double) executionEvaluationResultMap.get("studentsGradeToFacility");
-        percentOfFilledExecutionEvaluationForms = getPercentOfFilledExecutionEvaluationForms(classStudents);
-
+        if(executionEvaluationResultMap!=null) {
+            if (executionEvaluationResultMap.get("studentsGradeToTeacher") != null)
+                studentsGradeToTeacher = (Double) executionEvaluationResultMap.get("studentsGradeToTeacher");
+            if (executionEvaluationResultMap.get("studentsGradeToGoals") != null)
+                studentsGradeToGoals = (Double) executionEvaluationResultMap.get("studentsGradeToGoals");
+            if (executionEvaluationResultMap.get("studentsGradeToFacility") != null)
+                studentsGradeToFacility = (Double) executionEvaluationResultMap.get("studentsGradeToFacility");
+            percentOfFilledExecutionEvaluationForms = getPercentOfFilledExecutionEvaluationForms(classStudents);
+        }
         studentCount = getStudentCount(classStudents);
          if(evaluationIds!=null) {
              List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers=new ArrayList<>();
@@ -895,12 +896,13 @@ public class TclassService implements ITclassService {
              if (answers != null && answers.size() > 0) {
                  executionInfos = getQuestionnaireInfo(answers);
              }
-              Optional<Evaluation> optionalEvaluation= evaluationDAO.findById(evaluationIds.get(0));
-             Optional<Questionnaire> questionnaire = questionnaireDAO.findById(optionalEvaluation.get().getQuestionnaireId());
-             if (questionnaire.isPresent()) {
-                 evaluationResult.setQuestionnaireTitle(questionnaire.get().getTitle());
+             if(evaluationIds!=null && evaluationIds.size()>0) {
+                 Optional<Evaluation> optionalEvaluation = evaluationDAO.findById(evaluationIds.get(0));
+                 Optional<Questionnaire> questionnaire = questionnaireDAO.findById(optionalEvaluation.get().getQuestionnaireId());
+                 if (questionnaire.isPresent()) {
+                     evaluationResult.setQuestionnaireTitle(questionnaire.get().getTitle());
+                 }
              }
-
          }
         if(executionInfos!=null )
           evaluationResult.setQuestionnaireQuestions(executionInfos);
