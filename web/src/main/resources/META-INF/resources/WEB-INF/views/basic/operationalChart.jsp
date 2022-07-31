@@ -205,15 +205,19 @@
         ]
     });
 
-    let RestDataSource_JspOperationalChart = isc.TrDS.create({
-        // transformRequest: function (dsRequest) {
-        //     transformCriteriaForLastModifiedDateNA(dsRequest);
-        //      return this.Super("transformRequest", arguments);
-        // },
-        // dataArrived: function (startRow, endRow, data) {
-        //    console.log(data);
-        // },
 
+    let RestDataSource_ParameterValue = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true},
+                {name: "title"},
+                {name: "code"},
+            ],
+        fetchDataURL:   parameterValueUrl+/listByCode/+"operational_chart_role" ,
+        autoFetchData: true
+    });
+
+    let RestDataSource_JspOperationalChart = isc.TrDS.create({
         fields:
             [
                 {name: "id", primaryKey: true},
@@ -221,20 +225,12 @@
                 {name: "userName"},
                 {name: "nationalCode"},
                 {name: "title"},
-                {name: "title"},
+                {name: "roleId"},
                 {name: "parentId"},
                  ],
         fetchDataURL: operationalChartUrl + "/spec-list",
     });
     let RestDataSource_Parent = isc.TrDS.create({
-        transformRequest: function (dsRequest) {
-            transformCriteriaForLastModifiedDateNA(dsRequest);
-            return this.Super("transformRequest", arguments);
-        },
-        dataArrived: function (startRow, endRow, data) {
-            console.log(data);
-        },
-
         fields:
             [
                 {name: "id", primaryKey: true},
@@ -288,6 +284,18 @@
                 title: "سطح بالادست",
                 optionDataSource: RestDataSource_Parent,
                 displayField: "userName",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                required: false,
+                validateOnExit: true,
+                length: 255,
+            },
+            {
+                name: "roleId",
+                title: "نقش",
+                optionDataSource: RestDataSource_ParameterValue,
+                displayField: "title",
                 autoFetchData: true,
                 valueField: "id",
                 textAlign: "center",
@@ -412,16 +420,18 @@
             let userId= DynamicForm_JspOperationalChart.getField("userIds").getValue();
             let title = DynamicForm_JspOperationalChart.getField("title").getValue();
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
-            let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue();
-// debugger
+            let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("parentId").getValue();
+            let roleId = DynamicForm_JspOperationalChart.getField("roleId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("roleId").getValue() ;
+debugger
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
 
-                "operationalCharParentChild": [
+                "operationalChartParentChild": [
                     null
                 ],
                 "parentId": parentId ,
+                "roleId": roleId ,
                 "complex":complex,
                 "title": title,
                 "code": code,
@@ -544,8 +554,8 @@
             {name: "id", hidden: true},
             {
                 name: "userIds",
-                // type: "ComboBoxItem",
-                type: "MultiComboBoxItem",
+                type: "ComboBoxItem",
+                // type: "MultiComboBoxItem",
                 title: "نام کاربری",
                 optionDataSource: UserDS_JspOperationalChart,
                 valueField: "id",
@@ -630,9 +640,17 @@
             {
                 name: "roleId",
                 title: "نقش",
+                optionDataSource: RestDataSource_ParameterValue,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
                 required: false,
                 validateOnExit: true,
-                length: 255
+                length: 255,
+                pickListFields: [
+                    {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"}
+                ],
             },
             {
                 name: "parentId",

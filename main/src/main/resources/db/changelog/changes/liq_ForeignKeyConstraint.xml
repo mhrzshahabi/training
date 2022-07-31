@@ -1406,4 +1406,8 @@
     <addForeignKeyConstraint baseColumnNames="committee_of_experts_id" baseTableName="tbl_committee_of_experts_complex" constraintName="FKcommittee_of_experts_complex" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
 </changeSet>
 
+    <changeSet author="kasehpour (generated)" id="1654668348111-07">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="TBL_OPERATIONAL_CHART" constraintName="FK_PARAMETER_VALUE_IN_OP_CHART" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_PARAMETER_VALUE" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>
