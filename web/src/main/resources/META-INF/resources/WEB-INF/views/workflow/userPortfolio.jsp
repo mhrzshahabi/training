@@ -36,7 +36,6 @@
             {name: "processStartTime", title: "تاریخ شروع فرایند"},
             {name: "taskDefinitionKey"},
             {name: "processDefinitionKey"},
-            {name: "assigneeList"},
             {name: "returnReason",title: "توضیحات",
                 showHover:true,
                 hoverWidth: 250,
@@ -163,33 +162,41 @@
         title: "نمایش جزییات و تکمیل فرایند",
         click: function () {
             let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
-            if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس ارشد برنامه ریزی"))
-                showParallelRequestItemProcessAndCompletion(record);
-            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس برنامه ریزی جهت تعیین وضعیت"))
-                showRequestItemProcessToDetermineStatus(record);
-            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس اجرا"))
-                showRequestItemProcessStatusToRunChief(record);
-            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی سرپرست اجرا"))
-                showRequestItemProcessStatusToRunSupervisor(record);
-            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس اجرا"))
-                showRequestItemProcessStatusToRunExperts(record);
-            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید سرپرست اجرا"))
-                showRequestItemProcessStatusToRunSupervisorForApproval(record);
-            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید رئیس اجرا"))
-                showRequestItemProcessStatusToRunChiefForApproval(record);
-            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی / تایید رئیس برنامه ریزی"))
-                showRequestItemProcessStatusToPlanningChiefForApproval(record);
-            else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس انتصاب"))
-                showRequestItemProcessToAppointmentExpert(record);
-            else
-                showProcessAndCompletion(record);
+            if (record == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            } else {
+                if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس ارشد برنامه ریزی"))
+                    showParallelRequestItemProcessAndCompletion(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس برنامه ریزی جهت تعیین وضعیت"))
+                    showRequestItemProcessToDetermineStatus(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس اجرا"))
+                    showRequestItemProcessStatusToRunChief(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی سرپرست اجرا"))
+                    showRequestItemProcessStatusToRunSupervisor(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس اجرا"))
+                    showRequestItemProcessStatusToRunExperts(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید سرپرست اجرا"))
+                    showRequestItemProcessStatusToRunSupervisorForApproval(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("تایید رئیس اجرا"))
+                    showRequestItemProcessStatusToRunChiefForApproval(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی / تایید رئیس برنامه ریزی"))
+                    showRequestItemProcessStatusToPlanningChiefForApproval(record);
+                else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس انتصاب"))
+                    showRequestItemProcessToAppointmentExpert(record);
+                else
+                    showProcessAndCompletion(record);
+            }
         }
     });
     let ToolStripButton_InProgress_Workflow_UserPortfolio = isc.ToolStripButton.create({
         title: "به جریان انداختن فرآیند",
         click: function () {
             let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
-            reAssignTask(record);
+            if (record == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            } else {
+                reAssignTask(record);
+            }
         }
     });
     let ToolStrip_Actions_Processes_UserPortfolio = isc.ToolStrip.create({
@@ -1951,9 +1958,7 @@
                 processInstanceId: record.processInstanceId
             };
         } else if (record.title.includes("صلاحیت علمی و فنی")) {
-            let ass_data = {
-                "assigneeList": record.assigneeList,
-            };
+            let ass_data = {};
             baseUrl = requestItemBPMSUrl;
             url = "/tasks/request-item/review";
             reviewTaskRequest = {

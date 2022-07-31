@@ -5076,6 +5076,21 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="namdari" id="1658205590000-09">
+        <addColumn tableName="tbl_question_protocol">
+            <column name="correct_answer_v2" type="CLOB"/>
+        </addColumn>
+        <sql>
+            <![CDATA[
+            UPDATE tbl_question_protocol SET correct_answer_v2 = correct_answer;
+            ALTER TABLE tbl_question_protocol
+            DROP COLUMN correct_answer;
+            ALTER TABLE tbl_question_protocol
+                RENAME COLUMN correct_answer_v2 TO correct_answer;
+            ]]>
+        </sql>
+    </changeSet>
+
     <changeSet author="MShahabi" id="1799887766557-087">
         <addColumn tableName="tbl_agreement_class_cost">
             <column name="n_teaching_cost_per_hour_auto" type="NUMBER(19, 0)"/>

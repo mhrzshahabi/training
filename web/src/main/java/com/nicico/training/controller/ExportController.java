@@ -1280,45 +1280,184 @@ public class ExportController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        String start="";
-        String end="";
-        List<Object> categoryList=new ArrayList<>();
-        List<Object> subCategoryList=new ArrayList<>();
-        for (int f=0 ; f<criteriaRq.getCriteria().get(0).getCriteria().size();f++){
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classStartDate"))
-                start=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classEndDate"))
-                end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
-            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
-                categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
+//        String start="";
+//        String end="";
+//        List<Object> categoryList=new ArrayList<>();
+//        List<Object> subCategoryList=new ArrayList<>();
+//        for (int f=0 ; f<criteriaRq.getCriteria().get(0).getCriteria().size();f++){
+//            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classStartDate"))
+//                start=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+//            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("classEndDate"))
+//                end=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+//            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryTitleFa")){
+//                categoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();}
+//            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")) {
+//                subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
+//            }
+//
+//        }
+//
+//        List<ViewLearningEvaluationCourseReport>    firstData=  courseReportDAO.findAllByEndDateLessThanEqualAndStartDateGreaterThanEqual(end,start);
+//        List<Object> finalCategoryList = categoryList;
+//        List<Object> finalSubCategoryList = subCategoryList;
+//        List<ViewLearningEvaluationCourseReport> secondData;
+//        List<ViewLearningEvaluationCourseReport> data;
+//        if (categoryList.size()>0){
+//            secondData  =firstData.stream()
+//                    .filter(first -> finalCategoryList.stream()
+//                            .anyMatch(category -> first.getCategory_titlefa().equals(category)))
+//                    .collect(Collectors.toList());
+//        }else{
+//            secondData=firstData;
+//        }
+//        if (subCategoryList.size()>0){
+//            data =secondData.stream()
+//                    .filter(sec -> finalSubCategoryList.stream()
+//                            .anyMatch(sub -> sec.getSub_category_id().equals(Long.valueOf(sub.toString()))))
+//                    .collect(Collectors.toList());
+//        }else {
+//            data=secondData;
+//        }
+        String startFrom = null;
+        String startTo = null;
+        String endFrom = null;
+        String endTo = null;
+        String classYear = null;
+        String teachingMethod = null;
+        String institute = null;
+        Long teacherId = null;
+
+        List<String> classCodeList = null;
+        List<String> complexList = null;
+        List<String> assistantList = null;
+        List<String> affairList = null;
+        List<Long> categoryList = null;
+        List<Long> subCategoryList = null;
+        List<Long> termIds = null;
+
+        for (int f = 0; f < criteriaRq.getCriteria().get(0).getCriteria().size(); f++) {
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("plannerComplex")) {
+                complexList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(Objects::toString).collect(Collectors.toList());
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("plannerAssistant")) {
+                assistantList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(Objects::toString).collect(Collectors.toList());
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("plannerAffairs")) {
+                affairList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(Objects::toString).collect(Collectors.toList());
+            }
+
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("tclassCode")) {
+                classCodeList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(Objects::toString).collect(Collectors.toList());
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("startDate1")) {
+                startFrom = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("startDate2")) {
+                startTo = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("endDate1")) {
+                endFrom = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("endDate2")) {
+                endTo = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("categoryId")) {
+                categoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());;
+            }
             if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("subCategoryId")) {
-                subCategoryList=criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue();
+                subCategoryList = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());;
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("tclassYear")) {
+                classYear = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("termId")) {
+                termIds = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().stream().map(o -> Long.parseLong(o.toString())).collect(Collectors.toList());
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("teacherId")) {
+                teacherId = Long.parseLong(criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString());
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("tclassOrganizerId")) {
+                institute = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
+            }
+            if (criteriaRq.getCriteria().get(0).getCriteria().get(f).getFieldName().equals("tclassTeachingType")) {
+                teachingMethod = criteriaRq.getCriteria().get(0).getCriteria().get(f).getValue().get(0).toString();
             }
 
         }
 
-        List<ViewLearningEvaluationCourseReport>    firstData=  courseReportDAO.findAllByEndDateLessThanEqualAndStartDateGreaterThanEqual(end,start);
-        List<Object> finalCategoryList = categoryList;
-        List<Object> finalSubCategoryList = subCategoryList;
-        List<ViewLearningEvaluationCourseReport> secondData;
-        List<ViewLearningEvaluationCourseReport> data;
-        if (categoryList.size()>0){
-            secondData  =firstData.stream()
-                    .filter(first -> finalCategoryList.stream()
-                            .anyMatch(category -> first.getCategory_titlefa().equals(category)))
-                    .collect(Collectors.toList());
-        }else{
-            secondData=firstData;
-        }
-        if (subCategoryList.size()>0){
-            data =secondData.stream()
-                    .filter(sec -> finalSubCategoryList.stream()
-                            .anyMatch(sub -> sec.getSub_category_id().equals(Long.valueOf(sub.toString()))))
-                    .collect(Collectors.toList());
-        }else {
-            data=secondData;
+        int complexNullCheck = (complexList == null) ? 1 : 0;
+        int moavenatNullCheck = (assistantList == null) ? 1 : 0;
+        int omorNullCheck = (affairList == null) ? 1 : 0;
+        int classCodeNullCheck = (classCodeList == null) ? 1 : 0;
+        int categoryNullCheck = (categoryList == null) ? 1 : 0;
+        int subCategoryNullCheck = (subCategoryList == null) ? 1 : 0;
+        int termIdNullCheck = (termIds == null) ? 1 : 0;
+        int teacherIdNullCheck = (teacherId == null) ? 1 : 0;
+
+        if (complexList == null) {
+            complexList = new ArrayList<>();
+            complexList.add("");
         }
 
+        if (assistantList == null) {
+            assistantList = new ArrayList<>();
+            assistantList.add("");
+        }
+
+        if (affairList == null) {
+            affairList = new ArrayList<>();
+            affairList.add("");
+        }
+
+
+
+
+        if (classCodeList == null) {
+            classCodeList = new ArrayList<>();
+            classCodeList.add("");
+        }
+
+        if (termIds == null) {
+            termIds = new ArrayList<>();
+            termIds.add(-1L);
+        }
+
+        if (categoryList == null) {
+            categoryList = new ArrayList<>();
+            categoryList.add(-1L);
+        }
+
+        if (subCategoryList == null) {
+            subCategoryList = new ArrayList<>();
+            subCategoryList.add(-1L);
+        }
+
+        if (teacherId == null) {
+            teacherId = -1L;
+        }
+
+        List<ViewLearningEvaluationCourseReport> data = courseReportDAO.findAllByFilters(
+                complexList,
+                complexNullCheck,
+                assistantList,
+                moavenatNullCheck,
+                affairList,
+                omorNullCheck,
+                classCodeList,
+                classCodeNullCheck,
+                startFrom, startTo, endFrom, endTo,
+                categoryList,
+                categoryNullCheck,
+                subCategoryList,
+                subCategoryNullCheck,
+                classYear,
+                termIds,
+                termIdNullCheck,
+                teacherId,
+                teacherIdNullCheck,
+                institute,
+                teachingMethod
+        );
 
         String fileFullPath = "export.xlsx";
         Workbook workbook = null;

@@ -58,6 +58,7 @@
                 }
             },
             {name: "personalNum", type: "text", title: "شماره پرسنلی"},
+            {name: "personalNum2", type: "text", title: "شماره پرسنلی ۶ رقمی"},
             {name: "nationalCode", type: "text", title: "کد ملی",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
@@ -371,7 +372,11 @@
                     params.code = classGridRecordInAttendanceJsp.code;
                     params.titleClass = classGridRecordInAttendanceJsp.titleClass;
                     params.teacher = classGridRecordInAttendanceJsp.teacher;
-                    params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
+                    if (classGridRecordInAttendanceJsp.institute!==undefined && classGridRecordInAttendanceJsp.institute.titleFa!==undefined){
+                        params.institute = classGridRecordInAttendanceJsp.institute.titleFa;
+                    }else
+                        params.institute ="ثبت نشده"
+
                     params.startDate = classGridRecordInAttendanceJsp.startDate;
                     let localData = ListGrid_Attendance_AttendanceJSP.getData().localData.toArray();
                     let data = [];
@@ -388,6 +393,7 @@
                             obj.fullName = localData[i].studentName + " " + localData[i].studentFamily;
                             obj.nationalCode = localData[i].nationalCode;
                             obj.personalNum = localData[i].personalNum;
+                            obj.personalNum2 =localData[i].personalNum2;
                             for (let j = 0; j < sessionKeys.length; j++) {
                                 obj["session" + (j + 1).toString()] = printAttendanceState[localData[i][sessionKeys[j]]]
                             }

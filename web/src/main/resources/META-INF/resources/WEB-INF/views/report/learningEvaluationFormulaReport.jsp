@@ -168,7 +168,7 @@
             Window_SelectClasses_REFR_Learning.close();
         }
     });
-    let initialLayoutStyle_RER = "vertical";
+    let initialLayoutStyle_REFR = "vertical";
     let DynamicForm_SelectClasses_REFR_Learning = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
@@ -188,7 +188,7 @@
                 displayField: "code",
                 comboBoxWidth: 500,
                 valueField: "code",
-                layoutStyle: initialLayoutStyle_RER,
+                layoutStyle: initialLayoutStyle_REFR,
                 optionDataSource: RestDataSource_Class_REFR_learning
             }
         ]
@@ -247,7 +247,7 @@
             },
             {
                 name: "startDate1",
-                ID: "startDate1_RER",
+                ID: "startDate1_REFR",
                 title: "تاریخ شروع کلاس: از",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -258,7 +258,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('startDate1_RER', this, 'ymd', '/');
+                        displayDatePicker('startDate1_REFR', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -292,7 +292,7 @@
             },
             {
                 name: "startDate2",
-                ID: "startDate2_RER",
+                ID: "startDate2_REFR",
                 title: "تا",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -303,7 +303,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_RER', this, 'ymd', '/');
+                        displayDatePicker('startDate2_REFR', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -336,7 +336,7 @@
             },
             {
                 name: "endDate1",
-                ID: "endDate1_RER",
+                ID: "endDate1_REFR",
                 title: "تاریخ پایان کلاس: از",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -347,7 +347,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('endDate1_RER', this, 'ymd', '/');
+                        displayDatePicker('endDate1_REFR', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -380,7 +380,7 @@
             },
             {
                 name: "endDate2",
-                ID: "endDate2_RER",
+                ID: "endDate2_REFR",
                 title: "تا",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -391,7 +391,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate2_RER', this, 'ymd', '/');
+                        displayDatePicker('endDate2_REFR', this, 'ymd', '/');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -626,32 +626,32 @@
                     "همه"
                 ]
             },
-            {
-                name: "exportType",
-                title: "نوع خروجی:",
-                multiple: false,
-                type: "SelectItem",
-                defaultValue: "PDF",
-                valueMap: {
-                    "PDF": "PDF", "EXCEL": "EXCEL"
-                },
-                valueField: "id",
-                displayField: "title",
-                changed: function (form, item, value) {
-                    if (value !== null && value !== undefined) {
-                        if (value === "PDF") {
-                            IButton_PDF_Report_REFR.enable();
-                            IButton_Excel_Report_REFR.disable();
-                            IButton_Excel_Report_REFR_2.disable();
-                        }
-                        if (value === "EXCEL") {
-                            IButton_PDF_Report_REFR.disable();
-                            IButton_Excel_Report_REFR.enable();
-                            IButton_Excel_Report_REFR_2.enable();
-                        }
-                    }
-                }
-            },
+            // {
+            //     name: "exportType",
+            //     title: "نوع خروجی:",
+            //     multiple: false,
+            //     type: "SelectItem",
+            //     defaultValue: "PDF",
+            //     valueMap: {
+            //         "PDF": "PDF", "EXCEL": "EXCEL"
+            //     },
+            //     valueField: "id",
+            //     displayField: "title",
+            //     changed: function (form, item, value) {
+            //         if (value !== null && value !== undefined) {
+            //             if (value === "PDF") {
+            //                 IButton_PDF_Report_REFR.enable();
+            //                 IButton_Excel_Report_REFR.disable();
+            //                 IButton_Excel_Report_REFR_2.disable();
+            //             }
+            //             if (value === "EXCEL") {
+            //                 IButton_PDF_Report_REFR.disable();
+            //                 IButton_Excel_Report_REFR.enable();
+            //                 IButton_Excel_Report_REFR_2.enable();
+            //             }
+            //         }
+            //     }
+            // },
         ]
     });
 
@@ -661,13 +661,13 @@
         icon: "<spring:url value="excel.png"/>",
         title: "درخواست گزارش اکسل(براساس فراگیر)",
         width: 300,
-        enabled: false,
+        enabled: true,
         click: async function () {
             let isPassed = await checkFormValidation();
             if (!isPassed) {
                 return;
             }
-            makeExcelReportBasedOnStudent();
+            makeExcelReportBasedOnStudentOrCourse("formula");
         }
     });
     let IButton_Excel_Report_REFR_2 = isc.IButtonSave.create({
@@ -676,14 +676,14 @@
         icon: "<spring:url value="excel.png"/>",
         title: "درخواست گزارش اکسل(براساس دوره)",
         width: 300,
-        enabled: false,
+        enabled: true,
         click: async function () {
             let isPassed = await checkFormValidation();
             if (!isPassed) {
                 return;
             }
-            makeExcelReportBasedOnCourse();
-
+            // makeExcelReportBasedOnCourse();
+            makeExcelReportBasedOnStudentOrCourse("formula2")
         }
     });
     let IButton_Clear_REFR_learning = isc.IButtonSave.create({
@@ -695,9 +695,9 @@
             organSegmentFilter_REFR_Learning.clearErrors();
             DynamicForm_CriteriaForm_REFR_learning.clearValues();
             DynamicForm_CriteriaForm_REFR_learning.clearErrors();
-            IButton_Excel_Report_REFR.disable();
-            IButton_Excel_Report_REFR_2.disable();
-            IButton_PDF_Report_REFR.enable();
+            // IButton_Excel_Report_REFR.disable();
+            // IButton_Excel_Report_REFR_2.disable();
+            // IButton_PDF_Report_REFR.enable();
         }
     });
     let IButton_PDF_Report_REFR = isc.ToolStripButtonPrint.create({
@@ -734,7 +734,7 @@
             IButton_Clear_REFR_learning,
             IButton_Excel_Report_REFR,
             IButton_Excel_Report_REFR_2,
-            IButton_PDF_Report_REFR
+            // IButton_PDF_Report_REFR
         ]
     });
 
@@ -830,7 +830,7 @@
         return true;
     }
 
-    function makeExcelReportBasedOnStudent() {
+    function makeExcelReportBasedOnStudentOrCourse(endpoint) {
         reportCriteria_REFR_learning = null;
         let data_values = DynamicForm_CriteriaForm_REFR_learning.getValuesAsAdvancedCriteria();
 
@@ -896,11 +896,38 @@
             }
         }
 
-        excelData_learning = [];
+        // excelData_learning = [];
+        // excelData_learning.add({
+        //             class_code: "کد کلاس",
+        //             class_status: "وضعیت کلاس",
+        //             complex: "مجتمع کلاس",
+        //             teacher_national_code: "کد ملی استاد",
+        //             teacher: " استاد",
+        //             is_personnel: "نوع استاد",
+        //             class_start_date: "تاریخ شروع",
+        //             class_end_date: "تاریخ پایان",
+        //             course_code: "کد دوره",
+        //             course_titlefa: "نام دوره",
+        //             category_titlefa: "گروه",
+        //             sub_category_titlefa: "زیرگروه",
+        //             student: "فراگیر",
+        //             student_per_number: " شماره پرسنلی فراگیر",
+        //             student_post_title: " پست فراگیر",
+        //             student_post_code: "کد پست فراگیر",
+        //             student_hoze: "حوزه فراگیر",
+        //             student_omor: "امور فراگیر",
+        //             total_std: "تعداد کل فراگیران کلاس",
+        //             training_grade_to_teacher: "نمره ارزیابی آموزش به استاد",
+        //             teacher_grade_to_class: "نمره ارزیابی استاد به کلاس",
+        //             reactione_evaluation_grade: "نمره ارزیابی واکنشی  کلاس",
+        //             final_teacher: "نمره ارزیابی نهایی  مدرس",
+        //
+        //         });
 
         let downloadForm = isc.DynamicForm.create({
             method: "POST",
-            action: "/training/export/excel/formula/learning",
+            // action: "/training/export/excel/formula/learning",
+            action: "/training/export/excel/" + endpoint +"/learning",
             target: "_Blank",
             canSubmit: true,
             fields:
@@ -911,74 +938,73 @@
         downloadForm.setValue("criteria", JSON.stringify(data_values));
         downloadForm.show();
         downloadForm.submitForm();
-
-        
     }
 
-    function makeExcelReportBasedOnCourse() {
-        reportCriteria_REFR_learning = null;
-        let data_values = DynamicForm_CriteriaForm_REFR_learning.getValuesAsAdvancedCriteria();
-
-        for (let i = 0; i < data_values.criteria.size(); i++) {
-            if (data_values.criteria[i].fieldName === "courseCategory") {
-                data_values.criteria[i].fieldName = "categoryTitleFa";
-                data_values.criteria[i].operator = "inSet";
-            } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
-                data_values.criteria[i].fieldName = "subCategoryId";
-                data_values.criteria[i].operator = "inSet";
-            } else if (data_values.criteria[i].fieldName === "startDate") {
-                data_values.criteria[i].fieldName = "classStartDate";
-                data_values.criteria[i].operator = "greaterOrEqual";
-            } else if (data_values.criteria[i].fieldName === "endDate") {
-                data_values.criteria[i].fieldName = "classEndDate";
-                data_values.criteria[i].operator = "lessOrEqual";
-            }
-        }
-
-        excelData_learning = [];
-        excelData_learning.add({
-            class_code: "کد کلاس",
-            class_status: "وضعیت کلاس",
-            complex: "مجتمع کلاس",
-            teacher_national_code: "کد ملی استاد",
-            teacher: " استاد",
-            is_personnel: "نوع استاد",
-            class_start_date: "تاریخ شروع",
-            class_end_date: "تاریخ پایان",
-            course_code: "کد دوره",
-            course_titlefa: "نام دوره",
-            category_titlefa: "گروه",
-            sub_category_titlefa: "زیرگروه",
-            student: "فراگیر",
-            student_per_number: " شماره پرسنلی فراگیر",
-            student_post_title: " پست فراگیر",
-            student_post_code: "کد پست فراگیر",
-            student_hoze: "حوزه فراگیر",
-            student_omor: "امور فراگیر",
-            total_std: "تعداد کل فراگیران کلاس",
-            training_grade_to_teacher: "نمره ارزیابی آموزش به استاد",
-            teacher_grade_to_class: "نمره ارزیابی استاد به کلاس",
-            reactione_evaluation_grade: "نمره ارزیابی واکنشی  کلاس",
-            final_teacher: "نمره ارزیابی نهایی  مدرس",
-
-        });
-
-        let downloadForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "/training/export/excel/formula2/learning",
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "criteria", type: "hidden"},
-                ]
-        });
-        downloadForm.setValue("criteria", JSON.stringify(data_values));
-        downloadForm.show();
-        downloadForm.submitForm();
-
-        
-    }
-
+    //
+    // function makeExcelReportBasedOnCourse() {
+    //     reportCriteria_REFR_learning = null;
+    //     let data_values = DynamicForm_CriteriaForm_REFR_learning.getValuesAsAdvancedCriteria();
+    //
+    //     for (let i = 0; i < data_values.criteria.size(); i++) {
+    //         if (data_values.criteria[i].fieldName === "courseCategory") {
+    //             data_values.criteria[i].fieldName = "categoryTitleFa";
+    //             data_values.criteria[i].operator = "inSet";
+    //         } else if (data_values.criteria[i].fieldName === "courseSubCategory") {
+    //             data_values.criteria[i].fieldName = "subCategoryId";
+    //             data_values.criteria[i].operator = "inSet";
+    //         } else if (data_values.criteria[i].fieldName === "startDate") {
+    //             data_values.criteria[i].fieldName = "classStartDate";
+    //             data_values.criteria[i].operator = "greaterOrEqual";
+    //         } else if (data_values.criteria[i].fieldName === "endDate") {
+    //             data_values.criteria[i].fieldName = "classEndDate";
+    //             data_values.criteria[i].operator = "lessOrEqual";
+    //         }
+    //     }
+    //
+    //     excelData_learning = [];
+    //     excelData_learning.add({
+    //         class_code: "کد کلاس",
+    //         class_status: "وضعیت کلاس",
+    //         complex: "مجتمع کلاس",
+    //         teacher_national_code: "کد ملی استاد",
+    //         teacher: " استاد",
+    //         is_personnel: "نوع استاد",
+    //         class_start_date: "تاریخ شروع",
+    //         class_end_date: "تاریخ پایان",
+    //         course_code: "کد دوره",
+    //         course_titlefa: "نام دوره",
+    //         category_titlefa: "گروه",
+    //         sub_category_titlefa: "زیرگروه",
+    //         student: "فراگیر",
+    //         student_per_number: " شماره پرسنلی فراگیر",
+    //         student_post_title: " پست فراگیر",
+    //         student_post_code: "کد پست فراگیر",
+    //         student_hoze: "حوزه فراگیر",
+    //         student_omor: "امور فراگیر",
+    //         total_std: "تعداد کل فراگیران کلاس",
+    //         training_grade_to_teacher: "نمره ارزیابی آموزش به استاد",
+    //         teacher_grade_to_class: "نمره ارزیابی استاد به کلاس",
+    //         reactione_evaluation_grade: "نمره ارزیابی واکنشی  کلاس",
+    //         final_teacher: "نمره ارزیابی نهایی  مدرس",
+    //
+    //     });
+    //
+    //     let downloadForm = isc.DynamicForm.create({
+    //         method: "POST",
+    //         action: "/training/export/excel/formula2/learning",
+    //         target: "_Blank",
+    //         canSubmit: true,
+    //         fields:
+    //             [
+    //                 {name: "criteria", type: "hidden"},
+    //             ]
+    //     });
+    //     downloadForm.setValue("criteria", JSON.stringify(data_values));
+    //     downloadForm.show();
+    //     downloadForm.submitForm();
+    //
+    //
+    // }
+    //
 
     // </script>

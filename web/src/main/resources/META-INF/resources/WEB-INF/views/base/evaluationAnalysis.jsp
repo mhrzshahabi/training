@@ -393,27 +393,24 @@
         let evaluationType = record.evaluation;
 
         Detail_Tab_Evaluation_Analysis.enable();
-        if (evaluationType === "0" || evaluationType === "حین دوره") {
-            fill_execution_evaluation_result(record);
-            Detail_Tab_Evaluation_Analysis.enableTab(0);
-            Detail_Tab_Evaluation_Analysis.disableTab(1);
-            Detail_Tab_Evaluation_Analysis.disableTab(2);
-            Detail_Tab_Evaluation_Analysis.disableTab(3);
-        }else  if (evaluationType === "1" || evaluationType === "واکنشی") {
+        if (evaluationType === "1" || evaluationType === "واکنشی") {
             fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
-            Detail_Tab_Evaluation_Analysis.disableTab(1);
+            Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.disableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
+            Detail_Tab_Evaluation_Analysis.disableTab(4);
         } else if (evaluationType === "2" || evaluationType === "یادگیری") {
             fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
             evaluationAnalysist_learning(record);
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
-            Detail_Tab_Evaluation_Analysis.disableTab(2);
+            Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.disableTab(3);
+            Detail_Tab_Evaluation_Analysis.disableTab(4);
+
         } else if (evaluationType === "3" || evaluationType === "رفتاری") {
             fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
@@ -422,9 +419,11 @@
             Detail_Tab_Evaluation_Analysis.enableTab(0);
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
-            Detail_Tab_Evaluation_Analysis.disableTab(3);
-        } else if (evaluationType === "4" || evaluationType === "نتایج") {
+            Detail_Tab_Evaluation_Analysis.enableTab(3);
+            Detail_Tab_Evaluation_Analysis.disableTab(4);
 
+        } else if (evaluationType === "4" || evaluationType === "نتایج") {
+            fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
             evaluationAnalysist_learning(record);
             fill_behavioral_evaluation_result(record);
@@ -432,6 +431,8 @@
             Detail_Tab_Evaluation_Analysis.enableTab(1);
             Detail_Tab_Evaluation_Analysis.enableTab(2);
             Detail_Tab_Evaluation_Analysis.enableTab(3);
+            Detail_Tab_Evaluation_Analysis.enableTab(4);
+
         };
     }
 

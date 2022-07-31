@@ -465,7 +465,7 @@
                 // required: true,
                 keyPressFilter: "[0-9]",
                 hint: "SSN/کدملی",
-                length: "10",
+                // length: "10",
                 showHintInField: true
             },
             {
@@ -473,11 +473,13 @@
                 title: "<spring:message code='national.code'/>",
                 required: true,
                 keyPressFilter: "[0-9]",
-                length: "10",
+                // length: "10",
                 blur: function () {
                     DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
                     var codeCheckPerReg;
-                    codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value);
+                    codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value
+                    ,DynamicForm_PersonnelReg_BaseInfo.getField("nationality")._value
+                    );
                     codeMeliCheckPerReg = codeCheckPerReg;
                     if (codeCheckPerReg === false) {
                         DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message
@@ -586,6 +588,7 @@
                 title: "<spring:message code='nationality'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30",
+                required: true,
                 showHintInField: true,
                 valueMap:
                     {
@@ -683,7 +686,7 @@
                 required: true,
                 // validators: [TrValidators.MobileValidate],
                 changed: function () {
-                    DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("contactInfo.mobile", true);
+                    DynamicForm_PersonnelReg_BaseInfo.clearErrors();
                     var mobileCheck;
                     mobileCheck = checkMobilePerReg(DynamicForm_PersonnelReg_BaseInfo.getValue("contactInfo.mobile"));
                     cellPhoneCheckPerReg = mobileCheck;
@@ -1281,7 +1284,10 @@
         align: "center",
         icon: "[SKIN]/actions/save.png",
         click: async function () {
-            if (codeMeliCheckPerReg === false) {
+            DynamicForm_PersonnelReg_BaseInfo.clearErrors();
+            if (checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value
+                ,DynamicForm_PersonnelReg_BaseInfo.getField("nationality")._value
+            ) === false) {
                 DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message  code='msg.national.code.validation'/>", true);
                 return;
             }
@@ -2040,10 +2046,17 @@
         }
     };
 
-    function checkCodeMeliPerReg(code) {
+    function checkCodeMeliPerReg(code,nationality) {
+        if (nationality!=null && nationality==="غیر ایرانی"){
+            return true;
+        }
+
         if (code === undefined || code === null || code === "")
             return false;
         var L = code.length;
+
+        if (L>10)
+            return false;
 
         if (L < 8 || parseFloat(code, 10) === 0)
             return false;
@@ -2166,7 +2179,7 @@
 
 
                         if (person.length === 0) {
-                            if (insert && !checkIfAlreadyExist(list[i], students) && checkCodeMeliPerReg(list[i].nationalCode)
+                            if (insert && !checkIfAlreadyExist(list[i], students) && checkCodeMeliPerReg(list[i].nationalCode,null)
                                 && checkGender(list[i].gender)
                                 && checkMobilePerReg(list[i].mobile)
                             ) {
@@ -2189,10 +2202,10 @@
                             allRowsOK = false;
                             list[i].error = false;
                             list[i].hasWarning = "warning";
-                            if (checkCodeMeliPerReg(list[i].nationalCode) && checkMobilePerReg(list[i].mobile) && checkGender(list[i].gender))
+                            if (checkCodeMeliPerReg(list[i].nationalCode,null) && checkMobilePerReg(list[i].mobile) && checkGender(list[i].gender))
                                 list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شخصی با کد ملی وارد شده در سیستم وجود ندارد.</span>";
                             else {
-                                if (!checkCodeMeliPerReg(list[i].nationalCode))
+                                if (!checkCodeMeliPerReg(list[i].nationalCode,null))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">کد ملی وارد شده فرمت صحیحی ندارد.</span>";
                                 if (!checkMobilePerReg(list[i].mobile))
                                     list[i].description = "<span style=\"color:white !important;background-color:#dc3545 !important;padding: 2px;\">شماره تلفن درست وارد نشده است.</span>";

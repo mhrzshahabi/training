@@ -25,4 +25,8 @@ public class ImportedQuestionProtocol {
     private Boolean hasParent;
     @ApiModelProperty
     private ImportedQuestion parent;
+    @ApiModelProperty
+    private Boolean isChild;
+    @ApiModelProperty
+    private String childPriority;
 }

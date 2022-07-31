@@ -129,6 +129,7 @@ public abstract class QuestionBankBeanMapper {
                     GroupQuestionDto questionDto=new GroupQuestionDto();
                     questionDto.setQuestion(item.getQuestion());
                     questionDto.setCorrectAnswer(item.getDescriptiveAnswer());
+                    questionDto.setPriority(item.getChildPriority());
                     questionDto.setType(parameterValueService.getInfo(item.getQuestionTypeId()).getTitle());
                     questionDto.setId(item.getId());
                     /////
@@ -162,6 +163,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setHasAttachment(questionBank.getHasAttachment());
             elsQuestionDto.setFiles(elsAttachmentDtoFiles);
             elsQuestionDto.setQuestionCode(questionBank.getCode());
+            elsQuestionDto.setIsChild(questionBank.getIsChild());
             elsQuestionDto.setProposedPointValue(questionBank.getProposedPointValue());
             if(questionBank.getDisplayTypeId()!=null){
              Long id= questionBank.getDisplayTypeId();
@@ -283,6 +285,7 @@ public abstract class QuestionBankBeanMapper {
             elsQuestionDto.setCorrectAnswer(questionBank.getDescriptiveAnswer());
             elsQuestionDto.setHasAttachment(questionBank.getHasAttachment());
             elsQuestionDto.setFiles(elsAttachmentDtoFiles);
+            elsQuestionDto.setIsChild(questionBank.getIsChild());
             elsQuestionDto.setQuestionCode(questionBank.getCode());
             elsQuestionDto.setProposedPointValue(questionBank.getProposedPointValue());
             if(questionBank.getDisplayTypeId()!=null){
@@ -357,7 +360,7 @@ public abstract class QuestionBankBeanMapper {
 //            create.setSubCategoryId(elsQuestionDto.getSubCategory());
             create.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
             if (elsQuestionDto.getGroupQuestions()!=null)
-            create.setGroupQuestions(questionBankService.getListOfGroupQuestions(elsQuestionDto.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet())).stream().map(QuestionBank::getId).collect(Collectors.toSet()));
+            create.setGroupQuestions(elsQuestionDto.getGroupQuestions());
             create.setTeacherId(teacherId);
             create.setLines(1);
             create.setDisplayTypeId(521L);
@@ -365,7 +368,6 @@ public abstract class QuestionBankBeanMapper {
             create.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
             create.setHasAttachment(elsQuestionDto.getHasAttachment());
             create.setIsChild(elsQuestionDto.getIsChild());
-            create.setChildPriority(elsQuestionDto.getChildPriority());
             create.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
             create.setTclassId(tClass.getId());
             create.setCourseId(tClass.getCourseId());
@@ -405,7 +407,6 @@ public abstract class QuestionBankBeanMapper {
                         option4Files.addAll(option4.get().getOptionFiles());
                 }
             }
-
             QuestionBankDTO.Info info = questionBankService.create(create);
             if (files.size() != 0) {
                 for (ElsAttachmentDto elsAttachmentDto : files) {
@@ -460,7 +461,7 @@ public abstract class QuestionBankBeanMapper {
         update.setSubCategoryId(tClass.getCourse().getSubCategoryId());
         update.setQuestionDesigner(teacherService.getTeacherFullName(teacherId));
         update.setQuestionTargets(elsQuestionDto.getQuestionTargetIds());
-        update.setGroupQuestions(elsQuestionDto.getGroupQuestions().stream().map(GroupQuestionDto::getId).collect(Collectors.toSet()));
+        update.setGroupQuestions(elsQuestionDto.getGroupQuestions());
         update.setLines(1);
         update.setTclassId(tClass.getId());
         update.setCourseId(tClass.getCourseId());
@@ -469,7 +470,6 @@ public abstract class QuestionBankBeanMapper {
         update.setDescriptiveAnswer(elsQuestionDto.getCorrectAnswer());
         update.setMultipleChoiceAnswer(elsQuestionDto.getCorrectOption());
         update.setHasAttachment(elsQuestionDto.getHasAttachment());
-        update.setChildPriority(elsQuestionDto.getChildPriority());
         update.setIsChild(elsQuestionDto.getIsChild());
         update.setQuestionLevelId(mapQuestionLevel(elsQuestionDto.getQuestionLevel()));
         update.setProposedPointValue(elsQuestionDto.getProposedPointValue());

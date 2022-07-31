@@ -1,5 +1,6 @@
 package response.question.dto;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,5 +13,6 @@ public class GroupQuestionDto {
     private String question;
     private String type;
     private String correctAnswer;
+    private String priority;
     private List<ElsQuestionOptionDto> optionList;
 }

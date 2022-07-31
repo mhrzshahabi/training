@@ -111,6 +111,7 @@ public class TclassService implements ITclassService {
     private final QuestionnaireDAO questionnaireDAO;
 
 
+
     @Override
     public List<Tclass> getTeacherClasses(Long teacherId) {
         return tclassDAO.getTeacherClasses(teacherId);
@@ -861,34 +862,43 @@ public class TclassService implements ITclassService {
         List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions=new ArrayList<>();
 
 
-        List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers=new ArrayList<>();
+
         List<QuestionnaireQuestionDTO.ExecutionInfo> executionInfos=new ArrayList<>();
 
         Tclass tclass = getTClass(classId);
         classStudents = tclass.getClassStudents();
 
         TclassDTO.ExecutionEvaluationResult evaluationResult = modelMapper.map(tclass, TclassDTO.ExecutionEvaluationResult.class);
-        Map<String, Double> executionEvaluationResult = calculateStudentsExecutionEvaluationResult(classStudents);
-        if (executionEvaluationResult.get("studentsGradeToTeacher") != null)
-            studentsGradeToTeacher = (Double) executionEvaluationResult.get("studentsGradeToTeacher");
-        if (executionEvaluationResult.get("studentsGradeToGoals") != null)
-            studentsGradeToGoals = (Double) executionEvaluationResult.get("studentsGradeToGoals");
-        if (executionEvaluationResult.get("studentsGradeToFacility") != null)
-            studentsGradeToFacility = (Double) executionEvaluationResult.get("studentsGradeToFacility");
-        percentOfFilledExecutionEvaluationForms = getPercentOfFilledExecutionEvaluationForms(classStudents);
-
+   ExecutionResultDTO executionResultDTO = calculateStudentsExecutionEvaluationResult(classStudents);
+        Map<String, Double> executionEvaluationResultMap=executionResultDTO.getStringDoubleMap();
+        List<Long> evaluationIds=executionResultDTO.getEvaluationIds();
+        if(executionEvaluationResultMap!=null) {
+            if (executionEvaluationResultMap.get("studentsGradeToTeacher") != null)
+                studentsGradeToTeacher = (Double) executionEvaluationResultMap.get("studentsGradeToTeacher");
+            if (executionEvaluationResultMap.get("studentsGradeToGoals") != null)
+                studentsGradeToGoals = (Double) executionEvaluationResultMap.get("studentsGradeToGoals");
+            if (executionEvaluationResultMap.get("studentsGradeToFacility") != null)
+                studentsGradeToFacility = (Double) executionEvaluationResultMap.get("studentsGradeToFacility");
+            percentOfFilledExecutionEvaluationForms = getPercentOfFilledExecutionEvaluationForms(classStudents);
+        }
         studentCount = getStudentCount(classStudents);
-         if(executionEvaluationResult.get("evaluationId")!=null) {
-             Optional<Evaluation> evaluation = evaluationDAO.findById(executionEvaluationResult.get("evaluationId").longValue());
+         if(evaluationIds!=null) {
+             List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers=new ArrayList<>();
+             evaluationIds.stream().forEach(evaluationId->{
+                 Optional<Evaluation> evaluation = evaluationDAO.findById(evaluationId);
 
-             if (evaluation.isPresent()) {
-                 answers = evaluationService.getEvaluationFormAnswerDetail(evaluation.get());
+                 if (evaluation.isPresent()) {
+                     answers.addAll( evaluationService.getEvaluationFormAnswerDetail(evaluation.get()));
 
-                 if (answers != null && answers.size() > 0) {
-                     executionInfos = getQuestionnaireInfo(answers, evaluation.get().getQuestionnaireId());
+
                  }
-
-                 Optional<Questionnaire> questionnaire = questionnaireDAO.findById(evaluation.get().getQuestionnaireId());
+             });
+             if (answers != null && answers.size() > 0) {
+                 executionInfos = getQuestionnaireInfo(answers);
+             }
+             if(evaluationIds!=null && evaluationIds.size()>0) {
+                 Optional<Evaluation> optionalEvaluation = evaluationDAO.findById(evaluationIds.get(0));
+                 Optional<Questionnaire> questionnaire = questionnaireDAO.findById(optionalEvaluation.get().getQuestionnaireId());
                  if (questionnaire.isPresent()) {
                      evaluationResult.setQuestionnaireTitle(questionnaire.get().getTitle());
                  }
@@ -1219,7 +1229,7 @@ public class TclassService implements ITclassService {
         return result;
     }
     @Transactional
-    public Map<String, Double> calculateStudentsExecutionEvaluationResult( Set<ClassStudent> classStudents) {
+    public ExecutionResultDTO calculateStudentsExecutionEvaluationResult( Set<ClassStudent> classStudents) {
 //
         Double studentsGradeToTeacher_l = null;
         Double studentsGradeToFacility_l = null;
@@ -1229,6 +1239,8 @@ public class TclassService implements ITclassService {
         Integer studentsGradeToGoals_count = null;
         Map<String, Double> result = new HashMap<>();
         Double completeNum = 0.0;
+        ExecutionResultDTO executionResultDTO=new ExecutionResultDTO();
+        List<Long> evaluationIds=new ArrayList<>();
         List<QuestionnaireQuestionDTO.ExecutionInfo> questionnaireQuestions=new ArrayList<>();
         Long questionnaireId=null;
         EvaluationDTO.Info evaluationDTO =new EvaluationDTO.Info();
@@ -1253,6 +1265,7 @@ public class TclassService implements ITclassService {
                     double facilityTotalWeight = 0.0;
                     double goalsTotalWeight = 0.0;
                     questionnaireId=   evaluation.getQuestionnaireId();
+                    evaluationIds.add(evaluation.getId());
 
                     result.put("questionnaireId",questionnaireId.doubleValue());
 
@@ -1322,14 +1335,15 @@ public class TclassService implements ITclassService {
         result.put("answeredStudentsNum", Double.valueOf(completeNum));
         result.put("allStudentsNum", Double.valueOf(classStudents.size()));
         if(evaluationDTO.getId()!=null)
-        result.put("evaluationId",evaluationDTO.getId().doubleValue());
-
-        return result;
+//        result.put("evaluationId",evaluationDTO.getId().doubleValue());
+         executionResultDTO.setStringDoubleMap(result);
+        executionResultDTO.setEvaluationIds(evaluationIds);
+        return executionResultDTO;
     }
 
 
 
-    private List<QuestionnaireQuestionDTO.ExecutionInfo> getQuestionnaireInfo(List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers, Long questionnaireId) {
+    private List<QuestionnaireQuestionDTO.ExecutionInfo> getQuestionnaireInfo(List<EvaluationAnswerDTO.EvaluationAnswerFullData> answers) {
         List<QuestionnaireQuestionDTO.ExecutionInfo> executionInfos=new ArrayList<>();
         final int[] studentsGradeToQuestion_cl = {0};
         final Double[] questionTotalWeight = {0.00};
@@ -1348,7 +1362,10 @@ public class TclassService implements ITclassService {
      List<Long> evaluationQuestionIds=  forTeacherAnswers.stream().map(answer->answer.getEvaluationQuestionId()).collect(Collectors.toList());
        evaluationQuestionIds.stream().forEach(evaluationQuestionId->{
 
-      forTeacherAnswers.stream().filter(answer->answer.getEvaluationQuestionId().equals(evaluationQuestionId)).collect(Collectors.toList()).forEach(answer->{
+           QuestionnaireQuestionDTO.ExecutionInfo executionInfo=new QuestionnaireQuestionDTO.ExecutionInfo();
+
+          List<EvaluationAnswerDTO.EvaluationAnswerFullData> finalAnswers= forTeacherAnswers.stream().filter(answer->answer.getEvaluationQuestionId().equals(evaluationQuestionId)).collect(Collectors.toList());
+          finalAnswers.stream().forEach(answer->{
           studentsGradeToQuestion_cl[0] = 1;
           if (answer.getWeight() != null) {
               questionTotalWeight[0] += answer.getWeight();
@@ -1357,6 +1374,18 @@ public class TclassService implements ITclassService {
           else
               questionTotalWeight[0]++;
           questionTotalGrade[0] += (Double.parseDouble(parameterValueDAO.findFirstById(answer.getAnswerId()).getValue())) * answer.getWeight();
+          Double order=  answer.getOrder().doubleValue();
+          if(orders.contains(order))
+              order+=0.1;
+          else{
+              orders.add(order.doubleValue());
+          }
+          Collections.sort(orders);
+          executionInfo.setQuestionOrder(order);
+
+          executionInfo.setQuestionTitle(answer.getQuestion());
+
+      });
           if (questionTotalWeight[0] != 0) {
               if (studentsGradeToQuestion_l[0] == null) studentsGradeToQuestion_l[0] = 0.0;
               if (studentsGradeToQuestion_count[0] == null) studentsGradeToQuestion_count[0] = 0;
@@ -1370,23 +1399,20 @@ public class TclassService implements ITclassService {
 
 
 
-          QuestionnaireQuestionDTO.ExecutionInfo executionInfo=new QuestionnaireQuestionDTO.ExecutionInfo();
+
           executionInfo.setAveGradeToQuestion((double) Math.round( studentsGradeToQuestion_l[0]* 100) / 100);
 
-//       QuestionnaireQuestion questionnaireQuestion=   questionnaireQuestionDAO.findByQuestionnaireIdAndEvaluationQuestionId(questionnaireId,answer.getEvaluationQuestionId());
 
-        Double order=  answer.getOrder().doubleValue();
-        if(orders.contains(order))
-            order+=0.1;
-        else{
-            orders.add(order.doubleValue());
-        }
-        Collections.sort(orders);
-          executionInfo.setQuestionOrder(order);
 
-        executionInfo.setQuestionTitle(answer.getQuestion());
+
           executionInfos.add(executionInfo);
-      });
+
+          studentsGradeToQuestion_cl [0]= 0;
+          questionTotalWeight[0] = 0.00;
+           questionTotalGrade[0] = 0.00;
+           studentsGradeToQuestion_l[0] = 0.00;
+           studentsGradeToQuestion_count[0] = 0;
+
 
        });
       List<QuestionnaireQuestionDTO.ExecutionInfo> sortedList= executionInfos.stream().sorted(Comparator.comparing(QuestionnaireQuestionDTO.ExecutionInfo::getQuestionOrder)).collect(Collectors.toList());

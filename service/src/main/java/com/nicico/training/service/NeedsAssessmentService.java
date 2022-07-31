@@ -153,7 +153,7 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
     @Override
     public List<NeedsAssessmentDTO.CourseDetail> findCoursesByTrainingPostCode(String trainingPostCode) {
         List<NeedsAssessmentDTO.CourseDetail> courseDetailDistinctList = new ArrayList<>();
-        List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCode("TrainingPost", trainingPostCode);
+        List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCodeAndDeleted("TrainingPost", trainingPostCode, null);
         List<NeedsAssessmentDTO.CourseDetail> courseDetailList = needAssessmentBeanMapper.toNeedsAssessmentCourseDetailDTOList(needsAssessmentList);
         for (NeedsAssessmentDTO.CourseDetail courseDetail : courseDetailList) {
             if (!courseDetailDistinctList.stream().map(NeedsAssessmentDTO.CourseDetail::getCourseCode).collect(Collectors.toList()).contains(courseDetail.getCourseCode()))

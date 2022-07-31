@@ -13,6 +13,8 @@ import com.nicico.training.model.QuestionBank;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 import response.BaseResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -33,6 +37,7 @@ public class QuestionBankRestController {
     private final IQuestionBankService iQuestionBankService;
     private final ObjectMapper objectMapper;
     private final IQuestionBankTestQuestionService iQuestionBankTestQuestionService;
+    private final MessageSource messageSource;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -43,10 +48,14 @@ public class QuestionBankRestController {
     @GetMapping(value = "/children-question/{id}")
     public ResponseEntity<QuestionBankDTO.QuestionBankSpecRsFullInfo> getChildrenQuestions(@PathVariable Long id) {
         final QuestionBankDTO.SpecRsFullInfo specResponse = new QuestionBankDTO.SpecRsFullInfo();
-        specResponse.setData(iQuestionBankService.getChildrenQuestions(id).stream().toList())
+        List<QuestionBankDTO.FullInfo> data=new ArrayList<>();
+        if (id!=-1L){
+            data=iQuestionBankService.getChildrenQuestions(id).stream().toList();
+        }
+        specResponse.setData(data)
                 .setStartRow(0)
-                .setEndRow(iQuestionBankService.getChildrenQuestions(id).stream().toList().size())
-                .setTotalRows(iQuestionBankService.getChildrenQuestions(id).stream().toList().size());
+                .setEndRow(data.size())
+                .setTotalRows(data.size());
 
         final QuestionBankDTO.QuestionBankSpecRsFullInfo specRs = new QuestionBankDTO.QuestionBankSpecRsFullInfo();
         specRs.setResponse(specResponse);
@@ -284,6 +293,52 @@ public class QuestionBankRestController {
 
         } catch (DataIntegrityViolationException e) {
             response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            return response;
+        }
+    }
+
+    @Loggable
+    @PostMapping(value = "/add-questions-group/{id}/{ids}")
+    public BaseResponse addQuestionsGroup(@PathVariable Long id, @PathVariable Set<Long> ids
+            ,@RequestBody List<QuestionBankDTO.priorityData> priorityData
+    ) {
+        BaseResponse response=new BaseResponse();
+        try {
+            if (id==-1L){
+                response.setStatus(HttpStatus.NOT_FOUND.value());
+                response.setMessage(messageSource.getMessage("question.error.group-question-creation", null, LocaleContextHolder.getLocale()));
+                return response;
+            }
+            if (!iQuestionBankTestQuestionService.usedQuestion(id)) {
+                QuestionBank qb = iQuestionBankService.getById(id);
+
+                if (qb == null && id!=-1L) {
+                    response.setStatus(HttpStatus.NOT_FOUND.value());
+                    response.setMessage(messageSource.getMessage("question.error.notFound", null, LocaleContextHolder.getLocale()));
+
+
+                    return response;
+                } else if (iQuestionBankService.isExist(id)) {
+                    response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                    response.setMessage(messageSource.getMessage("question.error.used", null, LocaleContextHolder.getLocale()));
+
+
+                    return response;
+                } else {
+                    return iQuestionBankService.addQuestionsGroup(id,ids,priorityData);
+                }
+            } else {
+                response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+                response.setMessage(messageSource.getMessage("question.error.used", null, LocaleContextHolder.getLocale()));
+                return response;
+            }
+
+
+        } catch (DataIntegrityViolationException e) {
+            response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+            response.setMessage(messageSource.getMessage("msg.operation.error", null, LocaleContextHolder.getLocale()));
+
+
             return response;
         }
     }
