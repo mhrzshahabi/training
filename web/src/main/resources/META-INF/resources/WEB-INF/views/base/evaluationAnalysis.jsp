@@ -423,7 +423,7 @@
             Detail_Tab_Evaluation_Analysis.disableTab(4);
 
         } else if (evaluationType === "4" || evaluationType === "نتایج") {
-
+            fill_execution_evaluation_result(record);
             fill_reaction_evaluation_result(record);
             evaluationAnalysist_learning(record);
             fill_behavioral_evaluation_result(record);
