@@ -206,13 +206,13 @@
     });
 
     let RestDataSource_JspOperationalChart = isc.TrDS.create({
-        transformRequest: function (dsRequest) {
-            transformCriteriaForLastModifiedDateNA(dsRequest);
-             return this.Super("transformRequest", arguments);
-        },
-        dataArrived: function (startRow, endRow, data) {
-           console.log(data);
-        },
+        // transformRequest: function (dsRequest) {
+        //     transformCriteriaForLastModifiedDateNA(dsRequest);
+        //      return this.Super("transformRequest", arguments);
+        // },
+        // dataArrived: function (startRow, endRow, data) {
+        //    console.log(data);
+        // },
 
         fields:
             [
@@ -305,8 +305,6 @@
             ListGrid_JspOperationalChart.invalidateCache();
         }
     });
-
-
 
     let VLayout_Body_JspOperationalChart = isc.TrVLayout.create({
         height: "50%",
@@ -415,7 +413,7 @@
             let title = DynamicForm_JspOperationalChart.getField("title").getValue();
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
             let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue();
-debugger
+// debugger
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
@@ -435,6 +433,59 @@ debugger
                 methodOperationalChart,
                 JSON.stringify(data),
                 OperationalChart_save_result));
+
+            if (parentId != null || parentId != undefined ) {
+                let record = ListGrid_JspOperationalChart.getSelectedRecord();
+                if (record.parentId != undefined) {
+// debugger
+                    isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/removeOldParent/" + record.id,
+                        "PUT",
+                        null,
+                        function (resp) {
+                            wait_Permission.close();
+                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                refreshLG(ListGrid_JspOperationalChart);
+                                Window_JspOperationalChart.close();
+                                setTimeout(function () {
+                                    OK.close();
+                                }, 3000);
+                            } else {
+                                // if (resp.httpResponseCode === 406 && resp.httpResponseText == undefined) {
+                                if (resp.httpResponseCode === 406 ) {
+                                    createDialog("info", "<spring:message code="msg.changed.not.save"/>");
+                                } else {
+                                    createDialog("info", "<spring:message code="msg.operation.error"/>");
+                                }
+                            }
+                        }));
+
+                }
+
+// debugger
+                isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/addchild/"+ record.id+"/"+ parentId,
+                    "POST",
+                    null,
+                    function (resp) {
+                        wait_Permission.close();
+                        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                            refreshLG(ListGrid_JspOperationalChart);
+                            Window_JspOperationalChart.close();
+                            setTimeout(function () {
+                                OK.close();
+                            }, 3000);
+                        } else {
+                            // if (resp.httpResponseCode === 406 && resp.httpResponseText == undefined) {
+                            if (resp.httpResponseCode === 406 ) {
+                                createDialog("info", "<spring:message code="msg.changed.not.save"/>");
+                            } else {
+                                createDialog("info", "<spring:message code="msg.operation.error"/>");
+                            }
+                        }
+                    }));
+            }
+
         }
     });
 
@@ -493,7 +544,8 @@ debugger
             {name: "id", hidden: true},
             {
                 name: "userIds",
-                type: "ComboBoxItem",
+                // type: "ComboBoxItem",
+                type: "MultiComboBoxItem",
                 title: "نام کاربری",
                 optionDataSource: UserDS_JspOperationalChart,
                 valueField: "id",
