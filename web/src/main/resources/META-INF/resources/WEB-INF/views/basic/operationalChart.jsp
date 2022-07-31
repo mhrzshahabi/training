@@ -489,7 +489,7 @@ debugger
                         }
                     }));
             }
-
+debugger
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
                 JSON.stringify(data),

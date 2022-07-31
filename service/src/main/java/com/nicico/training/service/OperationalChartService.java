@@ -102,6 +102,14 @@ public class OperationalChartService implements IOperationalChartService {
             operationalChart.setParentId(null);
 
             return mapper.toInfoDTO(operationalChart);
+            /*
+                <UnauthorizedException>
+                <error>unauthorized</error>
+                <error_description>
+                Full authentication is required to access this resource
+                </error_description>
+                </UnauthorizedException>
+             */
         } else {
               return mapper.toInfoDTO(operationalChart) ; // if it don't have parent,just return itself.
 //            throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));
