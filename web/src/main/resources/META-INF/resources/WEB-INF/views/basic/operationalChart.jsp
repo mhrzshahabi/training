@@ -222,7 +222,6 @@
             [
                 {name: "id", primaryKey: true},
                 {name: "complex"},
-                {name: "complexId"},
                 {name: "userName"},
                 {name: "nationalCode"},
                 {name: "title"},
@@ -345,13 +344,12 @@
             Window_JspOperationalChart.show();
         }
 
-
     function OperationalChart_save_result(resp) {
 
         wait_Permission.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            refreshLG(ListGrid_JspOperationalChart);
+            // refreshLG(ListGrid_JspOperationalChart);
             Window_JspOperationalChart.close();
             setTimeout(function () {
                 OK.close();
@@ -423,7 +421,7 @@
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
             let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("parentId").getValue();
             let roleId = DynamicForm_JspOperationalChart.getField("roleId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("roleId").getValue() ;
-// debugger
+debugger
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
@@ -439,7 +437,7 @@
                 "userId" : userId,
                 "version": 0
             }
-           if( methodOperationalChart = "PUT" ) {
+           if( methodOperationalChart === "PUT" ) {
                if (parentId != null || parentId != undefined) {
                    let record = ListGrid_JspOperationalChart.getSelectedRecord();
                    if (record.parentId != undefined) {
@@ -491,7 +489,7 @@
                        }));
                }
            }
-// debugger
+debugger
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
                 JSON.stringify(data),
