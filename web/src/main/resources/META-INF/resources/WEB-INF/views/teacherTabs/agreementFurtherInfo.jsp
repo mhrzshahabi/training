@@ -62,12 +62,14 @@
             {
                 name: "salaryBase",
                 title: "<spring:message code='salaryBase'/>",
+                textAlign: "center",
                 required: true,
             },
 
             {
                 name: "teachingExperience",
                 title: "<spring:message code='teachingExperience'/>",
+                textAlign: "center",
                 required: true,
             },
 
@@ -76,6 +78,7 @@
                 title: "<spring:message code='teacherRank'/>",
                 required: true,
                 align: "center",
+                textAlign: "center",
                 filterOnKeypress: true,
                 filterEditorProperties:{
                     pickListProperties: {
