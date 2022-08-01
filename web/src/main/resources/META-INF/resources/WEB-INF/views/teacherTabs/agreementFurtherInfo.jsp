@@ -11,6 +11,7 @@
     var startDateCheck_JSPAgreementFurtherInfo = true;
     var endDateCheck_JSPAgreementFurtherInfo = true;
     var dateCheck_Order_JSPAgreementFurtherInfo = true;
+    let rialIdAgreement = null;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -21,15 +22,16 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "salaryBase", filterOperator: "iContains"},
             {name: "teachingExperience", filterOperator: "iContains"},
-            {name: "currency.title", title: "واحد", filterOperator: "iContains"},
-            {name: "personnelStatus",
+
+            {name: "teacherRank.title",
                 valueMap: {
-                    "1":  "<spring:message code='teacher'/>",
-                    "2": "<spring:message code='associateProfessor'/>",
-                    "3": "<spring:message code='assistantProfessor'/>",
-                    "4": "<spring:message code='coach'/>",
-                    "5": "<spring:message code='educator'/>"
+                    "PROFESSOR":  "<spring:message code='teacher'/>",
+                    "ASSOCIATEPROFESSOR": "<spring:message code='associateProfessor'/>",
+                    "ASSISTANTPROFESSOR": "<spring:message code='assistantProfessor'/>",
+                    "COACH": "<spring:message code='coach'/>",
+                    "EDUCATOR": "<spring:message code='educator'/>"
                 }}
+
 
 
         ]
@@ -60,44 +62,19 @@
             {
                 name: "salaryBase",
                 title: "<spring:message code='salaryBase'/>",
-                required: true
-            },
-            {
-                name: "currencyId",
-                title: "واحد",
                 required: true,
-                colSpan: 4,
-                type: "selectItem",
-                autoFetchData: false,
-                optionDataSource: RestDataSource_Currency_AgreementFurtherInfo,
-                displayField: "title",
-                valueField: "id",
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                click: function (form, item) {
-                    item.fetchData();
-                },
-                change: function (form, item, value) {
-                    let salaryBase = form.getItem("salaryBase").getValue();
-                    if (salaryBase != null) {
-                        if (value === rialId) {
-                            let salaryBaseT = salaryBase / 10;
-                            form.getItem("salaryBase").show();
-
-                        } else
-                            form.getItem("salaryBase").hide();
-                    }
-                }
             },
+
             {
                 name: "teachingExperience",
-                title: "<spring:message code='teachingExperience'/>"
+                title: "<spring:message code='teachingExperience'/>",
+                required: true,
             },
 
             {
                 name: "teacherRank",
                 title: "<spring:message code='teacherRank'/>",
+                required: true,
                 align: "center",
                 filterOnKeypress: true,
                 filterEditorProperties:{
@@ -106,12 +83,13 @@
                     }
                 },
                 filterOperator: "iContains",
+                displayField:"teacherRank",
                 valueMap: {
-                    "1":  "<spring:message code='teacher'/>",
-                    "2": "<spring:message code='associateProfessor'/>",
-                    "3": "<spring:message code='assistantProfessor'/>",
-                    "4": "<spring:message code='coach'/>",
-                    "5": "<spring:message code='educator'/>"
+                    "PROFESSOR":  "<spring:message code='teacher'/>",
+                    "ASSOCIATEPROFESSOR": "<spring:message code='associateProfessor'/>",
+                    "ASSISTANTPROFESSOR": "<spring:message code='assistantProfessor'/>",
+                    "COACH": "<spring:message code='coach'/>",
+                    "EDUCATOR": "<spring:message code='educator'/>"
                 }}
 
 
@@ -122,6 +100,7 @@
     IButton_Save_JspAgreementFurtherInfo = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
+
             DynamicForm_JspAgreementFurtherInfo.validate();
             if (!DynamicForm_JspAgreementFurtherInfo.valuesHaveChanged() ||
                 !DynamicForm_JspAgreementFurtherInfo.validate() ||
@@ -137,9 +116,9 @@
 
 
             waitAgreementFurtherInfo = createDialog("wait");
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlTeacherCertification,
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlAgreementFurtherInfo,
                 methodAgreementFurtherInfo,
-                JSON.stringify(DynamicForm_JspTAgreementFurtherInfo.getValues()),
+                JSON.stringify(DynamicForm_JspAgreementFurtherInfo.getValues()),
                 "callback: AgreementFurtherInfo_save_result(rpcResponse)"));
         }
     });
@@ -198,19 +177,14 @@
         dataSource: RestDataSource_JspAgreementFurtherInfo,
         contextMenu: Menu_JspAgreementFurtherInfo,
         fields: [
+            {name: "id", hidden:true},
 
             {
 
                 name: "salaryBase",
                 title: "<spring:message code='salaryBase'/>",
             },
-            {
-                name: "currency.title",
-                canFilter: false,
-                sortNormalizer: function (record) {
-                    return record.currency.title;
-                }
-            },
+
             {
                 name: "teachingExperience",
                 title: "<spring:message code='teachingExperience'/>",
@@ -218,7 +192,7 @@
 
 
             {
-                name: "teacherRank",
+                name: "teacherRank.title",
                 title: "<spring:message code='teacherRank'/>",
                 align: "center",
                 filterOnKeypress: true,
@@ -228,13 +202,12 @@
                     }
                 },
                 filterOperator: "equals",
-                valueMap: {
-                    "1":  "<spring:message code='teacher'/>",
-                    "2": "<spring:message code='associateProfessor'/>",
-                    "3": "<spring:message code='assistantProfessor'/>",
-                    "4": "<spring:message code='coach'/>",
-                    "5": "<spring:message code='educator'/>"
-                }}
+                "PROFESSOR":  "<spring:message code='teacher'/>",
+                "ASSOCIATEPROFESSOR": "<spring:message code='associateProfessor'/>",
+                "ASSISTANTPROFESSOR": "<spring:message code='assistantProfessor'/>",
+                "COACH": "<spring:message code='coach'/>",
+                "EDUCATOR": "<spring:message code='educator'/>"
+            }
 
 
 
@@ -249,7 +222,8 @@
         filterOperator: "iContains",
         filterOnKeypress: true,
         sortField: 1,
-        sortDirection: "descending",
+        sortDirection: "ascending",
+        sortBy:"id",
         dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
@@ -335,29 +309,14 @@
         } else {
             methodAgreementFurtherInfo = "PUT";
             saveActionUrlAgreementFurtherInfo = agreementFurtherInfoUrl + "/" + record.id;
+            debugger;
             DynamicForm_JspAgreementFurtherInfo.clearValues();
             var clonedRecord = Object.assign({}, record);
-            clonedRecord.teacherRank = null;
+            clonedRecord.teacherRank = record.teacherRank.title;
 
             DynamicForm_JspAgreementFurtherInfo.editRecord(clonedRecord);
-            // if (record.teacherRank == null || record.teacherRank.isEmpty())
-            //     DynamicForm_JspAgreementFurtherInfo.getField("subCategories").disable();
-            // else {
-            //     DynamicForm_JspTeacherCertification.getField("subCategories").enable();
-            //     var catIds = [];
-            //     for (var i = 0; i < record.categories.length; i++)
-            //         catIds.add(record.categories[i].id);
-            //     DynamicForm_JspTeacherCertification.getField("categories").setValue(catIds);
-            //     isCategoriesChanged_JspTeacherCertification = true;
-            //     DynamicForm_JspTeacherCertification.getField("subCategories").focus(null, null);
-            // }
-            // if (record.subCategories != null && !record.subCategories.isEmpty()) {
-            //     var subCatIds = [];
-            //     for (var i = 0; i < record.subCategories.length; i++)
-            //         subCatIds.add(record.subCategories[i].id);
-            //     DynamicForm_JspTeacherCertification.getField("subCategories").setValue(subCatIds);
-            // }
             Window_JspAgreementFurtherInfo.show();
+
         }
     }
 
@@ -397,16 +356,16 @@
                 OK.close();
             }, 3000);
         } else {
-            <%--if (resp.httpResponseCode === 405) {--%>
-            <%--    createDialog("info", "<spring:message code="teacherCertification.title.duplicate"/>",--%>
-            <%--        "<spring:message code="message"/>");--%>
-            <%--}--%>
+            if (resp.httpResponseCode === 405) {
+                createDialog("info", "<spring:message code="teacher.experience.rank.title"/>",
+                    "<spring:message code="message"/>");
+            }
 
-            <%--else if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {--%>
-            <%--    createDialog("info", "<spring:message code="msg.record.duplicate"/>");--%>
-            <%--} else {--%>
-            <%--    createDialog("info", "<spring:message code="msg.operation.error"/>");--%>
-            <%--}--%>
+            else if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
         }
     }
 

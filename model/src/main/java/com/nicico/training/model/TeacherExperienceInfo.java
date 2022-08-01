@@ -23,10 +23,10 @@ public class TeacherExperienceInfo extends Auditable {
     private Long id;
 
     @Column(name = "salary_base")
-    private String salaryBase;
+    private Long salaryBase;
 
     @Column(name = "teaching_experience")
-    private String teachingExperience;
+    private Long teachingExperience;
 
     @Column(name = "t_rank", insertable = false, updatable = false)
     private TeacherRank teacherRank;
@@ -36,12 +36,8 @@ public class TeacherExperienceInfo extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "teacher", insertable = false, updatable = false)
     private Teacher teacher;
+    @Column(name = "teacher")
+    private Long teacherId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "t_currency_id", nullable = false, insertable = false, updatable = false)
-    private ParameterValue currency;
-
-    @Column(name = "t_currency_id")
-    private Long currencyId;
 
 }

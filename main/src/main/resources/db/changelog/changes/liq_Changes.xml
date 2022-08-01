@@ -5096,6 +5096,11 @@ FROM
             <column name="t_currency_id" type="number(19, 0)"></column>
         </addColumn>
     </changeSet>
+    <changeSet id="1658896976000-12" author="ZPakdaman">
+        <dropColumn tableName="tbl_teacher_experience_info">
+            <column name="t_currency_id" type="number(19, 0)"></column>
+        </dropColumn>
+    </changeSet>
 </databaseChangeLog>
 
 

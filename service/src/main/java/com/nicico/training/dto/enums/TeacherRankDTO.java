@@ -9,4 +9,5 @@ import lombok.Setter;
 @ApiModel("TeacherRankDTO")
 public class TeacherRankDTO {
     private String title;
+    private Integer Id;
 }

@@ -10,11 +10,11 @@ import lombok.ToString;
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum TeacherRank {
-    Professor(1, "استاد"),
-    AssociateProfessor(2,  "دانشیار"),
-    AssistantProfessor(3, "استادیار"),
-    Coach(4, "مربی"),
-    Educator(5, "آموزشیار");
+    PROFESSOR(1, "استاد"),
+    ASSOCIATEPROFESSOR(2,  "دانشیار"),
+    ASSISTANTPROFESSOR(3, "استادیار"),
+    COACH(4, "مربی"),
+    EDUCATOR(5, "آموزشیار");
 
 
     private final Integer id;
