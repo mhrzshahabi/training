@@ -8,7 +8,10 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.OperationalChartDTO;
+import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalChartService;
+import com.nicico.training.iservice.IOperationalRoleService;
+import com.nicico.training.repository.ComplexDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +20,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +31,7 @@ import java.util.List;
 public class OperationalChartRestController {
     private final IOperationalChartService operationalChartService;
     private final ObjectMapper objectMapper;
+    private final ComplexDAO complexDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -35,8 +41,8 @@ public class OperationalChartRestController {
 
     @Loggable
     @PostMapping(value = "/list")
-    public ResponseEntity<List<OperationalChartDTO.Info>> list(@RequestBody String complexTitle) {
-        return new ResponseEntity<>(operationalChartService.list(complexTitle), HttpStatus.OK);
+    public ResponseEntity<List<OperationalChartDTO.Info>> list(@RequestBody Long complexId) {
+        return new ResponseEntity<>(operationalChartService.list(complexId), HttpStatus.OK);
     }
 
     @Loggable
@@ -78,37 +84,22 @@ public class OperationalChartRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<OperationalChartDTO.OperationalCharSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                                          @RequestParam(value = "_endRow", defaultValue = "75") Integer endRow,
-                                                                          @RequestParam(value = "operator", required = false) String operator,
-                                                                          @RequestParam(value = "criteria", required = false) String criteria,
-                                                                          @RequestParam(value = "_constructor", required = false) String constructor) throws JsonProcessingException {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+    public ResponseEntity<ISC<OperationalChartDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        searchRq.setDistinct(true);
+        SearchDTO.SearchRs<OperationalChartDTO.Info> searchRs = null;
 
-        SearchDTO.CriteriaRq criteriaRq;
-        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator)).setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-            }));
-            request.setCriteria(criteriaRq);
+        try {
+            searchRs = operationalChartService.deepSearch(searchRq);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
-
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
-
-        SearchDTO.SearchRs<OperationalChartDTO.Info> response = operationalChartService.search(request);
-
-        final OperationalChartDTO.SpecRs specResponse = new OperationalChartDTO.SpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getList().size())
-                .setTotalRows(response.getTotalCount().intValue());
-
-        final OperationalChartDTO.OperationalCharSpecRs specRs = new OperationalChartDTO.OperationalCharSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable

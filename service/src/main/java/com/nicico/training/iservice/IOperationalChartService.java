@@ -3,13 +3,14 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.OperationalChartDTO;
+import com.nicico.training.dto.OperationalRoleDTO;
 
 import java.util.List;
 
 public interface IOperationalChartService {
     OperationalChartDTO.Info get(Long id);
 
-    List<OperationalChartDTO.Info> list(String complexTitle);
+    List<OperationalChartDTO.Info> list(Long complexId);
 
     OperationalChartDTO.Info create(OperationalChartDTO.Create request);
 
@@ -24,4 +25,6 @@ public interface IOperationalChartService {
      SearchDTO.SearchRs<OperationalChartDTO.Info> search(SearchDTO.SearchRq request);
 
     OperationalChartDTO.Info addChild(Long parent_id, Long child_id);
+
+    SearchDTO.SearchRs<OperationalChartDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException;
 }

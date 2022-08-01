@@ -4,12 +4,18 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalChartDTO;
+import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalChartService;
 import com.nicico.training.iservice.ISynonymOAUserService;
 import com.nicico.training.mapper.operationalChart.OperationalChartMapper;
+import com.nicico.training.model.Complex;
 import com.nicico.training.model.OperationalChart;
+import com.nicico.training.model.OperationalRole;
+import com.nicico.training.repository.ComplexDAO;
 import com.nicico.training.repository.OperationalChartDAO;
+import com.nicico.training.repository.OperationalRoleDAO;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
@@ -25,9 +31,32 @@ public class OperationalChartService implements IOperationalChartService {
      private final OperationalChartDAO operationalChartDAO;
      private final OperationalChartMapper mapper;
     private final ISynonymOAUserService synonymOAUserService;
+    private final ComplexDAO complexDAO;
+    private final ModelMapper modelMapper;
 
     @Autowired
     private MessageSource messageSource;
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<OperationalChartDTO.Info> deepSearch(SearchDTO.SearchRq searchRq) throws NoSuchFieldException, IllegalAccessException {
+        if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null) {
+            for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                if (criterion.getFieldName().equals("complex")) {
+                    criterion.setFieldName("complex");
+                    List<Object> value = criterion.getValue();
+                    Object o = value.get(0);
+                    Long ComplexId = Long.valueOf(o.toString());
+
+                    String complexTitle = complexDAO.findById(ComplexId).get().getTitle();
+                    criterion.setValue(complexTitle);
+                }
+            }
+        }
+
+        SearchDTO.SearchRs<OperationalChartDTO.Info> searchRs = BaseService.<OperationalChart, OperationalChartDTO.Info, OperationalChartDAO>optimizedSearch(operationalChartDAO, p -> modelMapper.map(p, OperationalChartDTO.Info.class), searchRq);
+        return searchRs;
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -39,12 +68,14 @@ public class OperationalChartService implements IOperationalChartService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<OperationalChartDTO.Info> list(String complexTitle) {
+    public List<OperationalChartDTO.Info> list(Long complexId) {
         final List<OperationalChart> gAll = operationalChartDAO.findAll();
+
+       String complexTitle = complexDAO.findById(complexId).get().getTitle();
 
         Set<OperationalChart> set = new HashSet<>();
         gAll.forEach(one -> {
-                    if (one.getComplex().equals(complexTitle.replace("\"",""))) {
+                    if (one.getComplex().equals( complexTitle)) {
                         set.add(one);
                     }
         }

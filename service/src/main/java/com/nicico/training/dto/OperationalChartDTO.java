@@ -58,6 +58,7 @@ public class OperationalChartDTO {
         private String lastModifiedBy;
         private Integer version;
 
+
     }
 
     @Getter

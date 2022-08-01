@@ -100,8 +100,8 @@
                 optionDataSource: RestDataSource_OperationalChart_Department_Filter,
                 autoFetchData: false,
                 displayField: "title",
-                // valueField: "id",
-                valueField: "title",
+                valueField: "id",
+                // valueField: "title",
                 textAlign: "center",
                 icons: [
                     {
@@ -222,6 +222,7 @@
             [
                 {name: "id", primaryKey: true},
                 {name: "complex"},
+                {name: "complexId"},
                 {name: "userName"},
                 {name: "nationalCode"},
                 {name: "title"},
@@ -422,7 +423,7 @@
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
             let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("parentId").getValue();
             let roleId = DynamicForm_JspOperationalChart.getField("roleId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("roleId").getValue() ;
-debugger
+// debugger
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
@@ -442,7 +443,7 @@ debugger
                if (parentId != null || parentId != undefined) {
                    let record = ListGrid_JspOperationalChart.getSelectedRecord();
                    if (record.parentId != undefined) {
- debugger
+ // debugger
                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/removeOldParent/" + record.id,
                            "PUT",
                            null,
@@ -490,7 +491,7 @@ debugger
                        }));
                }
            }
-debugger
+// debugger
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
                 JSON.stringify(data),
@@ -624,7 +625,8 @@ debugger
                 optionDataSource: RestDataSource_OperationalChart_Department_Filter,
                 displayField: "title",
                 autoFetchData: true,
-                valueField: "title",
+                // valueField: "title",
+                valueField: "id",
                 textAlign: "center",
                 required: true,
                 textMatchStyle: "substring",
@@ -705,21 +707,22 @@ debugger
     //         getTreeData();
     // });
 
-    function getTreeData(complexTitle) {
+    function getTreeData(complexId) {
 
-        if (complexTitle !== undefined) {
+        if (complexId !== undefined) {
             var url = operationalChartUrl + "/list";
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(url, "POST",  JSON.stringify(complexTitle), function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(url, "POST",  JSON.stringify(complexId), function (resp) {
                 wait.close();
                 if (resp.httpResponseCode !== 200)
                     return false;
                 else {
                     let data = JSON.parse(resp.data);
-
+// debugger
                     let childs = data.filter(p => p);
-                    let chart = data.filter(p => p);
-                    chart.forEach(p => p.directReports = childs.filter(c => c.parentId === p.id));
+                    let chart = data.filter(p => p );
+
+               chart.forEach(p => p.directReports = childs.filter(c => c.parentId === p.id));
                     let treeData = setTreeData(operationalTree, chart, false);
                     return treeData;
                 }
@@ -755,29 +758,24 @@ debugger
          return treeData;
     }
 
-    function createMainCriteriaInChart() {
+    function createMainCriteriaInChart(value) {
         let mainCriteria = {};
         mainCriteria._constructor = "AdvancedCriteria";
         mainCriteria.operator = "and";
-        mainCriteria.criteria = [];
-        mainCriteria.criteria.add(departmentCriteriaChart);
+        mainCriteria.criteria =
+            [
+                {
+                    fieldName: "complex", operator: "inSet", value: value
+                }
+            ];
+
         return mainCriteria;
     }
 
     function load_chart_by_complex(value) {
         if (value !== undefined) {
-            let criteria = {
-                _constructor: "AdvancedCriteria",
-                operator: "and",
-                criteria: [
-                    {
-                        fieldName: "complex", operator: "inSet", value: value
-                    }
-                ]
-            };
             RestDataSource_JspOperationalChart.fetchDataURL = operationalChartUrl + "/spec-list";
-            departmentCriteriaChart = criteria;
-            let mainCriteria = createMainCriteriaInChart();
+            let mainCriteria = createMainCriteriaInChart(value);
             ListGrid_JspOperationalChart.invalidateCache();
             ListGrid_JspOperationalChart.fetchData(mainCriteria);
 
