@@ -194,6 +194,10 @@ public class OperationalChartService implements IOperationalChartService {
         toUpdate.setNationalCode(nationalCode);
         toUpdate.setUserName(fullName);
 
+        Long ComplexId = Long.valueOf(request.getComplex());
+        String complexTitle = complexDAO.findById(ComplexId).get().getTitle();
+        toUpdate.setComplex(complexTitle);
+
       return save(toUpdate) ;
     }
 
