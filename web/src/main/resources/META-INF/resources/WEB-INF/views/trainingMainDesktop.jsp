@@ -1335,6 +1335,7 @@
     const systemStatusUrl = rootUrl + "/system-status";
     const addIndividualPost = rootUrl + "/view-training-post/add";
     const deleteIndividualPost = rootUrl + "/view-training-post/delete";
+    const genericStatisticalIndexReportUrl = rootUrl + "/generic_statistical_index_report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2832,6 +2833,17 @@
 
                         ]
                 },
+                {
+                    title: "گزارشات شاخص های آماری",
+                    submenu: [
+                        {
+                            title: "گزارش شاخص های آماری",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");
+                            }
+                        }
+                    ]
+                }
             ]
         }),
     });
@@ -4071,6 +4083,8 @@
     function init_OrganSegmentFilterDF(disableField = false,
                                        useNameInCriteria = false,
                                        hideCompanyFilter = false,
+                                       hideGhesmatFilter = false,
+                                       hideVahedFilter = false,
                                        companyFieldName = "companyName",
                                        mojtameFieldName = "department.mojtameCode",
                                        moavenatFieldName = "department.moavenatCode",
@@ -4087,6 +4101,12 @@
 
         if (hideCompanyFilter === true)
             filterDF.getFields()[0].hide();
+
+        if (hideGhesmatFilter === true)
+            filterDF.getFields()[4].hide();
+
+        if (hideVahedFilter === true)
+            filterDF.getFields()[5].hide();
 
         if (disableField === true){
             filterDF.getFields()[2].disable();

@@ -871,10 +871,14 @@ public class RequestItemService implements IRequestItemService {
     private RequestItemWithDiff getRequestDiff(RequestItem requestItem) {
 
         SynonymPersonnel synonymPersonnel = null;
+        SynonymPersonnel synonymPersonnelByNationalCode = null;
+        SynonymPersonnel synonymPersonnelByPersonnelNo2 = null;
         RequestItemWithDiff requestItemWithDiff = new RequestItemWithDiff();
 
-        SynonymPersonnel synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
-        SynonymPersonnel synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+        if (requestItem.getNationalCode() != null)
+            synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+        if (requestItem.getPersonnelNo2() != null)
+            synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
 
         if (synonymPersonnelByNationalCode != null) {
             synonymPersonnel = synonymPersonnelByNationalCode;

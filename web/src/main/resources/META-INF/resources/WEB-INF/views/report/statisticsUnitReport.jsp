@@ -420,7 +420,7 @@
         ]
     });
 
-    var organizationFilter = init_OrganSegmentFilterDF(true,true, true , null, "personnelComplexTitle","studentCcpAssistant","studentCcpAffairs", "studentCcpSection", "studentCcpUnit");
+    var organizationFilter = init_OrganSegmentFilterDF(true, true, true, false, false, null, "personnelComplexTitle","studentCcpAssistant","studentCcpAffairs", "studentCcpSection", "studentCcpUnit");
 
     //----------------------------------------------------Criteria Form------------------------------------------------
     var DynamicForm_CriteriaForm_JspUnitReport = isc.DynamicForm.create({
