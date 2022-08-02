@@ -476,15 +476,15 @@
                 // length: "10",
                 blur: function () {
                     DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
-                    var codeCheckPerReg;
-                    codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value
-                    ,DynamicForm_PersonnelReg_BaseInfo.getField("nationality")._value
-                    );
-                    codeMeliCheckPerReg = codeCheckPerReg;
-                    if (codeCheckPerReg === false) {
+
+                    if (checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value
+                        ,DynamicForm_PersonnelReg_BaseInfo.getField("nationality")._value
+                    ) === false) {
                         DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message
                                                                         code='msg.national.code.validation'/>", true);
-                    } else if (codeCheckPerReg === true) {
+                    } else if (checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode")._value
+                        ,DynamicForm_PersonnelReg_BaseInfo.getField("nationality")._value
+                    )  === true) {
                         DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
                         checkPersonalRegNationalCode(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
                     }
@@ -1348,6 +1348,7 @@
                     var personnelRegRecord = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
                     personnelRegSaveUrl += "/" + personnelRegRecord.id;
                 }
+                debugger
                 isc.RPCManager.sendRequest(TrDSRequest(personnelRegSaveUrl, personnelRegMethod, JSON.stringify(data), "callback: personnelReg_action_result(rpcResponse)"));
                 // Window_PersonnelReg_JspPersonnelReg.close();
             }
@@ -1904,7 +1905,7 @@
                             align: "center",
                             icon: "[SKIN]/actions/save.png",
                             click: function () {
-
+debugger
                                 // let getEditCells=GroupSelectedPersonnelRegisterLG.getAllEditCells();
                                 //
                                 //
@@ -1976,6 +1977,7 @@
     };
 
     function personnelReg_action_result(resp) {
+        debugger
         personnelRegWait.close();
 
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
@@ -2047,15 +2049,17 @@
     };
 
     function checkCodeMeliPerReg(code,nationality) {
+        if (code === undefined || code === null || code === "")
+            return false;
+
+
         if (nationality!=null && nationality==="غیر ایرانی"){
             return true;
         }
 
-        if (code === undefined || code === null || code === "")
-            return false;
         var L = code.length;
 
-        if (L>10)
+        if (L>10 || L===0)
             return false;
 
         if (L < 8 || parseFloat(code, 10) === 0)
@@ -2097,11 +2101,6 @@
     };
 
     function checkPersonalRegNationalCode(nationalCode) {
-        if (DynamicForm_PersonnelReg_BaseInfo.getItem("nationalCode").getValue() == tempNationalCode) {
-            DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
-            return;
-        }
-
         isc.RPCManager.sendRequest(TrDSRequest(personnelRegByNationalCodeUrl + "getOneByNationalCode/" + nationalCode, "GET", null, "callback: personalReg_findOne_result(rpcResponse)"));
     };
 
@@ -2123,12 +2122,14 @@
 
     function checkPersonnelRegisteredResponse(url, result, addStudentsInGroupInsert) {
         wait.show();
+        debugger
         isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
             , "callback: checkResultForAdd(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
     }
 
     function addValidRegisterdStudents(students) {
         wait.show();
+        debugger
         isc.RPCManager.sendRequest(TrDSRequest(addPerssonelRegisteredList, "POST", JSON.stringify(students), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 wait.close();

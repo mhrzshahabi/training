@@ -124,7 +124,7 @@ public class ContactInfoService implements IContactInfoService {
             if ((alreadyNc == null && recordNc != null) || !Objects.equals(alreadyNc, recordNc)) {
                 throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, msg, msg);
             }
-            if (recordNc==null){
+            if (recordNc == null) {
                 msg = messageSource.getMessage("msg.duplicate.mobile.number.national.code.RegisteredPersonnel", new Object[]{alreadyNc}, locale);
                 throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, msg, msg);
             }
@@ -136,11 +136,11 @@ public class ContactInfoService implements IContactInfoService {
         modelMapper.map(request, cUpdating);
 
         try {
-            ContactInfo contactInfo1=contactInfoDAO.saveAndFlush(cUpdating);
-            boolean savedToAllRepos= updateAllRepositoriesWithThisContactInfo(record,contactInfo1);
+            ContactInfo contactInfo1 = contactInfoDAO.saveAndFlush(cUpdating);
+            boolean savedToAllRepos = updateAllRepositoriesWithThisContactInfo(record, contactInfo1);
             if (savedToAllRepos)
-            return modelMapper.map(contactInfo1, ContactInfoDTO.Info.class);
-            else{
+                return modelMapper.map(contactInfo1, ContactInfoDTO.Info.class);
+            else {
                 msg = messageSource.getMessage("msg.mobile.not.saved.in.all.repositories", null, locale);
                 throw new TrainingException(TrainingException.ErrorType.DuplicateMobile, msg, msg);
 
@@ -155,19 +155,20 @@ public class ContactInfoService implements IContactInfoService {
     @Transactional
     public boolean updateAllRepositoriesWithThisContactInfo(Object record, ContactInfo contactInfo1) {
         String recordNc = "";
-            if (record instanceof Student) {
-                recordNc = ((Student) record).getNationalCode();
-            } else if (record instanceof Personnel) {
-                recordNc = ((Personnel) record).getNationalCode();
-            } else if (record instanceof PersonnelRegistered) {
-                recordNc = ((PersonnelRegistered) record).getNationalCode();
-            }
+        if (record instanceof Student) {
+            recordNc = ((Student) record).getNationalCode();
+        } else if (record instanceof Personnel) {
+            recordNc = ((Personnel) record).getNationalCode();
+        } else if (record instanceof PersonnelRegistered) {
+            recordNc = ((PersonnelRegistered) record).getNationalCode();
+        }
 
 //
         //        update all student
-        List<Student> studentList = studentDAO.findByNationalCode(recordNc);
-            if (!studentList.isEmpty()){
-                for (Student student:studentList){
+        if (recordNc != null) {
+            List<Student> studentList = studentDAO.findByNationalCode(recordNc);
+            if (!studentList.isEmpty()) {
+                for (Student student : studentList) {
                     student.setContactInfo(contactInfo1);
                     student.setContactInfoId(contactInfo1.getId());
                     studentDAO.saveAndFlush(student);
@@ -175,27 +176,36 @@ public class ContactInfoService implements IContactInfoService {
             }
 
 //      update all    personnelRegistered
-        List<PersonnelRegistered> personnelRegisteredList = personnelRegisteredDAO.findAllByNationalCodeOrderByIdDesc(recordNc);
-        if (!personnelRegisteredList.isEmpty()){
-            for (PersonnelRegistered personnelRegistered:personnelRegisteredList){
-                personnelRegistered.setContactInfo(contactInfo1);
-                personnelRegistered.setContactInfoId(contactInfo1.getId());
-                personnelRegisteredDAO.saveAndFlush(personnelRegistered);
+            List<PersonnelRegistered> personnelRegisteredList = personnelRegisteredDAO.findAllByNationalCodeOrderByIdDesc(recordNc);
+            if (!personnelRegisteredList.isEmpty()) {
+                for (PersonnelRegistered personnelRegistered : personnelRegisteredList) {
+                    personnelRegistered.setContactInfo(contactInfo1);
+                    personnelRegistered.setContactInfoId(contactInfo1.getId());
+                    personnelRegisteredDAO.saveAndFlush(personnelRegistered);
+                }
             }
-        }
-
 
 
 //           update all     personnel
-        List<Personnel> personnelList = personnelDAO.findAllByNationalCodeOrderByIdDesc(recordNc);
-        if (!personnelList.isEmpty()){
-            for (Personnel personnel:personnelList){
-                personnel.setContactInfo(contactInfo1);
-                personnel.setContactInfoId(contactInfo1.getId());
-                personnelDAO.saveAndFlush(personnel);
+            List<Personnel> personnelList = personnelDAO.findAllByNationalCodeOrderByIdDesc(recordNc);
+            if (!personnelList.isEmpty()) {
+                for (Personnel personnel : personnelList) {
+                    personnel.setContactInfo(contactInfo1);
+                    personnel.setContactInfoId(contactInfo1.getId());
+                    personnelDAO.saveAndFlush(personnel);
+                }
             }
         }
+
         return true;
+    }
+
+    @Override
+    @Transactional
+    public ContactInfo save(ContactInfoDTO.Info contactInfoDTO) {
+        contactInfoDTO.setId(null);
+        contactInfoDTO.setVersion(0);
+        return contactInfoDAO.save(modelMapper.map(contactInfoDTO, ContactInfo.class));
     }
 
     @Transactional

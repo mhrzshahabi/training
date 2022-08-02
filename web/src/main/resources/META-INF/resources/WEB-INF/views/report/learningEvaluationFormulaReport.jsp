@@ -303,7 +303,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_REFR', this, 'ymd', '/');
+                        displayDatePicker('startDate2_REFR', this, 'ymd', '/','right');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -391,7 +391,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate2_REFR', this, 'ymd', '/');
+                        displayDatePicker('endDate2_REFR', this, 'ymd', '/','right');
                     }
                 }],
                 editorExit: function (form, item, value) {
