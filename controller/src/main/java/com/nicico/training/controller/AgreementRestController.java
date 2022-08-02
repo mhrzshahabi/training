@@ -1,6 +1,5 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
@@ -21,7 +20,6 @@ import java.io.IOException;
 @RequestMapping(value = "/api/agreement")
 public class AgreementRestController {
 
-    private final ObjectMapper objectMapper;
     private final IAgreementService agreementService;
 
     @Loggable

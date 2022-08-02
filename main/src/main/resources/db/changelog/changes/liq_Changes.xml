@@ -5097,6 +5097,129 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="MShahabi" id="1799887766557-089">
+        <addColumn tableName="tbl_agreement">
+            <column name="c_agreement_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_agreement_date" type="TIMESTAMP"/>
+            <column name="d_from_date" type="TIMESTAMP"/>
+            <column name="d_to_date" type="TIMESTAMP"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-090">
+        <dropColumn columnName="e_service_type" tableName="tbl_agreement"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-091">
+        <sql splitStatements="false" stripComments="false">
+            <![CDATA[
+            DECLARE
+            l_parameter_id NUMBER;
+            BEGIN
+            BEGIN
+            l_parameter_id
+            := seq_parameter_id.nextval;
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter (id,
+                                       c_created_by,
+                                       d_created_date,
+                                       e_deleted,
+                                       e_enabled,
+                                       c_last_modified_by,
+                                       d_last_modified_date,
+                                       n_version,
+                                       c_title,
+                                       c_code)
+            VALUES (l_parameter_id,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    'مبنای محاسبه مبلغ',
+                    'basisCalculatingCost');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'به ازای هر ساعت',
+                    'perHour');
+            END;
+            BEGIN
+            INSERT INTO tbl_parameter_value (id,
+                                             c_created_by,
+                                             d_created_date,
+                                             e_deleted,
+                                             e_enabled,
+                                             c_last_modified_by,
+                                             d_last_modified_date,
+                                             n_version,
+                                             f_parameter_id,
+                                             c_title,
+                                             c_code)
+            VALUES (seq_parameter_value_id.NEXTVAL,
+                    'shahabi',
+                    current_timestamp,
+                    NULL,
+                    NULL,
+                    NULL,
+                    NULL,
+                    0,
+                    l_parameter_id,
+                    'به ازای هر نفر',
+                    'perPerson');
+            END;
+            END;
+            ]]>
+        </sql>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-092">
+        <addColumn tableName="tbl_agreement_class_cost">
+            <column name="f_basis_calculate_id" type="NUMBER(19, 0)" defaultValueNumeric="1214">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+        </addColumn>
+        <addForeignKeyConstraint baseColumnNames="f_basis_calculate_id"
+                                 baseTableName="tbl_agreement_class_cost"
+                                 constraintName="fk_basis_calculate_id_to_parameter_value"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tbl_parameter_value"
+                                 validate="true"/>
+        <addForeignKeyConstraint baseColumnNames="f_teacher_id"
+                                 baseTableName="tbl_agreement_class_cost"
+                                 constraintName="fk_teacher_id_to_teacher"
+                                 deferrable="false"
+                                 initiallyDeferred="false"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tbl_teacher"
+                                 validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

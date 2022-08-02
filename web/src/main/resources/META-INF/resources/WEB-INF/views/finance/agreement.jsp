@@ -11,6 +11,25 @@
     let AgreementClassCost_ListGridData = [];
     let agreementClassCost_Data = [];
 
+    // function AgreementClassCost_Add(records, window) {
+    //     let dataObject = {};
+    //     agreementClassCost_Data = [];
+    //     for (let i = 0; i < records.length; i++) {
+    //         if (records[i].teachingCostPerHour === undefined || records[i].teachingCostPerHour === null) {
+    //             createDialog("info", "کلاسی بدون ثبت هزینه تدریس وجود دارد");
+    //             return;
+    //             break;
+    //         }
+    //         dataObject = {
+    //             classId: records[i].classId,
+    //             teachingCostPerHour: records[i].teachingCostPerHour
+    //         };
+    //         agreementClassCost_Data.add(dataObject);
+    //     }
+    //     costListChanged = true;
+    //     window.close();
+    // }
+
     let reportCriteria_ULR = null;
     let agreementMethod = "POST";
     let maxFileSizeUpload = 31457280;
@@ -30,18 +49,21 @@
     RestDataSource_Agreement = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
+            {name: "agreementNumber", title: "شماره تفاهم نامه"},
+            {name: "agreementDate", title: "تاریخ عقد تفاهم نامه"},
+            {name: "fromDate", title: "<spring:message code='from.date'/>"},
+            {name: "toDate", title: "<spring:message code='to.date'/>"},
             {name: "firstPartyId", title: "firstPartyId", hidden: true},
             {name: "firstParty.titleFa", title: "طرف اول تفاهم نامه", filterOperator: "iContains"},
             {name: "secondPartyTeacherId", title: "secondPartyTeacherId", hidden: true},
             {name: "secondPartyTeacher.teacherCode", title: "طرف دوم تفاهم نامه (مدرس)", filterOperator: "iContains"},
             {name: "secondPartyInstituteId", title: "secondPartyInstituteId", hidden: true},
             {name: "secondPartyInstitute.titleFa", title: "طرف دوم تفاهم نامه (موسسه آموزشی)", filterOperator: "iContains"},
-            {name: "serviceType.title", title: "نوع خدمات", filterOperator: "iContains"},
-            {name: "finalCost", title: "مبلغ نهایی"},
+            {name: "finalCost", title: "مبلغ نهایی", hidden: true},
             {name: "currency.title", title: "واحد", filterOperator: "iContains"},
             {name: "subject", title: "موضوع تفاهم نامه", filterOperator: "iContains"},
             {name: "teacherEvaluation", title: "اعمال نمره ارزشیابی مدرس برای پرداخت", valueMap: {"true" : "بله", "false" : "خیر"}},
-            {name: "maxPaymentHours", title: "حداکثر ساعت پرداختی"}
+            {name: "maxPaymentHours", title: "حداکثر ساعت پرداختی", hidden: true}
         ],
         fetchDataURL: agreementUrl + "/spec-list"
     });
@@ -76,22 +98,31 @@
         ],
         fetchDataURL: teacherUrl + "spec-list-agreement"
     });
-    RestDataSource_Service_Type_Agreement = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "title"}
-        ],
-        fetchDataURL: enumUrl + "serviceType/spec-list",
-    });
     RestDataSource_Currency_Agreement = isc.TrDS.create({
-        fields:
-            [
+        fields: [
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "title", title: "<spring:message code="title"/>"},
                 {name: "code", title: "<spring:message code="code"/>"}
-            ],
-        autoCacheAllData: true,
+        ],
         fetchDataURL: parameterUrl + "/iscList/currency"
+    });
+    RestDataSource_Basis_Calculate_Agreement = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>"},
+            {name: "code", title: "<spring:message code="code"/>"}
+        ],
+        fetchDataURL: parameterUrl + "/iscList/basisCalculatingCost"
+    });
+    RestDataSource_Teacher_Name_Agreement = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "fullNameFa", filterOperator: "iContains"},
+            {name: "personality.firstNameFa", title: "<spring:message code='firstName'/>", filterOperator: "iContains"},
+            {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", filterOperator: "iContains"},
+            {name: "personality.nationalCode", title: "<spring:message code='national.code'/>", filterOperator: "iContains"}
+        ],
+        fetchDataURL: teacherUrl + "fullName-list"
     });
 
     //----------------------------------- layOut -----------------------------------------------------------------------
@@ -170,6 +201,26 @@
         fields: [
             {name: "id", hidden: true},
             {
+                name: "agreementNumber",
+            },
+            {
+                name: "agreementDate",
+                formatCellValue: function (value) {
+                    if (value) {
+                        let date = new Date (value);
+                        return date.toLocaleDateString('fa-IR');
+                    }
+                }
+            },
+            {
+                name: "fromDate",
+                hidden: true
+            },
+            {
+                name: "toDate",
+                hidden: true
+            },
+            {
                 name: "firstParty.titleFa",
                 sortNormalizer: function (record) {
                     return record.firstParty.titleFa;
@@ -182,15 +233,9 @@
                 name: "secondPartyInstitute.titleFa"
             },
             {
-                name: "serviceType.title",
-                canFilter: false,
-                sortNormalizer: function (record) {
-                    return record.serviceType.title;
-                }
-            },
-            {
                 name: "finalCost",
                 canFilter: false,
+                hidden: true
             },
             {
                 name: "currency.title",
@@ -201,7 +246,7 @@
             },
             {
                 name: "subject",
-                canFilter: false,
+                canFilter: false
             },
             {
                 name: "teacherEvaluation",
@@ -210,6 +255,7 @@
             {
                 name: "maxPaymentHours",
                 canFilter: false,
+                hidden: true
             },
             {
                 name: "upload",
@@ -255,23 +301,106 @@
     });
 
     DynamicForm_Agreement = isc.DynamicForm.create({
-        width: "80%",
+        width: "85%",
         height: "50%",
         align: "center",
         canSubmit: true,
         wrapItemTitles: false,
         showInlineErrors: true,
         showErrorText: false,
-        numCols: 2,
+        numCols: 4,
         titleAlign: "right",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         fields: [
             {name: "id", hidden: true},
             {
+                name: "agreementNumber",
+                title: "شماره تفاهم نامه",
+                required: true,
+                titleColSpan: 1,
+                colSpan: 1,
+                type: "text"
+            },
+            {
+                name: "agreementDate",
+                title: "تاریخ عقد تفاهم نامه",
+                required: true,
+                titleColSpan: 1,
+                colSpan: 1,
+                ID: "agreementDate_agreement",
+                hint: "--/--/----",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                textAlign: "center",
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('agreementDate_agreement', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "fromDate",
+                title: "<spring:message code='from.date'/>",
+                required: true,
+                titleColSpan: 1,
+                colSpan: 1,
+                ID: "fromDate_agreement",
+                hint: "--/--/----",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                textAlign: "center",
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('fromDate_agreement', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
+                name: "toDate",
+                title: "<spring:message code='to.date'/>",
+                required: true,
+                titleColSpan: 1,
+                colSpan: 1,
+                ID: "toDate_agreement",
+                hint: "--/--/----",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                textAlign: "center",
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('toDate_agreement', this, 'ymd', '/');
+                    }
+                }],
+                changed: function (form, item, value) {
+                    if (value == null || value === "" || checkDate(value))
+                        item.clearErrors();
+                    else
+                        item.setErrors("<spring:message code='msg.correct.date'/>");
+                }
+            },
+            {
                 name: "firstPartyId",
                 title: "طرف اول تفاهم نامه",
                 required: true,
-                colSpan: 2,
+                colSpan: 4,
                 type: "selectItem",
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_Agreement,
@@ -303,7 +432,7 @@
                 name: "secondParty",
                 title: "طرف دوم تفاهم نامه",
                 required: true,
-                colSpan: 2,
+                colSpan: 4,
                 type: "radioGroup",
                 defaultValue: "1",
                 valueMap: {
@@ -328,7 +457,7 @@
                 name: "secondPartyTeacherId",
                 title: "طرف دوم تفاهم نامه (مدرس)",
                 required: true,
-                colSpan: 2,
+                colSpan: 4,
                 hidden: false,
                 type: "selectItem",
                 autoFetchData: false,
@@ -361,7 +490,7 @@
                 name: "secondPartyInstituteId",
                 title: "طرف دوم تفاهم نامه (موسسه آموزشی)",
                 required: false,
-                colSpan: 2,
+                colSpan: 4,
                 hidden: true,
                 type: "selectItem",
                 autoFetchData: false,
@@ -390,29 +519,17 @@
                 }
             },
             {
-                name: "serviceTypeId",
-                title: "نوع خدمات",
-                required: true,
-                colSpan: 2,
-                type: "radioGroup",
-                defaultValue: 1,
-                valueMap: {
-                    1 : "تدریس",
-                    2 : "سایر خدمات"
-                }
-            },
-            {
                 name: "finalCost",
                 title: "مبلغ نهایی",
-                required: true,
-                colSpan: 2,
-                type: "float"
+                colSpan: 4,
+                type: "float",
+                hidden: true
             },
             {
                 name: "currencyId",
                 title: "واحد",
                 required: true,
-                colSpan: 2,
+                colSpan: 4,
                 type: "selectItem",
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Currency_Agreement,
@@ -421,33 +538,29 @@
                 pickListProperties: {
                     showFilterEditor: false
                 },
-                click: function (form, item) {
-                    item.fetchData();
-                },
-                change: function (form, item, value) {
-                    let finalCost = form.getItem("finalCost").getValue();
-                    if (finalCost != null) {
-                        if (value === rialId) {
-                            let finalCostT = finalCost / 10;
-                            form.getItem("alphabeticFinalCost").show();
-                            form.setValue("alphabeticFinalCost", String(finalCostT).toPersianLetter() + " تومان");
-                        } else
-                            form.getItem("alphabeticFinalCost").hide();
-                    }
-                }
+                // change: function (form, item, value) {
+                //     let finalCost = form.getItem("finalCost").getValue();
+                //     if (finalCost != null) {
+                //         if (value === rialId) {
+                //             let finalCostT = finalCost / 10;
+                //             form.getItem("alphabeticFinalCost").show();
+                //             form.setValue("alphabeticFinalCost", String(finalCostT).toPersianLetter() + " تومان");
+                //         } else
+                //             form.getItem("alphabeticFinalCost").hide();
+                //     }
+                // }
             },
             {
                 name: "alphabeticFinalCost",
                 title: "مبلغ نهایی به حروف",
-                required: false,
-                colSpan: 2,
+                colSpan: 4,
                 type: "staticText",
                 hidden: true
             },
             {
                 name: "subject",
                 title: "موضوع تفاهم نامه",
-                colSpan: 2,
+                colSpan: 4,
                 type: "textArea",
                 height: "100",
                 length: 150
@@ -456,27 +569,20 @@
                 name: "teacherEvaluation",
                 title: "اعمال نمره ارزشیابی مدرس برای پرداخت",
                 required: true,
-                colSpan: 2,
+                colSpan: 4,
                 type: "radioGroup",
                 defaultValue: "false",
                 valueMap: {
                     "true" : "بله",
                     "false" : "خیر"
-                },
-                // change: function (form, item, value, oldValue) {
-                //     if (value === "1") {
-                //         form.getItem("class").setRequired(true);
-                //     } else {
-                //         form.getItem("class").setRequired(false);
-                //     }
-                // }
+                }
             },
             {
                 name: "maxPaymentHours",
                 title: "حداکثر ساعت پرداختی",
-                required: true,
-                colSpan: 2,
-                type: "float"
+                colSpan: 4,
+                type: "float",
+                hidden: true
             }
         ]
     });
@@ -484,16 +590,121 @@
         width: "100%",
         height: "45%",
         autoFetchData: true,
+        validateByCell: true,
+        validateOnChange: true,
+        alternateRecordStyles: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         fields: [
             {name: "id", hidden: true},
-            {name: "classId", hidden: true},
-            {name: "titleClass", title: "عنوان کلاس"},
-            {name: "code", title: "کدکلاس"},
-            {name: "teachingCostPerHourAuto", title: "هزینه ساعتی تدریس - محاسبه سیستمی"},
-            {name: "teachingCostPerHour", title: "هزینه ساعتی تدریس", canEdit: true},
-            {name: "agreementId", hidden: true},
+            {
+                name: "classId",
+                validators: [
+                    {
+                        type: "required",
+                        validateOnChange: true
+                    }
+                ],
+                // required: true,
+                // validateOnExit: true,
+                hidden: true
+            },
+            {
+                name: "titleClass",
+                title: "عنوان کلاس",
+                // required: true,
+                // validateOnExit: true
+                validators: [
+                    {
+                        type: "required",
+                        validateOnChange: true
+                    }
+                ]
+            },
+            {
+                name: "code",
+                title: "کد کلاس",
+                // required: true,
+                // validateOnExit: true
+                validators: [
+                    {
+                        type: "required",
+                        validateOnChange: true
+                    }
+                ]
+            },
+            {
+                name: "teacherId",
+                title: "استاد",
+                canEdit: true,
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "fullNameFa",
+                optionDataSource: RestDataSource_Teacher_Name_Agreement,
+                pickListWidth: "500",
+                pickListProperties:
+                    {
+                        showFilterEditor: true
+                    },
+                pickListFields: [
+                    {name: "personality.firstNameFa"},
+                    {name: "personality.lastNameFa"},
+                    {name: "personality.nationalCode", title: "کد ملی"}
+                ]
+            },
+            {
+                name: "basisCalculateId",
+                title: "مبنای محاسبه",
+                canEdit: true,
+                // required: true,
+                // validateOnExit: true,
+                validators: [
+                    {
+                        type: "required",
+                        validateOnChange: true
+                    }
+                ],
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "title",
+                optionDataSource: RestDataSource_Basis_Calculate_Agreement,
+                pickListProperties:
+                    {
+                        showFilterEditor: true
+                    },
+                pickListFields: [
+                    {name: "title", align: "center"},
+                ]
+            },
+            {
+                name: "teachingCostPerHourAuto",
+                title: "نرخ محاسباتی",
+                // required: true,
+                // validateOnExit: true
+                validators: [
+                    {
+                        type: "required",
+                        validateOnChange: true
+                    }
+                ]
+            },
+            {
+                name: "teachingCostPerHour",
+                title: "نرخ توافقی",
+                // required: true,
+                // validateOnExit: true,
+                validators: [
+                    {
+                        type: "required",
+                        validateOnChange: true
+                    }
+                ],
+                canEdit: true
+            },
+            {
+                name: "agreementId",
+                hidden: true
+            },
             {
                 name: "removeIcon",
                 width: "4%",
@@ -520,7 +731,7 @@
             "body",
             isc.Button.create({
                 name: "calcTeachingCost",
-                title: "محاسبه سیستمی هزینه تدریس",
+                title: "محاسبه سیستمی نرخ",
                 colSpan: 2,
                 align: "center",
                 width: 200,
@@ -561,66 +772,60 @@
         align: "center",
         click: function () {
 
-            DynamicForm_Agreement.validate();
-            if (DynamicForm_Agreement.hasErrors())
+            if (!DynamicForm_Agreement.validate())
                 return;
-            let data = DynamicForm_Agreement.getValues();
 
+            let data = DynamicForm_Agreement.getValues();
+            let classCostData = ListGrid_Class_Teaching_Cost.getData();
+
+            if (classCostData.size() === 0) {
+                createDialog("info", "کلاسی انتخاب نشده است");
+                return;
+            } else {
+                debugger;
+                for (let i = 0; i < ListGrid_Class_Teaching_Cost.getTotalRows(); i++) {
+                    if(!ListGrid_Class_Teaching_Cost.validateRow(i))
+                        return;
+                }
+            }
+
+            data.agreementDate = JalaliDate.jalaliToGregori(data.agreementDate);
+            data.fromDate = JalaliDate.jalaliToGregori(data.fromDate);
+            data.toDate = JalaliDate.jalaliToGregori(data.toDate);
+            data.classCostList = classCostData;
+
+            debugger;
 
             if (agreementMethod === "POST") {
 
-                if (data.serviceTypeId === 1 && agreementClassCost_Data.length === 0) {
-                    createDialog("info", "کلاسی انتخاب نشده است");
-                    return;
-                }
-
-                let create = {
-                    firstPartyId: data.firstPartyId,
-                    secondPartyTeacherId: data.secondPartyTeacherId,
-                    secondPartyInstituteId: data.secondPartyInstituteId,
-                    serviceTypeId: data.serviceTypeId,
-                    currencyId: data.currencyId,
-                    finalCost: data.finalCost,
-                    subject: data.subject,
-                    teacherEvaluation: data.teacherEvaluation,
-                    maxPaymentHours: data.maxPaymentHours,
-                    classCostList: agreementClassCost_Data
-                };
-
-                wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest(agreementUrl, "POST", JSON.stringify(create), function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        wait.close();
-                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                        Window_Agreement.close();
-                        ListGrid_Agreement.invalidateCache();
-                    } else {
-                        wait.close();
-                        createDialog("info", "خطایی رخ داده است");
-                        Window_Agreement.close();
-                    }
-                }));
+                <%--wait.show();--%>
+                <%--isc.RPCManager.sendRequest(TrDSRequest(agreementUrl, "POST", JSON.stringify(data), function (resp) {--%>
+                <%--    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+                <%--        wait.close();--%>
+                <%--        createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
+                <%--        Window_Agreement.close();--%>
+                <%--        ListGrid_Agreement.invalidateCache();--%>
+                <%--    } else {--%>
+                <%--        wait.close();--%>
+                <%--        createDialog("info", "خطایی رخ داده است");--%>
+                <%--        Window_Agreement.close();--%>
+                <%--    }--%>
+                <%--}));--%>
 
             } else if (agreementMethod === "PUT") {
-
-                if (data.serviceTypeId === 1 && isClassAdded === false && agreementClassCost_Data.length === 0) {
-                    createDialog("info", "کلاسی انتخاب نشده است");
-                    return;
-                }
 
                 let update = {
                     id: data.id,
                     firstPartyId: data.firstPartyId,
                     secondPartyTeacherId: data.secondPartyTeacherId,
                     secondPartyInstituteId: data.secondPartyInstituteId,
-                    serviceTypeId: data.serviceTypeId,
                     currencyId: data.currencyId,
-                    finalCost: data.finalCost,
+                    // finalCost: data.finalCost,
                     subject: data.subject,
                     teacherEvaluation: data.teacherEvaluation,
-                    maxPaymentHours: data.maxPaymentHours,
+                    // maxPaymentHours: data.maxPaymentHours,
                     changed: costListChanged,
-                    classCostList: agreementClassCost_Data
+                    // classCostList: agreementClassCost_Data
                 };
 
                 wait.show();
@@ -661,7 +866,7 @@
 
     Window_Agreement = isc.Window.create({
         title: "<spring:message code='agreement'/>",
-        width: "50%",
+        width: "60%",
         height: "90%",
         autoSize: false,
         align: "center",
@@ -686,7 +891,8 @@
         agreementMethod = "POST";
         DynamicForm_Agreement.clearValues();
         DynamicForm_Agreement.clearErrors();
-        Window_Agreement.setTitle("ایجاد تفاهم نامه");
+        ListGrid_Class_Teaching_Cost.setData([]);
+        Window_Agreement.setTitle("ایجاد تفاهم نامه/ قرارداد");
         Window_Agreement.show();
     }
     function Agreement_Edit() {
@@ -715,9 +921,8 @@
                 DynamicForm_Agreement.setValue("secondParty", "2");
                 DynamicForm_Agreement.getItem("secondParty").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("secondParty"), "2");
             }
-            DynamicForm_Agreement.setValue("serviceTypeId", record.serviceType.id);
-            DynamicForm_Agreement.getItem("currencyId").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("currencyId"), record.currencyId);
-            Window_Agreement.setTitle("ویرایش تفاهم نامه");
+            // DynamicForm_Agreement.getItem("currencyId").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("currencyId"), record.currencyId);
+            Window_Agreement.setTitle("ویرایش تفاهم نامه/ قرارداد");
             Window_Agreement.show();
         }
     }
@@ -774,7 +979,8 @@
                 }
             });
         } else {
-            let finalCostChars = String(record.finalCost).toPersianLetter();
+            // let finalCostChars = String(record.finalCost).toPersianLetter();
+            let finalCostChars = "مبلغ به حروف";
             window.open("/training/agreement/print/" + record.id + "?finalCostChars=" + finalCostChars);
         }
     }
@@ -877,25 +1083,6 @@
             ]
         });
 
-        // if (agreementMethod === "PUT") {
-        //     let recordId = ListGrid_Agreement.getSelectedRecord().id;
-        //     wait.show();
-        //     isc.RPCManager.sendRequest(TrDSRequest(agreementClassCostUrl + "/list-by-agreementId/" + recordId, "GET", null, function (resp) {
-        //         if (resp.httpResponseCode === 200) {
-        //             wait.close();
-        //             let costList = JSON.parse(resp.httpResponseText);
-        //             ListGrid_Class_Teaching_Cost.setData(costList);
-        //             isClassAdded = false;
-        //             Window_Select_Class.show();
-        //         } else {
-        //             wait.close();
-        //             createDialog("info", "خطایی رخ داده است");
-        //         }
-        //     }));
-        // } else
-        //     Window_Select_Class.show();
-
-        // ListGrid_Class_Teaching_Cost.
         Window_Select_Class.show();
     }
     function calculateTeachingCost() {
@@ -905,24 +1092,6 @@
 
         }
     }
-    // function AgreementClassCost_Add(records, window) {
-    //     let dataObject = {};
-    //     agreementClassCost_Data = [];
-    //     for (let i = 0; i < records.length; i++) {
-    //         if (records[i].teachingCostPerHour === undefined || records[i].teachingCostPerHour === null) {
-    //             createDialog("info", "کلاسی بدون ثبت هزینه تدریس وجود دارد");
-    //             return;
-    //             break;
-    //         }
-    //         dataObject = {
-    //             classId: records[i].classId,
-    //             teachingCostPerHour: records[i].teachingCostPerHour
-    //         };
-    //         agreementClassCost_Data.add(dataObject);
-    //     }
-    //     costListChanged = true;
-    //     window.close();
-    // }
     function checkInstituteValidation(item) {
         let record = item.getSelectedRecord();
         if (record.valid === false) {

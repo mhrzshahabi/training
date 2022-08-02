@@ -18,7 +18,8 @@ public class AgreementClassCostDTO implements Serializable {
     private Long teachingCostPerHourAuto;
     private Long classId;
     private Long agreementId;
-
+    private Long basisCalculateId;
+    private Long teacherId;
 
     @Getter
     @Setter

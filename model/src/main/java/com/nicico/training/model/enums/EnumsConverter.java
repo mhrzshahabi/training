@@ -473,24 +473,4 @@ public abstract class EnumsConverter {
         }
     }
 
-    @Converter(autoApply = true)
-    public static class EServiceTypeConverter implements AttributeConverter<EServiceType, Integer> {
-
-        @Override
-        public Integer convertToDatabaseColumn(EServiceType entry) {
-            return entry != null ? entry.getId() : null;
-        }
-
-        @Override
-        public EServiceType convertToEntityAttribute(Integer id) {
-
-            for (EServiceType entry : EServiceType.values()) {
-                if (entry.getId().equals(id)) {
-                    return entry;
-                }
-            }
-            return null;
-        }
-    }
-
 }

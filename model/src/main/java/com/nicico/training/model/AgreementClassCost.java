@@ -40,4 +40,18 @@ public class AgreementClassCost extends Auditable {
 
     @Column(name = "f_agreement_id")
     private Long agreementId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_basis_calculate_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue basisCalculate;
+
+    @Column(name = "f_basis_calculate_id")
+    private Long basisCalculateId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)
+    private Teacher teacher;
+
+    @Column(name = "f_teacher_id")
+    private Long teacherId;
 }

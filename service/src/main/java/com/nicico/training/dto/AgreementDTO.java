@@ -1,13 +1,13 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.enums.EServiceType;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -16,14 +16,18 @@ import java.util.Map;
 @Accessors(chain = true)
 public class AgreementDTO implements Serializable {
 
+    private String agreementNumber;
+    private Date agreementDate;
+    private Date fromDate;
+    private Date toDate;
     private Long firstPartyId;
     private Long secondPartyTeacherId;
     private Long secondPartyInstituteId;
     private Long currencyId;
-    private Long finalCost;
     private String subject;
     private Boolean teacherEvaluation;
-    private Long maxPaymentHours;
+//    private Long finalCost;
+//    private Long maxPaymentHours;
 
 
     @Getter
@@ -36,7 +40,6 @@ public class AgreementDTO implements Serializable {
         private TeacherDTO.TeacherInfo secondPartyTeacher;
         private InstituteDTO.InstituteInfoTuple secondPartyInstitute;
         private ParameterValueDTO.MinInfo currency;
-        private EServiceType serviceType;
         private String fileName;
         private String group_id;
         private String key;
@@ -47,7 +50,6 @@ public class AgreementDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Agreement - Create")
     public static class Create extends AgreementDTO {
-        private Long serviceTypeId;
         private List<AgreementClassCostDTO.Create> classCostList;
     }
 
@@ -58,7 +60,6 @@ public class AgreementDTO implements Serializable {
     public static class Update extends AgreementDTO {
         private Long id;
         private boolean changed;
-        private Long serviceTypeId;
         private List<AgreementClassCostDTO.Create> classCostList;
     }
 

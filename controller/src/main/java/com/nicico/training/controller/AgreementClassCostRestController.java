@@ -4,7 +4,6 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.AgreementClassCostDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IAgreementClassCostService;
@@ -52,15 +51,7 @@ public class AgreementClassCostRestController {
     public ResponseEntity<List<AgreementClassCostDTO.Info>> agreementClassCostListByAgreementId(HttpServletRequest iscRq, @PathVariable Long agreementId) throws IOException {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-
-//        criteriaRq.setFieldName("agreementId");
-//        criteriaRq.setOperator(EOperator.equals);
-//        criteriaRq.setValue(agreementId);
-//        searchRq.setCriteria(criteriaRq);
-
-        searchRq.setCriteria(
-                createCriteria(EOperator.equals, "agreementId", agreementId)
-        );
+        searchRq.setCriteria(createCriteria(EOperator.equals, "agreementId", agreementId));
 
         SearchDTO.SearchRs<AgreementClassCostDTO.Info> result = agreementClassCostService.search(searchRq);
         result.getList().forEach(item -> {
