@@ -296,13 +296,18 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
             RequestItem requestItem = optionalRequestItem.get();
             List<String> assigneeList = getPlanningExpertsAssigneeList(requestItem.getPost());
-            Map<String, Object> map = reviewTaskRequestDto.getVariables();
-            map.put("assigneeList", assigneeList);
-            String processStatus = parameterValueService.getInfo(requestItem.getProcessStatusId()).getCode();
-            if (processStatus.equals("waitingReviewByPlanningChief")) {
-                requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningExperts"));
-                requestItemDAO.saveAndFlush(requestItem);
-                response.setStatus(200);
+
+            if (assigneeList.size() == 0) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+            } else {
+                Map<String, Object> map = reviewTaskRequestDto.getVariables();
+                map.put("assigneeList", assigneeList);
+                String processStatus = parameterValueService.getInfo(requestItem.getProcessStatusId()).getCode();
+                if (processStatus.equals("waitingReviewByPlanningChief")) {
+                    requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningExperts"));
+                    requestItemDAO.saveAndFlush(requestItem);
+                    response.setStatus(200);
+                }
             }
         } else {
             response.setStatus(404);
@@ -316,6 +321,8 @@ public class RequestItemService implements IRequestItemService {
                 response.setStatus(404);
                 response.setMessage("عملیات bpms انجام نشد");
             }
+        } else if (response.getStatus() == 400) {
+            response.setMessage("کارشناس ارشد برنامه ریزی برای پست پیشنهادی یافت نشد");
         } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");

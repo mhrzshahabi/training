@@ -1973,14 +1973,10 @@
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url , "POST", JSON.stringify(reviewTaskRequest), function (resp) {
             wait.close();
-            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                window.close();
-                createDialog("info", "<spring:message code="global.form.request.successful"/>");
-                ToolStripButton_Refresh_Processes_UserPortfolio.click();
-            } else {
-                window.close();
-                createDialog("info", "عملیات انجام نشد");
-            }
+            let response = JSON.parse(resp.httpResponseText);
+            window.close();
+            createDialog("info", response.message);
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
         }));
     }
     function confirmParallelRequestItemProcess(record, expertOpinion, coursesListGrid, window) {
