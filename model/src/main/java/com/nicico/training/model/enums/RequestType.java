@@ -12,7 +12,7 @@ import lombok.ToString;
 public enum RequestType {
 
     Appointment(1, "انتصاب سمت"),
-    Replacement(2, "تعویض پست");
+    Replacement(2, "تغییر وضعیت");
 
     private final Integer id;
     private final String titleFa;
