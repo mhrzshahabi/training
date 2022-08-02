@@ -34,7 +34,6 @@
     let agreementMethod = "POST";
     let maxFileSizeUpload = 31457280;
     let isFileAttached = false;
-    let isClassAdded = false;
     let costListChanged = false;
     let rialId = null;
 
@@ -592,46 +591,21 @@
         autoFetchData: true,
         validateByCell: true,
         validateOnChange: true,
-        alternateRecordStyles: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         fields: [
             {name: "id", hidden: true},
             {
                 name: "classId",
-                validators: [
-                    {
-                        type: "required",
-                        validateOnChange: true
-                    }
-                ],
-                // required: true,
-                // validateOnExit: true,
                 hidden: true
             },
             {
                 name: "titleClass",
-                title: "عنوان کلاس",
-                // required: true,
-                // validateOnExit: true
-                validators: [
-                    {
-                        type: "required",
-                        validateOnChange: true
-                    }
-                ]
+                title: "عنوان کلاس"
             },
             {
                 name: "code",
-                title: "کد کلاس",
-                // required: true,
-                // validateOnExit: true
-                validators: [
-                    {
-                        type: "required",
-                        validateOnChange: true
-                    }
-                ]
+                title: "کد کلاس"
             },
             {
                 name: "teacherId",
@@ -656,14 +630,8 @@
                 name: "basisCalculateId",
                 title: "مبنای محاسبه",
                 canEdit: true,
-                // required: true,
-                // validateOnExit: true,
-                validators: [
-                    {
-                        type: "required",
-                        validateOnChange: true
-                    }
-                ],
+                required: true,
+                validateOnChange: true,
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "title",
@@ -679,26 +647,14 @@
             {
                 name: "teachingCostPerHourAuto",
                 title: "نرخ محاسباتی",
-                // required: true,
-                // validateOnExit: true
-                validators: [
-                    {
-                        type: "required",
-                        validateOnChange: true
-                    }
-                ]
+                required: true,
+                validateOnChange: true
             },
             {
                 name: "teachingCostPerHour",
                 title: "نرخ توافقی",
-                // required: true,
-                // validateOnExit: true,
-                validators: [
-                    {
-                        type: "required",
-                        validateOnChange: true
-                    }
-                ],
+                required: true,
+                validateOnChange: true,
                 canEdit: true
             },
             {
@@ -781,36 +737,34 @@
             if (classCostData.size() === 0) {
                 createDialog("info", "کلاسی انتخاب نشده است");
                 return;
-            } else {
-                debugger;
-                for (let i = 0; i < ListGrid_Class_Teaching_Cost.getTotalRows(); i++) {
-                    if(!ListGrid_Class_Teaching_Cost.validateRow(i))
-                        return;
-                }
             }
+            // else {
+            //     for (let i = 0; i < ListGrid_Class_Teaching_Cost.getTotalRows(); i++) {
+            //         if(!ListGrid_Class_Teaching_Cost.validateRow(i))
+            //             return;
+            //     }
+            // }
 
             data.agreementDate = JalaliDate.jalaliToGregori(data.agreementDate);
             data.fromDate = JalaliDate.jalaliToGregori(data.fromDate);
             data.toDate = JalaliDate.jalaliToGregori(data.toDate);
             data.classCostList = classCostData;
 
-            debugger;
-
             if (agreementMethod === "POST") {
 
-                <%--wait.show();--%>
-                <%--isc.RPCManager.sendRequest(TrDSRequest(agreementUrl, "POST", JSON.stringify(data), function (resp) {--%>
-                <%--    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
-                <%--        wait.close();--%>
-                <%--        createDialog("info", "<spring:message code="global.form.request.successful"/>");--%>
-                <%--        Window_Agreement.close();--%>
-                <%--        ListGrid_Agreement.invalidateCache();--%>
-                <%--    } else {--%>
-                <%--        wait.close();--%>
-                <%--        createDialog("info", "خطایی رخ داده است");--%>
-                <%--        Window_Agreement.close();--%>
-                <%--    }--%>
-                <%--}));--%>
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(agreementUrl, "POST", JSON.stringify(data), function (resp) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        wait.close();
+                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                        Window_Agreement.close();
+                        ListGrid_Agreement.invalidateCache();
+                    } else {
+                        wait.close();
+                        createDialog("info", "خطایی رخ داده است");
+                        Window_Agreement.close();
+                    }
+                }));
 
             } else if (agreementMethod === "PUT") {
 
@@ -909,10 +863,16 @@
                 }
             });
         } else {
+
+            debugger;
             agreementMethod = "PUT";
-            isClassAdded = true;
             DynamicForm_Agreement.clearValues();
             DynamicForm_Agreement.clearErrors();
+
+            record.agreementDate = new Date(record.agreementDate).toLocaleDateString('fa-IR');
+            record.fromDate = new Date(record.fromDate).toLocaleDateString('fa-IR');
+            record.toDate = new Date(record.toDate).toLocaleDateString('fa-IR');
+
             DynamicForm_Agreement.editRecord(record);
             if (record.secondPartyTeacherId !== undefined && record.secondPartyTeacherId !== null) {
                 DynamicForm_Agreement.setValue("secondParty", "1");
@@ -1040,7 +1000,7 @@
                     if (addedClassesId.contains(item.classId))
                         selectedClasses.splice(selectedClasses.indexOf(item), 1);
                 });
-                // debugger;
+
                 ListGrid_Class_Teaching_Cost.setData(selectedClasses.concat(addedClasses));
                 Window_Select_Class.close();
             }
@@ -1049,7 +1009,6 @@
             title: "<spring:message code='close'/>",
             align: "center",
             click: function () {
-                isClassAdded = true;
                 Window_Select_Class.close();
             }
         });
