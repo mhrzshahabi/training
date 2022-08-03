@@ -493,4 +493,24 @@ public abstract class EnumsConverter {
         }
     }
 
+    @Converter(autoApply = true)
+    public static class ETeacherRankConverter implements AttributeConverter<TeacherRank, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(TeacherRank entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public TeacherRank convertToEntityAttribute(Integer id) {
+
+            for (TeacherRank entry : TeacherRank.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
 }

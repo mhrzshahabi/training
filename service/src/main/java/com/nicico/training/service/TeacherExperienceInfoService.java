@@ -62,12 +62,12 @@ public class TeacherExperienceInfoService  implements ITeacherExperienceInfoServ
     public void addTeacherExperienceInfo(TeacherExperienceInfoDTO teacherExperienceInfoDTO, HttpServletResponse response) {
         final Teacher teacher = teacherService.getTeacher(teacherExperienceInfoDTO.getTeacherId());
 
-        if (!teacherExperienceInfoDAO.existsByTeacherRankIdAndTeacherIdAndSalaryBaseAndTeachingExperience(TeacherRank.valueOf(teacherExperienceInfoDTO.getTeacherRankTitle()).ordinal(),teacher.getId(),teacherExperienceInfoDTO.getSalaryBase(),teacherExperienceInfoDTO.getTeachingExperience())){
+        if (!teacherExperienceInfoDAO.existsByTeacherRankIdAndTeacherIdAndSalaryBaseAndTeachingExperience(teacherExperienceInfoDTO.getTeacherRank().ordinal(),teacher.getId(),teacherExperienceInfoDTO.getSalaryBase(),teacherExperienceInfoDTO.getTeachingExperience())){
             TeacherExperienceInfo teacherExperienceInfo = new TeacherExperienceInfo();
             teacherExperienceInfo.setTeacherId(teacherExperienceInfoDTO.getTeacherId());
             teacherExperienceInfo.setTeachingExperience(teacherExperienceInfoDTO.getTeachingExperience());
 
-            teacherExperienceInfo.setTeacherRankId((TeacherRank.valueOf(teacherExperienceInfoDTO.getTeacherRankTitle()).getId())-1);
+            teacherExperienceInfo.setTeacherRankId((teacherExperienceInfoDTO.getTeacherRank()).ordinal());
 
             teacherExperienceInfo.setSalaryBase(teacherExperienceInfoDTO.getSalaryBase());
             try {
@@ -89,11 +89,11 @@ public class TeacherExperienceInfoService  implements ITeacherExperienceInfoServ
     public TeacherExperienceInfoDTO update(Long id, TeacherExperienceInfoDTO update, HttpServletResponse response) {
         final TeacherExperienceInfo teacherExperienceInfo = getTeacherExperienceInfo(id);
 
-        if (!teacherExperienceInfoDAO.existsByTeacherRankIdAndTeacherIdAndSalaryBaseAndTeachingExperience(TeacherRank.valueOf(update.getTeacherRankTitle()).ordinal(),teacherExperienceInfo.getTeacherId(),update.getSalaryBase(),update.getTeachingExperience())) {
+        if (!teacherExperienceInfoDAO.existsByTeacherRankIdAndTeacherIdAndSalaryBaseAndTeachingExperience(update.getTeacherRank().ordinal(),teacherExperienceInfo.getTeacherId(),update.getSalaryBase(),update.getTeachingExperience())) {
 
 
             teacherExperienceInfo.setTeachingExperience(update.getTeachingExperience());
-            teacherExperienceInfo.setTeacherRankId(TeacherRank.valueOf(update.getTeacherRankTitle()).ordinal());
+            teacherExperienceInfo.setTeacherRankId(update.getTeacherRank().ordinal());
 
             teacherExperienceInfo.setSalaryBase(update.getSalaryBase());
             try {
