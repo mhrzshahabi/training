@@ -13855,8 +13855,11 @@ GROUP BY
     <changeSet author="Montazeri" id="1659420168004">
         <createView viewName="VIEW_CLASS_COURSE_FINAL_STATUS" replaceIfExists="true">
             <![CDATA[
-                SELECT DISTINCT
-                ROWNUM AS id,
+                SELECT
+               ROWNUM AS id,
+                    res.* FROM
+                    (
+                SELECT
                 tclass.c_code              AS class_code,
                 course.c_code              AS course_code,
                 tclass.c_title_class       AS class_title,
@@ -13875,8 +13878,7 @@ GROUP BY
                         || ' '
                         || personalinfo.c_last_name_fa
                 END AS teacher_full_name,
-                CASE
-                    WHEN tclass.c_status = 1 THEN
+                CASE WHEN tclass.c_status = 1 THEN
                         ' برنامه ریزی'
                     WHEN tclass.c_status = 2 THEN
                         ' در حال اجرا'
@@ -13954,7 +13956,7 @@ GROUP BY
             FROM
                 tbl_class           tclass
                 LEFT JOIN tbl_class_student ON tbl_class_student.class_id = tclass.id
-                LEFT JOIN tbl_course          course ON tclass.f_course = course.id
+                INNER JOIN tbl_course          course ON tclass.f_course = course.id
                 LEFT JOIN tbl_teacher         teacher ON teacher.id = tclass.f_teacher
                 LEFT JOIN tbl_personal_info   personalinfo ON teacher.f_personality = personalinfo.id
                 LEFT JOIN view_complex ON tclass.complex_id = view_complex.id
@@ -13962,7 +13964,7 @@ GROUP BY
                 LEFT JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
                 LEFT JOIN view_affairs ON tclass.affairs_id = view_affairs.id
                 LEFT JOIN view_assistant ON tclass.assistant_id = view_assistant.id
-                LEFT JOIN tbl_institute ON tclass.f_institute = tbl_institute.id
+                LEFT JOIN tbl_institute ON tclass.f_institute = tbl_institute.id)res
             ]]>
         </createView>
     </changeSet>
@@ -13970,7 +13972,7 @@ GROUP BY
     <changeSet author="Montazeri" id="1659504927340">
         <createView viewName="VIEW_CLASS_STUDENT_FINAL_STATUS" replaceIfExists="true">
             <![CDATA[
-                SELECT DISTINCT
+                SELECT
                     ROWNUM AS id,
                     tclass.c_code                 AS class_code,
                     tbl_course.c_code             AS course_code,
@@ -14027,7 +14029,7 @@ GROUP BY
                     LEFT JOIN tbl_term ON tclass.f_term = tbl_term.id
                     LEFT JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
                     LEFT JOIN tbl_institute ON tclass.f_institute = tbl_institute.id
-                    LEFT JOIN tbl_course ON tclass.f_course = tbl_course.id
+                    INNER JOIN tbl_course ON tclass.f_course = tbl_course.id
                     LEFT JOIN tbl_parameter_value ON tbl_class_student.scores_state_id = tbl_parameter_value.id
             ]]>
         </createView>
