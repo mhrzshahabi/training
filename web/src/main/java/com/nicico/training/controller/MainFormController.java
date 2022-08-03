@@ -522,6 +522,12 @@ public class MainFormController {
         return "report/studentsSatisfactionOfTeachersReport";
     }
 
+    @RequestMapping("/personnelStatisticReport")
+    public String personnelStatisticReport(){
+        return "report/personnelStatisticReport";
+    }
+
+
     @RequestMapping("/CoursePassedOrUnPassedInNAReport")
     public String CoursePassedOrUnPassedInNAReport() {
         return "report/CoursePassedOrUnPassedInNAReport";

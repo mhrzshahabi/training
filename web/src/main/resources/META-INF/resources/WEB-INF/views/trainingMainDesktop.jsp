@@ -1263,6 +1263,7 @@
     const needsAssessmentReportsUrl = rootUrl + "/needsAssessment-reports";
     const skillNAUrl = rootUrl + "/skill-na";
     const trainingOverTimeReportUrl = rootUrl + "/trainingOverTime";
+    const personnelStatisticReportUrl = rootUrl + "/personnelStatistic";
     const needsAssessmentsPerformedUrl = rootUrl + "/needAssessmentInRange";
     const assigneeNeedsAssessmentsReport = rootUrl + "/assigneeNeedsAssessmentsReport";
     const unAssigneeNeedsAssessmentsReport = rootUrl + "/unAssigneeNeedsAssessmentsReport";
@@ -2711,6 +2712,14 @@
                                 }
 
                             },
+                            {
+                                title: "<spring:message code="personnel.statistic.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/personnelStatisticReport"/>");
+                                }
+
+                            },
+
 
                         ]
                 },
