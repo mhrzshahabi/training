@@ -34,29 +34,98 @@
         ],
         fetchDataURL: categoryUrl + "spec-list"
     });
-    // let RestDataSource_SubCategory_csfr = isc.TrDS.create({
-    //     fields: [{name: "id"}, {name: "titleFa"},],
-    //     fetchDataURL: subCategoryUrl + "iscList"
-    // });
+
     let RestDataSource_ListGrid_Student_csfr = isc.TrDS.create({
-        // ID: "RestDataSource_ListGrid_Student_csfr",
         fields: [
             {name: "id", primaryKey: true},
-            {name: "classCode"},
-            {name: "course.code"},
-            {name: "class.title"},
-            {name: "teacher"},
-            {name: "student.national.code"},
-            {name: "student.full.name"},
-            {name: "student.complex"},
-            {name: "student.assistant"},
-            {name: "student.affair"},
-            {name: "acceptanceState"},
-            {name: "score"},
-            {name: "acceptance.limit"},
-            {name: "executor"}
+            {
+                name: "classCode",
+                title: "<spring:message code='class.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "courseCode",
+                title: "<spring:message code='course.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+                sortNormalizer: function (record) {
+                    return record.course.titleFa;
+                }
+            },
+            {
+                name: "classTitle",
+                title: "<spring:message code="class.title"/>",
+                align: "center",
+                filterOperator: "iContains",
+                hidden: false
+            },
+            {
+                name: "teacherFullName",
+                title: "<spring:message code='trainer'/>",
+                // displayField: "teacher.personality.lastNameFa",
+                // type: "TextItem",
+                // sortNormalizer(record) {
+                //     return record.teacherFullName;
+                // },
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "studentNationalCode",
+                title: "<spring:message code='student.national.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "studentFullName",
+                title: "<spring:message code='student.full.name'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "studentComplex",
+                title: "<spring:message code='student.complex'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "studentAssistant",
+                title: "<spring:message code='student.assistant'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "studentAffair",
+                title: "<spring:message code='student.affair'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "acceptanceStatus",
+                title: "<spring:message code='acceptanceState.state'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "studentScore",
+                title: "<spring:message code='score'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "acceptanceLimit",
+                title: "<spring:message code='acceptance.limit'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "instituteTitle",
+                title: "<spring:message code="executor.complex"/>",
+                filterOperator: "iContains"
+            }
         ],
-
+        fetchDataURL: classStudentFinalStatusReport + "/iscList"
     });
     let RestDataSource_ListGrid_Course_csfr = isc.TrDS.create({
         fields: [
@@ -112,7 +181,7 @@
                 filterOperator: "iContains"
             }
         ],
-        fetchDataURL: classFinalStatusReport + "/iscList"
+        fetchDataURL: classCourseFinalStatusReport + "/iscList"
     });
     let RestDataSource_Term_csfr = isc.TrDS.create({
         fields: [
@@ -548,14 +617,14 @@
     //----------------------------------- layOut -----------------------------------------------------------------------
 
     let ListGrid_CFSR_Student = isc.TrLG.create({
-        dataSource: RestDataSource_Class_cfsr,
-        dataPageSize: 50,
+        dataSource: RestDataSource_ListGrid_Student_csfr,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         showRollOver:false,
         autoFitWidth: true,
+        autoSize: true,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
@@ -565,7 +634,7 @@
                 filterOperator: "iContains",
             },
             {
-                name: "course.code",
+                name: "courseCode",
                 title: "<spring:message code='course.code'/>",
                 align: "center",
                 filterOperator: "iContains",
@@ -574,65 +643,81 @@
                 }
             },
             {
-                name: "class.title",
+                name: "classTitle",
                 title: "<spring:message code="class.title"/>",
                 align: "center",
                 filterOperator: "iContains",
                 hidden: false
             },
             {
-                name: "teacher",
+                name: "teacherFullName",
                 title: "<spring:message code='trainer'/>",
-                displayField: "teacher.personality.lastNameFa",
-                type: "TextItem",
-                sortNormalizer(record) {
-                    return record.teacher.personality.lastNameFa;
-                },
+                // displayField: "teacher.personality.lastNameFa",
+                // type: "TextItem",
+                // sortNormalizer(record) {
+                //     return record.teacherFullName;
+                // },
                 align: "center",
                 filterOperator: "iContains",
             },
             {
-                name: "student.national.code",
+                name: "studentNationalCode",
                 title: "<spring:message code='student.national.code'/>",
-                displayField: "teacher.personality.lastNameFa",
                 align: "center",
                 filterOperator: "iContains",
             },
             {
-                name: "student.full.name",
+                name: "studentFullName",
                 title: "<spring:message code='student.full.name'/>",
-                displayField: "teacher.personality.lastNameFa",
                 align: "center",
                 filterOperator: "iContains",
             },
             {
-                name: "student.complex",
-                title: "<spring:message code="student.complex"/>",
-                canSort: false,
+                name: "studentComplex",
+                title: "<spring:message code='student.complex'/>",
                 align: "center",
+                filterOperator: "iContains",
             },
             {
-                name: "student.assistant",
-                title: "<spring:message code="student.assistant"/>",
-                canSort: false,
+                name: "studentAssistant",
+                title: "<spring:message code='student.assistant'/>",
                 align: "center",
+                filterOperator: "iContains",
             },
             {
-                name: "student.affair",
-                title: "<spring:message code="student.affair"/>",
-                canSort: false,
+                name: "studentAffair",
+                title: "<spring:message code='student.affair'/>",
                 align: "center",
+                filterOperator: "iContains",
             },
-            {name: "acceptanceState", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
-            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
-            {name: "acceptance.limit", title: "<spring:message code="acceptance.limit"/>", filterOperator: "iContains"},
-            {name: "executor", title: "<spring:message code="executer"/>", filterOperator: "iContains"},
+            {
+                name: "acceptanceStatus",
+                title: "<spring:message code='acceptanceState.state'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "studentScore",
+                title: "<spring:message code='score'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "acceptanceLimit",
+                title: "<spring:message code='acceptance.limit'/>",
+                align: "center",
+                filterOperator: "iContains",
+            },
+            {
+                name: "instituteTitle",
+                title: "<spring:message code="executor.complex"/>",
+                filterOperator: "iContains"
+            }
         ]
     });
 
     let ListGrid_CFSR_Course = isc.TrLG.create({
         dataSource: RestDataSource_ListGrid_Course_csfr,
-        dataPageSize: 50,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         showRecordComponents: true,
@@ -641,6 +726,7 @@
         selectionType: "single",
         autoFetchData: false,
         autoFitWidth: true,
+        autoSize: true,
         // initialSort: [
         //     {property: "startDate", direction: "descending", primarySort: true}
         // ],
@@ -752,9 +838,6 @@
                 ListGrid_CFSR_Course
             ]
         })],
-        // closeClick: function () {
-        //     // ListGrid_CFSR_Course.clearValues();
-        // },
     });
 
     let IButton_student_csfr = isc.IButtonSave.create({
@@ -810,9 +893,7 @@
         members: [
             organSegmentFilter_cfsr,
             DynamicForm_CriteriaForm_csfr,
-            HLayOut_buttons_csfr,
-            // VLayOut_CriteriaForm_csfr,
-            // VLayout_ListGrid_CFSR_Result
+            HLayOut_buttons_csfr
         ]
     });
 

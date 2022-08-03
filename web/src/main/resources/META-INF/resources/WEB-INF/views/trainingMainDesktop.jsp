@@ -3698,7 +3698,8 @@
     const courseListNeedAssessment = rootUrl + "/trainingNeedAssessment/"
     const roleUrl = rootUrl + "/role/";
     const educationalCalenderUrl= rootUrl + "/educational-calender/"
-    const classFinalStatusReport = rootUrl + "/class-final-status-report"
+    const classCourseFinalStatusReport = rootUrl + "/class-course-final-status-report"
+    const classStudentFinalStatusReport = rootUrl + "/class-student-final-status-report"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

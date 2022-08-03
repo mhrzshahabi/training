@@ -93,7 +93,5 @@ public class ViewClassStudentFinalStatusReport {
     @Column(name = "COURSE_TITLE")
     private String courseTitle;
 
-    @Column(name = "CLASS_SCORING_STATUS")
-    private String classScoringStatus;
 
 }

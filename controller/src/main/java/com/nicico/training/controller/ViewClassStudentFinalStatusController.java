@@ -2,7 +2,12 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewClassCourseFinalStatusDTO;
+import com.nicico.training.dto.ViewClassStudentFinalStatusDTO;
 import com.nicico.training.iservice.IViewClassCourseFinalStatusService;
+import com.nicico.training.iservice.IViewClassStudentFinalStatusService;
+import com.nicico.training.model.ViewClassStudentFinalStatusReport;
+import com.nicico.training.repository.ViewClassStudentFinalStatusDAO;
+import com.nicico.training.service.ViewClassStudentFinalStatusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -18,16 +23,16 @@ import java.io.IOException;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/class-course-final-status-report")
-public class ViewClassCourseFinalStatusController {
+@RequestMapping(value = "/api/class-student-final-status-report")
+public class ViewClassStudentFinalStatusController {
 
-    private final IViewClassCourseFinalStatusService iViewClassCourseFinalStatusService;
+    private final IViewClassStudentFinalStatusService iViewClassStudentFinalStatusService;
     private final ModelMapper modelMapper;
 
     @GetMapping(value = "/iscList")
-    public ResponseEntity<ISC<ViewClassCourseFinalStatusDTO.TrainingClassCourseFinalStatusDTOSpecRs>> iscListReport(HttpServletRequest iscRq) throws IOException {
+    public ResponseEntity<ISC<ViewClassStudentFinalStatusDTO.TrainingClassStudentFinalStatusDTOSpecRs>> iscListReport(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs result = iViewClassCourseFinalStatusService.search(searchRq, o -> modelMapper.map(o, ViewClassCourseFinalStatusDTO.Info.class));
+        SearchDTO.SearchRs result = iViewClassStudentFinalStatusService.search(searchRq, o -> modelMapper.map(o, ViewClassStudentFinalStatusDTO.Info.class));
         return new ResponseEntity<>(ISC.convertToIscRs(result, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
