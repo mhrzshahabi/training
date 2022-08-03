@@ -31,10 +31,40 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
                                                                  int affairsNull) {
 
         List<GenericStatisticalIndexReport> result = new ArrayList<>();
-
-        if (reportName.equals("report01")) {
-            result = genericStatisticalIndexReportDAO.getTechnicalTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+        switch (reportName) {
+            case "report01":
+                result = genericStatisticalIndexReportDAO.needAssessment(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report02":
+                result = genericStatisticalIndexReportDAO.getTotalHours(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report03":
+                result = genericStatisticalIndexReportDAO.saraneomomi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report04":
+                result = genericStatisticalIndexReportDAO.saratakhasosi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report05":
+                result = genericStatisticalIndexReportDAO.saraneModiriati(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report06":
+                result = genericStatisticalIndexReportDAO.gozarAzAmozesh(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report07":
+                result = genericStatisticalIndexReportDAO.arzeshyabiYadgiri(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report08":
+                result = genericStatisticalIndexReportDAO.getTechnicalTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report09":
+                result = genericStatisticalIndexReportDAO.getSkillTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report10":
+                result = genericStatisticalIndexReportDAO.posheshFardi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
         }
+
+
         return modelMapper.map(result, new TypeToken<List<GenericStatisticalIndexReportDTO>>() {
         }.getType());
     }

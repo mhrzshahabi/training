@@ -13,7 +13,7 @@ public class GenericStatisticalIndexReportDTO {
     private String complex;
     private String assistant;
     private String affairs;
-    private Long baseOnComplex;
-    private Long baseOnAssistant;
-    private Long baseOnAffairs;
+    private Double baseOnComplex;
+    private Double baseOnAssistant;
+    private Double baseOnAffairs;
 }

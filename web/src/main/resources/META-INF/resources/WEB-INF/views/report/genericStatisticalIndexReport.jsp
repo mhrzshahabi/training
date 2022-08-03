@@ -65,9 +65,11 @@
                 title: "از تاریخ",
                 hint: todayDate,
                 required: true,
-                keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 length: 10,
+                filterOperator: "equals",
+                type: 'text',
+                keyPressFilter: "[\u200E\u200F ]",
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
@@ -110,9 +112,11 @@
                 title: "تا تاریخ",
                 hint: todayDate,
                 required: true,
-                keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 length: 10,
+                filterOperator: "equals",
+                type: 'text',
+                keyPressFilter: "[\u200E\u200F ]",
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
@@ -153,7 +157,17 @@
                 title: "نوع شاخص",
                 required: true,
                 valueMap: {
-                    "report01": "نسبت نیازهای آموزشی تخصصی"
+                    "report01": "شاخص میزان کل نیازهای شناسایی شده",
+                    "report02": "مجموع ساعات آموزش اجرا شده",
+                    "report03": "سرانه انباشت سابقه آموزشی عمومی",
+                    "report04": "سرانه انباشت سابقه آموزشی تخصصی",
+                    "report05": "سرانه انباشت سابقه آموزشی مدیریتی",
+                    "report06": " نرخ گذر آموزش",
+                    "report07": " نرخ پوشش ارزشيابي سطح یادگیری",
+                    "report08": "نسبت نیازهای آموزشی تخصصی",
+                    "report09": "نسبت نیازهای آموزشی مهارتی",
+                    "report10": "نرخ پوشش نیازسنجی فردی",
+
                 }
             }
         ]
