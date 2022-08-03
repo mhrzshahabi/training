@@ -3698,6 +3698,7 @@
     const courseListNeedAssessment = rootUrl + "/trainingNeedAssessment/"
     const roleUrl = rootUrl + "/role/";
     const educationalCalenderUrl= rootUrl + "/educational-calender/"
+    const classFinalStatusReport = rootUrl + "/class-final-status-report"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
@@ -4078,6 +4079,8 @@
     function init_OrganSegmentFilterDF(disableField = false,
                                        useNameInCriteria = false,
                                        hideCompanyFilter = false,
+                                       hideGhesmatFilter = false,
+                                       hideVahedFilter = false,
                                        companyFieldName = "companyName",
                                        mojtameFieldName = "department.mojtameCode",
                                        moavenatFieldName = "department.moavenatCode",
@@ -4094,6 +4097,12 @@
 
         if (hideCompanyFilter === true)
             filterDF.getFields()[0].hide();
+
+        if (hideGhesmatFilter === true)
+            filterDF.getFields()[4].hide();
+
+        if (hideVahedFilter === true)
+            filterDF.getFields()[5].hide();
 
         if (disableField === true){
             filterDF.getFields()[2].disable();
