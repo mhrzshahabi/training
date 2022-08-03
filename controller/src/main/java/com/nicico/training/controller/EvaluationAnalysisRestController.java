@@ -12,6 +12,8 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IEvaluationAnalysisService;
 import com.nicico.training.iservice.IParameterService;
+import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.Coordinate;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.PersianCharachtersUnicode;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +43,7 @@ public class EvaluationAnalysisRestController {
     private final IEvaluationAnalysisService evaluationAnalysisService;
     private final ViewEvaluationStaticalReportService viewEvaluationStaticalReportService;
     private final ICategoryService categoryService;
+    private final ITclassService tclassService;
     private final IParameterService parameterService;
     private static final DecimalFormat df = new DecimalFormat("0.00");
 
@@ -161,6 +164,7 @@ public class EvaluationAnalysisRestController {
     @PostMapping(value = {"/printExecutionEvaluation"})
     public void printExecutionEvaluation(HttpServletResponse response,
                                         @RequestParam(value = "code") String code,
+                                        @RequestParam(value = "id") String id,
                                          @RequestParam(value = "titleClass") String titleClass,
                                         @RequestParam(value = "term") String term,
                                          @RequestParam(value = "studentCount") String studentCount,
@@ -211,6 +215,9 @@ public class EvaluationAnalysisRestController {
         else
             params.put("studentsGradeToTeacher", 0.0);
 
+        //zazazaza.
+
+
         HashMap<Double,String> doubleArrayList = new HashMap<>();
 
 
@@ -220,10 +227,28 @@ public class EvaluationAnalysisRestController {
             doubleArrayList.put(Double.parseDouble(studentsGradeToTeacher),"نمره فراگیران به مدرس");
 
 
+        TclassDTO.ExecutionEvaluationResult chartData=  tclassService.getExecutionEvaluationResult(Long.valueOf(id));
+        List<Coordinate> xyData = new ArrayList<>();
+        chartData.getQuestionnaireQuestions().forEach(item->{
+            xyData.add(new Coordinate(item.getQuestionOrder().intValue(), item.getAveGradeToQuestion(),"" ,item.getQuestionTitle()));
 
-        ArrayList<String> list = new ArrayList();
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
+        });
+
+        final String[] addition = {""};
+        xyData.stream().forEach(xy->{
+            addition[0] +=  xy.getCourseName()+"<--"+xy.getHorizontal()+"\n";
+        });
+
+        params.put("CHART_DATA",xyData);
+        xyData.stream().forEach(xy->{
+            params.put("horizontal",xy.getHorizontal());
+            params.put("vertical",xy.getVertical());
+        });
+         params.put("chart_caption", addition[0]);
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(xyData) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+
         reportUtil.export("/reports/ExecutionEvaluationResult.jasper", params, jsonDataSource, response);
     }
     private String getMinFactor(HashMap<Double, String> list){
@@ -507,7 +532,7 @@ public class EvaluationAnalysisRestController {
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(tableData) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-//zaza
+
         reportUtil.export("/reports/reactionEvaluationReport.jasper", params, jsonDataSource, response);
     }
 

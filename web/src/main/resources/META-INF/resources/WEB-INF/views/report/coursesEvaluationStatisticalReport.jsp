@@ -94,7 +94,7 @@
             ]
     });
 
-    organSegmentFilter_CESR = init_OrganSegmentFilterDF(true, true, true, null, "complexTitle","assistant","affairs", "section", "unit");
+    organSegmentFilter_CESR = init_OrganSegmentFilterDF(true, true, true, false, false, null, "complexTitle","assistant","affairs", "section", "unit");
 
     DynamicForm_SelectClasses_CESR = isc.DynamicForm.create({
         align: "center",

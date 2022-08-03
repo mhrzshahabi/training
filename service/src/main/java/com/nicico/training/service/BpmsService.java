@@ -77,6 +77,8 @@ public class BpmsService implements IBpmsService {
 //            mainConfirmBoss = "pourfathian_a";
             mainConfirmBoss = "3149622123";
 //            mainConfirmBoss = "hajizadeh_mh";
+        }else  if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
+            mainConfirmBoss = "6049618348";
         }
 
         map.put("assignTo", mainConfirmBoss);
@@ -160,6 +162,8 @@ public class BpmsService implements IBpmsService {
 //            mainConfirmBoss = "pourfathian_a";
             mainConfirmBoss = "3149622123";
 //            mainConfirmBoss = "hajizadeh_mh";
+        }else  if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
+            mainConfirmBoss = "6049618348";
         }
 
         map.put("assignTo", mainConfirmBoss);

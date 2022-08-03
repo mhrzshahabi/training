@@ -281,11 +281,16 @@ public class NeedsAssessmentRestController {
             @PathVariable String requestItemId) {
 
         SynonymPersonnel synonymPersonnel;
+        SynonymPersonnel synonymPersonnelByNationalCode = null;
+        SynonymPersonnel synonymPersonnelByPersonnelNo2 = null;
         RequestItem requestItem = requestItemService.get(Long.valueOf(requestItemId));
 
         if (requestItem != null) {
-            SynonymPersonnel synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
-            SynonymPersonnel synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+            if (requestItem.getNationalCode() != null)
+                synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+            if (requestItem.getPersonnelNo2() != null)
+                synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+
             if (synonymPersonnelByNationalCode != null)
                 synonymPersonnel = synonymPersonnelByNationalCode;
             else

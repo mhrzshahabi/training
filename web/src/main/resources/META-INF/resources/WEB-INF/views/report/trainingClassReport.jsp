@@ -85,7 +85,8 @@
             {name: "holdingClassTypeId"},
             {name: "holdingClassTypeTitle"},
             {name: "teachingMethodId"},
-            {name: "teachingMethodTitle"}
+            {name: "teachingMethodTitle"},
+            {name:"supervisor"}
         ],
         fetchDataURL: viewEvaluationStaticalReportUrl + "/iscList"
     });
@@ -277,6 +278,7 @@
             {name: "courseTitleFa", title: "نام دوره", autoFitWidth: true},
             {name: "tclassDuration", title: "مدت کلاس", filterOperator: "equals", autoFitWidth: true},
             {name: "plannerComplex", title:"<spring:message code='organizer.complex'/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "supervisor", title: "مسئول اجرا",autoFitWidth: true},
             {name: "plannerName", title:"<spring:message code='planner.name'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "instituteName", title:"<spring:message code='institute.organizer.name'/>", filterOperator: "iContains", autoFitWidth: true },
             {name: "tclassStartDate", title: "تاریخ شروع",autoFitWidth: true},
@@ -974,6 +976,13 @@
                 pickListWidth: 550,
                 pickListFields: [{name: "personnelNo2"}, {name: "firstName"}, {name: "lastName"}, {name: "nationalCode"}, {name: "personnelNo"}],
                 pickListProperties: {sortField: "personnelNo2", showFilterEditor: true}
+            },
+            {
+                name: "supervisor",
+                title: "مسئول اجرا",
+                canEdit: false,
+                textAlign: "center",
+                with:60
             },
             {
                 name: "temp6",

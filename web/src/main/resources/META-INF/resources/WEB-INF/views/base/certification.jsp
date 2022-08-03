@@ -19,7 +19,7 @@
             {name: "requestType", title: "نوع درخواست", filterOperator: "iContains",
                 valueMap: {
                     1 : "انتصاب سمت",
-                    2 : "تعویض پست"
+                    2 : "تغییر وضعیت"
                 }
             },
             {name: "letterNumber", title: "شماره نامه کارگزینی", filterOperator: "iContains"}
@@ -274,7 +274,7 @@
                 required: true,
                 valueMap: {
                     1 : "انتصاب سمت",
-                    2 : "تعویض پست"
+                    2 : "تغییر وضعیت"
                 }
             },
             {
@@ -402,7 +402,7 @@
                 align: "center",
                 valueMap: {
                     1 : "انتصاب سمت",
-                    2 : "تعویض پست"
+                    2 : "تغییر وضعیت"
                 }
             },
             {

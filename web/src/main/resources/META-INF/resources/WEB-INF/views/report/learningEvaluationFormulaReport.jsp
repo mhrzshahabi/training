@@ -218,7 +218,7 @@
         ]
     });
 
-    let organSegmentFilter_REFR_Learning = init_OrganSegmentFilterDF(true,true, true , null, "complexTitle","assistant","affairs", "section", "unit");
+    let organSegmentFilter_REFR_Learning = init_OrganSegmentFilterDF(true, true, true, false, false, null, "complexTitle","assistant","affairs", "section", "unit");
     let DynamicForm_CriteriaForm_REFR_learning = isc.DynamicForm.create({
         align: "center",
         titleWidth: 0,
@@ -303,7 +303,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_REFR', this, 'ymd', '/');
+                        displayDatePicker('startDate2_REFR', this, 'ymd', '/','right');
                     }
                 }],
                 editorExit: function (form, item, value) {
@@ -391,7 +391,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate2_REFR', this, 'ymd', '/');
+                        displayDatePicker('endDate2_REFR', this, 'ymd', '/','right');
                     }
                 }],
                 editorExit: function (form, item, value) {

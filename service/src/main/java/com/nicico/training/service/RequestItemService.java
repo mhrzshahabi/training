@@ -296,13 +296,18 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
             RequestItem requestItem = optionalRequestItem.get();
             List<String> assigneeList = getPlanningExpertsAssigneeList(requestItem.getPost());
-            Map<String, Object> map = reviewTaskRequestDto.getVariables();
-            map.put("assigneeList", assigneeList);
-            String processStatus = parameterValueService.getInfo(requestItem.getProcessStatusId()).getCode();
-            if (processStatus.equals("waitingReviewByPlanningChief")) {
-                requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningExperts"));
-                requestItemDAO.saveAndFlush(requestItem);
-                response.setStatus(200);
+
+            if (assigneeList.size() == 0) {
+                response.setStatus(HttpStatus.BAD_REQUEST.value());
+            } else {
+                Map<String, Object> map = reviewTaskRequestDto.getVariables();
+                map.put("assigneeList", assigneeList);
+                String processStatus = parameterValueService.getInfo(requestItem.getProcessStatusId()).getCode();
+                if (processStatus.equals("waitingReviewByPlanningChief")) {
+                    requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningExperts"));
+                    requestItemDAO.saveAndFlush(requestItem);
+                    response.setStatus(200);
+                }
             }
         } else {
             response.setStatus(404);
@@ -316,6 +321,8 @@ public class RequestItemService implements IRequestItemService {
                 response.setStatus(404);
                 response.setMessage("عملیات bpms انجام نشد");
             }
+        } else if (response.getStatus() == 400) {
+            response.setMessage("کارشناس ارشد برنامه ریزی برای پست پیشنهادی یافت نشد");
         } else {
             response.setStatus(406);
             response.setMessage("تغییر وضعیت درخواست انجام نشد");
@@ -759,6 +766,8 @@ public class RequestItemService implements IRequestItemService {
 //            mainConfirmBoss = "pourfathian_a";
             mainConfirmBoss = "3149622123";
 //            mainConfirmBoss = "hajizadeh_mh";
+        } else  if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
+            mainConfirmBoss = "6049618348";
         }
         return mainConfirmBoss;
     }
@@ -864,10 +873,14 @@ public class RequestItemService implements IRequestItemService {
     private RequestItemWithDiff getRequestDiff(RequestItem requestItem) {
 
         SynonymPersonnel synonymPersonnel = null;
+        SynonymPersonnel synonymPersonnelByNationalCode = null;
+        SynonymPersonnel synonymPersonnelByPersonnelNo2 = null;
         RequestItemWithDiff requestItemWithDiff = new RequestItemWithDiff();
 
-        SynonymPersonnel synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
-        SynonymPersonnel synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+        if (requestItem.getNationalCode() != null)
+            synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+        if (requestItem.getPersonnelNo2() != null)
+            synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
 
         if (synonymPersonnelByNationalCode != null) {
             synonymPersonnel = synonymPersonnelByNationalCode;

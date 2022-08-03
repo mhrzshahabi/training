@@ -14,6 +14,7 @@ import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.utility.persianDate.PersianDate;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
@@ -64,8 +65,23 @@ public class TeacherService implements ITeacherService {
     @Transactional(readOnly = true)
     @Override
     public TeacherDTO.Info get(Long id) {
-        return modelMapper.map(getTeacher(id), TeacherDTO.Info.class);
+        Set<TeacherExperienceInfoDTO> finalDTOs=new HashSet<>();
+        TeacherDTO.Info info= modelMapper.map(getTeacher(id), TeacherDTO.Info.class);
+//
+//        if(info.getTeacherExperienceInfo()!=null && info.getTeacherExperienceInfo().size()>0){
+//            info.getTeacherExperienceInfos().stream().forEach(teacherExperienceInfoDTO -> {
+//                String persianDate=  PersianDate.convertToTrainingPersianDate(teacherExperienceInfoDTO.getCreatedDate());
+//              teacherExperienceInfoDTO.setCreatedDatePersian(persianDate);
+//               finalDTOs.add(teacherExperienceInfoDTO);
+//
+//            });
+////          info.setTeacherExperienceInfos(finalDTOs);
+//        }
+        return info;
     }
+
+
+
 
     @Transactional(readOnly = true)
     @Override

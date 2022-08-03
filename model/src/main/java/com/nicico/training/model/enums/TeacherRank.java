@@ -9,15 +9,19 @@ import lombok.ToString;
 @Getter
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum RequestType {
+public enum TeacherRank {
+    PROFESSOR(1, "استاد"),
+    ASSOCIATEPROFESSOR(2,  "دانشیار"),
+    ASSISTANTPROFESSOR(3, "استادیار"),
+    COACH(4, "مربی"),
+    EDUCATOR(5, "آموزشیار");
 
-    Appointment(1, "انتصاب سمت"),
-    Replacement(2, "تغییر وضعیت");
 
     private final Integer id;
-    private final String titleFa;
+    private final String title;
 
     public String getLiteral() {
         return name();
     }
+
 }

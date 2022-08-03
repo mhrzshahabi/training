@@ -88,6 +88,7 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private String holdingClassTypeTitle;
         private String teachingMethodId;
         private String teachingMethodTitle;
+        private String supervisor;
     }
 
     @Getter

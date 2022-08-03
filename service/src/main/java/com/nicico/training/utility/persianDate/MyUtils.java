@@ -8,9 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import response.tclass.dto.CourseProgramDTO;
 import response.tclass.dto.WeekDays;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -517,5 +515,16 @@ public class MyUtils {
                 return false; // Invalid MelliCode
             }
         }
+    }
+
+    public static <T> boolean areAllUnique(List<T> list){
+        Set<T> set = new HashSet<>();
+
+        for (T t: list){
+            if (!set.add(t))
+                return false;
+        }
+
+        return true;
     }
 }
