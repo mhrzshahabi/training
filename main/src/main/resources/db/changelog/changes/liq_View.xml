@@ -14469,14 +14469,14 @@ GROUP BY
             res.* FROM
             (
             SELECT
-            tbl_evaluation_analysis.b_effectiveness_pass    AS effectiveness_pass,
-            tbl_evaluation_analysis.c_effectiveness_grade   AS effectiveness_grade,
-            tbl_term.id                                     AS term_id,
-            tbl_term.c_title_fa                             AS term_title,
-            tbl_class.c_start_date                          AS class_start_date,
-            tbl_class.c_end_date                            AS class_end_date,
+            tbl_evaluation_analysis.b_effectiveness_pass   AS effectiveness_pass,
+            CAST(tbl_evaluation_analysis.c_effectiveness_grade AS DECIMAL(10, 2)) AS effectiveness_grade,
+            tbl_term.id                                    AS term_id,
+            tbl_term.c_title_fa                            AS term_title,
+            tbl_class.c_start_date                         AS class_start_date,
+            tbl_class.c_end_date                           AS class_end_date,
             substr(tbl_class.c_start_date, 1, 4) AS class_year,
-            tbl_student.id                                  AS student_id,
+            tbl_student.id                                 AS student_id,
             CASE
             WHEN tbl_student.first_name IS NULL
             AND tbl_student.last_name IS NULL THEN
@@ -14486,18 +14486,18 @@ GROUP BY
             || ' '
             || tbl_student.last_name
             END AS student_full_name,
-            tbl_class.c_code                                AS class_code,
-            tbl_course.c_code                               AS course_code,
-            tbl_class.c_title_class                         AS class_title,
-            tbl_teacher.id                                  AS teacher_id,
+            tbl_class.c_code                               AS class_code,
+            tbl_course.c_code                              AS course_code,
+            tbl_class.c_title_class                        AS class_title,
+            tbl_teacher.id                                 AS teacher_id,
             tbl_personal_info.c_first_name_fa
             || ' '
             || tbl_personal_info.c_last_name_fa AS teacher_full_name,
-            tbl_category.id                                 AS course_category_id,
-            tbl_student.ccp_affairs                         AS student_affair,
-            tbl_student.ccp_area                            AS student_complex,
-            tbl_student.ccp_assistant                       AS student_assistant,
-            tbl_class.c_evaluation                          AS class_evaluation_code,
+            tbl_category.id                                AS course_category_id,
+            tbl_student.ccp_affairs                        AS student_affair,
+            tbl_student.ccp_area                           AS student_complex,
+            tbl_student.ccp_assistant                      AS student_assistant,
+            tbl_class.c_evaluation                         AS class_evaluation_code,
             CASE
             WHEN tbl_class.c_evaluation = 1 THEN
             'واکنشی'
@@ -14515,7 +14515,8 @@ GROUP BY
             INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
             INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
             LEFT JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
-            LEFT JOIN tbl_category ON tbl_course.category_id = tbl_category.id) res
+            LEFT JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+            ) res
         </createView>
     </changeSet>
 
