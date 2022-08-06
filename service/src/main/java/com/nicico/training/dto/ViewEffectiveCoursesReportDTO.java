@@ -49,7 +49,7 @@ public class ViewEffectiveCoursesReportDTO implements Serializable {
     private Double effectivenessGrade;
 
     @ApiModelProperty
-    private String effectivenessType;
+    private String effectivenessStatus;
 
     @ApiModelProperty
     private String description;

@@ -108,7 +108,7 @@
                 filterOperator: "iContains",
             },
             {
-                name: "effectivenessType",
+                name: "effectivenessStatus",
                 title: "<spring:message code='effectiveness.status'/>",
                 align: "center",
                 filterOperator: "iContains",
@@ -606,11 +606,11 @@
 
     let ListGrid_effectiveness_courses = isc.TrLG.create({
         dataSource: RestDataSource_ListGrid_effectiveness_courses,
-        // allowAdvancedCriteria: true,
-        // allowFilterExpressions: true,
-        // showRecordComponents: true,
-        // showRecordComponentsByCell: true,
-        // showRollOver:false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        showRollOver:false,
         autoFitWidth: true,
         autoSize: true,
         fields: [
@@ -685,10 +685,10 @@
                 },
                 filterEditorProperties: {
                     pickListProperties: {
-                        showFilterEditor: false,
-                    }
+                        showFilterEditor: false
+                    },
                 },
-                filterOnKeyPress: true,
+                filterOnKeypress: true,
                 filterOperator: "iContains",
             },
             {
@@ -698,20 +698,20 @@
                 filterOperator: "iContains",
             },
             {
-                name: "effectivenessType",
+                name: "effectivenessStatus",
                 title: "<spring:message code='effectiveness.status'/>",
                 align: "center",
                 valueMap: {
-                    "اثربخش": "اثربخش",
-                    "غیر اثربخش": "غیر اثربخش"
+                    "تایید شده": "تایید شده",
+                    "عدم تایید": "عدم تایید"
                 },
                 filterEditorProperties: {
                     pickListProperties: {
                         showFilterEditor: false
-                    }
+                    },
                 },
-                filterOnKeyPress: true,
-                filterOperator: "iContains",
+                filterOnKeypress: true,
+                filterOperator: "iContains"
             },
             {
                 name: "description",
@@ -721,13 +721,14 @@
             }
         ],
         getCellCSSText: function (record, rowNum, colNum) {
-            if (this.getFieldName(colNum) === "effectivenessType") {
-                if (record.effectivenessType === "اثربخش")
+            if (this.getFieldName(colNum) === "effectivenessStatus") {
+                if (record.effectivenessStatus === "تایید شده")
                     return "color:green;";
-                if (record.effectivenessType === "غیر اثربخش")
+                if (record.effectivenessStatus === "عدم تایید")
                     return "color:red;";
 
             }
+            debugger
         }
     });
 
@@ -768,7 +769,7 @@
         ]
     });
 
-    let organSegmentFilter_ecr = init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle", "assistantTitle", "affairTitle", "section", "unit");
+    let organSegmentFilter_ecr = init_OrganSegmentFilterDF(true, true, true, true, true, null, "studentComplex", "studentAssistant", "studentAffair", "section", "unit");
 
     let VLayOut_CriteriaForm_ecr = isc.VLayout.create({
         showEdges: false,

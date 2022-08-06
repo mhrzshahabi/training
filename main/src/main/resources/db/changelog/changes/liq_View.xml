@@ -14478,6 +14478,12 @@ GROUP BY
             WHEN tbl_evaluation_analysis.b_effectiveness_pass = 1 THEN
             'اثربخش'
             END AS effectiveness_type,
+            CASE
+            WHEN tbl_evaluation_analysis.b_effectiveness_pass = 0 THEN
+            'عدم تایید'
+            WHEN tbl_evaluation_analysis.b_effectiveness_pass = 1 THEN
+            'تایید شده'
+            END AS effectiveness_status,
             CAST(tbl_evaluation_analysis.c_effectiveness_grade AS DECIMAL(10, 2)) AS effectiveness_grade,
             tbl_term.id                                    AS term_id,
             tbl_term.c_title_fa                            AS term_title,

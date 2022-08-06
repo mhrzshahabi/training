@@ -31,6 +31,9 @@ public class ViewEffectiveCoursesReport implements Serializable {
     @Column(name = "EFFECTIVENESS_TYPE")
     private String effectivenessType;
 
+    @Column(name = "EFFECTIVENESS_STATUS")
+    private String effectivenessStatus;
+
     @Column(name = "EFFECTIVENESS_GRADE")
     private Double effectivenessGrade;
 

@@ -1,6 +1,6 @@
 spring:
   application:
-    name: Training
+    name: Development
   profiles:
     active: Local
   datasource:
