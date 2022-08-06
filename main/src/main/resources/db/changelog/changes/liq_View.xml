@@ -14465,11 +14465,19 @@ GROUP BY
 
     <changeSet author="Montazeri" id="1659516513941">
         <createView viewName="view_effective_courses_report" replaceIfExists="true">
-            SELECT ROWNUM AS id,
-            res.* FROM
+            SELECT
+            ROWNUM AS id,
+            res.*
+            FROM
             (
             SELECT
             tbl_evaluation_analysis.b_effectiveness_pass   AS effectiveness_pass,
+            CASE
+            WHEN tbl_evaluation_analysis.b_effectiveness_pass = 0 THEN
+            'غیر اثربخش'
+            WHEN tbl_evaluation_analysis.b_effectiveness_pass = 1 THEN
+            'اثربخش'
+            END AS effectiveness_type,
             CAST(tbl_evaluation_analysis.c_effectiveness_grade AS DECIMAL(10, 2)) AS effectiveness_grade,
             tbl_term.id                                    AS term_id,
             tbl_term.c_title_fa                            AS term_title,
