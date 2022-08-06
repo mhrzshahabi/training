@@ -149,6 +149,16 @@
         ],
         fetchDataURL: teacherUrl + "fullName-list"
     });
+    let RestDataSource_Student_ecr = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "firstName", filterOperator: "iContains"},
+            {name: "lastName", filterOperator: "iContains"},
+            {name: "nationalCode", filterOperator: "iContains"},
+            {name: "fullName"}
+        ],
+        fetchDataURL: studentUrl + "spec-list"
+    });
     let RestDataSource_Class_ecr = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -556,6 +566,24 @@
                 }
             },
             {
+                name: "studentId",
+                title: "<spring:message code='student'/>:",
+                type: "ComboBoxItem",
+                filterOperator: "equals",
+                autoFetchData: false,
+                optionDataSource: RestDataSource_Student_ecr,
+                valueField: "id",
+                displayField: "fullName",
+                filterFields: ["firstName", "lastName", "nationalCode"],
+                pickListFields: [
+                    {name: "firstName", title: "نام"},
+                    {name: "lastName", title: "نام خانوادگی"},
+                    {name: "nationalCode", title: "کد ملی"}],
+                pickListProperties: {
+                    showFilterEditor: true
+                }
+            },
+            {
                 name: "courseCategoryId",
                 title: "گروه آموزشی",
                 type: "SelectItem",
@@ -636,6 +664,7 @@
                 name: "classYear",
                 title: "<spring:message code='year'/>",
                 align: "center",
+                canFilter: false,
                 filterOperator: "iContains",
             },
             {
@@ -649,10 +678,15 @@
                 title: "<spring:message code='evaluation.level'/>",
                 align: "center",
                 valueMap: {
-                    "1": "واکنشی",
-                    "2": "یادگیری",
-                    "3": "رفتاری",
-                    "4": "نتایج",
+                    "واکنشی": "واکنشی",
+                    "یادگیری": "یادگیری",
+                    "رفتاری": "رفتاری",
+                    "نتایج": "نتایج",
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false,
+                    }
                 },
                 filterOnKeyPress: true,
                 filterOperator: "iContains",
@@ -668,8 +702,13 @@
                 title: "<spring:message code='effectiveness.status'/>",
                 align: "center",
                 valueMap: {
-                  "اثربخش" : "اثربخش",
-                  "غیر اثربخش" : "غیر اثربخش"
+                    "اثربخش": "اثربخش",
+                    "غیر اثربخش": "غیر اثربخش"
+                },
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
                 },
                 filterOnKeyPress: true,
                 filterOperator: "iContains",
@@ -680,9 +719,18 @@
                 align: "center",
                 filterOperator: "iContains",
             }
-        ]
+        ],
+        getCellCSSText: function (record, rowNum, colNum) {
+            if (this.getFieldName(colNum) === "effectivenessType") {
+                if (record.effectivenessType === "اثربخش")
+                    return "color:green;";
+                if (record.effectivenessType === "غیر اثربخش")
+                    return "color:red;";
+
+            }
+        }
     });
-    
+
     let Window_Show_effectiveness_courses_Report = isc.Window.create({
         placement: "center",
         width: "90%",
@@ -720,7 +768,7 @@
         ]
     });
 
-    let organSegmentFilter_ecr = init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistantTitle","affairTitle", "section", "unit");
+    let organSegmentFilter_ecr = init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle", "assistantTitle", "affairTitle", "section", "unit");
 
     let VLayOut_CriteriaForm_ecr = isc.VLayout.create({
         showEdges: false,
