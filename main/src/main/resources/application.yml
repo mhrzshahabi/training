@@ -1,8 +1,8 @@
 spring:
   application:
-    name: Development
+    name: Training
   profiles:
-    active: Local
+    active: Development
   datasource:
     hikari:
       connection-test-query: SELECT 1 FROM DUAL
@@ -51,13 +51,7 @@ server:
       timeout: 30m
 
 management:
-  endpoints:
-    web:
-      exposure:
-        include: "*"
   endpoint:
-    prometheus:
-      enabled: true
     health:
       show-details: always
 
