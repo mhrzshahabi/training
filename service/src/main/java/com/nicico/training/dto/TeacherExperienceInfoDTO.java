@@ -25,6 +25,7 @@ public class TeacherExperienceInfoDTO {
     private Long salaryBase;
     private Long teachingExperience;
     private Long teacherId;
+    private Integer teacherRankId;
 
 
 }
