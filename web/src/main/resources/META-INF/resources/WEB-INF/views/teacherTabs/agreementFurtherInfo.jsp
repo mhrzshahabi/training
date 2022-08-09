@@ -192,6 +192,9 @@
     ListGrid_JspAgreementFurtherInfo = isc.TrLG.create({
         dataSource: RestDataSource_JspAgreementFurtherInfo,
         contextMenu: Menu_JspAgreementFurtherInfo,
+        initialSort: [
+            {property: "id", direction: "descanding"}
+        ],
         fields: [
             {name: "id", hidden:true},
 
@@ -235,7 +238,6 @@
         filterOperator: "iContains",
         filterOnKeypress: true,
         sortField: 1,
-        sortDirection: "ascending",
         sortBy:"id",
         dataPageSize: 50,
         autoFetchData: true,
