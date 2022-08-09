@@ -59,9 +59,55 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
             case "report09":
                 result = genericStatisticalIndexReportDAO.getSkillTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
                 break;
-//            case "report10":
-//                result = genericStatisticalIndexReportDAO.posheshFardi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-//                break;
+            case "report10":
+                result = genericStatisticalIndexReportDAO.trainingStaffToTotalStaff( complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report11":
+                result = genericStatisticalIndexReportDAO.teachingLearningLevelOfNewCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report12":
+                result = genericStatisticalIndexReportDAO.teachingLearningLevelOfFrequentCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report13":
+                result = genericStatisticalIndexReportDAO.teachingRatioOfInternalTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report14":
+                result = genericStatisticalIndexReportDAO.ojt(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report15":
+                result = genericStatisticalIndexReportDAO.proportionOfTrainingOutsideTheCalendar(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report16":
+                result = genericStatisticalIndexReportDAO.canceledCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report17":
+                result = genericStatisticalIndexReportDAO.trainingOutsideTheOrganization(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report18":
+                result = genericStatisticalIndexReportDAO.trainingWithInTheOrganization(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report19":
+                result = genericStatisticalIndexReportDAO.specializedTrainingForCustomers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report20":
+                result = genericStatisticalIndexReportDAO.HSE(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report21":
+                result = genericStatisticalIndexReportDAO.lowerThanBachelor(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report22":
+                result = genericStatisticalIndexReportDAO.trainingOfSupervisors(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report23":
+                result = genericStatisticalIndexReportDAO.managersTrainingPerCapita(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+
+                case "report24":
+                result = genericStatisticalIndexReportDAO.capitaOfContractingForces(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+                case "report25":
+                result = genericStatisticalIndexReportDAO.trainingHoursOfTheCompany(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
         }
 
 
