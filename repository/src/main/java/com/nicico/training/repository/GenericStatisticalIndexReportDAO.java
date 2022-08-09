@@ -1495,15 +1495,15 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
 
 
 
-    @Query(value = "", nativeQuery = true)
-    List<GenericStatisticalIndexReport> posheshFardi(String fromDate,
-                                                       String toDate,
-                                                       List<Object> complex,
-                                                       int complexNull,
-                                                       List<Object> assistant,
-                                                       int assistantNull,
-                                                       List<Object> affairs,
-                                                       int affairsNull);
+//    @Query(value = "", nativeQuery = true)
+//    List<GenericStatisticalIndexReport> posheshFardi(String fromDate,
+//                                                       String toDate,
+//                                                       List<Object> complex,
+//                                                       int complexNull,
+//                                                       List<Object> assistant,
+//                                                       int assistantNull,
+//                                                       List<Object> affairs,
+//                                                       int affairsNull);
 
 
 //    @Query(value = "", nativeQuery = true)

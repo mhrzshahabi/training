@@ -59,9 +59,9 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
             case "report09":
                 result = genericStatisticalIndexReportDAO.getSkillTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
                 break;
-            case "report10":
-                result = genericStatisticalIndexReportDAO.posheshFardi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
+//            case "report10":
+//                result = genericStatisticalIndexReportDAO.posheshFardi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+//                break;
         }
 
 
