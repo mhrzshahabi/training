@@ -19,12 +19,9 @@
     // let teachToClass_csfr = null;
     // let recordsEvalData_csfr = [];
 
-    let startDateCheck_csfr = true;
-    let endDateCheck_csfr = true;
-    let startDateCheck_Order_csfr = true;
-    let endDate1Check_csfr = true;
-    let endDate2Check_csfr = true;
-    let endDateCheck_Order_csfr = true;
+    let startDate1Check_CSFR = true;
+    let startDate2Check_CSFR = true;
+    let startDateCheck_Order_CSFR = true;
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     let RestDataSource_Category_csfr = isc.TrDS.create({
@@ -376,8 +373,8 @@
         height: "100%",
         fields: [
             {
-                name: "classStartDate",
-                ID: "startDate_cfsr",
+                name: "startDate1",
+                ID: "startDate1_cfsr",
                 title: "تاریخ شروع کلاس: از",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -391,37 +388,37 @@
                         displayDatePicker('startDate_cfsr', this, 'ymd', '/');
                     }
                 }],
-                editorExit: function (form, item, value) {
-                    if (value === undefined || value == null) {
-                        form.clearFieldErrors("classEndDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        form.clearFieldErrors("classStartDate", true);
-                        startDateCheck_Order_csfr = true;
-                        startDateCheck_csfr = true;
+                changed: function (form, item, value) {
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        form.clearFieldErrors("startDate2", true);
+                        startDateCheck_Order_CSFR = true;
+                        startDate1Check_CSFR = true;
                         return;
                     }
                     let dateCheck;
-                    let classEndDate = form.getValue("classEndDate");
+                    let classEndDate = form.getValue("startDate2");
                     dateCheck = checkDate(value);
                     if (dateCheck === false) {
-                        startDateCheck_csfr = false;
-                        startDateCheck_Order_csfr = true;
-                        form.clearFieldErrors("classStartDate", true);
-                        form.addFieldErrors("classStartDate", "<spring:message code='msg.correct.date'/>", true);
+                        startDate1Check_CSFR = false;
+                        startDateCheck_Order_CSFR = true;
+                        form.clearFieldErrors("startDate1", true);
+                        form.addFieldErrors("startDate1", "<spring:message code='msg.correct.date'/>", true);
                     } else if (classEndDate < value) {
-                        startDateCheck_Order_csfr = false;
-                        startDateCheck_csfr = true;
-                        form.clearFieldErrors("classStartDate", true);
-                        form.addFieldErrors("classStartDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                        startDateCheck_Order_CSFR = false;
+                        startDate1Check_CSFR = true;
+                        form.clearFieldErrors("startDate1", true);
+                        form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     } else {
-                        startDateCheck_csfr = true;
-                        startDateCheck_Order_csfr = true;
-                        form.clearFieldErrors("classStartDate", true);
+                        startDate1Check_CSFR = true;
+                        startDateCheck_Order_CSFR = true;
+                        form.clearFieldErrors("startDate1", true);
                     }
                 }
             },
             {
-                name: "classEndDate",
-                ID: "endDate_cfsr",
+                name: "startDate2",
+                ID: "startDate2",
                 title: "تا",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -432,34 +429,34 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('endDate_cfsr', this, 'ymd', '/');
+                        displayDatePicker('startDate1_csfr', this, 'ymd', '/');
                     }
                 }],
-                editorExit: function (form, item, value) {
-                    if (value === undefined || value == null) {
-                        form.clearFieldErrors("classStartDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                        form.clearFieldErrors("classEndDate", true);
-                        startDateCheck_Order_csfr = true;
-                        endDateCheck_csfr = true;
+                changed: function (form, item, value) {
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                        form.clearFieldErrors("startDate2", true);
+                        startDate2Check_CSFR = true;
+                        startDateCheck_Order_CSFR = true;
                         return;
                     }
                     let dateCheck;
                     dateCheck = checkDate(value);
-                    let classStartDate = form.getValue("classStartDate");
-                    if (dateCheck === false) {
-                        endDateCheck_csfr = false;
-                        startDateCheck_Order_csfr = true;
-                        form.clearFieldErrors("classEndDate", true);
-                        form.addFieldErrors("classEndDate", "<spring:message code='msg.correct.date'/>", true);
+                    let classStartDate = form.getValue("startDate1");
+                    if (dateCheck == false) {
+                        startDate2Check_CSFR = false;
+                        startDateCheck_Order_CSFR = true;
+                        form.clearFieldErrors("startDate2", true);
+                        form.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
                     } else if (classStartDate !== undefined && value < classStartDate) {
-                        form.clearFieldErrors("classEndDate", true);
-                        form.addFieldErrors("classEndDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-                        endDateCheck_csfr = true;
-                        startDateCheck_Order_csfr = false;
+                        form.clearFieldErrors("startDate2", true);
+                        form.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        startDate2Check_CSFR = true;
+                        startDateCheck_Order_CSFR = false;
                     } else {
-                        form.clearFieldErrors("classEndDate", true);
-                        endDateCheck_csfr = true;
-                        startDateCheck_Order_csfr = true;
+                        form.clearFieldErrors("startDate2", true);
+                        startDate2Check_CSFR = true;
+                        startDateCheck_Order_CSFR = true;
                     }
                 }
             },
@@ -846,6 +843,8 @@
         width: 300,
         height: "100%",
         click: function () {
+            if (!checkDateValidation())
+                return
             extractFinalStatusReport("student");
         }
     });
@@ -855,6 +854,8 @@
         width: 300,
         height: "100%",
         click: function () {
+            if (!checkDateValidation())
+                return
             extractFinalStatusReport("course");
         }
     });
@@ -900,7 +901,6 @@
     //------------------------------------------------- Functions ------------------------------------------------------
 
     function extractFinalStatusReport(target) {
-        debugger
         let departmentCriteria = organSegmentFilter_cfsr.getCriteria();
         let data = DynamicForm_CriteriaForm_csfr.getValuesAsAdvancedCriteria();
 
@@ -926,10 +926,12 @@
         };
 
         for (let i = 0; i < data.criteria.length; i++) {
-            if (data.criteria[i].fieldName === "classStartDate") {
+            if (data.criteria[i].fieldName === "startDate1") {
+                data.criteria[i].fieldName = "classStartDate"
                 data.criteria[i].operator = "greaterOrEqual";
             }
-            if (data.criteria[i].fieldName === "classEndDate") {
+            if (data.criteria[i].fieldName === "startDate2") {
+                data.criteria[i].fieldName = "classStartDate"
                 data.criteria[i].operator = "lessOrEqual";
             }
             if (data.criteria[i].fieldName === "courseCategory") {
@@ -948,54 +950,38 @@
         }
     }
 
-    async function checkFormValidation() {
+    function checkDateValidation() {
         DynamicForm_CriteriaForm_csfr.validate();
-        if (DynamicForm_CriteriaForm_csfr.hasErrors())
+        if (!DynamicForm_CriteriaForm_csfr.validate() || DynamicForm_CriteriaForm_csfr.hasErrors())
             return false;
 
         if (!DynamicForm_CriteriaForm_csfr.validate() ||
-            startDateCheck_Order_csfr === false ||
-            endDateCheck_csfr === false ||
-            startDateCheck_csfr === false ||
-            endDateCheck_Order_csfr === false ||
-            endDate2Check_csfr === false ||
-            endDate1Check_csfr === false) {
+            startDateCheck_Order_CSFR === false ||
+            startDate2Check_CSFR === false ||
+            startDate1Check_CSFR === false) {
 
-            if (startDateCheck_Order_csfr === false) {
-                DynamicForm_CriteriaForm_csfr.clearFieldErrors("classEndDate", true);
-                DynamicForm_CriteriaForm_csfr.addFieldErrors("classEndDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+            if (startDateCheck_Order_CSFR === false) {
+                DynamicForm_CriteriaForm_csfr.clearFieldErrors("startDate2", true);
+                DynamicForm_CriteriaForm_csfr.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                return false;
             }
-            if (startDateCheck_Order_csfr === false) {
-                DynamicForm_CriteriaForm_csfr.clearFieldErrors("classStartDate", true);
-                DynamicForm_CriteriaForm_csfr.addFieldErrors("classStartDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+            if (startDateCheck_Order_CSFR === false) {
+                DynamicForm_CriteriaForm_csfr.clearFieldErrors("startDate1", true);
+                DynamicForm_CriteriaForm_csfr.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                return false;
             }
-            if (endDateCheck_csfr === false) {
-                DynamicForm_CriteriaForm_csfr.clearFieldErrors("classEndDate", true);
-                DynamicForm_CriteriaForm_csfr.addFieldErrors("classEndDate", "<spring:message code='msg.correct.date'/>", true);
+            if (startDate2Check_CSFR === false) {
+                DynamicForm_CriteriaForm_csfr.clearFieldErrors("startDate2", true);
+                DynamicForm_CriteriaForm_csfr.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
+                return false;
             }
-            if (startDateCheck_csfr === false) {
-                DynamicForm_CriteriaForm_csfr.clearFieldErrors("classStartDate", true);
-                DynamicForm_CriteriaForm_csfr.addFieldErrors("classStartDate", "<spring:message code='msg.correct.date'/>", true);
+            if (startDate1Check_CSFR === false) {
+                DynamicForm_CriteriaForm_csfr.clearFieldErrors("startDate1", true);
+                DynamicForm_CriteriaForm_csfr.addFieldErrors("startDate1", "<spring:message code='msg.correct.date'/>", true);
+                return false;
             }
 
-            if (endDateCheck_Order_csfr === false) {
-                DynamicForm_CriteriaForm_csfr.clearFieldErrors("endDate2", true);
-                DynamicForm_CriteriaForm_csfr.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
-            }
-            if (endDateCheck_Order_csfr === false) {
-                DynamicForm_CriteriaForm_csfr.clearFieldErrors("endDate1", true);
-                DynamicForm_CriteriaForm_csfr.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-            }
-            if (endDate2Check_csfr === false) {
-                DynamicForm_CriteriaForm_csfr.clearFieldErrors("endDate2", true);
-                DynamicForm_CriteriaForm_csfr.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
-            }
-            if (endDate1Check_csfr === false) {
-                DynamicForm_CriteriaForm_csfr.clearFieldErrors("endDate1", true);
-                DynamicForm_CriteriaForm_csfr.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
-            }
         }
         return true;
     }
-
      // </script>
