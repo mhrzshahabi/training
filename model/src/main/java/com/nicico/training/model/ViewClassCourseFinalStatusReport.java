@@ -56,7 +56,7 @@ public class ViewClassCourseFinalStatusReport {
     private Double acceptancePercentage;
 
     @Column(name = "CATEGORY_ID")
-    private Long courseCategory;
+    private Long courseCategoryId;
 
     @Column(name = "CLASS_START_DATE")
     private String classStartDate;

@@ -935,7 +935,20 @@
                 data.criteria[i].operator = "lessOrEqual";
             }
             if (data.criteria[i].fieldName === "courseCategory") {
+                data.criteria[i].fieldName = "courseCategoryId"
                 data.criteria[i].operator = "inSet";
+            }
+            if (target === "student") {
+                if (data.criteria[i].fieldName === "complexTitle") {
+                    data.criteria[i].fieldName = "studentComplex"
+                    data.criteria[i].operator = "inSet";
+                } else if (data.criteria[i].fieldName === "assistantTitle") {
+                    data.criteria[i].fieldName = "studentAssistant"
+                    data.criteria[i].operator = "inSet";
+                } else if (data.criteria[i].fieldName === "affairTitle") {
+                    data.criteria[i].fieldName = "studentAffair"
+                    data.criteria[i].operator = "inSet";
+                }
             }
             finalCriteria.criteria.add(data.criteria[i]);
         }
