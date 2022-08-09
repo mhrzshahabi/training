@@ -51,7 +51,13 @@ server:
       timeout: 30m
 
 management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
   endpoint:
+    prometheus:
+      enabled: true
     health:
       show-details: always
 
