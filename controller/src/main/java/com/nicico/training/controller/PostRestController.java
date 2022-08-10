@@ -185,13 +185,13 @@ public class PostRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity updatePostDeletionStatus(@PathVariable("id") Long postId) {
+    @PutMapping("/update-deletion-status/{postId}")
+    public ResponseEntity updatePostDeletionStatus(@PathVariable Long postId) {
         Boolean updatedPostDeletionStatus = iPostService.updatePostDeletionStatus(postId);
         if (updatedPostDeletionStatus) {
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(Boolean.FALSE, HttpStatus.BAD_REQUEST);
         }
     }
 
