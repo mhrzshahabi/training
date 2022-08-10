@@ -11,7 +11,7 @@ import java.util.List;
 @Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.WARN)
 public interface OperationalChartMapper {
 
-    @Mapping(target = "operationalChartParentChild",source = "operationalChartParentChild",ignore = false)
+    @Mapping(target = "operationalChartParentChild",source = "operationalChartParentChild",ignore = true)
     OperationalChartDTO.Info toInfoDTO(OperationalChart operationalChart);
 
     List<OperationalChartDTO.Info> toInfoDTOList(List<OperationalChart> operationalCharts);

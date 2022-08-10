@@ -12,55 +12,55 @@
 
     var operationalSearchTree = isc.TreeGrid.create({
         ID: "operationalSearchTree",
-        data:[],
+        data: [],
         fields: [
-            {name: "title", title: "موارد جستجو شده", width:"75%"},
-            {name: "code", title: "کد", width:"25%"},
+            {name: "title", title: "موارد جستجو شده", width: "75%"},
+            {name: "code", title: "کد", width: "25%"},
         ],
         canDragRecordsOut: true,
         width: "100%",
         height: "30%",
         autoDraw: false,
-        showOpenIcons:false,
-        showDropIcons:false,
-        showSelectedIcons:false,
+        showOpenIcons: false,
+        showDropIcons: false,
+        showSelectedIcons: false,
         showConnectors: true,
-        dataProperties:{
-            dataArrived:function (parentNode) {
+        dataProperties: {
+            dataArrived: function (parentNode) {
                 this.openAll();
             }
         },
         rowClick: function (record, recordNum, fieldNum) {
         },
-        rowDoubleClick: function(record, recordNum, fieldNum) {
+        rowDoubleClick: function (record, recordNum, fieldNum) {
         }
     });
 
     var operationalTree = isc.TreeGrid.create({
         ID: "operationalTree",
-        data:[],
+        data: [],
         fields: [
-            {name: "title", title: "درخت کامل", width:"75%", },
-            {name: "code", title: "کد", width:"25%"},
+            {name: "title", title: "درخت کامل", width: "75%",},
+            {name: "code", title: "کد", width: "25%"},
         ],
         canDragRecordsOut: true,
         width: "100%",
         height: "70%",
         autoDraw: false,
-        showOpenIcons:false,
-        showDropIcons:false,
-        showSelectedIcons:false,
+        showOpenIcons: false,
+        showDropIcons: false,
+        showSelectedIcons: false,
         showConnectors: true,
-        dataProperties:{
-            dataArrived:function (parentNode) {
+        dataProperties: {
+            dataArrived: function (parentNode) {
                 this.openAll();
             }
         },
-        rowDoubleClick: function(record, recordNum, fieldNum) {
+        rowDoubleClick: function (record, recordNum, fieldNum) {
         },
-        openFolder:function () {
+        openFolder: function () {
             openDepFolder(this);
-            this.Super("openFolder",arguments);
+            this.Super("openFolder", arguments);
         }
     });
 
@@ -142,7 +142,7 @@
 
     let ToolStripButton_Edit_JspOperationalChart = isc.ToolStripButtonEdit.create({
         click: function () {
-             let record = ListGrid_JspOperationalChart.getSelectedRecord();
+            let record = ListGrid_JspOperationalChart.getSelectedRecord();
             selected_record = record;
             if (record == null || record.id == null) {
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
@@ -153,7 +153,7 @@
     });
     let ToolStripButton_Add_JspOperationalChart = isc.ToolStripButtonCreate.create({
         click: function () {
-           ListGrid_OperationalChart_Add();
+            ListGrid_OperationalChart_Add();
         }
     });
     let ToolStripButton_Remove_JspOperationalChart = isc.ToolStripButtonRemove.create({
@@ -213,7 +213,7 @@
                 {name: "title"},
                 {name: "code"},
             ],
-        fetchDataURL:   parameterValueUrl+/listByCode/+"operational_chart_role" ,
+        fetchDataURL: parameterValueUrl + /listByCode/ + "operational_chart_role",
         autoFetchData: true
     });
 
@@ -227,7 +227,7 @@
                 {name: "title"},
                 {name: "roleId"},
                 {name: "parentId"},
-                 ],
+            ],
         fetchDataURL: operationalChartUrl + "/spec-list",
     });
     let RestDataSource_Parent = isc.TrDS.create({
@@ -239,7 +239,7 @@
                 {name: "nationalCode"},
                 {name: "title"},
             ],
-        fetchDataURL:  operationalChartUrl + "/spec-list" ,
+        fetchDataURL: operationalChartUrl + "/spec-list",
         autoFetchData: true
     });
 
@@ -262,7 +262,7 @@
                 name: "complex",
                 title: "مجتمع",
                 filterOperator: "iContains"
-             },
+            },
             {
                 name: "userName",
                 title: "نام کاربری",
@@ -334,15 +334,15 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-             methodOperationalChart = "PUT";
-             saveActionUrlOperationalChart = operationalChartUrl + "/update/" + record.id;
+            methodOperationalChart = "PUT";
+            saveActionUrlOperationalChart = operationalChartUrl + "/update/" + record.id;
 
             DynamicForm_JspOperationalChart.clearValues();
             DynamicForm_JspOperationalChart.editRecord(record);
-            }
-
-            Window_JspOperationalChart.show();
         }
+
+        Window_JspOperationalChart.show();
+    }
 
     function OperationalChart_save_result(resp) {
 
@@ -415,12 +415,12 @@
             }
             wait_Permission = createDialog("wait");
 
-            let complex = DynamicForm_JspOperationalChart.getField( "complexId").getValue();
-            let userId= DynamicForm_JspOperationalChart.getField("userIds").getValue();
+            let complex = DynamicForm_JspOperationalChart.getField("complexId").getValue();
+            let userId = DynamicForm_JspOperationalChart.getField("userIds").getValue();
             let title = DynamicForm_JspOperationalChart.getField("title").getValue();
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
-            let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("parentId").getValue();
-            let roleId = DynamicForm_JspOperationalChart.getField("roleId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("roleId").getValue() ;
+            let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue() == undefined ? null : DynamicForm_JspOperationalChart.getField("parentId").getValue();
+            let roleId = DynamicForm_JspOperationalChart.getField("roleId").getValue() == undefined ? null : DynamicForm_JspOperationalChart.getField("roleId").getValue();
 // debugger
             let data = {
                 "nationalCode": "nationalCode",
@@ -429,48 +429,80 @@
                 "operationalChartParentChild": [
                     null
                 ],
-                "parentId": parentId ,
-                "roleId": roleId ,
-                "complex":complex,
+                "parentId": parentId,
+                "roleId": roleId,
+                "complex": complex,
                 "title": title,
                 "code": code,
-                "userId" : userId,
+                "userId": userId,
                 "version": 0
             }
-           if( methodOperationalChart === "PUT" ) {
-               if (parentId != null || parentId != undefined) {
-                   let record = ListGrid_JspOperationalChart.getSelectedRecord();
-                   if (record.parentId != undefined) {
- // debugger
-                       isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/removeOldParent/" + record.id,
-                           "PUT",
-                           null,
-                           function (resp) {
-                               wait_Permission.close();
-                               if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                   var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-                                   refreshLG(ListGrid_JspOperationalChart);
-                                   Window_JspOperationalChart.close();
-                                   setTimeout(function () {
-                                       OK.close();
-                                   }, 3000);
-                                   addChild();
-                               } else {
-                                   // if (resp.httpResponseCode === 406 && resp.httpResponseText == undefined) {
-                                   if (resp.httpResponseCode === 406) {
-                                       createDialog("info", "<spring:message code="msg.changed.not.save"/>");
-                                   } else {
-                                       createDialog("info", "<spring:message code="msg.operation.error"/>");
-                                   }
-                               }
-                           }));
-                   }
-                    else{
-                       addChild();
-                   }
+            if (methodOperationalChart === "PUT") {
+                if (parentId != null || parentId != undefined) {
+                    let record = ListGrid_JspOperationalChart.getSelectedRecord();
+                    debugger
+                    if (record.parentId != undefined) {
 
-               }
-           }
+                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/removeOldParent/" + record.id,
+                            "PUT",
+                            null,
+                            function (resp) {
+                                wait_Permission.close();
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                    refreshLG(ListGrid_JspOperationalChart);
+                                    Window_JspOperationalChart.close();
+                                    // setTimeout(function () {
+                                    //     OK.close();
+                                    // }, 3000);
+                                    // addChild();
+                                    isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/addchild/" + record.id + "/" + parentId,
+                                        "POST",
+                                        null,
+                                        function (resp) {
+                                            wait_Permission.close();
+                                            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                                var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                                refreshLG(ListGrid_JspOperationalChart);
+                                                Window_JspOperationalChart.close();
+                                                // setTimeout(function () {
+                                                //     OK.close();
+                                                // }, 3000);
+                                            } else {
+                                                createDialog("info", "<spring:message code="msg.operation.error"/>");
+
+                                            }
+                                        }));
+                                } else {
+                                    createDialog("info", "<spring:message code="msg.operation.error"/>");
+
+                                }
+                            }));
+                    } else {
+
+                        // addChild();
+
+                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/addchild/" + record.id + "/" + parentId,
+                            "POST",
+                            null,
+                            function (resp) {
+                                wait_Permission.close();
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                                    var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                    refreshLG(ListGrid_JspOperationalChart);
+                                    Window_JspOperationalChart.close();
+                                    // setTimeout(function () {
+                                    //     OK.close();
+                                    // }, 3000);
+                                } else {
+                                    createDialog("info", "<spring:message code="msg.operation.error"/>");
+
+                                }
+                            }));
+                    }
+
+                }
+            }
 // debugger
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
@@ -526,7 +558,7 @@
         fetchDataURL: oauthUserUrl + "/spec-list"
     });
 
-    let DynamicForm_JspOperationalChart= isc.DynamicForm.create({
+    let DynamicForm_JspOperationalChart = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         titleAlign: "left",
@@ -555,7 +587,7 @@
                                 autoDraw: false,
                                 height: 30,
                                 width: "100%",
-                                members: [ ]
+                                members: []
                             }),
                             "header", "body"
                         ]
@@ -673,8 +705,8 @@
 
 
     var VLayout_Operational_Chart_Body = isc.VLayout.create({
-            members: [VLayout_Body_JspOperationalChart, VLayout_operationalTree]
-     });
+        members: [VLayout_Body_JspOperationalChart, VLayout_operationalTree]
+    });
 
     var HLayout_Operational_Chart_Body = isc.TrHLayout.create({
         members: [VLayout_Operational_Chart_Body]
@@ -692,23 +724,23 @@
         if (complexId !== undefined) {
             var url = operationalChartUrl + "/list";
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(url, "POST",  JSON.stringify(complexId), function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(complexId), function (resp) {
                 wait.close();
                 if (resp.httpResponseCode !== 200)
                     return false;
                 else {
                     let data = JSON.parse(resp.data);
 
-                    let childs = data.filter(p => p.operationalChartParentChild);
-                    let chart = data.filter(p => p );
-                    chart.map(p => p.directReports = childs.filter(c=>c.parentId === p.id));
+                    let childs = data.filter(p => p);
+                    let chart = data.filter(p => p);
+                    chart.map(p => p.directReports = childs.filter(c => c.parentId === p.id));
 
-                  let tree=  chart.reduce( (finalchart,one)=>{
-                          if(one.parentId === null ||one.parentId === undefined ){
-                             finalchart.push(one);
-                          }
-                        return   finalchart
-                    } , [] );
+                    let tree = chart.reduce((finalchart, one) => {
+                        if (one.parentId === null || one.parentId === undefined) {
+                            finalchart.push(one);
+                        }
+                        return finalchart
+                    }, []);
                     let treeData = setTreeData(operationalTree, tree, false);
 
                     return treeData;
@@ -719,16 +751,16 @@
 
     function openDepFolder(tree) {
 
-        if(batch) {
+        if (batch) {
             let childeren = [];
             let parent = tree.getDropFolder();
             parent.directReports.forEach(function (currentValue, index, arr) {
-                if(currentValue.isFolder === undefined  && (currentValue.isFetched === undefined || currentValue.isFetched === false)){
+                if (currentValue.isFolder === undefined && (currentValue.isFetched === undefined || currentValue.isFetched === false)) {
                     childeren.add(currentValue.id);
                     currentValue.isFetched = true;
                 }
             });
-         }
+        }
     }
 
     function setTreeData(tree, data, open = false,) {
@@ -742,7 +774,7 @@
             root: {parentTitle: "-", directReports: data}
         });
         tree.setData(treeData);
-         return treeData;
+        return treeData;
     }
 
     function createMainCriteriaInChart(value) {
@@ -772,7 +804,7 @@
 
     }
 
-    function addChild(){
+    function addChild() {
         isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/addchild/" + record.id + "/" + parentId,
             "POST",
             null,
@@ -782,9 +814,9 @@
                     var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
                     refreshLG(ListGrid_JspOperationalChart);
                     Window_JspOperationalChart.close();
-                    setTimeout(function () {
-                        OK.close();
-                    }, 3000);
+                    // setTimeout(function () {
+                    //     OK.close();
+                    // }, 3000);
                 } else {
                     // if (resp.httpResponseCode === 406 && resp.httpResponseText == undefined) {
                     if (resp.httpResponseCode === 406) {
