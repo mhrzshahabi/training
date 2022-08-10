@@ -14463,7 +14463,7 @@ GROUP BY
     </createView>
     </changeSet>
 
-    <changeSet author="Montazeri" id="1659516513941">
+    <changeSet author="Montazeri" id="1660109777475">
         <createView viewName="view_effective_courses_report" replaceIfExists="true">
             SELECT
             ROWNUM AS id,
