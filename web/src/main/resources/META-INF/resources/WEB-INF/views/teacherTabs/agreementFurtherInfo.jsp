@@ -21,32 +21,23 @@
     RestDataSource_JspAgreementFurtherInfo = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "salaryBase", filterOperator: "iContains"},
-            {name: "teachingExperience", filterOperator: "iContains"},
+            {name: "salaryBase"
+               },
+            {name: "teachingExperience"
+            },
 
-            {name: "teacherRank.title",
-                valueMap: {
-                    "PROFESSOR":  "<spring:message code='teacher'/>",
-                    "ASSOCIATEPROFESSOR": "<spring:message code='associateProfessor'/>",
-                    "ASSISTANTPROFESSOR": "<spring:message code='assistantProfessor'/>",
-                    "COACH": "<spring:message code='coach'/>",
-                    "EDUCATOR": "<spring:message code='educator'/>"
-                }}
-
+            {name: "teacherRank"
+                <%--valueMap: {--%>
+                <%--    "1":  "<spring:message code='teacher'/>",--%>
+                <%--    "2": "<spring:message code='associateProfessor'/>",--%>
+                <%--    "3": "<spring:message code='assistantProfessor'/>",--%>
+                <%--    "4": "<spring:message code='coach'/>",--%>
+                <%--    "5": "<spring:message code='educator'/>"--%>
+                <%--}--%>
+            }
 
 
         ]
-    });
-
-    RestDataSource_Currency_AgreementFurtherInfo = isc.TrDS.create({
-        fields:
-            [
-                {name: "id", primaryKey: true, hidden: true},
-                {name: "title", title: "<spring:message code="title"/>"},
-                {name: "code", title: "<spring:message code="code"/>"}
-            ],
-        autoCacheAllData: true,
-        fetchDataURL: parameterUrl + "/iscList/currency"
     });
 
     RestDataSource_Teacher_Rank_AgreementFurtherInfo = isc.TrDS.create({
@@ -86,7 +77,7 @@
             },
 
             {
-                name: "teacherRank.id",
+                name: "teacherRank",
                 title: "<spring:message code='teacherRank'/>",
                 required: true,
                 align: "center",
@@ -202,11 +193,21 @@
 
                 name: "salaryBase",
                 title: "<spring:message code='salaryBase'/>",
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|:]"
+                }
             },
 
             {
                 name: "teachingExperience",
                 title: "<spring:message code='teachingExperience'/>",
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|:]"
+                }
             },
 
 
@@ -214,28 +215,27 @@
                 name: "teacherRank",
                 title: "<spring:message code='teacherRank'/>",
                 align: "center",
-                filterOnKeypress: true,
-                filterEditorProperties:{
-                    pickListProperties: {
-                        showFilterEditor: false
-                    }
-                },
-                filterOperator: "equals",
-                formatCellValue: function (value) {
-                    if (value) {
-                        return value.title;
-                    }
-                }
+
+                // filterOnKeypress: true,
+                // filterEditorProperties:{
+                //     pickListProperties: {
+                //         showFilterEditor: false
+                //     }
+                // },
+                // filterOperator: "equals",
+                // // formatCellValue: function (value) {
+                // //     if (value) {
+                // //         return value.title;
+                // //     }
+                // // }
             }
         ],
         doubleClick: function () {
             ListGrid_AgreementFurtherInfo_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspAgreementFurtherInfo.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
+        showFilterEditor: false,
         filterOnKeypress: true,
         sortField: 1,
         sortBy:"id",
@@ -280,7 +280,8 @@
                 ToolStripButton_Remove_JspAgreementFurtherInfo,
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAgreementFurtherInfo, agreementFurtherInfoUrl + "/iscList/" + teacherIdAgreementFurtherInfo, 0,null, '', "استاد - اطلاعات پايه - اطلاعات تکمیلی تفاهم نامه", ListGrid_JspAgreementFurtherInfo.getCriteria(), null)
+                        debugger;
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAgreementFurtherInfo, agreementFurtherInfoUrl + "/iscList/" + teacherIdAgreementFurtherInfo, 0, null, '',"استاد - اطلاعات پايه - اطلاعات تکمیلی تفاهم نامه"  , ListGrid_JspAgreementFurtherInfo.getCriteria(), null);
                     }
                 }),
                 isc.ToolStrip.create({
@@ -319,6 +320,7 @@
 
     function ListGrid_AgreementFurtherInfo_Edit() {
         let record = ListGrid_JspAgreementFurtherInfo.getSelectedRecord();
+        debugger;
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
