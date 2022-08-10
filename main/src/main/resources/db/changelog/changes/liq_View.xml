@@ -14518,7 +14518,7 @@ GROUP BY
             WHEN tbl_class.c_evaluation = 2 THEN
             'یادگیری'
             WHEN tbl_class.c_evaluation = 3 THEN
-            'ارزیابی'
+            'رفتاری'
             END AS evaluation_type
             FROM
             tbl_evaluation_analysis

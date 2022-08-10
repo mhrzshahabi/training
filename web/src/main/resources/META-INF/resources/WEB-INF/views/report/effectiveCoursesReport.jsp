@@ -584,6 +584,20 @@
                     filterOperator: "iContains"
                 }
             },
+            {
+                name: "evaluationType",
+                title: "<spring:message code='evaluation.type'/>:",
+                type: "SelectItem",
+                multiple: true,
+                valueMap: {
+                    "1": "واکنشی",
+                    "2": "یادگیری",
+                    "3": "رفتاری"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                }
+            },
         ]
     });
 
@@ -741,7 +755,7 @@
             if (!isDateValid) {
                 return;
             }
-            extractEffectivenessCoursesReport();
+            extractEffectiveCoursesReport();
         }
     });
     
@@ -786,7 +800,7 @@
 
     //------------------------------------------------- Functions ------------------------------------------------------
 
-    function extractEffectivenessCoursesReport() {
+    function extractEffectiveCoursesReport() {
         let departmentCriteria = organSegmentFilter_ecr.getCriteria();
         let data = DynamicForm_CriteriaForm_ecr.getValuesAsAdvancedCriteria();
 
@@ -832,8 +846,13 @@
             if (data.criteria[i].fieldName === "effectivenessPass") {
                 data.criteria[i].operator = "inSet";
             }
+            if (data.criteria[i].fieldName === "evaluationType") {
+                data.criteria[i].fieldName = "classEvaluationCode";
+                data.criteria[i].operator = "inSet";
+            }
             finalCriteria.criteria.add(data.criteria[i]);
         }
+        debugger
         ListGrid_effectiveness_courses.invalidateCache();
         ListGrid_effectiveness_courses.fetchData(finalCriteria);
         Window_Show_effectiveness_courses_Report.show();
