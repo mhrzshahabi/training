@@ -250,4 +250,18 @@ public class TrainingPostService implements ITrainingPostService {
         else
             throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
+
+    @Transactional
+    @Override
+    public Boolean updateTrainingPostDeletionStatus(Long trainingPostId) {
+        TrainingPost trainingPost = trainingPostDAO.findById(trainingPostId)
+                .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        if (trainingPost.getDeleted() != null && trainingPost.getDeleted() == 75) {
+            trainingPostDAO.setNullToDeleted(trainingPostId);
+            return true;
+        }
+
+        return false;
+    }
 }

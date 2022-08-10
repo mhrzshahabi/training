@@ -55,24 +55,6 @@ public class PostService implements IPostService {
         return modelMapper.map(postDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound)), PostDTO.Info.class);
     }
 
-    @Override
-    public Post getById(Long id) {
-        Optional<Post> optionalPost = postDAO.findById(id);
-        return modelMapper.map(optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound)), Post.class);
-    }
-
-    @Override
-    public Boolean updatePostDeletionStatus(Long postId) {
-        Post post = getById(postId);
-
-        if (post.getDeleted() == 75) {
-            post.setDeleted(null);
-            return true;
-        }
-
-        return false;
-    }
-
     @Transactional(readOnly = true)
     @Override
     public Page<Post> listByJobId(Long jobId, Pageable pageable) {
@@ -170,6 +152,21 @@ public class PostService implements IPostService {
             return modelMapper.map(optionalPost.get(), PostDTO.needAssessmentInfo.class);
         else
             throw new TrainingException(TrainingException.ErrorType.NotFound);
+    }
+
+
+    @Transactional
+    @Override
+    public Boolean updatePostDeletionStatus(Long postId) {
+        Post post = postDAO.findById(postId)
+                .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        if (post.getDeleted() != null && post.getDeleted() == 75) {
+            postDAO.setNullToDeleted(postId);
+            return true;
+        }
+
+        return false;
     }
 
 }

@@ -18,10 +18,6 @@ public interface IPostService {
     @Transactional(readOnly = true)
     PostDTO.Info get(Long id);
 
-    Post getById(Long id);
-
-    Boolean updatePostDeletionStatus(Long postId);
-
     @Transactional(readOnly = true)
     Page<Post> listByJobId(Long jobId, Pageable pageable);
 
@@ -37,5 +33,8 @@ public interface IPostService {
     SearchDTO.SearchRs<PostDTO.Info> unassignedSearch(SearchDTO.SearchRq request);
 
     PostDTO.needAssessmentInfo getNeedAssessmentInfo(String postCode);
+
+    Boolean updatePostDeletionStatus(Long postId);
+
 
 }
