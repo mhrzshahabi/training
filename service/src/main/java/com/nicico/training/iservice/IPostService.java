@@ -34,4 +34,7 @@ public interface IPostService {
 
     PostDTO.needAssessmentInfo getNeedAssessmentInfo(String postCode);
 
+    Boolean updatePostDeletionStatus(Long postId);
+
+
 }

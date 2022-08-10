@@ -22,4 +22,7 @@ public interface TrainingPostDAO extends BaseDAO<TrainingPost, Long> {
 
     Optional<TrainingPost> findByCodeAndDeleted(@Param("code") String code, Long deleted);
 
+    @Modifying
+    @Query(value = "UPDATE TBL_TRAINING_POST SET E_DELETED = NULL WHERE ID = :trainingPostId", nativeQuery = true)
+    void setNullToDeleted(@Param("trainingPostId") Long trainingPostId);
 }

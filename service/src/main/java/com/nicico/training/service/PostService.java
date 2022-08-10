@@ -154,4 +154,19 @@ public class PostService implements IPostService {
             throw new TrainingException(TrainingException.ErrorType.NotFound);
     }
 
+
+    @Transactional
+    @Override
+    public Boolean updatePostDeletionStatus(Long postId) {
+        Post post = postDAO.findById(postId)
+                .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        if (post.getDeleted() != null && post.getDeleted() == 75) {
+            postDAO.setNullToDeleted(postId);
+            return true;
+        }
+
+        return false;
+    }
+
 }
