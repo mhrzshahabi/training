@@ -21,18 +21,20 @@
     RestDataSource_JspAgreementFurtherInfo = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "salaryBase", filterOperator: "iContains"},
-            {name: "teachingExperience", filterOperator: "iContains"},
+            {name: "salaryBase"
+               },
+            {name: "teachingExperience"
+            },
 
-            {name: "teacherRank",
-                valueMap: {
-                    "1":  "<spring:message code='teacher'/>",
-                    "2": "<spring:message code='associateProfessor'/>",
-                    "3": "<spring:message code='assistantProfessor'/>",
-                    "4": "<spring:message code='coach'/>",
-                    "5": "<spring:message code='educator'/>"
-                }}
-
+            {name: "teacherRank"
+                <%--valueMap: {--%>
+                <%--    "1":  "<spring:message code='teacher'/>",--%>
+                <%--    "2": "<spring:message code='associateProfessor'/>",--%>
+                <%--    "3": "<spring:message code='assistantProfessor'/>",--%>
+                <%--    "4": "<spring:message code='coach'/>",--%>
+                <%--    "5": "<spring:message code='educator'/>"--%>
+                <%--}--%>
+            }
 
 
         ]
@@ -191,11 +193,21 @@
 
                 name: "salaryBase",
                 title: "<spring:message code='salaryBase'/>",
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|:]"
+                }
             },
 
             {
                 name: "teachingExperience",
                 title: "<spring:message code='teachingExperience'/>",
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|:]"
+                }
             },
 
 
@@ -203,28 +215,27 @@
                 name: "teacherRank",
                 title: "<spring:message code='teacherRank'/>",
                 align: "center",
-                filterOnKeypress: true,
-                filterEditorProperties:{
-                    pickListProperties: {
-                        showFilterEditor: false
-                    }
-                },
-                filterOperator: "equals",
-                // formatCellValue: function (value) {
-                //     if (value) {
-                //         return value.title;
+
+                // filterOnKeypress: true,
+                // filterEditorProperties:{
+                //     pickListProperties: {
+                //         showFilterEditor: false
                 //     }
-                // }
+                // },
+                // filterOperator: "equals",
+                // // formatCellValue: function (value) {
+                // //     if (value) {
+                // //         return value.title;
+                // //     }
+                // // }
             }
         ],
         doubleClick: function () {
             ListGrid_AgreementFurtherInfo_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspAgreementFurtherInfo.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
+        showFilterEditor: false,
         filterOnKeypress: true,
         sortField: 1,
         sortBy:"id",
@@ -270,7 +281,7 @@
                 isc.ToolStripButtonExcel.create({
                     click: function () {
                         debugger;
-                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAgreementFurtherInfo, agreementFurtherInfoUrl + "/iscList/" + teacherIdAgreementFurtherInfo, 0, null, '',"استاد - اطلاعات پايه - اطلاعات تکمیلی تفاهم نامه"  , null, null);
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAgreementFurtherInfo, agreementFurtherInfoUrl + "/iscList/" + teacherIdAgreementFurtherInfo, 0, null, '',"استاد - اطلاعات پايه - اطلاعات تکمیلی تفاهم نامه"  , ListGrid_JspAgreementFurtherInfo.getCriteria(), null);
                     }
                 }),
                 isc.ToolStrip.create({

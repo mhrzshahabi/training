@@ -60,14 +60,14 @@ public class TeacherExperienceInfoController {
         TeacherExperienceInfoDTO teacherExperienceInfoDTO =new TeacherExperienceInfoDTO();
         teacherExperienceInfoDTO.setTeacherId((Long) request.get("teacher"));
         teacherExperienceInfoDTO.setTeachingExperience(Long.valueOf( request.get("teachingExperience").toString()));
-        HashMap hashMap=new HashMap();
-        hashMap= (HashMap) request.get("teacherRank");
-       Integer id= (Integer) hashMap.get("id");
+
+        Integer idRank= (Integer) request.get("teacherRank");
+
        TeacherRank.values();
        Object o = null;
        for (TeacherRank t:TeacherRank.values()){
 
-           if(t.getId().equals(id)){
+           if(t.getId().equals(idRank)){
               o=t;
 
            }
@@ -100,7 +100,7 @@ public class TeacherExperienceInfoController {
         TeacherExperienceInfoDTO update =new TeacherExperienceInfoDTO();
         update.setTeacherId((Long) request.get("teacher"));
        update.setTeachingExperience(Long.valueOf( request.get("teachingExperience").toString()));
-        HashMap hashMap=new HashMap();
+
         Integer idRank= (Integer) request.get("teacherRank");
 
         TeacherRank.values();
