@@ -277,7 +277,7 @@ public class MainFormController {
     }
 
     @RequestMapping("/effectiveCoursesReport")
-    public String showClassFinalStatusReport() {
+    public String showEffectiveCoursesReport() {
         return "report/effectiveCoursesReport";
     }
 
