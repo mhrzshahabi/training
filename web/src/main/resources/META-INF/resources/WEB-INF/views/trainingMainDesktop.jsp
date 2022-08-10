@@ -1337,6 +1337,7 @@
     const addIndividualPost = rootUrl + "/view-training-post/add";
     const deleteIndividualPost = rootUrl + "/view-training-post/delete";
     const genericStatisticalIndexReportUrl = rootUrl + "/generic_statistical_index_report";
+    const effectiveCoursesReportUrl = rootUrl + "/effective-courses-report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2710,6 +2711,13 @@
                                 title: "<spring:message code="students.satisfaction.of.teachers.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/studentsSatisfactionOfTeachersReport"/>");
+                                }
+
+                            },
+                            {
+                                title: "<spring:message code="effective.courses.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/effectiveCoursesReport"/>");
                                 }
 
                             },
