@@ -55,6 +55,24 @@ public class PostService implements IPostService {
         return modelMapper.map(postDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound)), PostDTO.Info.class);
     }
 
+    @Override
+    public Post getById(Long id) {
+        Optional<Post> optionalPost = postDAO.findById(id);
+        return modelMapper.map(optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound)), Post.class);
+    }
+
+    @Override
+    public Boolean updatePostDeletionStatus(Long postId) {
+        Post post = getById(postId);
+
+        if (post.getDeleted() == 75) {
+            post.setDeleted(null);
+            return true;
+        }
+
+        return false;
+    }
+
     @Transactional(readOnly = true)
     @Override
     public Page<Post> listByJobId(Long jobId, Pageable pageable) {

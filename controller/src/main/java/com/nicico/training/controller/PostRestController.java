@@ -15,6 +15,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.model.Post;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -183,4 +184,15 @@ public class PostRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity updatePostDeletionStatus(@PathVariable("id") Long postId) {
+        Boolean updatedPostDeletionStatus = iPostService.updatePostDeletionStatus(postId);
+        if (updatedPostDeletionStatus) {
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(false, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }
