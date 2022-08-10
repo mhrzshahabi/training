@@ -42,10 +42,10 @@ public class TeacherExperienceInfoController {
     private final ModelMapper modelMapper;
 
     @GetMapping(value = "/iscList/{teacherId}")
-    public ResponseEntity<ISC<TeacherExperienceInfoDTO>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
+    public ResponseEntity<ISC<TeacherExperienceInfoDTO.ExcelInfo>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<TeacherExperienceInfoDTO> searchRs = teacherExperienceInfoService.search(searchRq, teacherId);
+        SearchDTO.SearchRs<TeacherExperienceInfoDTO.ExcelInfo> searchRs = teacherExperienceInfoService.search(searchRq, teacherId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -101,8 +101,8 @@ public class TeacherExperienceInfoController {
         update.setTeacherId((Long) request.get("teacher"));
        update.setTeachingExperience(Long.valueOf( request.get("teachingExperience").toString()));
         HashMap hashMap=new HashMap();
-        hashMap= (HashMap) request.get("teacherRank");
-        Integer idRank= (Integer) hashMap.get("id");
+        Integer idRank= (Integer) request.get("teacherRank");
+
         TeacherRank.values();
         Object o = null;
         for (TeacherRank t:TeacherRank.values()){

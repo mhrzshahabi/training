@@ -8,6 +8,7 @@ import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.dto.TeacherExperienceInfoDTO;
 import com.nicico.training.iservice.ITeacherExperienceInfoService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.mapper.teacher.TeacherExperienceMapper;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.model.TeacherCertification;
 import com.nicico.training.model.TeacherExperienceInfo;
@@ -32,11 +33,12 @@ import java.util.Optional;
 public class TeacherExperienceInfoService  implements ITeacherExperienceInfoService {
     private final TeacherExperienceInfoDAO teacherExperienceInfoDAO;
     private final ModelMapper modelMapper;
+    private final TeacherExperienceMapper teacherExperienceMapper;
     private final ITeacherService teacherService;
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<TeacherExperienceInfoDTO> search(SearchDTO.SearchRq request, Long teacherId) {
+    public SearchDTO.SearchRs<TeacherExperienceInfoDTO.ExcelInfo> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         request.setSortBy("id");
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
@@ -54,8 +56,8 @@ public class TeacherExperienceInfoService  implements ITeacherExperienceInfoServ
                 request.setCriteria(criteriaRq);
         }
 
-        return SearchUtil.search(teacherExperienceInfoDAO, request, teacherExInfo -> modelMapper.map(teacherExInfo, TeacherExperienceInfoDTO.class));
-
+//     return   SearchUtil.search(teacherExperienceInfoDAO, request, teacherExInfo -> modelMapper.map(teacherExInfo, TeacherExperienceInfoDTO.class));
+     return   SearchUtil.search(teacherExperienceInfoDAO, request, teacherExInfo -> teacherExperienceMapper.mapToDTO(teacherExInfo));
     }
     @Transactional
     @Override
