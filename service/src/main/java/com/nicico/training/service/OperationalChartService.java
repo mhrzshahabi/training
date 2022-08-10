@@ -71,14 +71,14 @@ public class OperationalChartService implements IOperationalChartService {
     public List<OperationalChartDTO.Info> list(Long complexId) {
         final List<OperationalChart> gAll = operationalChartDAO.findAll();
 
-       String complexTitle = complexDAO.findById(complexId).get().getTitle();
+        String complexTitle = complexDAO.findById(complexId).get().getTitle();
 
         Set<OperationalChart> set = new HashSet<>();
         gAll.forEach(one -> {
-                    if (one.getComplex().equals( complexTitle)) {
+                    if (one.getComplex().equals(complexTitle)) {
                         set.add(one);
                     }
-        }
+                }
         );
         List<OperationalChart> listByComplex = set.stream().toList();
         return mapper.toInfoDTOList(listByComplex);
@@ -152,6 +152,7 @@ public class OperationalChartService implements IOperationalChartService {
 
     }
 
+    @Transactional
     @Override
     public OperationalChartDTO.Info addChild(Long parentId, Long childId) {
         Optional<OperationalChart> findOperationalParent = operationalChartDAO.findById(parentId);
@@ -165,7 +166,7 @@ public class OperationalChartService implements IOperationalChartService {
             OperationalChart parent = operationalParent.get();
             OperationalChart child = operationalChild.get();
 
-            if ((parent.getParentId() !=null &&  parent.getParentId().equals(child.getId())) || parent.getId().equals(child.getId())  ) {  // || operationalChild.get().getParentId() !=null
+            if ((parent.getParentId() !=null &&  parent.getParentId().equals(child.getId())) || parent.getId().equals(child.getId()) || parent.getId().equals(child.getId()) ) {  // || operationalChild.get().getParentId() !=null
                 throw new TrainingException(TrainingException.ErrorType.Forbidden, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
             } else {
                 Set<OperationalChart> lastChilds = new HashSet<>(operationalChartDAO.findAllByParentId(parentId));

@@ -421,7 +421,7 @@
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
             let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("parentId").getValue();
             let roleId = DynamicForm_JspOperationalChart.getField("roleId").getValue() == undefined ? null :DynamicForm_JspOperationalChart.getField("roleId").getValue() ;
-debugger
+// debugger
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
@@ -441,7 +441,7 @@ debugger
                if (parentId != null || parentId != undefined) {
                    let record = ListGrid_JspOperationalChart.getSelectedRecord();
                    if (record.parentId != undefined) {
- debugger
+ // debugger
                        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/removeOldParent/" + record.id,
                            "PUT",
                            null,
@@ -454,6 +454,7 @@ debugger
                                    setTimeout(function () {
                                        OK.close();
                                    }, 3000);
+                                   addChild();
                                } else {
                                    // if (resp.httpResponseCode === 406 && resp.httpResponseText == undefined) {
                                    if (resp.httpResponseCode === 406) {
@@ -464,32 +465,13 @@ debugger
                                }
                            }));
                    }
+                    else{
+                       addChild();
+                   }
 
-debugger
-                   isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/addchild/" + record.id + "/" + parentId,
-                       "POST",
-                       null,
-                       function (resp) {
-                           wait_Permission.close();
-                           if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                               var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-                               refreshLG(ListGrid_JspOperationalChart);
-                               Window_JspOperationalChart.close();
-                               setTimeout(function () {
-                                   OK.close();
-                               }, 3000);
-                           } else {
-                               // if (resp.httpResponseCode === 406 && resp.httpResponseText == undefined) {
-                               if (resp.httpResponseCode === 406) {
-                                   createDialog("info", "<spring:message code="msg.changed.not.save"/>");
-                               } else {
-                                   createDialog("info", "<spring:message code="msg.operation.error"/>");
-                               }
-                           }
-                       }));
                }
            }
-debugger
+// debugger
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
                 JSON.stringify(data),
@@ -717,12 +699,18 @@ debugger
                 else {
                     let data = JSON.parse(resp.data);
 
-                    let childs = data.filter(p => p);
+                    let childs = data.filter(p => p.operationalChartParentChild);
                     let chart = data.filter(p => p );
+                    chart.map(p => p.directReports = childs.filter(c=>c.parentId === p.id));
 
-               chart.map(p => p.directReports = childs.filter(c => c.parentId === p.id));
-                    debugger
-                    let treeData = setTreeData(operationalTree, chart, false);
+                  let tree=  chart.reduce( (finalchart,one)=>{
+                          if(one.parentId === null ||one.parentId === undefined ){
+                             finalchart.push(one);
+                          }
+                        return   finalchart
+                    } , [] );
+                    let treeData = setTreeData(operationalTree, tree, false);
+
                     return treeData;
                 }
             }));
@@ -778,11 +766,34 @@ debugger
             let mainCriteria = createMainCriteriaInChart(value);
             ListGrid_JspOperationalChart.invalidateCache();
             ListGrid_JspOperationalChart.fetchData(mainCriteria);
-debugger
         } else {
             createDialog("info", "<spring:message code="msg.select.complex.ask"/>", "<spring:message code="message"/>")
         }
 
+    }
+
+    function addChild(){
+        isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/addchild/" + record.id + "/" + parentId,
+            "POST",
+            null,
+            function (resp) {
+                wait_Permission.close();
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                    refreshLG(ListGrid_JspOperationalChart);
+                    Window_JspOperationalChart.close();
+                    setTimeout(function () {
+                        OK.close();
+                    }, 3000);
+                } else {
+                    // if (resp.httpResponseCode === 406 && resp.httpResponseText == undefined) {
+                    if (resp.httpResponseCode === 406) {
+                        createDialog("info", "<spring:message code="msg.changed.not.save"/>");
+                    } else {
+                        createDialog("info", "<spring:message code="msg.operation.error"/>");
+                    }
+                }
+            }));
     }
 
     // </script>
