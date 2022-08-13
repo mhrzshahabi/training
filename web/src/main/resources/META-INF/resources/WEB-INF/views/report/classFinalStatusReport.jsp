@@ -516,7 +516,6 @@
                                         }
                                         item.setValue(values);
                                         item.pickList.hide();
-                                        debugger
                                     }
                                 }),
                                 isc.ToolStripButton.create({
