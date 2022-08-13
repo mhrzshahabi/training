@@ -430,7 +430,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_cfsr', this, 'ymd', '/');
+                        displayDatePicker('startDate2_cfsr', this, 'ymd', '/', 'right');
                     }
                 }],
                 changed: function (form, item, value) {
