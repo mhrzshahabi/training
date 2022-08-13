@@ -189,6 +189,20 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
                 objectResult = genericStatisticalIndexReportDAO.postNeedAssessment(fromDate, toDate);
                result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (پست)");
                 break;
+
+
+            case "report47":
+                result = genericStatisticalIndexReportDAO.reactiveEvaluationCoverage(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                 break;
+            case "report48":
+                result = genericStatisticalIndexReportDAO.coursesDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                 break;
+            case "report49":
+                result = genericStatisticalIndexReportDAO.coursesTargetDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
+            case "report50":
+                result = genericStatisticalIndexReportDAO.scheduledTraining(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                break;
         }
 
 
