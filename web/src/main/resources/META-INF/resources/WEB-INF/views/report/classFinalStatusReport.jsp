@@ -818,7 +818,13 @@
         items: [isc.TrVLayout.create({
             align: "center",
             members: [
-                ListGrid_CFSR_Student
+                ListGrid_CFSR_Student, isc.ToolStripButtonExcel.create({
+                    height: "1%",
+                    margin: 5,
+                    click: function () {
+                        makeClassFinalStatusExcelReport(ListGrid_CFSR_Student, classStudentFinalStatusReport + "/iscList", 'وضعیت نهایی کلاس بر اساس فراگیر', ListGrid_CFSR_Student.getCriteria())
+                    }
+                })
             ]
         })]
     });
@@ -832,7 +838,13 @@
         items: [isc.TrVLayout.create({
             align: "center",
             members: [
-                ListGrid_CFSR_Course
+                ListGrid_CFSR_Course, isc.ToolStripButtonExcel.create({
+                    height: "1%",
+                    margin: 5,
+                    click: function () {
+                        makeClassFinalStatusExcelReport(ListGrid_CFSR_Course, classCourseFinalStatusReport + "/iscList", 'وضعیت نهایی کلاس بر اساس دوره', ListGrid_CFSR_Course.getCriteria())
+                    }
+                })
             ]
         })],
     });
@@ -961,6 +973,20 @@
             ListGrid_CFSR_Student.fetchData(finalCriteria);
             Window_Show_Student_Report.show();
         }
+    }
+
+    function makeClassFinalStatusExcelReport(listGrid, url, title, criteria) {
+        ExportToFile.downloadExcelRestUrl(
+            null,
+            listGrid,
+            url,
+            0,
+            null,
+            '',
+            title,
+            criteria,
+            null
+        );
     }
 
     function checkDateValidation() {
