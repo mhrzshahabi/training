@@ -6,7 +6,6 @@
 // <script>
 
     let batch = true;
-    let departmentCriteriaChart = [];
 
     // <<----------------------------------------- Create - TreeGrid --------------------------------------------
 
@@ -239,8 +238,11 @@
                 {name: "nationalCode"},
                 {name: "title"},
             ],
+        transformResponse: function (dsResponse) {
+           debugger
+            return this.Super("transformResponse", arguments);
+        },
         fetchDataURL: operationalChartUrl + "/spec-list",
-        autoFetchData: true
     });
 
     let ListGrid_JspOperationalChart = isc.TrLG.create({
@@ -421,7 +423,7 @@
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
             let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue() == undefined ? null : DynamicForm_JspOperationalChart.getField("parentId").getValue();
             let roleId = DynamicForm_JspOperationalChart.getField("roleId").getValue() == undefined ? null : DynamicForm_JspOperationalChart.getField("roleId").getValue();
-// debugger
+debugger
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
@@ -440,7 +442,7 @@
             if (methodOperationalChart === "PUT") {
                 if (parentId != null || parentId != undefined) {
                     let record = ListGrid_JspOperationalChart.getSelectedRecord();
-                    debugger
+
                     if (record.parentId != undefined) {
 
                         isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/removeOldParent/" + record.id,
@@ -503,7 +505,7 @@
 
                 }
             }
-// debugger
+
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
                 methodOperationalChart,
                 JSON.stringify(data),
@@ -566,10 +568,11 @@
             {name: "id", hidden: true},
             {
                 name: "userIds",
-                type: "ComboBoxItem",
-                // type: "MultiComboBoxItem",
+                // type: "ComboBoxItem",
+                type: "MultiComboBoxItem",
                 title: "نام کاربری",
                 optionDataSource: UserDS_JspOperationalChart,
+                autoFetchData: true,
                 valueField: "id",
                 displayField: "lastName",
                 filterOnKeypress: true,
@@ -735,11 +738,11 @@
                     let chart = data.filter(p => p);
                     chart.map(p => p.directReports = childs.filter(c => c.parentId === p.id));
 
-                    let tree = chart.reduce((finalchart, one) => {
+                    let tree = chart.reduce((finalChart, one) => {
                         if (one.parentId === null || one.parentId === undefined) {
                             finalchart.push(one);
                         }
-                        return finalchart
+                        return finalChart
                     }, []);
                     let treeData = setTreeData(operationalTree, tree, false);
 

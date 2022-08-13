@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -43,8 +42,8 @@ public class OperationalChartDTO {
     @ApiModelProperty(required = true)
     private String code;
 
-    @ApiModelProperty(required = true)
-    private List<OperationalChart> operationalChartParentChild;
+//    @ApiModelProperty(required = true)
+//    private List<OperationalChartDTO> operationalChartParentChild;
 
     @Getter
     @Setter
@@ -80,28 +79,6 @@ public class OperationalChartDTO {
         @ApiModelProperty(required = true)
         private Long userId;
 
-//        @NotEmpty
-//        @ApiModelProperty(required = true)
-//        private String title;
-//
-//        @ApiModelProperty(required = true)
-//        private String userName;
-//
-//        @ApiModelProperty(required = true)
-//        private String nationalCode;
-//
-//        @ApiModelProperty(required = true)
-//        private Long roleId;
-//
-//        @ApiModelProperty(required = true)
-//        private Long userId;
-//
-//        @ApiModelProperty(required = true)
-//        private String code;
-//
-//        @NotNull
-//        @ApiModelProperty(required = true)
-//        private Integer version;
     }
 
     @Getter

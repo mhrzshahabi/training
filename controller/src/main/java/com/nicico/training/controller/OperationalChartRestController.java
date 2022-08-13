@@ -1,20 +1,14 @@
 package com.nicico.training.controller;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.OperationalChartDTO;
-import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalChartService;
-import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.repository.ComplexDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -30,8 +24,6 @@ import java.util.List;
 @RequestMapping(value = "/api/operationalchart")
 public class OperationalChartRestController {
     private final IOperationalChartService operationalChartService;
-    private final ObjectMapper objectMapper;
-    private final ComplexDAO complexDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -59,8 +51,8 @@ public class OperationalChartRestController {
 
     @Loggable
     @PostMapping(value = "/addchild/{child_id}/{parent_id}")
-    public ResponseEntity<OperationalChartDTO.Info> addChild(@PathVariable Long parent_id,@PathVariable Long child_id) {
-         return new ResponseEntity<>(operationalChartService.addChild(parent_id,child_id), HttpStatus.OK);
+    public ResponseEntity<OperationalChartDTO.Info> addChild(@PathVariable Long parent_id, @PathVariable Long child_id) {
+        return new ResponseEntity<>(operationalChartService.addChild(parent_id, child_id), HttpStatus.OK);
     }
 
     @Loggable
@@ -68,12 +60,6 @@ public class OperationalChartRestController {
     public ResponseEntity<OperationalChartDTO.Info> update(@PathVariable Long id, @Validated @RequestBody OperationalChartDTO.Update request) {
         return new ResponseEntity<>(operationalChartService.update(id, request), HttpStatus.OK);
     }
-
-//    @Loggable
-//    @PutMapping(value = "/updateParent/{childId}/{newParentId}")
-//    public ResponseEntity<OperationalChartDTO.Info> updateParent(@PathVariable Long childId,@PathVariable Long newParentId) {
-//        return new ResponseEntity<>(operationalChartService.updateParent(childId,newParentId), HttpStatus.OK);
-//    }
 
     @Loggable
     @DeleteMapping(value = "/delete/{id}")

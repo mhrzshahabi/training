@@ -4,16 +4,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalChartDTO;
-import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.iservice.IOperationalChartService;
 import com.nicico.training.iservice.ISynonymOAUserService;
 import com.nicico.training.mapper.operationalChart.OperationalChartMapper;
-import com.nicico.training.model.Complex;
 import com.nicico.training.model.OperationalChart;
-import com.nicico.training.model.OperationalRole;
 import com.nicico.training.repository.ComplexDAO;
 import com.nicico.training.repository.OperationalChartDAO;
-import com.nicico.training.repository.OperationalRoleDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,12 +20,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
-
 @Service
 @RequiredArgsConstructor
 public class OperationalChartService implements IOperationalChartService {
-     private final OperationalChartDAO operationalChartDAO;
-     private final OperationalChartMapper mapper;
+    private final OperationalChartDAO operationalChartDAO;
+    private final OperationalChartMapper mapper;
     private final ISynonymOAUserService synonymOAUserService;
     private final ComplexDAO complexDAO;
     private final ModelMapper modelMapper;
@@ -146,8 +141,8 @@ public class OperationalChartService implements IOperationalChartService {
         final Optional<OperationalChart> cById = operationalChartDAO.findById(childId);
         final OperationalChart operationalChart = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
 
-        if (operationalChart.getParentId() == null ){
-            return mapper.toInfoDTO(operationalChart) ; // if it don't have parent,just return itself.
+        if (operationalChart.getParentId() == null) {
+            return mapper.toInfoDTO(operationalChart); // if it don't have parent,just return itself.
         }
 
         Optional<OperationalChart> findOperationalOldParent = operationalChartDAO.findById(operationalChart.getParentId());
@@ -161,7 +156,7 @@ public class OperationalChartService implements IOperationalChartService {
             return mapper.toInfoDTO(operationalChart);
 
         } else {
-              return mapper.toInfoDTO(operationalChart) ; // if it don't have parent,just return itself.
+            return mapper.toInfoDTO(operationalChart); // if it don't have parent,just return itself.
 //            throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));
         }
 
@@ -202,7 +197,7 @@ public class OperationalChartService implements IOperationalChartService {
         final Optional<OperationalChart> cById = operationalChartDAO.findById(id);
         final OperationalChart operationalChart = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
 
-        OperationalChart toUpdate= mapper.toUpdate(operationalChart,request);
+        OperationalChart toUpdate = mapper.toUpdate(operationalChart, request);
 
         String fullName = synonymOAUserService.getFullNameByUserId(request.getUserId());
         String nationalCode = synonymOAUserService.getNationalCodeByUserId(request.getUserId());
@@ -213,7 +208,7 @@ public class OperationalChartService implements IOperationalChartService {
         String complexTitle = complexDAO.findById(ComplexId).get().getTitle();
         toUpdate.setComplex(complexTitle);
 
-      return save(toUpdate) ;
+        return save(toUpdate);
     }
 
     @Transactional
@@ -222,21 +217,20 @@ public class OperationalChartService implements IOperationalChartService {
         final Optional<OperationalChart> one = operationalChartDAO.findById(id);
         final OperationalChart OperationalToDelete = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
 
-        if (OperationalToDelete.getParentId() == null){
+        if (OperationalToDelete.getParentId() == null) {
             operationalChartDAO.delete(OperationalToDelete);
             return;
         }
-        Optional<OperationalChart> findOperationalParent=  operationalChartDAO.findById(OperationalToDelete.getParentId());
-        Optional<OperationalChart> operationalParent= Optional.ofNullable(findOperationalParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
+        Optional<OperationalChart> findOperationalParent = operationalChartDAO.findById(OperationalToDelete.getParentId());
+        Optional<OperationalChart> operationalParent = Optional.ofNullable(findOperationalParent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound)));
 
-        if (OperationalToDelete.getOperationalChartParentChild().size()==0) {
+        if (OperationalToDelete.getOperationalChartParentChild().size() == 0) {
             OperationalChart parent = operationalParent.get();
             parent.getOperationalChartParentChild().remove(OperationalToDelete);
             save(parent);
             operationalChartDAO.delete(OperationalToDelete);
-        }else
-        {
-        throw new TrainingException(TrainingException.ErrorType. OperationalChartHasChild, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.OperationalChartHasChild, messageSource.getMessage("exception.forbidden.operation", null, LocaleContextHolder.getLocale()));
         }
     }
 
@@ -245,6 +239,7 @@ public class OperationalChartService implements IOperationalChartService {
     public SearchDTO.SearchRs<OperationalChartDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(operationalChartDAO, request, operationalChart -> mapper.toInfoDTO(operationalChart));
     }
+
     @Transactional
     OperationalChartDTO.Info save(OperationalChart operationalChart) {
         OperationalChart saved = operationalChartDAO.saveAndFlush(operationalChart);
