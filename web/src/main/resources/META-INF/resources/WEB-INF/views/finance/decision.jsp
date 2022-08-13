@@ -541,7 +541,7 @@
                 textAlign: "center",
                 required: true,
                 displayField: "titleFa",
-                valueField: "id",
+                valueField: "titleFa",
                 //optionDataSource: RestDataSource_eTechnicalType,
                 sortField: ["id"],
                 // titleOrientation: "top",
