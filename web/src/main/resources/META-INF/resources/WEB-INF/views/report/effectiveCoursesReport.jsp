@@ -256,7 +256,7 @@
 
                 RestDataSource_Term_ecr.fetchDataURL = termUrl + "listByYear/" + criteriaDisplayValues;
             }
-            if (selectorDisplayValues !== undefined) {
+            if (selectorDisplayValues !== undefined && selectorDisplayValues.length > 0) {
                 for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
                     criteriaDisplayValues += selectorDisplayValues [i] + ",";
                 }

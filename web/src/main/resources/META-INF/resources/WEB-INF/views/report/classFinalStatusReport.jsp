@@ -320,7 +320,7 @@
             } else {
                 DynamicForm_CriteriaForm_csfr.getField("classScoringMethodCode").disable();
             }
-            if (selectorDisplayValues !== undefined) {
+            if (selectorDisplayValues !== undefined && selectorDisplayValues.length > 0) {
                 for (let i = 0; i < selectorDisplayValues.size() - 1; i++) {
                     criteriaDisplayValues += selectorDisplayValues [i] + ",";
                 }
@@ -339,6 +339,7 @@
             criteriaDisplayValues = criteriaDisplayValues === undefined ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_csfr.getField("classCode").setValue(criteriaDisplayValues);
+            debugger
             Window_SelectClasses_csfr.close();
         }
     });
@@ -385,7 +386,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('startDate_cfsr', this, 'ymd', '/');
+                        displayDatePicker('startDate1_cfsr', this, 'ymd', '/');
                     }
                 }],
                 changed: function (form, item, value) {
@@ -418,7 +419,7 @@
             },
             {
                 name: "startDate2",
-                ID: "startDate2",
+                ID: "startDate2_cfsr",
                 title: "تا",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -429,7 +430,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate1_csfr', this, 'ymd', '/');
+                        displayDatePicker('startDate2_cfsr', this, 'ymd', '/', 'right');
                     }
                 }],
                 changed: function (form, item, value) {
