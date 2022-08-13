@@ -325,8 +325,8 @@
                     }
                 }],
                 changed: function (form, item, value) {
-                    if(value == undefined || value == null){
-                        form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
                         form.clearFieldErrors("startDate1", true);
                         startDateCheck_Order_ECR = true;
                         startDate1Check_ECR = true;
@@ -345,9 +345,8 @@
                         startDate1Check_ECR = true;
                         form.clearFieldErrors("startDate1", true);
                         form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                    }
-                    else {
-                        startDate1Check_ECR  = true;
+                    } else {
+                        startDate1Check_ECR = true;
                         startDateCheck_Order_ECR = true;
                         form.clearFieldErrors("startDate1", true);
                     }
@@ -366,12 +365,12 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
                         closeCalendarWindow();
-                        displayDatePicker('startDate2_REFR', this, 'ymd', '/','right');
+                        displayDatePicker('startDate2_REFR', this, 'ymd', '/', 'right');
                     }
                 }],
                 changed: function (form, item, value) {
-                    if(value == undefined || value == null){
-                        form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                    if (value == undefined || value == null) {
+                        form.clearFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                         form.clearFieldErrors("startDate2", true);
                         startDateCheck_Order_ECR = true;
                         startDate2Check_ECR = true;
@@ -392,7 +391,7 @@
                         startDateCheck_Order_ECR = false;
                     } else {
                         form.clearFieldErrors("startDate2", true);
-                        startDate2Check_ECR  = true;
+                        startDate2Check_ECR = true;
                         startDateCheck_Order_ECR = true;
                     }
                 }
@@ -609,7 +608,7 @@
         allowFilterExpressions: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
-        showRollOver:false,
+        showRollOver: false,
         autoFitWidth: true,
         autoSize: true,
         fields: [
@@ -730,6 +729,27 @@
         }
     });
 
+    let IButton_Effective_courses_Export_To_Excel = isc.ToolStripButtonExcel.create({
+        height: "1%",
+        margin: 5,
+        click: function () {
+            if (ListGrid_effectiveness_courses.data.size < 1)
+                return
+            else
+                ExportToFile.downloadExcelRestUrl(
+                    null,
+                    ListGrid_effectiveness_courses,
+                    effectiveCoursesReportUrl + "/iscList",
+                    0,
+                    null,
+                    '',
+                    "گزارش دوره های اثربخش",
+                    ListGrid_effectiveness_courses.getCriteria(),
+                    null
+                );
+        }
+    });
+
     let Window_Show_effectiveness_courses_Report = isc.Window.create({
         placement: "center",
         width: "90%",
@@ -740,7 +760,7 @@
         items: [isc.TrVLayout.create({
             align: "center",
             members: [
-                ListGrid_effectiveness_courses
+                ListGrid_effectiveness_courses, IButton_Effective_courses_Export_To_Excel
             ]
         })]
     });
@@ -758,7 +778,7 @@
             extractEffectiveCoursesReport();
         }
     });
-    
+
     let HLayOut_buttons_ecr = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
@@ -852,7 +872,7 @@
             }
             finalCriteria.criteria.add(data.criteria[i]);
         }
-        debugger
+
         ListGrid_effectiveness_courses.invalidateCache();
         ListGrid_effectiveness_courses.fetchData(finalCriteria);
         Window_Show_effectiveness_courses_Report.show();
