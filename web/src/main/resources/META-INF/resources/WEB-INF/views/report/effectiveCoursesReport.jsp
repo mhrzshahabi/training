@@ -13,8 +13,6 @@
     let startDate2Check_ECR = true;
     let startDateCheck_Order_ECR = true;
 
-    let exportToExcelCriteria;
-
     //----------------------------------------------------Rest DataSource-----------------------------------------------
     let RestDataSource_Category_ecr = isc.TrDS.create({
         fields: [
@@ -874,8 +872,6 @@
             }
             finalCriteria.criteria.add(data.criteria[i]);
         }
-
-        exportToExcelCriteria = finalCriteria
 
         ListGrid_effectiveness_courses.invalidateCache();
         ListGrid_effectiveness_courses.fetchData(finalCriteria);
