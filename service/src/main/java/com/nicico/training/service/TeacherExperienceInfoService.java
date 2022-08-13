@@ -8,6 +8,7 @@ import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.dto.TeacherExperienceInfoDTO;
 import com.nicico.training.iservice.ITeacherExperienceInfoService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.mapper.teacher.TeacherExperienceMapper;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.model.TeacherCertification;
 import com.nicico.training.model.TeacherExperienceInfo;
@@ -32,11 +33,12 @@ import java.util.Optional;
 public class TeacherExperienceInfoService  implements ITeacherExperienceInfoService {
     private final TeacherExperienceInfoDAO teacherExperienceInfoDAO;
     private final ModelMapper modelMapper;
+    private final TeacherExperienceMapper teacherExperienceMapper;
     private final ITeacherService teacherService;
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<TeacherExperienceInfoDTO> search(SearchDTO.SearchRq request, Long teacherId) {
+    public SearchDTO.SearchRs<TeacherExperienceInfoDTO.ExcelInfo> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         request.setSortBy("id");
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
@@ -54,20 +56,21 @@ public class TeacherExperienceInfoService  implements ITeacherExperienceInfoServ
                 request.setCriteria(criteriaRq);
         }
 
-        return SearchUtil.search(teacherExperienceInfoDAO, request, teacherExInfo -> modelMapper.map(teacherExInfo, TeacherExperienceInfoDTO.class));
-
+//     return   SearchUtil.search(teacherExperienceInfoDAO, request, teacherExInfo -> modelMapper.map(teacherExInfo, TeacherExperienceInfoDTO.class));
+     return   SearchUtil.search(teacherExperienceInfoDAO, request, teacherExInfo -> teacherExperienceMapper.mapToDTO(teacherExInfo));
     }
     @Transactional
     @Override
     public void addTeacherExperienceInfo(TeacherExperienceInfoDTO teacherExperienceInfoDTO, HttpServletResponse response) {
         final Teacher teacher = teacherService.getTeacher(teacherExperienceInfoDTO.getTeacherId());
 
-        if (!teacherExperienceInfoDAO.existsByTeacherRankIdAndTeacherIdAndSalaryBaseAndTeachingExperience(TeacherRank.valueOf(teacherExperienceInfoDTO.getTeacherRankTitle()).ordinal(),teacher.getId(),teacherExperienceInfoDTO.getSalaryBase(),teacherExperienceInfoDTO.getTeachingExperience())){
+        if (!teacherExperienceInfoDAO.existsByTeacherRankIdAndTeacherIdAndSalaryBaseAndTeachingExperience(teacherExperienceInfoDTO.getTeacherRank().getId(),teacher.getId(),teacherExperienceInfoDTO.getSalaryBase(),teacherExperienceInfoDTO.getTeachingExperience())){
             TeacherExperienceInfo teacherExperienceInfo = new TeacherExperienceInfo();
             teacherExperienceInfo.setTeacherId(teacherExperienceInfoDTO.getTeacherId());
             teacherExperienceInfo.setTeachingExperience(teacherExperienceInfoDTO.getTeachingExperience());
 
-            teacherExperienceInfo.setTeacherRankId((TeacherRank.valueOf(teacherExperienceInfoDTO.getTeacherRankTitle()).getId())-1);
+            teacherExperienceInfo.setTeacherRank((teacherExperienceInfoDTO.getTeacherRank()));
+            teacherExperienceInfo.setTeacherRankId(teacherExperienceInfoDTO.getTeacherRank().getId());
 
             teacherExperienceInfo.setSalaryBase(teacherExperienceInfoDTO.getSalaryBase());
             try {
@@ -89,11 +92,12 @@ public class TeacherExperienceInfoService  implements ITeacherExperienceInfoServ
     public TeacherExperienceInfoDTO update(Long id, TeacherExperienceInfoDTO update, HttpServletResponse response) {
         final TeacherExperienceInfo teacherExperienceInfo = getTeacherExperienceInfo(id);
 
-        if (!teacherExperienceInfoDAO.existsByTeacherRankIdAndTeacherIdAndSalaryBaseAndTeachingExperience(TeacherRank.valueOf(update.getTeacherRankTitle()).ordinal(),teacherExperienceInfo.getTeacherId(),update.getSalaryBase(),update.getTeachingExperience())) {
+        if (!teacherExperienceInfoDAO.existsByTeacherRankIdAndTeacherIdAndSalaryBaseAndTeachingExperience(update.getTeacherRank().getId(),teacherExperienceInfo.getTeacherId(),update.getSalaryBase(),update.getTeachingExperience())) {
 
 
             teacherExperienceInfo.setTeachingExperience(update.getTeachingExperience());
-            teacherExperienceInfo.setTeacherRankId(TeacherRank.valueOf(update.getTeacherRankTitle()).ordinal());
+            teacherExperienceInfo.setTeacherRank(update.getTeacherRank());
+            teacherExperienceInfo.setTeacherRankId(update.getTeacherRank().getId());
 
             teacherExperienceInfo.setSalaryBase(update.getSalaryBase());
             try {

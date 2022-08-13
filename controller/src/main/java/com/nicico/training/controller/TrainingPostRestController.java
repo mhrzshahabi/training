@@ -191,4 +191,15 @@ public class TrainingPostRestController {
         }
     }
 
+    @PutMapping("/update-deletion-status/{postId}")
+    public ResponseEntity updatePostDeletionStatus(@PathVariable Long postId) {
+        Boolean updatedTrainingPostDeletionStatus = trainingPostService.updateTrainingPostDeletionStatus(postId);
+
+        if (updatedTrainingPostDeletionStatus != null && updatedTrainingPostDeletionStatus) {
+            return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(Boolean.FALSE, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

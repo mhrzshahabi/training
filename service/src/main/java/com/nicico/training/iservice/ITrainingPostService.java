@@ -43,5 +43,7 @@ public interface ITrainingPostService {
 
     TrainingPostDTO.needAssessmentInfo getNeedAssessmentInfo(String trainingPostCode);
 
+    Boolean updateTrainingPostDeletionStatus(Long trainingPostId);
+
 
 }

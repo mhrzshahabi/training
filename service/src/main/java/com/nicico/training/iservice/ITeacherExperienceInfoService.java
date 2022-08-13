@@ -8,8 +8,7 @@ import com.nicico.training.model.TeacherExperienceInfo;
 import javax.servlet.http.HttpServletResponse;
 
 public interface ITeacherExperienceInfoService {
-    SearchDTO.SearchRs<TeacherExperienceInfoDTO> search(SearchDTO.SearchRq request, Long teacherId);
-
+    SearchDTO.SearchRs<TeacherExperienceInfoDTO.ExcelInfo> search(SearchDTO.SearchRq request, Long teacherId);
     void addTeacherExperienceInfo(TeacherExperienceInfoDTO teacherExperienceInfoDTO, HttpServletResponse response);
     TeacherExperienceInfo getTeacherExperienceInfo(Long id);
     TeacherExperienceInfoDTO update(Long id, TeacherExperienceInfoDTO update, HttpServletResponse response);

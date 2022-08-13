@@ -276,6 +276,16 @@ public class MainFormController {
         return "report/manHourStatisticsByClassCategoryReport";
     }
 
+    @RequestMapping("/effectiveCoursesReport")
+    public String showEffectiveCoursesReport() {
+        return "report/effectiveCoursesReport";
+    }
+
+    @RequestMapping("/classFinalStatusReport")
+    public String showClassFinalStatusReport() {
+        return "report/classFinalStatusReport";
+    }
+
     @RequestMapping("class-contract")
     public String showClassContractForm() {
         return "run/class-contract";

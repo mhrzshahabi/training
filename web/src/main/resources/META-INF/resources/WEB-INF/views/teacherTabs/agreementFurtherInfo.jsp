@@ -12,6 +12,7 @@
     var endDateCheck_JSPAgreementFurtherInfo = true;
     var dateCheck_Order_JSPAgreementFurtherInfo = true;
     let rialIdAgreement = null;
+    const numFilter_agreement = "[0-9]";
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -20,32 +21,31 @@
     RestDataSource_JspAgreementFurtherInfo = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "salaryBase", filterOperator: "iContains"},
-            {name: "teachingExperience", filterOperator: "iContains"},
+            {name: "salaryBase"
+               },
+            {name: "teachingExperience"
+            },
 
-            {name: "teacherRank.title",
-                valueMap: {
-                    "PROFESSOR":  "<spring:message code='teacher'/>",
-                    "ASSOCIATEPROFESSOR": "<spring:message code='associateProfessor'/>",
-                    "ASSISTANTPROFESSOR": "<spring:message code='assistantProfessor'/>",
-                    "COACH": "<spring:message code='coach'/>",
-                    "EDUCATOR": "<spring:message code='educator'/>"
-                }}
-
+            {name: "teacherRank"
+                <%--valueMap: {--%>
+                <%--    "1":  "<spring:message code='teacher'/>",--%>
+                <%--    "2": "<spring:message code='associateProfessor'/>",--%>
+                <%--    "3": "<spring:message code='assistantProfessor'/>",--%>
+                <%--    "4": "<spring:message code='coach'/>",--%>
+                <%--    "5": "<spring:message code='educator'/>"--%>
+                <%--}--%>
+            }
 
 
         ]
     });
 
-    RestDataSource_Currency_AgreementFurtherInfo = isc.TrDS.create({
-        fields:
-            [
-                {name: "id", primaryKey: true, hidden: true},
-                {name: "title", title: "<spring:message code="title"/>"},
-                {name: "code", title: "<spring:message code="code"/>"}
-            ],
-        autoCacheAllData: true,
-        fetchDataURL: parameterUrl + "/iscList/currency"
+    RestDataSource_Teacher_Rank_AgreementFurtherInfo = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "title"}
+        ],
+        fetchDataURL: enumUrl + "teacherRank/spec-list",
     });
 
 
@@ -64,6 +64,8 @@
                 title: "<spring:message code='salaryBase'/>",
                 textAlign: "center",
                 required: true,
+                filterOnKeypress: true,
+                keyPressFilter: numFilter_agreement,
             },
 
             {
@@ -71,6 +73,7 @@
                 title: "<spring:message code='teachingExperience'/>",
                 textAlign: "center",
                 required: true,
+                keyPressFilter: numFilter_agreement,
             },
 
             {
@@ -80,20 +83,24 @@
                 align: "center",
                 textAlign: "center",
                 filterOnKeypress: true,
+                type: "selectItem",
+                optionDataSource: RestDataSource_Teacher_Rank_AgreementFurtherInfo,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },
                 filterOperator: "iContains",
-                displayField:"teacherRank",
-                valueMap: {
-                    "PROFESSOR":  "<spring:message code='teacher'/>",
-                    "ASSOCIATEPROFESSOR": "<spring:message code='associateProfessor'/>",
-                    "ASSISTANTPROFESSOR": "<spring:message code='assistantProfessor'/>",
-                    "COACH": "<spring:message code='coach'/>",
-                    "EDUCATOR": "<spring:message code='educator'/>"
-                }}
+                displayField:"title",
+                valueField: "id"
+                <%-- valueMap: {--%>
+                <%--    "PROFESSOR":  "<spring:message code='teacher'/>",--%>
+                <%--    "ASSOCIATEPROFESSOR": "<spring:message code='associateProfessor'/>",--%>
+                <%--    "ASSISTANTPROFESSOR": "<spring:message code='assistantProfessor'/>",--%>
+                <%--    "COACH": "<spring:message code='coach'/>",--%>
+                <%--    "EDUCATOR": "<spring:message code='educator'/>"--%>
+                <%--}--%>
+            }
 
 
         ]
@@ -104,19 +111,16 @@
         top: 260,
         click: function () {
 
-            DynamicForm_JspAgreementFurtherInfo.validate();
-            if (!DynamicForm_JspAgreementFurtherInfo.valuesHaveChanged() ||
-                !DynamicForm_JspAgreementFurtherInfo.validate() ||
-                dateCheck_Order_JSPAgreementFurtherInfo == false ||
-                dateCheck_Order_JSPAgreementFurtherInfo == false ||
-                endDateCheck_JSPAgreementFurtherInfo == false ||
-                startDateCheck_JSPAgreementFurtherInfo == false) {
 
-
+            debugger;
+            // DynamicForm_JspAgreementFurtherInfo.validate();
+            // if (!DynamicForm_JspAgreementFurtherInfo.valuesHaveChanged() ||
+            //     !DynamicForm_JspAgreementFurtherInfo.validate()) {
+            //     return;
+            // }
+            if (!DynamicForm_JspAgreementFurtherInfo.validate()) {
                 return;
             }
-
-
 
             waitAgreementFurtherInfo = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlAgreementFurtherInfo,
@@ -179,6 +183,9 @@
     ListGrid_JspAgreementFurtherInfo = isc.TrLG.create({
         dataSource: RestDataSource_JspAgreementFurtherInfo,
         contextMenu: Menu_JspAgreementFurtherInfo,
+        initialSort: [
+            {property: "id", direction: "descanding"}
+        ],
         fields: [
             {name: "id", hidden:true},
 
@@ -186,46 +193,51 @@
 
                 name: "salaryBase",
                 title: "<spring:message code='salaryBase'/>",
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|:]"
+                }
             },
 
             {
                 name: "teachingExperience",
                 title: "<spring:message code='teachingExperience'/>",
+                align: "center",
+                filterOperator: "iContains",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9|:]"
+                }
             },
 
 
             {
-                name: "teacherRank.title",
+                name: "teacherRank",
                 title: "<spring:message code='teacherRank'/>",
                 align: "center",
-                filterOnKeypress: true,
-                filterEditorProperties:{
-                    pickListProperties: {
-                        showFilterEditor: false
-                    }
-                },
-                filterOperator: "equals",
-                "PROFESSOR":  "<spring:message code='teacher'/>",
-                "ASSOCIATEPROFESSOR": "<spring:message code='associateProfessor'/>",
-                "ASSISTANTPROFESSOR": "<spring:message code='assistantProfessor'/>",
-                "COACH": "<spring:message code='coach'/>",
-                "EDUCATOR": "<spring:message code='educator'/>"
+
+                // filterOnKeypress: true,
+                // filterEditorProperties:{
+                //     pickListProperties: {
+                //         showFilterEditor: false
+                //     }
+                // },
+                // filterOperator: "equals",
+                // // formatCellValue: function (value) {
+                // //     if (value) {
+                // //         return value.title;
+                // //     }
+                // // }
             }
-
-
-
         ],
         doubleClick: function () {
             ListGrid_AgreementFurtherInfo_Edit();
         },
-        filterEditorSubmit: function () {
-            ListGrid_JspAgreementFurtherInfo.invalidateCache();
-        },
         align: "center",
         filterOperator: "iContains",
+        showFilterEditor: false,
         filterOnKeypress: true,
         sortField: 1,
-        sortDirection: "ascending",
         sortBy:"id",
         dataPageSize: 50,
         autoFetchData: true,
@@ -268,7 +280,8 @@
                 ToolStripButton_Remove_JspAgreementFurtherInfo,
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAgreementFurtherInfo, agreementFurtherInfoUrl + "/iscList/" + teacherIdAgreementFurtherInfo, 0,null, '', "استاد - اطلاعات پايه - اطلاعات تکمیلی تفاهم نامه", ListGrid_JspAgreementFurtherInfo.getCriteria(), null)
+                        debugger;
+                        ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAgreementFurtherInfo, agreementFurtherInfoUrl + "/iscList/" + teacherIdAgreementFurtherInfo, 0, null, '',"استاد - اطلاعات پايه - اطلاعات تکمیلی تفاهم نامه"  , ListGrid_JspAgreementFurtherInfo.getCriteria(), null);
                     }
                 }),
                 isc.ToolStrip.create({
@@ -306,18 +319,21 @@
     }
 
     function ListGrid_AgreementFurtherInfo_Edit() {
-        var record = ListGrid_JspAgreementFurtherInfo.getSelectedRecord();
+        let record = ListGrid_JspAgreementFurtherInfo.getSelectedRecord();
+        debugger;
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             methodAgreementFurtherInfo = "PUT";
             saveActionUrlAgreementFurtherInfo = agreementFurtherInfoUrl + "/" + record.id;
-            debugger;
+        
             DynamicForm_JspAgreementFurtherInfo.clearValues();
-            var clonedRecord = Object.assign({}, record);
-            clonedRecord.teacherRank = record.teacherRank.title;
+            // let clonedRecord = Object.assign({}, record);
+            // clonedRecord.teacherRank = record.teacherRank.title;
+            // clonedRecord.teacherRankTitle=record.teacherRank.literal;
+            
 
-            DynamicForm_JspAgreementFurtherInfo.editRecord(clonedRecord);
+            DynamicForm_JspAgreementFurtherInfo.editRecord(record);
             Window_JspAgreementFurtherInfo.show();
 
         }

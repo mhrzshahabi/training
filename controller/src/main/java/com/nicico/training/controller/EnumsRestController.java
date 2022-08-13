@@ -136,4 +136,9 @@ public class EnumsRestController {
         return new ResponseEntity<>(new EQuestionLevelDTO.EQuestionLevelSpecRs(), HttpStatus.OK);
     }
 
+    @GetMapping("teacherRank/spec-list")
+    public ResponseEntity<ETeacherRankDTO.ETeacherRankSpecRs> getTeacherRank() {
+        return new ResponseEntity<>(new ETeacherRankDTO.ETeacherRankSpecRs(), HttpStatus.OK);
+    }
+
 }

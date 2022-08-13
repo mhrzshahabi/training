@@ -9,11 +9,14 @@ import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.dto.TeacherExperienceInfoDTO;
 import com.nicico.training.dto.enums.TeacherRankDTO;
 import com.nicico.training.iservice.ITeacherExperienceInfoService;
+import com.nicico.training.model.enums.EnumsConverter;
+import com.nicico.training.model.enums.TeacherRank;
 import com.nicico.training.repository.TeacherExperienceInfoDAO;
 import com.sun.jdi.LongValue;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.javassist.expr.Instanceof;
+import org.aspectj.apache.bcel.classfile.Unknown;
 import org.exolab.castor.xml.validators.LongValidator;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -38,10 +42,10 @@ public class TeacherExperienceInfoController {
     private final ModelMapper modelMapper;
 
     @GetMapping(value = "/iscList/{teacherId}")
-    public ResponseEntity<ISC<TeacherExperienceInfoDTO>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
+    public ResponseEntity<ISC<TeacherExperienceInfoDTO.ExcelInfo>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<TeacherExperienceInfoDTO> searchRs = teacherExperienceInfoService.search(searchRq, teacherId);
+        SearchDTO.SearchRs<TeacherExperienceInfoDTO.ExcelInfo> searchRs = teacherExperienceInfoService.search(searchRq, teacherId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -56,9 +60,22 @@ public class TeacherExperienceInfoController {
         TeacherExperienceInfoDTO teacherExperienceInfoDTO =new TeacherExperienceInfoDTO();
         teacherExperienceInfoDTO.setTeacherId((Long) request.get("teacher"));
         teacherExperienceInfoDTO.setTeachingExperience(Long.valueOf( request.get("teachingExperience").toString()));
-        teacherExperienceInfoDTO.setTeacherRankTitle( request.get("teacherRank").toString());
-        teacherExperienceInfoDTO.setSalaryBase(Long.valueOf(request.get("salaryBase").toString()));
 
+        Integer idRank= (Integer) request.get("teacherRank");
+
+       TeacherRank.values();
+       Object o = null;
+       for (TeacherRank t:TeacherRank.values()){
+
+           if(t.getId().equals(idRank)){
+              o=t;
+
+           }
+           }
+         teacherExperienceInfoDTO.setTeacherRank((TeacherRank) o);
+//       teacherExperienceInfoDTO.setTeacherRank((TeacherRank.valueOf(id));
+//        teacherExperienceInfoDTO.setTeacherRank(TeacherRank.);
+        teacherExperienceInfoDTO.setSalaryBase(Long.valueOf(request.get("salaryBase").toString()));
 
 
         teacherExperienceInfoDTO.setTeacherId(teacherId);
@@ -71,6 +88,8 @@ public class TeacherExperienceInfoController {
         }
     }
 
+
+
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request, HttpServletResponse response) {
@@ -81,7 +100,19 @@ public class TeacherExperienceInfoController {
         TeacherExperienceInfoDTO update =new TeacherExperienceInfoDTO();
         update.setTeacherId((Long) request.get("teacher"));
        update.setTeachingExperience(Long.valueOf( request.get("teachingExperience").toString()));
-        update.setTeacherRankTitle( request.get("teacherRank").toString());
+
+        Integer idRank= (Integer) request.get("teacherRank");
+
+        TeacherRank.values();
+        Object o = null;
+        for (TeacherRank t:TeacherRank.values()){
+
+            if(t.getId().equals(idRank)){
+                o=t;
+
+            }
+        }
+        update.setTeacherRank((TeacherRank) o);
        update.setSalaryBase(Long.valueOf(request.get("salaryBase").toString()));
 
 

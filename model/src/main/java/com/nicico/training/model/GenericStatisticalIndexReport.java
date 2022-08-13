@@ -39,11 +39,11 @@ public class GenericStatisticalIndexReport {
     private Long affairsId;
 
     @Column(name = "n_base_on_complex")
-    private Long baseOnComplex;
+    private Double baseOnComplex;
 
     @Column(name = "n_base_on_assistant")
-    private Long baseOnAssistant;
+    private Double baseOnAssistant;
 
     @Column(name = "n_base_on_affairs")
-    private Long baseOnAffairs;
+    private Double baseOnAffairs;
 }
