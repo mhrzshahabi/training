@@ -184,6 +184,7 @@ public class EvaluationAnalysisFormController {
 
             params.add("code", object.get("tclassCode").toString());
             params.add("titleClass", object.get("courseTitleFa").toString());
+            params.add("id",object.get("id").toString());
             params.add("term", object.get("termTitleFa").toString());
             params.add("studentCount", object.get("tclassStudentsCount").toString());
             params.add("classStatus", object.get("tclassStatus").toString());

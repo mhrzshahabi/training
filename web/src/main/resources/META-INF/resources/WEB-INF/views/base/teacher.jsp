@@ -44,6 +44,10 @@
             {name: "personality.contactInfo.workAddress.id"},
             {name: "personality.accountInfo.id"},
             {name: "personality.educationLevelId"},
+            {name:"teacherExperienceInfo.salaryBase"},
+            {name:"teacherExperienceInfo.teachingExperience"},
+            {name:"teacherExperienceInfo.rankId"},
+            {name:"teacherExperienceInfo.createdDate"},
             {name: "lastClass", canFilter: false, canSort: false},
             {name: "personnelStatus",
                 valueMap: {
@@ -609,6 +613,12 @@
                 title: "<spring:message code="otherActivities"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/otherActivities-tab"})
             },
+            {
+                ID: "agreementFurtherInfo",
+                title: "<spring:message code="agreement.further.info"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/agreementFurtherInfo-tab"})
+            },
+
         ],
         tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
             var teacherId;
@@ -634,6 +644,8 @@
                     loadPage_Publication(teacherId);
                 if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == 'employmentHistory')
                     loadPage_EmploymentHistory(teacherId);
+                if (TabSet_Bottom_JspTeacher.getSelectedTab().ID == "agreementFurtherInfo")
+                    loadPage_AgreementFurtherInfo(teacherId);
             }
         }
     });
@@ -1059,6 +1071,7 @@
             ToolStrip_Actions_JspPublication.setVisibility(false);
             ToolStrip_Actions_JspForeignLangKnowledge.setVisibility(false);
             ToolStrip_Actions_JspEmploymentHistory.setVisibility(false);
+            ToolStrip_Actions_JspTeacherCertification.setVisibility(false);
             DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
     }
     function ListGrid_teacher_edit(teacherRecordId = null,tab) {
@@ -1726,6 +1739,7 @@
         ListGrid_JspEmploymentHistory.clearFilterValues();
         ListGrid_JspTeachingHistory.clearFilterValues();
         ListGrid_JspTeacherCertification.clearFilterValues();
+        ListGrid_JspAgreementFurtherInfo.clearFilterValues();
         ListGrid_JspPublication.clearFilterValues();
         ListGrid_JspForeignLangKnowledge.clearFilterValues();
         if(oLoadAttachments_Teacher)
@@ -1734,6 +1748,7 @@
         ListGrid_JspEmploymentHistory.filterByEditor();
         ListGrid_JspTeachingHistory.filterByEditor();
         ListGrid_JspTeacherCertification.filterByEditor();
+        ListGrid_JspAgreementFurtherInfo.filterByEditor();
         ListGrid_JspPublication.filterByEditor();
         ListGrid_JspForeignLangKnowledge.filterByEditor();
         if(oLoadAttachments_Teacher)

@@ -231,6 +231,25 @@ public class PersonnelService implements IPersonnelService {
         return personnelDAO.getPersonnelFullName(id);
     }
 
+    @Override
+    @Transactional
+    public boolean changeComplex(Long id,String complex) {
+        try {
+            Optional<Personnel>optionalPersonnel=personnelDAO.findById(id);
+            if (optionalPersonnel.isPresent()){
+                Personnel personnel=optionalPersonnel.get();
+                personnel.setComplexTitle(complex);
+                personnelDAO.save(personnel);
+                return true;
+            }else
+                return false;
+        }catch ( Exception e){
+            return false;
+
+        }
+
+    }
+
     //Unused
     @Override
     @Transactional

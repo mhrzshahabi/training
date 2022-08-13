@@ -256,4 +256,10 @@ public class PersonnelRestController {
 
     }
 
+    @Loggable
+    @PutMapping(value = "/change-complex")
+    public boolean changeComplex(@RequestParam Long id,@RequestParam String complex) {
+        return iPersonnelService.changeComplex(id,complex);
+    }
+
 }

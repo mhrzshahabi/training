@@ -66,6 +66,12 @@ public class TeacherFormController {
         return "teacherTabs/otherActivities";
     }
 
+    @RequestMapping("/agreementFurtherInfo-tab")
+    public String agreementFurtherInfoTab() {
+        return "teacherTabs/agreementFurtherInfo";
+    }
+
+
     @RequestMapping("/jobInfo-tab")
     public String jobInfoTab() {
         return "teacherTabs/jobInfo";

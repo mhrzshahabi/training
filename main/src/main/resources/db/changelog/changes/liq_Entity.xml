@@ -3802,4 +3802,50 @@
             <column name="complex_values" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-088">
+        <createTable tableName="tbl_generic_statistical_index_report">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_generic_statistical_index_reportPK"/>
+            </column>
+            <column name="complex" type="VARCHAR2(255 CHAR)"/>
+            <column name="complex_id" type="NUMBER(19, 0)"/>
+            <column name="assistant" type="VARCHAR2(255 CHAR)"/>
+            <column name="assistant_id" type="NUMBER(19, 0)"/>
+            <column name="affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="affairs_id" type="NUMBER(19, 0)"/>
+            <column name="n_base_on_complex" type="NUMBER(19, 0)"/>
+            <column name="n_base_on_assistant" type="NUMBER(19, 0)"/>
+            <column name="n_base_on_affairs" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="ZPakdaman" id="1658896976000-01">
+        <createTable tableName="tbl_teacher_experience_info">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_teacher_experience_infoPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="salary_base" type="VARCHAR2(255 CHAR)"/>
+            <column name="teaching_experience" type="VARCHAR2(255 CHAR)"/>
+            <column name="t_rank" type="NUMBER(10, 0)"/>
+            <column name="teacher" type="NUMBER(19, 0)"/>
+
+
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

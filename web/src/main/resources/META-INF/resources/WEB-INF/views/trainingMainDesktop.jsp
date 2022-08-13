@@ -1239,6 +1239,7 @@
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
+    const agreementFurtherInfoUrl=rootUrl + "/teacherExperienceInfo"
     const foreignLangKnowledgeUrl = rootUrl + "/foreignLangKnowledge";
     const publicationUrl = rootUrl + "/publication";
     const configQuestionnaireUrl = rootUrl + "/config-questionnaire";
@@ -1336,6 +1337,8 @@
     const systemStatusUrl = rootUrl + "/system-status";
     const addIndividualPost = rootUrl + "/view-training-post/add";
     const deleteIndividualPost = rootUrl + "/view-training-post/delete";
+    const genericStatisticalIndexReportUrl = rootUrl + "/generic_statistical_index_report";
+    const effectiveCoursesReportUrl = rootUrl + "/effective-courses-report";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -2713,6 +2716,13 @@
 
                             },
                             {
+                                title: "<spring:message code="effective.courses.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/effectiveCoursesReport"/>");
+                                }
+
+                            },
+                            {
                                 title: "<spring:message code="personnel.statistic.report"/>",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/personnelStatisticReport"/>");
@@ -2803,6 +2813,13 @@
                                     createTab(this.title, "<spring:url value="web/manHourStatisticsByClassCategoryReport/"/>");
                                 }
                             },
+                            {isSeparator: true},
+                            {
+                                title: "<spring:message code="class.final.status.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/classFinalStatusReport/"/>");
+                                }
+                            },
                         ]
                 },
                 </sec:authorize>
@@ -2841,6 +2858,17 @@
 
                         ]
                 },
+                {
+                    title: "گزارشات شاخص های آماری",
+                    submenu: [
+                        {
+                            title: "گزارش شاخص های آماری",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="web/genericStatisticalIndexReport"/>");
+                            }
+                        }
+                    ]
+                }
             ]
         }),
     });
@@ -3700,6 +3728,8 @@
     const courseListNeedAssessment = rootUrl + "/trainingNeedAssessment/"
     const roleUrl = rootUrl + "/role/";
     const educationalCalenderUrl= rootUrl + "/educational-calender/"
+    const classCourseFinalStatusReport = rootUrl + "/class-course-final-status-report"
+    const classStudentFinalStatusReport = rootUrl + "/class-student-final-status-report"
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
@@ -4080,6 +4110,8 @@
     function init_OrganSegmentFilterDF(disableField = false,
                                        useNameInCriteria = false,
                                        hideCompanyFilter = false,
+                                       hideGhesmatFilter = false,
+                                       hideVahedFilter = false,
                                        companyFieldName = "companyName",
                                        mojtameFieldName = "department.mojtameCode",
                                        moavenatFieldName = "department.moavenatCode",
@@ -4097,14 +4129,18 @@
         if (hideCompanyFilter === true)
             filterDF.getFields()[0].hide();
 
+        if (hideGhesmatFilter === true)
+            filterDF.getFields()[4].hide();
+
+        if (hideVahedFilter === true)
+            filterDF.getFields()[5].hide();
+
         if (disableField === true){
             filterDF.getFields()[2].disable();
             filterDF.getFields()[3].disable();
             filterDF.getFields()[4].disable();
             filterDF.getFields()[5].disable();
         }
-
-
 
         filterDF.getFields()[0].criteriaField = companyFieldName;
         filterDF.getFields()[1].criteriaField = mojtameFieldName;

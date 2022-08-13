@@ -63,4 +63,6 @@ public interface IPersonnelService {
     Optional<Personnel> findById(Long PersonnelId);
 
     String getPersonnelFullName(Long id);
+
+    boolean changeComplex(Long id,String complex);
 }

@@ -34,4 +34,8 @@ public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExec
 
     @Query(value = "SELECT    * FROM tbl_post where e_deleted is NULL AND c_code= :code ",nativeQuery = true)
     Post findByDeletedAndPostFilter(String code);
+
+    @Modifying
+    @Query(value = "UPDATE TBL_POST SET E_DELETED = NULL WHERE ID = :postId ", nativeQuery = true)
+    void setNullToDeleted(@Param("postId") Long postId);
 }

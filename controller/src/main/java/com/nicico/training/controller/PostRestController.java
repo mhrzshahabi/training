@@ -15,6 +15,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.model.Post;
 import com.nicico.training.service.BaseService;
 import com.nicico.training.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import response.BaseResponse;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -183,4 +185,16 @@ public class PostRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    @PutMapping("/update-deletion-status/{postId}")
+    public ResponseEntity updatePostDeletionStatus(@PathVariable Long postId) {
+        Boolean updatedPostDeletionStatus = iPostService.updatePostDeletionStatus(postId);
+
+        if (updatedPostDeletionStatus != null && updatedPostDeletionStatus) {
+            return new ResponseEntity<>(Boolean.TRUE, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(Boolean.FALSE, HttpStatus.BAD_REQUEST);
+        }
+    }
+
 }

@@ -35,5 +35,7 @@ public interface IContactInfoService {
     Object getCorrespondingRecordOfContactInfo(Long id, Long parentId);
     boolean  updateAllRepositoriesWithThisContactInfo(Object record, ContactInfo contactInfo1);
 
+    ContactInfo save(ContactInfoDTO.Info contactInfo);
+
     //Boolean has
 }

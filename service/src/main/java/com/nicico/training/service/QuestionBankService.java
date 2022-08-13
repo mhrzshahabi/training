@@ -1,6 +1,5 @@
 package com.nicico.training.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
@@ -30,6 +29,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
+import static com.nicico.training.utility.persianDate.MyUtils.areAllUnique;
 
 @Service
 @RequiredArgsConstructor
@@ -442,6 +442,15 @@ public class QuestionBankService implements IQuestionBankService {
     @Override
     public BaseResponse addQuestionsGroup(Long id, Set<Long> ids, List<QuestionBankDTO.priorityData> priorityData) {
         BaseResponse response=new BaseResponse() ;
+
+        Set<String> priorityList=priorityData.stream().map(QuestionBankDTO.priorityData::getChildPriority).collect(Collectors.toSet());
+
+
+        if (priorityList.size()!=priorityData.size()){
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE.value());
+            response.setMessage(messageSource.getMessage("question.error.priority.duplicate", null, LocaleContextHolder.getLocale()));
+            return response;
+        }
         final Optional<QuestionBank> cById = questionBankDAO.findById(id);
         final QuestionBank model = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.QuestionBankNotFound));
         Set<QuestionBank> questionGroupIds=model.getGroupQuestions();

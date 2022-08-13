@@ -60,7 +60,9 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     @Override
     public PersonnelRegisteredDTO.Info create(PersonnelRegisteredDTO.Create request) {
         final PersonnelRegistered personnelRegistered = modelMapper.map(request, PersonnelRegistered.class);
-        ContactInfo contactInfo = contactInfoDAO.save(modelMapper.map(request.getContactInfo(), ContactInfo.class));
+        ContactInfo contactInfo = contactInfoService.save(request.getContactInfo());
+//        ContactInfo contactInfo = contactInfoService.save(modelMapper.map(request.getContactInfo(), ContactInfo.class));
+
         personnelRegistered.setContactInfo(contactInfo);
         personnelRegistered.setActive(1);
         return save(personnelRegistered);

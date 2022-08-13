@@ -2,7 +2,6 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ViewCoursesEvaluationStatisticalReportDTO;
-import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.iservice.IViewCoursesEvaluationStatisticalReportService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +23,6 @@ import java.util.Map;
 public class ViewCoursesEvaluationStatisticalReportRestController {
 
     private final IViewCoursesEvaluationStatisticalReportService viewCoursesEvaluationStatisticalReportService;
-    private final ITclassService tclassService;
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<ViewCoursesEvaluationStatisticalReportDTO.StatisticalData>> iscList(HttpServletRequest iscRq) throws IOException {
@@ -45,7 +42,6 @@ public class ViewCoursesEvaluationStatisticalReportRestController {
         statisticalData.setNumberOfInEffective(0);
 
         data.forEach(item -> {
-//            Map<String, Object> map = tclassService.getEvaluationStatisticalReport(item.getClassId());
             statisticalData.setTotalClasses(statisticalData.getTotalClasses()+1);
             if (item.getHasReactionEval()!=null && !item.getHasReactionEval().equals("0"))
                 statisticalData.setNumberOfReaction(statisticalData.getNumberOfReaction()+1);

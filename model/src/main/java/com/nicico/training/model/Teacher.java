@@ -92,6 +92,9 @@ public class Teacher extends Auditable {
     @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<AcademicBK> academicBKs;
 
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TeacherExperienceInfo> teacherExperienceInfos;
+
     @Column(name = "c_other_activities", length = 500)
     private String otherActivities;
 
