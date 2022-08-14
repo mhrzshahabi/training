@@ -239,7 +239,6 @@
                 {name: "title"},
             ],
         transformResponse: function (dsResponse) {
-           debugger
             return this.Super("transformResponse", arguments);
         },
         fetchDataURL: operationalChartUrl + "/spec-list",
@@ -427,10 +426,6 @@ debugger
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
-
-                "operationalChartParentChild": [
-                    null
-                ],
                 "parentId": parentId,
                 "roleId": roleId,
                 "complex": complex,
@@ -451,25 +446,22 @@ debugger
                             function (resp) {
                                 wait_Permission.close();
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                    var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                    <%--var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");--%>
+                                    console.log("remove old parent operation successful done.");
                                     refreshLG(ListGrid_JspOperationalChart);
                                     Window_JspOperationalChart.close();
-                                    // setTimeout(function () {
-                                    //     OK.close();
-                                    // }, 3000);
-                                    // addChild();
+
                                     isc.RPCManager.sendRequest(TrDSRequest(operationalChartUrl + "/addchild/" + record.id + "/" + parentId,
                                         "POST",
                                         null,
                                         function (resp) {
                                             wait_Permission.close();
                                             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                                var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                                <%--var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");--%>
+                                                console.log("add child operation successful done.");
                                                 refreshLG(ListGrid_JspOperationalChart);
                                                 Window_JspOperationalChart.close();
-                                                // setTimeout(function () {
-                                                //     OK.close();
-                                                // }, 3000);
+
                                             } else {
                                                 createDialog("info", "<spring:message code="msg.operation.error"/>");
 
@@ -490,12 +482,11 @@ debugger
                             function (resp) {
                                 wait_Permission.close();
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                    var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
+                                    <%--var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");--%>
+                                    console.log("just add child operation successful done.");
                                     refreshLG(ListGrid_JspOperationalChart);
                                     Window_JspOperationalChart.close();
-                                    // setTimeout(function () {
-                                    //     OK.close();
-                                    // }, 3000);
+
                                 } else {
                                     createDialog("info", "<spring:message code="msg.operation.error"/>");
 
@@ -568,8 +559,7 @@ debugger
             {name: "id", hidden: true},
             {
                 name: "userIds",
-                // type: "ComboBoxItem",
-                type: "MultiComboBoxItem",
+                type: "ComboBoxItem",
                 title: "نام کاربری",
                 optionDataSource: UserDS_JspOperationalChart,
                 autoFetchData: true,

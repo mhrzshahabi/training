@@ -156,8 +156,7 @@ public class OperationalChartService implements IOperationalChartService {
             return mapper.toInfoDTO(operationalChart);
 
         } else {
-            return mapper.toInfoDTO(operationalChart); // if it don't have parent,just return itself.
-//            throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));
+            throw new TrainingException(TrainingException.ErrorType.NotFound, messageSource.getMessage("exception.record.not−found", null, LocaleContextHolder.getLocale()));
         }
 
     }
