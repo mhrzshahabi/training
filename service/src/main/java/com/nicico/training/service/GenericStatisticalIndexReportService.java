@@ -20,7 +20,7 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
     private final GenericStatisticalIndexReportDAO genericStatisticalIndexReportDAO;
 
     @Override
-    public List<GenericStatisticalIndexReportDTO>  getQueryResult(String reportName,
+    public List<GenericStatisticalIndexReportDTO> getQueryResult(String reportName,
                                                                  String fromDate,
                                                                  String toDate,
                                                                  List<Object> complex,
@@ -30,194 +30,100 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
                                                                  List<Object> affairs,
                                                                  int affairsNull) {
 
-        List<GenericStatisticalIndexReport> result = new ArrayList<>();
-        List<Object> objectResult = new ArrayList<>();
-        switch (reportName) {
-            case "report01":
-                result = genericStatisticalIndexReportDAO.needAssessment(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report02":
-                result = genericStatisticalIndexReportDAO.getTotalHours(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report03":
-                result = genericStatisticalIndexReportDAO.saraneomomi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report04":
-                result = genericStatisticalIndexReportDAO.saratakhasosi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report05":
-                result = genericStatisticalIndexReportDAO.saraneModiriati(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report06":
-                result = genericStatisticalIndexReportDAO.gozarAzAmozesh(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report07":
-                result = genericStatisticalIndexReportDAO.arzeshyabiYadgiri(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report08":
-                result = genericStatisticalIndexReportDAO.getTechnicalTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report09":
-                result = genericStatisticalIndexReportDAO.getSkillTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report10":
-                result = genericStatisticalIndexReportDAO.trainingStaffToTotalStaff( complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report11":
-                result = genericStatisticalIndexReportDAO.teachingLearningLevelOfNewCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report12":
-                result = genericStatisticalIndexReportDAO.teachingLearningLevelOfFrequentCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report13":
-                result = genericStatisticalIndexReportDAO.teachingRatioOfInternalTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report14":
-                result = genericStatisticalIndexReportDAO.ojt(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report15":
-                result = genericStatisticalIndexReportDAO.proportionOfTrainingOutsideTheCalendar(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report16":
-                result = genericStatisticalIndexReportDAO.canceledCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report17":
-                result = genericStatisticalIndexReportDAO.trainingOutsideTheOrganization(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report18":
-                result = genericStatisticalIndexReportDAO.trainingWithInTheOrganization(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report19":
-                result = genericStatisticalIndexReportDAO.specializedTrainingForCustomers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report20":
-                result = genericStatisticalIndexReportDAO.HSE(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report21":
-                result = genericStatisticalIndexReportDAO.lowerThanBachelor(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report22":
-                result = genericStatisticalIndexReportDAO.trainingOfSupervisors(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report23":
-                result = genericStatisticalIndexReportDAO.managersTrainingPerCapita(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-
-                case "report24":
-                result = genericStatisticalIndexReportDAO.capitaOfContractingForces(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report25":
-                result = genericStatisticalIndexReportDAO.trainingHoursOfTheCompany(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report26":
-                result = genericStatisticalIndexReportDAO.educationParticipationRateIndex(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report27":
-                result = genericStatisticalIndexReportDAO.indexOfTheRatioOfImplementedTrainings(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report28":
-                result = genericStatisticalIndexReportDAO.percentageOfcalendarTitleOfTheCourse(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report29":
-                result = genericStatisticalIndexReportDAO.percentageOfcalendarTitleOfTheStudent(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report30":
-                result = genericStatisticalIndexReportDAO.totalNumberOfTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report31":
-                result = genericStatisticalIndexReportDAO.totalNumberOfInnerTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report32":
-                result = genericStatisticalIndexReportDAO.ratioOfEvaluatedTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-
-                case "report33":
-                result = genericStatisticalIndexReportDAO.electronicallyExecuted(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report34":
-                result = genericStatisticalIndexReportDAO.performedInAbsentia(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-                case "report35":
-                    objectResult = genericStatisticalIndexReportDAO.proportionOfDesignedManagementCourses(fromDate, toDate);
-                    result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (دوره)");
-                    break;
-                case "report36":
-                    objectResult = genericStatisticalIndexReportDAO.revisedLessonPlansRatio(fromDate, toDate);
-                    result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (دوره)");
-                    break;
-                case "report37":
-                    objectResult = genericStatisticalIndexReportDAO.proportionOfNewLessonPlans(fromDate, toDate);
-                    result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (دوره)");
-
-                    break;
-
-            case "report38":
-                result = genericStatisticalIndexReportDAO.educationPenetrationRate(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report39":
-                result = genericStatisticalIndexReportDAO.rateOfEducationInGeneral(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report40":
-                result = genericStatisticalIndexReportDAO.rateOfEducationInOneYear(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-
-            case "report41":
-                objectResult = genericStatisticalIndexReportDAO.lowerThanExpertise(fromDate, toDate);
-                result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (شغل)");
-                break;
-
-            case "report42":
-                objectResult = genericStatisticalIndexReportDAO.supervisionJob(fromDate, toDate);
-                result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (شغل)");
-                break;
-            case "report43":
-                objectResult = genericStatisticalIndexReportDAO.mastersJob(fromDate, toDate);
-                result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (شغل)");
-
-                break;
-
-            case "report44":
-                objectResult = genericStatisticalIndexReportDAO.jobModiriati(fromDate, toDate);
-                result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (شغل)");
-                break;
-            case "report45":
-                objectResult = genericStatisticalIndexReportDAO.jobNeedAssessment(fromDate, toDate);
-                result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (شغل)");
-                break;
-
-            case "report46":
-                objectResult = genericStatisticalIndexReportDAO.postNeedAssessment(fromDate, toDate);
-               result=convertObject(objectResult,"محاسبه بر اساس کل سازمان می باشد (پست)");
-                break;
 
 
-            case "report47":
-                result = genericStatisticalIndexReportDAO.reactiveEvaluationCoverage(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                 break;
-            case "report48":
-                result = genericStatisticalIndexReportDAO.coursesDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                 break;
-            case "report49":
-                result = genericStatisticalIndexReportDAO.coursesTargetDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
-            case "report50":
-                result = genericStatisticalIndexReportDAO.scheduledTraining(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
-                break;
+        
+        List<GenericStatisticalIndexReport> result;
+        List<Object> objectResult;
+        result = switch (reportName) {
+            case "report01"-> genericStatisticalIndexReportDAO.needAssessment(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report02"-> genericStatisticalIndexReportDAO.getTotalHours(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report03"-> genericStatisticalIndexReportDAO.saraneomomi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report04"-> genericStatisticalIndexReportDAO.saratakhasosi(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report05"-> genericStatisticalIndexReportDAO.saraneModiriati(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report06"-> genericStatisticalIndexReportDAO.gozarAzAmozesh(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report07"-> genericStatisticalIndexReportDAO.arzeshyabiYadgiri(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report08"-> genericStatisticalIndexReportDAO.getTechnicalTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report09"-> genericStatisticalIndexReportDAO.getSkillTrainingNeeds(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report10"-> genericStatisticalIndexReportDAO.trainingStaffToTotalStaff(complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report11"-> genericStatisticalIndexReportDAO.teachingLearningLevelOfNewCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report12"-> genericStatisticalIndexReportDAO.teachingLearningLevelOfFrequentCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report13"-> genericStatisticalIndexReportDAO.teachingRatioOfInternalTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report14"-> genericStatisticalIndexReportDAO.ojt(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report15"-> genericStatisticalIndexReportDAO.proportionOfTrainingOutsideTheCalendar(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report16"-> genericStatisticalIndexReportDAO.canceledCourses(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report17"-> genericStatisticalIndexReportDAO.trainingOutsideTheOrganization(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report18"-> genericStatisticalIndexReportDAO.trainingWithInTheOrganization(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report19"-> genericStatisticalIndexReportDAO.specializedTrainingForCustomers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report20"-> genericStatisticalIndexReportDAO.HSE(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report21"-> genericStatisticalIndexReportDAO.lowerThanBachelor(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report22"-> genericStatisticalIndexReportDAO.trainingOfSupervisors(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report23"-> genericStatisticalIndexReportDAO.managersTrainingPerCapita(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report24"-> genericStatisticalIndexReportDAO.capitaOfContractingForces(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report25"-> genericStatisticalIndexReportDAO.trainingHoursOfTheCompany(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report26"-> genericStatisticalIndexReportDAO.educationParticipationRateIndex(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report27"-> genericStatisticalIndexReportDAO.indexOfTheRatioOfImplementedTrainings(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report28"-> genericStatisticalIndexReportDAO.percentageOfcalendarTitleOfTheCourse(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report29"-> genericStatisticalIndexReportDAO.percentageOfcalendarTitleOfTheStudent(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report30"-> genericStatisticalIndexReportDAO.totalNumberOfTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report31"-> genericStatisticalIndexReportDAO.totalNumberOfInnerTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report32"-> genericStatisticalIndexReportDAO.ratioOfEvaluatedTeachers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report33"-> genericStatisticalIndexReportDAO.electronicallyExecuted(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report34"-> genericStatisticalIndexReportDAO.performedInAbsentia(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report35"->{
+                objectResult = genericStatisticalIndexReportDAO.proportionOfDesignedManagementCourses(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (دوره)");
         }
+            case "report36"->{
+                objectResult = genericStatisticalIndexReportDAO.revisedLessonPlansRatio(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (دوره)");
+        }
+            case "report37"->{
+                objectResult = genericStatisticalIndexReportDAO.proportionOfNewLessonPlans(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (دوره)");
+        }
+            case "report38"-> genericStatisticalIndexReportDAO.educationPenetrationRate(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report39"-> genericStatisticalIndexReportDAO.rateOfEducationInGeneral(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report40"-> genericStatisticalIndexReportDAO.rateOfEducationInOneYear(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report41"->{
+                objectResult = genericStatisticalIndexReportDAO.lowerThanExpertise(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (شغل)");
+            }
+            case "report42"->{
+                objectResult = genericStatisticalIndexReportDAO.supervisionJob(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (شغل)");}
+            case "report43"->{
+                objectResult = genericStatisticalIndexReportDAO.mastersJob(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (شغل)");}
+            case "report44"->{
+                objectResult = genericStatisticalIndexReportDAO.jobModiriati(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (شغل)");}
+            case "report45"->{
+                objectResult = genericStatisticalIndexReportDAO.jobNeedAssessment(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (شغل)");}
+            case "report46"->{
+                objectResult = genericStatisticalIndexReportDAO.postNeedAssessment(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (پست)");}
+            case "report47"-> genericStatisticalIndexReportDAO.reactiveEvaluationCoverage(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report48"-> genericStatisticalIndexReportDAO.coursesDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report49"-> genericStatisticalIndexReportDAO.coursesTargetDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report50"-> genericStatisticalIndexReportDAO.scheduledTraining(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+                default -> null;
+        };
 
 
         return modelMapper.map(result, new TypeToken<List<GenericStatisticalIndexReportDTO>>() {
         }.getType());
     }
 
-    private List<GenericStatisticalIndexReport> convertObject(List<Object> objectResult,String title) {
+    private List<GenericStatisticalIndexReport> convertObject(List<Object> objectResult, String title) {
         List<GenericStatisticalIndexReport> result = new ArrayList<>();
 
         try {
             if (objectResult.size() > 0) {
                 for (Object o : objectResult) {
                     Object[] arr = (Object[]) o;
-                    GenericStatisticalIndexReport genericStatisticalIndexReport=new GenericStatisticalIndexReport();
+                    GenericStatisticalIndexReport genericStatisticalIndexReport = new GenericStatisticalIndexReport();
                     genericStatisticalIndexReport.setId(Long.parseLong(arr[0].toString()));
                     genericStatisticalIndexReport.setBaseOnComplex(Double.parseDouble(arr[1].toString()));
                     genericStatisticalIndexReport.setComplex(title);
@@ -225,9 +131,9 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
                     result.add(genericStatisticalIndexReport);
                 }
             }
-        }catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-return result;
+        return result;
     }
 }

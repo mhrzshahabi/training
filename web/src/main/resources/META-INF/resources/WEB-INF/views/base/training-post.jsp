@@ -156,13 +156,13 @@
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         transformRequest: function (dsRequest) {
-            if (postAdmin !== undefined && postAdmin != null) {
-                if (postAdmin === "true") {
+            // if (postAdmin !== undefined && postAdmin != null) {
+                // if (postAdmin === "true") {
                     this.fetchDataURL = viewTrainingPostUrl + "/iscList";
-                } else {
-                    this.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
-                }
-            }
+                // } else {
+                //     this.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
+                // }
+            // }
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
@@ -1787,13 +1787,13 @@
     });
 
     function ListGrid_TrainingPost_Posts_refresh() {
-        if (postAdmin !== undefined && postAdmin != null) {
-            if (postAdmin === true) {
+        // if (postAdmin !== undefined && postAdmin != null) {
+        //     if (postAdmin === true) {
                 RestDataSource_TrainingPost_Jsp.fetchDataURL  = viewTrainingPostUrl + "/iscList";
-            } else {
-                RestDataSource_TrainingPost_Jsp.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
-            }
-        }
+            // } else {
+            //     RestDataSource_TrainingPost_Jsp.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
+            // }
+        // }
         if (ListGrid_TrainingPost_Jsp.getSelectedRecord() == null)
             ListGrid_TrainingPost_Posts.setData([]);
         else
