@@ -151,7 +151,6 @@ public class OperationalChartService implements IOperationalChartService {
         if (operationalOldParent.isPresent()) {
             OperationalChart OldParent = operationalOldParent.get();
             OldParent.getOperationalChartParentChild().remove(operationalChart);
-            operationalChart.setParentId(null);
 
             return mapper.toInfoDTO(operationalChart);
 
