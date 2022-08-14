@@ -14,7 +14,6 @@ import com.nicico.training.mapper.teacher.TeacherBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.utility.persianDate.PersianDate;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
@@ -56,7 +55,6 @@ public class TeacherService implements ITeacherService {
     private final IEducationOrientationService educationOrientationService;
     private final ITeacherRoleService iTeacherRoleService;
     private final IPersonalInfoService iPersonalInfoService;
-    private final IContactInfoService iContactInfoService;
 
 
     @Value("${nicico.dirs.upload-person-img}")
@@ -1039,5 +1037,10 @@ public class TeacherService implements ITeacherService {
             } else agreementInfo.setValid(true);
         }
         return infoSearchRs;
+    }
+
+    @Override
+    public String getTeacherResidence(Long teacherId) {
+        return teacherDAO.getTeacherResidence(teacherId);
     }
 }

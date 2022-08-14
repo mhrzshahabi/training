@@ -22,10 +22,10 @@ public class AgreementClassCost extends Auditable {
     private Long id;
 
     @Column(name = "n_teaching_cost_per_hour")
-    private Long teachingCostPerHour;
+    private Double teachingCostPerHour;
 
     @Column(name = "n_teaching_cost_per_hour_auto")
-    private Long teachingCostPerHourAuto;
+    private Double teachingCostPerHourAuto;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_class_id", nullable = false, insertable = false, updatable = false)

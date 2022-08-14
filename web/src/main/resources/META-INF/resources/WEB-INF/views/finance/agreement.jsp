@@ -10,31 +10,10 @@
     //----------------------------------------------------Variables-----------------------------------------------------
     let AgreementClassCost_ListGridData = [];
     let agreementClassCost_Data = [];
-
-    // function AgreementClassCost_Add(records, window) {
-    //     let dataObject = {};
-    //     agreementClassCost_Data = [];
-    //     for (let i = 0; i < records.length; i++) {
-    //         if (records[i].teachingCostPerHour === undefined || records[i].teachingCostPerHour === null) {
-    //             createDialog("info", "کلاسی بدون ثبت هزینه تدریس وجود دارد");
-    //             return;
-    //             break;
-    //         }
-    //         dataObject = {
-    //             classId: records[i].classId,
-    //             teachingCostPerHour: records[i].teachingCostPerHour
-    //         };
-    //         agreementClassCost_Data.add(dataObject);
-    //     }
-    //     costListChanged = true;
-    //     window.close();
-    // }
-
     let reportCriteria_ULR = null;
     let agreementMethod = "POST";
     let maxFileSizeUpload = 31457280;
     let isFileAttached = false;
-    let costListChanged = false;
     let rialId = null;
 
     //----------------------------------------------------Default Rest--------------------------------------------------
@@ -48,14 +27,14 @@
     RestDataSource_Agreement = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "agreementNumber", title: "شماره تفاهم نامه"},
-            {name: "agreementDate", title: "تاریخ عقد تفاهم نامه"},
+            {name: "agreementNumber", title: "شماره تفاهم نامه", filterOperator: "iContains"},
+            {name: "agreementDate", title: "تاریخ عقد تفاهم نامه", filterOperator: "iContains"},
             {name: "fromDate", title: "<spring:message code='from.date'/>"},
             {name: "toDate", title: "<spring:message code='to.date'/>"},
             {name: "firstPartyId", title: "firstPartyId", hidden: true},
             {name: "firstParty.titleFa", title: "طرف اول تفاهم نامه", filterOperator: "iContains"},
             {name: "secondPartyTeacherId", title: "secondPartyTeacherId", hidden: true},
-            {name: "secondPartyTeacher.teacherCode", title: "طرف دوم تفاهم نامه (مدرس)", filterOperator: "iContains"},
+            {name: "secondPartyTeacher.fullNameFa", title: "طرف دوم تفاهم نامه (مدرس)", filterOperator: "iContains"},
             {name: "secondPartyInstituteId", title: "secondPartyInstituteId", hidden: true},
             {name: "secondPartyInstitute.titleFa", title: "طرف دوم تفاهم نامه (موسسه آموزشی)", filterOperator: "iContains"},
             {name: "finalCost", title: "مبلغ نهایی", hidden: true},
@@ -87,6 +66,7 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode", title: "کد مدرس", filterOperator: "iContains"},
+            {name: "fullNameFa", title: "مدرس", filterOperator: "iContains"},
             {name: "personality.firstNameFa", title: "نام", filterOperator: "iContains"},
             {name: "personality.lastNameFa", title: "نام خانوادگی", filterOperator: "iContains"},
             {name: "personality.nationalCode", title: "کدملی", filterOperator: "iContains"},
@@ -184,7 +164,7 @@
     });
 
     ListGrid_Agreement = isc.TrLG.create({
-        height: "90%",
+        height: "55%",
         autoFetchData: true,
         showFilterEditor: true,
         filterOnKeypress: false,
@@ -203,13 +183,7 @@
                 name: "agreementNumber",
             },
             {
-                name: "agreementDate",
-                formatCellValue: function (value) {
-                    if (value) {
-                        let date = new Date (value);
-                        return date.toLocaleDateString('fa-IR');
-                    }
-                }
+                name: "agreementDate"
             },
             {
                 name: "fromDate",
@@ -226,7 +200,7 @@
                 }
             },
             {
-                name: "secondPartyTeacher.teacherCode"
+                name: "secondPartyTeacher.fullNameFa"
             },
             {
                 name: "secondPartyInstitute.titleFa"
@@ -269,6 +243,9 @@
                 canFilter: false
             }
         ],
+        recordClick: function () {
+            selectionUpdated_Teaching_Cost();
+        },
         filterEditorSubmit: function () {
             ListGrid_Agreement.invalidateCache();
         },
@@ -299,9 +276,194 @@
         }
     });
 
+    ListGrid_Class_Teaching_Cost = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        canEdit: true,
+        autoFetchData: true,
+        validateByCell: true,
+        // validateOnChange: true,
+        // showInlineErrors: true,
+        // editEvent: "doubleClick",
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "classId",
+                hidden: true
+            },
+            {
+                name: "titleClass",
+                title: "عنوان کلاس",
+                canEdit: false
+            },
+            {
+                name: "code",
+                title: "کد کلاس",
+                canEdit: false
+            },
+            {
+                name: "teacherId",
+                title: "استاد",
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "fullNameFa",
+                optionDataSource: RestDataSource_Teacher_Name_Agreement,
+                pickListWidth: "500",
+                pickListProperties:
+                    {
+                        showFilterEditor: true
+                    },
+                pickListFields: [
+                    {name: "personality.firstNameFa"},
+                    {name: "personality.lastNameFa"},
+                    {name: "personality.nationalCode", title: "کد ملی"}
+                ]
+            },
+            {
+                name: "basisCalculateId",
+                title: "مبنای محاسبه",
+                required: true,
+                // validateOnChange: true,
+                editorType: "SelectItem",
+                valueField: "id",
+                displayField: "title",
+                optionDataSource: RestDataSource_Basis_Calculate_Agreement,
+                pickListProperties:
+                    {
+                        showFilterEditor: true
+                    },
+                pickListFields: [
+                    {name: "title", align: "center"},
+                ]
+            },
+            {
+                name: "teachingCostPerHourAuto",
+                title: "نرخ محاسباتی",
+                required: true,
+                // validateOnChange: true,
+                canEdit: false
+            },
+            {
+                name: "teachingCostPerHour",
+                title: "نرخ توافقی",
+                required: true,
+                // validateOnChange: true,
+            },
+            {
+                name: "agreementId",
+                hidden: true
+            },
+            {
+                name: "removeIcon",
+                width: "4%",
+                align: "center",
+                showTitle: false,
+                canFilter: false,
+                canEdit: false
+            }
+        ],
+        gridComponents: [
+            isc.ToolStrip.create({
+                width: "100%",
+                height: "5%",
+                membersMargin: 5,
+                members:
+                    [
+                        isc.Button.create({
+                            name: "class",
+                            title: "انتخاب کلاس",
+                            colSpan: 2,
+                            align: "center",
+                            width: 200,
+                            type: "button",
+                            startRow: true,
+                            endRow: false,
+                            click: function () {
+                                ClassTeachingCost_SelectClass();
+                            }
+                        }),
+                        isc.Button.create({
+                            name: "calcTeachingCost",
+                            title: "محاسبه سیستمی نرخ",
+                            colSpan: 2,
+                            align: "center",
+                            width: 200,
+                            type: "button",
+                            startRow: true,
+                            endRow: false,
+                            click: function () {
+                                ClassTeachingCost_Calculate();
+                            }
+                        }),
+                    ]
+            }),
+            "header",
+            "body",
+            isc.HLayout.create({
+                layoutMargin: 5,
+                width: "100%",
+                height: "10%",
+                align: "center",
+                membersMargin: 10,
+                alignLayout: "center",
+                members: [
+                    isc.IButtonSave.create({
+                        title: "ذخیره تغییرات",
+                        align: "center",
+                        click: function () {
+                            let record = ListGrid_Agreement.getSelectedRecord();
+                            ClassTeachingCost_Save(record.id);
+                        }
+                    })
+                ]
+            })
+        ],
+        createRecordComponent: function (record, colNum) {
+
+            let fieldName = this.getFieldName(colNum);
+            if (fieldName === "removeIcon") {
+                let removeImg = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "[SKIN]/actions/remove.png",
+                    prompt: "حذف",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                        ClassTeachingCost_Remove(record);
+                    }
+                });
+                return removeImg;
+            } else {
+                return null;
+            }
+        }
+    });
+    TabSet_Agreement = isc.TabSet.create({
+        tabBarPosition: "top",
+        tabs: [
+            {
+                name: "classTeachingCostTab",
+                title: "هزینه کلاس ها",
+                pane: ListGrid_Class_Teaching_Cost
+            }
+        ]
+    });
+    HLayout_Tab_Agreement = isc.HLayout.create({
+        width: "100%",
+        height: "40%",
+        members: [
+            TabSet_Agreement
+        ]
+    });
+
     DynamicForm_Agreement = isc.DynamicForm.create({
         width: "85%",
-        height: "50%",
+        height: "90%",
         align: "center",
         canSubmit: true,
         wrapItemTitles: false,
@@ -440,14 +602,14 @@
                 },
                 change: function (form, item, value) {
                     if (value === "1") {
-                        form.getItem("secondPartyTeacherId").show();
+                        form.getItem("secondPartyTeacherId").disabled = false;
                         form.getItem("secondPartyTeacherId").setRequired(true);
-                        form.getItem("secondPartyInstituteId").hide();
+                        form.getItem("secondPartyInstituteId").disabled = true;
                         form.getItem("secondPartyInstituteId").setRequired(false);
                     } else if (value === "2") {
-                        form.getItem("secondPartyTeacherId").hide();
+                        form.getItem("secondPartyTeacherId").disabled = true;
                         form.getItem("secondPartyTeacherId").setRequired(false);
-                        form.getItem("secondPartyInstituteId").show();
+                        form.getItem("secondPartyInstituteId").disabled = false;
                         form.getItem("secondPartyInstituteId").setRequired(true);
                     }
                 }
@@ -457,16 +619,16 @@
                 title: "طرف دوم تفاهم نامه (مدرس)",
                 required: true,
                 colSpan: 4,
-                hidden: false,
+                disabled: false,
                 type: "selectItem",
-                autoFetchData: false,
+                autoFetchData: true,
                 optionDataSource: RestDataSource_Teacher_Agreement,
                 valueField: "id",
-                displayField: "teacherCode",
-                filterFields: ["teacherCode"],
+                displayField: "fullNameFa",
                 pickListFields: [
                     {name: "id", primaryKey: true, hidden: true},
                     {name: "teacherCode", title: "کد مدرس"},
+                    {name: "fullNameFa", hidden: true},
                     {name: "personality.firstNameFa", title: "نام"},
                     {name: "personality.lastNameFa", title: "نام خانوادگی"},
                     {name: "personality.nationalCode", title: "کدملی"},
@@ -490,9 +652,9 @@
                 title: "طرف دوم تفاهم نامه (موسسه آموزشی)",
                 required: false,
                 colSpan: 4,
-                hidden: true,
+                disabled: true,
                 type: "selectItem",
-                autoFetchData: false,
+                autoFetchData: true,
                 optionDataSource: RestDataSource_Institute_Agreement,
                 valueField: "id",
                 displayField: "titleFa",
@@ -585,144 +747,6 @@
             }
         ]
     });
-    ListGrid_Class_Teaching_Cost = isc.ListGrid.create({
-        width: "100%",
-        height: "45%",
-        autoFetchData: true,
-        validateByCell: true,
-        validateOnChange: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        fields: [
-            {name: "id", hidden: true},
-            {
-                name: "classId",
-                hidden: true
-            },
-            {
-                name: "titleClass",
-                title: "عنوان کلاس"
-            },
-            {
-                name: "code",
-                title: "کد کلاس"
-            },
-            {
-                name: "teacherId",
-                title: "استاد",
-                canEdit: true,
-                editorType: "SelectItem",
-                valueField: "id",
-                displayField: "fullNameFa",
-                optionDataSource: RestDataSource_Teacher_Name_Agreement,
-                pickListWidth: "500",
-                pickListProperties:
-                    {
-                        showFilterEditor: true
-                    },
-                pickListFields: [
-                    {name: "personality.firstNameFa"},
-                    {name: "personality.lastNameFa"},
-                    {name: "personality.nationalCode", title: "کد ملی"}
-                ]
-            },
-            {
-                name: "basisCalculateId",
-                title: "مبنای محاسبه",
-                canEdit: true,
-                required: true,
-                validateOnChange: true,
-                editorType: "SelectItem",
-                valueField: "id",
-                displayField: "title",
-                optionDataSource: RestDataSource_Basis_Calculate_Agreement,
-                pickListProperties:
-                    {
-                        showFilterEditor: true
-                    },
-                pickListFields: [
-                    {name: "title", align: "center"},
-                ]
-            },
-            {
-                name: "teachingCostPerHourAuto",
-                title: "نرخ محاسباتی",
-                required: true,
-                validateOnChange: true
-            },
-            {
-                name: "teachingCostPerHour",
-                title: "نرخ توافقی",
-                required: true,
-                validateOnChange: true,
-                canEdit: true
-            },
-            {
-                name: "agreementId",
-                hidden: true
-            },
-            {
-                name: "removeIcon",
-                width: "4%",
-                align: "center",
-                showTitle: false,
-                canFilter: false
-            }
-        ],
-        gridComponents: [
-            isc.Button.create({
-                name: "class",
-                title: "انتخاب کلاس (ها)",
-                colSpan: 2,
-                align: "center",
-                width: 200,
-                type: "button",
-                startRow: true,
-                endRow: false,
-                click: function () {
-                    selectClasses();
-                }
-            }),
-            "header",
-            "body",
-            isc.Button.create({
-                name: "calcTeachingCost",
-                title: "محاسبه سیستمی نرخ",
-                colSpan: 2,
-                align: "center",
-                width: 200,
-                type: "button",
-                startRow: true,
-                endRow: false,
-                click: function () {
-                    calculateTeachingCost();
-                }
-            })
-        ],
-        createRecordComponent: function (record, colNum) {
-
-            let fieldName = this.getFieldName(colNum);
-            if (fieldName === "removeIcon") {
-                let removeImg = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "[SKIN]/actions/remove.png",
-                    prompt: "حذف",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-                        ListGrid_Class_Teaching_Cost.selectSingleRecord(record);
-                        ListGrid_Class_Teaching_Cost.removeData(record);
-                    }
-                });
-                return removeImg;
-            } else {
-                return null;
-            }
-        }
-    });
     IButton_Save_Agreement = isc.IButtonSave.create({
         title: "<spring:message code='save'/>",
         align: "center",
@@ -732,23 +756,6 @@
                 return;
 
             let data = DynamicForm_Agreement.getValues();
-            let classCostData = ListGrid_Class_Teaching_Cost.getData();
-
-            if (classCostData.size() === 0) {
-                createDialog("info", "کلاسی انتخاب نشده است");
-                return;
-            }
-            // else {
-            //     for (let i = 0; i < ListGrid_Class_Teaching_Cost.getTotalRows(); i++) {
-            //         if(!ListGrid_Class_Teaching_Cost.validateRow(i))
-            //             return;
-            //     }
-            // }
-
-            data.agreementDate = JalaliDate.jalaliToGregori(data.agreementDate);
-            data.fromDate = JalaliDate.jalaliToGregori(data.fromDate);
-            data.toDate = JalaliDate.jalaliToGregori(data.toDate);
-            data.classCostList = classCostData;
 
             if (agreementMethod === "POST") {
 
@@ -758,7 +765,7 @@
                         wait.close();
                         createDialog("info", "<spring:message code="global.form.request.successful"/>");
                         Window_Agreement.close();
-                        ListGrid_Agreement.invalidateCache();
+                        Agreement_Refresh();
                     } else {
                         wait.close();
                         createDialog("info", "خطایی رخ داده است");
@@ -768,27 +775,13 @@
 
             } else if (agreementMethod === "PUT") {
 
-                let update = {
-                    id: data.id,
-                    firstPartyId: data.firstPartyId,
-                    secondPartyTeacherId: data.secondPartyTeacherId,
-                    secondPartyInstituteId: data.secondPartyInstituteId,
-                    currencyId: data.currencyId,
-                    // finalCost: data.finalCost,
-                    subject: data.subject,
-                    teacherEvaluation: data.teacherEvaluation,
-                    // maxPaymentHours: data.maxPaymentHours,
-                    changed: costListChanged,
-                    // classCostList: agreementClassCost_Data
-                };
-
                 wait.show();
-                isc.RPCManager.sendRequest(TrDSRequest(agreementUrl + "/" + data.id, "PUT", JSON.stringify(update), function (resp) {
+                isc.RPCManager.sendRequest(TrDSRequest(agreementUrl + "/" + data.id, "PUT", JSON.stringify(data), function (resp) {
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         wait.close();
                         createDialog("info", "<spring:message code="global.form.request.successful"/>");
                         Window_Agreement.close();
-                        ListGrid_Agreement.invalidateCache();
+                        Agreement_Refresh();
                     } else {
                         wait.close();
                         createDialog("info", "خطایی رخ داده است");
@@ -808,7 +801,7 @@
     HLayOut_SaveOrExit_Agreement = isc.HLayout.create({
         layoutMargin: 5,
         width: "100%",
-        height: "5%",
+        height: "10%",
         align: "center",
         membersMargin: 10,
         alignLayout: "center",
@@ -817,16 +810,14 @@
             IButton_Exit_Agreement
         ]
     });
-
     Window_Agreement = isc.Window.create({
         title: "<spring:message code='agreement'/>",
         width: "60%",
-        height: "90%",
+        height: "60%",
         autoSize: false,
         align: "center",
         items: [
             DynamicForm_Agreement,
-            ListGrid_Class_Teaching_Cost,
             HLayOut_SaveOrExit_Agreement
         ]
     });
@@ -834,7 +825,8 @@
     VLayout_Body_Agreement = isc.TrVLayout.create({
         members: [
             ToolStrip_Actions_Agreement,
-            ListGrid_Agreement
+            ListGrid_Agreement,
+            HLayout_Tab_Agreement
         ]
     });
 
@@ -845,7 +837,8 @@
         agreementMethod = "POST";
         DynamicForm_Agreement.clearValues();
         DynamicForm_Agreement.clearErrors();
-        ListGrid_Class_Teaching_Cost.setData([]);
+        DynamicForm_Agreement.getItem("secondPartyTeacherId").disabled = false;
+        DynamicForm_Agreement.getItem("secondPartyInstituteId").disabled = true;
         Window_Agreement.setTitle("ایجاد تفاهم نامه/ قرارداد");
         Window_Agreement.show();
     }
@@ -857,23 +850,20 @@
                 message: "تفاهم نامه ای برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.IButtonSave.create({title: "تائید"})],
+                buttons: [
+                    isc.IButtonSave.create({title: "تائید"})
+                ],
                 buttonClick: function (button, index) {
                     this.close();
                 }
             });
         } else {
 
-            debugger;
             agreementMethod = "PUT";
             DynamicForm_Agreement.clearValues();
             DynamicForm_Agreement.clearErrors();
-
-            record.agreementDate = new Date(record.agreementDate).toLocaleDateString('fa-IR');
-            record.fromDate = new Date(record.fromDate).toLocaleDateString('fa-IR');
-            record.toDate = new Date(record.toDate).toLocaleDateString('fa-IR');
-
             DynamicForm_Agreement.editRecord(record);
+
             if (record.secondPartyTeacherId !== undefined && record.secondPartyTeacherId !== null) {
                 DynamicForm_Agreement.setValue("secondParty", "1");
                 DynamicForm_Agreement.getItem("secondParty").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("secondParty"), "1");
@@ -915,7 +905,7 @@
                             wait.close();
                             if (resp.httpResponseCode === 200) {
                                 createDialog("info", "<spring:message code='global.grid.record.remove.success'/>");
-                                ListGrid_Agreement.invalidateCache();
+                                Agreement_Refresh();
                             } else {
                                 createDialog("info", "<spring:message code='global.grid.record.remove.failed'/>")
                             }
@@ -947,110 +937,252 @@
     function Agreement_Refresh() {
         ListGrid_Agreement.clearFilterValues();
         ListGrid_Agreement.invalidateCache();
+        ListGrid_Class_Teaching_Cost.setData([]);
     }
 
-    function selectClasses() {
+    function ClassTeachingCost_SelectClass() {
 
-        let RestDataSource_Select_Class = isc.TrDS.create({
-            fields: [
-                {name: "id", primaryKey: true},
-                {name: "titleClass", filterOperator: "iContains"},
-                {name: "code", filterOperator: "iContains"},
-                {name: "course.titleFa"}
-            ],
-            fetchDataURL: classUrl + "info-tuple-list"
-        });
-        let ListGrid_Select_Class = isc.TrLG.create({
-            height: "90%",
-            autoFetchData: true,
-            showFilterEditor: true,
-            filterOnKeypress: false,
-            selectionType: "simple",
-            selectionAppearance: "checkbox",
-            dataSource: RestDataSource_Select_Class,
-            gridComponents: ["filterEditor", "header", "body"],
-            initialSort: [
-                {property: "id", direction: "descending"}
-            ],
-            fields: [
-                {name: "id", hidden: true},
-                {name: "titleClass", title: "عنوان کلاس"},
-                {name: "code", title: "کد کلاس"}
-            ]
-        });
+        let record = ListGrid_Agreement.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "تفاهم نامه ای انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [
+                    isc.IButtonSave.create({title: "تائید"})
+                ],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            let RestDataSource_Select_Class = isc.TrDS.create({
+                fields: [
+                    {name: "id", primaryKey: true},
+                    {name: "titleClass", filterOperator: "iContains"},
+                    {name: "code", filterOperator: "iContains"},
+                    {name: "course.titleFa"}
+                ],
+                fetchDataURL: classUrl + "info-tuple-list"
+            });
+            let ListGrid_Select_Class = isc.TrLG.create({
+                height: "90%",
+                autoFetchData: true,
+                showFilterEditor: true,
+                filterOnKeypress: false,
+                selectionType: "simple",
+                selectionAppearance: "checkbox",
+                dataSource: RestDataSource_Select_Class,
+                gridComponents: ["filterEditor", "header", "body"],
+                initialSort: [
+                    {property: "id", direction: "descending"}
+                ],
+                fields: [
+                    {name: "id", hidden: true},
+                    {name: "titleClass", title: "عنوان کلاس"},
+                    {name: "code", title: "کد کلاس"}
+                ]
+            });
 
-        let IButton_Select_Class_Save = isc.IButtonSave.create({
-            title: "<spring:message code='save'/>",
-            align: "center",
-            click: function () {
-                let records = ListGrid_Select_Class.getSelectedRecords();
-                let selectedClasses = [];
-                records.forEach(item => {
-                    let object = {
-                        classId: item.id,
-                        titleClass: item.titleClass,
-                        code: item.code
-                    };
-                    selectedClasses.add(object);
-                });
+            let IButton_Select_Class_Save = isc.IButtonSave.create({
+                title: "<spring:message code='save'/>",
+                align: "center",
+                click: function () {
+                    let records = ListGrid_Select_Class.getSelectedRecords();
+                    let selectedClasses = [];
+                    records.forEach(item => {
+                        let object = {
+                            classId: item.id,
+                            titleClass: item.titleClass,
+                            code: item.code
+                        };
+                        selectedClasses.add(object);
+                    });
 
-                let addedClasses = ListGrid_Class_Teaching_Cost.getData();
-                let addedClassesId = ListGrid_Class_Teaching_Cost.getData().map(item => item.classId);
-                selectedClasses.forEach(item => {
-                    if (addedClassesId.contains(item.classId))
-                        selectedClasses.splice(selectedClasses.indexOf(item), 1);
-                });
+                    let addedClasses = ListGrid_Class_Teaching_Cost.getData();
+                    let addedClassesId = ListGrid_Class_Teaching_Cost.getData().map(item => item.classId);
+                    selectedClasses.forEach(item => {
+                        if (addedClassesId.contains(item.classId))
+                            selectedClasses.splice(selectedClasses.indexOf(item), 1);
+                    });
 
-                ListGrid_Class_Teaching_Cost.setData(selectedClasses.concat(addedClasses));
-                Window_Select_Class.close();
-            }
-        });
-        let IButton_Select_Class_Exit = isc.IButtonCancel.create({
-            title: "<spring:message code='close'/>",
-            align: "center",
-            click: function () {
-                Window_Select_Class.close();
-            }
-        });
-        let HLayOut_Select_Class_SaveOrExit = isc.HLayout.create({
-            layoutMargin: 5,
-            showEdges: false,
-            edgeImage: "",
-            width: "100%",
-            height: "10%",
-            alignLayout: "center",
-            align: "center",
-            membersMargin: 10,
-            members: [
-                IButton_Select_Class_Save,
-                IButton_Select_Class_Exit
-            ]
-        });
-        let Window_Select_Class = isc.Window.create({
-            title: "انتخاب کلاس (ها)",
-            autoSize: false,
-            width: "40%",
-            height: "45%",
-            canDragReposition: true,
-            canDragResize: true,
-            autoDraw: false,
-            autoCenter: true,
-            isModal: false,
-            items: [
-                ListGrid_Select_Class,
-                HLayOut_Select_Class_SaveOrExit
-            ]
-        });
+                    ListGrid_Class_Teaching_Cost.setData(selectedClasses.concat(addedClasses));
+                    Window_Select_Class.close();
+                }
+            });
+            let IButton_Select_Class_Exit = isc.IButtonCancel.create({
+                title: "<spring:message code='close'/>",
+                align: "center",
+                click: function () {
+                    Window_Select_Class.close();
+                }
+            });
+            let HLayOut_Select_Class_SaveOrExit = isc.HLayout.create({
+                layoutMargin: 5,
+                showEdges: false,
+                edgeImage: "",
+                width: "100%",
+                height: "10%",
+                alignLayout: "center",
+                align: "center",
+                membersMargin: 10,
+                members: [
+                    IButton_Select_Class_Save,
+                    IButton_Select_Class_Exit
+                ]
+            });
+            let Window_Select_Class = isc.Window.create({
+                title: "انتخاب کلاس",
+                autoSize: false,
+                width: "40%",
+                height: "45%",
+                canDragReposition: true,
+                canDragResize: true,
+                autoDraw: false,
+                autoCenter: true,
+                isModal: false,
+                items: [
+                    ListGrid_Select_Class,
+                    HLayOut_Select_Class_SaveOrExit
+                ]
+            });
 
-        Window_Select_Class.show();
+            Window_Select_Class.show();
+        }
     }
-    function calculateTeachingCost() {
+    function ClassTeachingCost_Calculate() {
 
-        let records = ListGrid_Class_Teaching_Cost.getData();
-        if (records.size() !== 0) {
+        let records = ListGrid_Class_Teaching_Cost.getSelectedRecords();
+        if (records.size() === 0) {
+            isc.Dialog.create({
+                message: "رکوردی برای محاسبه نرخ انتخاب نشده است",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [
+                    isc.IButtonSave.create({title: "تائید"})
+                ],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+
+            let agreementRecord = ListGrid_Agreement.getSelectedRecord();
+            let fromDate = agreementRecord.fromDate;
+            if (fromDate === null) {
+                createDialog("info", "از تاریخ برای تفاهم نامه مشخص نشده است");
+                return;
+            }
+            let alarm = false;
+            if (agreementRecord.secondPartyTeacherId !== undefined) {
+                // teacher
+                let teacherId = agreementRecord.secondPartyTeacherId;
+                records.forEach(item => item.teacherId = teacherId);
+            } else {
+                // institute
+                for (let i = 0; i < records.size(); i++) {
+                    if (records[i].teacherId == null) {
+                        alarm = true;
+                        break;
+                    }
+                }
+            }
+
+            if (alarm) {
+                isc.Dialog.create({
+                    message: "برای تعدادی از کلاسها استاد انتخاب نشده است بنابراین امکان محاسبه برای آنها وجود ندارد",
+                    icon: "[SKIN]ask.png",
+                    title: "توجه",
+                    buttons: [
+                        isc.IButtonSave.create({title: "تائید"})
+                    ],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+
+                let calcTeachingCostList = {
+                    fromDate: fromDate,
+                    calcTeachingCost: records
+                };
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(agreementClassCostUrl + "/calculate-teaching-cost", "POST", JSON.stringify(calcTeachingCostList), function (resp) {
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                        Agreement_Refresh();
+                    } else if (resp.httpResponseCode === 404) {
+                        createDialog("info", resp.httpResponseText);
+                    } else {
+                        createDialog("info", "خطایی رخ داده است");
+                    }
+                }));
+            }
+
 
         }
     }
+    function ClassTeachingCost_Save(agreementId) {
+
+        let isValid = true;
+        for (let i = 0; i < ListGrid_Class_Teaching_Cost.getTotalRows(); i++) {
+            if (!ListGrid_Class_Teaching_Cost.validateRow(i))
+                return;
+        }
+        let costList = ListGrid_Class_Teaching_Cost.getData();
+        costList.forEach(item => {
+            if (item.basisCalculateId === undefined)
+                isValid = false;
+        });
+
+        if (isValid) {
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(agreementClassCostUrl + "/create-or-update/" + agreementId, "POST", JSON.stringify(costList), function (resp) {
+                wait.close();
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    selectionUpdated_Teaching_Cost();
+                } else {
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
+        } else {
+            createDialog("info", "مبنای محاسبه برای بعضی از رکوردها مشخض نشده است");
+        }
+    }
+    function ClassTeachingCost_Remove(record) {
+
+        if (record.id == null) {
+            ListGrid_Class_Teaching_Cost.selectSingleRecord(record);
+            ListGrid_Class_Teaching_Cost.removeData(record);
+        } else {
+            let Dialog_Delete = isc.Dialog.create({
+                message: "آيا مي خواهيد اين رکورد حذف گردد؟",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                    title: "خير"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(agreementClassCostUrl + "/" + record.id, "DELETE", null, function (resp) {
+                            wait.close();
+                            if (resp.httpResponseCode === 200) {
+                                createDialog("info", "<spring:message code='global.grid.record.remove.success'/>");
+                                selectionUpdated_Teaching_Cost();
+                            } else {
+                                createDialog("info", "<spring:message code='global.grid.record.remove.failed'/>")
+                            }
+                        }));
+                    }
+                }
+            });
+        }
+    }
+
     function checkInstituteValidation(item) {
         let record = item.getSelectedRecord();
         if (record.valid === false) {
@@ -1138,7 +1270,7 @@
                                     wait.close();
                                     createDialog("info", "<spring:message code="global.form.request.successful"/>");
                                     Window_Upload_File.close();
-                                    ListGrid_Agreement.invalidateCache();
+                                    Agreement_Refresh();
                                 } else {
                                     wait.close();
                                     createDialog("info", "خطایی رخ داده است");
@@ -1224,6 +1356,32 @@
     function Agreement_Upload_Changed() {
         if (document.getElementById('file_JspAgreement').files.length !== 0)
             isFileAttached = true;
+    }
+    function selectionUpdated_Teaching_Cost() {
+
+        let agreement = ListGrid_Agreement.getSelectedRecord();
+        let tab = TabSet_Agreement.getSelectedTab();
+
+        if (agreement == null && tab.pane != null) {
+            tab.pane.setData([]);
+            return;
+        }
+
+        switch (tab.name) {
+            case "classTeachingCostTab": {
+                wait.show();
+                isc.RPCManager.sendRequest(TrDSRequest(agreementClassCostUrl + "/list-by-agreementId/" + agreement.id, "GET", null, function (resp) {
+                    wait.close();
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                        let classCostList = JSON.parse(resp.httpResponseText);
+                        ListGrid_Class_Teaching_Cost.setData(classCostList);
+                    } else {
+                        createDialog("info", "خطایی رخ داده است");
+                    }
+                }));
+                break;
+            }
+        }
     }
 
     // </script>

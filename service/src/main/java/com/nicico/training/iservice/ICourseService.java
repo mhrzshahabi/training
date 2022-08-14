@@ -102,4 +102,9 @@ public interface ICourseService {
 
     void updateDurationByCourseCode(String code, Float theoryDuration);
 
+    String getClassCourseType(Long classId);
+
+    String getClassCourseTechnicalType(Long classId);
+
+    String getClassCourseLevelType(Long classId);
 }

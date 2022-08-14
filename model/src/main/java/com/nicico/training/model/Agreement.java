@@ -24,13 +24,13 @@ public class Agreement extends Auditable {
     private String agreementNumber;
 
     @Column(name = "d_agreement_date")
-    private Date agreementDate;
+    private String agreementDate;
 
     @Column(name = "d_from_date")
-    private Date fromDate;
+    private String fromDate;
 
     @Column(name = "d_to_date")
-    private Date toDate;
+    private String toDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_first_party_institute_id", nullable = false, insertable = false, updatable = false)

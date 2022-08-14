@@ -4,16 +4,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.dto.TeacherExperienceInfoDTO;
 import com.nicico.training.iservice.ITeacherExperienceInfoService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.mapper.teacher.TeacherExperienceMapper;
 import com.nicico.training.model.Teacher;
-import com.nicico.training.model.TeacherCertification;
 import com.nicico.training.model.TeacherExperienceInfo;
-import com.nicico.training.model.enums.TeacherRank;
-import com.nicico.training.repository.ParameterValueDAO;
 import com.nicico.training.repository.TeacherExperienceInfoDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -25,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -122,7 +119,6 @@ public class TeacherExperienceInfoService  implements ITeacherExperienceInfoServ
         return modelMapper.map(getTeacherExperienceInfo(id), TeacherExperienceInfoDTO.class);
     }
 
-
     @Override
     public void deleteTeacherExperienceInfo(Long teacherId, Long id) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
@@ -147,6 +143,12 @@ public class TeacherExperienceInfoService  implements ITeacherExperienceInfoServ
     }
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
         return BaseService.makeNewCriteria(fieldName, value, operator, criteriaRqList);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public TeacherExperienceInfo getLastTeacherExperienceInfoByTeacherId(Long teacherId) {
+        return teacherExperienceInfoDAO.findAllByTeacherId(teacherId).stream().max(Comparator.comparing(TeacherExperienceInfo::getId)).orElse(null);
     }
 
 }

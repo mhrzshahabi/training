@@ -7,7 +7,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -17,9 +16,9 @@ import java.util.Map;
 public class AgreementDTO implements Serializable {
 
     private String agreementNumber;
-    private Date agreementDate;
-    private Date fromDate;
-    private Date toDate;
+    private String agreementDate;
+    private String fromDate;
+    private String toDate;
     private Long firstPartyId;
     private Long secondPartyTeacherId;
     private Long secondPartyInstituteId;
@@ -50,7 +49,6 @@ public class AgreementDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("Agreement - Create")
     public static class Create extends AgreementDTO {
-        private List<AgreementClassCostDTO.Create> classCostList;
     }
 
     @Getter
@@ -59,8 +57,6 @@ public class AgreementDTO implements Serializable {
     @ApiModel("Agreement - Update")
     public static class Update extends AgreementDTO {
         private Long id;
-        private boolean changed;
-        private List<AgreementClassCostDTO.Create> classCostList;
     }
 
     @Getter

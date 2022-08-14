@@ -85,4 +85,7 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
             "WHERE TEACHER.B_ENABLED = 1 " +
             "  and TPI.C_NATIONAL_CODE = :nationalCode ", nativeQuery = true)
     List<Teacher> findActiveTeacherByNationalCode(@Param("nationalCode") String nationalCode);
+
+    @Query(value = "select t.residence from TBL_TEACHER t where t.ID =:teacherId", nativeQuery = true)
+    String getTeacherResidence(Long teacherId);
 }

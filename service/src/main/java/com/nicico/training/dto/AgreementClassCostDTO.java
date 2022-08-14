@@ -14,8 +14,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class AgreementClassCostDTO implements Serializable {
 
-    private Long teachingCostPerHour;
-    private Long teachingCostPerHourAuto;
+    private Double teachingCostPerHour;
+    private Double teachingCostPerHourAuto;
     private Long classId;
     private Long agreementId;
     private Long basisCalculateId;
@@ -36,6 +36,7 @@ public class AgreementClassCostDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("AgreementClassCost - Create")
     public static class Create extends AgreementClassCostDTO {
+        private Long id;
     }
 
     @Getter
@@ -44,6 +45,15 @@ public class AgreementClassCostDTO implements Serializable {
     @ApiModel("AgreementClassCost - Update")
     public static class Update extends AgreementClassCostDTO {
         private Long id;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("AgreementClassCost - CalcTeachingCostList")
+    public static class CalcTeachingCostList {
+        private String fromDate;
+        private List<AgreementClassCostDTO.Info> calcTeachingCost;
     }
 
     @Getter

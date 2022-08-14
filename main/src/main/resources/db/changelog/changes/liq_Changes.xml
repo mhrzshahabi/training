@@ -5246,6 +5246,18 @@ FROM
             <column name="t_currency_id" type="number(19, 0)"></column>
         </dropColumn>
     </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-093">
+        <modifyDataType tableName="tbl_agreement" columnName="d_agreement_date" newDataType="VARCHAR2(255 CHAR)"/>
+        <modifyDataType tableName="tbl_agreement" columnName="d_from_date" newDataType="VARCHAR2(255 CHAR)"/>
+        <modifyDataType tableName="tbl_agreement" columnName="d_to_date" newDataType="VARCHAR2(255 CHAR)"/>
+    </changeSet>
+
+    <changeSet author="MShahabi" id="1799887766557-094">
+        <modifyDataType tableName="tbl_agreement_class_cost" columnName="n_teaching_cost_per_hour" newDataType="FLOAT"/>
+        <modifyDataType tableName="tbl_agreement_class_cost" columnName="n_teaching_cost_per_hour_auto" newDataType="FLOAT"/>
+    </changeSet>
+
 </databaseChangeLog>
 
 

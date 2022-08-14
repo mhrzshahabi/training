@@ -47,6 +47,31 @@ public class AgreementClassCostRestController {
     }
 
     @Loggable
+    @PostMapping("/create-or-update/{agreementId}")
+    public ResponseEntity<Void> createOrUpdateClassCostList(@RequestBody List<AgreementClassCostDTO.Create> costList, @PathVariable Long agreementId) {
+        agreementClassCostService.createOrUpdateClassCostList(costList, agreementId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        agreementClassCostService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping("/calculate-teaching-cost")
+    public ResponseEntity calculateTeachingCostList(@RequestBody AgreementClassCostDTO.CalcTeachingCostList calcInfoList) {
+        try {
+            agreementClassCostService.calculateTeachingCost(calcInfoList);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMsg(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Loggable
     @GetMapping(value = "/list-by-agreementId/{agreementId}")
     public ResponseEntity<List<AgreementClassCostDTO.Info>> agreementClassCostListByAgreementId(HttpServletRequest iscRq, @PathVariable Long agreementId) throws IOException {
 

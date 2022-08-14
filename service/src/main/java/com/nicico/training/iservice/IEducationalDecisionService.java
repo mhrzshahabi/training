@@ -16,6 +16,5 @@ public interface IEducationalDecisionService {
 
     void delete(Long id);
 
-
-
+    List<EducationalDecision> findAllByDateAndRef(String fromDate, String ref);
 }
