@@ -5,7 +5,7 @@
 
 // <script>
     let LoadAttachments_Post = null;
-    let PostDS_Url = viewPostUrl + "/iscList";
+    let PostDS_Url = viewPostUrl + "/post/iscList";
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -305,7 +305,7 @@
             // if (postAdmin !== undefined && postAdmin != null) {
             //
             //     if (postAdmin === "true") {
-                    PostDS_post.fetchDataURL = viewPostUrl + "/iscList";
+                    PostDS_post.fetchDataURL = viewPostUrl + "/post/iscList";
                 // } else {
                 //     PostDS_post.fetchDataURL = viewPostUrl + "/roleIndPostIscList";
                 // }

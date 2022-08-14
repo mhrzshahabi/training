@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.oauth.common.domain.CustomUserDetails;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.ViewPostDTO;
+import com.nicico.training.dto.ViewTrainingPostDTO;
 import com.nicico.training.iservice.IOperationalRoleService;
 import com.nicico.training.iservice.IViewPostService;
 import com.nicico.training.service.BaseService;
@@ -39,6 +40,21 @@ public class ViewPostRestController {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
         SearchDTO.SearchRs<ViewPostDTO.Info> searchRs = viewPostService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+    @GetMapping(value = "/post/iscList")
+    public ResponseEntity<ISC<ViewPostDTO.Info>> postIscList(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        SearchDTO.SearchRs<ViewPostDTO.Info> searchRs = viewPostService.search(searchRq);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = ((CustomUserDetails) principal).getUserId();
+        List<Long> userAccessPostIds = iOperationalRoleService.getUserAccessPostsInRole(userId);
+        if (userAccessPostIds!=null && !userAccessPostIds.isEmpty()){
+            for (ViewPostDTO.Info info:searchRs.getList()){
+                info.setHasPermission(userAccessPostIds.stream().anyMatch(a -> (a.equals(info.getId()))));
+            }
+        }
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 

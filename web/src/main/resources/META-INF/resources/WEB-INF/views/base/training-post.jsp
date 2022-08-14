@@ -23,7 +23,7 @@
         // "Company" : "شرکتی",
         // "OrgCostCenter" : "پیمان کار"
     };
-    let TrainingPostDS_Url = viewTrainingPostUrl + "/iscList";
+    let TrainingPostDS_Url = viewTrainingPostUrl + "/training-post/iscList";
 
 
     let PostDS_TrainingPost = isc.TrDS.create({
@@ -158,7 +158,7 @@
         transformRequest: function (dsRequest) {
             // if (postAdmin !== undefined && postAdmin != null) {
                 // if (postAdmin === "true") {
-                    this.fetchDataURL = viewTrainingPostUrl + "/iscList";
+                    this.fetchDataURL = viewTrainingPostUrl + "/training-post/iscList";
                 // } else {
                 //     this.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
                 // }
@@ -1789,7 +1789,7 @@
     function ListGrid_TrainingPost_Posts_refresh() {
         // if (postAdmin !== undefined && postAdmin != null) {
         //     if (postAdmin === true) {
-                RestDataSource_TrainingPost_Jsp.fetchDataURL  = viewTrainingPostUrl + "/iscList";
+                RestDataSource_TrainingPost_Jsp.fetchDataURL  = viewTrainingPostUrl + "/training-post/iscList";
             // } else {
             //     RestDataSource_TrainingPost_Jsp.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
             // }
