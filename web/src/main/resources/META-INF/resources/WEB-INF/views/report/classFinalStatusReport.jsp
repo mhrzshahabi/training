@@ -956,8 +956,6 @@
             }
             finalCriteria.criteria.add(data.criteria[i]);
         }
-        debugger
-
         if (target === "course") {
             ListGrid_CFSR_Course.invalidateCache();
             ListGrid_CFSR_Course.fetchData(finalCriteria);
