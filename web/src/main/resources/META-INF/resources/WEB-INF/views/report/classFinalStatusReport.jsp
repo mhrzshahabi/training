@@ -492,7 +492,7 @@
                 multiple: true,
                 filterOperator: "equals",
                 disabled: true,
-                valueField: "id",
+                valueField: "titleFa",
                 displayField: "titleFa",
                 filterLocally: true,
                 pickListProperties: {
@@ -939,6 +939,9 @@
                 data.criteria[i].fieldName = "courseCategoryId"
                 data.criteria[i].operator = "inSet";
             }
+            if (data.criteria[i].fieldName === "termTitle") {
+                data.criteria[i].operator = "inSet";
+            }
             if (target === "student") {
                 if (data.criteria[i].fieldName === "complexTitle") {
                     data.criteria[i].fieldName = "studentComplex"
@@ -953,6 +956,8 @@
             }
             finalCriteria.criteria.add(data.criteria[i]);
         }
+        debugger
+
         if (target === "course") {
             ListGrid_CFSR_Course.invalidateCache();
             ListGrid_CFSR_Course.fetchData(finalCriteria);
