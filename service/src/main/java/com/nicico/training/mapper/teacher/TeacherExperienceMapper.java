@@ -12,7 +12,8 @@ import org.mapstruct.ReportingPolicy;
 public interface TeacherExperienceMapper {
 
     @Mappings({
-            @Mapping(source = "teacherRank.title", target = "teacherRank")
+            @Mapping(source = "teacherRank.id", target = "teacherRank"),
+            @Mapping(source = "teacherRank.title", target = "teacherRankTitle"),
     })
     TeacherExperienceInfoDTO.ExcelInfo mapToDTO(TeacherExperienceInfo teacherExperienceInfo);
 }
