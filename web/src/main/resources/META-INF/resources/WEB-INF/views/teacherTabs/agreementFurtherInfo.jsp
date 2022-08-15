@@ -112,7 +112,6 @@
         click: function () {
 
 
-            debugger;
             // DynamicForm_JspAgreementFurtherInfo.validate();
             // if (!DynamicForm_JspAgreementFurtherInfo.valuesHaveChanged() ||
             //     !DynamicForm_JspAgreementFurtherInfo.validate()) {
@@ -280,7 +279,7 @@
                 ToolStripButton_Remove_JspAgreementFurtherInfo,
                 isc.ToolStripButtonExcel.create({
                     click: function () {
-                        debugger;
+
                         ExportToFile.downloadExcelRestUrl(null, ListGrid_JspAgreementFurtherInfo, agreementFurtherInfoUrl + "/iscList/" + teacherIdAgreementFurtherInfo, 0, null, '',"استاد - اطلاعات پايه - اطلاعات تکمیلی تفاهم نامه"  , ListGrid_JspAgreementFurtherInfo.getCriteria(), null);
                     }
                 }),
@@ -320,7 +319,7 @@
 
     function ListGrid_AgreementFurtherInfo_Edit() {
         let record = ListGrid_JspAgreementFurtherInfo.getSelectedRecord();
-        debugger;
+
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
