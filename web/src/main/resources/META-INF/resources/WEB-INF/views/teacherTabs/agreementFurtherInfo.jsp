@@ -214,7 +214,8 @@
                 name: "teacherRank",
                 title: "<spring:message code='teacherRank'/>",
                 align: "center",
-
+                displayField:"title",
+                valueField: "id"
                 // filterOnKeypress: true,
                 // filterEditorProperties:{
                 //     pickListProperties: {
@@ -318,6 +319,7 @@
     }
 
     function ListGrid_AgreementFurtherInfo_Edit() {
+
         let record = ListGrid_JspAgreementFurtherInfo.getSelectedRecord();
 
         if (record == null || record.id == null) {
@@ -330,7 +332,17 @@
             // let clonedRecord = Object.assign({}, record);
             // clonedRecord.teacherRank = record.teacherRank.title;
             // clonedRecord.teacherRankTitle=record.teacherRank.literal;
-            
+            if(record.teacherRank=="استاد")
+                record.teacherRank=1
+            if(record.teacherRank=="دانشیار")
+                record.teacherRank=2
+            if(record.teacherRank=="استادیار")
+                record.teacherRank=3
+            if(record.teacherRank=="مربی")
+                record.teacherRank=4
+            if(record.teacherRank=="آموزشیار")
+                record.teacherRank=5
+
 
             DynamicForm_JspAgreementFurtherInfo.editRecord(record);
             Window_JspAgreementFurtherInfo.show();
