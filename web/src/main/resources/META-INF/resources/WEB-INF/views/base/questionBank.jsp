@@ -1562,6 +1562,7 @@
                         //groupQuestions
                         QuestionBankWin_questionBank.items[1].members[3].setVisibility(true);
                         QuestionBankDF_questionBank.getItem("isChild").disable();
+                        QuestionBankDF_questionBank.getItem("isChild").setValue(false);
 
                     }else {
                         //others
@@ -2152,6 +2153,7 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
                 if (record.questionTypeId != 520 && record.questionTypeId != 519){
                     //groupQuestions
                     QuestionBankDF_questionBank.getItem("isChild").disable();
+                    QuestionBankDF_questionBank.getItem("isChild").setValue(false);
                     QuestionBankWin_questionBank.items[1].members[3].setVisibility(true);
 
 
@@ -2272,6 +2274,10 @@ QuestionBankWin_questionBank.items[1].members[2].setVisibility(true);
         if (QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 520 || QuestionBankDF_questionBank.getItem("questionTypeId").getValue() === 519){
 
             QuestionBankDF_questionBank.getField("groupQuestionIds").setValue();
+
+        }else
+        {
+            QuestionBankDF_questionBank.getItem("isChild").setValue(false);
 
         }
 
