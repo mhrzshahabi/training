@@ -101,7 +101,8 @@ public class TeacherExperienceInfoController {
         update.setTeacherId((Long) request.get("teacher"));
        update.setTeachingExperience(Long.valueOf( request.get("teachingExperience").toString()));
 
-        Integer idRank= (Integer) request.get("teacherRank");
+        Integer idRank= (Integer)request.get("teacherRank");
+
 
         TeacherRank.values();
         Object o = null;
