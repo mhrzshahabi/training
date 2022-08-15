@@ -52,4 +52,9 @@ public class EducationalDecisionHeaderService implements IEducationalDecisionHea
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
     }
+
+    @Override
+    public EducationalDecisionHeader findAllByFromDate(String fromDate) {
+        return educationalDecisionHeaderDao.findAllByFromDate(fromDate).stream().max(Comparator.comparing(EducationalDecisionHeader::getId)).orElse(null);
+    }
 }

@@ -10,7 +10,11 @@ public interface IAgreementClassCostService {
 
     AgreementClassCostDTO.Info create(AgreementClassCostDTO.Create request);
 
-    AgreementClassCost update(AgreementClassCostDTO.Update update, Long id);
+    void createOrUpdateClassCostList(List<AgreementClassCostDTO.Create> costList, Long agreementId);
+
+    AgreementClassCostDTO.Info update(AgreementClassCostDTO.Update update, Long id);
+
+    void updateTeachingCostPerHourAuto(Long id, Double teachingCostPerHourAuto);
 
     SearchDTO.SearchRs<AgreementClassCostDTO.Info> search(SearchDTO.SearchRq request);
 
@@ -19,4 +23,6 @@ public interface IAgreementClassCostService {
     List<AgreementClassCost> findAllByAgreementId(Long agreementId);
 
     List<AgreementClassCost> findAll();
+
+    void calculateTeachingCost(AgreementClassCostDTO.CalcTeachingCostList calcInfoList);
 }

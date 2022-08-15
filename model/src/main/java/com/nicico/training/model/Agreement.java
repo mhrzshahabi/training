@@ -1,9 +1,9 @@
 package com.nicico.training.model;
 
-import com.nicico.training.model.enums.EServiceType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Getter
 @Setter
@@ -19,6 +19,18 @@ public class Agreement extends Auditable {
     @SequenceGenerator(name = "agreement_seq", sequenceName = "seq_agreement_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
+
+    @Column(name = "c_agreement_number")
+    private String agreementNumber;
+
+    @Column(name = "d_agreement_date")
+    private String agreementDate;
+
+    @Column(name = "d_from_date")
+    private String fromDate;
+
+    @Column(name = "d_to_date")
+    private String toDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_first_party_institute_id", nullable = false, insertable = false, updatable = false)
@@ -40,9 +52,6 @@ public class Agreement extends Auditable {
 
     @Column(name = "f_second_party_institute_id")
     private Long secondPartyInstituteId;
-
-    @Column(name = "e_service_type")
-    private EServiceType serviceType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_currency_id", nullable = false, insertable = false, updatable = false)

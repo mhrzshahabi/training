@@ -109,6 +109,7 @@ public class TclassService implements ITclassService {
     private final ViewActivePersonnelDAO viewActivePersonnelDAO;
     private final EducationalCalenderDAO educationalCalenderDAO;
     private final QuestionnaireDAO questionnaireDAO;
+    private final IParameterValueService iParameterValueService;
 
 
 
@@ -2761,7 +2762,13 @@ public class TclassService implements ITclassService {
         return elsClassDto;
     }
 
+    @Override
+    public String getClassTeachingMethod(Long classId) {
+        return iParameterValueService.getInfo(getTClass(classId).getTeachingMethodId()).getTitle();
+    }
 
-
-
+    @Override
+    public String getClassTargetPopulation(Long classId) {
+        return iParameterValueService.getInfo(getTClass(classId).getTargetPopulationTypeId()).getTitle();
+    }
 }

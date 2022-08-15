@@ -2,8 +2,10 @@ package com.nicico.training.service;
 
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EducationalDecisionDTO;
+import com.nicico.training.iservice.IEducationalDecisionHeaderService;
 import com.nicico.training.iservice.IEducationalDecisionService;
 import com.nicico.training.model.EducationalDecision;
+import com.nicico.training.model.EducationalDecisionHeader;
 import com.nicico.training.repository.EducationalDecisionDao;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -11,6 +13,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import response.BaseResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +21,7 @@ import java.util.List;
 public class EducationalDecisionService implements IEducationalDecisionService {
 
     private final EducationalDecisionDao educationalDecisionDao;
+    private final IEducationalDecisionHeaderService educationalDecisionHeaderService;
 
     @Override
     public EducationalDecisionDTO.Info get(Long id) {
@@ -50,5 +54,14 @@ public class EducationalDecisionService implements IEducationalDecisionService {
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
+    }
+
+    @Override
+    public List<EducationalDecision> findAllByDateAndRef(String fromDate, String ref) {
+        EducationalDecisionHeader educationalDecisionHeader = educationalDecisionHeaderService.findAllByFromDate(fromDate);
+        if (educationalDecisionHeader != null) {
+            return educationalDecisionDao.findAllByHeaderIdAndFromDateAndRef(educationalDecisionHeader.getId(), fromDate, ref);
+        } else
+            return new ArrayList<>();
     }
 }

@@ -1,7 +1,6 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.TeacherExperienceInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -348,6 +347,12 @@ public class TeacherDTO {
     public static class TeacherInfo {
         private String teacherCode;
         private String teacherName;
+        private PersonalInfoDTO.FullName personality;
+
+        public String getFullNameFa() {
+            return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
+        }
+
     }
 
     @Getter
@@ -359,6 +364,10 @@ public class TeacherDTO {
         private String teacherCode;
         private PersonalInfoDTO.ForAgreementInfo personality;
         private boolean valid;
+
+        public String getFullNameFa() {
+            return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
+        }
     }
 
 }

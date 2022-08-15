@@ -36,12 +36,10 @@ public class EducationalDecision extends Auditable{
     @JoinColumn(name = "f_educational_decision_header", insertable = false, updatable = false)
     private EducationalDecisionHeader educationalDecisionHeader;
 
-
     @Column(name = "f_educational_decision_header")
     private Long educationalDecisionHeaderId;
 
     // Educational_history fields
-
 
     @Column(name = "educational_history_coefficient")
     private Double educationalHistoryCoefficient;
@@ -73,6 +71,7 @@ public class EducationalDecision extends Auditable{
     private String educationalAssistantTuitionFee;
 
     //teaching Method
+
     @Column(name = "teaching_method")
     private String teachingMethod;
 
@@ -83,6 +82,7 @@ public class EducationalDecision extends Auditable{
     private String coefficientOfTeachingMethod;
 
     //course type
+
     @Column(name = "type_of_specialization_course_type")
     private String typeOfSpecializationCourseType;
 
@@ -94,6 +94,7 @@ public class EducationalDecision extends Auditable{
 
     @Column(name = "coefficient_of_course_type")
     private String coefficientOfCourseType;
+
     //distance
 
     @Column(name = "distance")
