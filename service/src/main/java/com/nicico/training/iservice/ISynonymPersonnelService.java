@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PersonnelStatisticInfoDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.model.SynonymPersonnel;
 
@@ -11,6 +12,7 @@ import java.util.Optional;
 public interface ISynonymPersonnelService {
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria nicicoCriteria);
+    PersonnelStatisticInfoDTO searchStatistic(NICICOCriteria nicicoCriteria);
 
     ViewActivePersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode);
 
@@ -21,4 +23,6 @@ public interface ISynonymPersonnelService {
     SynonymPersonnel getById(Long nationalCode);
 
     SynonymPersonnel getByPersonnelNo2(String personnelNo2);
+
+//    PersonnelStatisticInfoDTO getPersonnelStatisticInfo(String)
 }

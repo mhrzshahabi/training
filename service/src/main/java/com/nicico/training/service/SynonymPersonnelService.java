@@ -4,8 +4,10 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PersonnelStatisticInfoDTO;
 import com.nicico.training.dto.ViewActivePersonnelDTO;
 import com.nicico.training.iservice.ISynonymPersonnelService;
 import com.nicico.training.model.SynonymPersonnel;
@@ -15,6 +17,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -27,6 +32,51 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
     @Transactional(readOnly = true)
     public TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(dao, request, SynonymPersonnel -> modelMapper.map(SynonymPersonnel, PersonnelDTO.Info.class));
+    }
+
+    @Override
+    public PersonnelStatisticInfoDTO searchStatistic(NICICOCriteria nicicoCriteria) {
+        List<Object> complexList=new ArrayList<>(); List<Object> assistanceList=new ArrayList<>();
+        List<Object> affairList=new ArrayList<>();List<Object> sectionList=new ArrayList<>();
+        List<Object> unitList=new ArrayList<>();List<Object> statusList=new ArrayList<>();
+       List<Map<String,String>> objects= (List<Map<String,String>>) nicicoCriteria.getCriteria();
+      SearchDTO.SearchRq searchRq= SearchUtil.createSearchRq(nicicoCriteria);
+    SearchDTO.CriteriaRq criteriaRq= searchRq.getCriteria();
+    List<SearchDTO.CriteriaRq> criteriaRqs=  criteriaRq.getCriteria();
+        for (int i = 0; i <criteriaRqs.size() ; i++) {
+
+            if (criteriaRqs.get(i).getFieldName().equals("complexTitle")) {
+                complexList = criteriaRqs.get(i).getValue();
+            } else if (criteriaRqs.get(i).getFieldName().equals("ccpAssistant")) {
+                 assistanceList=criteriaRqs.get(i).getValue();
+            }else if(criteriaRqs.get(i).getFieldName().equals("ccpAffairs")){
+                affairList=criteriaRqs.get(i).getValue();
+            }else if(criteriaRqs.get(i).getFieldName().equals("ccpSection")){
+                sectionList=criteriaRqs.get(i).getValue();
+            }else if(criteriaRqs.get(i).getFieldName().equals("ccpUnit")){
+                unitList=criteriaRqs.get(i).getValue();
+            }else if(criteriaRqs.get(i).getFieldName().equals("empStatus")){
+              List<Object> empList=  criteriaRqs.get(i).getValue();
+            empList.stream().forEach(status->{
+                    if(status.equals("1")){
+                        status="اشتغال";
+                        statusList.add(status);
+                    }
+
+                    if(status.equals("2")){
+                        status=  "بازنشسته";
+                        statusList.add(status);
+                        status="بازنشسته&-پیش از موعد";
+                        statusList.add(status);
+                    }
+
+
+                });
+            }
+        }
+
+     List<Object> statistics=   dao.getStatisticInfoFromPersonnel(complexList,assistanceList,affairList,sectionList,unitList,statusList,complexList.size(),assistanceList.size(),affairList.size(),sectionList.size(),unitList.size(),statusList.size());
+       return null;
     }
 
     @Override

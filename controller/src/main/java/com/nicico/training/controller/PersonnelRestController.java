@@ -69,6 +69,13 @@ public class PersonnelRestController {
 
     }
 
+    @GetMapping(value = "/Synonym/statistic-iscList")
+
+    public ResponseEntity<PersonnelStatisticInfoDTO> statisticSynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+
+        return new ResponseEntity<>(iSynonymPersonnelService.searchStatistic(nicicoCriteria), HttpStatus.OK);
+    }
     @Loggable
     @GetMapping(value = "/Synonym/byPersonnelCode/{personnelCode}")
     public ResponseEntity<ViewActivePersonnelDTO.PersonalityInfo> findSynonymPersonnelByPersonnelCode(@PathVariable String personnelCode) {

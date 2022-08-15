@@ -27,10 +27,9 @@
 
         ],
 
-
     });
 
-    var organSegmentFilter_personnelStatistic = init_OrganSegmentFilterDF(true,true, true , null, "complexTitle","assistant","affairs", "section", "unit")
+    var organSegmentFilter_personnelStatistic = init_OrganSegmentFilterDF(true,true, true,false,false, null, "complexTitle","assistant","affairs", "section", "unit")
 
     var DynamicForm_EmploymentStatus = isc.DynamicForm.create({
         colWidths: ["5%", "25%", "5%", "25%","5%","25%"],
@@ -74,8 +73,9 @@
         title: "<spring:message code="search"/>",
         width: 300,
         click() {
+
             if ((DynamicForm_EmploymentStatus.getValuesAsAdvancedCriteria() == null || DynamicForm_EmploymentStatus.getValuesAsAdvancedCriteria().criteria.size() <= 1)
-                && ((organSegmentFilter.getCriteria(DynamicForm_EmploymentStatus.getValuesAsAdvancedCriteria())).criteria.length <= 1)) {
+                && ((organSegmentFilter_personnelStatistic.getCriteria(DynamicForm_EmploymentStatus.getValuesAsAdvancedCriteria())).criteria.length <= 1)) {
                 createDialog("info", "فیلتری انتخاب نشده است.");
                 return;
             }
@@ -88,7 +88,6 @@
 
             else {
                 data_values = organSegmentFilter_personnelStatistic.getCriteria(DynamicForm_EmploymentStatus.getValuesAsAdvancedCriteria());
-
                 var personnel_statistic_wait = createDialog("wait");
                 setTimeout(function () {
                     for (let i = 0; i < data_values.criteria.size(); i++){
@@ -122,8 +121,10 @@
                             data_values.criteria[i].operator = "inSet";
                         }
 
+
                     }
-                    let url =    personnelStatisticReportUrl + "/iscList";
+                    debugger;
+                    let url =   synonymPersonnel + "/statistic-iscList";
                     RestDataSource_ListResult_JspPersonnelStatistic.fetchDataURL = url;
                     ListGrid_PersonnelStatistic.invalidateCache();
                     ListGrid_PersonnelStatistic.fetchData(data_values);
