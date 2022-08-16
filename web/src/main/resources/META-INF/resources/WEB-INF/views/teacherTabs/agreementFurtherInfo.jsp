@@ -53,6 +53,7 @@
                 title: "<spring:message code='salaryBase'/>",
                 textAlign: "center",
                 required: true,
+                length:10,
                 filterOnKeypress: true,
                 keyPressFilter: numFilter_agreement,
             },
@@ -62,6 +63,7 @@
                 title: "<spring:message code='teachingExperience'/>",
                 textAlign: "center",
                 required: true,
+                length:3,
                 keyPressFilter: numFilter_agreement,
             },
 
