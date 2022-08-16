@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -51,8 +50,6 @@ public class DepartmentService extends GenericService<Department, Long, Departme
         return modelMapper.map(mainForm, new TypeToken<List<DepartmentDTO.Info>>() {
         }.getType());
     }
-
-    // unavailable services
 
     @Override
     public DepartmentDTO.Info create(Object request) {
@@ -338,6 +335,16 @@ public class DepartmentService extends GenericService<Department, Long, Departme
             }
         }
         return new ArrayList<>(departments);
+    }
+
+    @Override
+    public String getComplexTitleById(Long id) {
+        return departmentDAO.getComplexTitleById(id);
+    }
+
+    @Override
+    public Long getComplexIdByComplexTitle(String complexTitle) {
+        return complexDAO.getComplexIdByComplexTitle(complexTitle);
     }
 
     @Override

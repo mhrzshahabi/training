@@ -591,13 +591,21 @@
                             }
                         ]
                     }),
+                    isc.Button.create({
+                        title: "ارسال گروهی به گردش کار",
+                        width: "150",
+                        click: function () {
+                            let records = ListGrid_Competence_Request_Items.getData();
+                            sendGroupRequestItemProcess(records);
+                        }
+                    }),
                     <sec:authorize access="hasAuthority('CompetenceRequest_P')">
                     isc.ToolStripButtonExcel.create({
                         align: "left",
                         click: function () {
                             exportToExcelRequestItems();
                         }
-                    })
+                    }),
                     </sec:authorize>
                 ]
             });
@@ -758,22 +766,25 @@
         },
         getCellCSSText: function (record, rowNum, colNum) {
 
-            if (this.getFieldName(colNum) == "nationalCode") {
+            if (record.processInstanceId !== undefined)
+                return "background-color:#92f0ab";
+
+            if (this.getFieldName(colNum) === "nationalCode") {
                 if (record.nationalCodeCorrect != null && !record.nationalCodeCorrect)
                     return "background-color:#fa5f71;";
-            } else if (this.getFieldName(colNum) == "personnelNumber") {
+            } else if (this.getFieldName(colNum) === "personnelNumber") {
                 if (record.personnelNumberCorrect != null && !record.personnelNumberCorrect)
                     return "background-color:#fa5f71;";
-            } else if (this.getFieldName(colNum) == "personnelNo2") {
+            } else if (this.getFieldName(colNum) === "personnelNo2") {
                 if (record.personnelNo2Correct != null && !record.personnelNo2Correct)
                     return "background-color:#fa5f71;";
-            } else if (this.getFieldName(colNum) == "name") {
+            } else if (this.getFieldName(colNum) === "name") {
                 if (record.nameCorrect != null && !record.nameCorrect)
                     return "background-color:#fa5f71;";
-            } else if (this.getFieldName(colNum) == "lastName") {
+            } else if (this.getFieldName(colNum) === "lastName") {
                 if (record.lastNameCorrect != null && !record.lastNameCorrect)
                     return "background-color:#fa5f71;";
-            } else if (this.getFieldName(colNum) == "affairs") {
+            } else if (this.getFieldName(colNum) === "affairs") {
                 if (record.affairsCorrect != null && !record.affairsCorrect)
                     return "background-color:#fa5f71;";
             }
@@ -1530,10 +1541,8 @@
 
         if (record.processInstanceId != null) {
             createDialog("info", "فرایند پیش تر به موتور گردش کار ارسال شده است");
-            return;
         } else if (record.operationalRoleUsers.size() === 0 || record.operationalRoleUsers == null) {
             createDialog("info", "کارشناس ارشد برنامه ریزی برای پست پیشنهادی تعریف نشده است.");
-            return;
         } else {
             isc.MyYesNoDialog.create({
                 message: "<spring:message code="request.item.sent.to.workflow.ask"/>",
@@ -1545,10 +1554,9 @@
                         let param = {}
                         param.data = {
                             "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
-                            "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + record.personnelNo2 + " برای کدپست پیشنهادی " + record.post,
+                            "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + record.personnelNo2 + " برای کدپست پیشنهادی " + record.post + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
                             "requestItemId": record.id,
-                            "requestNo": requestRecord.id,
-                            "requestLetterNumber": requestRecord.letterNumber
+                            "requestNo": requestRecord.id
                         }
                         wait.show();
                         isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/request-item/start-data-validation", "POST", JSON.stringify(param), function (resp) {
@@ -1560,6 +1568,51 @@
                                 createDialog("info", "<spring:message code='workflow.bpmn.not.uploaded'/>");
                             } else {
                                 createDialog("info", "<spring:message code='msg.send.to.workflow.problem'/>");
+                            }
+                        }));
+                    }
+                }
+            });
+        }
+    }
+    function sendGroupRequestItemProcess(records) {
+
+        let validRecords = [];
+        for (let i = 0; i < records.length; i++) {
+            if (records[i].processInstanceId == null && records[i].operationalRoleUsers.size() !== 0)
+                validRecords.add(records[i]);
+        }
+        if (validRecords.length === 0) {
+            createDialog("info", "همه درخواست ها ارسال شده اند یا رکوردی با اطلاعات کامل برای ارسال به گردش کار وجود ندارد");
+        } else {
+            isc.MyYesNoDialog.create({
+                message: "<spring:message code="request.item.sent.to.workflow.ask"/>",
+                title: "<spring:message code="message"/>",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        let data = [];
+                        let requestRecord = ListGrid_Competence_Request.getSelectedRecord();
+                        for (let i = 0; i < validRecords.length; i++) {
+                            let param = {}
+                            param.data = {
+                                "processDefinitionKey": "فرآیند درخواست تایید صلاحیت علمی و فنی",
+                                "title": "درخواست تایید صلاحیت علمی و فنی پرسنل با شماره پرسنلی قدیم " + validRecords[i].personnelNo2 + " برای کدپست پیشنهادی " + validRecords[i].post + " و شماره نامه کارگزینی " + requestRecord.letterNumber,
+                                "requestItemId": validRecords[i].id,
+                                "requestNo": requestRecord.id
+                            };
+                            data.add(param);
+                        }
+                        wait.show();
+                        isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/processes/request-item/start-data-validation/group", "POST", JSON.stringify(data), function (resp) {
+                            wait.close();
+                            let hasException = JSON.parse(resp.httpResponseText);
+                            if (hasException === false) {
+                                createDialog("info", "<spring:message code='global.form.request.successful'/>");
+                                refreshRequestItem();
+                            } else {
+                                createDialog("info", "ارسال بعضی از درخواست ها با مشکل مواجه شده است");
+                                refreshRequestItem();
                             }
                         }));
                     }
