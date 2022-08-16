@@ -85,7 +85,7 @@ public class ViewPostDTO implements Serializable {
         private Long deleted;
         private String committee;
         private Boolean hasCommittee;
-        private Boolean hasPermission;
+        private Boolean hasPermission=false;
     }
 
     public String getPostGradeTitleFa() {

@@ -1199,7 +1199,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            if (postAdmin || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
+            if (postAdmin==="true"  || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
                 Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",false);
             }else {
                 simpleDialog("پیغام", "شما دسترسی ویرایش نیازسنجی ندارید . در صورت نیاز , دسترسی به پست مربوطه را در نقش عملیاتی داده شود", 0, "say");
@@ -1214,7 +1214,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            if (postAdmin || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
+            if (postAdmin==="true"  || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
                 Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",true);
             }else {
                 simpleDialog("پیغام", "شما دسترسی ویرایش نیازسنجی ندارید . در صورت نیاز , دسترسی به پست مربوطه را در نقش عملیاتی داده شود", 0, "say");
@@ -1811,7 +1811,7 @@
             simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "say");
 
         } else {
-            if (postAdmin || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
+            if (postAdmin==="true"  || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
                 DynamicForm_TrainingPost_Jsp.clearValues();
                 method = "PUT";
                 url = trainingPostUrl + "/" + record.id;
@@ -1831,7 +1831,7 @@
             simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "ask");
         } else {
 
-            if (postAdmin || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
+            if (postAdmin==="true"  || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
                 var Dialog_Delete = isc.Dialog.create({
                     message: getFormulaMessage("آیا از حذف گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                     icon: "[SKIN]ask.png",
@@ -2082,7 +2082,7 @@
 
         let record= ListGrid_TrainingPost_Jsp.getSelectedRecord();
 
-        if (postAdmin || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
+        if (postAdmin==="true"  || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
             DynamicForm_Uncertainly_needAssessment_trainingPost.clearValues();
             wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/removeConfirmation?code=" + record.code, "GET", null, function (resp) {
