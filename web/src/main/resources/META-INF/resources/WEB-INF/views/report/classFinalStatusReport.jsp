@@ -339,7 +339,6 @@
             criteriaDisplayValues = criteriaDisplayValues === undefined ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_csfr.getField("classCode").setValue(criteriaDisplayValues);
-            debugger
             Window_SelectClasses_csfr.close();
         }
     });
