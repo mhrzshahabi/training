@@ -36,6 +36,7 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
 
     @Override
     public PersonnelStatisticInfoDTO searchStatistic(NICICOCriteria nicicoCriteria) {
+        int complexFlag=0;int assistanceFlag=0;int affairFlag=0;int sectionFlag=0; int unitFlag=0; int statusFlag=0;
         List<Object> complexList=new ArrayList<>(); List<Object> assistanceList=new ArrayList<>();
         List<Object> affairList=new ArrayList<>();List<Object> sectionList=new ArrayList<>();
         List<Object> unitList=new ArrayList<>();List<Object> statusList=new ArrayList<>();
@@ -47,16 +48,34 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
 
             if (criteriaRqs.get(i).getFieldName().equals("complexTitle")) {
                 complexList = criteriaRqs.get(i).getValue();
+                if(complexList.size()>0) {
+                    complexFlag = 1;
+                }
             } else if (criteriaRqs.get(i).getFieldName().equals("ccpAssistant")) {
                  assistanceList=criteriaRqs.get(i).getValue();
+                 if(assistanceList.size()>0) {
+                    assistanceFlag =1;
+                }
             }else if(criteriaRqs.get(i).getFieldName().equals("ccpAffairs")){
                 affairList=criteriaRqs.get(i).getValue();
+                if(affairList.size()>0) {
+                   affairFlag= 1;
+                }
             }else if(criteriaRqs.get(i).getFieldName().equals("ccpSection")){
                 sectionList=criteriaRqs.get(i).getValue();
+                if(sectionList.size()>0) {
+                    sectionFlag= 1;
+                }
             }else if(criteriaRqs.get(i).getFieldName().equals("ccpUnit")){
                 unitList=criteriaRqs.get(i).getValue();
+                if(unitList.size()>0) {
+                    unitFlag= 1;
+                }
             }else if(criteriaRqs.get(i).getFieldName().equals("empStatus")){
               List<Object> empList=  criteriaRqs.get(i).getValue();
+                if(empList.size()>0) {
+                    statusFlag= 1;
+                }
             empList.stream().forEach(status->{
                     if(status.equals("1")){
                         status="اشتغال";
@@ -75,7 +94,7 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
             }
         }
 
-     List<Object> statistics=   dao.getStatisticInfoFromPersonnel(complexList,assistanceList,affairList,sectionList,unitList,statusList,complexList.size(),assistanceList.size(),affairList.size(),sectionList.size(),unitList.size(),statusList.size());
+     List<Object> statistics=   dao.getStatisticInfoFromPersonnel(complexList,assistanceList,affairList,sectionList,unitList,statusList,complexFlag,assistanceFlag,affairFlag,sectionFlag,unitFlag,statusFlag);
        return null;
     }
 

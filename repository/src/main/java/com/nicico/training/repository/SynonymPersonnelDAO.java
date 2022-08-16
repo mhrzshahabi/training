@@ -27,13 +27,14 @@ public interface SynonymPersonnelDAO extends JpaRepository<SynonymPersonnel, Lon
     List<SynonymPersonnel> findAllByPersonnelNoOrderByIdDesc(String personnelNo);
 
  @Query(value ="    \n" +
-         "   select  case when  view_synonym_personnel.complex_title is null  then null else view_synonym_personnel.complex_title end  as complex ,\n" +
-         " case when  view_synonym_personnel.ccp_assistant is null then null else view_synonym_personnel.ccp_assistant end  as assistant ,\n" +
-         "    case when    view_synonym_personnel.ccp_affairs is null then null else view_synonym_personnel.ccp_affairs end as affair,\n" +
-         "  case when   view_synonym_personnel.ccp_section is null then null else view_synonym_personnel.ccp_section end as section,\n" +
-         "   case when   view_synonym_personnel.ccp_unit is null then null else view_synonym_personnel.ccp_unit end as unit ,\n" +
-         "   case when  view_synonym_personnel.employment_status_title is null then null else view_synonym_personnel.employment_status_title end as status,\n" +
+         "   select  case when :complexFlag= 0  then null else view_synonym_personnel.complex_title end  as complex ,\n" +
+         " case when :assistanceFlag= 0 then null else view_synonym_personnel.ccp_assistant end  as assistant ,\n" +
+         "    case when   :affairFlag= 0 then null else view_synonym_personnel.ccp_affairs end as affair,\n" +
+         "  case when   :sectionFlag= 0  then null else view_synonym_personnel.ccp_section end as sec,\n" +
+         "   case when   :unitFlag= 0 then null else view_synonym_personnel.ccp_unit end as unit ,\n" +
+         "   case when :statusFlag= 0 then null else view_synonym_personnel.employment_status_title end as status,\n" +
          " \n" +
+         "     COUNT(*) as total_count,\n" +
          "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'مدیر 'THEN 1 END) as manager_count,\n" +
          "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'رئیس' THEN 1 END) as boss_count,\n" +
          "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'معاون مدیرعامل' THEN 1 END) as assistant_count,\n" +
@@ -50,21 +51,21 @@ public interface SynonymPersonnelDAO extends JpaRepository<SynonymPersonnel, Lon
          "    \n" +
          "    \n" +
          " where 1=1\n" +
-         "   and  ( :complexFlag = 0 or  view_synonym_personnel.complex_title IN (:complex)) \n" +
-         "    and ( :assistanceFlag = 0 or view_synonym_personnel.ccp_assistant IN (:assistance ))\n" +
-         "    and ( :affairFlag = 0 or view_synonym_personnel.ccp_affairs IN (:affair))\n" +
-         "    and ( :sectionFlag = 0 or view_synonym_personnel.ccp_section IN (:section ))\n" +
-         "    and ( :unitFlag = 0 or view_synonym_personnel.ccp_unit IN (:unit ))\n" +
-         "    and ( :statusFlag = 0 or view_synonym_personnel.employment_status_title IN (:status))\n" +
+         "   and  (:complexFlag= 0 or  view_synonym_personnel.complex_title IN (:complex)) \n" +
+         "    and (:assistanceFlag= 0 or  view_synonym_personnel.ccp_assistant IN (:assistance ))\n" +
+         "    and (:affairFlag= 0 or  view_synonym_personnel.ccp_affairs IN (:affair))\n" +
+         "    and (:sectionFlag= 0 or  view_synonym_personnel.ccp_section IN (:section ))\n" +
+         "    and (:unitFlag= 0 or  view_synonym_personnel.ccp_unit IN (:unit ))\n" +
+         "    and (:statusFlag= 0 or  view_synonym_personnel.employment_status_title IN (:status))\n" +
          "    \n" +
          "    \n" +
          "    group by \n" +
-         "  case when   view_synonym_personnel.complex_title is null then null else view_synonym_personnel.complex_title end ,\n" +
-         " case when   view_synonym_personnel.ccp_assistant is null then null else view_synonym_personnel.ccp_assistant end,\n" +
-         "  case when     view_synonym_personnel.ccp_affairs is null then null else  view_synonym_personnel.ccp_affairs end,\n" +
-         "    case when  view_synonym_personnel.ccp_section is null then null else view_synonym_personnel.ccp_section end,\n" +
-         "   case when   view_synonym_personnel.ccp_unit is null then null else view_synonym_personnel.ccp_unit end,\n" +
-         "   case when   view_synonym_personnel.employment_status_title is null then null else  view_synonym_personnel.employment_status_title end\n" +
+         "  case when   :complexFlag= 0 then null  else view_synonym_personnel.complex_title end ,\n" +
+         " case when   :assistanceFlag= 0 then null else view_synonym_personnel.ccp_assistant end,\n" +
+         "  case when    :affairFlag= 0 then null else  view_synonym_personnel.ccp_affairs end,\n" +
+         "    case when :sectionFlag= 0 then null else view_synonym_personnel.ccp_section end,\n" +
+         "   case when  :unitFlag= 0 then null else view_synonym_personnel.ccp_unit end,\n" +
+         "   case when  :statusFlag= 0 then null else  view_synonym_personnel.employment_status_title end\n" +
          "   "
 
       ,nativeQuery = true)
