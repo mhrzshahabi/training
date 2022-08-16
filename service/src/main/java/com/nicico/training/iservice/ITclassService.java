@@ -8,7 +8,6 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
-import org.springframework.util.MultiValueMap;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
@@ -221,4 +220,8 @@ public interface ITclassService {
     ElsSessionDetailsResponse getClassUsersDetail(String classCode);
 
     TclassDTO.ExecutionEvaluationResult getExecutionEvaluationResult(Long classId);
+
+    String getClassTeachingMethod(Long classId);
+
+    String getClassTargetPopulation(Long classId);
 }

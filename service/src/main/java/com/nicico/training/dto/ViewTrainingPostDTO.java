@@ -88,6 +88,7 @@ public class ViewTrainingPostDTO implements Serializable {
         private Long enabled;
         private String committee;
         private Boolean hasCommittee;
+        private Boolean hasPermission=false;
 
     }
 

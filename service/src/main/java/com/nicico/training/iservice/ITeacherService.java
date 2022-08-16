@@ -77,4 +77,6 @@ public interface ITeacherService {
     ElsTeacherInfoDto.Resume getTeacherResumeByNationalCode(String nationalCode);
 
     SearchDTO.SearchRs<TeacherDTO.ForAgreementInfo> forAgreementInfoSearch(SearchDTO.SearchRq request);
+
+    String getTeacherResidence(Long teacherId);
 }

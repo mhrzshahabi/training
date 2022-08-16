@@ -24,7 +24,8 @@ public class TeacherExperienceInfoDTO {
     @Accessors(chain = true)
     public static class ExcelInfo {
         private Long id;
-        private String  teacherRank;
+        private Long teacherRank;
+        private String teacherRankTitle;
         private Long salaryBase;
         private Long teachingExperience;
     }

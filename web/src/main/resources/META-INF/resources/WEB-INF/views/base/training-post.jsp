@@ -23,7 +23,7 @@
         // "Company" : "شرکتی",
         // "OrgCostCenter" : "پیمان کار"
     };
-    let TrainingPostDS_Url = viewTrainingPostUrl + "/iscList";
+    let TrainingPostDS_Url = viewTrainingPostUrl + "/training-post/iscList";
 
 
     let PostDS_TrainingPost = isc.TrDS.create({
@@ -153,16 +153,17 @@
                     74 : "غیر فعال"
                 },filterOnKeypress: true,
             },
-            {name: "version", title: "version", canEdit: false, hidden: true}
+            {name: "version", title: "version", canEdit: false, hidden: true},
+            {name: "hasPermission", title: "hasPermission", canEdit: false, hidden: true}
         ],
         transformRequest: function (dsRequest) {
-            if (postAdmin !== undefined && postAdmin != null) {
-                if (postAdmin === "true") {
-                    this.fetchDataURL = viewTrainingPostUrl + "/iscList";
-                } else {
-                    this.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
-                }
-            }
+            // if (postAdmin !== undefined && postAdmin != null) {
+                // if (postAdmin === "true") {
+                    this.fetchDataURL = viewTrainingPostUrl + "/training-post/iscList";
+                // } else {
+                //     this.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
+                // }
+            // }
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
@@ -1198,15 +1199,12 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",false);
-            // Window_NeedsAssessment_Edit.setProperties({
-            //     close() {
-            //         ListGrid_TrainingPost_Jsp.invalidateCache()
-            //         this.Super("close", arguments)
-            //     }
-            // })
-            // createTab(this.title, "web/edit-needs-assessment/", "loadEditNeedsAssessment(ListGrid_TrainingPost_Jsp.getSelectedRecord(), 'PostGroup')");
-            // Window_NeedsAssessment_E
+            if (postAdmin==="true"  || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
+                Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",false);
+            }else {
+                simpleDialog("پیغام", "شما دسترسی ویرایش نیازسنجی ندارید . در صورت نیاز , دسترسی به پست مربوطه را در نقش عملیاتی داده شود", 0, "say");
+
+            }
         }
     });
     ToolStripButton_EditNA_JspGap = isc.ToolStripButton.create({
@@ -1216,7 +1214,11 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",true);
+            if (postAdmin==="true"  || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
+                Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",true);
+            }else {
+                simpleDialog("پیغام", "شما دسترسی ویرایش نیازسنجی ندارید . در صورت نیاز , دسترسی به پست مربوطه را در نقش عملیاتی داده شود", 0, "say");
+            }
         }
     });
     ToolStripButton_TreeNA_JspTrainingPost = isc.ToolStripButton.create({
@@ -1787,13 +1789,13 @@
     });
 
     function ListGrid_TrainingPost_Posts_refresh() {
-        if (postAdmin !== undefined && postAdmin != null) {
-            if (postAdmin === true) {
-                RestDataSource_TrainingPost_Jsp.fetchDataURL  = viewTrainingPostUrl + "/iscList";
-            } else {
-                RestDataSource_TrainingPost_Jsp.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
-            }
-        }
+        // if (postAdmin !== undefined && postAdmin != null) {
+        //     if (postAdmin === true) {
+                RestDataSource_TrainingPost_Jsp.fetchDataURL  = viewTrainingPostUrl + "/training-post/iscList";
+            // } else {
+            //     RestDataSource_TrainingPost_Jsp.fetchDataURL = viewTrainingPostUrl + "/rolePostIscList";
+            // }
+        // }
         if (ListGrid_TrainingPost_Jsp.getSelectedRecord() == null)
             ListGrid_TrainingPost_Posts.setData([]);
         else
@@ -1809,11 +1811,17 @@
             simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "say");
 
         } else {
-            DynamicForm_TrainingPost_Jsp.clearValues();
-            method = "PUT";
-            url = trainingPostUrl + "/" + record.id;
-            DynamicForm_TrainingPost_Jsp.editRecord(record);
-            Window_TrainingPost_Jsp.show();
+            if (postAdmin==="true"  || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
+                DynamicForm_TrainingPost_Jsp.clearValues();
+                method = "PUT";
+                url = trainingPostUrl + "/" + record.id;
+                DynamicForm_TrainingPost_Jsp.editRecord(record);
+                Window_TrainingPost_Jsp.show();
+            }else {
+                simpleDialog("پیغام", "شما دسترسی ویرایش ندارید . در صورت نیاز , دسترسی به پست مربوطه  در نقش عملیاتی داده شود", 0, "say");
+
+            }
+
         }
     }
 
@@ -1822,21 +1830,27 @@
         if (record == null) {
             simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "ask");
         } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: getFormulaMessage("آیا از حذف گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                icon: "[SKIN]ask.png",
-                title: "تائید حذف",
-                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                    title: "خیر"
-                })],
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-                        wait.show();
-                        isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/" + record.id, "DELETE", null, "callback: postGroup_delete_result(rpcResponse)"));
+
+            if (postAdmin==="true"  || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
+                var Dialog_Delete = isc.Dialog.create({
+                    message: getFormulaMessage("آیا از حذف گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                    icon: "[SKIN]ask.png",
+                    title: "تائید حذف",
+                    buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                        title: "خیر"
+                    })],
+                    buttonClick: function (button, index) {
+                        this.close();
+                        if (index == 0) {
+                            wait.show();
+                            isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/" + record.id, "DELETE", null, "callback: postGroup_delete_result(rpcResponse)"));
+                        }
                     }
-                }
-            });
+                });
+            }else {
+                simpleDialog("پیغام", "شما دسترسی حذف ندارید . در صورت نیاز , دسترسی به پست مربوطه  در نقش عملیاتی داده شود", 0, "say");
+
+            }
         }
     }
 
@@ -2067,18 +2081,25 @@
     function delete_uncertainly_assessment_trainingPost(){
 
         let record= ListGrid_TrainingPost_Jsp.getSelectedRecord();
-        DynamicForm_Uncertainly_needAssessment_trainingPost.clearValues();
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/removeConfirmation?code=" + record.code, "GET", null, function (resp) {
-            wait.close();
-            if (resp.httpResponseCode === 201 || resp.httpResponseCode===200)   {
 
-                Window_delete_uncertainly_needAssessment_trainingPost.close();
-                createDialog("info","عملیات حذف موفقیت آمیز بود")
-            } else {
-                createDialog("info", "<spring:message code="delete.was.not.successful"/>", "<spring:message code="error"/>");
-            }
-        }));
+        if (postAdmin==="true"  || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
+            DynamicForm_Uncertainly_needAssessment_trainingPost.clearValues();
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/removeConfirmation?code=" + record.code, "GET", null, function (resp) {
+                wait.close();
+                if (resp.httpResponseCode === 201 || resp.httpResponseCode===200)   {
+
+                    Window_delete_uncertainly_needAssessment_trainingPost.close();
+                    createDialog("info","عملیات حذف موفقیت آمیز بود")
+                } else {
+                    createDialog("info", "<spring:message code="delete.was.not.successful"/>", "<spring:message code="error"/>");
+                }
+            }));
+        }else {
+            simpleDialog("پیغام", "شما دسترسی ویرایش نیازسنجی ندارید . در صورت نیاز , دسترسی به پست مربوطه را در نقش عملیاتی داده شود", 0, "say");
+
+        }
+
     }
 
 

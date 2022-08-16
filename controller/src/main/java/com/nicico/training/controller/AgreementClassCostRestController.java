@@ -4,7 +4,6 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.AgreementClassCostDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IAgreementClassCostService;
@@ -48,19 +47,36 @@ public class AgreementClassCostRestController {
     }
 
     @Loggable
+    @PostMapping("/create-or-update/{agreementId}")
+    public ResponseEntity<Void> createOrUpdateClassCostList(@RequestBody List<AgreementClassCostDTO.Create> costList, @PathVariable Long agreementId) {
+        agreementClassCostService.createOrUpdateClassCostList(costList, agreementId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        agreementClassCostService.delete(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping("/calculate-teaching-cost")
+    public ResponseEntity calculateTeachingCostList(@RequestBody AgreementClassCostDTO.CalcTeachingCostList calcInfoList) {
+        try {
+            agreementClassCostService.calculateTeachingCost(calcInfoList);
+            return new ResponseEntity<>(null, HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMsg(), HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Loggable
     @GetMapping(value = "/list-by-agreementId/{agreementId}")
     public ResponseEntity<List<AgreementClassCostDTO.Info>> agreementClassCostListByAgreementId(HttpServletRequest iscRq, @PathVariable Long agreementId) throws IOException {
 
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-
-//        criteriaRq.setFieldName("agreementId");
-//        criteriaRq.setOperator(EOperator.equals);
-//        criteriaRq.setValue(agreementId);
-//        searchRq.setCriteria(criteriaRq);
-
-        searchRq.setCriteria(
-                createCriteria(EOperator.equals, "agreementId", agreementId)
-        );
+        searchRq.setCriteria(createCriteria(EOperator.equals, "agreementId", agreementId));
 
         SearchDTO.SearchRs<AgreementClassCostDTO.Info> result = agreementClassCostService.search(searchRq);
         result.getList().forEach(item -> {

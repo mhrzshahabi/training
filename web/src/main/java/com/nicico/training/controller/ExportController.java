@@ -32,6 +32,7 @@ import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -224,6 +225,38 @@ public class ExportController {
            data=secondData;
        }
 
+       data.forEach(item -> {
+           if (item.getFinal_teacher() != null) {
+               item.setFinal_teacher(
+                       String.valueOf(Math.round(Float.parseFloat(item.getFinal_teacher())))
+               );
+           }
+           if (item.getReactione_evaluation_grade() != null) {
+               item.setReactione_evaluation_grade(
+                       String.valueOf(Math.round(Float.parseFloat(item.getReactione_evaluation_grade())))
+               );
+           }
+           if (item.getTeacher_grade_to_class() != null) {
+               item.setTeacher_grade_to_class(
+                       String.valueOf(Math.round(Float.parseFloat(item.getTeacher_grade_to_class())))
+               );
+           }
+           if (item.getTraining_grade_to_teacher() != null) {
+               item.setTraining_grade_to_teacher(
+                       String.valueOf(Math.round(Float.parseFloat(item.getTraining_grade_to_teacher())))
+               );
+           }
+           if (item.getStudentEvaluation() != null) {
+               item.setStudentEvaluation(
+                       String.valueOf(Math.round(Float.parseFloat(item.getStudentEvaluation())))
+               );
+           }
+           if (item.getMiangin_javab_dade() != null) {
+               item.setMiangin_javab_dade(
+                       String.valueOf(Math.round(Float.parseFloat(item.getMiangin_javab_dade())))
+               );
+           }
+       });
 
         String fileFullPath = "export.xlsx";
         Workbook workbook = null;
@@ -984,6 +1017,33 @@ public class ExportController {
             data=secondData;
         }
 
+        data.forEach(item -> {
+            if (item.getFinal_teacher() != null) {
+                item.setFinal_teacher(
+                        String.valueOf(Math.round(Float.parseFloat(item.getFinal_teacher())))
+                );
+            }
+            if (item.getReactione_evaluation_grade() != null) {
+                item.setReactione_evaluation_grade(
+                        String.valueOf(Math.round(Float.parseFloat(item.getReactione_evaluation_grade())))
+                );
+            }
+            if (item.getTeacher_grade_to_class() != null) {
+                item.setTeacher_grade_to_class(
+                        String.valueOf(Math.round(Float.parseFloat(item.getTeacher_grade_to_class())))
+                );
+            }
+            if (item.getTraining_grade_to_teacher() != null) {
+                item.setTraining_grade_to_teacher(
+                        String.valueOf(Math.round(Float.parseFloat(item.getTraining_grade_to_teacher())))
+                );
+            }
+            if (item.getMiangin_javab_dade() != null) {
+                item.setMiangin_javab_dade(
+                        String.valueOf(Math.round(Float.parseFloat(item.getMiangin_javab_dade())))
+                );
+            }
+        });
 
         String fileFullPath = "export.xlsx";
         Workbook workbook = null;

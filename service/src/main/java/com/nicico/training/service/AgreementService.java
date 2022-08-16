@@ -3,11 +3,9 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AgreementClassCostDTO;
 import com.nicico.training.dto.AgreementDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.AgreementDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -26,7 +24,6 @@ public class AgreementService implements IAgreementService {
     private final ModelMapper modelMapper;
     private final AgreementDAO agreementDAO;
     private final IAgreementClassCostService agreementClassCostService;
-    private final EnumsConverter.EServiceTypeConverter eServiceTypeConverter = new EnumsConverter.EServiceTypeConverter();
 
 
     @Override
@@ -39,14 +36,8 @@ public class AgreementService implements IAgreementService {
     public AgreementDTO.Info create(AgreementDTO.Create request) {
 
         final Agreement agreement = modelMapper.map(request, Agreement.class);
-        List<AgreementClassCostDTO.Create> classCostCreate = request.getClassCostList();
-        agreement.setServiceType(eServiceTypeConverter.convertToEntityAttribute(request.getServiceTypeId().intValue()));
         try {
             AgreementDTO.Info info = modelMapper.map(agreementDAO.saveAndFlush(agreement), AgreementDTO.Info.class);
-            classCostCreate.forEach(item -> {
-                item.setAgreementId(info.getId());
-                agreementClassCostService.create(item);
-            });
             return info;
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
@@ -59,23 +50,6 @@ public class AgreementService implements IAgreementService {
 
         Optional<Agreement> agreementOptional = agreementDAO.findById(id);
         Agreement agreement = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        List<AgreementClassCostDTO.Create> classCostCreate = update.getClassCostList();
-
-        List<AgreementClassCost> costList =  agreementClassCostService.findAllByAgreementId(id);
-
-        if (update.isChanged()) {
-
-            costList.forEach(item -> {
-                agreementClassCostService.delete(item.getId());
-            });
-            if (classCostCreate.size() != 0) {
-
-                classCostCreate.forEach(item -> {
-                    item.setAgreementId(agreement.getId());
-                    agreementClassCostService.create(item);
-                });
-            }
-        }
 
         Agreement updating = new Agreement();
         modelMapper.map(agreement, updating);

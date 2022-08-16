@@ -1348,7 +1348,6 @@
                     var personnelRegRecord = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
                     personnelRegSaveUrl += "/" + personnelRegRecord.id;
                 }
-                debugger
                 isc.RPCManager.sendRequest(TrDSRequest(personnelRegSaveUrl, personnelRegMethod, JSON.stringify(data), "callback: personnelReg_action_result(rpcResponse)"));
                 // Window_PersonnelReg_JspPersonnelReg.close();
             }
@@ -1905,7 +1904,6 @@
                             align: "center",
                             icon: "[SKIN]/actions/save.png",
                             click: function () {
-debugger
                                 // let getEditCells=GroupSelectedPersonnelRegisterLG.getAllEditCells();
                                 //
                                 //
@@ -1977,7 +1975,6 @@ debugger
     };
 
     function personnelReg_action_result(resp) {
-        debugger
         personnelRegWait.close();
 
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
@@ -2122,14 +2119,12 @@ debugger
 
     function checkPersonnelRegisteredResponse(url, result, addStudentsInGroupInsert) {
         wait.show();
-        debugger
         isc.RPCManager.sendRequest(TrDSRequest(url, "POST", JSON.stringify(result)
             , "callback: checkResultForAdd(rpcResponse," + JSON.stringify(result) + ",'" + url + "'," + addStudentsInGroupInsert + ")"));
     }
 
     function addValidRegisterdStudents(students) {
         wait.show();
-        debugger
         isc.RPCManager.sendRequest(TrDSRequest(addPerssonelRegisteredList, "POST", JSON.stringify(students), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 wait.close();

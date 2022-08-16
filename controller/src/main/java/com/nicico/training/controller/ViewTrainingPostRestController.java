@@ -52,6 +52,23 @@ public class ViewTrainingPostRestController {
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
     }
 
+    @GetMapping(value = "/training-post/iscList")
+    public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> trainingtrainingPostIscList(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        SearchDTO.SearchRs<ViewTrainingPostDTO.Info> searchRs = viewTrainingPostService.search(searchRq);
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Long userId = ((CustomUserDetails) principal).getUserId();
+        Set<Long> userAccessTrainingPostIds = iOperationalRoleService.getUserAccessTrainingPostsInRole(userId);
+        if (userAccessTrainingPostIds!=null && !userAccessTrainingPostIds.isEmpty()){
+            for (ViewTrainingPostDTO.Info info:searchRs.getList()){
+                info.setHasPermission(userAccessTrainingPostIds.stream().anyMatch(a -> (a.equals(info.getId()))));
+            }
+        }
+
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
+    }
+
     @GetMapping(value = "/rolePostIscList")
     public ResponseEntity<ISC<ViewTrainingPostDTO.Info>> rolePostIscList(HttpServletRequest iscRq) throws IOException {
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);

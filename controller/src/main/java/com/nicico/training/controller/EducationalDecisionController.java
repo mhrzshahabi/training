@@ -38,7 +38,6 @@ public class EducationalDecisionController {
 
     @Loggable
     @GetMapping(value = "/list/{ref}/{header}")
-//    @PreAuthorize("hasAuthority('r_country')")
     public ResponseEntity<EducationalDecisionDTO.EducationDecisionSpecRs> list( @PathVariable String ref,@PathVariable long header) {
         List<EducationalDecisionDTO.Info> data=  mapper.toDtosInfos(iEducationalDecisionService.list(ref,header));
         final EducationalDecisionDTO.SpecRs specResponse = new EducationalDecisionDTO.SpecRs();

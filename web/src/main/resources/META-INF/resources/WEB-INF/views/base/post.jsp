@@ -5,7 +5,7 @@
 
 // <script>
     let LoadAttachments_Post = null;
-    let PostDS_Url = viewPostUrl + "/iscList";
+    let PostDS_Url = viewPostUrl + "/post/iscList";
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -81,7 +81,12 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post",false);
+            if (postAdmin==="true" || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
+                Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post",false);
+            }else {
+                simpleDialog("پیغام", "شما دسترسی ویرایش نیازسنجی ندارید . در صورت نیاز , دسترسی به پست مربوطه را در نقش عملیاتی داده شود", 0, "say");
+
+            }
         }
     });
     ToolStripButton_EditNA_POSTGap = isc.ToolStripButton.create({
@@ -91,7 +96,11 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post",true);
+            if (postAdmin==="true"  || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
+                Window_NeedsAssessment_Edit.showUs(PostLG_post.getSelectedRecord(), "Post",true);
+            }else {
+                simpleDialog("پیغام", "شما دسترسی ویرایش نیازسنجی ندارید . در صورت نیاز , دسترسی به پست مربوطه را در نقش عملیاتی داده شود", 0, "say");
+            }
         }
     });
     ToolStripButton_TreeNA_JspPost = isc.ToolStripButton.create({
@@ -302,14 +311,14 @@
             },
         ],
         transformRequest: function (dsRequest) {
-            if (postAdmin !== undefined && postAdmin != null) {
-
-                if (postAdmin === "true") {
-                    PostDS_post.fetchDataURL = viewPostUrl + "/iscList";
-                } else {
-                    PostDS_post.fetchDataURL = viewPostUrl + "/roleIndPostIscList";
-                }
-            }
+            // if (postAdmin !== undefined && postAdmin != null) {
+            //
+            //     if (postAdmin === "true") {
+                    PostDS_post.fetchDataURL = viewPostUrl + "/post/iscList";
+                // } else {
+                //     PostDS_post.fetchDataURL = viewPostUrl + "/roleIndPostIscList";
+                // }
+            // }
             transformCriteriaForLastModifiedDateNA(dsRequest);
             return this.Super("transformRequest", arguments);
         },
@@ -1050,20 +1059,26 @@
 
     }
     function delete_uncertainly_assessment_post(){
-
         let record=  PostLG_post.getSelectedRecord();
-        DynamicForm_Uncertainly_needAssessment_post.clearValues();
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/removeConfirmation?code=" + record.code, "GET", null, function (resp) {
-            wait.close();
-            if (resp.httpResponseCode === 201 || resp.httpResponseCode===200)   {
 
-                Window_delete_uncertainly_needAssessment_post.close();
-                createDialog("info","عملیات حذف موفقیت آمیز بود")
-            } else {
-                createDialog("info", "<spring:message code="delete.was.not.successful"/>", "<spring:message code="error"/>");
-            }
-        }));
+        if (postAdmin==="true"  || (record.hasPermission!==undefined && record.hasPermission!==null && record.hasPermission===true)){
+            DynamicForm_Uncertainly_needAssessment_post.clearValues();
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(needsAssessmentUrl + "/removeConfirmation?code=" + record.code, "GET", null, function (resp) {
+                wait.close();
+                if (resp.httpResponseCode === 201 || resp.httpResponseCode===200)   {
+
+                    Window_delete_uncertainly_needAssessment_post.close();
+                    createDialog("info","عملیات حذف موفقیت آمیز بود")
+                } else {
+                    createDialog("info", "<spring:message code="delete.was.not.successful"/>", "<spring:message code="error"/>");
+                }
+            }));
+        }else {
+            simpleDialog("پیغام", "شما دسترسی حذف ندارید . در صورت نیاز , دسترسی به پست مربوطه  در نقش عملیاتی داده شود", 0, "say");
+
+        }
+
     }
 
     // </script>

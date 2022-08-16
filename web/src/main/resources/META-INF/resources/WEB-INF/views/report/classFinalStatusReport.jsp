@@ -339,7 +339,6 @@
             criteriaDisplayValues = criteriaDisplayValues === undefined ? "" : criteriaDisplayValues;
 
             DynamicForm_CriteriaForm_csfr.getField("classCode").setValue(criteriaDisplayValues);
-            debugger
             Window_SelectClasses_csfr.close();
         }
     });
@@ -492,7 +491,7 @@
                 multiple: true,
                 filterOperator: "equals",
                 disabled: true,
-                valueField: "id",
+                valueField: "titleFa",
                 displayField: "titleFa",
                 filterLocally: true,
                 pickListProperties: {
@@ -948,6 +947,9 @@
             }
             if (data.criteria[i].fieldName === "courseCategory") {
                 data.criteria[i].fieldName = "courseCategoryId"
+                data.criteria[i].operator = "inSet";
+            }
+            if (data.criteria[i].fieldName === "termTitle") {
                 data.criteria[i].operator = "inSet";
             }
             if (target === "student") {

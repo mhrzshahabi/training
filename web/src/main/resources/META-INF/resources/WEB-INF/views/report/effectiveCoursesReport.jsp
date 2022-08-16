@@ -716,6 +716,7 @@
                 title: "<spring:message code='description'/>",
                 align: "center",
                 filterOperator: "iContains",
+                hidden: true
             }
         ],
         getCellCSSText: function (record, rowNum, colNum) {

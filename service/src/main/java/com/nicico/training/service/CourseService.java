@@ -8,6 +8,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.ICourseService;
+import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.mapper.course.CourseBeanMapper;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
@@ -48,6 +49,7 @@ public class CourseService implements ICourseService {
     private final SubcategoryDAO subCategoryDAO;
     private final WorkGroupService workGroupService;
     private final TclassService tclassService;
+    private final ITclassService iTclassService;
     private final TeacherService teacherService;
     private final GoalService goalService;
     private final ParameterService parameterService;
@@ -344,6 +346,21 @@ public class CourseService implements ICourseService {
     @Override
     public void updateDurationByCourseCode(String code, Float theoryDuration) {
         courseDAO.updateDurationByCourseCode(code, theoryDuration);
+    }
+
+    @Override
+    public String getClassCourseType(Long classId) {
+        return getCourse(iTclassService.getTClass(classId).getCourseId()).getETheoType().getTitleFa();
+    }
+
+    @Override
+    public String getClassCourseTechnicalType(Long classId) {
+        return getCourse(iTclassService.getTClass(classId).getCourseId()).getETechnicalType().getTitleFa();
+    }
+
+    @Override
+    public String getClassCourseLevelType(Long classId) {
+        return getCourse(iTclassService.getTClass(classId).getCourseId()).getELevelType().getTitleFa();
     }
 
     @Transactional(readOnly = true)

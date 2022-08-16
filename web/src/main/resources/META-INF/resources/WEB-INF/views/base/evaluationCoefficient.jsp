@@ -113,7 +113,6 @@
                 name: "z3",
                 title: "ضریب نمره ارزیابی فراگیران به محتوای دوره &nbsp;(Z1)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;%",
                 change: function (form, item, value) {
-                    debugger;
                     if (value > 100) {
                         item.setValue()
                     }
