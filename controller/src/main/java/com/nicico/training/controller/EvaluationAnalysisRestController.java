@@ -18,7 +18,6 @@ import com.nicico.training.service.*;
 import com.nicico.training.utility.PersianCharachtersUnicode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.impl.util.json.JSONObject;
 import org.springframework.http.HttpStatus;
@@ -472,7 +471,7 @@ public class EvaluationAnalysisRestController {
                         for (int z=0 ; z<subV2.size();z++) {
                             ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
 
-                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), z+1 + "" ,
+                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentReaction()+"% )" , z+1 + "" ,
                                     Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
                                     Double.parseDouble(minFerGrade.getValue())));
 
@@ -492,7 +491,7 @@ public class EvaluationAnalysisRestController {
 
                 }else {
                     for (ViewEvaluationStaticalReportDTO.Info info : list) {
-                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode(), index + "",
+                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentReaction()+"% )" , index + "",
                                 Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
                                 Double.parseDouble(minFerGrade.getValue())));
 
@@ -672,17 +671,17 @@ public class EvaluationAnalysisRestController {
 
     public static class TableData{
         private String courseGrade;
-        private String percentOfAnsweredEvaluation;
+        private String reactionPer;
         private String courseName;
         private Long id;
 
         public TableData() {
         }
 
-        public TableData(String courseGrade, String courseName,Long id,String percentOfAnsweredEvaluation) {
+        public TableData(String courseGrade, String courseName,Long id,String reactionPer) {
             this.courseGrade = courseGrade;
             this.courseName = courseName;
-            this.percentOfAnsweredEvaluation = percentOfAnsweredEvaluation;
+            this.reactionPer = reactionPer;
             this.id = id;
         }
 
@@ -706,12 +705,12 @@ public class EvaluationAnalysisRestController {
             return courseGrade;
         }
 
-        public String getPercentOfAnsweredEvaluation() {
-            return percentOfAnsweredEvaluation;
+        public String getReactionPer() {
+            return reactionPer;
         }
 
-        public void setPercentOfAnsweredEvaluation(String percentOfAnsweredEvaluation) {
-            this.percentOfAnsweredEvaluation = percentOfAnsweredEvaluation;
+        public void setReactionPer(String reactionPer) {
+            this.reactionPer = reactionPer;
         }
 
         public String getCourseName() {
