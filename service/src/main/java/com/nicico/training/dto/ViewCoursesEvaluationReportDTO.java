@@ -38,7 +38,7 @@ public class ViewCoursesEvaluationReportDTO implements Serializable {
 
         private String evaluationAnalysisReactionPass;
         public String getEvaluationAnalysisReactionPass() {
-            if (evaluationAnalysisReactionPass!=null && evaluationAnalysisReactionPass.equals("0")) {
+            if (evaluationAnalysisReactionPass!=null && evaluationAnalysisReactionPass.equals("1")) {
                 return "نهایی شده";
             } else {
                 return "ناقص";
