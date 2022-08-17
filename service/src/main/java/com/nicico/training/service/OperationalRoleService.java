@@ -6,7 +6,9 @@ import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalRoleDTO;
 import com.nicico.training.dto.ViewTrainingPostDTO;
+import com.nicico.training.iservice.IDepartmentService;
 import com.nicico.training.iservice.IOperationalRoleService;
+import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.mapper.viewTrainingPost.ViewTrainingPostMapper;
 import com.nicico.training.model.Complex;
 import com.nicico.training.model.OperationalRole;
@@ -31,7 +33,8 @@ public class OperationalRoleService implements IOperationalRoleService {
 
     private final ComplexDAO complexDAO;
     private final ModelMapper modelMapper;
-    private final PersonnelDAO personnelDAO;
+    private final IPersonnelService personnelService;
+    private final IDepartmentService departmentService;
     private final OperationalUnitDAO operationalUnitDAO;
     private final OperationalRoleDAO operationalRoleDAO;
     private final ViewTrainingPostDAO viewTrainingPostDAO;
@@ -45,7 +48,6 @@ public class OperationalRoleService implements IOperationalRoleService {
             String complexParameterCode = complex.getCode().trim().substring(0,3);
             OperationalUnit operationalUnit = operationalUnitDAO.findById(creating.getOperationalUnitId()).get();
             String generatedRoleCode = complexParameterCode + operationalUnit.getUnitCode();
-//            creating.setOperationalUnit(operationalUnit);
             Random rand = new Random();
             String random4Code = String.format("%04d", rand.nextInt(10000));
             String finalCode = generatedRoleCode + random4Code;
@@ -115,23 +117,19 @@ public class OperationalRoleService implements IOperationalRoleService {
 
     @Override
     public List<OperationalRole> getOperationalRolesByByPostIdsAndComplexIdAndObjectType(Long postId, String objectType) {
-        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+
+        String complexTitle;
         Long complexId;
-        if (complexTitle != null) {
-            if (complexTitle.contains("حوزه مدیرعامل"))
-                complexId = 58910L;
-            else if (complexTitle.contains("استان کرمان"))
-                complexId = 24740L;
-            else if (complexTitle.contains("آذربایجان"))
-                complexId = 22190L;
-            else if (complexTitle.contains("شهربابک"))
-                complexId = 66470L;
-            else if (complexTitle.contains("سرچشمه"))
-                complexId = 85930L;
-            else
-                complexId = 38060L; // صندوق بازنشستگی
-        } else
-            complexId = 85930L;
+        Long departmentId = personnelService.getDepartmentIdByNationalCode(SecurityUtil.getNationalCode());
+        if (departmentId != null) {
+            complexTitle = departmentService.getComplexTitleById(departmentId);
+            if (complexTitle == null) {
+                complexTitle = "مدیر مجتمع مس سرچشمه";
+            }
+        } else {
+            complexTitle = "مدیر مجتمع مس سرچشمه";
+        }
+        complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
 
         List<OperationalRole> operationalRoles = operationalRoleDAO.findAllByPostIdsAndComplexIdAndObjectType(postId, complexId, objectType);
         if (operationalRoles.size() != 0)

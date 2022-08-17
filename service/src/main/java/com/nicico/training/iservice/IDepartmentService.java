@@ -42,4 +42,8 @@ public interface IDepartmentService {
     List<DepartmentDTO.TSociety> getDepartmentsByParentIds(List<Long> parentsId);
 
     List<DepartmentDTO.TSociety> searchSocieties(SearchDTO.SearchRq request);
+
+    String getComplexTitleById(Long id);
+
+    Long getComplexIdByComplexTitle(String complexTitle);
 }

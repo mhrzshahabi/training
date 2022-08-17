@@ -15,7 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import response.BaseResponse;
 
-import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -27,7 +27,7 @@ public class RequestItemBPMSRestController {
 
     @Loggable
     @PostMapping({"/processes/request-item/start-data-validation"})
-    public ResponseEntity<BaseResponse> startRequestItemProcessWithData(@RequestBody BpmsStartParamsDto params, HttpServletResponse response) {
+    public ResponseEntity<BaseResponse> startRequestItemProcessWithData(@RequestBody BpmsStartParamsDto params) {
         BaseResponse res = new BaseResponse();
         Long requestItemId = Long.valueOf(params.getData().get("requestItemId").toString());
         try {
@@ -38,6 +38,22 @@ public class RequestItemBPMSRestController {
             res.setStatus(406);
         }
         return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+    }
+
+    @Loggable
+    @PostMapping({"/processes/request-item/start-data-validation/group"})
+    public ResponseEntity startGroupRequestItemProcessWithData(@RequestBody List<BpmsStartParamsDto> paramsList) {
+        boolean hasException = false;
+        for (BpmsStartParamsDto params : paramsList) {
+            Long requestItemId = Long.valueOf(params.getData().get("requestItemId").toString());
+            try {
+                ProcessInstance processInstance = requestItemService.startRequestItemProcessWithData(requestItemService.getRequestItemStartProcessDto(requestItemId, params, AppUtils.getTenantId()));
+                requestItemService.updateStartedRequestItemProcess(requestItemId, processInstance.getId());
+            } catch (Exception e) {
+                hasException = true;
+            }
+        }
+        return new ResponseEntity<>(hasException, HttpStatus.OK);
     }
 
     @Loggable

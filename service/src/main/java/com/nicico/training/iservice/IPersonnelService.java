@@ -65,4 +65,6 @@ public interface IPersonnelService {
     String getPersonnelFullName(Long id);
 
     boolean changeComplex(Long id,String complex);
+
+    Long getDepartmentIdByNationalCode(String nationalCode);
 }

@@ -76,4 +76,7 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
 
     @Query(value = "select * from TBL_PERSONNEL where personnel_no = :PersonnelNumber AND  active = 1 AND  deleted = 0" , nativeQuery = true)
     Personnel findPersonnelDataByPersonnelNumber(String PersonnelNumber);
+
+    @Query(value = "SELECT f_department_id FROM tbl_personnel where national_code =:nationalCode AND deleted = 0 AND ROWNUM < 2", nativeQuery = true)
+    Long getDepartmentIdByNationalCode(String nationalCode);
 }

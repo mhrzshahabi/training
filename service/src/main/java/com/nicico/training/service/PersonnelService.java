@@ -1,6 +1,3 @@
-/*
-ghazanfari_f, 8/29/2019, 11:51 AM
-*/
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
@@ -42,7 +39,6 @@ public class PersonnelService implements IPersonnelService {
     private final TrainingPostDAO trainingPostDAO;
     private final DepartmentDAO departmentDAO;
     private final TclassDAO tclassDAO;
-    private final ViewActivePersonnelInRegisteringDAO viewActivePersonnelInRegisteringDAO;
 
     @Autowired
     EntityManager entityManager;
@@ -165,7 +161,6 @@ public class PersonnelService implements IPersonnelService {
         return personnelDAO.findOneByPostCode(postCode);
     }
 
-
     //Unused
     @Override
     @Transactional
@@ -248,6 +243,11 @@ public class PersonnelService implements IPersonnelService {
 
         }
 
+    }
+
+    @Override
+    public Long getDepartmentIdByNationalCode(String nationalCode) {
+        return personnelDAO.getDepartmentIdByNationalCode(nationalCode);
     }
 
     //Unused
@@ -550,14 +550,6 @@ public class PersonnelService implements IPersonnelService {
     public Optional<Personnel> getOneByNationalCodeAndDeleted(String nationalCode, int deleted) {
         return personnelDAO.findFirstByNationalCodeAndDeleted(nationalCode, deleted);
     }
-
-//    @Transactional(readOnly = true)
-//    @Override
-//    public <R> R getPOrRegisteredP(String personnelNo, Function<Object, R> converter) {
-//        Optional<Personnel> optPersonnel = personnelDAO.findFirstByPersonnelNo(personnelNo);
-//        return optPersonnel.map(converter).orElse(personnelRegisteredDAO.findOneByPersonnelNo(personnelNo).map(converter).orElse(null));
-//    }
-
 
     @Override
     public boolean isPresent(String nationalCode) {

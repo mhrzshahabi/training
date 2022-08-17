@@ -50,6 +50,7 @@ public class RequestItemService implements IRequestItemService {
     private final RequestItemDAO requestItemDAO;
     private final IPersonnelService personnelService;
     private final BpmsClientService bpmsClientService;
+    private final IDepartmentService departmentService;
     private final ITrainingPostService trainingPostService;
     private final ISynonymOAUserService synonymOAUserService;
     private final RequestItemBeanMapper requestItemBeanMapper;
@@ -235,7 +236,6 @@ public class RequestItemService implements IRequestItemService {
             map.put("createBy", SecurityUtil.getFullName());
             map.put("requestItemId", params.getData().get("requestItemId").toString());
             map.put("requestNo", params.getData().get("requestNo").toString());
-            map.put("requestLetterNumber", params.getData().get("requestLetterNumber").toString());
             StartProcessWithDataDTO startProcessDto = new StartProcessWithDataDTO();
             startProcessDto.setProcessDefinitionKey(iBpmsService.getDefinitionKey(params.getData().get("processDefinitionKey").toString(), tenantId, 0, 10).getMessage());
             startProcessDto.setVariables(map);
@@ -766,7 +766,7 @@ public class RequestItemService implements IRequestItemService {
 //            mainConfirmBoss = "pourfathian_a";
             mainConfirmBoss = "3140008635";
 //            mainConfirmBoss = "hajizadeh_mh";
-        } else  if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
+        } else if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
             mainConfirmBoss = "6049618348";
         }
         return mainConfirmBoss;
@@ -787,23 +787,19 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     public List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getSupervisorAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos) {
-        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+
+        String complexTitle;
         Long complexId;
-        if (complexTitle != null) {
-            if (complexTitle.contains("حوزه مدیرعامل"))
-                complexId = 58910L;
-            else if (complexTitle.contains("استان کرمان"))
-                complexId = 24740L;
-            else if (complexTitle.contains("آذربایجان"))
-                complexId = 22190L;
-            else if (complexTitle.contains("شهربابک"))
-                complexId = 66470L;
-            else if (complexTitle.contains("سرچشمه"))
-                complexId = 85930L;
-            else
-                complexId = 38060L; // صندوق بازنشستگی
-        } else
-            complexId = 85930L;
+        Long departmentId = personnelService.getDepartmentIdByNationalCode(SecurityUtil.getNationalCode());
+        if (departmentId != null) {
+            complexTitle = departmentService.getComplexTitleById(departmentId);
+            if (complexTitle == null) {
+                complexTitle = "مدیر مجتمع مس سرچشمه";
+            }
+        } else {
+            complexTitle = "مدیر مجتمع مس سرچشمه";
+        }
+        complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
 
         courseCategoryInfos.forEach(item -> {
             List<String> supervisorAssigneeList = new ArrayList<>();
@@ -819,23 +815,19 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     public List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos) {
-        String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
+
+        String complexTitle;
         Long complexId;
-        if (complexTitle != null) {
-            if (complexTitle.contains("حوزه مدیرعامل"))
-                complexId = 58910L;
-            else if (complexTitle.contains("استان کرمان"))
-                complexId = 24740L;
-            else if (complexTitle.contains("آذربایجان"))
-                complexId = 22190L;
-            else if (complexTitle.contains("شهربابک"))
-                complexId = 66470L;
-            else if (complexTitle.contains("سرچشمه"))
-                complexId = 85930L;
-            else
-                complexId = 38060L; // صندوق بازنشستگی
-        } else
-            complexId = 85930L;
+        Long departmentId = personnelService.getDepartmentIdByNationalCode(SecurityUtil.getNationalCode());
+        if (departmentId != null) {
+            complexTitle = departmentService.getComplexTitleById(departmentId);
+            if (complexTitle == null) {
+                complexTitle = "مدیر مجتمع مس سرچشمه";
+            }
+        } else {
+            complexTitle = "مدیر مجتمع مس سرچشمه";
+        }
+        complexId = departmentService.getComplexIdByComplexTitle(complexTitle);
 
         courseCategoryInfos.forEach(item -> {
             List<String> expertsAssigneeList = new ArrayList<>();

@@ -25,8 +25,6 @@ public abstract class RequestItemBeanMapper {
     protected IOperationalRoleService operationalRoleService;
     @Autowired
     protected ISynonymPersonnelService synonymPersonnelService;
-//    @Autowired
-//    protected IRequestItemService requestItemService;
     @Autowired
     protected IRequestItemProcessDetailService requestItemProcessDetailService;
 
@@ -63,7 +61,7 @@ public abstract class RequestItemBeanMapper {
 //            mainConfirmBoss = "pourfathian_a";
             mainConfirmBoss = "3140008635";
 //            mainConfirmBoss = "hajizadeh_mh";
-        }else  if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
+        } else if ((complexTitle != null) && (complexTitle.equals("سونگون"))) {
             mainConfirmBoss = "6049618348";
         }
         return mainConfirmBoss;

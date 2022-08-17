@@ -23,7 +23,6 @@ public interface BPMSBeanMapper {
     @Mapping(source = "processVariables", target = "returnReason", qualifiedByName = "processVariablesToReturnReason")
     @Mapping(source = "processVariables", target = "requestItemId", qualifiedByName = "processVariablesToRequestItemId")
     @Mapping(source = "processVariables", target = "requestNo", qualifiedByName = "processVariablesToRequestNo")
-    @Mapping(source = "processVariables", target = "requestLetterNumber", qualifiedByName = "processVariablesToRequestLetterNumber")
     @Mapping(source = "processVariables", target = "assigneeList", qualifiedByName = "processVariablesToAssigneeList")
     BPMSUserTasksContentDto toUserTasksContent (BPMSUserTasksResponseDto bpmsUserTasksResponseDto);
 
@@ -92,14 +91,6 @@ public interface BPMSBeanMapper {
     default String processVariablesToRequestNo(LinkedHashMap<String, Object> variables) {
         if(variables!=null && variables.get("requestNo")!=null)
             return String.valueOf(variables.get("requestNo"));
-        else
-            return null;
-    }
-
-    @Named("processVariablesToRequestLetterNumber")
-    default String processVariablesToRequestLetterNumber(LinkedHashMap<String, Object> variables) {
-        if(variables!=null && variables.get("requestLetterNumber")!=null)
-            return String.valueOf(variables.get("requestLetterNumber"));
         else
             return null;
     }

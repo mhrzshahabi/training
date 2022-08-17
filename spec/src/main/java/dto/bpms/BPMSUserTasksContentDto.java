@@ -28,6 +28,5 @@ public class BPMSUserTasksContentDto {
     private String returnReason;
     private String requestItemId;
     private String requestNo;
-    private String requestLetterNumber;
     private List<String> assigneeList;
 }

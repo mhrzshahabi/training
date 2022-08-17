@@ -583,7 +583,7 @@
             } else if (record.title.includes("صلاحیت علمی و فنی")) {
 
                 DynamicForm_Completion_UserPortfolio.getItem("objectType").title = "توضیحات";
-                DynamicForm_Completion_UserPortfolio.setValue("objectType", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+                DynamicForm_Completion_UserPortfolio.setValue("objectType", "درخواست با شماره " + record.requestNo);
             }
             Window_Completion_UserPortfolio.show();
         }
@@ -767,7 +767,7 @@
 
             DynamicForm_Parallel_RequestItem_Completion.setValue("title", record.title);
             DynamicForm_Parallel_RequestItem_Completion.setValue("createBy", record.createBy);
-            DynamicForm_Parallel_RequestItem_Completion.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_Parallel_RequestItem_Completion.setValue("description", "درخواست با شماره " + record.requestNo);
 
             isc.RPCManager.sendRequest(TrDSRequest(trainingPostUrl + "/getNeedAssessmentInfo/byRequestItemId?requestItemId=" + record.requestItemId, "GET", null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -916,7 +916,7 @@
 
             DynamicForm_RequestItem_Determine_Status.setValue("title", record.title);
             DynamicForm_RequestItem_Determine_Status.setValue("createBy", record.createBy);
-            DynamicForm_RequestItem_Determine_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_RequestItem_Determine_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
             Window_RequestItem_Determine_Status_Completion.show();
         }
@@ -1051,7 +1051,7 @@
 
             DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
             DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
-            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
             RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/planning-chief-opinion/" + record.requestItemId;
@@ -1199,7 +1199,7 @@
 
             DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
             DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
-            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
             RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
@@ -1348,7 +1348,7 @@
 
             DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
             DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
-            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
             RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
@@ -1497,7 +1497,7 @@
 
             DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
             DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
-            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
             RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
@@ -1646,7 +1646,7 @@
 
             DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
             DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
-            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
             RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/planning-chief-opinion/" + record.requestItemId;
@@ -1795,7 +1795,7 @@
 
             DynamicForm_RequestItem_Show_Status.setValue("title", record.title);
             DynamicForm_RequestItem_Show_Status.setValue("createBy", record.createBy);
-            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
             RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/planning-chief-opinion/" + record.requestItemId;
@@ -1922,7 +1922,7 @@
 
             DynamicForm_RequestItem_Appointment_Expert.setValue("title", record.title);
             DynamicForm_RequestItem_Appointment_Expert.setValue("createBy", record.createBy);
-            DynamicForm_RequestItem_Appointment_Expert.setValue("description", "درخواست با شماره " + record.requestNo + " و شماره نامه کارگزینی " + record.requestLetterNumber);
+            DynamicForm_RequestItem_Appointment_Expert.setValue("description", "درخواست با شماره " + record.requestNo);
 
             Window_RequestItem_Appointment_Expert_Completion.show();
         }

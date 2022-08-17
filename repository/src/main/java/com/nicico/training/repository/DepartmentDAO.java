@@ -40,4 +40,7 @@ public interface DepartmentDAO extends JpaRepository<Department, Long>, JpaSpeci
     List<Department> getRoot();
 
     Optional<Department> getByCode(String code);
+
+    @Query(value = "SELECT c_mojtame_title FROM tbl_department where id =:id AND e_deleted IS NULL", nativeQuery = true)
+    String getComplexTitleById(Long id);
 }
