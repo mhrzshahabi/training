@@ -81,6 +81,18 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
+    @PostMapping({"/tasks/request-item/review/group"})
+    public ResponseEntity reviewGroupRequestItemTask(@RequestBody List<ReviewTaskRequest> reviewTaskRequestDtoList) {
+        boolean hasException = false;
+        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestDtoList) {
+            BaseResponse response = requestItemService.reviewRequestItemTask(reviewTaskRequest);
+            if (response.getStatus() != 200)
+                hasException = true;
+        }
+        return new ResponseEntity<>(hasException, HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping({"/tasks/parallel/request-item/review/{expertOpinionId}/{userNationalCode}"})
     public BaseResponse reviewParallelRequestItemTask(@RequestBody BPMSReqItemCoursesDto bpmsReqItemCoursesDto, @PathVariable Long expertOpinionId, @PathVariable String userNationalCode) {
         return requestItemService.reviewParallelRequestItemTask(bpmsReqItemCoursesDto, expertOpinionId, userNationalCode);

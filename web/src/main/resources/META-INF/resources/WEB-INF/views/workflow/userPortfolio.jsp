@@ -199,11 +199,29 @@
             }
         }
     });
+    let ToolStripButton_Group_Confirm_UserPortfolio = isc.ToolStripButton.create({
+        title: "تایید گروهی",
+        click: function () {
+            let records = ListGrid_Processes_UserPortfolio.getSelectedRecords();
+            if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی رئیس برنامه ریزی") {
+                confirmGroupProcess(records);
+            } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی کارشناس ارشد برنامه ریزی") {
+
+            } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی رئیس برنامه ریزی جهت تعیین وضعیت") {
+
+            } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی کارشناس انتصاب سمت") {
+
+            } else {
+                createDialog("info", "امکان تایید گروهی برای رکوردهای انتخابی وجود ندارد");
+            }
+        }
+    });
     let ToolStrip_Actions_Processes_UserPortfolio = isc.ToolStrip.create({
         width: "100%",
         members: [
             ToolStripButton_Show_Processes_UserPortfolio,
             ToolStripButton_InProgress_Workflow_UserPortfolio,
+            ToolStripButton_Group_Confirm_UserPortfolio,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -247,6 +265,7 @@
         showFilterEditor: true,
         filterOnKeypress: true,
         selectionUpdated: function (record) {
+
             if (record.approved ===false) {
                 ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
                 ToolStripButton_InProgress_Workflow_UserPortfolio.setDisabled(false);
@@ -255,6 +274,13 @@
                 ToolStripButton_Show_Processes_UserPortfolio.setDisabled(false);
                 ToolStripButton_InProgress_Workflow_UserPortfolio.setDisabled(true);
             }
+
+            let records = ListGrid_Processes_UserPortfolio.getSelectedRecords();
+            let setRecords = new Set(records.map(item => item.name));
+            if (records.size() > 1 && setRecords.size === 1) {
+                ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(false);
+            } else
+                ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(true);
         },
         recordClick: function(viewer, record) {
             showProcessHistory(record.processInstanceId);
@@ -517,7 +543,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 confirmProcess(record, Window_Completion_UserPortfolio);
                             }
                             this.hide();
@@ -720,7 +746,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 let expertOpinion = DynamicForm_Parallel_RequestItem_Completion.getValue("expertOpinion");
                                 confirmParallelRequestItemProcess(record, expertOpinion, ListGrid_Parallel_RequestItem_Courses, Window_Parallel_RequestItem_Completion);
                             }
@@ -869,7 +895,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 let chiefOpinion = DynamicForm_RequestItem_Determine_Status.getValue("chiefOpinion");
                                 confirmRequestItemProcessToDetermineStatus(record, chiefOpinion, Window_RequestItem_Determine_Status_Completion);
                             }
@@ -1005,7 +1031,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 confirmRequestItemProcessByRunChief(record, Window_RequestItem_Show_Status_Completion);
                             }
                             this.hide();
@@ -1153,7 +1179,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 confirmRequestItemProcessByRunSupervisor(record, Window_RequestItem_Show_Status_Completion);
                             }
                             this.hide();
@@ -1302,7 +1328,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 confirmRequestItemProcessByRunExperts(record, Window_RequestItem_Show_Status_Completion);
                             }
                             this.hide();
@@ -1451,7 +1477,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 confirmRequestItemProcessByRunSupervisorForApproval(record, Window_RequestItem_Show_Status_Completion);
                             }
                             this.hide();
@@ -1600,7 +1626,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 confirmRequestItemProcessByRunChiefForApproval(record, Window_RequestItem_Show_Status_Completion);
                             }
                             this.hide();
@@ -1749,7 +1775,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 confirmRequestItemProcessByPlanningChiefForApproval(record, Window_RequestItem_Show_Status_Completion);
                             }
                             this.hide();
@@ -1876,7 +1902,7 @@
                         ],
                         buttonClick: function (button, index) {
 
-                            if (index == 0) {
+                            if (index === 0) {
                                 let letterNumberSent = DynamicForm_RequestItem_Appointment_Expert.getValue("letterNumberSent");
                                 confirmRequestItemProcessByAppointmentExpert(record, letterNumberSent, Window_RequestItem_Appointment_Expert_Completion);
                             }
@@ -2198,6 +2224,34 @@
                 window.close();
                 createDialog("info", "عملیات انجام نشد");
             }
+        }));
+    }
+
+    function confirmGroupProcess(records) {
+
+        let reviewTaskRequestList = [];
+        for (let i = 0; i < records.length; i++) {
+            let ass_data = {};
+            let reviewTaskRequest = {
+                taskId: records[i].taskId,
+                approve: true,
+                userName: userUserName,
+                processInstanceId: records[i].processInstanceId,
+                variables: ass_data
+            };
+            reviewTaskRequestList.add(reviewTaskRequest);
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(requestItemBPMSUrl + "/tasks/request-item/review/group", "POST", JSON.stringify(reviewTaskRequestList), function (resp) {
+            wait.close();
+            let hasException = JSON.parse(resp.httpResponseText);
+            if (hasException === false) {
+                createDialog("info", "<spring:message code='global.form.request.successful'/>");
+            } else {
+                createDialog("info", "ارسال بعضی از درخواست ها با مشکل مواجه شده است");
+            }
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
         }));
     }
 

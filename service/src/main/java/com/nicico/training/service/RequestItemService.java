@@ -302,12 +302,9 @@ public class RequestItemService implements IRequestItemService {
             } else {
                 Map<String, Object> map = reviewTaskRequestDto.getVariables();
                 map.put("assigneeList", assigneeList);
-                String processStatus = parameterValueService.getInfo(requestItem.getProcessStatusId()).getCode();
-                if (processStatus.equals("waitingReviewByPlanningChief")) {
-                    requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningExperts"));
-                    requestItemDAO.saveAndFlush(requestItem);
-                    response.setStatus(200);
-                }
+                requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningExperts"));
+                requestItemDAO.saveAndFlush(requestItem);
+                response.setStatus(200);
             }
         } else {
             response.setStatus(404);
