@@ -251,9 +251,9 @@ public class AgreementClassCostService implements IAgreementClassCostService {
         try {
             String basicTuitionFee = getTeacherBasicTuitionFee(calcTeachingCostData.getTeacherId(), fromDate);
             Double educationalHistoryFactor = getTeacherEducationalHistoryFactor(calcTeachingCostData.getTeacherId(), fromDate);
-            String distanceFactor = getDistanceFactor(calcTeachingCostData.getTeacherId(), fromDate);
             String teachingMethodFactor = getTeachingMethodFactor(calcTeachingCostData.getClassId(), fromDate);
             String courseTypeFactor = getCourseTypeFactor(calcTeachingCostData.getClassId(), fromDate);
+            String distanceFactor = getDistanceFactor(calcTeachingCostData.getTeacherId(), fromDate);
             return Double.parseDouble(basicTuitionFee) * educationalHistoryFactor * Double.parseDouble(teachingMethodFactor) *
                     Double.parseDouble(courseTypeFactor) * Double.parseDouble(distanceFactor);
         } catch (TrainingException ex) {

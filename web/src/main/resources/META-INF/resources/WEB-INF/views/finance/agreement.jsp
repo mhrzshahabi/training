@@ -282,9 +282,6 @@
         canEdit: true,
         autoFetchData: true,
         validateByCell: true,
-        // validateOnChange: true,
-        // showInlineErrors: true,
-        // editEvent: "doubleClick",
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         fields: [
@@ -325,7 +322,6 @@
                 name: "basisCalculateId",
                 title: "مبنای محاسبه",
                 required: true,
-                // validateOnChange: true,
                 editorType: "SelectItem",
                 valueField: "id",
                 displayField: "title",
@@ -342,14 +338,12 @@
                 name: "teachingCostPerHourAuto",
                 title: "نرخ محاسباتی",
                 required: true,
-                // validateOnChange: true,
                 canEdit: false
             },
             {
                 name: "teachingCostPerHour",
                 title: "نرخ توافقی",
                 required: true,
-                // validateOnChange: true,
             },
             {
                 name: "agreementId",
@@ -1052,6 +1046,7 @@
     }
     function ClassTeachingCost_Calculate() {
 
+        ListGrid_Class_Teaching_Cost.endEditing();
         let records = ListGrid_Class_Teaching_Cost.getSelectedRecords();
         if (records.size() === 0) {
             isc.Dialog.create({
@@ -1126,6 +1121,7 @@
     function ClassTeachingCost_Save(agreementId) {
 
         let isValid = true;
+        ListGrid_Class_Teaching_Cost.endEditing();
         for (let i = 0; i < ListGrid_Class_Teaching_Cost.getTotalRows(); i++) {
             if (!ListGrid_Class_Teaching_Cost.validateRow(i))
                 return;
@@ -1188,7 +1184,6 @@
         if (record.valid === false) {
             item.setValue(null);
             createDialog("info", "همه اطلاعات موسسه آموزشی انتخابی شامل نام موسسه - شماره ملی - شماره اقتصادی - آدرس - تلفن - فاکس - نام و نام خانوادگی و موبایل مدیر و شبای موسسه باید در فرم مرکز آموزشی تکمیل گردد");
-            return;
         }
     }
     function checkTeacherValidation(item) {
@@ -1196,7 +1191,6 @@
         if (record.valid === false) {
             item.setValue(null);
             createDialog("info", "همه اطلاعات مدرس انتخابی شامل نام - نام خانوادگی - کد ملی  - آدرس - موبایل - شبا باید در فرم استاد تکمیل گردد");
-            return;
         }
     }
 
