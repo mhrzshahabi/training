@@ -477,7 +477,7 @@ public class EvaluationAnalysisRestController {
                                     Double.parseDouble(minFerGrade.getValue())));
 
                             if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-                                TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
+                                TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId(),info.getPercentReaction());
                                 tableData.add(tableData1);
                             }
                         }
@@ -498,7 +498,7 @@ public class EvaluationAnalysisRestController {
 
                         index++;
                         if (Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())) {
-                            TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())), info.getCourseTitleFa() + "/" + info.getTclassCode(), info.getId());
+                            TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())), info.getCourseTitleFa() + "/" + info.getTclassCode(), info.getId(),info.getPercentReaction());
                             tableData.add(tableData1);
                         }
                     }
@@ -672,15 +672,17 @@ public class EvaluationAnalysisRestController {
 
     public static class TableData{
         private String courseGrade;
+        private String percentOfAnsweredEvaluation;
         private String courseName;
         private Long id;
 
         public TableData() {
         }
 
-        public TableData(String courseGrade, String courseName,Long id) {
+        public TableData(String courseGrade, String courseName,Long id,String percentOfAnsweredEvaluation) {
             this.courseGrade = courseGrade;
             this.courseName = courseName;
+            this.percentOfAnsweredEvaluation = percentOfAnsweredEvaluation;
             this.id = id;
         }
 
@@ -702,6 +704,14 @@ public class EvaluationAnalysisRestController {
 
         public String getCourseGrade() {
             return courseGrade;
+        }
+
+        public String getPercentOfAnsweredEvaluation() {
+            return percentOfAnsweredEvaluation;
+        }
+
+        public void setPercentOfAnsweredEvaluation(String percentOfAnsweredEvaluation) {
+            this.percentOfAnsweredEvaluation = percentOfAnsweredEvaluation;
         }
 
         public String getCourseName() {
@@ -746,7 +756,7 @@ public class EvaluationAnalysisRestController {
             if(list != null && list.size() != 0){
                 for (ViewEvaluationStaticalReportDTO.Info info : list) {
                     if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-                        TableData tableData1 = new TableData(info.getEvaluationReactionGrade(),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId());
+                        TableData tableData1 = new TableData(info.getEvaluationReactionGrade(),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId(),info.getPercentReaction());
                         tableData.add(tableData1);
                     }
                 }
