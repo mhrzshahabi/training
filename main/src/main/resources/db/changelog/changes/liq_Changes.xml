@@ -5257,6 +5257,13 @@ FROM
         <modifyDataType tableName="tbl_agreement_class_cost" columnName="n_teaching_cost_per_hour" newDataType="FLOAT"/>
         <modifyDataType tableName="tbl_agreement_class_cost" columnName="n_teaching_cost_per_hour_auto" newDataType="FLOAT"/>
     </changeSet>
+    <changeSet author="namdari" id="1660716338000-01">
+        <sql>
+            <![CDATA[
+            UPDATE TBL_PARAMETER_VALUE SET c_title = 'سمینار' where c_code='intraOrganizationalSeminar';
+             ]]>
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
 

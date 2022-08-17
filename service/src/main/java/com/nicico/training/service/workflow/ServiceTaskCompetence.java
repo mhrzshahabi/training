@@ -33,7 +33,7 @@ public class ServiceTaskCompetence implements JavaDelegate {
 
         if ((complexTitle != null) && (complexTitle.equals("شهر بابک"))) {
 //            mainConfirmBoss = "pourfathian_a";
-            mainConfirmBoss = "hajizadeh_mh";
+            mainConfirmBoss = "aminpour_r ";
         }
 
 
