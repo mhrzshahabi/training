@@ -1222,7 +1222,7 @@
 
 
         if(selected_record.personnelStatus == true){
-            DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
+            // DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
             if(!editTeacherMode){
                 DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
                 DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
@@ -1442,7 +1442,7 @@
                 TabSet_Bottom_JspTeacher.enable();
             }, 300);
             if(selected_record.personnelStatus == true){
-                DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
+                // DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
                 DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
                 DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
                 DynamicForm_BasicInfo_JspTeacher.getField("updatePersonnelInfo").enable();
@@ -1567,7 +1567,8 @@
                     }
                     if(internalTeacher == true){
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").setValue(personnelCode);
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+                        // DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
                     }
                 }
         }));
