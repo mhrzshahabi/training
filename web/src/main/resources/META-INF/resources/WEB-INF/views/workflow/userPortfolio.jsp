@@ -158,7 +158,6 @@
         }
     });
     let ToolStripButton_Show_Processes_UserPortfolio = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/column_preferences.png",
         title: "نمایش جزییات و تکمیل فرایند",
         click: function () {
             let record = ListGrid_Processes_UserPortfolio.getSelectedRecord();
@@ -266,21 +265,26 @@
         filterOnKeypress: true,
         selectionUpdated: function (record) {
 
-            if (record.approved ===false) {
+            if (record.approved === false) {
                 ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
                 ToolStripButton_InProgress_Workflow_UserPortfolio.setDisabled(false);
-            }
-            else {
+            } else {
                 ToolStripButton_Show_Processes_UserPortfolio.setDisabled(false);
                 ToolStripButton_InProgress_Workflow_UserPortfolio.setDisabled(true);
             }
 
             let records = ListGrid_Processes_UserPortfolio.getSelectedRecords();
             let setRecords = new Set(records.map(item => item.name));
-            if (records.size() > 1 && setRecords.size === 1) {
+
+            if (records.size() > 1 && setRecords.size === 1)
                 ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(false);
-            } else
+            else
                 ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(true);
+
+            if (records.size() > 1)
+                ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
+            else
+                ToolStripButton_Show_Processes_UserPortfolio.setDisabled(false);
         },
         recordClick: function(viewer, record) {
             showProcessHistory(record.processInstanceId);
@@ -653,6 +657,7 @@
                         name: "expertOpinion",
                         title: "نظر کارشناس ارشد",
                         width: "100%",
+                        hidden: true,
                         optionDataSource: RestDataSource_Request_Item_Experts_Opinion,
                         displayField: "title",
                         autoFetchData: true,
@@ -747,8 +752,8 @@
                         buttonClick: function (button, index) {
 
                             if (index === 0) {
-                                let expertOpinion = DynamicForm_Parallel_RequestItem_Completion.getValue("expertOpinion");
-                                confirmParallelRequestItemProcess(record, expertOpinion, ListGrid_Parallel_RequestItem_Courses, Window_Parallel_RequestItem_Completion);
+                                // let expertOpinion = DynamicForm_Parallel_RequestItem_Completion.getValue("expertOpinion");
+                                confirmParallelRequestItemProcess(record, ListGrid_Parallel_RequestItem_Courses, Window_Parallel_RequestItem_Completion);
                             }
                             this.hide();
                         }
@@ -2005,7 +2010,7 @@
             ToolStripButton_Refresh_Processes_UserPortfolio.click();
         }));
     }
-    function confirmParallelRequestItemProcess(record, expertOpinion, coursesListGrid, window) {
+    function confirmParallelRequestItemProcess(record, coursesListGrid, window) {
 
         let coursesRecord = coursesListGrid.getSelectedRecords();
 
@@ -2027,7 +2032,7 @@
         };
 
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + expertOpinion + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reqItemCourses), function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reqItemCourses), function (resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 window.close();

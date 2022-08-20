@@ -93,9 +93,9 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
-    @PostMapping({"/tasks/parallel/request-item/review/{expertOpinionId}/{userNationalCode}"})
-    public BaseResponse reviewParallelRequestItemTask(@RequestBody BPMSReqItemCoursesDto bpmsReqItemCoursesDto, @PathVariable Long expertOpinionId, @PathVariable String userNationalCode) {
-        return requestItemService.reviewParallelRequestItemTask(bpmsReqItemCoursesDto, expertOpinionId, userNationalCode);
+    @PostMapping({"/tasks/parallel/request-item/review/{userNationalCode}"})
+    public BaseResponse reviewParallelRequestItemTask(@RequestBody BPMSReqItemCoursesDto bpmsReqItemCoursesDto, @PathVariable String userNationalCode) {
+        return requestItemService.reviewParallelRequestItemTask(bpmsReqItemCoursesDto, userNationalCode);
     }
 
     @Loggable

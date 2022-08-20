@@ -474,7 +474,8 @@
                 required: true,
                 titleColSpan: 1,
                 colSpan: 1,
-                type: "text"
+                type: "text",
+                length: 10
             },
             {
                 name: "agreementDate",

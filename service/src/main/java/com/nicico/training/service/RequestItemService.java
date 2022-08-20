@@ -329,19 +329,20 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    public BaseResponse reviewParallelRequestItemTask(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, Long expertOpinionId, String userNationalCode) {
+    public BaseResponse reviewParallelRequestItemTask(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, String userNationalCode) {
 
         BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(bpmsReqItemCoursesDto.getReviewTaskRequest().getProcessInstanceId());
 
         if (optionalRequestItem.isPresent()) {
-
             RequestItem requestItem = optionalRequestItem.get();
             RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
+
             if (requestItemProcessDetail == null) {
+                Long count = bpmsReqItemCoursesDto.getCourses().stream().filter(item -> item.getPriority().contains("انتصاب")).count();
                 RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
                 requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
-                requestItemProcessDetailDTO.setExpertsOpinionId(expertOpinionId);
+                requestItemProcessDetailDTO.setExpertsOpinionId(count > 0 ? parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
                 requestItemProcessDetailDTO.setExpertNationalCode(userNationalCode);
                 requestItemProcessDetail = requestItemProcessDetailService.create(requestItemProcessDetailDTO);
             }
@@ -355,9 +356,9 @@ public class RequestItemService implements IRequestItemService {
             }
 
             List<RequestItemProcessDetail> requestItemProcessDetailList = requestItemProcessDetailService.findAllByRequestItemId(requestItem.getId());
-            Object object = bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables().get("assigneeList");
-            if (object != null) {
-                List<String> assigneeList = (List<String>) object;
+            Object assigneeObject = bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables().get("assigneeList");
+            if (assigneeObject != null) {
+                List<String> assigneeList = (List<String>) assigneeObject;
                 if (assigneeList.size() == requestItemProcessDetailList.size()) {
                     requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningChiefToDetermineStatus"));
                     requestItemDAO.saveAndFlush(requestItem);
