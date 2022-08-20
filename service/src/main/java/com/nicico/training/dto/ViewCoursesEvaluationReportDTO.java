@@ -29,6 +29,7 @@ public class ViewCoursesEvaluationReportDTO implements Serializable {
         private Long subCategoryId;
         private Integer classStudentStatusReaction;
         private String evaluationAnalysisReactionGrade;
+        private String percentOfReaction;
 
         public String getEvaluationAnalysisReactionGrade() {
             if (evaluationAnalysisReactionGrade!=null)

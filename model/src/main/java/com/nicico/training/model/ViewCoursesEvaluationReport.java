@@ -66,4 +66,7 @@ public class ViewCoursesEvaluationReport implements Serializable {
 
     @Column(name = "evaluation_analysis_teacher_pass")
     private String evaluationAnalysisTeacherPass;
+
+    @Column(name = "percent_reaction")
+    private String percentOfReaction;
 }

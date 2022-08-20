@@ -15487,4 +15487,98 @@ GROUP BY
         </createView>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1660988415403">
+        <createView viewName="VIEW_COURSES_EVALUATION_REPORT" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    ROWNUM AS id,
+                    cl.c_code             AS class_code,
+                    cl.c_status           AS class_status,
+                    cl.c_start_date       AS class_start_date,
+                    cl.c_end_date         AS class_end_date,
+                    co.c_code             AS course_code,
+                    co.c_title_fa         AS course_titlefa,
+                    cat.c_title_fa        AS category_titlefa,
+                    sucat.c_title_fa      AS sub_category_titlefa,
+                    sucat.id              AS sub_category_id,
+                    cs.status_reaction    AS class_student_status_reaction,
+                    ea.c_reaction_grade   AS evaluation_analysis_reaction_grade,
+                    ea.b_reaction_pass    AS evaluation_analysis_reaction_pass,
+                    ea.c_teacher_grade    AS evaluation_analysis_teacher_grade,
+                    ea.b_teacher_pass     AS evaluation_analysis_teacher_pass,
+                    reactionpercent.percent_reaction
+                FROM
+                    tbl_class                 cl
+                    INNER JOIN tbl_course                co ON cl.f_course = co.id
+                    INNER JOIN tbl_category              cat ON cat.id = co.category_id
+                    INNER JOIN tbl_sub_category          sucat ON sucat.id = co.subcategory_id
+                    INNER JOIN (
+                        SELECT
+                            tbl_class_student.class_id AS class_id,
+                            SUM(
+                                CASE
+                                    WHEN tbl_class_student.evaluation_status_reaction = 2 THEN
+                                        0
+                                    ELSE
+                                        1
+                                END
+                            ) AS status_reaction
+                        FROM
+                            tbl_class_student
+                        GROUP BY
+                            tbl_class_student.class_id
+                    ) cs ON cl.id = cs.class_id
+                    INNER JOIN tbl_evaluation_analysis   ea ON cl.id = ea.f_tclass
+                    LEFT JOIN (
+                        SELECT
+                            class_id AS class_id,
+                            CASE
+                                WHEN all_reaction_eval = 0 THEN
+                                    0
+                                ELSE
+                                    CAST((filled_reaction_eval / all_reaction_eval) * 100 AS DECIMAL(6, 2))
+                            END AS percent_reaction
+                        FROM
+                            (
+                                SELECT DISTINCT
+                                    cs.class_id AS class_id,
+                                    (
+                                        SELECT
+                                            COUNT(DISTINCT cs.id) --AS filled_reaction_eval
+                                        FROM
+                                            tbl_class_student   cs
+                                            INNER JOIN tbl_class           c ON cs.class_id = c.id
+                                        WHERE
+                                            c.id = classx.id
+                                            AND cs.evaluation_status_reaction IN (
+                                                2,
+                                                3
+                                            )
+                                    ) AS filled_reaction_eval,
+                                    (
+                                        SELECT
+                                            COUNT(DISTINCT cs.id) --AS all_reaction_eval
+                                        FROM
+                                            tbl_class_student   cs
+                                            INNER JOIN tbl_class           c ON cs.class_id = c.id
+                                        WHERE
+                                            c.id = classx.id
+                                            AND ( cs.evaluation_status_reaction IN (
+                                                0,
+                                                1,
+                                                2,
+                                                3
+                                            )
+                                                  OR cs.evaluation_status_reaction IS NULL )
+                                    ) AS all_reaction_eval
+                                FROM
+                                    tbl_class_student   cs
+                                    INNER JOIN tbl_class           classx ON cs.class_id = classx.id
+                            )
+                    ) reactionpercent ON cl.id = reactionpercent.class_id
+            ]]>
+        </createView>
+    </changeSet>
+
+
 </databaseChangeLog>

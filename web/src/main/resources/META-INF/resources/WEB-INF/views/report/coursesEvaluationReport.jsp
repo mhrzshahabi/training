@@ -370,6 +370,17 @@
                 // }
             },
             {
+                name: "percentOfReaction",
+                title: "فرم های تکمیل شده ارزیابی واکنشی(%)",
+                canFilter: false,
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },
+                filterOperator: "equals",
+            },
+            {
                 name: "evaluationAnalysisReactionGrade",
                 canFilter: false,
                 // formatCellValue: function (value) {
