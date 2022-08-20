@@ -35,7 +35,7 @@ public interface SynonymPersonnelDAO extends JpaRepository<SynonymPersonnel, Lon
          "   case when :statusFlag= 0 then null else view_synonym_personnel.employment_status_title end as status,\n" +
          " \n" +
          "     COUNT(*) as total_count,\n" +
-         "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'مدیر 'THEN 1 END) as manager_count,\n" +
+         "      COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'مدیر' THEN 1 END) as manager_count,\n" +
          "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'رئیس' THEN 1 END) as boss_count,\n" +
          "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'معاون مدیرعامل' THEN 1 END) as assistant_count,\n" +
          "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'سرپرست و کارشناس ارشد' THEN 1 END) as supervisor_count,\n" +

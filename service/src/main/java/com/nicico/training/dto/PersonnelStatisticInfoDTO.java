@@ -18,6 +18,7 @@ public class PersonnelStatisticInfoDTO {
     private String unit;
     private String totalNumber;
     private String managerNumber;
+    private String assistantNumber;
     private String bossNumber;
     private String supervisorNumber;
     private String expertsNumber;

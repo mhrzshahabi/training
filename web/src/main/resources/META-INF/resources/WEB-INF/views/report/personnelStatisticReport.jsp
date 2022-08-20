@@ -18,6 +18,7 @@
             {name: "totalNumber"},
             {name: "managerNumber"},
             {name: "bossNumber"},
+            {name: "assistantNumber"},
             {name: "supervisorNumber"},
             {name: "expertsNumber"},
             {name: "attendantsNumber"},
@@ -225,6 +226,11 @@
                     keyPressFilter: "[0-9]"
                 }
                 },
+            {name: "assistantNumber",title: "تعداد معاون"  ,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }},
+
             {name: "supervisorNumber", title: "تعداد سرپرست و کارشناس ارشد",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"

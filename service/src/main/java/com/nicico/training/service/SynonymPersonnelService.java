@@ -52,6 +52,7 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
                 if(complexList.size()>0) {
                     complexFlag = 1;
                 }
+
             } else if (criteriaRqs.get(i).getFieldName().equals("ccpAssistant")) {
                  assistanceList=criteriaRqs.get(i).getValue();
                  if(assistanceList.size()>0) {
@@ -73,7 +74,7 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
                     unitFlag= 1;
                 }
             }else if(criteriaRqs.get(i).getFieldName().equals("empStatus")){
-              List<Object> empList=  criteriaRqs.get(i).getValue();
+               List<Object> empList=  criteriaRqs.get(i).getValue();
                 if(empList.size()>0) {
                     statusFlag= 1;
                 }
@@ -131,7 +132,7 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
                 dto.setTotalNumber(oracleResult_Obj[6] !=null ? oracleResult_Obj[6].toString() : "");
                 dto.setManagerNumber(oracleResult_Obj[7] !=null ? oracleResult_Obj[7].toString() : "");
                 dto.setBossNumber(oracleResult_Obj[8] != null ? oracleResult_Obj[8].toString(): "");
-                dto.setAttendantsNumber(oracleResult_Obj[9]!= null ? oracleResult_Obj[9].toString() : "");
+                dto.setAssistantNumber(oracleResult_Obj[9]!= null ? oracleResult_Obj[9].toString() : "");
                 dto.setSupervisorNumber(oracleResult_Obj[10]!= null ? oracleResult_Obj[10].toString() : "");
                 dto.setExpertsNumber(oracleResult_Obj[11]!= null ? oracleResult_Obj[11].toString() : "");
                 dto.setAttendantsNumber(oracleResult_Obj[12]!= null ? oracleResult_Obj[12].toString() : "");
@@ -297,21 +298,21 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
               " case when "+ unitFlag + "= 0 then null else view_synonym_personnel.ccp_unit end  as unit,\n"+
               " case when "+ statusFlag + "= 0 then null else view_synonym_personnel.employment_status_title end as status ,\n"+
               " COUNT(*) as total_count,\n" +
-              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'مدیر 'THEN 1 END) as manager_count ,\n" +
+              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'مدیر' THEN 1 END) as manager_count ,\n" +
               "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'رئیس' THEN 1 END)as boss_count,\n" +
-              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'معاون مدیرعامل' THEN 1 END) as assiatant_count ,\n" +
-              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'سرپرست و کارشناس ارشد' THEN 1 END) as supervisor_count ,\n" +
-              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'مسئول و کارشناس' THEN 1 END) as expert_count ,\n" +
-              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'متصدی و تکنسین' THEN 1 END) as attendent_count ,\n" +
-              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'اجرایی' THEN 1 END)  as worker_count,\n" +
-              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN  null  THEN 1 END) as unranked_count \n" +
+              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'معاون مدیرعامل' THEN 1  END) as assiatant_count ,\n" +
+              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'سرپرست و کارشناس ارشد' THEN 1  END) as supervisor_count ,\n" +
+              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'مسئول و کارشناس' THEN 1  END) as expert_count ,\n" +
+              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'متصدی و تکنسین' THEN 1  END) as attendent_count ,\n" +
+              "     COUNT(CASE view_synonym_personnel.post_grade_title WHEN 'اجرایی' THEN 1  END)  as worker_count,\n" +
+              "      SUM(CASE when view_synonym_personnel.post_grade_title is null THEN 1 else 0 END) as unranked_count \n" +
               "    FROM view_synonym_personnel \n" +
               " where 1=1\n"+
               "and  ("+complexFlag+"= 0 or  view_synonym_personnel.complex_title IN ("+complexStrings+"))\n "+
               "and ("+assistanceFlag+"=0 or  view_synonym_personnel.ccp_assistant IN ("+assistanceStrings+"))\n "+
               "and("+affairFlag+"= 0 or  view_synonym_personnel.ccp_affairs IN ("+affairStrings+")) \n"+
               "and ("+sectionFlag+"= 0 or  view_synonym_personnel.ccp_section IN ("+sectionStrings+"))\n"+
-              "and ("+unitFlag+"= 0 or  view_synonym_personnel.ccp_unit IN ("+untiStrings+" )) \n"+
+              "and ("+unitFlag+"= 0 or  view_synonym_personnel.ccp_unit IN ("+untiStrings+")) \n"+
               "and ("+statusFlag+"= 0 or  view_synonym_personnel.employment_status_title IN ("+statusStrings+")) \n"+
               "  group by \n"+
               "case when "+complexFlag+"= 0 then null  else view_synonym_personnel.complex_title end , \n"+
