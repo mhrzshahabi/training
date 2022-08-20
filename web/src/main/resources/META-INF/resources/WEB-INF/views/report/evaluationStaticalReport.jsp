@@ -112,7 +112,9 @@
             {name: "evaluationEffectivenessStatus"},
             {name: "evaluationEffectivenessPass"},
             {name: "evaluationTeacherStatus"},
-            {name: "evaluationTeacherPass"}
+            {name: "evaluationTeacherPass"},
+            {name: "percentOfReaction"},
+            {name: "percentOfBehavioral"},
         ],
         fetchDataURL: viewEvaluationStaticalReportUrl + "/iscList"
     });
@@ -204,84 +206,106 @@
         dataSource: RestDataSource_ListResult_JspEvaluationStaticalReport,
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
-            {name: "tclassCode", title: "کد کلاس"},
-            {name: "courseCode", title: "کد دوره"},
-            {name: "courseTitleFa", title: "نام دوره"},
-            {name: "tclassStudentsCount", title: "تعداد فراگیران" , filterOperator: "equals"},
-            {name: "evaluationReactionStatus",title: "ارزیابی واکنشی",valueMap: {true: "انجام شده", false: "انجام نشده"},
+            {name: "tclassCode", title: "کد کلاس", autoFitWidth: true},
+            {name: "courseCode", title: "کد دوره", autoFitWidth: true},
+            {name: "courseTitleFa", title: "نام دوره", autoFitWidth: true},
+            {name: "tclassStudentsCount", title: "تعداد فراگیران" , filterOperator: "equals", autoFitWidth: true},
+            {name: "evaluationReactionStatus",title: "ارزیابی واکنشی",valueMap: {true: "انجام شده", false: "انجام نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationReactionGrade", title: "نمره ارزیابی واکنشی"},
-            {name: "evaluationReactionPass", title: "وضعیت ارزیابی واکنشی",valueMap: {true: "تائید شده", false: "تائید نشده"},
+            {name: "evaluationReactionGrade", title: "نمره ارزیابی واکنشی", autoFitWidth: true},
+            {name: "evaluationReactionPass", title: "وضعیت ارزیابی واکنشی",valueMap: {true: "تائید شده", false: "تائید نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationLearningStatus", title:  "ارزیابی یادگیری" ,valueMap: {true: "انجام شده", false: "انجام نشده"},
+            {name: "evaluationLearningStatus", title:  "ارزیابی یادگیری" ,valueMap: {true: "انجام شده", false: "انجام نشده"},autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationLearningGrade", title: "نمره ارزیابی یادگیری"},
-            {name: "evaluationLearningPass", title: "وضعیت ارزیابی یادگیری" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
+            {name: "evaluationLearningGrade", title: "نمره ارزیابی یادگیری", autoFitWidth: true},
+            {name: "evaluationLearningPass", title: "وضعیت ارزیابی یادگیری" ,valueMap: {true: "تائید شده", false: "تائید نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationBehavioralStatus", title: "ارزیابی رفتاری" ,valueMap: {true: "انجام شده", false: "انجام نشده"},
+            {name: "evaluationBehavioralStatus", title: "ارزیابی رفتاری" ,valueMap: {true: "انجام شده", false: "انجام نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationBehavioralPass", title:"وضعیت ارزیابی رفتاری" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
+            {name: "evaluationBehavioralPass", title:"وضعیت ارزیابی رفتاری" ,valueMap: {true: "تائید شده", false: "تائید نشده", }, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationEffectivenessStatus", title: "اثربخشی" ,valueMap: {true: "انجام شده", false: "انجام نشده"},
+            {name: "evaluationEffectivenessStatus", title: "اثربخشی" ,valueMap: {true: "انجام شده", false: "انجام نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationEffectivenessPass", title: "وضعیت اثربخشی" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
+            {name: "evaluationEffectivenessPass", title: "وضعیت اثربخشی" ,valueMap: {true: "تائید شده", false: "تائید نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationTeacherStatus",title: "ارزیابی مدرس" ,valueMap: {true: "انجام شده", false: "انجام نشده"},
+            {name: "evaluationTeacherStatus",title: "ارزیابی مدرس" ,valueMap: {true: "انجام شده", false: "انجام نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationTeacherPass",title: "وضعیت ارزیابی مدرس",valueMap: {true: "تائید شده", false: "تائید نشده"},
+            {name: "evaluationTeacherPass",title: "وضعیت ارزیابی مدرس",valueMap: {true: "تائید شده", false: "تائید نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals"},
-            {name: "evaluationResultsStatus", title:"ارزیابی نتایج",valueMap: {true: "انجام شده", false: "انجام نشده"},
+            {name: "evaluationResultsStatus", title:"ارزیابی نتایج",valueMap: {true: "انجام شده", false: "انجام نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
                 },filterOperator: "equals" },
-            {name: "evaluationResultsPass", title: "وضعیت ارزیابی نتایج" ,valueMap: {true: "تائید شده", false: "تائید نشده"},
+            {name: "evaluationResultsPass", title: "وضعیت ارزیابی نتایج" ,valueMap: {true: "تائید شده", false: "تائید نشده"}, autoFitWidth: true,
                 filterEditorProperties:{
                     pickListProperties: {
                         showFilterEditor: false
                     }
-                },filterOperator: "equals"}
+                },filterOperator: "equals"},
+            {
+                name: "percentOfReaction",
+                title: "فرم های تکمیل شده ارزیابی واکنشی(%)",
+                autoFitWidth: true,
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },
+                filterOperator: "equals",
+            },
+            {
+                name: "percentOfBehavioral",
+                title: "فرم های تکمیل شده ارزیابی رفتاری(%)",
+                autoFitWidth: true,
+                filterEditorProperties: {
+                    pickListProperties: {
+                        showFilterEditor: false
+                    }
+                },
+                filterOperator: "equals"
+            }
         ],
         cellHeight: 43,
         sortField: 1,
