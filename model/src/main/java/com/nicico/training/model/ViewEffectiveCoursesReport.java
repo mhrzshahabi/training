@@ -91,4 +91,13 @@ public class ViewEffectiveCoursesReport implements Serializable {
     @Column(name = "EVALUATION_TYPE")
     private String evaluationType;
 
+    @Column(name = "ANSWERED_REACTION_EVAL_PERCENT")
+    private String answeredReactionEvalPercent;
+
+    @Column(name = "ANSWERED_LEARNING_EVAL_PERCENT")
+    private String answeredLearningEvalPercent;
+
+    @Column(name = "ANSWERED_BEHAVIOR_EVAL_PERCENT")
+    private String answeredBehaviorEvalPercent;
+
 }
