@@ -2729,6 +2729,14 @@
                                 }
 
                             },
+                            {
+                                title: "<spring:message code="personnel.statistic.report"/>",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/personnelStatisticReport"/>");
+                                }
+
+                            },
+
 
                         ]
                 },

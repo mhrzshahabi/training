@@ -882,8 +882,13 @@
             IButton_student_csfr, IButton_course_csfr
         ]
     });
+    disableField = false,
+        useNameInCriteria = false,
+        hideCompanyFilter = false,
+        hideGhesmatFilter = false,
+        hideVahedFilter = false,
 
-    let organSegmentFilter_cfsr = init_OrganSegmentFilterDF(true, true, true, true, true, null, "complexTitle","assistantTitle","affairTitle", "section", "unit");
+    let organSegmentFilter_cfsr = init_OrganSegmentFilterDF(true,true,true,false,false, "complexTitle","assistantTitle","affairTitle", "section", "unit");
 
     let VLayOut_CriteriaForm_csfr = isc.VLayout.create({
         showEdges: false,
