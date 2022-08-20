@@ -627,22 +627,21 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         showRollOver: false,
-        autoFitWidth: false,
+        autoFitWidth: true,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
                 name: "classCode",
                 title: "<spring:message code='class.code'/>",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true,
+                filterOperator: "iContains"
             },
             {
                 name: "courseCode",
                 title: "<spring:message code='course.code'/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true,
+
                 sortNormalizer: function (record) {
                     return record.course.titleFa;
                 }
@@ -652,7 +651,7 @@
                 title: "<spring:message code="class.title"/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true,
+
                 hidden: false
             },
             {
@@ -665,21 +664,21 @@
                 // },
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true
+
             },
             {
                 name: "classStartDate",
                 title: "<spring:message code='class.start.date'/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true
+
             },
             {
                 name: "classEndDate",
                 title: "<spring:message code='class.end.date'/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true
+
             },
             {
                 name: "classYear",
@@ -687,14 +686,14 @@
                 align: "center",
                 canFilter: false,
                 filterOperator: "iContains",
-                autoFitWidth: true
+
             },
             {
                 name: "termTitle",
                 title: "<spring:message code='term'/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true
+
             },
             {
                 name: "evaluationType",
@@ -713,14 +712,13 @@
                 },
                 filterOnKeypress: true,
                 filterOperator: "iContains",
-                autoFitWidth: true
+
             },
             {
                 name: "effectivenessGrade",
                 title: "<spring:message code='FECRGrade'/>",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "effectivenessStatus",
@@ -736,36 +734,31 @@
                     },
                 },
                 filterOnKeypress: true,
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "answeredReactionEvalPercent",
                 title: "<spring:message code='reaction.submitted.forms.percent'/>",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "answeredLearningEvalPercent",
                 title: "<spring:message code='learning.submitted.forms.percent'/>",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "answeredBehaviorEvalPercent",
                 title: "<spring:message code='behavior.submitted.forms.percent'/>",
                 align: "center",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
             {
                 name: "description",
                 title: "<spring:message code='description'/>",
                 align: "center",
                 filterOperator: "iContains",
-                autoFitWidth: true,
                 hidden: true
             }
         ],
