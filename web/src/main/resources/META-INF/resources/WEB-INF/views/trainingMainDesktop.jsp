@@ -1301,6 +1301,7 @@
     const presenceReportUrl = rootUrl + "/presence-report";
     const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
     const departmentUrl = rootUrl + "/department";
+    const operationalChartUrl = rootUrl + "/operationalchart";
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
@@ -1805,6 +1806,13 @@
                     title: "<spring:message code="department.chart"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/departmentChart"/>");
+                    }
+                },
+
+                {
+                    title: "<spring:message code="operational.chart"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/operationalChart"/>");
                     }
                 },
 

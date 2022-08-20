@@ -185,7 +185,6 @@
                 affairs.forEach(a => a.directReports = sections.filter(s => s.parentTitle === a.title));
                 assistants.forEach(a => a.directReports = affairs.filter(af => af.parentTitle === a.title));
                 complexes.forEach(c => c.directReports = assistants.filter(a => a.parentTitle === c.title));
-
                 let treeData = setTreeData(departmentTree, complexes, false);
                 return treeData;
             }

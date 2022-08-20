@@ -381,4 +381,11 @@
     <changeSet author="ZPakdaman" id="1658896976000-02">
         <createSequence sequenceName="seq_teacher_experience_info_id"/>
     </changeSet>
+
+
+
+
+    <changeSet id="1654668348111-01" author="kasehpour">
+        <createSequence sequenceName="seq_operational_chart_id"/>
+    </changeSet>
 </databaseChangeLog>

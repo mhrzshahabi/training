@@ -211,4 +211,9 @@
         <addUniqueConstraint columnNames="f_parent_id, f_child_id" constraintName="UK_group_questions" tableName="tbl_group_question"/>
     </changeSet>
 
+
+    <changeSet author="kasehpour (generated)" id="1654668348111-03">
+        <addUniqueConstraint columnNames="parent_id, child_id" constraintName="UK_parent_childs" tableName="tbl_operational_chart_parent_child"/>
+    </changeSet>
+
 </databaseChangeLog>

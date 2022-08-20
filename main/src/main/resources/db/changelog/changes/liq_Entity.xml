@@ -3848,4 +3848,44 @@
 
         </createTable>
     </changeSet>
+    <changeSet author="kasehpour" id="1654668348111-02">
+        <createTable tableName="tbl_operational_chart_parent_child">
+            <column name="parent_id" type="NUMBER(19, 0)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="child_id" type="NUMBER(19, 0)">
+                <constraints nullable="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="kasehpour" id="1654668348111-04">
+        <createTable tableName="tbl_operational_chart">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_operational_chartPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+
+            <column name="c_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="parent_id" type="NUMBER(19, 0)"/>
+            <column name="c_complex" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_username" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_nationalcode" type="VARCHAR2(255 CHAR)"/>
+
+        </createTable>
+    </changeSet>
+
 </databaseChangeLog>

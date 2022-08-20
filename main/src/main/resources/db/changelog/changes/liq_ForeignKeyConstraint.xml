@@ -1382,6 +1382,13 @@
         <addForeignKeyConstraint baseColumnNames="f_educational_decision_header" baseTableName="tbl_educational_decision" constraintName="FK_educational_decision_header_in_decision" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_educational_decision_header" validate="true"/>
     </changeSet>
 
+<!--    <changeSet author="kasehpour (generated)" id="1654668348111-05">-->
+<!--        <addForeignKeyConstraint baseColumnNames="child_id" baseTableName="tbl_operational_chart_parent_child" constraintName="FK_operational_chart" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_chart" validate="true"/>-->
+<!--    </changeSet>-->
+
+    <changeSet author="kasehpour (generated)" id="1654668348111-06">
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="tbl_operational_chart_parent_child" constraintName="FK_parent_id_operational_chart" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_operational_chart" validate="true"/>
+    </changeSet>
 
     <changeSet author="namdari" id="1656131979000-05">
         <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_of_experts_personnel" constraintName="FKCommitteeOfExpertsPersonnel" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
@@ -1396,6 +1403,10 @@
     <changeSet author="namdari (generated)" id="1656131979000-15">
     <addForeignKeyConstraint baseColumnNames="committee_of_experts_id" baseTableName="tbl_committee_of_experts_complex" constraintName="FKcommittee_of_experts_complex" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee_of_experts" validate="true"/>
 </changeSet>
+
+    <changeSet author="kasehpour (generated)" id="1654668348111-07">
+        <addForeignKeyConstraint baseColumnNames="role_id" baseTableName="TBL_OPERATIONAL_CHART" constraintName="FK_PARAMETER_VALUE_IN_OP_CHART" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="TBL_PARAMETER_VALUE" validate="true"/>
+    </changeSet>
 
     <changeSet author="ZPakdaman" id="1658896976000-03">
         <addForeignKeyConstraint baseColumnNames="teacher" baseTableName="tbl_teacher_experience_info" constraintName="FKteacher_experience_info" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
