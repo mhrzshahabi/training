@@ -92,14 +92,7 @@ public class PersonnelRestController {
     public ResponseEntity<ISC<PersonnelStatisticInfoDTO.TrainingPersonnelStatisticInfo>> minlist(HttpServletRequest iscRq) throws IOException {
         return search(iscRq, r -> modelMapper.map(r, PersonnelStatisticInfoDTO.TrainingPersonnelStatisticInfo.class));
     }
-//
-//    @GetMapping(value = "/Synonym/statistic-iscList")
-//
-//    public ResponseEntity<List<PersonnelStatisticInfoDTO>> statisticSynonymList(@RequestParam MultiValueMap<String, String> criteria) {
-//        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-//
-//        return new ResponseEntity<>(iSynonymPersonnelService.searchStatistic(nicicoCriteria), HttpStatus.OK);
-//    }
+
     @Loggable
     @GetMapping(value = "/Synonym/byPersonnelCode/{personnelCode}")
     public ResponseEntity<ViewActivePersonnelDTO.PersonalityInfo> findSynonymPersonnelByPersonnelCode(@PathVariable String personnelCode) {
@@ -107,12 +100,6 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
     }
 
-//    @Loggable
-//    @PostMapping(value = "/Synonym/checkPersonnelNos/{courseId}")
-//    public ResponseEntity<List<PersonnelDTO.InfoForStudent>> checkSynonymPersonnelNos(@PathVariable Long courseId, @RequestBody List<String> personnelNos) {
-//        List<PersonnelDTO.InfoForStudent> list = iSynonymPersonnelService.checkSynonymPersonnelNos(personnelNos, courseId);
-//        return new ResponseEntity<>(list, HttpStatus.OK);
-//    }
     @Loggable
     @PostMapping(value = "/checkPersonnelNos/{courseId}")
     public ResponseEntity<List<PersonnelDTO.InfoForStudent>> checkPersonnelNos(@PathVariable Long courseId, @RequestBody List<String> personnelNos) {
