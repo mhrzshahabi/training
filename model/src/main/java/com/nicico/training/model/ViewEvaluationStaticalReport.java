@@ -227,5 +227,8 @@ public class ViewEvaluationStaticalReport extends Auditable {
     private String supervisor;
 
     @Column(name = "percent_reaction")
-    private String percentReaction;
+    private String percentOfReaction;
+
+    @Column(name = "percent_behavior")
+    private String percentOfBehavioral;
 }

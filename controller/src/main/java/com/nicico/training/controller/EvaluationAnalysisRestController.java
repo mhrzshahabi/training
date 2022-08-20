@@ -471,12 +471,12 @@ public class EvaluationAnalysisRestController {
                         for (int z=0 ; z<subV2.size();z++) {
                             ViewEvaluationStaticalReportDTO.Info info=subV2.get(z);
 
-                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentReaction()+"% )" , z+1 + "" ,
+                            chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , z+1 + "" ,
                                     Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa()+" بخش "+" ( "+(m+1)+" ) ",
                                     Double.parseDouble(minFerGrade.getValue())));
 
                             if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-                                TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId(),info.getPercentReaction());
+                                TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId(),info.getPercentOfReaction());
                                 tableData.add(tableData1);
                             }
                         }
@@ -491,13 +491,13 @@ public class EvaluationAnalysisRestController {
 
                 }else {
                     for (ViewEvaluationStaticalReportDTO.Info info : list) {
-                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentReaction()+"% )" , index + "",
+                        chartData.add(new ChartData(PersianCharachtersUnicode.bidiReorder(info.getCourseTitleFa()) + "/" + info.getTclassCode()+ "("+info.getPercentOfReaction()+"% )" , index + "",
                                 Double.parseDouble(df.format(Double.parseDouble(info.getEvaluationReactionGrade()))), catCount + ". واحد " + category.getTitleFa(),
                                 Double.parseDouble(minFerGrade.getValue())));
 
                         index++;
                         if (Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())) {
-                            TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())), info.getCourseTitleFa() + "/" + info.getTclassCode(), info.getId(),info.getPercentReaction());
+                            TableData tableData1 = new TableData(df.format(Double.valueOf(info.getEvaluationReactionGrade())), info.getCourseTitleFa() + "/" + info.getTclassCode(), info.getId(),info.getPercentOfReaction());
                             tableData.add(tableData1);
                         }
                     }
@@ -518,8 +518,9 @@ public class EvaluationAnalysisRestController {
             Object key = iterator.next();
             if(key.equals("title"))
                 params.put("title", reportComments.getString(key.toString()));
-            else if(key.equals("description"))
+            else if(key.equals("description")){
                 params.put("description",reportComments.getString(key.toString()));
+            }
             iterator.remove();
         }
 
@@ -755,7 +756,7 @@ public class EvaluationAnalysisRestController {
             if(list != null && list.size() != 0){
                 for (ViewEvaluationStaticalReportDTO.Info info : list) {
                     if(Double.parseDouble(info.getEvaluationReactionGrade()) < Double.parseDouble(minFerGrade.getValue())){
-                        TableData tableData1 = new TableData(info.getEvaluationReactionGrade(),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId(),info.getPercentReaction());
+                        TableData tableData1 = new TableData(info.getEvaluationReactionGrade(),info.getCourseTitleFa() + "/" + info.getTclassCode(),info.getId(),info.getPercentOfReaction());
                         tableData.add(tableData1);
                     }
                 }

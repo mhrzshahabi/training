@@ -85,11 +85,11 @@
 				<textFieldExpression><![CDATA[$P{description}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="230" y="32" width="315" height="30" forecolor="#D13E38" uuid="8d1d1555-49c4-47b8-85a9-f536fc683692"/>
+				<reportElement positionType="Float" x="0" y="32" width="555" height="30" forecolor="#D13E38" uuid="8d1d1555-49c4-47b8-85a9-f536fc683692"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="12"/>
+					<font fontName="Shabnam-FD" size="10"/>
 				</textElement>
-				<text><![CDATA[الف) نمودار نمره ی واکنش کلی دوره ها بر اساس واحدهای آموزش]]></text>
+				<text><![CDATA[الف) نمودار نمره ی واکنش کلی دوره ها بر اساس واحدهای آموزش - اعداد داخل پرانتز درصد فرم های تکمیل شده می باشد]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" x="0" y="379" width="550" height="35" uuid="d058cdd1-0d01-4cdf-9e95-089b73c49ce0"/>
@@ -99,7 +99,7 @@
 				<textFieldExpression><![CDATA[" با توجه به نمودارهای فوق، نمودار ارزیابی کلی دوره های ذیل از حد نصاب " + $P{minFerGrade} + "کمتر بوده است که نیاز به بررسی و در  نهایت بهبود موارد نقص می باشد. "]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="60" y="431" width="440" height="60" uuid="11ef668e-f89a-4f9c-8477-6fcd20ed21d5">
+				<reportElement positionType="Float" x="0" y="431" width="555" height="60" uuid="11ef668e-f89a-4f9c-8477-6fcd20ed21d5">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -118,7 +118,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
-								<text><![CDATA[درصد فرم های واکنشی ارسال شده]]></text>
+								<text><![CDATA[درصد فرم های تکمیل شده]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
