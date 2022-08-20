@@ -88,7 +88,7 @@ public class PersonnelRestController {
 
     @Loggable
     @GetMapping(value = "/Synonym/statistic-iscList")
-    @Transactional(readOnly = true)
+
     public ResponseEntity<ISC<PersonnelStatisticInfoDTO.TrainingPersonnelStatisticInfo>> minlist(HttpServletRequest iscRq) throws IOException {
         return search(iscRq, r -> modelMapper.map(r, PersonnelStatisticInfoDTO.TrainingPersonnelStatisticInfo.class));
     }

@@ -24,5 +24,4 @@ public interface ISynonymPersonnelService {
 
     SynonymPersonnel getByPersonnelNo2(String personnelNo2);
 
-//    PersonnelStatisticInfoDTO getPersonnelStatisticInfo(String)
 }

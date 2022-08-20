@@ -38,14 +38,12 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public SearchDTO.SearchRs searchStatistic(SearchDTO.CriteriaRq criteriaRq) {
        int complexFlag=0;int assistanceFlag=0;int affairFlag=0;int sectionFlag=0; int unitFlag=0; int statusFlag=0;
         List<Object> complexList=new ArrayList<>(); List<Object> assistanceList=new ArrayList<>();
         List<Object> affairList=new ArrayList<>();List<Object> sectionList=new ArrayList<>();
         List<Object> unitList=new ArrayList<>();List<Object> statusList=new ArrayList<>();
-//       List<Map<String,String>> objects= (List<Map<String,String>>) nicicoCriteria.getCriteria();
-//      SearchDTO.SearchRq searchRq= SearchUtil.createSearchRq(nicicoCriteria);
-//    SearchDTO.CriteriaRq criteriaRq= searchRq.getCriteria();
     List<SearchDTO.CriteriaRq> criteriaRqs=  criteriaRq.getCriteria();
         for (int i = 0; i <criteriaRqs.size() ; i++) {
 
