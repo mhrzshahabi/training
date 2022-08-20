@@ -53,6 +53,8 @@ public class ViewEvaluationStaticalReportDTO implements Serializable {
         private Boolean evaluationLearningPass;
         private Boolean evaluationLearningStatus;
         private String evaluationReactionGrade;
+        private String percentOfReaction;
+        private String percentOfBehavioral;
         private Boolean evaluationReactionPass;
         private Boolean evaluationReactionStatus;
         private String evaluationResultsGrade;

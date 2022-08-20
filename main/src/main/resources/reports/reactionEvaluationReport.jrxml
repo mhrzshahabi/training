@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<!-- Created with Jaspersoft Studio version 6.9.0.final using JasperReports Library version 6.9.0-cb8f9004be492ccc537180b49c026951f4220bf3  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="reactionEvaluationReport" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="da2486f4-0744-447f-92e2-37ffbbffbd58">
 	<style name="Table 1_TH" mode="Opaque" backcolor="#F0F8FF">
 		<box>
@@ -35,6 +35,7 @@
 		</queryString>
 		<field name="courseName" class="java.lang.String"/>
 		<field name="courseGrade" class="java.lang.String"/>
+		<field name="reactionPer" class="java.lang.String"/>
 		<variable name="Row_Number" class="java.lang.Integer">
 			<variableExpression><![CDATA[$V{REPORT_COUNT}]]></variableExpression>
 		</variable>
@@ -84,11 +85,11 @@
 				<textFieldExpression><![CDATA[$P{description}]]></textFieldExpression>
 			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="230" y="32" width="315" height="30" forecolor="#D13E38" uuid="8d1d1555-49c4-47b8-85a9-f536fc683692"/>
+				<reportElement positionType="Float" x="0" y="32" width="555" height="30" forecolor="#D13E38" uuid="8d1d1555-49c4-47b8-85a9-f536fc683692"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="12"/>
+					<font fontName="Shabnam-FD" size="10"/>
 				</textElement>
-				<text><![CDATA[الف) نمودار نمره ی واکنش کلی دوره ها بر اساس واحدهای آموزش]]></text>
+				<text><![CDATA[الف) نمودار نمره ی واکنش کلی دوره ها بر اساس واحدهای آموزش - اعداد داخل پرانتز درصد فرم های تکمیل شده می باشد]]></text>
 			</staticText>
 			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
 				<reportElement positionType="Float" x="0" y="379" width="550" height="35" uuid="d058cdd1-0d01-4cdf-9e95-089b73c49ce0"/>
@@ -98,7 +99,7 @@
 				<textFieldExpression><![CDATA[" با توجه به نمودارهای فوق، نمودار ارزیابی کلی دوره های ذیل از حد نصاب " + $P{minFerGrade} + "کمتر بوده است که نیاز به بررسی و در  نهایت بهبود موارد نقص می باشد. "]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement positionType="Float" x="60" y="431" width="440" height="60" uuid="11ef668e-f89a-4f9c-8477-6fcd20ed21d5">
+				<reportElement positionType="Float" x="0" y="431" width="555" height="60" uuid="11ef668e-f89a-4f9c-8477-6fcd20ed21d5">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table 1_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table 1_CH"/>
@@ -109,11 +110,32 @@
 					<datasetRun subDataset="content" uuid="09b6193c-e6ee-4ce2-892d-8d50a30e12b2">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("content")]]></dataSourceExpression>
 					</datasetRun>
-					<jr:column width="150" uuid="d7e88367-92d6-47ad-bf68-b420058e4cbf">
+					<jr:column width="190" uuid="0bb53965-692b-4d22-a333-6206627fac5a">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="150" height="30" uuid="34c85cfd-84ac-4cbf-8d02-9173f60f6328"/>
+								<reportElement x="0" y="0" width="190" height="30" uuid="9f49c02d-a2a5-461a-9ef5-857f505e000f"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="12"/>
+								</textElement>
+								<text><![CDATA[درصد فرم های تکمیل شده]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table 1_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="190" height="30" uuid="15658b0e-38e2-4e64-b4b3-82cdaa6e2238"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="12"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{reactionPer}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="220" uuid="d7e88367-92d6-47ad-bf68-b420058e4cbf">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement x="0" y="0" width="220" height="30" uuid="34c85cfd-84ac-4cbf-8d02-9173f60f6328"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
@@ -122,7 +144,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="150" height="30" uuid="8d452470-7406-49d7-a43e-855a5cccaff6"/>
+								<reportElement x="0" y="0" width="220" height="30" uuid="8d452470-7406-49d7-a43e-855a5cccaff6"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
@@ -130,11 +152,11 @@
 							</textField>
 						</jr:detailCell>
 					</jr:column>
-					<jr:column width="250" uuid="e8577922-8348-4b4f-89cb-a58844cf6843">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+					<jr:column width="180" uuid="e8577922-8348-4b4f-89cb-a58844cf6843">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
-								<reportElement x="0" y="0" width="250" height="30" uuid="77d6ca89-3b1b-42f7-837a-cb94f5405450"/>
+								<reportElement x="0" y="0" width="180" height="30" uuid="77d6ca89-3b1b-42f7-837a-cb94f5405450"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
@@ -143,7 +165,7 @@
 						</jr:columnHeader>
 						<jr:detailCell style="Table 1_TD" height="30">
 							<textField>
-								<reportElement x="0" y="0" width="250" height="30" uuid="bd8eaa74-9c37-4108-a559-f41e69d2b1a5"/>
+								<reportElement x="0" y="0" width="180" height="30" uuid="bd8eaa74-9c37-4108-a559-f41e69d2b1a5"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="12"/>
 								</textElement>
@@ -152,7 +174,7 @@
 						</jr:detailCell>
 					</jr:column>
 					<jr:column width="40" uuid="b7983cf6-6f07-4620-ada6-a328a9a3cf39">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 						<jr:columnHeader style="Table 1_CH" height="30" rowSpan="1">
 							<staticText>
 								<reportElement x="0" y="0" width="40" height="30" uuid="344a63ac-6a96-4518-b696-cb1936838cc3"/>
