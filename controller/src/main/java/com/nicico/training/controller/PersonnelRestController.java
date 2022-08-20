@@ -19,17 +19,21 @@ import com.nicico.training.model.*;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -47,6 +51,7 @@ public class PersonnelRestController {
     private final ISynonymPersonnelService iSynonymPersonnelService;
     private final IPersonnelRegisteredService personnelRegisteredService;
     private final IContactInfoService contactInfoService;
+    private final ModelMapper modelMapper;
 
     //Unused
     @GetMapping("list")
@@ -61,21 +66,40 @@ public class PersonnelRestController {
     }
 
     @GetMapping(value = "/Synonym/iscList")
-//    public ResponseEntity<TotalResponse<SynonymPersonnel>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+//    public ResponseEntity<TotalResponse<SynonymPersonnel>> SynonymList(@RequestBody MultiValueMap<String, String> criteria) {
         public ResponseEntity<TotalResponse<PersonnelDTO.Info>> SynonymList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
 //        return new ResponseEntity<>(synonymiPersonnelService.getData(nicicoCriteria), HttpStatus.OK);
         return new ResponseEntity<>(iSynonymPersonnelService.search(nicicoCriteria), HttpStatus.OK);
 
     }
+    private <E, T> ResponseEntity<ISC<T>> search(HttpServletRequest iscRq, Function<E, T> converter) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        if (searchRq.getCriteria() != null)
+            criteriaRq.getCriteria().add(searchRq.getCriteria());
+     SearchDTO.SearchRs searchRs = iSynonymPersonnelService.searchStatistic(searchRq.getCriteria());
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, searchRq.getStartIndex()), HttpStatus.OK);
 
-    @GetMapping(value = "/Synonym/statistic-iscList")
-
-    public ResponseEntity<PersonnelStatisticInfoDTO> statisticSynonymList(@RequestParam MultiValueMap<String, String> criteria) {
-        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-
-        return new ResponseEntity<>(iSynonymPersonnelService.searchStatistic(nicicoCriteria), HttpStatus.OK);
     }
+
+
+
+
+    @Loggable
+    @GetMapping(value = "/Synonym/statistic-iscList")
+    @Transactional(readOnly = true)
+    public ResponseEntity<ISC<PersonnelStatisticInfoDTO.TrainingPersonnelStatisticInfo>> minlist(HttpServletRequest iscRq) throws IOException {
+        return search(iscRq, r -> modelMapper.map(r, PersonnelStatisticInfoDTO.TrainingPersonnelStatisticInfo.class));
+    }
+//
+//    @GetMapping(value = "/Synonym/statistic-iscList")
+//
+//    public ResponseEntity<List<PersonnelStatisticInfoDTO>> statisticSynonymList(@RequestParam MultiValueMap<String, String> criteria) {
+//        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+//
+//        return new ResponseEntity<>(iSynonymPersonnelService.searchStatistic(nicicoCriteria), HttpStatus.OK);
+//    }
     @Loggable
     @GetMapping(value = "/Synonym/byPersonnelCode/{personnelCode}")
     public ResponseEntity<ViewActivePersonnelDTO.PersonalityInfo> findSynonymPersonnelByPersonnelCode(@PathVariable String personnelCode) {

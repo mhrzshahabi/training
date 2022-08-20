@@ -52,7 +52,15 @@
                 valueMap: {
                     "1": "اشتغال",
                     "2": "بازنشسته",
-
+                    "3" : "بازنشسته&-پیش از موعد",
+                    "4" : "از کار افتاده ناشی از کار",
+                    "5": "از کار افتاده غیر ناشی از کار",
+                    "6" : "انفصال دایم",
+                    "7" :"خاتمه قرارداد",
+                    "8" : "اخراج",
+                    "9" : "فوت",
+                    "10" : "فوت ناشی از کار",
+                    "11" : "فوت غیر ناشی از کار"
                 },
                 pickListProperties: {
                     showFilterEditor: false
@@ -97,7 +105,7 @@
                         }
                         else if (data_values.criteria[i].fieldName == "companyName") {
                             data_values.criteria[i].fieldName = "companyName";
-                            data_values.criteria[i].operator = "iContains";
+                            data_values.criteria[i].operator = "inSet";
                         }
                         else if (data_values.criteria[i].fieldName == "assistant") {
                             data_values.criteria[i].fieldName = "ccpAssistant";
@@ -162,7 +170,7 @@
 
     var ListGrid_PersonnelStatistic = isc.TrLG.create({
         ID: "TrainingOverTimeGrid",
-        //dynamicTitle: true,
+        dynamicTitle: true,
         filterOnKeypress: false,
         showFilterEditor:true,
         gridComponents: [organSegmentFilter_personnelStatistic,DynamicForm_EmploymentStatus,HLayOut_Confirm_PersonnelStatistic_buttons,
@@ -181,19 +189,67 @@
         fields: [
             {name: "complexTitle", title: "<spring:message code='complex'/>",
             },
-            {name: "assistant", title: "<spring:message code='assistance'/>", autoFitWidth:true,
+            {name: "assistance", title: "<spring:message code='assistance'/>", autoFitWidth:true,
             },
             {name: "affairs", title: "<spring:message code='affairs'/>"},
             {name: "section", title: "<spring:message code='section'/>",},
             {name: "unit", title: "<spring:message code='unit'/>"},
-            {name: "totalNumber", title: "<spring:message code='personnel.total'/>"},
-            {name: "managerNumber", title: "تعداد مدیر"},
-            {name: "bossNumber", title: "تعداد رییس"},
-            {name: "supervisorNumber", title: "تعداد سرپرست و کارشناس ارشد"},
-            {name: "expertsNumber", title: "تعداد کارشناس و مسئول"},
-            {name: "attendantsNumber", title: "تعداد متصدی و تکنیسین"},
-            {name: "workersNumber", title: "تعداد کارگر"},
-            {name: "unrankedNumber", title: "تعداد بدون رده"}
+            {name : "empStatus" , title: "<spring:message code='employment.status'/>", filterOperator:"equals",
+                valueMap: {
+                      "1": "اشتغال",
+                      "2": "بازنشسته",
+                      "3" : "بازنشسته&-پیش از موعد",
+                      "4" : "از کار افتاده ناشی از کار",
+                      "5": "از کار افتاده غیر ناشی از کار",
+                      "6" : "انفصال دایم",
+                      "7" :"خاتمه قرارداد",
+                      "8" : "اخراج",
+                      "9" : "فوت",
+                      "10" : "فوت ناشی از کار",
+                      "11" : "فوت غیر ناشی از کار"
+
+
+                  }
+
+                },
+            {name: "totalNumber", title: "<spring:message code='personnel.total'/>",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+                },
+            {name: "managerNumber", title: "تعداد مدیر" ,   filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }},
+            {name: "bossNumber", title: "تعداد رییس"  ,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+                },
+            {name: "supervisorNumber", title: "تعداد سرپرست و کارشناس ارشد",
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+                },
+            {name: "expertsNumber", title: "تعداد کارشناس و مسئول" ,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+                },
+            {name: "attendantsNumber", title: "تعداد متصدی و تکنیسین"     ,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+                },
+            {name: "workersNumber", title: "تعداد کارگر"  ,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+                },
+            {name: "unrankedNumber", title: "تعداد بدون رده" ,
+                filterEditorProperties: {
+                    keyPressFilter: "[0-9]"
+                }
+                },
         ]
     });
     var VLayout_Body_Personnel_Statistic= isc.VLayout.create({
