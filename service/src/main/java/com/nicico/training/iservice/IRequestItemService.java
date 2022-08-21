@@ -8,6 +8,7 @@ import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.model.RequestItem;
 import dto.bpms.BPMSReqItemCoursesDto;
+import dto.bpms.BPMSReqItemSentLetterDto;
 import dto.bpms.BpmsStartParamsDto;
 import response.BaseResponse;
 import response.requestItem.RequestItemDto;
@@ -61,7 +62,7 @@ public interface IRequestItemService {
 
     BaseResponse reviewParallelRequestItemTask(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, String userNationalCode);
 
-    BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, Long chiefOpinionId, String userNationalCode);
+    BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, String userNationalCode);
 
     BaseResponse reviewRequestItemTaskByRunChief(ReviewTaskRequest reviewTaskRequest);
 
@@ -75,7 +76,7 @@ public interface IRequestItemService {
 
     BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(ReviewTaskRequest reviewTaskRequest);
 
-    BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequest, String letterNumberSent);
+    BaseResponse reviewRequestItemTaskByAppointmentExpert(BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto);
 
     String getPlanningChiefNationalCode();
 

@@ -25,6 +25,7 @@ import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.RequestItemDAO;
 import dto.bpms.BPMSReqItemCoursesDetailDto;
 import dto.bpms.BPMSReqItemCoursesDto;
+import dto.bpms.BPMSReqItemSentLetterDto;
 import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -388,7 +389,7 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    public BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, Long chiefOpinionId, String userNationalCode) {
+    public BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, String userNationalCode) {
 
         BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
@@ -396,14 +397,15 @@ public class RequestItemService implements IRequestItemService {
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
+            List<Long> expertsOpinionId = requestItemProcessDetailService.findAllByRequestItemId(requestItem.getId()).stream().map(RequestItemProcessDetail::getExpertsOpinionId).collect(Collectors.toList());
             RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
-
 
             if (requestItemProcessDetail == null) {
                 RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
                 requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
-                requestItemProcessDetailDTO.setExpertsOpinionId(chiefOpinionId);
+                requestItemProcessDetailDTO.setExpertsOpinionId(expertsOpinionId.contains(parameterValueService.getId("needToPassCourse")) ?
+                        parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
                 requestItemProcessDetailDTO.setExpertNationalCode(userNationalCode);
                 requestItemProcessDetail = requestItemProcessDetailService.create(requestItemProcessDetailDTO);
             }
@@ -719,16 +721,17 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    public BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequestDto, String letterNumberSent) {
+    public BaseResponse reviewRequestItemTaskByAppointmentExpert(BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto) {
 
         BaseResponse response = new BaseResponse();
-        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequestDto.getProcessInstanceId());
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(bpmsReqItemSentLetterDto.getReviewTaskRequest().getProcessInstanceId());
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
             RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
-            requestItem.setLetterNumberSent(letterNumberSent);
+            requestItem.setLetterNumberSent(bpmsReqItemSentLetterDto.getLetterNumberSent());
+            requestItem.setDateSent(bpmsReqItemSentLetterDto.getDateSent());
             if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) ||
                     (!requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) &&
                     courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() == 0)) {
@@ -742,7 +745,7 @@ public class RequestItemService implements IRequestItemService {
 
         if (response.getStatus() == 200) {
             try {
-                bpmsClientService.reviewTask(reviewTaskRequestDto);
+                bpmsClientService.reviewTask(bpmsReqItemSentLetterDto.getReviewTaskRequest());
                 response.setMessage("عملیات موفقیت آمیز به پایان رسید");
             } catch (Exception e) {
                 response.setStatus(404);

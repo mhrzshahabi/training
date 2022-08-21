@@ -598,21 +598,18 @@
                 change: function (form, item, value) {
                     if (value === "1") {
                         form.getItem("secondPartyTeacherId").disabled = false;
-                        form.getItem("secondPartyTeacherId").setRequired(true);
                         form.getItem("secondPartyInstituteId").disabled = true;
-                        form.getItem("secondPartyInstituteId").setRequired(false);
                     } else if (value === "2") {
                         form.getItem("secondPartyTeacherId").disabled = true;
-                        form.getItem("secondPartyTeacherId").setRequired(false);
                         form.getItem("secondPartyInstituteId").disabled = false;
-                        form.getItem("secondPartyInstituteId").setRequired(true);
                     }
+                    form.setValue("secondPartyTeacherId", null);
+                    form.setValue("secondPartyInstituteId", null);
                 }
             },
             {
                 name: "secondPartyTeacherId",
                 title: "طرف دوم تفاهم نامه (مدرس)",
-                required: true,
                 colSpan: 4,
                 disabled: false,
                 type: "selectItem",
@@ -645,7 +642,6 @@
             {
                 name: "secondPartyInstituteId",
                 title: "طرف دوم تفاهم نامه (موسسه آموزشی)",
-                required: false,
                 colSpan: 4,
                 disabled: true,
                 type: "selectItem",
@@ -749,6 +745,14 @@
 
             if (!DynamicForm_Agreement.validate())
                 return;
+            if (DynamicForm_Agreement.getValue("secondParty") === "1" && DynamicForm_Agreement.getValue("secondPartyTeacherId") == null) {
+                createDialog("info", "مدرس را انتخاب کنید");
+                return;
+            }
+            if (DynamicForm_Agreement.getValue("secondParty") === "2" && DynamicForm_Agreement.getValue("secondPartyInstituteId") == null) {
+                createDialog("info", "موسسه آموزشی را انتخاب کنید");
+                return;
+            }
 
             let data = DynamicForm_Agreement.getValues();
 

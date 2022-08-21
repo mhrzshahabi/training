@@ -105,4 +105,8 @@ public class RequestItem extends Auditable implements Serializable {
     @Column(name = "c_letter_number_sent")
     @NotAudited
     private String letterNumberSent;
+
+    @Column(name = "c_date_sent")
+    @NotAudited
+    private String dateSent;
 }

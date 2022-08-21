@@ -65,7 +65,7 @@ public class AgreementClassCostService implements IAgreementClassCostService {
 
         Optional<AgreementClassCost> agreementClassCostOptional = agreementClassCostDAO.findById(id);
         AgreementClassCost agreementClassCost = agreementClassCostOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        agreementClassCost.setTeachingCostPerHourAuto(teachingCostPerHourAuto);
+        agreementClassCost.setTeachingCostPerHourAuto((double) Math.round(teachingCostPerHourAuto));
         agreementClassCostDAO.saveAndFlush(agreementClassCost);
     }
 
