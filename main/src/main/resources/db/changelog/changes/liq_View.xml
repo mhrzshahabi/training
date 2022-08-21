@@ -15580,5 +15580,239 @@ GROUP BY
         </createView>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1661054863655">
+        <createView viewName="view_effective_courses_report" replaceIfExists="true">
+            SELECT
+                ROWNUM AS id,
+                res.*
+                FROM
+                (
+                SELECT
+                tbl_evaluation_analysis.b_effectiveness_pass   AS effectiveness_pass,
+                CASE
+                WHEN tbl_evaluation_analysis.b_effectiveness_pass = 0 THEN
+                'غیر اثربخش'
+                WHEN tbl_evaluation_analysis.b_effectiveness_pass = 1 THEN
+                'اثربخش'
+                END AS effectiveness_type,
+                CASE
+                WHEN tbl_evaluation_analysis.b_effectiveness_pass = 0 THEN
+                'عدم تایید'
+                WHEN tbl_evaluation_analysis.b_effectiveness_pass = 1 THEN
+                'تایید شده'
+                END AS effectiveness_status,
+                CAST(tbl_evaluation_analysis.c_effectiveness_grade AS DECIMAL(10, 2)) AS effectiveness_grade,
+                tbl_term.id                                    AS term_id,
+                tbl_term.c_title_fa                            AS term_title,
+                tbl_class.c_start_date                         AS class_start_date,
+                tbl_class.c_end_date                           AS class_end_date,
+                substr(tbl_class.c_start_date, 1, 4) AS class_year,
+                tbl_student.id                                 AS student_id,
+                CASE
+                WHEN tbl_student.first_name IS NULL
+                AND tbl_student.last_name IS NULL THEN
+                NULL
+                ELSE
+                tbl_student.first_name
+                || ' '
+                || tbl_student.last_name
+                END AS student_full_name,
+                tbl_class.c_code                               AS class_code,
+                tbl_course.c_code                              AS course_code,
+                tbl_class.c_title_class                        AS class_title,
+                tbl_teacher.id                                 AS teacher_id,
+                tbl_personal_info.c_first_name_fa
+                || ' '
+                || tbl_personal_info.c_last_name_fa AS teacher_full_name,
+                tbl_category.id                                AS course_category_id,
+                tbl_student.ccp_affairs                        AS student_affair,
+                tbl_student.ccp_area                           AS student_complex,
+                tbl_student.ccp_assistant                      AS student_assistant,
+                tbl_class.c_evaluation                         AS class_evaluation_code,
+                CASE
+                WHEN tbl_class.c_evaluation = 1 THEN
+                'واکنشی'
+                WHEN tbl_class.c_evaluation = 2 THEN
+                'یادگیری'
+                WHEN tbl_class.c_evaluation = 3 THEN
+                'رفتاری'
+                END AS evaluation_type,
+                reactionpercent.percent_reaction               AS answered_reaction_eval_percent,
+                learningpercent.percent_learning               AS answered_learning_eval_percent,
+                behavioralpercent.percent_behavior             AS answered_behavior_eval_percent
+                FROM
+                tbl_evaluation_analysis
+                INNER JOIN tbl_class ON tbl_evaluation_analysis.f_tclass = tbl_class.id
+                LEFT JOIN tbl_term ON tbl_class.f_term = tbl_term.id
+                LEFT JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id
+                LEFT JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+                INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+                INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
+                LEFT JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+                LEFT JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+                LEFT JOIN (
+                SELECT
+                class_id AS class_id,
+                CASE
+                WHEN all_reaction_eval = 0 THEN
+                0
+                ELSE
+                CAST((filled_reaction_eval / all_reaction_eval) * 100 AS DECIMAL(6, 2))
+                END AS percent_reaction
+                FROM
+                (
+                SELECT DISTINCT
+                cs.class_id AS class_id,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id) --AS filled_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND cs.evaluation_status_reaction IN (
+                2,
+                3
+                )
+                ) AS filled_reaction_eval,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id) --AS all_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND ( cs.evaluation_status_reaction IN (
+                0,
+                1,
+                2,
+                3
+                )
+                OR cs.evaluation_status_reaction IS NULL )
+                ) AS all_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           classx ON cs.class_id = classx.id
+                )
+                ) reactionpercent ON reactionpercent.class_id = tbl_class.id
+                LEFT JOIN (
+                SELECT
+                class_id AS class_id,
+                CASE
+                WHEN all_learning_eval = 0 THEN
+                0
+                ELSE
+                CAST((filled_learning_eval / all_learning_eval) * 100 AS DECIMAL(6, 2))
+                END AS percent_learning
+                FROM
+                (
+                SELECT DISTINCT
+                cs.class_id AS class_id,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id)
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND cs.evaluation_status_learning IN (
+                2,
+                3
+                )
+                ) AS filled_learning_eval,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id)
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND ( cs.evaluation_status_learning IN (
+                0,
+                1,
+                2,
+                3
+                )
+                OR cs.evaluation_status_learning IS NULL )
+                ) AS all_learning_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           classx ON cs.class_id = classx.id
+                )
+                ) learningpercent ON learningpercent.class_id = tbl_class.id
+                LEFT JOIN (
+                SELECT
+                class_id AS class_id,
+                CASE
+                WHEN all_behavioral_eval = 0 THEN
+                0
+                ELSE
+                CAST((filled_behavior_eval / all_behavioral_eval) * 100 AS DECIMAL(6, 2))
+                END AS percent_behavior
+                FROM
+                (
+                SELECT DISTINCT
+                class.id AS class_id,
+                (
+                SELECT
+                COUNT(DISTINCT ex.id)
+                FROM
+                tbl_class        cx
+                INNER JOIN tbl_evaluation   ex ON ex.f_class_id = cx.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari
+                WHERE
+                1 = 1
+                AND class.id = cx.id
+                AND ex.f_evaluation_level_id = raftari.id --   156
+                AND ex.b_status = 1
+                ) AS filled_behavior_eval,
+                (
+                SELECT
+                COUNT(DISTINCT ex.id)
+                FROM
+                tbl_class        cx
+                INNER JOIN tbl_evaluation   ex ON ex.f_class_id = cx.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari
+                WHERE
+                1 = 1
+                AND class.id = cx.id
+                AND ex.f_evaluation_level_id = raftari.id --   156
+                ) AS all_behavioral_eval
+                FROM
+                tbl_class        class
+                INNER JOIN tbl_evaluation   e ON e.f_class_id = class.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari_id
+                WHERE
+                1 = 1
+                AND e.f_evaluation_level_id = raftari_id.id --   156
+                )
+                ) behavioralpercent ON behavioralpercent.class_id = tbl_class.id
+                ) res
+        </createView>
+    </changeSet>
+
+
 
 </databaseChangeLog>
