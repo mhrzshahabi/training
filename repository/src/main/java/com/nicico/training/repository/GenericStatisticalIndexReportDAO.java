@@ -7759,8 +7759,178 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                        int assistantNull,
                                                        List<Object> affairs,
                                                        int affairsNull);
-
-
+    @Query(value ="SELECT rowNum AS id,\n" +
+            "       res.*\n" +
+            "FROM(      \n" +
+            "\n" +
+            " with kol as (SELECT DISTINCT\n" +
+            "            count(distinct s.class_id)  over (partition by  s.mojtama)   AS count_kol_mojtama,\n" +
+            "             count(distinct s.class_id)  over (partition by  s.moavenat)  AS count__kol_moavenat,\n" +
+            "             count(distinct s.class_id)  over (partition by s.omoor)      AS count__kol_omoor,\n" +
+            "             s.mojtama_id,\n" +
+            "            s.mojtama,\n" +
+            "            moavenat_id,\n" +
+            "            s.moavenat,\n" +
+            "            s.omoor_id,\n" +
+            "            s.omoor\n" +
+            "          \n" +
+            "        FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "                    class.id               AS class_id,\n" +
+            "                    class.complex_id       AS mojtama_id,\n" +
+            "                    view_complex.c_title   AS mojtama,\n" +
+            "                    class.assistant_id     AS moavenat_id,\n" +
+            "                    view_assistant.c_title AS moavenat,\n" +
+            "                    class.affairs_id       AS omoor_id,\n" +
+            "                    view_affairs.c_title   AS omoor\n" +
+            "                FROM\n" +
+            "                    tbl_class   class \n" +
+            "                    LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
+            "                    LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
+            "                    LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
+            "               where 1=1 \n" +
+            "                and class.C_START_DATE >= :fromDate\n" +
+            "                and class.C_START_DATE <= :toDate\n" +
+            "                   \n" +
+            "         --      and view_complex.id =@\n" +
+            "        --       and view_affairs.id =@\n" +
+            "        --       and view_assistant.id =@\n" +
+            "                    \n" +
+            "                GROUP BY\n" +
+            "                    class.id,\n" +
+            "                    view_complex.c_title,\n" +
+            "                    class.complex_id,\n" +
+            "                    class.assistant_id,\n" +
+            "                    class.affairs_id,\n" +
+            "                    view_assistant.c_title,\n" +
+            "                    view_affairs.c_title\n" +
+            "     \n" +
+            "            ) s\n" +
+            "        GROUP BY\n" +
+            "         \n" +
+            "            s.class_id, \n" +
+            "            s.mojtama_id,\n" +
+            "            s.mojtama,\n" +
+            "            moavenat_id,\n" +
+            "            s.moavenat,\n" +
+            "            s.omoor_id,\n" +
+            "            s.omoor\n" +
+            "         having  nvl(count( s.class_id) ,0)  !=0\n" +
+            "         ),\n" +
+            "        \n" +
+            "        khod as(SELECT DISTINCT\n" +
+            "            count(distinct s.class_id)  over (partition by  s.mojtama)   AS count_electronic_mojtama,\n" +
+            "             count(distinct s.class_id)  over (partition by  s.moavenat)  AS count_electronic_moavenat,\n" +
+            "             count(distinct s.class_id)  over (partition by s.omoor)      AS count_electronic_omoor,\n" +
+            "             s.mojtama_id,\n" +
+            "            s.mojtama,\n" +
+            "            moavenat_id,\n" +
+            "            s.moavenat,\n" +
+            "            s.omoor_id,\n" +
+            "            s.omoor\n" +
+            "          \n" +
+            "        FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "                    class.id               AS class_id,\n" +
+            "                    class.complex_id       AS mojtama_id,\n" +
+            "                    view_complex.c_title   AS mojtama,\n" +
+            "                    class.assistant_id     AS moavenat_id,\n" +
+            "                    view_assistant.c_title AS moavenat,\n" +
+            "                    class.affairs_id       AS omoor_id,\n" +
+            "                    view_affairs.c_title   AS omoor\n" +
+            "                FROM\n" +
+            "                    tbl_class   class \n" +
+            "                    LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
+            "                    LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
+            "                    LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
+            "               where 1=1 \n" +
+            "                AND  class.C_TEACHING_TYPE = 'مجازی'\n" +
+            "                and class.C_START_DATE >= :fromDate\n" +
+            "                and class.C_START_DATE <= :toDate\n" +
+            "                   \n" +
+            "         --      and view_complex.id =@\n" +
+            "        --       and view_affairs.id =@\n" +
+            "        --       and view_assistant.id =@\n" +
+            "                    \n" +
+            "                GROUP BY\n" +
+            "                    class.id,\n" +
+            "                    view_complex.c_title,\n" +
+            "                    class.complex_id,\n" +
+            "                    class.assistant_id,\n" +
+            "                    class.affairs_id,\n" +
+            "                    view_assistant.c_title,\n" +
+            "                    view_affairs.c_title\n" +
+            "     \n" +
+            "            ) s\n" +
+            "        GROUP BY\n" +
+            "         \n" +
+            "            s.class_id, \n" +
+            "            s.mojtama_id,\n" +
+            "            s.mojtama,\n" +
+            "            moavenat_id,\n" +
+            "            s.moavenat,\n" +
+            "            s.omoor_id,\n" +
+            "            s.omoor\n" +
+            "      \n" +
+            "         )\n" +
+            "        \n" +
+            "        select DISTINCT\n" +
+            "        \n" +
+            "        kol.mojtama_id     as complex_id\n" +
+            "        ,kol.mojtama       as complex\n" +
+            "        ,max(cast ((khod.count_electronic_mojtama /kol.count_kol_mojtama)*100 as decimal(6,2)) ) OVER ( PARTITION BY kol.mojtama_id ) AS  n_base_on_complex\n" +
+            "        \n" +
+            "        , kol.moavenat_id  as assistant_id\n" +
+            "        , kol.moavenat     as assistant\n" +
+            "        ,max( cast ( (khod.count_electronic_moavenat /kol.count__kol_moavenat)*100 as decimal(6,2))) OVER ( PARTITION BY  kol.moavenat_id ) AS n_base_on_assistant\n" +
+            "        \n" +
+            "        ,kol.omoor_id     as affairs_id\n" +
+            "        ,kol.omoor        as affairs\n" +
+            "        ,max(cast ( (khod.count_electronic_omoor /kol.count__kol_omoor)*100 as decimal(6,2)) ) OVER ( PARTITION BY kol.omoor_id ) AS n_base_on_affairs\n" +
+            "        \n" +
+            "        FROM\n" +
+            "        kol \n" +
+            "        LEFT JOIN  khod\n" +
+            "        on\n" +
+            "         khod.mojtama_id = kol.mojtama_id\n" +
+            "         and khod.moavenat_id = kol.moavenat_id\n" +
+            "         and khod.omoor_id = kol.omoor_id\n" +
+            "        \n" +
+            "        where 1=1\n" +
+            "              and (\n" +
+            "                   kol.mojtama_id is not null\n" +
+            "                   and kol.moavenat_id is not null\n" +
+            "                   and kol.omoor_id is not null\n" +
+            "                  )\n" +
+            "         \n" +
+            "        group by\n" +
+            "        kol.mojtama_id\n" +
+            "        ,kol.mojtama\n" +
+            "        ,khod.count_electronic_mojtama \n" +
+            "        ,khod.count_electronic_moavenat \n" +
+            "        ,khod.count_electronic_omoor \n" +
+            "        ,kol.count_kol_mojtama\n" +
+            "        ,kol.count__kol_moavenat\n" +
+            "        ,kol.count__kol_omoor\n" +
+            "        , kol.moavenat_id\n" +
+            "        , kol.moavenat\n" +
+            "        ,kol.omoor_id\n" +
+            "        ,kol.omoor\n" +
+            ") res\n" +
+            " where 1=1\n" +
+            "     AND (:complexNull = 1 OR complex IN (:complex)) \n" +
+            "     AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
+            "     AND (:affairsNull = 1 OR affairs IN (:affairs)) ", nativeQuery = true)
+    List<GenericStatisticalIndexReport> theAmountOfVirtualCoursesProducedElectronic(String fromDate,
+                                                          String toDate,
+                                                          List<Object> complex,
+                                                          int complexNull,
+                                                          List<Object> assistant,
+                                                          int assistantNull,
+                                                          List<Object> affairs,
+                                                          int affairsNull);
 
 
 }
