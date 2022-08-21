@@ -234,7 +234,9 @@
                 title: "<spring:message code="test.question.status"/>",
                  autoFitWidth: true
             },
-            { name: "onlineExamDeadLineStatus", hidden: true}
+            { name: "onlineExamDeadLineStatus", hidden: true},
+            { name: "classScore", hidden: true},
+            { name: "practicalScore", hidden: true}
         ],
         fetchDataURL: testQuestionUrl + "/spec-list",
         implicitCriteria: {
@@ -1601,15 +1603,30 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='test.question.duration.hint'/>",
                 showHintInField: true,
-                length: 3
+                length: 2
+            }
+            , {
+                name: "practicalScore",
+                title: "نمره عملی",
+                // hidden: true,
+                 keyPressFilter: "[0-9.]",
+                length: 5
             },
+            {
+                name: "classScore",
+                title: "نمره کلاسی",
+                // hidden: true,
+                 keyPressFilter: "[0-9.]",
+                length: 5
+            },
+
 
         ]
     });
 
     let FinalTestWin_finalTest = isc.Window.create({
         width: 500,
-        height: 320,
+        height: 400,
         //autoCenter: true,
         overflow: "hidden",
         showMaximizeButton: false,
@@ -1619,10 +1636,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             members: [
                 isc.TrSaveBtn.create({
                     click: function () {
-                        if (!isCopyForm)
-                            saveFinalTest_finalTest();
-                        else
-                            saveCopyTest_finalTest();
+                        checkExamDate()
                     }
                 }),
                 isc.TrCancelBtn.create({
@@ -1823,6 +1837,7 @@ let inValidStudents = [];
             createDialog("warning", "<spring:message code='msg.can.not.edit.selected.record'/>", "<spring:message code="warning"/>");
         }
         else{
+            wait.show();
             isc.RPCManager.sendRequest(TrDSRequest(testQuestionUrl + "/" + record.id, "GET", null, result_EditFinalTest));
 
         }
@@ -1866,19 +1881,20 @@ let inValidStudents = [];
             }
             let data = FinalTestDF_finalTest.getValues();
             if (finalTestMethod_finalTest.localeCompare("POST") === 0) {
-
+                wait.show()
                 data.testQuestionType = "FinalTest";
                 isc.RPCManager.sendRequest(TrDSRequest(isValidForExam+data.tclassId, "GET",null, function (resp) {
-
                     let respText = JSON.parse(resp.httpResponseText);
                     if (respText.status === 200) {
                         isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
                             JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
                     } else {
+                        wait.close()
                         createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
                     }
                 }));
             } else {
+                wait.show()
                 let data = FinalTestDF_finalTest.getValues();
                 isc.RPCManager.sendRequest(TrDSRequest(finalTestSaveUrl, finalTestMethod_finalTest,
                     JSON.stringify(data), "callback: rcpResponse(rpcResponse, '<spring:message code="exam"/>', '" + finalTestAction + "')"));
@@ -1887,6 +1903,35 @@ let inValidStudents = [];
 
 
 
+    }
+    async function checkExamDate() {
+        let data = FinalTestDF_finalTest.getValues();
+if (data.tclassId !== undefined && data.tclassId !== null){
+    wait.show()
+    let    scoringClassDto= {}
+    scoringClassDto.classId=data.tclassId
+    scoringClassDto.classScore=(data.classScore !== undefined && data.classScore !== null) ? data.classScore : null
+    scoringClassDto.practicalScore=(data.practicalScore !== undefined && data.practicalScore !== null) ? data.practicalScore : null
+    isc.RPCManager.sendRequest(TrDSRequest(getClassScoring, "POST", JSON.stringify(scoringClassDto), function (resp) {
+        let respText = JSON.parse(resp.httpResponseText);
+        if (respText.status === 200) {
+            wait.close()
+                if (!isCopyForm)
+                    saveFinalTest_finalTest();
+                else
+                    saveCopyTest_finalTest();
+
+
+        } else {
+            wait.close()
+            createDialog("info", "جمع نمرات عملی و کلاسی با جمع نمرات کلاس هم خوانی ندارد");
+        }
+    }));
+
+}else {
+    createDialog("info", "ابتدا کلاس را انتخاب کنید");
+
+}
     }
 
     function showRemoveForm_finalTest() {
@@ -1944,6 +1989,7 @@ let inValidStudents = [];
 
             let data = FinalTestDF_finalTest.getValues();
             let recordId = FinalTestLG_finalTest.getSelectedRecord().id;
+        wait.show()
             isc.RPCManager.sendRequest(TrDSRequest(isValidForExam + data.tclassId, "GET",null, function (resp) {
 
                 let respText = JSON.parse(resp.httpResponseText);
@@ -1963,6 +2009,7 @@ let inValidStudents = [];
                         }
                     }));
                 } else {
+                    wait.close()
                     createDialog("warning", "روش نمره دهی این کلاس بدون آزمون ( بدون نمره , ارزشی ,  و یا عملی ) می باشد و قابلیت ایجاد آزمون آنلاین وجود ندارد", "اخطار");
                 }
             }));
@@ -1972,6 +2019,7 @@ let inValidStudents = [];
     }
 
     function rcpResponse(resp, entityType, action, entityName) {
+        wait.close()
         if (generalGetResp(resp)) {
             let respCode = resp.httpResponseCode;
             if (respCode == 200 || respCode == 201) {

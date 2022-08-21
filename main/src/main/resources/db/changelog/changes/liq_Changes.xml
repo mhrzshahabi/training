@@ -5468,6 +5468,12 @@ FROM
             ]]>
         </sql>
     </changeSet>
+    <changeSet author="namdari (generated)" id="1661057829000-1">
+        <addColumn tableName="tbl_test_question">
+            <column name="class_score" type="varchar2(255 CHAR)"/>
+            <column name="practical_score" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>
 

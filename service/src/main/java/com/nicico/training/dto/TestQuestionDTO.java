@@ -42,6 +42,8 @@ public class TestQuestionDTO {
         @ApiModelProperty(required = true)
         private Integer duration;
         private TclassDTO.Info tclass;
+        private String practicalScore;
+        private String classScore;
     }
 
     @Getter
@@ -56,6 +58,8 @@ public class TestQuestionDTO {
         private Integer duration;
         private String endDate;
         private String endTime;
+        private String practicalScore;
+        private String classScore;
         private TclassDTO.ExamInfo tclass;
     }
 
@@ -95,6 +99,8 @@ public class TestQuestionDTO {
         @ApiModelProperty(required = true)
         private Integer duration;
         private String testQuestionType;
+        private String practicalScore;
+        private String classScore;
     }
 
     @Getter
@@ -119,6 +125,8 @@ public class TestQuestionDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private String endTime;
+        private String practicalScore;
+        private String classScore;
     }
 
     @Getter
