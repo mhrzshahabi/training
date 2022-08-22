@@ -107,12 +107,6 @@
                 filterOperator: "iContains",
             },
             {
-                name: "learningSubmittedFormsPercent",
-                title: "<spring:message code='learning.evaluation.formula.report'/>",
-                align: "center",
-                filterOperator: "iContains",
-            },
-            {
                 name: "behaviorSubmittedFormsPercent",
                 title: "<spring:message code='behavior.submitted.forms.percent'/>",
                 align: "center",
@@ -739,12 +733,6 @@
             {
                 name: "answeredReactionEvalPercent",
                 title: "<spring:message code='reaction.submitted.forms.percent'/>",
-                align: "center",
-                filterOperator: "iContains"
-            },
-            {
-                name: "answeredLearningEvalPercent",
-                title: "<spring:message code='learning.submitted.forms.percent'/>",
                 align: "center",
                 filterOperator: "iContains"
             },
