@@ -135,8 +135,8 @@ public abstract class EvaluationBeanMapper {
         request.setTitle(questionnaire.getTitle());
         try {
             request.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
-            request.setPlanner(evaluation.getTclass().getPlanner().getFirstName() + " " +
-                    evaluation.getTclass().getPlanner().getLastName());
+            request.setPlanner(evaluation.getTclass().getPlanner()!=null ?(evaluation.getTclass().getPlanner().getFirstName() + " " +
+                    evaluation.getTclass().getPlanner().getLastName()):"");
         } catch (NullPointerException ignored) {
         }
         request.setTargetUsers(classStudents.stream()
@@ -178,8 +178,8 @@ public abstract class EvaluationBeanMapper {
         responseDto.setTitle(questionnaire.getTitle());
         try {
             responseDto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
-            responseDto.setPlanner(evaluation.getTclass().getPlanner().getFirstName() + " " +
-                    evaluation.getTclass().getPlanner().getLastName());
+            responseDto.setPlanner(evaluation.getTclass().getPlanner()!=null ?(evaluation.getTclass().getPlanner().getFirstName() + " " +
+                    evaluation.getTclass().getPlanner().getLastName()):"");
         } catch (NullPointerException ignored) {
         }
         responseDto.setQuestions(questionDtos);
@@ -235,8 +235,8 @@ public abstract class EvaluationBeanMapper {
             }
             dto.setClassId(evaluation.getClassId());
             dto.setOrganizer(evaluation.getTclass().getOrganizer().getTitleFa());
-            dto.setPlanner((evaluation.getTclass().getPlanner().getFirstName() + " " +
-                    evaluation.getTclass().getPlanner().getLastName()));
+            dto.setPlanner(evaluation.getTclass().getPlanner()!=null ?(evaluation.getTclass().getPlanner().getFirstName() + " " +
+                    evaluation.getTclass().getPlanner().getLastName()):"");
             PersonalInfo teacher = iPersonalInfoService.getPersonalInfo(teacherService.getTeacher(evaluation.getTclass().getTeacherId()).getPersonalityId());
             dto.setTeacherFullName(teacher.getFirstNameFa() + " " +
                     teacher.getLastNameFa());

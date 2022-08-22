@@ -47,6 +47,12 @@ public class TestQuestion extends Auditable {
     @Column(name = "c_time")
     private String time;
 
+    @Column(name = "class_score")
+    private String classScore;
+
+    @Column(name = "practical_score")
+    private String practicalScore;
+
     @Column(name = "n_duration")
     private Integer duration;
 

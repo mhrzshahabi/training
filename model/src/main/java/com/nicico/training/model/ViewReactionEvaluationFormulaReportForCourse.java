@@ -88,6 +88,6 @@ public class ViewReactionEvaluationFormulaReportForCourse implements Serializabl
     @Column(name = "javab_dade")
     private String javab_dade;
 
-    @Column(name = "miangin_javab_dade")
-    private String miangin_javab_dade;
+    @Column(name = "percent_reaction")
+    private String percent_reaction;
 }

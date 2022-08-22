@@ -1256,6 +1256,7 @@
     const evaluationUrl = rootUrl + "/evaluation";
     const hasAccessToChangeClassStatus = rootUrl + "/tclass/hasAccessToChangeClassStatus/";
     const isValidForExam = rootUrl + "/tclass/isValidForExam/";
+    const getClassScoring = rootUrl + "/tclass/get-class-scoring/";
     const hasAccessToGroups= rootUrl + "/tclass/hasAccessToGroups/";
     const changeClassStatusToLock = rootUrl + "/tclass/changeClassStatusToLock";
     const uploadFms = rootUrl + "/attachment/upload/fms";
