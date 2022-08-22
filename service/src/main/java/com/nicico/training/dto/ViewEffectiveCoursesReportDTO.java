@@ -52,9 +52,6 @@ public class ViewEffectiveCoursesReportDTO implements Serializable {
     private Double answeredReactionEvalPercent;
 
     @ApiModelProperty
-    private Double answeredLearningEvalPercent;
-
-    @ApiModelProperty
     private Double answeredBehaviorEvalPercent;
 
     @ApiModelProperty
