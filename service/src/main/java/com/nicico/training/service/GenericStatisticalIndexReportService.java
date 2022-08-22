@@ -108,6 +108,7 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
             case "report48"-> genericStatisticalIndexReportDAO.coursesDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report49"-> genericStatisticalIndexReportDAO.coursesTargetDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report50"-> genericStatisticalIndexReportDAO.scheduledTraining(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report58"-> genericStatisticalIndexReportDAO.totalEducationCostPerCapita(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
                 default -> null;
         };
 
