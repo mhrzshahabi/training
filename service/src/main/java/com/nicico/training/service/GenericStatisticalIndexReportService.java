@@ -111,6 +111,7 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
             case "report51"-> {
                 objectResult = genericStatisticalIndexReportDAO.proportionOfkeyOccupationsWithQualifications(fromDate, toDate);
                 yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (پست)");}
+            case "report52"-> genericStatisticalIndexReportDAO.theProportionOfSelfTaughtEducationalNeedsOffline(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
                 default -> null;
         };
 
