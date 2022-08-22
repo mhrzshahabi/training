@@ -422,7 +422,7 @@
             let code = DynamicForm_JspOperationalChart.getField("code").getValue();
             let parentId = DynamicForm_JspOperationalChart.getField("parentId").getValue() == undefined ? null : DynamicForm_JspOperationalChart.getField("parentId").getValue();
             let roleId = DynamicForm_JspOperationalChart.getField("roleId").getValue() == undefined ? null : DynamicForm_JspOperationalChart.getField("roleId").getValue();
-debugger
+
             let data = {
                 "nationalCode": "nationalCode",
                 "userName": "userName",
@@ -730,7 +730,7 @@ debugger
 
                     let tree = chart.reduce((finalChart, one) => {
                         if (one.parentId === null || one.parentId === undefined) {
-                            finalchart.push(one);
+                            finalChart.push(one);
                         }
                         return finalChart
                     }, []);
