@@ -8560,6 +8560,172 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                           int assistantNull,
                                                           List<Object> affairs,
                                                           int affairsNull);
+    @Query(value ="SELECT rowNum AS id,\n" +
+            "       res.*\n" +
+            "FROM(      \n" +
+            "\n" +
+            " with kol as(\n" +
+            "        select distinct\n" +
+            "        count(distinct p.id) over (partition by view_complex.c_title ) as personel_kol_mojtama\n" +
+            "        ,count(distinct p.id) over (partition by view_assistant.c_title ) as personel_kol_moavenat\n" +
+            "        ,count(distinct p.id) over (partition by view_affairs.c_title ) as personel_kol_omoor\n" +
+            "        ,view_complex.id        as mojtama_id\n" +
+            "        ,view_complex.c_title   as mojtama\n" +
+            "        ,view_assistant.id      as moavenat_id\n" +
+            "        ,view_assistant.c_title as moavenat\n" +
+            "        ,view_affairs.id        as omoor_id\n" +
+            "        ,view_affairs.c_title   as omoor\n" +
+            "        from  \n" +
+            "        VIEW_SYNONYM_PERSONNEL p\n" +
+            "             LEFT JOIN view_complex ON p.COMPLEX_TITLE = view_complex.c_title \n" +
+            "             LEFT JOIN view_assistant ON p.CCP_ASSISTANT = view_assistant.c_title\n" +
+            "             LEFT JOIN view_affairs ON p.CCP_AFFAIRS = view_affairs.c_title\n" +
+            "        where \n" +
+            "         p.EMPLOYMENT_STATUS_ID = 210 --eshteghal\n" +
+            "         and p.DELETED = 0\n" +
+            "         and ( p.POST_GRADE_TITLE like '%مدیر%' --farsi\n" +
+            "               or\n" +
+            "               p.POST_GRADE_TITLE like '%مدیر%' --arabic\n" +
+            "             )\n" +
+            "    --       and view_complex.id =@\n" +
+            "    --       and view_affairs.id =@\n" +
+            "    --       and view_assistant.id =@\n" +
+            "        \n" +
+            "        group by\n" +
+            "        p.id\n" +
+            "        , view_complex.id       \n" +
+            "        ,view_complex.c_title   \n" +
+            "        ,view_assistant.id      \n" +
+            "        ,view_assistant.c_title \n" +
+            "        ,view_affairs.id        \n" +
+            "        ,view_affairs.c_title   \n" +
+            "),\n" +
+            "        \n" +
+            "khod as(\n" +
+            "          SELECT DISTINCT\n" +
+            "            sum(distinct s.COUNT_HAZINEH_PER_CLASS)  over (partition by  s.mojtama)   AS count_hazineh_mojtama,\n" +
+            "             sum(distinct s.COUNT_HAZINEH_PER_CLASS)  over (partition by  s.moavenat)  AS count_hazineh_moavenat,\n" +
+            "             sum(distinct s.COUNT_HAZINEH_PER_CLASS)  over (partition by s.omoor)      AS count_hazineh_omoor,\n" +
+            "             s.mojtama_id,\n" +
+            "            s.mojtama,\n" +
+            "            moavenat_id,\n" +
+            "            s.moavenat,\n" +
+            "            s.omoor_id,\n" +
+            "            s.omoor\n" +
+            "          \n" +
+            "         FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "                    (\n" +
+            "                       select count(s.ID)*  nvl(to_number(c.C_STUDENT_COST),0)\n" +
+            "                       from TBL_CLASS c \n" +
+            "                            inner join TBL_CLASS_STUDENT s  on c.ID = s.CLASS_ID\n" +
+            "                       where C.ID = class.ID \n" +
+            "                       group by c.C_STUDENT_COST\n" +
+            "                    )                      AS COUNT_HAZINEH_PER_CLASS,\n" +
+            "                    class.id               AS class_id,\n" +
+            "                    class.complex_id       AS mojtama_id,\n" +
+            "                    view_complex.c_title   AS mojtama,\n" +
+            "                    class.assistant_id     AS moavenat_id,\n" +
+            "                    view_assistant.c_title AS moavenat,\n" +
+            "                    class.affairs_id       AS omoor_id,\n" +
+            "                    view_affairs.c_title   AS omoor\n" +
+            "                FROM\n" +
+            "                    tbl_class   class\n" +
+            "                    inner join TBL_CLASS_STUDENT CLASS_std  ON class.ID = CLASS_std.CLASS_ID\n" +
+            "                    inner join TBL_STUDENT std ON  std.id = CLASS_std.STUDENT_ID\n" +
+            "                    LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
+            "                    LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
+            "                    LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
+            "               where 1=1\n" +
+            "                and (\n" +
+            "                        std.POST_GRADE_TITLE like '%مدیر%' --farsi\n" +
+            "                        or\n" +
+            "                        std.POST_GRADE_TITLE like '%مدیر%' --arabic\n" +
+            "                    )\n" +
+            "                and class.C_START_DATE >= :fromDate\n" +
+            "                and class.C_START_DATE <= :toDate\n" +
+            "--                   \n" +
+            "         --      and view_complex.id =@\n" +
+            "        --       and view_affairs.id =@\n" +
+            "        --       and view_assistant.id =@\n" +
+            "                    \n" +
+            "                GROUP BY\n" +
+            "                    class.id,\n" +
+            "                    view_complex.c_title,\n" +
+            "                    class.complex_id,\n" +
+            "                    class.assistant_id,\n" +
+            "                    class.affairs_id,\n" +
+            "                    view_assistant.c_title,\n" +
+            "                    view_affairs.c_title\n" +
+            "             ) s\n" +
+            "        GROUP BY\n" +
+            "            s.COUNT_HAZINEH_PER_CLASS,\n" +
+            "            s.class_id, \n" +
+            "            s.mojtama_id,\n" +
+            "            s.mojtama,\n" +
+            "            moavenat_id,\n" +
+            "            s.moavenat,\n" +
+            "            s.omoor_id,\n" +
+            "            s.omoor\n" +
+            "      \n" +
+            "         )\n" +
+            "        \n" +
+            "        select DISTINCT\n" +
+            "        \n" +
+            "        kol.mojtama_id     as complex_id\n" +
+            "        ,kol.mojtama       as complex\n" +
+            "        ,SUM(cast ( khod.count_hazineh_mojtama /kol.personel_kol_mojtama as decimal(20,2)) ) OVER ( PARTITION BY kol.mojtama_id ) AS  n_base_on_complex\n" +
+            "        \n" +
+            "        , kol.moavenat_id  as assistant_id\n" +
+            "        , kol.moavenat     as assistant\n" +
+            "        ,SUM( cast ( khod.count_hazineh_moavenat /kol.personel_kol_moavenat as decimal(20,2))) OVER ( PARTITION BY  kol.moavenat_id ) AS n_base_on_assistant\n" +
+            "        \n" +
+            "        ,kol.omoor_id     as affairs_id\n" +
+            "        ,kol.omoor        as affairs\n" +
+            "        ,SUM(cast ( khod.count_hazineh_omoor /kol.personel_kol_omoor as decimal(20,2)) ) OVER ( PARTITION BY kol.omoor_id ) AS n_base_on_affairs\n" +
+            "        \n" +
+            "        FROM\n" +
+            "        kol \n" +
+            "        LEFT JOIN  khod\n" +
+            "        on\n" +
+            "         khod.mojtama_id = kol.mojtama_id\n" +
+            "         and khod.moavenat_id = kol.moavenat_id\n" +
+            "         and khod.omoor_id = kol.omoor_id\n" +
+            "        \n" +
+            "        where 1=1\n" +
+            "              and (\n" +
+            "                   kol.mojtama_id is not null\n" +
+            "                   and kol.moavenat_id is not null\n" +
+            "                   and kol.omoor_id is not null\n" +
+            "                  )\n" +
+            "         \n" +
+            "        group by\n" +
+            "        kol.mojtama_id\n" +
+            "        ,kol.mojtama\n" +
+            "        ,khod.count_hazineh_mojtama \n" +
+            "        ,khod.count_hazineh_moavenat \n" +
+            "        ,khod.count_hazineh_omoor \n" +
+            "        ,kol.personel_kol_mojtama\n" +
+            "        ,kol.personel_kol_moavenat\n" +
+            "        ,kol.personel_kol_omoor\n" +
+            "        , kol.moavenat_id\n" +
+            "        , kol.moavenat\n" +
+            "        ,kol.omoor_id\n" +
+            "        ,kol.omoor\n" +
+            ") res\n" +
+            " where 1=1\n" +
+            "     AND (:complexNull = 1 OR complex IN (:complex)) \n" +
+            "     AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
+            "     AND (:affairsNull = 1 OR affairs IN (:affairs)) "  , nativeQuery = true)
+    List<GenericStatisticalIndexReport> perCapitaCostOfTrainingManagers(String fromDate,
+                                                          String toDate,
+                                                          List<Object> complex,
+                                                          int complexNull,
+                                                          List<Object> assistant,
+                                                          int assistantNull,
+                                                          List<Object> affairs,
+                                                          int affairsNull);
 
 
 }
