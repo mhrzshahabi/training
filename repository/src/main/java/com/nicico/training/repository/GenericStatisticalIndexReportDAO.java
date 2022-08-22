@@ -8243,6 +8243,86 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                           int assistantNull,
                                                           List<Object> affairs,
                                                           int affairsNull);
+    @Query(value ="SELECT rowNum AS id,\n" +
+            "       res.*\n" +
+            "FROM(      \n" +
+            "\n" +
+            "SELECT DISTINCT\n" +
+            "              s.mojtama_id  as complex_id,\n" +
+            "              s.mojtama      as complex,\n" +
+            "              count(distinct s.class_id)  over (partition by  s.mojtama)    AS n_base_on_complex,\n" +
+            "              \n" +
+            "              moavenat_id    as assistant_id,\n" +
+            "              s.moavenat     as assistant,\n" +
+            "              count(distinct s.class_id)  over (partition by  s.moavenat)  AS n_base_on_assistant,\n" +
+            "              \n" +
+            "               s.omoor_id     as affairs_id,\n" +
+            "               s.omoor        as affairs, \n" +
+            "              count(distinct s.class_id)  over (partition by s.omoor)      AS n_base_on_affairs\n" +
+            " \n" +
+            "        FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "                    class.id               AS class_id,\n" +
+            "                    class.complex_id       AS mojtama_id,\n" +
+            "                    view_complex.c_title   AS mojtama,\n" +
+            "                    class.assistant_id     AS moavenat_id,\n" +
+            "                    view_assistant.c_title AS moavenat,\n" +
+            "                    class.affairs_id       AS omoor_id,\n" +
+            "                    view_affairs.c_title   AS omoor\n" +
+            "                FROM\n" +
+            "                    tbl_class   class \n" +
+            "                    LEFT JOIN view_complex ON class.complex_id = view_complex.id\n" +
+            "                    LEFT JOIN view_affairs ON class.affairs_id = view_affairs.id\n" +
+            "                    LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
+            "               where 1=1 \n" +
+            "                AND  class.C_TEACHING_TYPE like '%چند رسانه ایی%'\n" +
+            "                and class.C_START_DATE >= :fromDate\n" +
+            "                and class.C_START_DATE <= :toDate\n" +
+            "                   \n" +
+            "         --      and view_complex.id =@\n" +
+            "        --       and view_affairs.id =@\n" +
+            "        --       and view_assistant.id =@\n" +
+            "                    \n" +
+            "                GROUP BY\n" +
+            "                    class.id,\n" +
+            "                    view_complex.c_title,\n" +
+            "                    class.complex_id,\n" +
+            "                    class.assistant_id,\n" +
+            "                    class.affairs_id,\n" +
+            "                    view_assistant.c_title,\n" +
+            "                    view_affairs.c_title\n" +
+            "     \n" +
+            "            ) s\n" +
+            "          where 1=1\n" +
+            "              and (\n" +
+            "                   s.mojtama_id is not null\n" +
+            "                   and s.moavenat_id is not null\n" +
+            "                   and s.omoor_id is not null\n" +
+            "                  )    \n" +
+            "            \n" +
+            "        GROUP BY\n" +
+            "         \n" +
+            "            s.class_id, \n" +
+            "            s.mojtama_id,\n" +
+            "            s.mojtama,\n" +
+            "            moavenat_id,\n" +
+            "            s.moavenat,\n" +
+            "            s.omoor_id,\n" +
+            "            s.omoor\n" +
+            ") res\n" +
+            " where 1=1\n" +
+            "     AND (:complexNull = 1 OR complex IN (:complex)) \n" +
+            "     AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
+            "     AND (:affairsNull = 1 OR affairs IN (:affairs))   " , nativeQuery = true)
+    List<GenericStatisticalIndexReport> theNumberOfEditedNewMultimediaContents(String fromDate,
+                                                          String toDate,
+                                                          List<Object> complex,
+                                                          int complexNull,
+                                                          List<Object> assistant,
+                                                          int assistantNull,
+                                                          List<Object> affairs,
+                                                          int affairsNull);
 
 
 }
