@@ -1038,11 +1038,6 @@ public class ExportController {
                         String.valueOf(Math.round(Float.parseFloat(item.getTraining_grade_to_teacher())))
                 );
             }
-            if (item.getMiangin_javab_dade() != null) {
-                item.setMiangin_javab_dade(
-                        String.valueOf(Math.round(Float.parseFloat(item.getMiangin_javab_dade())))
-                );
-            }
         });
 
         String fileFullPath = "export.xlsx";
@@ -1150,7 +1145,7 @@ public class ExportController {
                     }
                     case 18: {
                         headers[z] = "درصد مشارکت فراگیران در ارزیابی";
-                        columns[z] = "mianginJavabDadeHa";
+                        columns[z] = "percent_reaction";
                         break;
                     }
                 }
@@ -1260,8 +1255,8 @@ public class ExportController {
                         } case "tedadJavabDade": {
                             row.createCell(i).setCellValue(map.getJavab_dade());
                             break;
-                        }  case "mianginJavabDadeHa": {
-                            row.createCell(i).setCellValue(map.getMiangin_javab_dade());
+                        }  case "percent_reaction": {
+                            row.createCell(i).setCellValue(map.getPercent_reaction());
                             break;
                         }
                     }
