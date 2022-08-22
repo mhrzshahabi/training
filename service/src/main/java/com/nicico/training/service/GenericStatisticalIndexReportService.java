@@ -118,6 +118,7 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
             case "report54"-> genericStatisticalIndexReportDAO.theAmountOfVirtualCoursesProducedElectronic(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report55"-> genericStatisticalIndexReportDAO.theNumberOfEditedNewMultimediaContents(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report56"-> genericStatisticalIndexReportDAO.theNumberOfGamifiedContentProduced(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report58"-> genericStatisticalIndexReportDAO.totalEducationCostPerCapita(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
                 default -> null;
         };
 
