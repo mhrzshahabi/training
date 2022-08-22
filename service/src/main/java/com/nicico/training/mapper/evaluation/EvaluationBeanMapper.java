@@ -991,15 +991,22 @@ public abstract class EvaluationBeanMapper {
 
         if (tClass.getScoringMethod().equals("3")) {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
-            exam.setScore(20D);
-
+            double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
+            double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
+            exam.setScore(20D-(classScore+practicalScore));
+            exam.setPracticalScore(practicalScore);
+            exam.setClassScore(classScore);
         } else if (tClass.getScoringMethod().equals("2")) {
             if (null != tClass.getAcceptancelimit())
                 exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             else
                 exam.setMinimumAcceptScore(50D);
 
-            exam.setScore(100D);
+            double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
+            double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
+            exam.setScore(100D-(classScore+practicalScore));
+            exam.setPracticalScore(practicalScore);
+            exam.setClassScore(classScore);
 
         } else {
             exam.setMinimumAcceptScore(0D);
@@ -1052,7 +1059,11 @@ public abstract class EvaluationBeanMapper {
 
         if (tClass.getScoringMethod().equals("3")) {
             examCreateDTO.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
-            examCreateDTO.setScore(20D);
+            double classScore= (  exam.getClassScore() != null) ? Double.parseDouble(exam.getClassScore()) : 0;
+            double practicalScore=(  exam.getPracticalScore() != null) ? Double.parseDouble(exam.getPracticalScore()) : 0;
+            examCreateDTO.setScore(20D-(classScore+practicalScore));
+            examCreateDTO.setPracticalScore(practicalScore);
+            examCreateDTO.setClassScore(classScore);
 
         } else if (tClass.getScoringMethod().equals("2")) {
             if (null != tClass.getAcceptancelimit())
@@ -1060,7 +1071,11 @@ public abstract class EvaluationBeanMapper {
             else
                 examCreateDTO.setMinimumAcceptScore(50D);
 
-            examCreateDTO.setScore(100D);
+            double classScore= (  exam.getClassScore() != null) ? Double.parseDouble(exam.getClassScore()) : 0;
+            double practicalScore=(  exam.getPracticalScore() != null) ? Double.parseDouble(exam.getPracticalScore()) : 0;
+            examCreateDTO.setScore(100D-(classScore+practicalScore));
+            examCreateDTO.setPracticalScore(practicalScore);
+            examCreateDTO.setClassScore(classScore);
 
         } else {
             examCreateDTO.setMinimumAcceptScore(0D);
@@ -1096,13 +1111,31 @@ public abstract class EvaluationBeanMapper {
 
         if (tClass.getScoringMethod().equals("3")) {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
-            exam.setScore(20D);
+            if (type.equalsIgnoreCase("preTest")){
+                exam.setScore(20D);
+            }else {
+                double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
+                double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
+                exam.setScore(20D-(classScore+practicalScore));
+                exam.setPracticalScore(practicalScore);
+                exam.setClassScore(classScore);
+            }
         } else if (tClass.getScoringMethod().equals("2")) {
             if (null != tClass.getAcceptancelimit())
                 exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             else
                 exam.setMinimumAcceptScore(50D);
-            exam.setScore(100D);
+
+            if (type.equalsIgnoreCase("preTest")){
+                exam.setScore(100D);
+
+            }else {
+                double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
+                double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
+                exam.setScore(100D-(classScore+practicalScore));
+                exam.setPracticalScore(practicalScore);
+                exam.setClassScore(classScore);
+            }
         } else {
             exam.setMinimumAcceptScore(0D);
             exam.setScore(0D);

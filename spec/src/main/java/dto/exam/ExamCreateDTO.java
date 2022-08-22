@@ -19,6 +19,8 @@ public class ExamCreateDTO {
     private Long resultDate;
     private Integer questionCount;
     private Double score;
+    private Double classScore;
+    private Double practicalScore;
     private Double minimumAcceptScore;
     private int duration;
     private ExamStatus status;
