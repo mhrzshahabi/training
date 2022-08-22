@@ -125,4 +125,7 @@ public class ViewLearningEvaluationCourseReport implements Serializable {
     @Column(name = "teaching_method")
     private String teachingMethod;
 
+    @Column(name = "percent_reaction")
+    private String percent_reaction;
+
 }
