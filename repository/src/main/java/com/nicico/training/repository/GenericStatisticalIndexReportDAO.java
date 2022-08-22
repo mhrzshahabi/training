@@ -8029,4 +8029,48 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                           List<Object> affairs,
                                                           int affairsNull);
 
+    @Query(value =  "SELECT rowNum AS id,\n" +
+            "       res.*\n" +
+            "FROM( \n" +
+            "\n" +
+            "         select  DISTINCT \n" +
+            "        round(\n" +
+            "        (\n" +
+            "          \n" +
+            "            SELECT distinct\n" +
+            "                    COUNT(distinct course.id)  as goal_doreh\n" +
+            "                  \n" +
+            "                FROM   TBL_COURSE course\n" +
+            "                       inner join TBL_COURSE_GOAL course_goal\n" +
+            "                           on course.id = course_goal.F_COURSE_ID\n" +
+            "                WHERE 1=1\n" +
+            "                    and E_DELETED is null\n" +
+            "                    and  course.d_created_date >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                    and  course.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "      \n" +
+            "         ) /\n" +
+            "         (\n" +
+            "         \n" +
+            "             SELECT distinct\n" +
+            "                    COUNT(distinct course.id)  as kol_doreh\n" +
+            "                  \n" +
+            "                FROM   TBL_COURSE course\n" +
+            "                   \n" +
+            "                WHERE 1=1\n" +
+            "                    and E_DELETED is null\n" +
+            "                    and  course.d_created_date >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                    and  course.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "      \n" +
+            "         ) \n" +
+            "        , 2) \n" +
+            "         AS n_base_on_complex\n" +
+            "        \n" +
+            "        FROM\n" +
+            "        TBL_COURSE\n" +
+            "\n" +
+            ") res ", nativeQuery = true)
+    List<Object> numberOfStandardDesignedCourses(String fromDate,
+                                                 String toDate);
+
+
 }
