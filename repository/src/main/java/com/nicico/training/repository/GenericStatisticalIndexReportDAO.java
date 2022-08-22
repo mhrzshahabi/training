@@ -7759,8 +7759,149 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                        int assistantNull,
                                                        List<Object> affairs,
                                                        int affairsNull);
-
-
+    @Query(value ="with percent_b as (\n" +
+            "\n" +
+            "SELECT\n" +
+            "    class_id AS class_id,\n" +
+            "    CASE\n" +
+            "        WHEN all_behavioral_eval = 0 THEN\n" +
+            "            0\n" +
+            "        ELSE\n" +
+            "            CAST((filled_behavior_eval / all_behavioral_eval) * 100 AS DECIMAL(6, 2))\n" +
+            "    END AS percent_behavior\n" +
+            "FROM\n" +
+            "    (\n" +
+            "        SELECT DISTINCT\n" +
+            "            class.id AS class_id,\n" +
+            "              (\n" +
+            "                SELECT\n" +
+            "                    COUNT(DISTINCT ex.id)\n" +
+            "                    from\n" +
+            "                tbl_class  cx        \n" +
+            "                  inner join TBL_EVALUATION   ex\n" +
+            "                   on ex.F_CLASS_ID = cx.id \n" +
+            "                    outer apply ( select id as id from TBL_PARAMETER_VALUE v where v.C_CODE = 'Behavioral' ) raftari\n" +
+            "                where 1=1\n" +
+            "                and class.id =  cx.id\n" +
+            "                and ex.F_EVALUATION_LEVEL_ID = raftari.id --   156\n" +
+            "                and      ex.B_STATUS= 1 \n" +
+            "    \n" +
+            "            ) AS filled_behavior_eval,\n" +
+            "            (\n" +
+            "                 SELECT\n" +
+            "                    COUNT(DISTINCT ex.id)\n" +
+            "                    from\n" +
+            "                tbl_class  cx        \n" +
+            "                  inner join TBL_EVALUATION   ex\n" +
+            "                   on ex.F_CLASS_ID = cx.id \n" +
+            "                    outer apply ( select id as id from TBL_PARAMETER_VALUE v where v.C_CODE = 'Behavioral' ) raftari\n" +
+            "                where 1=1\n" +
+            "                and class.id =  cx.id\n" +
+            "                and ex.F_EVALUATION_LEVEL_ID = raftari.id --   156\n" +
+            "                    \n" +
+            "            ) AS all_behavioral_eval\n" +
+            "        FROM\n" +
+            "               tbl_class  class        \n" +
+            "            inner join TBL_EVALUATION   e\n" +
+            "              on e.F_CLASS_ID = class.id\n" +
+            "              outer apply ( select id as id from TBL_PARAMETER_VALUE v where v.C_CODE = 'Behavioral' ) raftari_id\n" +
+            "              \n" +
+            "              where 1=1\n" +
+            "                and e.F_EVALUATION_LEVEL_ID = raftari_id.id --   156\n" +
+            "\n" +
+            "    )\n" +
+            "  \n" +
+            "\n" +
+            "                 outer apply ( select C_VALUE as C_VALUE from TBL_PARAMETER_VALUE v where v.C_CODE = 'minQusEB' ) hadenesab\n" +
+            "     \n" +
+            "   where    CAST((filled_behavior_eval / all_behavioral_eval) * 100 AS DECIMAL(6, 2)) >= to_number(hadenesab.C_VALUE)\n" +
+            ")\n" +
+            "\n" +
+            "\n" +
+            "SELECT rowNum AS id,\n" +
+            "       res.*\n" +
+            "FROM(     \n" +
+            "\n" +
+            "SELECT DISTINCT\n" +
+            "              s.mojtama_id  as complex_id,\n" +
+            "              s.mojtama      as complex,\n" +
+            "              sum( cast(( sum( s.count_class_mojtama) /(select count(c.id) from   tbl_class c where c.C_STATUS not in (1,4) ) )*100 as decimal(6,2)))  over (partition by  s.mojtama_id)    AS n_base_on_complex,\n" +
+            "              \n" +
+            "              s.moavenat_id    as assistant_id,\n" +
+            "              s.moavenat     as assistant,\n" +
+            "              sum( cast(( sum( s.count_class_moavenat) /(select count(c.id) from   tbl_class c where c.C_STATUS not in (1,4) ) )*100 as decimal(6,2)))  over (partition by  s.moavenat_id)  AS n_base_on_assistant,\n" +
+            "              \n" +
+            "               s.omoor_id     as affairs_id,\n" +
+            "               s.omoor        as affairs, \n" +
+            "              sum( cast(( sum( s.count_class_omoor) /(select count(c.id) from   tbl_class c where c.C_STATUS not in (1,4) ) )*100 as decimal(6,2)))  over (partition by s.omoor_id)      AS n_base_on_affairs\n" +
+            " \n" +
+            "        FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "              \n" +
+            "                    count(distinct class.id)  over (partition by   class.complex_id )      AS count_class_mojtama,\n" +
+            "                    count(distinct class.id)  over (partition by   class.assistant_id )    AS count_class_moavenat,\n" +
+            "                    count(distinct class.id)  over (partition by   class.affairs_id )      AS count_class_omoor,\n" +
+            "                    class.complex_id       AS mojtama_id,\n" +
+            "                    view_complex.c_title   AS mojtama,\n" +
+            "                    class.assistant_id     AS moavenat_id,\n" +
+            "                    view_assistant.c_title AS moavenat,\n" +
+            "                    class.affairs_id       AS omoor_id,\n" +
+            "                    view_affairs.c_title   AS omoor\n" +
+            "                FROM\n" +
+            "                    tbl_class   class \n" +
+            "                    INNER JOIN  percent_b    ON percent_b.class_id = class.id\n" +
+            "                    LEFT JOIN view_complex   ON class.complex_id = view_complex.id\n" +
+            "                    LEFT JOIN view_affairs   ON class.affairs_id = view_affairs.id\n" +
+            "                    LEFT JOIN view_assistant ON class.assistant_id = view_assistant.id\n" +
+            "               where 1=1 \n" +
+            "                AND   class.C_EVALUATION = '3' --raftari\n" +
+            "    \n" +
+            "                and class.C_START_DATE >= :fromDate\n" +
+            "                and class.C_START_DATE <= :toDate\n" +
+            "                   \n" +
+            "         --      and view_complex.id =@\n" +
+            "        --       and view_affairs.id =@\n" +
+            "        --       and view_assistant.id =@\n" +
+            "                    \n" +
+            "                GROUP BY\n" +
+            "  \n" +
+            "                    class.id,\n" +
+            "                    view_complex.c_title,\n" +
+            "                    class.complex_id,\n" +
+            "                    class.assistant_id,\n" +
+            "                    class.affairs_id,\n" +
+            "                    view_assistant.c_title,\n" +
+            "                    view_affairs.c_title\n" +
+            "     \n" +
+            "            ) s\n" +
+            "          where 1=1\n" +
+            "              and (\n" +
+            "                   s.mojtama_id is not null\n" +
+            "                   and s.moavenat_id is not null\n" +
+            "                   and s.omoor_id is not null\n" +
+            "                  )    \n" +
+            "            \n" +
+            "        GROUP BY\n" +
+            "            s.mojtama_id,\n" +
+            "            s.mojtama,\n" +
+            "            moavenat_id,\n" +
+            "            s.moavenat,\n" +
+            "            s.omoor_id,\n" +
+            "            s.omoor\n" +
+            ") res\n" +
+            " where 1=1\n" +
+            "     AND (:complexNull = 1 OR complex IN (:complex)) \n" +
+            "     AND (:assistantNull = 1 OR assistant IN (:assistant)) \n" +
+            "     AND (:affairsNull = 1 OR affairs IN (:affairs))           " , nativeQuery = true)
+    List<GenericStatisticalIndexReport> evaluationCoverageRateBehaviorLevel(String fromDate,
+                                                          String toDate,
+                                                          List<Object> complex,
+                                                          int complexNull,
+                                                          List<Object> assistant,
+                                                          int assistantNull,
+                                                          List<Object> affairs,
+                                                          int affairsNull);
 
 
 }
