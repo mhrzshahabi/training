@@ -7759,8 +7759,46 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                        int assistantNull,
                                                        List<Object> affairs,
                                                        int affairsNull);
-
-
-
+    @Query(value =  "SELECT rowNum AS id,\n" +
+            "       res.*\n" +
+            "FROM( \n" +
+            "        select DISTINCT\n" +
+            "         round(\n" +
+            "                (\n" +
+            "                     (   select  count(distinct t_post.id) as count_has_need\n" +
+            "                        from \n" +
+            "                             TBL_TRAINING_POST t_post \n" +
+            "                             inner join TBL_NEEDS_ASSESSMENT need    \n" +
+            "                             on t_post.id = need.F_OBJECT\n" +
+            "                        where  1=1 \n" +
+            "                         and t_post.E_DELETED is null\n" +
+            "                            and  need.d_created_date >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                            and  need.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                            and (  t_post.C_TITLE_FA    like  '%رئیس%'\n" +
+            "                                  or t_post.C_TITLE_FA  like  '%مجری%'\n" +
+            "                                  or t_post.C_TITLE_FA  like  ' %مجریان%'\n" +
+            "                                )\n" +
+            "                     )/   \n" +
+            "                     (   select count(distinct t_post.id) as count_kol  \n" +
+            "                         \n" +
+            "                        from \n" +
+            "                           TBL_TRAINING_POST t_post\n" +
+            "                        where  1=1 \n" +
+            "                            and t_post.E_DELETED is null\n" +
+            "                            and (  t_post.C_TITLE_FA    like  '%رئیس%'\n" +
+            "                                  or t_post.C_TITLE_FA  like  '%مجری%'\n" +
+            "                                  or t_post.C_TITLE_FA  like  ' %مجریان%'\n" +
+            "                                )\n" +
+            "                       )\n" +
+            "                   )*100\n" +
+            "          , 2)      \n" +
+            "          AS n_base_on_complex     \n" +
+            "               \n" +
+            "from\n" +
+            "    TBL_TRAINING_POST\n" +
+            ") res"
+, nativeQuery = true)
+    List<Object> proportionOfkeyOccupationsWithQualifications(String fromDate,
+                                    String toDate);
 
 }
