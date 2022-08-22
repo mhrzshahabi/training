@@ -88,5 +88,7 @@ public class ViewStatisticsUnitReportDTO {
         private Boolean evaluationTeacherPass;
         private Boolean evaluationTeacherStatus;
         private String teachingMethodTitle;
+        private String answeredReactionEvalPercent;
+        private String answeredBehavioralEvalPercent;
     }
 }
