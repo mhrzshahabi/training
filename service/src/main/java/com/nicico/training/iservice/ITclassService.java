@@ -8,6 +8,7 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.model.TClassAudit;
 import com.nicico.training.model.Tclass;
+import dto.ScoringClassDto;
 import request.evaluation.StudentEvaluationAnswerDto;
 import response.BaseResponse;
 import response.evaluation.dto.EvalAverageResult;
@@ -224,4 +225,6 @@ public interface ITclassService {
     String getClassTeachingMethod(Long classId);
 
     String getClassTargetPopulation(Long classId);
+
+    boolean checkClassScoring(ScoringClassDto scoringClassDto);
 }

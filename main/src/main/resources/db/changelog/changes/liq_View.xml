@@ -15487,25 +15487,25 @@ GROUP BY
         </createView>
     </changeSet>
 
-    <changeSet author="Montazeri" id="1660988415403">
+    <changeSet author="Montazeri" id="1661057395190">
         <createView viewName="VIEW_COURSES_EVALUATION_REPORT" replaceIfExists="true">
             <![CDATA[
                 SELECT
                     ROWNUM AS id,
-                    cl.c_code             AS class_code,
-                    cl.c_status           AS class_status,
-                    cl.c_start_date       AS class_start_date,
-                    cl.c_end_date         AS class_end_date,
-                    co.c_code             AS course_code,
-                    co.c_title_fa         AS course_titlefa,
-                    cat.c_title_fa        AS category_titlefa,
-                    sucat.c_title_fa      AS sub_category_titlefa,
-                    sucat.id              AS sub_category_id,
-                    cs.status_reaction    AS class_student_status_reaction,
-                    ea.c_reaction_grade   AS evaluation_analysis_reaction_grade,
-                    ea.b_reaction_pass    AS evaluation_analysis_reaction_pass,
-                    ea.c_teacher_grade    AS evaluation_analysis_teacher_grade,
-                    ea.b_teacher_pass     AS evaluation_analysis_teacher_pass,
+                    cl.c_code            AS class_code,
+                    cl.c_status          AS class_status,
+                    cl.c_start_date      AS class_start_date,
+                    cl.c_end_date        AS class_end_date,
+                    co.c_code            AS course_code,
+                    co.c_title_fa        AS course_titlefa,
+                    cat.c_title_fa       AS category_titlefa,
+                    sucat.c_title_fa     AS sub_category_titlefa,
+                    sucat.id             AS sub_category_id,
+                    cs.status_reaction   AS class_student_status_reaction,
+                    CAST(ea.c_reaction_grade AS DECIMAL(6, 2)) AS evaluation_analysis_reaction_grade,
+                    ea.b_reaction_pass   AS evaluation_analysis_reaction_pass,
+                    CAST(ea.c_teacher_grade AS DECIMAL(6, 2)) AS evaluation_analysis_teacher_grade,
+                    ea.b_teacher_pass    AS evaluation_analysis_teacher_pass,
                     reactionpercent.percent_reaction
                 FROM
                     tbl_class                 cl
@@ -15577,6 +15577,1076 @@ GROUP BY
                             )
                     ) reactionpercent ON cl.id = reactionpercent.class_id
             ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="namdari" id="1661077851000-01">
+        <createView viewName="VIEW_CALENDAR_EDUCATIONAL_CALENDAR" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
+    tbl_class.id,
+    tbl_class.c_code                   AS classcode,
+    tbl_course.c_code                  AS coursecode,
+    tbl_class.c_title_class            AS onvanclass,
+    (
+        CASE
+            WHEN tbl_class.c_teaching_brand = 1 THEN
+                'تمام وقت'
+            WHEN tbl_class.c_teaching_brand = 2 THEN
+                'نیمه وقت'
+            WHEN tbl_class.c_teaching_brand = 3 THEN
+                'پاره وقت'
+            ELSE
+                NULL
+        END
+    )                                  AS nahvebargozari,
+    tbl_class.c_student_cost
+    || ' '
+    || tbl_parameter_value.c_title     AS hazinehdore,
+    tbl_class.c_start_date
+    || ' لغایت '
+    || tbl_class.c_end_date            AS tarikhbargozari,
+    tbl_institute1.c_title_fa          mahalbargozari,
+    tbl_course.category_id,
+    tbl_category.c_title_fa            AS categorytitle,
+    (
+        CASE
+            WHEN tbl_class.c_reason = 1 THEN
+                'نیازسنجی'
+            WHEN tbl_class.c_reason = 2 THEN
+                'درخواست واحد'
+            WHEN tbl_class.c_reason = 3 THEN
+                'نیاز موردی'
+            ELSE
+                NULL
+        END
+    )                                  AS darkhastamouzeshi,
+    tbl_class.n_h_duration || ' ساعت ' AS modatdore,
+    tbl_class.c_start_date,
+    tbl_class.c_end_date,
+    'گروه ' || tbl_class.n_group       AS n_group,
+    CASE
+        WHEN tbl_class.c_status = 1 THEN
+            'برنامه ریزی'
+        WHEN tbl_class.c_status = 2 THEN
+            'در حال اجرا'
+        WHEN tbl_class.c_status = 3 THEN
+            'پایان یافته'
+        WHEN tbl_class.c_status = 4 THEN
+            'لغو شده'
+        WHEN tbl_class.c_status = 5 THEN
+            'اختتام'
+    END                                AS class_status,
+    tbl_class.calendar_id
+FROM
+    tbl_class
+    LEFT JOIN tbl_institute ON tbl_institute.id = tbl_class.f_institute_organizer
+    INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course
+    LEFT JOIN tbl_institute tbl_institute1 ON tbl_institute1.id = tbl_class.f_institute
+    LEFT JOIN tbl_class_training_place ON tbl_class.id = tbl_class_training_place.f_class_id
+    LEFT JOIN tbl_training_place ON tbl_training_place.id = tbl_class_training_place.f_training_place_id
+    INNER JOIN tbl_category ON tbl_category.id = tbl_course.category_id
+    LEFT JOIN tbl_parameter_value ON tbl_parameter_value.id = tbl_class.f_student_cost_currency
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="1661077851000-02">
+        <createView viewName="VIEW_CALENDAR_SESSIONS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    view_calendar_educational_calendar.id,
+    tbl_session.c_day_name,
+    tbl_session.c_session_date,
+    tbl_session.c_session_start_hour,
+    tbl_session.c_session_end_hour,
+    view_calendar_educational_calendar.calendar_id,
+    view_calendar_educational_calendar.classcode
+FROM
+         view_calendar_educational_calendar
+    INNER JOIN tbl_session ON tbl_session.f_class_id = view_calendar_educational_calendar.id
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="1661077851000-03">
+        <createView viewName="VIEW_CALENDAR_DETAIL" replaceIfExists="true">
+            <![CDATA[
+ SELECT
+    id,
+    coursecode,
+    noedore,
+    nahvebargozari,
+    hazinehdore,
+    tarikhbargozari,
+    mahalbargozari,
+    categorytitle,
+    darkhastamouzeshi,
+    modatdore,
+    ahdafasli,
+    pishniaz,
+    sarfaslha,
+    calendar_id,
+    c_code
+FROM
+    (
+        SELECT
+            tbl_class.id,
+            tbl_course.c_code                  AS coursecode,
+            (
+                CASE
+                    WHEN tbl_course.e_run_type = 1  THEN
+                        'داخلی'
+                    WHEN tbl_course.e_run_type = 2  THEN
+                        'اعزام'
+                    WHEN tbl_course.e_run_type = 3  THEN
+                        'سمينار داخلي'
+                    WHEN tbl_course.e_run_type = 4  THEN
+                        'سمینار اعزام'
+                    WHEN tbl_course.e_run_type = 5  THEN
+                        'حین کار'
+                    WHEN tbl_course.e_run_type = 6  THEN
+                        'خارجی'
+                    WHEN tbl_course.e_run_type = 7  THEN
+                        'سمینار خارجی'
+                    WHEN tbl_course.e_run_type = 8  THEN
+                        'مجازی'
+                    WHEN tbl_course.e_run_type = 9  THEN
+                        'بازآموزی'
+                    WHEN tbl_course.e_run_type = 10 THEN
+                        'جعبه ابزار'
+                    ELSE
+                        NULL
+                END
+            )                                  AS noedore,
+            (
+                CASE
+                    WHEN tbl_class.c_teaching_brand = 1 THEN
+                        'تمام وقت'
+                    WHEN tbl_class.c_teaching_brand = 2 THEN
+                        'نیمه وقت'
+                    WHEN tbl_class.c_teaching_brand = 3 THEN
+                        'پاره وقت'
+                    ELSE
+                        NULL
+                END
+            )                                  AS nahvebargozari,
+            tbl_class.c_student_cost
+            || ' '
+            || tbl_parameter_value.c_title     AS hazinehdore,
+            tbl_class.c_start_date
+            || ' لغایت '
+            || tbl_class.c_end_date            AS tarikhbargozari,
+            tbl_institute1.c_title_fa          mahalbargozari,
+            tbl_category.c_title_fa            AS categorytitle,
+            (
+                CASE
+                    WHEN tbl_class.c_reason = 1 THEN
+                        'نیازسنجی'
+                    WHEN tbl_class.c_reason = 2 THEN
+                        'درخواست واحد'
+                    WHEN tbl_class.c_reason = 3 THEN
+                        'نیاز موردی'
+                    ELSE
+                        NULL
+                END
+            )                                  AS darkhastamouzeshi,
+            tbl_class.n_h_duration || ' ساعت ' AS modatdore,
+            tbl_skill.c_title_fa               ahdafasli,
+            tbl_course1.c_title_fa             AS pishniaz,
+            tbl_syllabus.c_title_fa            AS sarfaslha,
+            tbl_class.calendar_id,
+            tbl_class.c_code
+        FROM
+            tbl_class
+            LEFT JOIN tbl_institute ON tbl_institute.id = tbl_class.f_institute_organizer
+            INNER JOIN tbl_course ON tbl_course.id = tbl_class.f_course
+            LEFT JOIN tbl_institute tbl_institute1 ON tbl_institute1.id = tbl_class.f_institute
+            LEFT JOIN tbl_class_training_place ON tbl_class.id = tbl_class_training_place.f_class_id
+            LEFT JOIN tbl_training_place ON tbl_training_place.id = tbl_class_training_place.f_training_place_id
+            INNER JOIN tbl_category ON tbl_category.id = tbl_course.category_id
+            LEFT JOIN tbl_parameter_value ON tbl_parameter_value.id = tbl_class.f_student_cost_currency
+            LEFT JOIN tbl_skill ON tbl_course.id = tbl_skill.f_main_objective_course
+            LEFT JOIN tbl_pre_course ON tbl_course.id = tbl_pre_course.f_course_id
+            LEFT JOIN tbl_course    tbl_course1 ON tbl_course1.id = tbl_pre_course.f_pre_course_id
+            LEFT JOIN tbl_course_goal ON tbl_course_goal.f_course_id = tbl_course.id
+            LEFT JOIN tbl_syllabus ON tbl_syllabus.f_goal = tbl_course_goal.f_goal_id
+    )
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="1661077851000-04">
+        <createView viewName="VIEW_CALENDAR_HEADLINE" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    id,
+    LISTAGG(sarfaslha, ';' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+    ORDER BY
+        sarfaslha
+    ) AS sarfaslha,
+    calendar_id,c_code
+FROM
+    (
+        SELECT DISTINCT
+            view_calendar_detail.id,
+            view_calendar_detail.sarfaslha,
+            view_calendar_detail.calendar_id,
+                        view_calendar_detail.c_code
+
+        FROM
+            view_calendar_detail
+    )
+GROUP BY
+    id,
+    calendar_id,c_code
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="namdari" id="1661077851000-05">
+        <createView viewName="VIEW_CALENDAR_PREREQUISITE" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    id,
+    LISTAGG(pishniaz, ';' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+    ORDER BY
+        pishniaz
+    ) AS pishniaz,
+    calendar_id,c_code
+FROM
+    (
+        SELECT DISTINCT
+            view_calendar_detail.id,
+            view_calendar_detail.pishniaz,
+            view_calendar_detail.calendar_id,
+                        view_calendar_detail.c_code
+
+        FROM
+            view_calendar_detail
+    )
+GROUP BY
+    id,
+    calendar_id,c_code
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="1661077851000-06">
+        <createView viewName="VIEW_CALENDAR_OF_MAIN_GOALS" replaceIfExists="true">
+            <![CDATA[
+SELECT
+    id,
+    LISTAGG(ahdafasli, ';' ON OVERFLOW TRUNCATE) WITHIN GROUP(
+    ORDER BY
+        ahdafasli
+    ) AS ahdafasli,
+    calendar_id,c_code
+FROM
+    (
+        SELECT DISTINCT
+            view_calendar_detail.id,
+            view_calendar_detail.ahdafasli,
+            view_calendar_detail.calendar_id,
+                        view_calendar_detail.c_code
+        FROM
+            view_calendar_detail
+    )
+GROUP BY
+    id,
+    calendar_id,c_code
+            ]]>
+        </createView>
+    </changeSet>
+    <changeSet author="namdari" id="1661077851000-07">
+        <createView viewName="VIEW_CALENDAR_FINAL_DETAIL" replaceIfExists="true">
+            <![CDATA[
+SELECT DISTINCT
+    view_calendar_detail.id,
+    view_calendar_detail.coursecode,
+    view_calendar_detail.noedore,
+    view_calendar_detail.nahvebargozari,
+    view_calendar_detail.hazinehdore,
+    view_calendar_detail.tarikhbargozari,
+    view_calendar_detail.mahalbargozari,
+    view_calendar_detail.categorytitle,
+    view_calendar_detail.darkhastamouzeshi,
+    view_calendar_detail.modatdore,
+    view_calendar_of_main_goals.ahdafasli,
+    view_calendar_prerequisite.pishniaz,
+    view_calendar_headline.sarfaslha,
+    view_calendar_detail.calendar_id,
+    view_calendar_detail.c_code
+FROM
+         view_calendar_detail
+    INNER JOIN view_calendar_of_main_goals ON view_calendar_of_main_goals.id = view_calendar_detail.id
+    INNER JOIN view_calendar_prerequisite ON view_calendar_prerequisite.id = view_calendar_detail.id
+    INNER JOIN view_calendar_headline ON view_calendar_headline.id = view_calendar_detail.id
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="Montazeri" id="1661139651754-782">
+        <createView viewName="VIEW_REACTION_EVALUATION_FORMULA_REPORT_FOR_COURSE" replaceIfExists="true">
+            <![CDATA[
+                SELECT
+                    ROWNUM AS id,
+                    n."CLASS_CODE",
+                    n."CLASS_STATUS",
+                    n."CLASS_END_DATE",
+                    n."CLASS_START_DATE",
+                    n."COURSE_CODE",
+                    n."COURSE_TITLEFA",
+                    n."SUB_CATEGORY_TITLEFA",
+                    n."SUB_CATEGORY_ID",
+                    n."CATEGORY_TITLEFA",
+                    n."CLASS_ID",
+                    n."COURSE_ID",
+                    n."COMPLEX",
+                    n."IS_PERSONNEL",
+                    n."TEACHER_NATIONAL_CODE",
+                    n."TEACHER",
+                    n."FINAL_TEACHER",
+                    n."REACTIONE_EVALUATION_GRADE",
+                    n."TEACHER_GRADE_TO_CLASS",
+                    n."TRAINING_GRADE_TO_TEACHER",
+                    n."JAVAB_DADE",
+                    n."TOTAL_STD",
+                    n."PERCENT_REACTION"
+                    --n."MIANGIN_JAVAB_DADE"
+                FROM
+                    (
+                        SELECT DISTINCT
+                            f.class_code,
+                            f.class_status,
+                            f.class_end_date,
+                            f.class_start_date,
+                            f.course_code,
+                            f.course_titlefa,
+                            f.sub_category_titlefa,
+                            f.sub_category_id,
+                            f.category_titlefa,
+                            f.class_id,
+                            f.course_id,
+                            f.complex,
+                            f.is_personnel,
+                            f.teacher_national_code,
+                            f.teacher,
+                            f.final_teacher,
+                            f.reactione_evaluation_grade,
+                            f.teacher_grade_to_class,
+                            f.training_grade_to_teacher,
+                            f.javab_dade,
+                            f.total_std,
+                            f.percent_reaction
+                --            f.miangin_javab_dade
+                        FROM
+                            (
+                                SELECT
+                                    ROWNUM AS id,
+                                    z.class_code                  AS class_code,
+                                    CASE
+                                        WHEN z.status = 1 THEN
+                                            ' برنامه ریزی'
+                                        WHEN z.status = 2 THEN
+                                            ' در حال اجرا'
+                                        WHEN z.status = 3 THEN
+                                            ' پایان یافته'
+                                        WHEN z.status = 4 THEN
+                                            ' لغو شده'
+                                        WHEN z.status = 5 THEN
+                                            'اختتام'
+                                    END AS class_status,
+                                    z.class_start_date            AS class_start_date,
+                                    z.class_end_date              AS class_end_date,
+                                    z.course_code                 AS course_code,
+                                    z.course_titlefa              AS course_titlefa,
+                                    z.category_titlefa            AS category_titlefa,
+                                    z.sub_category_titlefa        AS sub_category_titlefa,
+                                    z.sub_category_id             AS sub_category_id,
+                                    z.class_id                    AS class_id,
+                                    z.course_id                   AS course_id,
+                                    z.class_complex               AS complex,
+                                    z.is_personnel                AS is_personnel,
+                                    z.teacher_national_code       AS teacher_national_code,
+                                    z.teacher                     AS teacher,
+                                    concat(concat(tbl_student.first_name, ' '), tbl_student.last_name) AS student,
+                                    tbl_student.emp_no            AS student_emp_number,
+                                    tbl_student.personnel_no      AS student_per_number,
+                                    tbl_department.c_hoze_title   AS student_hoze,
+                                    tbl_department.c_omor_title   AS student_omor,
+                                    tbl_post.c_code               AS student_post_code,
+                                    tbl_post.c_title_fa           AS student_post_title,
+                                    CAST(tbl_evaluation_analysis.c_teacher_grade AS DECIMAL(10, 2)) AS final_teacher,
+                                    CAST(tbl_evaluation_analysis.c_reaction_grade AS DECIMAL(10, 2)) AS reactione_evaluation_grade,
+                                    modares.miangin               AS teacher_grade_to_class,
+                                    mianginmasol.miangin          AS training_grade_to_teacher,
+                                    clsstu.total_std              AS total_std,
+                                    CASE
+                                        WHEN darsadjavab.javabdade IS NULL THEN
+                                            0
+                                        ELSE
+                                            darsadjavab.javabdade
+                                    END AS javab_dade,
+                                    percent_reaction
+                                FROM
+                                    (
+                                        SELECT
+                                            class_id,
+                                            student_id,
+                                            total_std
+                                        FROM
+                                            (
+                                                SELECT
+                                                    tbl_class_student.class_id,
+                                                    tbl_class_student.student_id,
+                                                    COUNT(*) OVER(
+                                                        PARTITION BY tbl_class_student.class_id
+                                                    ) total_std
+                                                FROM
+                                                    tbl_class_student
+                                            )
+                                        WHERE
+                                            total_std > 0
+                                    ) clsstu
+                                    INNER JOIN (
+                                        SELECT
+                                            ROWNUM AS id,
+                                            tclass.id                           AS class_id,
+                                            tclass.c_code                       AS class_code,
+                                            tclass.c_status                     AS status,
+                                            tclass.c_start_date                 AS class_start_date,
+                                            tclass.c_end_date                   AS class_end_date,
+                                            course.id                           AS course_id,
+                                            course.c_code                       AS course_code,
+                                            course.c_title_fa                   AS course_titlefa,
+                                            cat.c_title_fa                      AS category_titlefa,
+                                            sucat.c_title_fa                    AS sub_category_titlefa,
+                                            sucat.id                            AS sub_category_id,
+                                            concat(concat(tbl_personal_info.c_first_name_fa, ' '), tbl_personal_info.c_last_name_fa) AS teacher,
+                                            tbl_personal_info.c_first_name_fa   AS teacher_name,
+                                            tbl_personal_info.c_last_name_fa    AS teacher_family,
+                                            tbl_personal_info.c_national_code   AS teacher_national_code,
+                                            view_complex.c_title                AS class_complex,
+                                            CASE
+                                                WHEN tbl_teacher.b_personnel = 0 THEN
+                                                    'برون سازمانی'
+                                                WHEN tbl_teacher.b_personnel = 1 THEN
+                                                    'درون سازمانی'
+                                            END AS is_personnel
+                                        FROM
+                                            tbl_class          tclass
+                                            INNER JOIN tbl_course         course ON tclass.f_course = course.id
+                                            INNER JOIN tbl_category       cat ON cat.id = course.category_id
+                                            INNER JOIN tbl_sub_category   sucat ON sucat.id = course.subcategory_id
+                                            INNER JOIN tbl_teacher ON tclass.f_teacher = tbl_teacher.id
+                                            INNER JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+                                            LEFT JOIN view_complex ON tclass.complex_id = view_complex.id
+                                        WHERE
+                                            tclass.c_status != '1'
+                                    ) z ON clsstu.class_id = z.class_id
+                                    LEFT JOIN tbl_student ON clsstu.student_id = tbl_student.id
+                                    LEFT JOIN tbl_department ON tbl_student.f_department_id = tbl_department.id
+                                    LEFT JOIN tbl_post ON tbl_student.f_post_id = tbl_post.id
+                                    LEFT JOIN tbl_evaluation_analysis ON clsstu.class_id = tbl_evaluation_analysis.f_tclass
+                                    LEFT JOIN tbl_evaluation   f ON z.class_id = f.f_class_id
+                                                                  AND f.f_evaluator_type_id = '187'
+                                    LEFT JOIN (
+                                        SELECT
+                                            CAST(SUM(rate * w) / SUM(w) AS DECIMAL(8, 2)) AS miangin,
+                                            idmodares
+                                        FROM
+                                            (
+                                                SELECT
+                                                    tbl_questionnaire_question.f_weight     AS w,
+                                                    tbl_parameter_value.c_value             AS rate,
+                                                    tbl_evaluation_answer.f_evaluation_id   AS idmodares
+                                                FROM
+                                                    tbl_evaluation_answer
+                                                    INNER JOIN tbl_questionnaire_question ON tbl_evaluation_answer.f_evaluation_question_id = tbl_questionnaire_question
+                                                    .id
+                                                    INNER JOIN tbl_parameter_value ON tbl_evaluation_answer.f_answer_id = tbl_parameter_value.id
+                                            )
+                                        GROUP BY
+                                            idmodares
+                                    ) modares ON f.id = modares.idmodares
+                                    LEFT JOIN tbl_evaluation   masol ON z.class_id = masol.f_class_id
+                                                                      AND masol.f_evaluator_type_id = '454'
+                                    LEFT JOIN (
+                                        SELECT
+                                            CAST(SUM(rate * w) / SUM(w) AS DECIMAL(8, 2)) AS miangin,
+                                            idmodares
+                                        FROM
+                                            (
+                                                SELECT
+                                                    tbl_questionnaire_question.f_weight     AS w,
+                                                    tbl_parameter_value.c_value             AS rate,
+                                                    tbl_evaluation_answer.f_evaluation_id   AS idmodares
+                                                FROM
+                                                    tbl_evaluation_answer
+                                                    INNER JOIN tbl_questionnaire_question ON tbl_evaluation_answer.f_evaluation_question_id = tbl_questionnaire_question
+                                                    .id
+                                                    INNER JOIN tbl_parameter_value ON tbl_evaluation_answer.f_answer_id = tbl_parameter_value.id
+                                            )
+                                        GROUP BY
+                                            idmodares
+                                    ) mianginmasol ON masol.id = mianginmasol.idmodares
+                                    LEFT JOIN (
+                                        SELECT
+                                            COUNT(*) AS javabdade,
+                                            tbl_evaluation.f_class_id AS classid
+                                        FROM
+                                            tbl_evaluation
+                                        WHERE
+                                            tbl_evaluation.b_status = 1
+                                            AND tbl_evaluation.f_evaluator_type_id = 188
+                                        GROUP BY
+                                            tbl_evaluation.f_class_id,
+                                            tbl_evaluation.b_status,
+                                            tbl_evaluation.f_evaluator_type_id
+                                    ) darsadjavab ON z.class_id = darsadjavab.classid
+                                    LEFT JOIN (
+                                        SELECT
+                                            class_id AS class_id,
+                                            CASE
+                                                WHEN all_reaction_eval = 0 THEN
+                                                    0
+                                                ELSE
+                                                    CAST((filled_reaction_eval / all_reaction_eval) * 100 AS DECIMAL(6, 2))
+                                            END AS percent_reaction
+                                        FROM
+                                            (
+                                                SELECT DISTINCT
+                                                    cs.class_id AS class_id,
+                                                    (
+                                                        SELECT
+                                                            COUNT(DISTINCT cs.id) --AS filled_reaction_eval
+                                                        FROM
+                                                            tbl_class_student   cs
+                                                            INNER JOIN tbl_class           c ON cs.class_id = c.id
+                                                        WHERE
+                                                            c.id = classx.id
+                                                            AND cs.evaluation_status_reaction IN (
+                                                                2,
+                                                                3
+                                                            )
+                                                    ) AS filled_reaction_eval,
+                                                    (
+                                                        SELECT
+                                                            COUNT(DISTINCT cs.id) --AS all_reaction_eval
+                                                        FROM
+                                                            tbl_class_student   cs
+                                                            INNER JOIN tbl_class           c ON cs.class_id = c.id
+                                                        WHERE
+                                                            c.id = classx.id
+                                                            AND ( cs.evaluation_status_reaction IN (
+                                                                0,
+                                                                1,
+                                                                2,
+                                                                3
+                                                            )
+                                                                  OR cs.evaluation_status_reaction IS NULL )
+                                                    ) AS all_reaction_eval
+                                                FROM
+                                                    tbl_class_student   cs
+                                                    INNER JOIN tbl_class           classx ON cs.class_id = classx.id
+                                            )
+                                    ) percent_ ON clsstu.class_id = percent_.class_id
+                                ORDER BY
+                                    class_code
+                            ) f
+                    ) n
+            ]]>
+        </createView>
+    </changeSet>
+
+    <changeSet author="Montazeri" id="1661054863655">
+        <createView viewName="view_effective_courses_report" replaceIfExists="true">
+            SELECT
+                ROWNUM AS id,
+                res.*
+                FROM
+                (
+                SELECT
+                tbl_evaluation_analysis.b_effectiveness_pass   AS effectiveness_pass,
+                CASE
+                WHEN tbl_evaluation_analysis.b_effectiveness_pass = 0 THEN
+                'غیر اثربخش'
+                WHEN tbl_evaluation_analysis.b_effectiveness_pass = 1 THEN
+                'اثربخش'
+                END AS effectiveness_type,
+                CASE
+                WHEN tbl_evaluation_analysis.b_effectiveness_pass = 0 THEN
+                'عدم تایید'
+                WHEN tbl_evaluation_analysis.b_effectiveness_pass = 1 THEN
+                'تایید شده'
+                END AS effectiveness_status,
+                CAST(tbl_evaluation_analysis.c_effectiveness_grade AS DECIMAL(10, 2)) AS effectiveness_grade,
+                tbl_term.id                                    AS term_id,
+                tbl_term.c_title_fa                            AS term_title,
+                tbl_class.c_start_date                         AS class_start_date,
+                tbl_class.c_end_date                           AS class_end_date,
+                substr(tbl_class.c_start_date, 1, 4) AS class_year,
+                tbl_student.id                                 AS student_id,
+                CASE
+                WHEN tbl_student.first_name IS NULL
+                AND tbl_student.last_name IS NULL THEN
+                NULL
+                ELSE
+                tbl_student.first_name
+                || ' '
+                || tbl_student.last_name
+                END AS student_full_name,
+                tbl_class.c_code                               AS class_code,
+                tbl_course.c_code                              AS course_code,
+                tbl_class.c_title_class                        AS class_title,
+                tbl_teacher.id                                 AS teacher_id,
+                tbl_personal_info.c_first_name_fa
+                || ' '
+                || tbl_personal_info.c_last_name_fa AS teacher_full_name,
+                tbl_category.id                                AS course_category_id,
+                tbl_student.ccp_affairs                        AS student_affair,
+                tbl_student.ccp_area                           AS student_complex,
+                tbl_student.ccp_assistant                      AS student_assistant,
+                tbl_class.c_evaluation                         AS class_evaluation_code,
+                CASE
+                WHEN tbl_class.c_evaluation = 1 THEN
+                'واکنشی'
+                WHEN tbl_class.c_evaluation = 2 THEN
+                'یادگیری'
+                WHEN tbl_class.c_evaluation = 3 THEN
+                'رفتاری'
+                END AS evaluation_type,
+                reactionpercent.percent_reaction               AS answered_reaction_eval_percent,
+                learningpercent.percent_learning               AS answered_learning_eval_percent,
+                behavioralpercent.percent_behavior             AS answered_behavior_eval_percent
+                FROM
+                tbl_evaluation_analysis
+                INNER JOIN tbl_class ON tbl_evaluation_analysis.f_tclass = tbl_class.id
+                LEFT JOIN tbl_term ON tbl_class.f_term = tbl_term.id
+                LEFT JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id
+                LEFT JOIN tbl_student ON tbl_class_student.student_id = tbl_student.id
+                INNER JOIN tbl_course ON tbl_class.f_course = tbl_course.id
+                INNER JOIN tbl_teacher ON tbl_class.f_teacher = tbl_teacher.id
+                LEFT JOIN tbl_personal_info ON tbl_teacher.f_personality = tbl_personal_info.id
+                LEFT JOIN tbl_category ON tbl_course.category_id = tbl_category.id
+                LEFT JOIN (
+                SELECT
+                class_id AS class_id,
+                CASE
+                WHEN all_reaction_eval = 0 THEN
+                0
+                ELSE
+                CAST((filled_reaction_eval / all_reaction_eval) * 100 AS DECIMAL(6, 2))
+                END AS percent_reaction
+                FROM
+                (
+                SELECT DISTINCT
+                cs.class_id AS class_id,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id) --AS filled_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND cs.evaluation_status_reaction IN (
+                2,
+                3
+                )
+                ) AS filled_reaction_eval,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id) --AS all_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND ( cs.evaluation_status_reaction IN (
+                0,
+                1,
+                2,
+                3
+                )
+                OR cs.evaluation_status_reaction IS NULL )
+                ) AS all_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           classx ON cs.class_id = classx.id
+                )
+                ) reactionpercent ON reactionpercent.class_id = tbl_class.id
+                LEFT JOIN (
+                SELECT
+                class_id AS class_id,
+                CASE
+                WHEN all_learning_eval = 0 THEN
+                0
+                ELSE
+                CAST((filled_learning_eval / all_learning_eval) * 100 AS DECIMAL(6, 2))
+                END AS percent_learning
+                FROM
+                (
+                SELECT DISTINCT
+                cs.class_id AS class_id,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id)
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND cs.evaluation_status_learning IN (
+                2,
+                3
+                )
+                ) AS filled_learning_eval,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id)
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND ( cs.evaluation_status_learning IN (
+                0,
+                1,
+                2,
+                3
+                )
+                OR cs.evaluation_status_learning IS NULL )
+                ) AS all_learning_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           classx ON cs.class_id = classx.id
+                )
+                ) learningpercent ON learningpercent.class_id = tbl_class.id
+                LEFT JOIN (
+                SELECT
+                class_id AS class_id,
+                CASE
+                WHEN all_behavioral_eval = 0 THEN
+                0
+                ELSE
+                CAST((filled_behavior_eval / all_behavioral_eval) * 100 AS DECIMAL(6, 2))
+                END AS percent_behavior
+                FROM
+                (
+                SELECT DISTINCT
+                class.id AS class_id,
+                (
+                SELECT
+                COUNT(DISTINCT ex.id)
+                FROM
+                tbl_class        cx
+                INNER JOIN tbl_evaluation   ex ON ex.f_class_id = cx.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari
+                WHERE
+                1 = 1
+                AND class.id = cx.id
+                AND ex.f_evaluation_level_id = raftari.id --   156
+                AND ex.b_status = 1
+                ) AS filled_behavior_eval,
+                (
+                SELECT
+                COUNT(DISTINCT ex.id)
+                FROM
+                tbl_class        cx
+                INNER JOIN tbl_evaluation   ex ON ex.f_class_id = cx.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari
+                WHERE
+                1 = 1
+                AND class.id = cx.id
+                AND ex.f_evaluation_level_id = raftari.id --   156
+                ) AS all_behavioral_eval
+                FROM
+                tbl_class        class
+                INNER JOIN tbl_evaluation   e ON e.f_class_id = class.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari_id
+                WHERE
+                1 = 1
+                AND e.f_evaluation_level_id = raftari_id.id --   156
+                )
+                ) behavioralpercent ON behavioralpercent.class_id = tbl_class.id
+                ) res
+        </createView>
+    </changeSet>
+
+
+    <changeSet author="Montazeri" id="1661055486909">
+        <createView viewName="VIEW_EVALUATION_STATICAL_REPORT" replaceIfExists="true">
+            SELECT rowNum                                                              as id,
+                term.C_TITLE_FA                                                            as term_TitleFa,
+                personal.C_FIRST_NAME_FA                                                   as teacher_FirstName,
+                personal.C_LAST_NAME_FA                                                    as teacher_LastName,
+                CONCAT(CONCAT(personal.C_FIRST_NAME_FA, ' '), personal.C_LAST_NAME_FA)     as teacher_FullName,
+                tclass.N_H_DURATION                                                        as tclass_n_duration,
+                tclass.F_INSTITUTE_ORGANIZER                                               as tclass_organizer,
+                tclass.C_STATUS                                                            as tclass_status,
+                tclass.f_cancel_class_reason                                               as class_cancel_reason_id,
+                parameterValue.C_TITLE                                                     as class_cancel_reason_title,
+                tclass.F_PLANNER                                                           as tclass_planner,
+                tclass.F_SUPERVISOR                                                        as tclass_supervisor,
+                tclass.c_created_by                                                        as c_created_by,
+                tclass.d_created_date                                                      as d_created_date,
+                tclass.e_deleted                                                           as e_deleted,
+                tclass.e_enabled                                                           as e_enabled,
+                tclass.c_last_modified_by                                                  as c_last_modified_by,
+                tclass.d_last_modified_date                                                as d_last_modified_date,
+                tclass.n_version                                                           as n_version,
+                tclass.ID                                                                  as tclass_id,
+                evaluationanalysis.ID                                                      as evaluationanalysis_id,
+                unit.ID                                                                    as unit_id,
+                tclass.C_CODE                                                              as tclass_c_code,
+                tclass.F_INSTITUTE                                                         as institute_id,
+                tclass.F_TEACHER                                                           as teacher_id,
+                tclass.F_TERM                                                              as term_id,
+                tclass.C_START_DATE                                                        as tclass_c_start_date,
+                tclass.C_END_DATE                                                          as tclass_c_end_date,
+                tclass.C_REASON                                                            as tclass_reason,
+                tclass.C_EVALUATION                                                        as tclass_evaluation,
+                tclass.c_teaching_type                                                     as tclass_teaching_type,
+                tclass.f_holding_class_type_id                                             as holding_class_type_id,
+                holdingClassTypParameterValue.C_TITLE                                      as holding_class_type_title,
+                tclass.f_teaching_method_id                                                as teaching_method_id,
+                teachingMethodParameterValue.C_TITLE                                       as teaching_method_title,
+                SUBSTR(tclass.C_START_DATE, 1, 4)                                          as tclass_year,
+                course.C_CODE                                                              as course_c_code,
+                course.E_TECHNICAL_TYPE                                                    as course_technical_type,
+                course.E_RUN_TYPE                                                          as course_run_type,
+                course.E_THEO_TYPE                                                         as course_theo_type,
+                course.E_LEVEL_TYPE                                                        as course_level_type,
+                course.CATEGORY_ID                                                         as course_category_id,
+                course.SUBCATEGORY_ID                                                      as course_subcategory_id,
+                course.C_TITLE_FA                                                          as course_c_title_fa,
+                course.C_EVALUATION                                                        as course_c_evaluation,
+                plnner_dep.C_MOJTAME_TITLE                                                 as planner_complex,
+                plnner_dep.C_MOAVENAT_TITLE                                                as planner_assistant,
+                plnner_dep.C_OMOR_TITLE                                                    as planner_affairs,
+                plnner_dep.C_GHESMAT_TITLE                                                 as planner_section,
+                plnner_dep.C_VAHED_TITLE                                                   as planner_unit,
+                CONCAT(CONCAT(personelPlanner.FIRST_NAME, ' '), personelPlanner.LAST_NAME) as planner_name,
+                organizer_ins.C_TITLE_FA                                                   as institute_name,
+                CASE WHEN students.counts IS NULL THEN 0 ELSE students.counts END          AS tclass_students_count,
+                evaluationanalysis.C_BEHAVIORAL_GRADE                                      as evaluationanalysis_c_behavioral_grade,
+                evaluationanalysis.B_BEHAVIORAL_PASS                                       as evaluationanalysis_c_behavioral_pass,
+                CAST(evaluationanalysis.C_EFFECTIVENESS_GRADE AS DECIMAL(6,2))             as evaluationanalysis_c_effectiveness_grade,
+                evaluationanalysis.B_EFFECTIVENESS_PASS                                    as evaluationanalysis_c_effectiveness_pass,
+                evaluationanalysis.C_LEARNING_GRADE                                        as evaluationanalysis_c_learning_grade,
+                evaluationanalysis.B_LEARNING_PASS                                         as evaluationanalysis_c_learning_pass,
+                CAST(evaluationanalysis.C_REACTION_GRADE AS DECIMAL(6,2))                  as evaluationanalysis_c_reaction_grade,
+                evaluationanalysis.B_REACTION_PASS                                         as evaluationanalysis_c_reaction_pass,
+                evaluationanalysis.C_RESULTS_GRADE                                         as evaluationanalysis_c_results_grade,
+                evaluationanalysis.B_RESULTS_PASS                                          as evaluationanalysis_c_results_pass,
+                CAST(evaluationanalysis.C_TEACHER_GRADE AS DECIMAL(6,2))                   as evaluationanalysis_c_teacher_grade,
+                evaluationanalysis.B_TEACHER_PASS                                          as evaluationanalysis_c_teacher_pass,
+                CASE WHEN evaluationanalysis.C_REACTION_GRADE IS NULL THEN 0 ELSE 1 END    as evaluationanalysis_b_reaction_status,
+                CASE WHEN evaluationanalysis.C_BEHAVIORAL_GRADE IS NULL THEN 0 ELSE 1 END  as evaluationanalysis_b_behavioral_status,
+                CASE WHEN evaluationanalysis.C_LEARNING_GRADE IS NULL THEN 0 ELSE 1 END    as evaluationanalysis_b_learning_status,
+                CASE WHEN evaluationanalysis.C_RESULTS_GRADE IS NULL THEN 0 ELSE 1 END     as evaluationanalysis_b_results_status,
+                CASE WHEN evaluationanalysis.C_TEACHER_GRADE IS NULL THEN 0 ELSE 1 END     as evaluationanalysis_b_teacher_status,
+                CASE
+                WHEN evaluationanalysis.C_EFFECTIVENESS_GRADE IS NULL THEN 0
+                ELSE 1 END                                                             as evaluationanalysis_b_effectiveness_status,
+                STATISTICS_.PRESENCE,
+                STATISTICS_.ABSENCE,
+                STATISTICS_.UNKNOWN,
+                supervisor.FIRST_NAME ||  supervisor.LAST_NAME                             as supervisor ,
+                Reactionpercent.percent_reaction ,
+                behevioralpercent.percent_behavior
+
+                FROM TBL_CLASS tclass
+                INNER JOIN TBL_COURSE course
+                ON tclass.F_COURSE = course.ID
+                LEFT JOIN TBL_TARGET_SOCIETY unit
+                ON unit.F_CLASS_ID = tclass.ID
+                LEFT JOIN (SELECT TBL_CLASS_STUDENT.CLASS_ID,
+                count(TBL_CLASS_STUDENT.ID) as counts
+                FROM TBL_CLASS_STUDENT
+                GROUP BY TBL_CLASS_STUDENT.CLASS_ID) students ON students.CLASS_ID = tclass.ID
+                LEFT JOIN TBL_EVALUATION_ANALYSIS evaluationanalysis
+                ON evaluationanalysis.F_TCLASS = tclass.ID
+                INNER JOIN TBL_TERM term ON tclass.F_TERM = term.ID
+                INNER JOIN TBL_TEACHER teacher ON tclass.F_TEACHER = teacher.ID
+                LEFT JOIN TBL_PERSONAL_INFO personal ON teacher.F_PERSONALITY = personal.ID
+                LEFT JOIN tbl_personnel personelPlanner on personelPlanner.id = tclass.f_planner
+                LEFT JOIN tbl_department plnner_dep on plnner_dep.id = personelPlanner.f_department_id
+                LEFT JOIN TBL_INSTITUTE organizer_ins on tclass.F_INSTITUTE_ORGANIZER = organizer_ins.ID
+                LEFT JOIN TBL_PARAMETER_VALUE parameterValue on tclass.f_cancel_class_reason = parameterValue.ID
+                LEFT JOIN TBL_PARAMETER_VALUE holdingClassTypParameterValue
+                on tclass.f_holding_class_type_id = holdingClassTypParameterValue.ID
+                LEFT JOIN TBL_PARAMETER_VALUE teachingMethodParameterValue
+                on tclass.f_teaching_method_id = teachingMethodParameterValue.ID
+                LEFT JOIN tbl_personnel supervisor on supervisor.id = tclass.F_SUPERVISOR
+                LEFT JOIN(
+                SELECT *
+                FROM
+                (
+                SELECT att_state,
+                f_class_id,
+                s_hour
+                FROM (
+                SELECT CASE
+                WHEN (att.c_state = 1
+                OR att.c_state = 2) THEN
+                'PRESENCE'
+                WHEN (att.c_state = 3
+                OR att.c_state = 4) THEN
+                'ABSENCE'
+                ELSE
+                'UNKNOWN'
+                END AS att_state,
+                att.f_session,
+                att.f_student,
+                sess.f_class_id,
+                sess.s_hour
+                FROM tbl_attendance att
+                INNER JOIN (
+                SELECT (to_number(regexp_substr(c_session_end_hour, '[^:]+', 3, 1)) + 60 * to_number
+                (regexp_substr(c_session_end_hour, '[^:]+', 1, 1)) - (to_number(regexp_substr
+                (c_session_start_hour, '[^:]+', 3, 1)) + 60 * to_number(regexp_substr(c_session_start_hour
+                , '[^:]+', 1, 1)))) / 60 AS s_hour,
+                id,
+                f_class_id
+                FROM tbl_session
+                ) sess ON (att.f_session = sess.id)
+                )
+                ) PIVOT (
+                SUM(s_hour)
+                FOR att_state
+                IN ( 'PRESENCE' AS presence, 'ABSENCE' AS absence, 'UNKNOWN' AS unknown )
+                )
+                ) STATISTICS_ on (tclass.id = STATISTICS_.f_class_id)
+                LEFT JOIN (
+                SELECT
+                class_id AS class_id,
+                CASE
+                WHEN all_reaction_eval = 0 THEN
+                0
+                ELSE
+                CAST((filled_reaction_eval / all_reaction_eval) * 100 AS DECIMAL(6, 2))
+                END AS percent_reaction
+                FROM
+                (
+                SELECT DISTINCT
+                cs.class_id AS class_id,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id) --AS filled_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND cs.evaluation_status_reaction IN (
+                2,
+                3
+                )
+                ) AS filled_reaction_eval,
+                (
+                SELECT
+                COUNT(DISTINCT cs.id) --AS all_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           c ON cs.class_id = c.id
+                WHERE
+                c.id = classx.id
+                AND (cs.evaluation_status_reaction IN (
+                0,
+                1,
+                2,
+                3
+                )
+                OR cs.evaluation_status_reaction IS NULL )
+                ) AS all_reaction_eval
+                FROM
+                tbl_class_student   cs
+                INNER JOIN tbl_class           classx ON cs.class_id = classx.id
+                )
+
+                ) Reactionpercent on tclass.id = Reactionpercent.class_id
+                LEFT JOIN (
+                SELECT
+                class_id AS class_id,
+                CASE
+                WHEN all_behavioral_eval = 0 THEN
+                0
+                ELSE
+                CAST((filled_behavior_eval / all_behavioral_eval) * 100 AS DECIMAL(6, 2))
+                END AS percent_behavior
+                FROM
+                (
+                SELECT DISTINCT
+                class.id AS class_id,
+                (
+                SELECT
+                COUNT(DISTINCT ex.id)
+                FROM
+                tbl_class        cx
+                INNER JOIN tbl_evaluation   ex ON ex.f_class_id = cx.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari
+                WHERE
+                1 = 1
+                AND class.id = cx.id
+                AND ex.f_evaluation_level_id = raftari.id --   156
+                AND ex.b_status = 1
+                ) AS filled_behavior_eval,
+                (
+                SELECT
+                COUNT(DISTINCT ex.id)
+                FROM
+                tbl_class        cx
+                INNER JOIN tbl_evaluation   ex ON ex.f_class_id = cx.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari
+                WHERE
+                1 = 1
+                AND class.id = cx.id
+                AND ex.f_evaluation_level_id = raftari.id --   156
+                ) AS all_behavioral_eval
+                FROM
+                tbl_class        class
+                INNER JOIN tbl_evaluation   e ON e.f_class_id = class.id OUTER APPLY (
+                SELECT
+                id AS id
+                FROM
+                tbl_parameter_value v
+                WHERE
+                v.c_code = 'Behavioral'
+                ) raftari_id
+                WHERE
+                1 = 1
+                AND e.f_evaluation_level_id = raftari_id.id --   156
+                )
+                ) behevioralpercent on tclass.id = behevioralpercent.class_id
         </createView>
     </changeSet>
 

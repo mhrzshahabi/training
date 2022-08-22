@@ -20,6 +20,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.ClassStatus;
 import com.nicico.training.repository.*;
 import com.nicico.training.utility.persianDate.MyUtils;
+import dto.ScoringClassDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -2770,5 +2771,34 @@ public class TclassService implements ITclassService {
     @Override
     public String getClassTargetPopulation(Long classId) {
         return iParameterValueService.getInfo(getTClass(classId).getTargetPopulationTypeId()).getTitle();
+    }
+
+    @Override
+    public boolean checkClassScoring(ScoringClassDto scoringClassDto) {
+
+        double classScore= (  scoringClassDto.getClassScore() != null) ? Double.parseDouble(scoringClassDto.getClassScore()) : 0;
+        double practicalScore=(  scoringClassDto.getPracticalScore() != null) ? Double.parseDouble(scoringClassDto.getPracticalScore()) : 0;
+
+        final Optional<Tclass> optionalTclass = tclassDAO.findById(scoringClassDto.getClassId());
+     try {
+         if (optionalTclass.isPresent())
+         {
+             Tclass tClass=optionalTclass.get();
+
+
+             if (tClass.getScoringMethod().equals("3")) {
+                 return classScore + practicalScore <= 20;
+             } else if (tClass.getScoringMethod().equals("2")) {
+                 return classScore + practicalScore <= 100;
+             } else {
+                 return false;
+             }
+         }
+         else
+             return false;
+     }catch (Exception e){
+         return false;
+     }
+
     }
 }

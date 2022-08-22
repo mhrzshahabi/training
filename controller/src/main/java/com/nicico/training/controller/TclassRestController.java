@@ -16,6 +16,7 @@ import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.tclass.TclassAuditMapper;
 import com.nicico.training.model.*;
+import dto.ScoringClassDto;
 import net.sf.jasperreports.engine.*;
 import net.sf.jasperreports.engine.util.JRLoader;
 import org.modelmapper.TypeToken;
@@ -822,6 +823,18 @@ public class TclassRestController {
     public BaseResponse isValidForExam(@PathVariable long id) {
         BaseResponse response = new BaseResponse();
         boolean isValidForExam = tClassService.isValidForExam(id);
+
+        if (isValidForExam)
+            response.setStatus(200);
+        else
+            response.setStatus(406);
+        return response;
+    }
+    @Loggable
+    @PostMapping(value = "/get-class-scoring")
+    public BaseResponse checkClassScoring(@RequestBody ScoringClassDto scoringClassDto) {
+        BaseResponse response = new BaseResponse();
+        boolean isValidForExam = tClassService.checkClassScoring(scoringClassDto);
 
         if (isValidForExam)
             response.setStatus(200);
