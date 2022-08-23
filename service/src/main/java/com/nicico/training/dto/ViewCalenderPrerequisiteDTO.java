@@ -36,7 +36,7 @@ public class ViewCalenderPrerequisiteDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ViewCalenderPrerequisiteDTOInfo")
-    public static class Info extends ViewCalenderMainGoalsDTO {
+    public static class Info extends ViewCalenderPrerequisiteDTO{
     }
 
     @Getter

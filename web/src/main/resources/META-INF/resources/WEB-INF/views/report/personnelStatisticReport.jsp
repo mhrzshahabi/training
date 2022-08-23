@@ -85,7 +85,7 @@
 
             if ((DynamicForm_EmploymentStatus.getValuesAsAdvancedCriteria() == null || DynamicForm_EmploymentStatus.getValuesAsAdvancedCriteria().criteria.size() <= 1)
                 && ((organSegmentFilter_personnelStatistic.getCriteria(DynamicForm_EmploymentStatus.getValuesAsAdvancedCriteria())).criteria.length <= 1)) {
-                createDialog("info", "فیلتری انتخاب نشده است.");
+                createDialog("info", "لطفا مجتمع را انتخاب کنید");
                 return;
             }
 
