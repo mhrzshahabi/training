@@ -11,12 +11,13 @@ import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 import java.util.List;
+
 @Getter
 @Setter
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ViewCalenderMainGoalsDTO implements Serializable {
+public class ViewCalenderHeadlinesDTO  implements Serializable {
     @ApiModelProperty
     private Long id;
 
@@ -24,7 +25,7 @@ public class ViewCalenderMainGoalsDTO implements Serializable {
     private String classCode;
 
     @ApiModelProperty
-    private String mainGoal;
+    private String headline;
 
     @ApiModelProperty
     private Long  calenderId;
@@ -34,17 +35,17 @@ public class ViewCalenderMainGoalsDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ViewCalenderMainGoalsDTOInfo")
-    public static class Info extends ViewCalenderMainGoalsDTO {
+    @ApiModel("ViewCalenderHeadlinesDTOInfo")
+    public static class Info extends ViewCalenderHeadlinesDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("ViewCalenderMainGoalsSpecRs")
-    public static class ViewCalenderMainGoalsSpecRs {
-        private ViewCalenderMainGoalsDTO.SpecRs response;
+    @ApiModel("ViewCalenderHeadlinesSpecRs")
+    public static class ViewCalenderHeadlinesSpecRs {
+        private ViewCalenderHeadlinesDTO.SpecRs response;
     }
 
     @Getter
@@ -52,7 +53,7 @@ public class ViewCalenderMainGoalsDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<ViewCalenderMainGoalsDTO.Info> data;
+        private List<ViewCalenderHeadlinesDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

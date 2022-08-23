@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.io.Serializable;
 import java.util.List;
 @Getter
@@ -16,35 +18,42 @@ import java.util.List;
 @Accessors(chain = true)
 @AllArgsConstructor
 @NoArgsConstructor
-public class ViewCalenderMainGoalsDTO implements Serializable {
-    @ApiModelProperty
-    private Long id;
+public class ViewCalenderSessionsDTO implements Serializable {
+//    @ApiModelProperty
+//    private Long id;
 
     @ApiModelProperty
     private String classCode;
 
     @ApiModelProperty
-    private String mainGoal;
-
+    private String sessionDay;
+    @ApiModelProperty
+   private String sessionDate;
     @ApiModelProperty
     private Long  calenderId;
+    @ApiModelProperty
+    private String sessionStartHour;
+
+    @ApiModelProperty
+    private String sessionEndHour;
+
 
 
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ViewCalenderMainGoalsDTOInfo")
-    public static class Info extends ViewCalenderMainGoalsDTO {
+    @ApiModel("ViewCalenderSessionsDTOInfo")
+    public static class Info extends ViewCalenderSessionsDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("ViewCalenderMainGoalsSpecRs")
-    public static class ViewCalenderMainGoalsSpecRs {
-        private ViewCalenderMainGoalsDTO.SpecRs response;
+    @ApiModel("ViewCalenderSessionsSpecRs")
+    public static class ViewCalenderSessionsSpecRs {
+        private ViewCalenderSessionsDTO.SpecRs response;
     }
 
     @Getter
@@ -52,7 +61,7 @@ public class ViewCalenderMainGoalsDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<ViewCalenderMainGoalsDTO.Info> data;
+        private List<ViewCalenderSessionsDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

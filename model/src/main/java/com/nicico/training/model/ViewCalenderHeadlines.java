@@ -16,16 +16,16 @@ import javax.persistence.Id;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Subselect("select * from view_calendar_of_main_goals")
-@DiscriminatorValue("viewCalenderOfMainGoals")
-public class ViewCalenderOfMainGoals {
+@Subselect("select * from view_calendar_headline")
+@DiscriminatorValue("viewCalenderHeadlines")
+public class ViewCalenderHeadlines {
 
     @Id
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "ahdafasli")
-    private String mainGoal;
+    @Column(name = "sarfaslha")
+    private String headline;
 
     @Column(name="calendar_id")
     private Long calenderId;
@@ -33,8 +33,4 @@ public class ViewCalenderOfMainGoals {
     @Column(name="c_code")
     private String classCode;
 
-
-
-
 }
-
