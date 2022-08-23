@@ -225,4 +225,11 @@ public class ViewStatisticsUnitReport implements Serializable {
 
     @Column(name = "teaching_method_title")
     private String teachingMethodTitle;
+
+    @Column(name = "ANSWERED_REACTION_EVAL_PERCENT")
+    private String answeredReactionEvalPercent;
+
+    @Column(name = "ANSWERED_BEHAVIORAL_EVAL_PERCENT")
+    private String answeredBehavioralEvalPercent;
+
 }

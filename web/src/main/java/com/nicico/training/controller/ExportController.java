@@ -1514,11 +1514,11 @@ public class ExportController {
         FileInputStream in = null;
         try {
 
-            String[] headers = new String[24];
-            String[] columns = new String[24];
+            String[] headers = new String[25];
+            String[] columns = new String[25];
 
 
-            for (int z = 0; z < 24; z++) {
+            for (int z = 0; z < 25; z++) {
 
                 switch (z) {
                     case 0: {
@@ -1640,6 +1640,11 @@ public class ExportController {
                     case 23: {
                         headers[z] = "درصد پیشرفت";
                         columns[z] = "pishraft";
+                        break;
+                    }
+                    case 24: {
+                        headers[z] = "فرم های تکمیلی ارزیابی واکنشی(%)";
+                        columns[z] = "percent_reaction";
                         break;
                     }
 
@@ -1781,6 +1786,10 @@ public class ExportController {
                         }
                        case "pishraft": {
                             row.createCell(i).setCellValue(map.getPishraft());
+                            break;
+                        }
+                       case "percent_reaction": {
+                            row.createCell(i).setCellValue(map.getPercent_reaction());
                             break;
                         }
                     }
@@ -2024,11 +2033,11 @@ public class ExportController {
         FileInputStream in = null;
         try {
 
-            String[] headers = new String[24];
-            String[] columns = new String[24];
+            String[] headers = new String[25];
+            String[] columns = new String[25];
 
 
-            for (int z = 0; z < 24; z++) {
+            for (int z = 0; z < 25; z++) {
 
                 switch (z) {
                     case 0: {
@@ -2153,6 +2162,11 @@ public class ExportController {
                     case 23: {
                         headers[z] = "نمره یادگیری ";
                         columns[z] = "learning";
+                        break;
+                    }
+                    case 24: {
+                        headers[z] = "فرم های تکمیلی ارزیابی واکنشی(%)";
+                        columns[z] = "percent_reaction";
                         break;
                     }
 
@@ -2294,6 +2308,10 @@ public class ExportController {
                         }
                         case "learning": {
                             row.createCell(i).setCellValue(map.getLearning());
+                            break;
+                        }
+                        case "percent_reaction": {
+                            row.createCell(i).setCellValue(map.getPercent_reaction());
                             break;
                         }
                     }

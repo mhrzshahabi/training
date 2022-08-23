@@ -84,7 +84,10 @@
             {name: "categoryId", hidden: true,filterOperator: "equals"},
             {name: "subCategoryId", hidden: true,filterOperator: "equals"},
             {name: "classPlanner", hidden: true, filterOperator: "equals"},
-            {name: "classSupervisor", hidden: true, filterOperator: "equals"}
+            {name: "classSupervisor", hidden: true, filterOperator: "equals"},
+            {name: "answeredReactionEvalPercent", title: "فرم های تکمیلی ارزیابی واکنشی(%)", filterOperator: "iContains", autoFitWidth: true},
+            {name: "answeredBehavioralEvalPercent", title: "فرم های تکمیلی ارزیابی رفتاری(%)", filterOperator: "iContains", autoFitWidth: true},
+
         ],
         fetchDataURL: statisticsUnitReportUrl
     });
@@ -356,12 +359,13 @@
             {name: "absenceHour"},
             {name: "absenceMinute"},
             {name: "instituteTitleFa"},
-
             {name: "evaluationReactionStatus"},
+            {name: "answeredReactionEvalPercent"},
             {name: "evaluationReactionPass"},
             {name: "evaluationLearningStatus"},
             {name: "evaluationLearningPass"},
             {name: "evaluationBehavioralStatus"},
+            {name: "answeredBehavioralEvalPercent"},
             {name: "evaluationBehavioralPass"},
             {name: "evaluationEffectivenessStatus"},
             {name: "evaluationEffectivenessPass"},

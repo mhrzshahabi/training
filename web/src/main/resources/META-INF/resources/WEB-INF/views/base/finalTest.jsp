@@ -29,6 +29,13 @@
         width: "100%",
         height: "100%"
     });
+    var classScoreLabel = isc.Label.create({
+        contents: "مجموع نمرات کلاسی و عملی  وارد شده : ",
+        border: "0px solid black",
+        align: "center",
+        width: "100%",
+        height: "100%"
+    });
     var timeLabel = isc.Label.create({
         contents: "مجموع زمان وارد شده : ",
         border: "0px solid black",
@@ -415,7 +422,12 @@
                             width: "145",
                             margin: 3,
                             click: function () {
-                               loadExamForScores(record);
+                                let classScore=(record.classScore !==undefined && record.classScore !==null)?strToNumber(record.classScore):0;
+                                let practicalScore=(record.practicalScore !==undefined && record.practicalScore !==null)?strToNumber(record.practicalScore):0;
+                                let sum = (+classScore) + (+practicalScore);
+                                classScoreLabel.setContents("مجموع نمرات کلاسی و عملی  وارد شده : "+sum)
+
+                                loadExamForScores(record);
                                 // loadExamQuestions(record)
                             }
                         });
@@ -758,7 +770,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                     isc.VLayout.create({
                                         width: "100%",
                                         height: "70%",
-                                        members: [ListGrid_Questions_finalTest,scoreLabel,timeLabel]
+                                        members: [ListGrid_Questions_finalTest,classScoreLabel,scoreLabel,timeLabel]
                                     }),
 
                                     isc.HLayout.create({
@@ -1148,6 +1160,10 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             Window_result_Answer_FinalTest.show();
     }
     function checkExamScore(examData) {
+        let classScore=(examData.examItem.classScore !==undefined && examData.examItem.classScore !==null)?strToNumber(examData.examItem.classScore):0;
+        let practicalScore=(examData.examItem.practicalScore !==undefined && examData.examItem.practicalScore !==null)?strToNumber(examData.examItem.practicalScore):0;
+        let sum = (+classScore) + (+practicalScore);
+
         if (examData.examItem.tclass.scoringMethod === "3" || examData.examItem.tclass.scoringMethod === "2") {
 
             let totalScore = 0;
@@ -1161,9 +1177,9 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
             }
             if (examData.examItem.tclass.scoringMethod === "3") {
-                return  totalScore === 20;
+                return  totalScore === 20-(sum);
             } else {
-                return totalScore === 100;
+                return totalScore === 100-(sum);
             }
         } else {
             return false;
@@ -1603,7 +1619,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='test.question.duration.hint'/>",
                 showHintInField: true,
-                length: 2
+                length: 3
             }
             , {
                 name: "practicalScore",
@@ -2290,4 +2306,14 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                wait.close();
            }));
 }
+    function strToNumber(value) {
+        // Convert strings to numbers
+        if (typeof value === 'string' && !isNaN(Number(value) - parseFloat(value))) {
+            return Number(value);
+        }
+        if (typeof value !== 'number') {
+            throw new Error(`${value} is not a number`);
+        }
+        return value;
+    }
     //</script>

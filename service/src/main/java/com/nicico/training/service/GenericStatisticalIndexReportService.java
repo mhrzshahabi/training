@@ -108,6 +108,21 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
             case "report48"-> genericStatisticalIndexReportDAO.coursesDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report49"-> genericStatisticalIndexReportDAO.coursesTargetDeterminedEvaluationMethod(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report50"-> genericStatisticalIndexReportDAO.scheduledTraining(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report51"-> {
+                objectResult = genericStatisticalIndexReportDAO.proportionOfkeyOccupationsWithQualifications(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد (پست)");}
+            case "report52"-> genericStatisticalIndexReportDAO.theProportionOfSelfTaughtEducationalNeedsOffline(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report53"->{
+                objectResult = genericStatisticalIndexReportDAO.numberOfStandardDesignedCourses(fromDate, toDate);
+                yield convertObject(objectResult, "محاسبه بر اساس کل سازمان می باشد ");}
+            case "report54"-> genericStatisticalIndexReportDAO.theAmountOfVirtualCoursesProducedElectronic(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report55"-> genericStatisticalIndexReportDAO.theNumberOfEditedNewMultimediaContents(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report56"-> genericStatisticalIndexReportDAO.theNumberOfGamifiedContentProduced(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report58"-> genericStatisticalIndexReportDAO.totalEducationCostPerCapita(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report59"-> genericStatisticalIndexReportDAO.perCapitaCostOfTrainingManagers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report60"-> genericStatisticalIndexReportDAO.perCapitaCostOfEmployeeTraining(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report61"-> genericStatisticalIndexReportDAO.effectivenessRateOfOutputLevelTrainingBehavior (fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report62"-> genericStatisticalIndexReportDAO.evaluationCoverageRateBehaviorLevel(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
                 default -> null;
         };
 

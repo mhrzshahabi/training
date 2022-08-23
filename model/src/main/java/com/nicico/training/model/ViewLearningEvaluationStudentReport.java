@@ -134,5 +134,8 @@ public class ViewLearningEvaluationStudentReport implements Serializable {
     @Column(name = "term_id")
     private Long termId;
 
+    @Column(name = "percent_reaction")
+    private String percent_reaction;
+
 
 }

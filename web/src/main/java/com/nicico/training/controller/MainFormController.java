@@ -552,6 +552,11 @@ public class MainFormController {
         return "report/CoursePassedOrUnPassedInNAReport";
     }
 
+    @RequestMapping("/educationalCalenderReport")
+    public String educationalCalenderReport() {
+        return "report/educationalCalenderReport";
+    }
+
     @RequestMapping("/coursesEvaluationReport")
     public String coursesEvaluationReport() {
         return "report/coursesEvaluationReport";
