@@ -13,4 +13,6 @@ public class ExamResult implements Serializable {
     private String descriptiveResult;
     private String finalResult;
     private String testResult;
+    private String classScore;
+    private String practicalScore;
 }

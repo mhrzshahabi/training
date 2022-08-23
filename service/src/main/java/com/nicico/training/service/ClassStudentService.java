@@ -345,6 +345,17 @@ public class ClassStudentService implements IClassStudentService {
             ClassStudent classStudent = getClassStudent(classStudentId);
             if (examResult1.getFinalResult() != null && !Objects.equals(examResult1.getFinalResult(), "-")) {
                 classStudent.setScore(Float.valueOf(examResult1.getFinalResult()));
+
+                if (examResult1.getClassScore()!=null && !Objects.equals(examResult1.getClassScore(), "-"))
+                classStudent.setClassScore(Double.parseDouble(examResult1.getClassScore()));
+                else
+                    classStudent.setClassScore(null);
+
+                if (examResult1.getPracticalScore()!=null && !Objects.equals(examResult1.getPracticalScore(), "-"))
+                    classStudent.setPracticalScore(Double.parseDouble(examResult1.getPracticalScore()));
+                else
+                    classStudent.setPracticalScore(null);
+
                 classStudent.setScoresStateId(parameterValueService.getEntityId(getStateByScore(classStudent.getTclass().getAcceptancelimit(), Float.valueOf(examResult1.getFinalResult()))).getId());
 
                 saveOrUpdate(classStudent);

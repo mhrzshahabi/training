@@ -127,4 +127,11 @@ public class ClassStudent extends Auditable {
 
     @Column(name = "DESCRIPTIVEـSCORE")
     private Float descriptiveScore;
+
+    @Column(name = "class_score")
+    private Double classScore;
+
+    @Column(name = "practical_score")
+    private Double practicalScore;
+
 }

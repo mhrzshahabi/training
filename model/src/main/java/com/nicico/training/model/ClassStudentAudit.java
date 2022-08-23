@@ -51,4 +51,10 @@ public class ClassStudentAudit implements Serializable {
 
     @Column(name = "C_LAST_MODIFIED_BY")
     private String modifiedBy;
+
+    @Column(name = "class_score")
+    private Double classScore;
+
+    @Column(name = "practical_score")
+    private Double practicalScore;
 }
