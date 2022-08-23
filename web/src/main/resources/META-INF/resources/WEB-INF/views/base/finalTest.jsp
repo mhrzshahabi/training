@@ -1177,7 +1177,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
 
             }
             if (examData.examItem.tclass.scoringMethod === "3") {
-                debugger
                 return  totalScore === 20-(sum);
             } else {
                 return totalScore === 100-(sum);
@@ -1620,7 +1619,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 keyPressFilter: "[0-9]",
                 hint: "<spring:message code='test.question.duration.hint'/>",
                 showHintInField: true,
-                length: 2
+                length: 3
             }
             , {
                 name: "practicalScore",
