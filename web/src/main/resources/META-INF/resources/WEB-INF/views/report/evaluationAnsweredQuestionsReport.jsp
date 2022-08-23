@@ -30,6 +30,17 @@
         fetchDataURL: evaluationUrl + "/getAnsweredEvalQuestionsDetails/"+ids.toString(),
     });
 
+    var RestDataSource_Class_evalAnsweredQuestions = isc.TrDS.create({
+        ID: "RestDataSource_Class_evalAnsweredQuestions",
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleClass"},
+            {name: "code"},
+            {name: "course.titleFa"}
+        ],
+        fetchDataURL: classUrl + "info-tuple-list"
+    });
+
     QuestionnaireDS_Answered_Questions_Details = isc.TrDS.create({
         ID: "QuestionnaireDS_Answered_Questions_Details",
         fields: [
@@ -160,6 +171,26 @@
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
+            },
+            {
+                name: "class",
+                title: "<spring:message code="class"/>",
+                type: "SelectItem",
+                textAlign: "center",
+                colSpan: 2,
+                titleColSpan: 1,
+                autoFetchData: false,
+                valueField: "evaluationQuestionId",
+                optionDataSource: RestDataSource_Class_evalAnsweredQuestions,
+                displayField: "titleClass",
+                pickListFields: [{name: "code"},{name:"titleClass"}],
+                disabled: false,
+                multiple: true,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains"
+                },
             }
         ]
     });
@@ -177,14 +208,20 @@
 
             let url = evaluationUrl + "/getAnsweredEvalQuestionsDetails/";
             let questionIds = [];
-            if (DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== undefined && DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== null) {
+            let classIds = [];
+            if (DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== undefined && DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== null && DynamicForm_CriteriaForm_Answered_Questions_Details.getField("class").getValue() !== null ) {
                 questionIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("question").getValue();
+                classIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("class").getValue();
             } else {
-                createDialog("info", "لطفا پرسشنامه و سوال را انتخاب کنید", "<spring:message code="message"/>")
+                createDialog("info", "لطفا پرسشنامه - سوال و کلاس را انتخاب کنید", "<spring:message code="message"/>")
                 return;
             }
             if (questionIds === null || questionIds === undefined || questionIds.length === 0) {
                 createDialog("info", "هیچ سوالی انتخاب نشده است", "<spring:message code="message"/>")
+                return;
+            }
+            if (classIds === null || classIds === undefined || classIds.length === 0) {
+                createDialog("info", "هیچ کلاسی انتخاب نشده است", "<spring:message code="message"/>")
                 return;
             }
             wait.show();
