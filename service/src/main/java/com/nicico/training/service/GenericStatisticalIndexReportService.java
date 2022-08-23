@@ -118,11 +118,17 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
             case "report54"-> genericStatisticalIndexReportDAO.theAmountOfVirtualCoursesProducedElectronic(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report55"-> genericStatisticalIndexReportDAO.theNumberOfEditedNewMultimediaContents(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report56"-> genericStatisticalIndexReportDAO.theNumberOfGamifiedContentProduced(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report57"->{
+                objectResult = genericStatisticalIndexReportDAO.nominalTrainingCapacity(fromDate, toDate);
+                yield convertObjectAndShowComplex(objectResult,"محاسبه بر اساس کل سازمان می باشد(نمایش مراکز آموزشی)");}
             case "report58"-> genericStatisticalIndexReportDAO.totalEducationCostPerCapita(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report59"-> genericStatisticalIndexReportDAO.perCapitaCostOfTrainingManagers(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report60"-> genericStatisticalIndexReportDAO.perCapitaCostOfEmployeeTraining(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report61"-> genericStatisticalIndexReportDAO.effectivenessRateOfOutputLevelTrainingBehavior (fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
             case "report62"-> genericStatisticalIndexReportDAO.evaluationCoverageRateBehaviorLevel(fromDate, toDate, complex, complexNull, assistant, assistantNull, affairs, affairsNull);
+            case "report63"->{
+                objectResult = genericStatisticalIndexReportDAO.numberOfActiveExpertCommittees(fromDate, toDate,complexNull,complex);
+                yield convertObjectAndShowComplex(objectResult);}
                 default -> null;
         };
 
@@ -131,7 +137,30 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
         }.getType());
     }
 
-    private List<GenericStatisticalIndexReport> convertObject(List<Object> objectResult, String title) {
+    private List<GenericStatisticalIndexReport> convertObjectAndShowComplex(List<Object> objectResult) {
+        List<GenericStatisticalIndexReport> result = new ArrayList<>();
+
+        try {
+            if (objectResult.size() > 0) {
+                for (Object o : objectResult) {
+                    Object[] arr = (Object[]) o;
+                    GenericStatisticalIndexReport genericStatisticalIndexReport = new GenericStatisticalIndexReport();
+                    genericStatisticalIndexReport.setId(Long.parseLong(arr[0].toString()));
+                    genericStatisticalIndexReport.setComplexId(Long.parseLong(arr[1].toString()));
+                    genericStatisticalIndexReport.setComplex(arr[2].toString());
+                    genericStatisticalIndexReport.setBaseOnComplex(Double.parseDouble(arr[3].toString()));
+
+                    result.add(genericStatisticalIndexReport);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private List<GenericStatisticalIndexReport> convertObject(List<Object> objectResult,
+                                                              String title) {
         List<GenericStatisticalIndexReport> result = new ArrayList<>();
 
         try {
@@ -142,6 +171,29 @@ public class GenericStatisticalIndexReportService implements IGenericStatistical
                     genericStatisticalIndexReport.setId(Long.parseLong(arr[0].toString()));
                     genericStatisticalIndexReport.setBaseOnComplex(Double.parseDouble(arr[1].toString()));
                     genericStatisticalIndexReport.setComplex(title);
+
+                    result.add(genericStatisticalIndexReport);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return result;
+    }
+
+    private List<GenericStatisticalIndexReport> convertObjectAndShowComplex(List<Object> objectResult,String title) {
+        List<GenericStatisticalIndexReport> result = new ArrayList<>();
+
+        try {
+            if (objectResult.size() > 0) {
+                for (Object o : objectResult) {
+                    Object[] arr = (Object[]) o;
+                    GenericStatisticalIndexReport genericStatisticalIndexReport = new GenericStatisticalIndexReport();
+                    genericStatisticalIndexReport.setId(Long.parseLong(arr[0].toString()));
+                    genericStatisticalIndexReport.setComplexId(Long.parseLong(arr[1].toString()));
+                    genericStatisticalIndexReport.setAssistant(arr[2].toString());
+                    genericStatisticalIndexReport.setComplex(title);
+                    genericStatisticalIndexReport.setBaseOnComplex(Double.parseDouble(arr[3].toString()));
 
                     result.add(genericStatisticalIndexReport);
                 }

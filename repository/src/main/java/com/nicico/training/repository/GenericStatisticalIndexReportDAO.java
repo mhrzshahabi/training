@@ -9110,4 +9110,140 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
                                                           int affairsNull);
 
 
+
+
+    @Query(value =" SELECT rowNum AS id,\n" +
+            "       res.*\n" +
+            "FROM(      \n" +
+            "\n" +
+            "SELECT DISTINCT     \n" +
+            "               s.place_id                                          as complex_id,\n" +
+            "               s.place_title                                       as complex,\n" +
+            "               sum( cast(s.zarfiat as decimal(8,2)) )  over (partition by  s.place_id)    as n_base_on_complex\n" +
+            "        FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "                    nvl(to_number(place.C_CAPACITY),0) * 6 * 5  as zarfiat,\n" +
+            "                    place.id                                    as place_id,\n" +
+            "                   place.C_TITLE_FA                             as place_title\n" +
+            "                FROM\n" +
+            "                    TBL_TRAINING_PLACE place    \n" +
+            "               \n" +
+            "               where 1=1 \n" +
+            "               and place.E_DELETED is null  \n" +
+            "               and  place.d_created_date >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "               and  place.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                     \n" +
+            "                GROUP BY\n" +
+            "                    place.id,\n" +
+            "                    place.C_TITLE_FA,\n" +
+            "                    place.C_CAPACITY\n" +
+            "            ) s\n" +
+            "          where 1=1\n" +
+            "     \n" +
+            "        GROUP BY\n" +
+            "            s.place_id,\n" +
+            "            s.place_title,\n" +
+            "            s.zarfiat\n" +
+            ") res ", nativeQuery = true)
+    List<Object> nominalTrainingCapacity(String fromDate,
+                                                                           String toDate);
+
+
+    @Query(value =" SELECT rowNum AS id,\n" +
+            "       res.*\n" +
+            "FROM(      \n" +
+            "\n" +
+            " with kol as (SELECT DISTINCT\n" +
+            "            count(distinct s.COMMITTEE_id)  over (partition by  s.mojtama)   AS count_kol_mojtama,\n" +
+            "            s.mojtama,\n" +
+            "            s.COMMITTEE_id\n" +
+            " \n" +
+            "        FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "                    COMMITTEE.id               AS COMMITTEE_id,\n" +
+            "                    TBL_COMMITTEE_OF_EXPERTS_COMPLEX.COMPLEX_VALUES   AS mojtama\n" +
+            "                   \n" +
+            "                FROM\n" +
+            "                    TBL_COMMITTEE_OF_EXPERTS   COMMITTEE \n" +
+            "                    INNER JOIN TBL_COMMITTEE_OF_EXPERTS_PERSONNEL PER ON COMMITTEE.id = PER.F_COMMITTEE_ID\n" +
+            "                    LEFT JOIN TBL_COMMITTEE_OF_EXPERTS_COMPLEX ON  COMMITTEE.id  = TBL_COMMITTEE_OF_EXPERTS_COMPLEX.COMMITTEE_OF_EXPERTS_ID \n" +
+            "                   \n" +
+            "              where  1=1 \n" +
+            "                     and COMMITTEE.E_DELETED is null\n" +
+            "                     and  COMMITTEE.d_created_date >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                     and  COMMITTEE.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                           \n" +
+            "                GROUP BY\n" +
+            "                    COMMITTEE.id,\n" +
+            "                    TBL_COMMITTEE_OF_EXPERTS_COMPLEX.COMPLEX_VALUES\n" +
+            "\n" +
+            "     \n" +
+            "            ) s\n" +
+            "        GROUP BY\n" +
+            "            s.COMMITTEE_id, \n" +
+            "            s.mojtama\n" +
+            "          \n" +
+            "         having  nvl(count( s.COMMITTEE_id) ,0)  !=0\n" +
+            "         ),\n" +
+            "        \n" +
+            "        khod as( SELECT DISTINCT\n" +
+            "            count(distinct s.COMMITTEE_id)  over (partition by  s.mojtama)   AS count_faal_mojtama,\n" +
+            "            s.mojtama,\n" +
+            "            s.COMMITTEE_id\n" +
+            " \n" +
+            "        FROM\n" +
+            "            (\n" +
+            "                SELECT\n" +
+            "                    COMMITTEE.id               AS COMMITTEE_id,\n" +
+            "                    TBL_COMMITTEE_OF_EXPERTS_COMPLEX.COMPLEX_VALUES   AS mojtama\n" +
+            "                   \n" +
+            "                FROM\n" +
+            "                    TBL_COMMITTEE_OF_EXPERTS   COMMITTEE \n" +
+            "                    INNER JOIN TBL_COMMITTEE_OF_EXPERTS_PERSONNEL PER ON COMMITTEE.id = PER.F_COMMITTEE_ID\n" +
+            "                    INNER JOIN  TBL_COMMITTEE_OF_EXPERTS_POST POST   ON COMMITTEE.id = POST.F_COMMITTEE_ID\n" +
+            "                    LEFT JOIN TBL_COMMITTEE_OF_EXPERTS_COMPLEX ON  COMMITTEE.id  = TBL_COMMITTEE_OF_EXPERTS_COMPLEX.COMMITTEE_OF_EXPERTS_ID \n" +
+            "                   \n" +
+            "              where  1=1 \n" +
+            "                     and COMMITTEE.E_DELETED is null\n" +
+            "                     and  COMMITTEE.d_created_date >=  TO_DATE(:fromDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                     and  COMMITTEE.d_created_date <  TO_DATE(:toDate, 'yyyy/mm/dd','nls_calendar=persian')\n" +
+            "                           \n" +
+            "              GROUP BY\n" +
+            "                    COMMITTEE.id,\n" +
+            "                    TBL_COMMITTEE_OF_EXPERTS_COMPLEX.COMPLEX_VALUES\n" +
+            "\n" +
+            "            ) s\n" +
+            "        GROUP BY\n" +
+            "         \n" +
+            "            s.COMMITTEE_id, \n" +
+            "            s.mojtama\n" +
+            "         )\n" +
+            "        \n" +
+            "        select DISTINCT\n" +
+            "        \n" +
+            "        kol.COMMITTEE_id            as complex_id,\n" +
+            "         kol.mojtama     as complex\n" +
+            "        ,sum(cast ((khod.count_faal_mojtama /kol.count_kol_mojtama)*100 as decimal(6,2)) ) OVER ( PARTITION BY kol.mojtama ) AS  n_base_on_complex\n" +
+            "       \n" +
+            "        FROM\n" +
+            "        kol \n" +
+            "        LEFT JOIN  khod\n" +
+            "        on\n" +
+            "         khod.mojtama = kol.mojtama\n" +
+            "           \n" +
+            "        where 1=1\n" +
+            "              and   kol.mojtama is not null\n" +
+            "                          \n" +
+            "        group by\n" +
+            "            kol.mojtama\n" +
+            "            ,khod.count_faal_mojtama \n" +
+            "            ,kol.count_kol_mojtama\n" +
+            "            , kol.COMMITTEE_id\n" +
+            "       \n" +
+            ") res\n" +
+            "where\n" +
+            "  (:complexNull = 1 OR complex IN (:complex))", nativeQuery = true)
+    List<Object> numberOfActiveExpertCommittees(String fromDate, String toDate, int complexNull, List<Object> complex);
 }
