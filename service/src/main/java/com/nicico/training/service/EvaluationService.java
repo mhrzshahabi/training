@@ -333,8 +333,8 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Long> questionIds) {
-        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds);
+    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Long> questionIds,List<Long> classIds) {
+        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds,classIds);
         List<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList> dtoList = new ArrayList<>();
         for (Object o : list){
             EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList dto = new EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList();

@@ -127,10 +127,10 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
                                  INNER JOIN TBL_EVALUATION_QUESTION EVAL_QUESTION ON QUESTIONNAIRE_Q.F_EVALUATION_QUESTION = EVAL_QUESTION.ID
                                  LEFT JOIN VIEW_COMPLEX COMPLEX ON COMPLEX.ID = TCLASS.COMPLEX_ID
                         WHERE EVALUATORPARAMVALUE.C_CODE = '32'
-                          AND EVAL_QUESTION.ID IN (:questionIds)
+                          AND EVAL_QUESTION.ID IN (:questionIds) AND EVAL.F_CLASS_ID IN (:classIds)
                         ORDER BY EVAL_QUESTION.ID, nationalCode
             """, nativeQuery = true)
-    List<Object> getAnsweredQuestionsDetails(@Param("questionIds") List<Long> questionIds);
+    List<Object> getAnsweredQuestionsDetails(@Param("questionIds") List<Long> questionIds,@Param("classIds") List<Long> classIds);
 
 
 
