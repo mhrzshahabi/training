@@ -1303,6 +1303,7 @@
     const continuousStatusReportViewUrl = rootUrl + "/continuous-status-report-view";
     const departmentUrl = rootUrl + "/department";
     const operationalChartUrl = rootUrl + "/operationalchart";
+    const educationalCalenderReportUrl = rootUrl + "/view-educational-calender-report"
     const viewClassDetailUrl = rootUrl + "/view-class-detail";
     const statisticsUnitReportUrl = rootUrl + "/ViewStatisticsUnitReport";
     const manHourStatisticsByClassFeaturesReportUrl = rootUrl + "/manHourStatisticsByClassFeatureReport";
@@ -2535,6 +2536,14 @@
                                 title: "گزارش دوره های گذرانده / نگذرانده شده بر اساس نیازسنجی",
                                 click: function () {
                                     createTab(this.title, "<spring:url value="web/CoursePassedOrUnPassedInNAReport"/>");
+                                }
+                            },
+                            {isSeparator: true},
+
+                            {
+                                title: "گزارش تقویم آموزشی",
+                                click: function () {
+                                    createTab(this.title, "<spring:url value="web/educationalCalenderReport"/>");
                                 }
                             },
                             {isSeparator: true},
