@@ -134,8 +134,13 @@
 
     let ToolStripButton_Refresh_JspOperationalChart = isc.ToolStripButtonRefresh.create({
         click: function () {
-            DynamicForm_departmentFilter_Filter.clearValues();
+
+            let value = DynamicForm_departmentFilter_Filter.getItem("departmentFilter").getValue();
+            getTreeData(value);
+
+                DynamicForm_departmentFilter_Filter.clearValues();
             refreshLG(ListGrid_JspOperationalChart);
+
         }
     });
 
