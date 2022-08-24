@@ -460,7 +460,7 @@
         if (ListGrid_Calender_BasicGoals.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else
-            ExportToFile.downloadExcelRestUrl(null,ListGrid_Calender_Sessions, educationalCalenderReportUrl + "/sessions/iscList", 1000, null, '',"گزارش جلسات تقویم"  , mainCriteria, null);
+            ExportToFile.downloadExcelRestUrl(null,ListGrid_Calender_Sessions, educationalCalenderReportUrl + "/sessions/iscList", 0, null, '',"گزارش جلسات تقویم"  , mainCriteria, null);
     }
     function createMainCriteriaInCalender(value) {
         let mainCriteria = {};
