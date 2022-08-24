@@ -47,7 +47,6 @@ public class AgreementFormController {
             baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
             baseResponse.setMessage("یافت نشد");
         } else {
-            String todayDate = PersianDate.now().toString();
             AgreementDTO.PrintInfo agreementDTO = agreementBeanMapper.toAgreementPrintInfo(agreement);
 
             String teacherRankTitle = null;
@@ -74,7 +73,7 @@ public class AgreementFormController {
             XWPFDocument doc = new XWPFDocument(stream);
 
             // replace data
-            wordUtil.replacePOI(doc, "TODAY_DATE", todayDate);
+            wordUtil.replacePOI(doc, "AGREEMENT_DATE", agreementDTO.getAgreementDate());
 
             wordUtil.replacePOI(doc, "FIRST_PARTY_NAME", agreementDTO.getFirstParty().get("firstPartyName"));
             wordUtil.replacePOI(doc, "FIRST_PARTY_ECONOMICAL_ID", agreementDTO.getFirstParty().get("firstPartyEconomicalId"));
