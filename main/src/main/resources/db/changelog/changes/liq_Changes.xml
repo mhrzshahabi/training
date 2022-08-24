@@ -5475,6 +5475,21 @@ FROM
         </addColumn>
     </changeSet>
 
+
+    <changeSet author="namdari (generated)" id="1661057829000-2">
+        <addColumn tableName="tbl_class_student">
+            <column name="class_score" type="NUMBER(19, 0)"/>
+            <column name="practical_score" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="namdari (generated)" id="1661057829000-3">
+        <addColumn tableName="tbl_class_student_aud">
+            <column name="class_score" type="NUMBER(19, 0)"/>
+            <column name="practical_score" type="NUMBER(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
     <changeSet author="MShahabi" id="1799887766557-095">
         <addColumn tableName="tbl_request_item">
             <column name="c_date_sent" type="VARCHAR2(255 CHAR)"/>

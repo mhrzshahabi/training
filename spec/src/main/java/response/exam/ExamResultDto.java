@@ -13,6 +13,8 @@ public class ExamResultDto {
     private String nationalCode;
     private String cellNumber;
     private String score; //نمره کسب شده
+    private String practicalScore;
+    private String classScore;
     private String resultStatus;
     private String testResult;//نمره تستی
     private String descriptiveResult;

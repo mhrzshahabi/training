@@ -678,26 +678,45 @@ public class ElsRestController {
                 baseResponse.setStatus(406);
                 baseResponse.setMessage("نمرات نهایی وارد شده از بیشترین مقدار روش نمره دهی کلاس بیشتر است");
             } else {
+                String classScore = testQuestionService.get(id).getClassScore();
 
-                if (SecurityUtil.getFirstName() == null && SecurityUtil.getLastName() == null) {
+                boolean checkClassScoreInRange = evaluationBeanMapper.checkClassScoreInRange(classScore, examResult);
+                if (!checkClassScoreInRange) {
 
-                    baseResponse.setMessage("توکن منقصی شده است؛ مجدد لاگین کنید");
-                    baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-                    return baseResponse;
-                } else {
+                    baseResponse.setStatus(406);
+                    baseResponse.setMessage("نمرات کلاسی این کلاس اشتباه وارد شده است");
+                }else {
+                    String practicalScore = testQuestionService.get(id).getPracticalScore();
 
-                    UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id, SecurityUtil.getFirstName() + " " + SecurityUtil.getLastName());
-                    try {
-                        baseResponse = classStudentService.updateTestScore(testQuestionService.get(id).getTclass().getId(), examResult);
-                        baseResponse = client.sendScoresToEls(requestDto);
-                        if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
+                    boolean checkPracticalScoreInRange = evaluationBeanMapper.checkPracticalScoreInRange(practicalScore, examResult);
+
+                    if (!checkPracticalScoreInRange) {
+
+                        baseResponse.setStatus(406);
+                        baseResponse.setMessage("نمرات عملی این کلاس اشتباه وارد شده است");
+                    }else {
+                        if (SecurityUtil.getFirstName() == null && SecurityUtil.getLastName() == null) {
+
+                            baseResponse.setMessage("توکن منقصی شده است؛ مجدد لاگین کنید");
+                            baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
                             return baseResponse;
-                    } catch (Exception e) {
-                        baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
-                        baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
-                        return baseResponse;
+                        } else {
+
+                            UpdateRequest requestDto = evaluationBeanMapper.convertScoresToDto(examResult, id, SecurityUtil.getFirstName() + " " + SecurityUtil.getLastName());
+                            try {
+                                baseResponse = classStudentService.updateTestScore(testQuestionService.get(id).getTclass().getId(), examResult);
+                                baseResponse = client.sendScoresToEls(requestDto);
+                                if (baseResponse.getStatus() != 200 && baseResponse.getMessage() != null)
+                                    return baseResponse;
+                            } catch (Exception e) {
+                                baseResponse.setMessage("اطلاعات به سیستم ارزشیابی آنلاین ارسال نشد");
+                                baseResponse.setStatus(HttpStatus.REQUEST_TIMEOUT.value());
+                                return baseResponse;
+                            }
+                        }
                     }
                 }
+
             }
         }
         return baseResponse;

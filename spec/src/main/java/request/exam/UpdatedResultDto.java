@@ -11,4 +11,7 @@ public class UpdatedResultDto {
     private Double testResult;
     private Double descriptiveResult;
     private Double finalResult;
+    private Double practicalScore;
+    private Double classScore;
+
 }

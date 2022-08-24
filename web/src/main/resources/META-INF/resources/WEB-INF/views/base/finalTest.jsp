@@ -242,8 +242,8 @@
                  autoFitWidth: true
             },
             { name: "onlineExamDeadLineStatus", hidden: true},
-            { name: "classScore", hidden: true},
-            { name: "practicalScore", hidden: true}
+            { name: "classScore", title: "نمره کلاسی"},
+            { name: "practicalScore",title: "نمره عملی"}
         ],
         fetchDataURL: testQuestionUrl + "/spec-list",
         implicitCriteria: {
@@ -361,6 +361,8 @@
             {name: "endDate"},
             {name: "endTime"},
             {name: "duration"},
+            {name: "practicalScore"},
+            {name: "classScore"},
             { name: "onlineFinalExamStatus",canFilter: false, valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
             { name: "sendBtn",canFilter: false, title: "بارم بندی ", width: "145"},
             { name: "showBtn",canFilter: false, title: "نتایج ", width: "130"},
@@ -505,9 +507,19 @@
             showRecordComponents: true,
             showRecordComponentsByCell: true,
             fields: [
-                {name: "cellNumber", title: 'موبایل',align: "center", width: "10%",  hidden: true},
+                {name: "cellNumber", title: 'موبایل',align: "center", width: "2%",  hidden: true},
                 {name: "surname", title: 'نام',align: "center", width: "10%"},
                 {name: "lastName", title: 'نام خانوادگی' ,align: "center", width: "15%"},
+                {name: "practicalScore", title: 'نمره عملی' ,align: "center", width: "8%",
+                    change: function(form, item, value, oldValue) {
+                        setPracticalScoreValue(value, form)
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click"
+                },
+                {name: "classScore", title: 'نمره کلاسی' ,align: "center", width: "8%",
+                    change: function(form, item, value, oldValue) {
+                        setClassScoreValue(value, form)
+                    },canEdit:true, filterOnKeypress: true,keyPressFilter: "[0-9.]",editEvent: "click"
+                },
                 {name: "score", title: 'نمره کسب شده دانشجو' ,align: "center", width: "15%"},
                 {name: "testResult", title: 'نمره تستی' ,align: "center", width: "10%"},
                 {name: "descriptiveResult", title: 'نمره تشریحی' ,align: "center", width: "10%",
@@ -574,9 +586,9 @@
                     }, 1500);
                     allResultScores=results
                     ListGrid_Result_finalTest.setData(results);
-                    hideFields(ListGrid_Result_finalTest,JSON.parse(resp.data).examType)
+                    hideFields(ListGrid_Result_finalTest,JSON.parse(resp.data).examType,recordList)
                     let Window_result_Finaltest = isc.Window.create({
-                        width: 1324,
+                        width: "90%",
                         height: 768,
                         keepInParentRect: true,
                         title: "مشاهده نتایج آزمون",
@@ -619,7 +631,10 @@
                               let listData=ListGrid_Result_finalTest.getData().get(i);
                             let testResult=    ((listData.testResult === undefined || listData.testResult === null || listData.testResult === "-") ? "0" : listData.testResult);
                             let descriptiveResult=    ((listData.descriptiveResult === undefined || listData.descriptiveResult === null || listData.descriptiveResult === "-") ? "0" : listData.descriptiveResult);
-                           let finalScore=parseFloat(testResult)+parseFloat(descriptiveResult);
+                            let practicalScore=    ((listData.practicalScore === undefined || listData.practicalScore === null || listData.practicalScore === "-") ? "0" : listData.practicalScore);
+                            let classScore=    ((listData.classScore === undefined || listData.classScore === null || listData.classScore === "-") ? "0" : listData.classScore);
+
+                            let finalScore=parseFloat(testResult)+parseFloat(descriptiveResult)+parseFloat(practicalScore)+parseFloat(classScore);
 
                                 ListGrid_Result_finalTest.setEditValue(i, ListGrid_Result_finalTest.getField("finalResult").masterIndex, finalScore);
                                 allResultScores[i].finalResult = finalScore;
@@ -690,6 +705,18 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             allResultScores[index].descriptiveResult = value;
 
         }
+    function setClassScoreValue(value, form) {
+
+        let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
+        allResultScores[index].classScore = value;
+
+    }
+    function setPracticalScoreValue(value, form) {
+
+        let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
+        allResultScores[index].practicalScore = value;
+
+    }
     function setFinalResultValue(value, form) {
    let index = allResultScores.findIndex(f => f.nationalCode === form.values.nationalCode)
             allResultScores[index].finalResult = value;
@@ -2159,7 +2186,7 @@ if (data.tclassId !== undefined && data.tclassId !== null){
 
     }));
 }
-    function hideFields(form,examType) {
+    function hideFields(form,examType,recordData) {
             switch (examType) {
             case "چند گزینه ای":
                               form.getField("descriptiveResult").hidden = true;
@@ -2179,6 +2206,17 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                               form.getField("descriptiveResult").hidden = false;
                               form.getField("testResult").hidden = false;
 
+        }
+        if (recordData.classScore===undefined || recordData.classScore===null){
+            form.getField("classScore").hidden = true;
+        }else {
+            form.getField("classScore").hidden = false;
+        }
+
+        if (recordData.practicalScore===undefined || recordData.practicalScore===null){
+            form.getField("practicalScore").hidden = true;
+        }else {
+            form.getField("practicalScore").hidden = false;
         }
 
     }

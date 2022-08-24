@@ -2142,6 +2142,15 @@ public abstract class EvaluationBeanMapper {
 
             updatedResultDto.setMobileNumber(data.getCellNumber());
             updatedResultDto.setNationalCode(data.getNationalCode());
+            if (data.getClassScore()!=null && !Objects.equals(data.getClassScore(), "-"))
+            updatedResultDto.setClassScore(Double.parseDouble(data.getClassScore()));
+            else
+                updatedResultDto.setClassScore(null);
+
+            if (data.getPracticalScore()!=null && !Objects.equals(data.getPracticalScore(), "-"))
+                updatedResultDto.setPracticalScore(Double.parseDouble(data.getPracticalScore()));
+            else
+                updatedResultDto.setPracticalScore(null);
 
             resultDtoList.add(updatedResultDto);
         }
@@ -2400,4 +2409,46 @@ public abstract class EvaluationBeanMapper {
     }
 
 
+    public boolean checkClassScoreInRange(String allClassScore, List<ExamResult> examResult) {
+        if (allClassScore!=null) {
+
+
+                for (ExamResult data : examResult) {
+                    double classScore = 0D;
+
+                    if (data.getClassScore() != null && !data.getClassScore().equals("-")) {
+                        String englishFinalResult = new BigDecimal(data.getClassScore()).toString();
+                        classScore = Double.parseDouble(englishFinalResult);
+                        if (classScore >  Double.parseDouble(allClassScore))
+                            return false;
+                    }
+
+                }
+                return true;
+
+        } else
+            return true;
+
+    }
+    public boolean checkPracticalScoreInRange(String allPracticalScore, List<ExamResult> examResult) {
+        if (allPracticalScore!=null) {
+
+
+                for (ExamResult data : examResult) {
+                    double practicalScore = 0D;
+
+                    if (data.getClassScore() != null && !data.getClassScore().equals("-")) {
+                        String englishFinalResult = new BigDecimal(data.getPracticalScore()).toString();
+                        practicalScore = Double.parseDouble(englishFinalResult);
+                        if (practicalScore >  Double.parseDouble(allPracticalScore))
+                            return false;
+                    }
+
+                }
+                return true;
+
+        } else
+            return true;
+
+    }
 }
