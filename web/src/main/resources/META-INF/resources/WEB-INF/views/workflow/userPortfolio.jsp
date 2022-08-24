@@ -165,7 +165,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
                 if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی کارشناس ارشد برنامه ریزی"))
-                    showParallelRequestItemProcessAndCompletion(record);
+                    showParallelRequestItemProcess(record);
                 else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس برنامه ریزی جهت تعیین وضعیت"))
                     showRequestItemProcessToDetermineStatus(record);
                 else if (record.title.includes("صلاحیت علمی و فنی") && record.name.includes("بررسی رئیس اجرا"))
@@ -205,7 +205,7 @@
             if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی رئیس برنامه ریزی") {
                 confirmGroupProcess(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی کارشناس ارشد برنامه ریزی") {
-
+                confirmGroupParallelRequestItemProcess(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی رئیس برنامه ریزی جهت تعیین وضعیت") {
                 confirmGroupRequestItemProcessToDetermineStatus(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی کارشناس انتصاب سمت") {
@@ -215,12 +215,20 @@
             }
         }
     });
+    let ToolStripButton_Excel_Processes_UserPortfolio = isc.ToolStripButton.create({
+        title: "ارسال به اکسل",
+        click: function () {
+            let records = ListGrid_Processes_UserPortfolio.getSelectedRecords();
+            showGroupExcelParallelRequestItemProcess(records);
+        }
+    });
     let ToolStrip_Actions_Processes_UserPortfolio = isc.ToolStrip.create({
         width: "100%",
         members: [
             ToolStripButton_Show_Processes_UserPortfolio,
             ToolStripButton_InProgress_Workflow_UserPortfolio,
             ToolStripButton_Group_Confirm_UserPortfolio,
+            ToolStripButton_Excel_Processes_UserPortfolio,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -274,12 +282,18 @@
             }
 
             let records = ListGrid_Processes_UserPortfolio.getSelectedRecords();
-            let setRecords = new Set(records.map(item => item.name));
+            let recordsName = records.map(item => item.name);
 
-            if (records.size() > 1 && setRecords.size === 1)
+            if (records.size() > 1 && new Set(recordsName).size === 1) {
                 ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(false);
-            else
+                if (recordsName.contains("بررسی کارشناس ارشد برنامه ریزی")) {
+                    ToolStripButton_Excel_Processes_UserPortfolio.show();
+                } else
+                    ToolStripButton_Excel_Processes_UserPortfolio.hide();
+            } else {
                 ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(true);
+                ToolStripButton_Excel_Processes_UserPortfolio.hide();
+            }
 
             if (records.size() > 1)
                 ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
@@ -618,7 +632,7 @@
             Window_Completion_UserPortfolio.show();
         }
     }
-    function showParallelRequestItemProcessAndCompletion(record) {
+    function showParallelRequestItemProcess(record) {
 
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
@@ -1984,6 +1998,31 @@
         }
     }
 
+    function showGroupExcelParallelRequestItemProcess(records) {
+
+        let itemFields = ["name", "lastName", "personnelNo2", "nationalCode", "affairs", "post", "postTitle", "courseCode", "courseTitle", "priority"];
+        let itemHeaders = ["نام", "نام خانوادگی", "شماره پرسنلی", "کدملی", "امور", "کدپست پیشنهادی", "پست پیشنهادی", "کد دوره", "نام دوره", "اولویت"];
+        let requestItemIds = records.map(item => item.requestItemId);
+
+        let downloadForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/training/reportsToExcel/planningExperts",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "fieldNames", type: "hidden"},
+                    {name: "headers", type: "hidden"},
+                    {name: "requestItemIds", type: "hidden"}
+                ]
+        });
+
+        downloadForm.setValue("fieldNames", itemFields);
+        downloadForm.setValue("headers", itemHeaders);
+        downloadForm.setValue("requestItemIds", requestItemIds);
+        downloadForm.show();
+        downloadForm.submitForm();
+    }
     function showGroupRequestItemProcessToAppointmentExpert(records) {
 
         let DynamicForm_Group_RequestItem_Appointment_Expert = isc.DynamicForm.create({
@@ -2071,7 +2110,7 @@
             ]
         });
         let Window_Group_RequestItem_Appointment_Expert_Completion = isc.Window.create({
-            title: "تکمیل گروهی فرایند",
+            title: "تایید گروهی فرایند",
             autoSize: false,
             width: "50%",
             height: "20%",
@@ -2388,6 +2427,38 @@
 
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequestList), function (resp) {
+            wait.close();
+            let hasException = JSON.parse(resp.httpResponseText);
+            if (hasException === false) {
+                createDialog("info", "<spring:message code='global.form.request.successful'/>");
+            } else {
+                createDialog("info", "ارسال بعضی از درخواست ها با مشکل مواجه شده است");
+            }
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmGroupParallelRequestItemProcess(records) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/parallel/request-item/review/group";
+
+        let reviewTaskRequestList = [];
+        for (let i = 0; i < records.length; i++) {
+            let ass_data = {
+                "assigneeList": records[i].assigneeList,
+            };
+            let reviewTaskRequest = {
+                taskId: records[i].taskId,
+                approve: true,
+                userName: userUserName,
+                processInstanceId: records[i].processInstanceId,
+                variables: ass_data
+            };
+            reviewTaskRequestList.add(reviewTaskRequest);
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reviewTaskRequestList), function (resp) {
             wait.close();
             let hasException = JSON.parse(resp.httpResponseText);
             if (hasException === false) {

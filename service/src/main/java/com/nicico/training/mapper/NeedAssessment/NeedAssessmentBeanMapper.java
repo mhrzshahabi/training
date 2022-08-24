@@ -32,6 +32,13 @@ public abstract class NeedAssessmentBeanMapper {
     public abstract NeedsAssessmentDTO.CourseDetail toNeedsAssessmentCourseDetailDTO(NeedsAssessment needsAssessment);
     public abstract List<NeedsAssessmentDTO.CourseDetail> toNeedsAssessmentCourseDetailDTOList(List<NeedsAssessment> needsAssessmentList);
 
+    @Mappings({
+            @Mapping(source = "skillId", target = "courseCode", qualifiedByName = "toCourseCode"),
+            @Mapping(source = "skillId", target = "courseTitle", qualifiedByName = "toCourseTitle"),
+            @Mapping(source = "needsAssessmentPriorityId", target = "priority", qualifiedByName = "toPriority")
+    })
+    public abstract NeedsAssessmentDTO.PlanningExpertsExcel toNeedsAssessmentPlanningExpertsExcelDTO(NeedsAssessment needsAssessment);
+    public abstract List<NeedsAssessmentDTO.PlanningExpertsExcel> toNeedsAssessmentPlanningExpertsExcelDTOList(List<NeedsAssessment> needsAssessmentList);
 
     @Named("toCourseCode")
     protected String toCourseCode(Long skillId) {

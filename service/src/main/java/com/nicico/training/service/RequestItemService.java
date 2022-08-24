@@ -9,11 +9,8 @@ import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.NeedsAssessmentReportsDTO;
-import com.nicico.training.dto.RequestItemCoursesDetailDTO;
-import com.nicico.training.dto.RequestItemProcessDetailDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
-import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.ICompetenceRequestService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IRequestItemService;
@@ -29,6 +26,7 @@ import dto.bpms.BPMSReqItemSentLetterDto;
 import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -48,6 +46,7 @@ public class RequestItemService implements IRequestItemService {
     private final ModelMapper modelMapper;
     private final PersonnelDAO personnelDAO;
     private final IBpmsService iBpmsService;
+    private final ITclassService classService;
     private final RequestItemDAO requestItemDAO;
     private final IPersonnelService personnelService;
     private final BpmsClientService bpmsClientService;
@@ -57,6 +56,7 @@ public class RequestItemService implements IRequestItemService {
     private final RequestItemBeanMapper requestItemBeanMapper;
     private final IParameterValueService parameterValueService;
     private final IOperationalRoleService operationalRoleService;
+    private final INeedsAssessmentService needsAssessmentService;
     private final ISynonymPersonnelService synonymPersonnelService;
     private final ICompetenceRequestService competenceRequestService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
@@ -853,6 +853,42 @@ public class RequestItemService implements IRequestItemService {
         }
     }
 
+    @Override
+    public List<BPMSReqItemCoursesDetailDto> getNotPassedCourses(String processInstanceId) {
+
+        SynonymPersonnel synonymPersonnel;
+        SynonymPersonnel synonymPersonnelByNationalCode = null;
+        SynonymPersonnel synonymPersonnelByPersonnelNo2 = null;
+        List<BPMSReqItemCoursesDetailDto> courseNotPassedList = new ArrayList<>();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(processInstanceId);
+
+        if (optionalRequestItem.isPresent()) {
+            RequestItem requestItem = optionalRequestItem.get();
+            if (requestItem.getNationalCode() != null)
+                synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+            if (requestItem.getPersonnelNo2() != null)
+                synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+
+            if (synonymPersonnelByNationalCode != null)
+                synonymPersonnel = synonymPersonnelByNationalCode;
+            else
+                synonymPersonnel = synonymPersonnelByPersonnelNo2;
+
+            List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = needsAssessmentService.findCoursesByTrainingPostCode(requestItem.getPost()).stream()
+                    .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
+            List<BPMSReqItemCoursesDetailDto> courseList = modelMapper.map(needsAssessmentDTOList, new TypeToken<List<BPMSReqItemCoursesDetailDto>>() {
+            }.getType());
+
+            List<String> list = classService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
+                    .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
+            for (BPMSReqItemCoursesDetailDto course : courseList) {
+                if (!list.contains(course.getCourseCode()))
+                    courseNotPassedList.add(course);
+            }
+        }
+        return courseNotPassedList.stream().filter(item -> item.getPriority().contains("ضروری") || item.getPriority().contains("انتصاب")).collect(Collectors.toList());
+    }
+
     private int getWrongCount(List<RequestItemWithDiff> list) {
         int wrongCount = 0;
         for (RequestItemWithDiff data : list) {
@@ -979,5 +1015,4 @@ public class RequestItemService implements IRequestItemService {
             return RequestItemState.PostMissed;
         }
     }
-
 }

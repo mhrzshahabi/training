@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.model.RequestItem;
+import dto.bpms.BPMSReqItemCoursesDetailDto;
 import dto.bpms.BPMSReqItemCoursesDto;
 import dto.bpms.BPMSReqItemSentLetterDto;
 import dto.bpms.BpmsStartParamsDto;
@@ -87,4 +88,6 @@ public interface IRequestItemService {
     List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
 
     void updateProcessStatus(Long requestItemId, String processStatus);
+
+    List<BPMSReqItemCoursesDetailDto> getNotPassedCourses(String processInstanceId);
 }

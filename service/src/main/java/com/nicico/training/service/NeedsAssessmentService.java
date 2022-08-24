@@ -10,6 +10,7 @@ import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.iservice.INeedsAssessmentService;
 import com.nicico.training.mapper.NeedAssessment.NeedAssessmentBeanMapper;
 import com.nicico.training.model.NeedsAssessment;
+import com.nicico.training.model.RequestItem;
 import com.nicico.training.repository.NeedsAssessmentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.TypeToken;
@@ -17,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
@@ -160,6 +158,28 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
                 courseDetailDistinctList.add(courseDetail);
         }
         return courseDetailDistinctList;
+    }
+
+    @Override
+    public List<NeedsAssessmentDTO.PlanningExpertsExcel> findCoursesForPlanningExpertsByTrainingPostCode(RequestItem requestItem) {
+        List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesDistinctList = new ArrayList<>();
+        List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCodeAndDeleted("TrainingPost", requestItem.getPost(), null);
+        List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesList = needAssessmentBeanMapper.toNeedsAssessmentPlanningExpertsExcelDTOList(needsAssessmentList);
+        for (NeedsAssessmentDTO.PlanningExpertsExcel course : coursesList) {
+            if (!coursesDistinctList.stream().map(NeedsAssessmentDTO.PlanningExpertsExcel::getCourseCode).collect(Collectors.toList()).contains(course.getCourseCode()))
+                coursesDistinctList.add(course);
+        }
+        coursesDistinctList.replaceAll(item -> {
+            item.setName(requestItem.getName());
+            item.setLastName(requestItem.getLastName());
+            item.setPersonnelNo2(requestItem.getPersonnelNo2());
+            item.setNationalCode(requestItem.getNationalCode());
+            item.setAffairs(requestItem.getAffairs());
+            item.setPost(requestItem.getPost());
+            item.setPostTitle(requestItem.getPostTitle());
+            return item;
+        });
+        return coursesDistinctList;
     }
 
     private List<NeedsAssessmentDTO.Tree> findGenerations(List<NeedsAssessmentDTO.Tree> tree) {

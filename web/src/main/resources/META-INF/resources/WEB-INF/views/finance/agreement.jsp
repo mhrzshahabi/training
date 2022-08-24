@@ -715,6 +715,7 @@
                 colSpan: 4,
                 type: "textArea",
                 height: "100",
+                enforceLength: true,
                 length: 150
             },
             {

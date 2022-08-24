@@ -100,6 +100,21 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
+    @PostMapping({"/tasks/parallel/request-item/review/group/{userNationalCode}"})
+    public ResponseEntity reviewGroupParallelRequestItemTask(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList, @PathVariable String userNationalCode) {
+        boolean hasException = false;
+        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
+            BPMSReqItemCoursesDto bPMSReqItemCoursesDto = new BPMSReqItemCoursesDto();
+            bPMSReqItemCoursesDto.setReviewTaskRequest(reviewTaskRequest);
+            bPMSReqItemCoursesDto.setCourses(requestItemService.getNotPassedCourses(reviewTaskRequest.getProcessInstanceId()));
+            BaseResponse response = requestItemService.reviewParallelRequestItemTask(bPMSReqItemCoursesDto, userNationalCode);
+            if (response.getStatus() != 200)
+                hasException = true;
+        }
+        return new ResponseEntity<>(hasException, HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping({"/tasks/determine-status/request-item/review/{chiefNationalCode}"})
     public BaseResponse reviewDetermineStatusRequestItemTask(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String chiefNationalCode) {
         return requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, chiefNationalCode);
