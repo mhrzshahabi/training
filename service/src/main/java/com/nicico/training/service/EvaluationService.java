@@ -333,8 +333,8 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Long> questionIds) {
-        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds);
+    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Long> questionIds,List<Long> classIds) {
+        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds,classIds);
         List<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList> dtoList = new ArrayList<>();
         for (Object o : list){
             EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList dto = new EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList();
@@ -347,6 +347,12 @@ public class EvaluationService implements IEvaluationService {
             dto.setNationalCode(arr[5] == null ? null : arr[5].toString());
             dto.setComplexTitle(arr[6] == null ? null : arr[6].toString());
             dto.setQuestionTitle(arr[7] == null ? null : arr[7].toString());
+            String first=(arr[8]== null ? "" : arr[8].toString());
+            String last=(arr[9]== null ? "" : arr[9].toString());
+            dto.setTeacherName(first+ " "+last);
+            dto.setTeacherMobileNo(arr[10]== null ? null : arr[10].toString());
+            dto.setStudentMobileNo(arr[11]== null ? null : arr[11].toString());
+            dto.setOrganizer(arr[12]== null ? null : arr[12].toString());
             dtoList.add(dto);
         }
         final EvaluationAnsweredQuestionsDetailsDTO.SpecRs specResponse = new EvaluationAnsweredQuestionsDetailsDTO.SpecRs();

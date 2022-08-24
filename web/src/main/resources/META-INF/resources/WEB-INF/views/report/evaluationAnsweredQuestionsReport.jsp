@@ -10,6 +10,7 @@
     //----------------------------------------------------Variables-----------------------------------------------------
     let excelData = [];
     let ids = "";
+    let classIdList= "";
     var isCriteriaCategoriesChanged_Answered_Questions_Details = false;
     let reportCriteria_Answered_Questions_Details = null;
 
@@ -25,9 +26,24 @@
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
             {name: "questionTitle", title: "<spring:message code="question"/>", filterOperator: "iContains"},
             {name: "answerTitle", title: "<spring:message code="answer"/>", filterOperator: "iContains"},
+            {name: "teacherName", title: "<spring:message code="teacher.name"/>", filterOperator: "iContains"},
+            {name: "teacherMobileNo", title: "<spring:message code="teacher.mobile"/>", filterOperator: "iContains"},
+            {name: "studentMobileNo", title: "<spring:message code="student.mobile"/>", filterOperator: "iContains"},
+            {name: "organizer", title: "<spring:message code="organizer"/>", filterOperator: "iContains"}
 
         ],
         fetchDataURL: evaluationUrl + "/getAnsweredEvalQuestionsDetails/"+ids.toString(),
+    });
+
+    var RestDataSource_Class_evalAnsweredQuestions = isc.TrDS.create({
+        ID: "RestDataSource_Class_evalAnsweredQuestions",
+        fields: [
+            {name: "id", primaryKey: true,hidden : true},
+            {name: "titleClass",title :"<spring:message code="title"/>", filterOperator: "iContains",autoFitWidth : true},
+            {name: "code",title: "<spring:message code="code"/>", filterOperator: "iContains",autoFitWidth : true}
+
+        ],
+        fetchDataURL: classUrl + "spec-list"
     });
 
     QuestionnaireDS_Answered_Questions_Details = isc.TrDS.create({
@@ -160,7 +176,69 @@
                     showFilterEditor: true,
                     filterOperator: "iContains"
                 },
-            }
+            },
+
+            {
+                name: "class",
+                title: "<spring:message code="class"/>",
+                required: false,
+                <%--prompt: "<spring:message code="first.select.course"/>",--%>
+                textAlign: "center",
+                autoFetchData: false,
+                width: "*",
+                colSpan: 2,
+                displayField: "titleClass",
+                valueField: "id",
+                optionDataSource: RestDataSource_Class_evalAnsweredQuestions,
+                sortField: ["id"],
+                filterFields: ["code"],
+                //type: "ComboBoxItem",
+                pickListFields: [
+                    {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                    {
+                        name: "code",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "classTitle",
+                        title: "<spring:message code='class.title'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+
+
+
+                ],
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListWidth: 800,
+                icons: [
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click: function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+
+                        }
+                    }
+                ],
+                endRow: true,
+                startRow: false,
+
+                changed: function (form, item, value) {
+                    //DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
+                }
+            },
         ]
     });
 
@@ -170,6 +248,7 @@
         title: "نمایش گزارش",
         width: 300,
         click: function () {
+
             data_values = DynamicForm_CriteriaForm_Answered_Questions_Details.getValuesAsAdvancedCriteria();
             reportCriteria_Answered_Questions_Details = data_values;
             RestDataSource_Answered_Questions_Details.fetchDataURL = evaluationUrl + "/getAnsweredEvalQuestionsDetails/";
@@ -177,19 +256,27 @@
 
             let url = evaluationUrl + "/getAnsweredEvalQuestionsDetails/";
             let questionIds = [];
-            if (DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== undefined && DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== null) {
+            let classIds= [];
+            if (DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== undefined && DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== null  ) {
                 questionIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("question").getValue();
+              classIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("class").getValue();
+                if(DynamicForm_CriteriaForm_Answered_Questions_Details.getField("class").getValue()=== undefined)
+                    classIds=null;
+
             } else {
-                createDialog("info", "لطفا پرسشنامه و سوال را انتخاب کنید", "<spring:message code="message"/>")
+                createDialog("info", "لطفا پرسشنامه - سوال و کلاس را انتخاب کنید", "<spring:message code="message"/>")
                 return;
             }
             if (questionIds === null || questionIds === undefined || questionIds.length === 0) {
                 createDialog("info", "هیچ سوالی انتخاب نشده است", "<spring:message code="message"/>")
                 return;
             }
+
             wait.show();
             ids= JSON.stringify(questionIds).toString().replace("]", "").replace("[","");
-                isc.RPCManager.sendRequest(TrDSRequest(url+ids,"GET",null, function (resp) {
+            classIdList= JSON.stringify(classIds).toString().replace("]", "").replace("[","");
+                isc.RPCManager.sendRequest(TrDSRequest(url+ids+"/"+classIdList,"GET",null, function (resp) {
+
                 wait.close();
                 if (resp.httpResponseCode === 200) {
 
@@ -248,8 +335,11 @@
             {name: "nationalCode"},
             {name: "complexTitle"},
             {name: "questionTitle"},
-            {name: "answerTitle"}
-
+            {name: "answerTitle"},
+            {name: "teacherName"},
+            {name: "teacherMobileNo"},
+            {name: "studentMobileNo"},
+            {name: "organizer"}
         ]
     });
 
