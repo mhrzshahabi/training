@@ -149,7 +149,7 @@
                 <sec:authorize access="hasAuthority('Agreement_D')">
                 ToolStripButton_Remove_Agreement,
                 </sec:authorize>
-                // ToolStripButton_Print_Word_Agreement,
+                ToolStripButton_Print_Word_Agreement,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -924,8 +924,8 @@
                 }
             });
         } else {
-            // let finalCostChars = String(record.finalCost).toPersianLetter();
-            let finalCostChars = "مبلغ به حروف";
+            let finalCostChars = String(record.finalCost).toPersianLetter();
+            // let finalCostChars = "مبلغ به حروف";
             window.open("/training/agreement/print/" + record.id + "?finalCostChars=" + finalCostChars);
         }
     }
