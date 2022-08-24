@@ -25,8 +25,8 @@ public class AgreementDTO implements Serializable {
     private Long currencyId;
     private String subject;
     private Boolean teacherEvaluation;
-//    private Long finalCost;
-//    private Long maxPaymentHours;
+    private Long finalCost;
+    private Long maxPaymentHours;
 
 
     @Getter
@@ -85,13 +85,13 @@ public class AgreementDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Agreement - PrintInfo")
-    public static class PrintInfo {
+    public static class PrintInfo extends AgreementDTO {
         private Long id;
         private Map<String, String> firstParty;
         private Map<String, String> secondParty;
         private Map<String, String> secondPartyTeacher;
         private Map<String, String> secondPartyInstitute;
-        private Long finalCost;
+//        private Long finalCost;
         private String currency;
         private String subject;
     }
