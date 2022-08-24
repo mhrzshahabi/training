@@ -10,7 +10,7 @@
     //----------------------------------------------------Variables-----------------------------------------------------
     let excelData = [];
     let ids = "";
-    let classIds = "";
+    let classIdList= "";
     var isCriteriaCategoriesChanged_Answered_Questions_Details = false;
     let reportCriteria_Answered_Questions_Details = null;
 
@@ -202,17 +202,20 @@
         title: "نمایش گزارش",
         width: 300,
         click: function () {
-            debugger
+
             data_values = DynamicForm_CriteriaForm_Answered_Questions_Details.getValuesAsAdvancedCriteria();
             reportCriteria_Answered_Questions_Details = data_values;
             RestDataSource_Answered_Questions_Details.fetchDataURL = evaluationUrl + "/getAnsweredEvalQuestionsDetails/";
 
-
+            debugger
             let url = evaluationUrl + "/getAnsweredEvalQuestionsDetails/";
             let questionIds = [];
-
+            let classIds= [];
             if (DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== undefined && DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== null  ) {
                 questionIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("question").getValue();
+              classIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("class").getValue();
+                if(DynamicForm_CriteriaForm_Answered_Questions_Details.getField("class").getValue()=== undefined)
+                    classIds=null;
 
             } else {
                 createDialog("info", "لطفا پرسشنامه - سوال و کلاس را انتخاب کنید", "<spring:message code="message"/>")
@@ -225,8 +228,9 @@
 
             wait.show();
             ids= JSON.stringify(questionIds).toString().replace("]", "").replace("[","");
-            classIds= JSON.stringify(questionIds).toString().replace("]", "").replace("[","");
-                isc.RPCManager.sendRequest(TrDSRequest(url+ids,"POST",classIds, function (resp) {
+            classIdList= JSON.stringify(classIds).toString().replace("]", "").replace("[","");
+                isc.RPCManager.sendRequest(TrDSRequest(url+ids+"/"+classIdList,"GET",null, function (resp) {
+
                 wait.close();
                 if (resp.httpResponseCode === 200) {
 

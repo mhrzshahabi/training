@@ -1004,11 +1004,14 @@ public class EvaluationRestController {
      * @param Ids
      * @return
      */
-    @PostMapping(value = "/getAnsweredEvalQuestionsDetails/{Ids}}")
-    public ResponseEntity<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs> getAnsweredQuestionsDetails(@PathVariable String Ids,@RequestBody String classIds) {
+    @GetMapping(value = "/getAnsweredEvalQuestionsDetails/{Ids}/{classIdList}")
+    public ResponseEntity<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs> getAnsweredQuestionsDetails(@PathVariable String Ids,@PathVariable String classIdList) {
         List<Long> questionIds = Arrays.stream(Ids.split(",")).map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
-        List<Long> classIdList = Arrays.stream(classIds.split(",")).map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
-        EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs dtos = evaluationService.getAnsweredQuestionsDetails(questionIds,classIdList);
+        List<Long> classIds=new ArrayList<>();
+        if(!classIdList.equals("null")){
+            classIds = Arrays.stream(classIdList.split(",")).map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
+        }
+        EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs dtos = evaluationService.getAnsweredQuestionsDetails(questionIds,classIds);
         if (dtos.getResponse().getTotalRows() > 0) {
             return new ResponseEntity<>(dtos, HttpStatus.OK);
         } else {
