@@ -59,7 +59,7 @@ public class AgreementFormController {
                 // is teacher
                 path = "reports/word/TeacherAgreement.docx";
                 Map<String, String> secondPartyName = new HashMap<>();
-                secondPartyName.put("secondPartyName", teacherName + teacherLastName);
+                secondPartyName.put("secondPartyName", teacherName + " " + teacherLastName);
                 agreementDTO.setSecondParty(secondPartyName);
 
                 TeacherExperienceInfo teacherExperience = teacherExperienceInfoService.getLastTeacherExperienceInfoByTeacherId(agreementDTO.getSecondPartyTeacherId());
@@ -104,7 +104,7 @@ public class AgreementFormController {
             wordUtil.replacePOI(doc, "SECOND_PARTY_SHABA", agreementDTO.getSecondParty().get("secondPartyShaba"));
             wordUtil.replacePOI(doc, "SECOND_PARTY_BANK", agreementDTO.getSecondParty().get("secondPartyBank"));
 
-            wordUtil.replacePOI(doc, "FINAL_COST", agreementDTO.getFinalCost() == null ? "(تعیین نشده)": agreementDTO.getFinalCost().toString());
+            wordUtil.replacePOI(doc, "FINAL_COST", agreementDTO.getFinalCost() == null ? "(تعیین نشده)" : agreementDTO.getFinalCost().toString());
             wordUtil.replacePOI(doc, "CHARS", finalCostChars);
             wordUtil.replacePOI(doc, "CURRENCY", agreementDTO.getCurrency());
             wordUtil.replacePOI(doc, "SUBJECT", agreementDTO.getSubject() == null ? "(تعیین نشده)" : agreementDTO.getSubject());
