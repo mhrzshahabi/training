@@ -994,6 +994,7 @@ public abstract class EvaluationBeanMapper {
             double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
             double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
             exam.setScore(20D-(classScore+practicalScore));
+            exam.setFinalScore(20D);
             exam.setPracticalScore(practicalScore);
             exam.setClassScore(classScore);
         } else if (tClass.getScoringMethod().equals("2")) {
@@ -1005,6 +1006,7 @@ public abstract class EvaluationBeanMapper {
             double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
             double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
             exam.setScore(100D-(classScore+practicalScore));
+            exam.setFinalScore(100D);
             exam.setPracticalScore(practicalScore);
             exam.setClassScore(classScore);
 
@@ -1012,6 +1014,7 @@ public abstract class EvaluationBeanMapper {
             exam.setMinimumAcceptScore(0D);
 
             exam.setScore(0D);
+            exam.setFinalScore(0D);
 
         }
 
@@ -1062,6 +1065,7 @@ public abstract class EvaluationBeanMapper {
             double classScore= (  exam.getClassScore() != null) ? Double.parseDouble(exam.getClassScore()) : 0;
             double practicalScore=(  exam.getPracticalScore() != null) ? Double.parseDouble(exam.getPracticalScore()) : 0;
             examCreateDTO.setScore(20D-(classScore+practicalScore));
+            examCreateDTO.setFinalScore(20D);
             examCreateDTO.setPracticalScore(practicalScore);
             examCreateDTO.setClassScore(classScore);
 
@@ -1074,6 +1078,8 @@ public abstract class EvaluationBeanMapper {
             double classScore= (  exam.getClassScore() != null) ? Double.parseDouble(exam.getClassScore()) : 0;
             double practicalScore=(  exam.getPracticalScore() != null) ? Double.parseDouble(exam.getPracticalScore()) : 0;
             examCreateDTO.setScore(100D-(classScore+practicalScore));
+            examCreateDTO.setFinalScore(100D);
+
             examCreateDTO.setPracticalScore(practicalScore);
             examCreateDTO.setClassScore(classScore);
 
@@ -1081,6 +1087,7 @@ public abstract class EvaluationBeanMapper {
             examCreateDTO.setMinimumAcceptScore(0D);
 
             examCreateDTO.setScore(0D);
+            examCreateDTO.setFinalScore(0D);
 
         }
 
@@ -1113,10 +1120,12 @@ public abstract class EvaluationBeanMapper {
             exam.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             if (type.equalsIgnoreCase("preTest")){
                 exam.setScore(20D);
+                exam.setFinalScore(20D);
             }else {
                 double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
                 double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
                 exam.setScore(20D-(classScore+practicalScore));
+                exam.setFinalScore(20D);
                 exam.setPracticalScore(practicalScore);
                 exam.setClassScore(classScore);
             }
@@ -1128,17 +1137,22 @@ public abstract class EvaluationBeanMapper {
 
             if (type.equalsIgnoreCase("preTest")){
                 exam.setScore(100D);
+                exam.setFinalScore(100D);
+
 
             }else {
                 double classScore= (  object.getExamItem().getClassScore() != null) ? Double.parseDouble(object.getExamItem().getClassScore()) : 0;
                 double practicalScore=(  object.getExamItem().getPracticalScore() != null) ? Double.parseDouble(object.getExamItem().getPracticalScore()) : 0;
                 exam.setScore(100D-(classScore+practicalScore));
+                exam.setFinalScore(100D);
                 exam.setPracticalScore(practicalScore);
                 exam.setClassScore(classScore);
             }
         } else {
             exam.setMinimumAcceptScore(0D);
             exam.setScore(0D);
+            exam.setFinalScore(0D);
+
         }
 
         exam.setStatus(ExamStatus.ACTIVE);
@@ -1160,15 +1174,21 @@ public abstract class EvaluationBeanMapper {
         if (tClass.getScoringMethod().equals("3")) {
             examDto.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             examDto.setScore(20D);
+            examDto.setFinalScore(20D);
+
         } else if (tClass.getScoringMethod().equals("2")) {
             if (null != tClass.getAcceptancelimit())
                 examDto.setMinimumAcceptScore(Double.valueOf(tClass.getAcceptancelimit()));
             else
                 examDto.setMinimumAcceptScore(50D);
             examDto.setScore(100D);
+            examDto.setFinalScore(100D);
+
         } else {
             examDto.setMinimumAcceptScore(0D);
             examDto.setScore(0D);
+            examDto.setFinalScore(0D);
+
         }
 
         examDto.setStatus(ExamStatus.ACTIVE);
