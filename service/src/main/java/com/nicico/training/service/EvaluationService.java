@@ -353,6 +353,7 @@ public class EvaluationService implements IEvaluationService {
             dto.setTeacherMobileNo(arr[10]== null ? null : arr[10].toString());
             dto.setStudentMobileNo(arr[11]== null ? null : arr[11].toString());
             dto.setOrganizer(arr[12]== null ? null : arr[12].toString());
+            dto.setDomain(arr[15]== null ? null : arr[15].toString());
             dtoList.add(dto);
         }
         final EvaluationAnsweredQuestionsDetailsDTO.SpecRs specResponse = new EvaluationAnsweredQuestionsDetailsDTO.SpecRs();

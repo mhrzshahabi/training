@@ -24,6 +24,7 @@ public class EvaluationAnsweredQuestionsDetailsDTO {
     private String teacherMobileNo;
     private String studentMobileNo;
     private String organizer;
+    private String domain;
 
 
     @Getter

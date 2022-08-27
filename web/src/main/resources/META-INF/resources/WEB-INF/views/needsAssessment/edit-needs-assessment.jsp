@@ -343,6 +343,7 @@
     let buttonSendToWorkFlow = isc.ToolStripButtonCreate.create({
         title: " ذخیره و ارسال به گردش کار",
         click: async function () {
+            wait.show();
             saveAndSendToWorkFlow()
         }
     });
@@ -2605,6 +2606,7 @@
 
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendNeedsAssessmentToWorkflow(mustSend) {
+        wait.close();
         isc.MyYesNoDialog.create({
             message: "<spring:message code="needs.assessment.sent.to.workflow.ask"/>",
             title: "<spring:message code="message"/>",

@@ -118,7 +118,8 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
                            STUDENTCONTACT.c_mobile     AS student_mobile,
                                ORGANIZER.c_title_fa       AS organizer,
                                 EVAL.F_QUESTIONNAIRE_ID,
-                              QUESTIONNAIRE.C_TITLE
+                              QUESTIONNAIRE.C_TITLE,
+                                                       tbl_parameter_value.c_title AS domain_title
                                                                                  
                         FROM TBL_EVALUATION EVAL
                                  LEFT JOIN TBL_EVALUATION_ANSWER ANSWER ON EVAL.ID = ANSWER.F_EVALUATION_ID
@@ -139,6 +140,8 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
                            INNER JOIN TBL_QUESTIONNAIRE_QUESTION QUESTIONNAIRE_Q ON ANSWER.F_EVALUATION_QUESTION_ID = QUESTIONNAIRE_Q.ID
                             INNER JOIN TBL_EVALUATION_QUESTION EVAL_QUESTION ON QUESTIONNAIRE_Q.F_EVALUATION_QUESTION = EVAL_QUESTION.ID
                              LEFT JOIN VIEW_COMPLEX COMPLEX ON COMPLEX.ID = TCLASS.COMPLEX_ID
+                                 LEFT JOIN tbl_parameter_value ON eval_question.f_domain_id = tbl_parameter_value.id
+                            
                         WHERE EVALUATORPARAMVALUE.C_CODE = '32'
                           AND (EVAL_QUESTION.ID IN (:questionIds)) AND (:classIds is null or EVAL.F_CLASS_ID IN (:classIds))
                         ORDER BY EVAL_QUESTION.ID, nationalCode
