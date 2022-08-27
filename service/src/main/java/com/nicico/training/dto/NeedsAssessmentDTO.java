@@ -65,6 +65,7 @@ public class NeedsAssessmentDTO implements Serializable {
         private String affairs;
         private String post;
         private String postTitle;
+        private String modifiedDate;
         private String courseCode;
         private String courseTitle;
         private String priority;

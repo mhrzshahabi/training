@@ -169,6 +169,18 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
+    @PostMapping({"/tasks/planning-chief-for-approval/request-item/review/group"})
+    public ResponseEntity reviewGroupRequestItemTaskByPlanningChiefForApproval(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList) {
+        boolean hasException = false;
+        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
+            BaseResponse response = requestItemService.reviewRequestItemTaskByPlanningChiefForApproval(reviewTaskRequest);
+            if (response.getStatus() != 200)
+                hasException = true;
+        }
+        return new ResponseEntity<>(hasException, HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping({"/tasks/appointment-expert/request-item/review"})
     public BaseResponse reviewRequestItemTaskByAppointmentExpert(@RequestBody BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto) {
         return requestItemService.reviewRequestItemTaskByAppointmentExpert(bpmsReqItemSentLetterDto);

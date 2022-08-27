@@ -208,6 +208,8 @@
                 confirmGroupParallelRequestItemProcess(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی رئیس برنامه ریزی جهت تعیین وضعیت") {
                 confirmGroupRequestItemProcessToDetermineStatus(records);
+            } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی / تایید رئیس برنامه ریزی") {
+                confirmGroupRequestItemProcessByPlanningChiefForApproval(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی کارشناس انتصاب سمت") {
                 showGroupRequestItemProcessToAppointmentExpert(records);
             } else {
@@ -2000,8 +2002,8 @@
 
     function showGroupExcelParallelRequestItemProcess(records) {
 
-        let itemFields = ["name", "lastName", "personnelNo2", "nationalCode", "affairs", "post", "postTitle", "courseCode", "courseTitle", "priority"];
-        let itemHeaders = ["نام", "نام خانوادگی", "شماره پرسنلی", "کدملی", "امور", "کدپست پیشنهادی", "پست پیشنهادی", "کد دوره", "نام دوره", "اولویت"];
+        let itemFields = ["name", "lastName", "personnelNo2", "nationalCode", "affairs", "post", "postTitle", "modifiedDate", "courseCode", "courseTitle", "priority"];
+        let itemHeaders = ["نام", "نام خانوادگی", "شماره پرسنلی", "کدملی", "امور", "کدپست پیشنهادی", "پست پیشنهادی", "تاریخ بروزرسانی پست", "کد دوره", "نام دوره", "اولویت"];
         let requestItemIds = records.map(item => item.requestItemId);
 
         let downloadForm = isc.DynamicForm.create({
@@ -2532,6 +2534,38 @@
                 createDialog("info", "ارسال بعضی از درخواست ها با مشکل مواجه شده است");
             }
             window.close();
+            ToolStripButton_Refresh_Processes_UserPortfolio.click();
+        }));
+    }
+    function confirmGroupRequestItemProcessByPlanningChiefForApproval(records) {
+
+        let baseUrl = requestItemBPMSUrl;
+        let url = "/tasks/planning-chief-for-approval/request-item/review/group";
+
+        let reviewTaskRequestList = [];
+        for (let i = 0; i < records.length; i++) {
+            let ass_data = {
+                "assignFrom": records[i].assignFrom,
+            };
+            let reviewTaskRequest = {
+                taskId: records[i].taskId,
+                approve: true,
+                userName: userUserName,
+                processInstanceId: records[i].processInstanceId,
+                variables: ass_data
+            };
+            reviewTaskRequestList.add(reviewTaskRequest);
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url, "POST", JSON.stringify(reviewTaskRequestList), function (resp) {
+            wait.close();
+            let hasException = JSON.parse(resp.httpResponseText);
+            if (hasException === false) {
+                createDialog("info", "<spring:message code='global.form.request.successful'/>");
+            } else {
+                createDialog("info", "ارسال بعضی از درخواست ها با مشکل مواجه شده است");
+            }
             ToolStripButton_Refresh_Processes_UserPortfolio.click();
         }));
     }
