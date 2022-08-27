@@ -2,9 +2,12 @@ package com.nicico.training.controller;
 
 import com.nicico.training.controller.utility.WordUtil;
 import com.nicico.training.dto.AgreementDTO;
+import com.nicico.training.dto.TeacherExperienceInfoDTO;
 import com.nicico.training.iservice.IAgreementService;
+import com.nicico.training.iservice.ITeacherExperienceInfoService;
 import com.nicico.training.mapper.agreement.AgreementBeanMapper;
 import com.nicico.training.model.Agreement;
+import com.nicico.training.model.TeacherExperienceInfo;
 import com.nicico.training.utility.persianDate.PersianDate;
 import lombok.RequiredArgsConstructor;
 import org.apache.poi.xwpf.usermodel.XWPFDocument;
@@ -21,6 +24,8 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Controller
@@ -29,6 +34,7 @@ public class AgreementFormController {
 
     private final WordUtil wordUtil;
     private final IAgreementService agreementService;
+    private final ITeacherExperienceInfoService teacherExperienceInfoService;
     private final AgreementBeanMapper agreementBeanMapper;
 
     @GetMapping(value = {"/print/{agreementId}"})
@@ -38,27 +44,44 @@ public class AgreementFormController {
         Agreement agreement = agreementService.get(agreementId);
 
         if (agreement == null) {
-
             baseResponse.setStatus(HttpStatus.NOT_FOUND.value());
             baseResponse.setMessage("یافت نشد");
         } else {
-
-            String todayDate = PersianDate.now().toString();
             AgreementDTO.PrintInfo agreementDTO = agreementBeanMapper.toAgreementPrintInfo(agreement);
 
-            InputStream stream = new ClassPathResource("reports/word/Agreement.docx").getInputStream();
+            String teacherRankTitle = null;
+            String path;
+
+            String teacherName = agreementDTO.getSecondPartyTeacher().get("teacherName");
+            String teacherLastName = agreementDTO.getSecondPartyTeacher().get("teacherLastName");
+
+            if (agreement.getSecondPartyTeacherId() != null && agreement.getSecondPartyInstituteId() == null) {
+                // is teacher
+                path = "reports/word/TeacherAgreement.docx";
+                Map<String, String> secondPartyName = new HashMap<>();
+                secondPartyName.put("secondPartyName", teacherName + teacherLastName);
+                agreementDTO.setSecondParty(secondPartyName);
+
+                TeacherExperienceInfo teacherExperience = teacherExperienceInfoService.getLastTeacherExperienceInfoByTeacherId(agreementDTO.getSecondPartyTeacherId());
+                teacherRankTitle = teacherExperience.getTeacherRank().getTitle();
+            } else {
+                // is institute
+                path = "reports/word/InstituteAgreement.docx";
+            }
+
+            InputStream stream = new ClassPathResource(path).getInputStream();
             XWPFDocument doc = new XWPFDocument(stream);
 
             // replace data
-            wordUtil.replacePOI(doc, "TODAY_DATE", todayDate);
+            wordUtil.replacePOI(doc, "AGREEMENT_DATE", agreementDTO.getAgreementDate());
 
             wordUtil.replacePOI(doc, "FIRST_PARTY_NAME", agreementDTO.getFirstParty().get("firstPartyName"));
             wordUtil.replacePOI(doc, "FIRST_PARTY_ECONOMICAL_ID", agreementDTO.getFirstParty().get("firstPartyEconomicalId"));
             wordUtil.replacePOI(doc, "FIRST_PARTY_PHONE", agreementDTO.getFirstParty().get("firstPartyPhone"));
             wordUtil.replacePOI(doc, "FIRST_PARTY_FAX", agreementDTO.getFirstParty().get("firstPartyFax"));
 
-            wordUtil.replacePOI(doc, "TEACHER_NAME", agreementDTO.getSecondPartyTeacher().get("teacherName"));
-            wordUtil.replacePOI(doc, "TEACHER_LAST_NAME", agreementDTO.getSecondPartyTeacher().get("teacherLastName"));
+            wordUtil.replacePOI(doc, "TEACHER_NAME", teacherName);
+            wordUtil.replacePOI(doc, "TEACHER_LAST_NAME", teacherLastName);
             wordUtil.replacePOI(doc, "TEACHER_FATHER_NAME", agreementDTO.getSecondPartyTeacher().get("teacherFatherName"));
             wordUtil.replacePOI(doc, "TEACHER_BIRTH_CERTIFICATE", agreementDTO.getSecondPartyTeacher().get("teacherBirthCertificate"));
             wordUtil.replacePOI(doc, "TEACHER_NATIONAL_CODE", agreementDTO.getSecondPartyTeacher().get("teacherNationalCode"));
@@ -67,6 +90,7 @@ public class AgreementFormController {
             wordUtil.replacePOI(doc, "TEACHER_ADDRESS", agreementDTO.getSecondPartyTeacher().get("teacherAddress"));
             wordUtil.replacePOI(doc, "TEACHER_POSTAL_CODE", agreementDTO.getSecondPartyTeacher().get("teacherPostalCode"));
             wordUtil.replacePOI(doc, "TEACHER_MOBILE", agreementDTO.getSecondPartyTeacher().get("teacherMobile"));
+            wordUtil.replacePOI(doc, "TEACHER_RANK", teacherRankTitle == null ? "(تعیین نشده)" : teacherRankTitle);
 
             wordUtil.replacePOI(doc, "INSTITUTE_NAME", agreementDTO.getSecondPartyInstitute().get("instituteName"));
             wordUtil.replacePOI(doc, "INSTITUTE_ID", agreementDTO.getSecondPartyInstitute().get("instituteId"));
@@ -80,10 +104,13 @@ public class AgreementFormController {
             wordUtil.replacePOI(doc, "SECOND_PARTY_SHABA", agreementDTO.getSecondParty().get("secondPartyShaba"));
             wordUtil.replacePOI(doc, "SECOND_PARTY_BANK", agreementDTO.getSecondParty().get("secondPartyBank"));
 
-            wordUtil.replacePOI(doc, "FINAL_COST", agreementDTO.getFinalCost().toString());
+            wordUtil.replacePOI(doc, "FINAL_COST", agreementDTO.getFinalCost() == null ? "(تعیین نشده)": agreementDTO.getFinalCost().toString());
             wordUtil.replacePOI(doc, "CHARS", finalCostChars);
             wordUtil.replacePOI(doc, "CURRENCY", agreementDTO.getCurrency());
-            wordUtil.replacePOI(doc, "SUBJECT", agreementDTO.getSubject());
+            wordUtil.replacePOI(doc, "SUBJECT", agreementDTO.getSubject() == null ? "(تعیین نشده)" : agreementDTO.getSubject());
+            wordUtil.replacePOI(doc, "DATE_FROM", agreementDTO.getFromDate() == null ? "(تعیین نشده)" : agreementDTO.getFromDate());
+            wordUtil.replacePOI(doc, "DATE_TO", agreementDTO.getToDate() == null ? "(تعیین نشده)" : agreementDTO.getToDate());
+            wordUtil.replacePOI(doc, "MAX_PAYMENT_HOURS", agreementDTO.getMaxPaymentHours() == null ? "(تعیین نشده)" : agreementDTO.getMaxPaymentHours().toString());
 
 
             response.setHeader("Content-Disposition", "attachment; filename=Agreement.docx");

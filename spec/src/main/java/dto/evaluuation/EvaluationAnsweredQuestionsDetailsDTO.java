@@ -20,6 +20,11 @@ public class EvaluationAnsweredQuestionsDetailsDTO {
     private String nationalCode;
     private String complexTitle;
     private String questionTitle;
+    private String teacherName;
+    private String teacherMobileNo;
+    private String studentMobileNo;
+    private String organizer;
+
 
     @Getter
     @Setter
