@@ -211,7 +211,7 @@
         sortField: 1,
         sortDirection: "descending",
         fields: [
-            {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center",
+            {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center", hidden: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
                 }
@@ -318,7 +318,8 @@
             {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                hidden: true
             },
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},
             {name: "enabled",
@@ -598,7 +599,8 @@
                 autoFitWidth: true,
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                hidden: true
             },
             {
                 name: "titleFa",

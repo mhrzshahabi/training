@@ -132,7 +132,8 @@
                 name: "code",
                 title: "<spring:message code="post.grade.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                hidden: true
             },
             {name: "titleFa2", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
             {name: "competenceCount", title: "تعداد شایستگی", align: "center", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
@@ -163,7 +164,9 @@
             {name: "code",
                 filterEditorProperties: {
                     keyPressFilter: "[0-9]"
-                }
+                },
+                hidden: true
+
             },
             {name: "peopleType", filterOnKeypress: true},
             {name: "titleFa2"},

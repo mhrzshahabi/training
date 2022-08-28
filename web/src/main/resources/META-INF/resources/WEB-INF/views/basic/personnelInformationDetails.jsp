@@ -897,7 +897,8 @@
                         {
                             name: "post.postGrade.code",
                             title: "<spring:message code="post.grade.code"/> : ",
-                            canEdit: false
+                            canEdit: false,
+                            hidden: true
                         },
                         {
                             name: "post.postGrade.titleFa2",
