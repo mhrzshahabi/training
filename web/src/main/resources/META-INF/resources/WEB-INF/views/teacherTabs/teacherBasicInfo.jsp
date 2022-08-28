@@ -168,8 +168,8 @@
                             fillPersonalInfoFields(nationalCodeTemp);
                         }
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").setValue(nationalCodeTemp);
-                        // DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
+                        // DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
                         DynamicForm_BasicInfo_JspTeacher.getField("evaluation").setValue("<spring:message code='select.related.category.and.subcategory.for.evaluation'/>");
                     }
                 }
