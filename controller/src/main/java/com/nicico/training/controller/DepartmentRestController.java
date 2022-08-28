@@ -119,6 +119,12 @@ public class DepartmentRestController {
         BaseService.setCriteriaToNotSearchDeleted(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(departmentService.getOrganSegmentList(fieldName, searchRq), searchRq.getStartIndex()), HttpStatus.OK);
     }
+    @GetMapping("/organ-segment-iscList/all-data/mojtame")
+    public ResponseEntity<ISC<DepartmentDTO.OrganSegment>> getAllComplexList(HttpServletRequest iscRq) throws IOException {
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        BaseService.setCriteriaToNotSearchDeleted(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(departmentService.getAllComplexList(searchRq), searchRq.getStartIndex()), HttpStatus.OK);
+    }
 
     @GetMapping(value = "iscList")
     public ResponseEntity<ISC<DepartmentDTO.Info>> list(HttpServletRequest iscRq) throws IOException {

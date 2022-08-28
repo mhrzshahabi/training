@@ -348,7 +348,7 @@
     let RestDataSource_Department_Filter = isc.TrDS.create({
         fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
         cacheAllData: true,
-        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/all-data/mojtame"
     });
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
@@ -4416,15 +4416,33 @@
     }
     function load_classes_by_department(value) {
                 if (value !== undefined) {
-                    let criteria = {
-                        _constructor: "AdvancedCriteria",
-                        operator: "and",
-                        criteria: [
-                            {
-                                fieldName: "complexId", operator: "inSet", value: value
-                            }
-                        ]
-                    };
+                    let criteria={};
+
+                    if(value !== -1 && value !== -2){
+                        criteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {
+                                    fieldName: "complexId", operator: "inSet", value: value
+                                }
+                            ]
+                        };
+                    }
+
+                    if(value === -2){
+                        criteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                                {
+                                    fieldName: "complexId", operator: "isNull",value:"true"
+                                }
+                            ]
+                        };
+                    }
+
+
                     if (ListGrid_Class_JspClass.implicitCriteria) {
                         let termCriteria = ListGrid_Class_JspClass.implicitCriteria.criteria.filter(c => c.fieldName
                             == "term.id");

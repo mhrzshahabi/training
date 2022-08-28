@@ -28,6 +28,7 @@ public interface IDepartmentService {
     SearchDTO.SearchRs<DepartmentDTO.FieldValue> findAllValuesOfOneFieldFromDepartment(String fieldName);
 
     SearchDTO.SearchRs<DepartmentDTO.OrganSegment> getOrganSegmentList(String fieldName, SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<DepartmentDTO.OrganSegment> getAllComplexList( SearchDTO.SearchRq request);
 
     List<DepartmentDTO.DepChart> getDepChartData();
 

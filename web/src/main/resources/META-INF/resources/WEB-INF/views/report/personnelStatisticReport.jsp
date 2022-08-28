@@ -132,7 +132,6 @@
 
 
                     }
-                    debugger;
                     let url =   synonymPersonnel + "/statistic-iscList";
                     RestDataSource_ListResult_JspPersonnelStatistic.fetchDataURL = url;
                     ListGrid_PersonnelStatistic.invalidateCache();
