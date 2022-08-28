@@ -1468,7 +1468,8 @@
                 {
                     name: "postGradeCode",
                     title: "<spring:message code="post.grade.code"/>",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "postTitle",

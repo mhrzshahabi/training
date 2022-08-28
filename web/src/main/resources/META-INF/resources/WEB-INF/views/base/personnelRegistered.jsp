@@ -142,7 +142,7 @@
     var RestDataSource_PostGrade_PerReg = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", hidden: true},
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
         ],
         canAddFormulaFields: false,
@@ -346,7 +346,7 @@
             {name: "workMonths", title: "<spring:message code="work.months"/>", filterOperator: "iContains"},
             {name: "workDays", title: "<spring:message code="work.days"/>", filterOperator: "iContains"},
             {name: "insuranceCode", title: "<spring:message code="insurance.code"/>", filterOperator: "iContains"},
-            {name: "postGradeCode", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains"},
+            {name: "postGradeCode", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", hidden: true},
             {name: "ccpCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains"},
             {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
             {
