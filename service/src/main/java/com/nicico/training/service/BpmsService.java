@@ -122,8 +122,8 @@ public class BpmsService implements IBpmsService {
     public BaseResponse reviewNeedAssessmentTask(ReviewTaskRequest reviewTaskRequestDto) {
         BaseResponse res = new BaseResponse();
         try {
-            iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(reviewTaskRequestDto.getVariables().get("objectType").toString(), Long.valueOf(reviewTaskRequestDto.getVariables().get("objectId").toString()), 1, "تایید نهایی اصلی");
-            iNeedsAssessmentTempService.verify(reviewTaskRequestDto.getVariables().get("objectType").toString(), Long.valueOf(reviewTaskRequestDto.getVariables().get("objectId").toString()));
+            iNeedsAssessmentTempService.updateNeedsAssessmentTempMainWorkflow(reviewTaskRequestDto.getProcessInstanceId(), 1, "تایید نهایی اصلی");
+            iNeedsAssessmentTempService.verifyNeedsAssessmentTempMainWorkflow(reviewTaskRequestDto.getProcessInstanceId());
 
             try {
                 client.reviewTask(reviewTaskRequestDto);

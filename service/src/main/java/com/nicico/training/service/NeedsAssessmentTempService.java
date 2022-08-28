@@ -8,7 +8,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.NeedsAssessmentForBpms;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.iservice.INeedsAssessmentService;
 import com.nicico.training.iservice.INeedsAssessmentTempService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
@@ -22,10 +24,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import javax.mail.search.SearchTerm;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -35,6 +35,8 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
 
     @Autowired
     private NeedsAssessmentDAO needsAssessmentDAO;
+    @Autowired
+    private INeedsAssessmentService iNeedsAssessmentService;
     @Autowired
     private PostDAO postDAO;
     @Autowired
@@ -58,7 +60,7 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     @Autowired
     private PersonnelService personnelService;
 
-    private Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
+    private final Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
 
     @Autowired
     NeedsAssessmentTempService(NeedsAssessmentTempDAO needsAssessmentTempDAO) {
@@ -260,6 +262,11 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         }
         return criteriaRq;
     }
+    public static SearchDTO.CriteriaRq getCriteriaForInstance(String processInstanceId) {
+        SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
+        criteriaRq.getCriteria().add(makeNewCriteria("processInstanceId", processInstanceId, EOperator.equals, null));
+        return criteriaRq;
+    }
 
     public int saveModifications(String objectType, Long objectId, String createdBy) {
         Date today = new Date();
@@ -301,8 +308,8 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     }
 
     @Transactional
-    public Integer updateNeedsAssessmentTempMainWorkflow(String objectType, Long objectId, Integer workflowStatusCode, String workflowStatus) {
-        return dao.updateNeedsAssessmentTempWorkflowMainStatus(objectType, objectId, workflowStatusCode, workflowStatus);
+    public Integer updateNeedsAssessmentTempMainWorkflow(String  processInstanceId, Integer workflowStatusCode, String workflowStatus) {
+        return dao.updateNeedsAssessmentTempWorkflowMainStatus(processInstanceId, workflowStatusCode, workflowStatus);
     }
 
     @Override
@@ -380,8 +387,24 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
     @Override
     public boolean updateNeedsAssessmentTempBpmsWorkflow(ProcessInstance ProcessInstance, Long objectId, String objectType, String mainWorkflowStatus, String mainWorkflowStatusCode) {
         try {
-            dao.updateNeedsAssessmentTempBpmsWorkflow(ProcessInstance.getId(), objectId, objectType, mainWorkflowStatus, mainWorkflowStatusCode);
-            return true;
+
+            SearchDTO.SearchRs<NeedsAssessmentDTO.Info> list=  iNeedsAssessmentService.fullSearch(objectId, objectType);
+            Set<NeedsAssessmentForBpms> dataForUpdate=new HashSet<>();
+            list.getList().forEach(item->{
+                NeedsAssessmentForBpms needsAssessmentForBpms=new NeedsAssessmentForBpms();
+                needsAssessmentForBpms.setObjectId(item.getObjectId());
+                needsAssessmentForBpms.setObjectType(item.getObjectType());
+                if (dataForUpdate.stream().noneMatch(a -> (a.getObjectId().equals(item.getObjectId()))) && dataForUpdate.stream().noneMatch(a -> (a.getObjectType().equals(item.getObjectType()))))
+                dataForUpdate.add(needsAssessmentForBpms);
+            });
+            var ref = new Object() {
+                int index = 0;
+            };
+            dataForUpdate.forEach(data->{
+                dao.updateNeedsAssessmentTempBpmsWorkflow(ProcessInstance.getId(), data.getObjectId(), data.getObjectType(), mainWorkflowStatus, mainWorkflowStatusCode);
+                ref.index = ref.index +1;
+            });
+            return ref.index == dataForUpdate.size();
         } catch (Exception e) {
             return false;
         }
@@ -395,5 +418,44 @@ public class NeedsAssessmentTempService extends BaseService<NeedsAssessmentTemp,
         if (needsAssessmentTemp.isPresent()) {
             return dao.updateNeedsAssessmentTempWorkflowProcessInstanceId(needsAssessmentTemp.get().getProcessInstanceId(), objectType, objectId, workflowStatusCode, workflowStatus);
         } else return null;
+    }
+
+    @Transactional
+    @Override
+    public void verifyNeedsAssessmentTempMainWorkflow(String processInstanceId) {
+        List<NeedsAssessmentDTO.verify> needsAssessmentTemps = modelMapper.map(dao.findAll(NICICOSpecification.of(getCriteriaForInstance(processInstanceId))), new TypeToken<List<NeedsAssessmentDTO.verify>>() {
+        }.getType());
+        String createdBy = null;
+        try {
+            if (needsAssessmentTemps.size()>0){
+                createdBy = needsAssessmentTemps.get(0).getCreatedBy();
+                SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+                PersonnelDTO.Info person = personnelService.search(searchRq.setCriteria(makeNewCriteria("userName", createdBy, EOperator.equals, null))).getList().get(0);
+                createdBy = person.getFirstName() + " " + person.getLastName();
+            }
+        } catch (IndexOutOfBoundsException e) {
+            createdBy = needsAssessmentTemps.get(0).getCreatedBy();
+        } catch (Exception e) {
+            createdBy = "anonymous";
+        }
+        needsAssessmentTemps.forEach(needsAssessmentTemp -> {
+            Optional<NeedsAssessment> optional = needsAssessmentDAO.findById(needsAssessmentTemp.getId());
+            if (optional.isPresent()) {
+                NeedsAssessment na = optional.get();
+                if (needsAssessmentTemp.getDeleted() != null && needsAssessmentTemp.getDeleted().equals(75L))
+                    needsAssessmentDAO.updateDeleted(needsAssessmentTemp.getId(), 75L);
+                else {
+                    needsAssessmentDAO.updateNeedsAssessmentPriority(na.getId(), needsAssessmentTemp.getNeedsAssessmentPriorityId() ,needsAssessmentTemp.getLimitSufficiency());
+                }
+            } else {
+                NeedsAssessment needsAssessment = new NeedsAssessment();
+                modelMapper.map(needsAssessmentTemp, needsAssessment);
+                needsAssessmentDAO.saveAndFlush(needsAssessment);
+            }
+        });
+        needsAssessmentTemps.forEach(item->{
+            saveModifications(item.getObjectType(), item.getObjectId(), item.getCreatedBy());
+        });
+        dao.deleteAllByProcessInstanceId(processInstanceId);
     }
 }

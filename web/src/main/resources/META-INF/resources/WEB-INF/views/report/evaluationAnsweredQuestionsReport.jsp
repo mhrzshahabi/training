@@ -24,6 +24,7 @@
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains"},
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
+            {name: "domain", title: "حیطه", filterOperator: "iContains"},
             {name: "questionTitle", title: "<spring:message code="question"/>", filterOperator: "iContains"},
             {name: "answerTitle", title: "<spring:message code="answer"/>", filterOperator: "iContains"},
             {name: "teacherName", title: "<spring:message code="teacher.name"/>", filterOperator: "iContains"},
@@ -35,12 +36,12 @@
         fetchDataURL: evaluationUrl + "/getAnsweredEvalQuestionsDetails/"+ids.toString(),
     });
 
-    var RestDataSource_Class_evalAnsweredQuestions = isc.TrDS.create({
+    let RestDataSource_Class_evalAnsweredQuestions = isc.TrDS.create({
         ID: "RestDataSource_Class_evalAnsweredQuestions",
         fields: [
             {name: "id", primaryKey: true,hidden : true},
-            {name: "titleClass",title :"<spring:message code="title"/>", filterOperator: "iContains",autoFitWidth : true},
-            {name: "code",title: "<spring:message code="code"/>", filterOperator: "iContains",autoFitWidth : true}
+            {name: "titleClass",title :"<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code",title: "<spring:message code="code"/>", filterOperator: "iContains"}
 
         ],
         fetchDataURL: classUrl + "spec-list"
@@ -68,12 +69,16 @@
         fields: [
             {name: "evaluationQuestionId", primaryKey: true, hidden: true},
             {
+                name: "evaluationQuestion.domain.title",
+                title: "حیطه",
+                filterOperator: "iContains"
+            },
+            {
                 name: "evaluationQuestion.question",
                 title: "<spring:message code="question"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
+                filterOperator: "iContains"
             },
-            {name: "weight", title: "<spring:message code="weight"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "weight", title: "<spring:message code="weight"/>", filterOperator: "iContains"},
             {name: "order", title: "<spring:message code="order"/>", filterOperator: "iContains"},
         ],
     });
@@ -168,7 +173,9 @@
                 valueField: "evaluationQuestionId",
                 optionDataSource: QuestionnaireQuestionDS_Answered_Questions_Details,
                 displayField: "evaluationQuestion.question",
-                pickListFields: [{name: "evaluationQuestion.question"}],
+                pickListFields: [
+                    {name: "evaluationQuestion.domain.title"},
+                    {name: "evaluationQuestion.question"}],
                 disabled: true,
                 multiple: true,
                 filterLocally: true,
@@ -182,41 +189,32 @@
                 name: "class",
                 title: "<spring:message code="class"/>",
                 required: false,
-                <%--prompt: "<spring:message code="first.select.course"/>",--%>
                 textAlign: "center",
                 autoFetchData: false,
-                width: "*",
                 colSpan: 2,
                 displayField: "titleClass",
                 valueField: "id",
                 optionDataSource: RestDataSource_Class_evalAnsweredQuestions,
                 sortField: ["id"],
                 filterFields: ["code"],
-                //type: "ComboBoxItem",
                 pickListFields: [
                     {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                     {
                         name: "code",
                         title: "<spring:message code='class.code'/>",
                         align: "center",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
+                        filterOperator: "iContains"
                     },
                     {
-                        name: "classTitle",
+                        name: "titleClass",
                         title: "<spring:message code='class.title'/>",
                         align: "center",
-                        filterOperator: "iContains",
-                        autoFitWidth: true
+                        filterOperator: "iContains"
                     },
-
-
-
                 ],
                 pickListProperties: {
                     showFilterEditor: true
                 },
-                pickListWidth: 800,
                 icons: [
                     {
                         name: "clear",
@@ -334,6 +332,7 @@
             {name: "lastName"},
             {name: "nationalCode"},
             {name: "complexTitle"},
+            {name: "domain"},
             {name: "questionTitle"},
             {name: "answerTitle"},
             {name: "teacherName"},

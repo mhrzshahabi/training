@@ -19,14 +19,19 @@ public interface NeedsAssessmentTempDAO extends BaseDAO<NeedsAssessmentTemp, Lon
     void deleteAllByObjectIdAndObjectType(Long objectId, String objectType);
 
     @Modifying
+    @Query(value = "delete from TBL_NEEDS_ASSESSMENT_TEMP where  process_instance_id = :processInstanceId", nativeQuery = true)
+    void deleteAllByProcessInstanceId(String processInstanceId);
+
+
+    @Modifying
     @Query(value = "delete from TBL_NEEDS_ASSESSMENT_TEMP where F_OBJECT = :objectId and C_OBJECT_TYPE = :objectType and N_MAIN_WORKFLOW_STATUS_CODE is null", nativeQuery = true)
     void deleteAllNotSentByObjectIdAndObjectType(Long objectId, String objectType);
 
     Optional<NeedsAssessmentTemp> findFirstByCompetenceId(Long competenceId);
 
     @Modifying
-    @Query(value = "update TBL_NEEDS_ASSESSMENT_TEMP SET N_MAIN_WORKFLOW_STATUS_CODE = :mainWorkflowStatusCode , C_MAIN_WORKFLOW_STATUS = :mainWorkflowStatus WHERE f_object = :objectId AND c_object_type = :objectType", nativeQuery = true)
-    Integer updateNeedsAssessmentTempWorkflowMainStatus(String objectType, Long objectId, Integer mainWorkflowStatusCode, String mainWorkflowStatus);
+    @Query(value = "update TBL_NEEDS_ASSESSMENT_TEMP SET N_MAIN_WORKFLOW_STATUS_CODE = :mainWorkflowStatusCode , C_MAIN_WORKFLOW_STATUS = :mainWorkflowStatus WHERE process_instance_id = :processInstanceId ", nativeQuery = true)
+    Integer updateNeedsAssessmentTempWorkflowMainStatus(String processInstanceId, Integer mainWorkflowStatusCode, String mainWorkflowStatus);
 
     @Modifying
     @Query(value = "update TBL_NEEDS_ASSESSMENT_TEMP SET N_MAIN_WORKFLOW_STATUS_CODE = :mainWorkflowStatusCode , C_MAIN_WORKFLOW_STATUS = :mainWorkflowStatus , PROCESS_INSTANCE_ID = :ProcessInstanceId WHERE f_object = :objectId AND c_object_type = :objectType", nativeQuery = true)

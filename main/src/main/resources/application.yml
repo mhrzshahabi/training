@@ -150,7 +150,7 @@ nicico:
 spring:
   profiles: Staging
   datasource:
-    url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_staging
+    url: jdbc:oracle:thin:@//172.16.180.49:1521/pdb_stg
     username: STG_TRAINING
     password: stgtraining
   redis:
