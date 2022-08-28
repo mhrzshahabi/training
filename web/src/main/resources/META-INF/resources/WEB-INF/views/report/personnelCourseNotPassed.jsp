@@ -144,7 +144,8 @@
                 name: "code",
                 title: "<spring:message code="post.grade.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                hidden: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
             {
