@@ -7,7 +7,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.model.RequestItem;
+import dto.bpms.BPMSReqItemCoursesDetailDto;
 import dto.bpms.BPMSReqItemCoursesDto;
+import dto.bpms.BPMSReqItemSentLetterDto;
 import dto.bpms.BpmsStartParamsDto;
 import response.BaseResponse;
 import response.requestItem.RequestItemDto;
@@ -75,7 +77,7 @@ public interface IRequestItemService {
 
     BaseResponse reviewRequestItemTaskByPlanningChiefForApproval(ReviewTaskRequest reviewTaskRequest);
 
-    BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequest, String letterNumberSent);
+    BaseResponse reviewRequestItemTaskByAppointmentExpert(BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto);
 
     String getPlanningChiefNationalCode();
 
@@ -86,4 +88,6 @@ public interface IRequestItemService {
     List<RequestItemCoursesDetailDTO.CourseCategoryInfo> getExpertsAssigneeList(List<RequestItemCoursesDetailDTO.CourseCategoryInfo> courseCategoryInfos);
 
     void updateProcessStatus(Long requestItemId, String processStatus);
+
+    List<BPMSReqItemCoursesDetailDto> getNotPassedCourses(String processInstanceId);
 }

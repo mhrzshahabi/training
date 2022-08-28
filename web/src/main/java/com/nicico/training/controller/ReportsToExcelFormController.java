@@ -2,16 +2,12 @@ package com.nicico.training.controller;
 
 import com.google.gson.Gson;
 import com.nicico.copper.common.Loggable;
-import com.nicico.training.dto.RequestItemDTO;
-import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.dto.ViewNeedAssessmentInRangeDTO;
-import com.nicico.training.dto.ViewTrainingNeedAssessmentDTO;
-import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.iservice.IViewNeedAssessmentInRangeTimeService;
+import com.nicico.training.dto.*;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.RequestItem;
+import com.nicico.training.model.SynonymPersonnel;
 import com.nicico.training.model.ViewTrainingNeedAssessment;
 import com.nicico.training.repository.ViewTrainingNeedAssessmentDAO;
-import com.nicico.training.iservice.IRequestItemService;
 import com.nicico.training.utility.MakeExcelOutputUtil;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -32,9 +28,12 @@ import java.util.stream.Collectors;
 public class ReportsToExcelFormController {
 
     private final ModelMapper modelMapper;
+    private final ITclassService iTclassService;
+    private final IRequestItemService requestItemService;
     private final MakeExcelOutputUtil makeExcelOutputUtil;
     private final IRequestItemService iRequestItemService;
-    private final ITclassService iTclassService;
+    private final INeedsAssessmentService needsAssessmentService;
+    private final ISynonymPersonnelService synonymPersonnelService;
     private final ViewTrainingNeedAssessmentDAO viewTrainingNeedAssessmentDAO;
     private final IViewNeedAssessmentInRangeTimeService iViewNeedAssessmentInRangeTimeService;
 
@@ -104,7 +103,7 @@ public class ReportsToExcelFormController {
 
     @Loggable
     @PostMapping("/competenceRequestWithItems")
-    public void ExportToExcel(@RequestParam("headers") String[] headers,
+    public void exportToExcel(@RequestParam("headers") String[] headers,
                               @RequestParam("fieldNames") String[] fieldNames,
                               @RequestParam("compReqId") Long compReqId,
                               @RequestParam("state") String state,
@@ -139,6 +138,48 @@ public class ReportsToExcelFormController {
         String[] headerNames = {"کدملی استاد", "نام استاد", "نام خانوادگی استاد", "کدکلاس", "عنوان کلاس", "تاریخ شروع", "تاریخ پایان"};
 
         byte[] bytes = makeExcelOutputUtil.makeOutput(resp, TclassDTO.TClassCurrentTerm.class, fieldNames, headerNames, false, "");
+        makeExcelOutputUtil.makeExcelResponse(bytes, response);
+    }
+
+    @Loggable
+    @PostMapping("/planningExperts")
+    public void planningExpertsExportToExcel(@RequestParam("headers") String[] headers,
+                              @RequestParam("fieldNames") String[] fieldNames,
+                              @RequestParam("requestItemIds") List<Long> requestItemIds,
+                              HttpServletResponse response) throws Exception {
+
+        List<NeedsAssessmentDTO.PlanningExpertsExcel> data = new ArrayList<>();
+        for (Long requestItemId : requestItemIds) {
+
+            SynonymPersonnel synonymPersonnel;
+            SynonymPersonnel synonymPersonnelByNationalCode = null;
+            SynonymPersonnel synonymPersonnelByPersonnelNo2 = null;
+            RequestItem requestItem = requestItemService.get(requestItemId);
+
+            if (requestItem != null) {
+                if (requestItem.getNationalCode() != null)
+                    synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+                if (requestItem.getPersonnelNo2() != null)
+                    synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+
+                if (synonymPersonnelByNationalCode != null)
+                    synonymPersonnel = synonymPersonnelByNationalCode;
+                else
+                    synonymPersonnel = synonymPersonnelByPersonnelNo2;
+
+                List<NeedsAssessmentDTO.PlanningExpertsExcel> needsAssessmentDTOList = needsAssessmentService.findCoursesForPlanningExpertsByTrainingPostCode(requestItem).stream()
+                        .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
+
+                List<String> list = iTclassService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
+                        .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
+                for (NeedsAssessmentDTO.PlanningExpertsExcel course : needsAssessmentDTOList) {
+                    if (!list.contains(course.getCourseCode()))
+                        data.add(course);
+                }
+            }
+        }
+        List<Object> resp = new ArrayList<>(data);
+        byte[] bytes = makeExcelOutputUtil.makeOutput(resp, NeedsAssessmentDTO.PlanningExpertsExcel.class, fieldNames, headers, true, "");
         makeExcelOutputUtil.makeExcelResponse(bytes, response);
     }
 

@@ -40,4 +40,13 @@ public class RequestItemProcessDetailService implements IRequestItemProcessDetai
         return requestItemProcessDetailDAO.saveAndFlush(requestItemProcessDetail);
     }
 
+    @Override
+    @Transactional
+    public void updateOpinion(Long id, Long opinionId) {
+        RequestItemProcessDetail requestItemProcessDetail = get(id);
+        if (requestItemProcessDetail != null) {
+            requestItemProcessDetail.setExpertsOpinionId(opinionId);
+            requestItemProcessDetailDAO.saveAndFlush(requestItemProcessDetail);
+        }
+    }
 }

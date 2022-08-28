@@ -9,11 +9,8 @@ import com.nicico.copper.common.domain.criteria.NICICOSpecification;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.NeedsAssessmentReportsDTO;
-import com.nicico.training.dto.RequestItemCoursesDetailDTO;
-import com.nicico.training.dto.RequestItemProcessDetailDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
-import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.ICompetenceRequestService;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.iservice.IRequestItemService;
@@ -25,9 +22,11 @@ import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.RequestItemDAO;
 import dto.bpms.BPMSReqItemCoursesDetailDto;
 import dto.bpms.BPMSReqItemCoursesDto;
+import dto.bpms.BPMSReqItemSentLetterDto;
 import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -47,6 +46,7 @@ public class RequestItemService implements IRequestItemService {
     private final ModelMapper modelMapper;
     private final PersonnelDAO personnelDAO;
     private final IBpmsService iBpmsService;
+    private final ITclassService classService;
     private final RequestItemDAO requestItemDAO;
     private final IPersonnelService personnelService;
     private final BpmsClientService bpmsClientService;
@@ -56,6 +56,7 @@ public class RequestItemService implements IRequestItemService {
     private final RequestItemBeanMapper requestItemBeanMapper;
     private final IParameterValueService parameterValueService;
     private final IOperationalRoleService operationalRoleService;
+    private final INeedsAssessmentService needsAssessmentService;
     private final ISynonymPersonnelService synonymPersonnelService;
     private final ICompetenceRequestService competenceRequestService;
     private final INeedsAssessmentReportsService iNeedsAssessmentReportsService;
@@ -356,10 +357,19 @@ public class RequestItemService implements IRequestItemService {
             }
 
             List<RequestItemProcessDetail> requestItemProcessDetailList = requestItemProcessDetailService.findAllByRequestItemId(requestItem.getId());
+            List<Long> expertsOpinionId = requestItemProcessDetailList.stream().map(RequestItemProcessDetail::getExpertsOpinionId).collect(Collectors.toList());
             Object assigneeObject = bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables().get("assigneeList");
             if (assigneeObject != null) {
+
                 List<String> assigneeList = (List<String>) assigneeObject;
                 if (assigneeList.size() == requestItemProcessDetailList.size()) {
+                    RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
+                    requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
+                    requestItemProcessDetailDTO.setExpertsOpinionId(expertsOpinionId.contains(parameterValueService.getId("needToPassCourse")) ?
+                            parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
+                    requestItemProcessDetailDTO.setExpertNationalCode(getPlanningChiefNationalCode());
+                    requestItemProcessDetailService.create(requestItemProcessDetailDTO);
+
                     requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningChiefToDetermineStatus"));
                     requestItemDAO.saveAndFlush(requestItem);
                 }
@@ -394,18 +404,12 @@ public class RequestItemService implements IRequestItemService {
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
 
         if (optionalRequestItem.isPresent()) {
-
             RequestItem requestItem = optionalRequestItem.get();
             RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
 
-
-            if (requestItemProcessDetail == null) {
-                RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
-                requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
-                requestItemProcessDetailDTO.setExpertsOpinionId(chiefOpinionId);
-                requestItemProcessDetailDTO.setExpertNationalCode(userNationalCode);
-                requestItemProcessDetail = requestItemProcessDetailService.create(requestItemProcessDetailDTO);
+            if (chiefOpinionId != null) {
+                requestItemProcessDetailService.updateOpinion(requestItemProcessDetail.getId(), chiefOpinionId);
             }
 
             if (courses.size() != 0) {
@@ -719,16 +723,17 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    public BaseResponse reviewRequestItemTaskByAppointmentExpert(ReviewTaskRequest reviewTaskRequestDto, String letterNumberSent) {
+    public BaseResponse reviewRequestItemTaskByAppointmentExpert(BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto) {
 
         BaseResponse response = new BaseResponse();
-        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequestDto.getProcessInstanceId());
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(bpmsReqItemSentLetterDto.getReviewTaskRequest().getProcessInstanceId());
         if (optionalRequestItem.isPresent()) {
 
             RequestItem requestItem = optionalRequestItem.get();
             RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), getPlanningChiefNationalCode());
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
-            requestItem.setLetterNumberSent(letterNumberSent);
+            requestItem.setLetterNumberSent(bpmsReqItemSentLetterDto.getLetterNumberSent());
+            requestItem.setDateSent(bpmsReqItemSentLetterDto.getDateSent());
             if (requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) ||
                     (!requestItemProcessDetail.getExpertsOpinionId().equals(parameterValueService.getId("needToPassCourse")) &&
                     courses.stream().filter(item -> item.getPriority().contains("ضمن خدمت")).count() == 0)) {
@@ -742,7 +747,7 @@ public class RequestItemService implements IRequestItemService {
 
         if (response.getStatus() == 200) {
             try {
-                bpmsClientService.reviewTask(reviewTaskRequestDto);
+                bpmsClientService.reviewTask(bpmsReqItemSentLetterDto.getReviewTaskRequest());
                 response.setMessage("عملیات موفقیت آمیز به پایان رسید");
             } catch (Exception e) {
                 response.setStatus(404);
@@ -848,6 +853,42 @@ public class RequestItemService implements IRequestItemService {
             requestItem.setProcessStatusId(parameterValueService.getId(processStatus));
             requestItemDAO.saveAndFlush(requestItem);
         }
+    }
+
+    @Override
+    public List<BPMSReqItemCoursesDetailDto> getNotPassedCourses(String processInstanceId) {
+
+        SynonymPersonnel synonymPersonnel;
+        SynonymPersonnel synonymPersonnelByNationalCode = null;
+        SynonymPersonnel synonymPersonnelByPersonnelNo2 = null;
+        List<BPMSReqItemCoursesDetailDto> courseNotPassedList = new ArrayList<>();
+        Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(processInstanceId);
+
+        if (optionalRequestItem.isPresent()) {
+            RequestItem requestItem = optionalRequestItem.get();
+            if (requestItem.getNationalCode() != null)
+                synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+            if (requestItem.getPersonnelNo2() != null)
+                synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+
+            if (synonymPersonnelByNationalCode != null)
+                synonymPersonnel = synonymPersonnelByNationalCode;
+            else
+                synonymPersonnel = synonymPersonnelByPersonnelNo2;
+
+            List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = needsAssessmentService.findCoursesByTrainingPostCode(requestItem.getPost()).stream()
+                    .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
+            List<BPMSReqItemCoursesDetailDto> courseList = modelMapper.map(needsAssessmentDTOList, new TypeToken<List<BPMSReqItemCoursesDetailDto>>() {
+            }.getType());
+
+            List<String> list = classService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
+                    .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
+            for (BPMSReqItemCoursesDetailDto course : courseList) {
+                if (!list.contains(course.getCourseCode()))
+                    courseNotPassedList.add(course);
+            }
+        }
+        return courseNotPassedList.stream().filter(item -> item.getPriority().contains("ضروری") || item.getPriority().contains("انتصاب")).collect(Collectors.toList());
     }
 
     private int getWrongCount(List<RequestItemWithDiff> list) {
@@ -976,5 +1017,4 @@ public class RequestItemService implements IRequestItemService {
             return RequestItemState.PostMissed;
         }
     }
-
 }

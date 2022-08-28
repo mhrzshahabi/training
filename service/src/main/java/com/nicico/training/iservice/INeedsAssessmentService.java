@@ -4,6 +4,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.model.RequestItem;
 
 import java.util.List;
 
@@ -22,4 +23,6 @@ public interface INeedsAssessmentService {
     TotalResponse<NeedsAssessmentDTO.Tree> tree(NICICOCriteria nicicoCriteria);
 
     List<NeedsAssessmentDTO.CourseDetail> findCoursesByTrainingPostCode(String trainingPostCode);
+
+    List<NeedsAssessmentDTO.PlanningExpertsExcel> findCoursesForPlanningExpertsByTrainingPostCode(RequestItem requestItem);
 }

@@ -6,6 +6,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.training.controller.util.AppUtils;
 import com.nicico.training.iservice.IRequestItemService;
 import dto.bpms.BPMSReqItemCoursesDto;
+import dto.bpms.BPMSReqItemSentLetterDto;
 import dto.bpms.BpmsCancelTaskDto;
 import dto.bpms.BpmsStartParamsDto;
 import lombok.RequiredArgsConstructor;
@@ -82,9 +83,9 @@ public class RequestItemBPMSRestController {
 
     @Loggable
     @PostMapping({"/tasks/request-item/review/group"})
-    public ResponseEntity reviewGroupRequestItemTask(@RequestBody List<ReviewTaskRequest> reviewTaskRequestDtoList) {
+    public ResponseEntity reviewGroupRequestItemTask(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList) {
         boolean hasException = false;
-        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestDtoList) {
+        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
             BaseResponse response = requestItemService.reviewRequestItemTask(reviewTaskRequest);
             if (response.getStatus() != 200)
                 hasException = true;
@@ -99,9 +100,36 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
+    @PostMapping({"/tasks/parallel/request-item/review/group/{userNationalCode}"})
+    public ResponseEntity reviewGroupParallelRequestItemTask(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList, @PathVariable String userNationalCode) {
+        boolean hasException = false;
+        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
+            BPMSReqItemCoursesDto bPMSReqItemCoursesDto = new BPMSReqItemCoursesDto();
+            bPMSReqItemCoursesDto.setReviewTaskRequest(reviewTaskRequest);
+            bPMSReqItemCoursesDto.setCourses(requestItemService.getNotPassedCourses(reviewTaskRequest.getProcessInstanceId()));
+            BaseResponse response = requestItemService.reviewParallelRequestItemTask(bPMSReqItemCoursesDto, userNationalCode);
+            if (response.getStatus() != 200)
+                hasException = true;
+        }
+        return new ResponseEntity<>(hasException, HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping({"/tasks/determine-status/request-item/review/{chiefOpinionId}/{chiefNationalCode}"})
     public BaseResponse reviewDetermineStatusRequestItemTask(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable Long chiefOpinionId, @PathVariable String chiefNationalCode) {
         return requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, chiefOpinionId, chiefNationalCode);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/determine-status/request-item/review/group/{chiefNationalCode}"})
+    public ResponseEntity reviewGroupDetermineStatusRequestItemTask(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList, @PathVariable String chiefNationalCode) {
+        boolean hasException = false;
+        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
+            BaseResponse response = requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, null, chiefNationalCode);
+            if (response.getStatus() != 200)
+                hasException = true;
+        }
+        return new ResponseEntity<>(hasException, HttpStatus.OK);
     }
 
     @Loggable
@@ -141,9 +169,33 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
-    @PostMapping({"/tasks/appointment-expert/request-item/review/{letterNumberSent}"})
-    public BaseResponse reviewRequestItemTaskByAppointmentExpert(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String letterNumberSent) {
-        return requestItemService.reviewRequestItemTaskByAppointmentExpert(reviewTaskRequest, letterNumberSent);
+    @PostMapping({"/tasks/planning-chief-for-approval/request-item/review/group"})
+    public ResponseEntity reviewGroupRequestItemTaskByPlanningChiefForApproval(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList) {
+        boolean hasException = false;
+        for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
+            BaseResponse response = requestItemService.reviewRequestItemTaskByPlanningChiefForApproval(reviewTaskRequest);
+            if (response.getStatus() != 200)
+                hasException = true;
+        }
+        return new ResponseEntity<>(hasException, HttpStatus.OK);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/appointment-expert/request-item/review"})
+    public BaseResponse reviewRequestItemTaskByAppointmentExpert(@RequestBody BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto) {
+        return requestItemService.reviewRequestItemTaskByAppointmentExpert(bpmsReqItemSentLetterDto);
+    }
+
+    @Loggable
+    @PostMapping({"/tasks/appointment-expert/request-item/review/group"})
+    public ResponseEntity reviewGroupRequestItemTaskByAppointmentExpert(@RequestBody List<BPMSReqItemSentLetterDto> bPMSReqItemSentLetterDtoList) {
+        boolean hasException = false;
+        for (BPMSReqItemSentLetterDto bpmsReqItemSentLetterDto : bPMSReqItemSentLetterDtoList) {
+            BaseResponse response = requestItemService.reviewRequestItemTaskByAppointmentExpert(bpmsReqItemSentLetterDto);
+            if (response.getStatus() != 200)
+                hasException = true;
+        }
+        return new ResponseEntity<>(hasException, HttpStatus.OK);
     }
 
 }

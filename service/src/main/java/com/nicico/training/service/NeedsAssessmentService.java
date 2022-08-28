@@ -7,20 +7,21 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedsAssessmentDTO;
+import com.nicico.training.dto.TrainingPostDTO;
 import com.nicico.training.iservice.INeedsAssessmentService;
 import com.nicico.training.mapper.NeedAssessment.NeedAssessmentBeanMapper;
 import com.nicico.training.model.NeedsAssessment;
+import com.nicico.training.model.RequestItem;
+import com.nicico.training.model.TrainingPost;
 import com.nicico.training.repository.NeedsAssessmentDAO;
+import com.nicico.training.repository.TrainingPostDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria;
@@ -30,11 +31,13 @@ import static com.nicico.training.service.NeedsAssessmentTempService.getCriteria
 public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, NeedsAssessmentDTO.Info, NeedsAssessmentDTO.Create, NeedsAssessmentDTO.Update, NeedsAssessmentDTO.Delete, NeedsAssessmentDAO> implements INeedsAssessmentService {
 
     @Autowired
+    private TrainingPostDAO trainingPostDAO;
+    @Autowired
     private CompetenceService competenceService;
     @Autowired
-    private ParameterValueService parameterValueService;
-    @Autowired
     private NeedsAssessmentDAO needsAssessmentDAO;
+    @Autowired
+    private ParameterValueService parameterValueService;
     @Autowired
     private NeedsAssessmentReportsService needsAssessmentReportsService;
     @Autowired
@@ -160,6 +163,34 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
                 courseDetailDistinctList.add(courseDetail);
         }
         return courseDetailDistinctList;
+    }
+
+    @Override
+    public List<NeedsAssessmentDTO.PlanningExpertsExcel>  findCoursesForPlanningExpertsByTrainingPostCode(RequestItem requestItem) {
+        List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesDistinctList = new ArrayList<>();
+        List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCodeAndDeleted("TrainingPost", requestItem.getPost(), null);
+        List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesList = needAssessmentBeanMapper.toNeedsAssessmentPlanningExpertsExcelDTOList(needsAssessmentList);
+        for (NeedsAssessmentDTO.PlanningExpertsExcel course : coursesList) {
+            if (!coursesDistinctList.stream().map(NeedsAssessmentDTO.PlanningExpertsExcel::getCourseCode).collect(Collectors.toList()).contains(course.getCourseCode()))
+                coursesDistinctList.add(course);
+        }
+        coursesDistinctList.replaceAll(item -> {
+            item.setName(requestItem.getName());
+            item.setLastName(requestItem.getLastName());
+            item.setPersonnelNo2(requestItem.getPersonnelNo2());
+            item.setNationalCode(requestItem.getNationalCode());
+            item.setAffairs(requestItem.getAffairs());
+            item.setPost(requestItem.getPost());
+            item.setPostTitle(requestItem.getPostTitle());
+            item.setModifiedDate(getTrainingPostLastModified(requestItem.getPost()));
+            return item;
+        });
+        return coursesDistinctList;
+    }
+
+    private String getTrainingPostLastModified(String trainingPostCode) {
+        Optional<TrainingPost> optionalTrainingPost = trainingPostDAO.findByCodeAndDeleted(trainingPostCode, null);
+        return optionalTrainingPost.map(trainingPost -> modelMapper.map(trainingPost, TrainingPostDTO.needAssessmentInfo.class).getLastModifiedDateNA()).orElse(null);
     }
 
     private List<NeedsAssessmentDTO.Tree> findGenerations(List<NeedsAssessmentDTO.Tree> tree) {

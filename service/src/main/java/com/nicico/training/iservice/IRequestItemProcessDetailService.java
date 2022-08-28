@@ -14,4 +14,6 @@ public interface IRequestItemProcessDetailService {
     RequestItemProcessDetail findByRequestItemIdAndExpertNationalCode(Long requestItemId, String expertNationalCode);
 
     RequestItemProcessDetail create(RequestItemProcessDetailDTO.Create create);
+
+    void updateOpinion(Long id, Long opinionId);
 }
