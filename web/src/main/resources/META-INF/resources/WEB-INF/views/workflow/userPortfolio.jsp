@@ -275,14 +275,6 @@
         filterOnKeypress: true,
         selectionUpdated: function (record) {
 
-            if (record.approved === false) {
-                ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
-                ToolStripButton_InProgress_Workflow_UserPortfolio.setDisabled(false);
-            } else {
-                ToolStripButton_Show_Processes_UserPortfolio.setDisabled(false);
-                ToolStripButton_InProgress_Workflow_UserPortfolio.setDisabled(true);
-            }
-
             let records = ListGrid_Processes_UserPortfolio.getSelectedRecords();
             let recordsName = records.map(item => item.name);
 
@@ -299,8 +291,15 @@
 
             if (records.size() > 1)
                 ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
-            else
-                ToolStripButton_Show_Processes_UserPortfolio.setDisabled(false);
+            else {
+                if (record.approved === false) {
+                    ToolStripButton_Show_Processes_UserPortfolio.setDisabled(true);
+                    ToolStripButton_InProgress_Workflow_UserPortfolio.setDisabled(false);
+                } else {
+                    ToolStripButton_Show_Processes_UserPortfolio.setDisabled(false);
+                    ToolStripButton_InProgress_Workflow_UserPortfolio.setDisabled(true);
+                }
+            }
         },
         recordClick: function(viewer, record) {
             showProcessHistory(record.processInstanceId);
