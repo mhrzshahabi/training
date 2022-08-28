@@ -63,7 +63,7 @@ public interface IRequestItemService {
 
     BaseResponse reviewParallelRequestItemTask(BPMSReqItemCoursesDto bpmsReqItemCoursesDto, String userNationalCode);
 
-    BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, String userNationalCode);
+    BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, Long chiefOpinionId, String userNationalCode);
 
     BaseResponse reviewRequestItemTaskByRunChief(ReviewTaskRequest reviewTaskRequest);
 

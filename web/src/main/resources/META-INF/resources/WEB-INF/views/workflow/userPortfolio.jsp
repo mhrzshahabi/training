@@ -865,7 +865,6 @@
                         name: "chiefOpinion",
                         title: "نظر رئیس برنامه ریزی",
                         width: "100%",
-                        hidden: true,
                         optionDataSource: RestDataSource_Request_Item_Experts_Opinion,
                         displayField: "title",
                         autoFetchData: true,
@@ -918,8 +917,8 @@
                         buttonClick: function (button, index) {
 
                             if (index === 0) {
-                                // let chiefOpinion = DynamicForm_RequestItem_Determine_Status.getValue("chiefOpinion");
-                                confirmRequestItemProcessToDetermineStatus(record, Window_RequestItem_Determine_Status_Completion);
+                                let chiefOpinion = DynamicForm_RequestItem_Determine_Status.getValue("chiefOpinion");
+                                confirmRequestItemProcessToDetermineStatus(record, chiefOpinion, Window_RequestItem_Determine_Status_Completion);
                             }
                             this.hide();
                         }
@@ -966,7 +965,13 @@
             DynamicForm_RequestItem_Determine_Status.setValue("createBy", record.createBy);
             DynamicForm_RequestItem_Determine_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
-            Window_RequestItem_Determine_Status_Completion.show();
+            isc.RPCManager.sendRequest(TrDSRequest(requestItemUrl + "/planning-chief-opinion/" + record.requestItemId, "GET", null, function (resp) {
+                if (resp.httpResponseCode === 200) {
+                    let opinion = JSON.parse(resp.httpResponseText);
+                    DynamicForm_RequestItem_Determine_Status.setValue("chiefOpinion", opinion.finalOpinion);
+                    Window_RequestItem_Determine_Status_Completion.show();
+                }
+            }));
         }
     }
     function showRequestItemProcessStatusToRunChief(record) {
@@ -2215,7 +2220,7 @@
             }
         }));
     }
-    function confirmRequestItemProcessToDetermineStatus(record, window) {
+    function confirmRequestItemProcessToDetermineStatus(record, chiefOpinion, window) {
 
         let baseUrl = requestItemBPMSUrl;
         let url = "/tasks/determine-status/request-item/review";
@@ -2231,7 +2236,7 @@
         };
 
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reviewTaskRequest), function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(baseUrl + url + "/" + chiefOpinion + "/" + "<%= userNationalCode %>", "POST", JSON.stringify(reviewTaskRequest), function (resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 window.close();

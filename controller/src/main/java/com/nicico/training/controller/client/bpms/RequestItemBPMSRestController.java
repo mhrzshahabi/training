@@ -115,9 +115,9 @@ public class RequestItemBPMSRestController {
     }
 
     @Loggable
-    @PostMapping({"/tasks/determine-status/request-item/review/{chiefNationalCode}"})
-    public BaseResponse reviewDetermineStatusRequestItemTask(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable String chiefNationalCode) {
-        return requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, chiefNationalCode);
+    @PostMapping({"/tasks/determine-status/request-item/review/{chiefOpinionId}/{chiefNationalCode}"})
+    public BaseResponse reviewDetermineStatusRequestItemTask(@RequestBody ReviewTaskRequest reviewTaskRequest, @PathVariable Long chiefOpinionId, @PathVariable String chiefNationalCode) {
+        return requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, chiefOpinionId, chiefNationalCode);
     }
 
     @Loggable
@@ -125,7 +125,7 @@ public class RequestItemBPMSRestController {
     public ResponseEntity reviewGroupDetermineStatusRequestItemTask(@RequestBody List<ReviewTaskRequest> reviewTaskRequestList, @PathVariable String chiefNationalCode) {
         boolean hasException = false;
         for (ReviewTaskRequest reviewTaskRequest : reviewTaskRequestList) {
-            BaseResponse response = requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, chiefNationalCode);
+            BaseResponse response = requestItemService.reviewRequestItemTaskToDetermineStatus(reviewTaskRequest, null, chiefNationalCode);
             if (response.getStatus() != 200)
                 hasException = true;
         }

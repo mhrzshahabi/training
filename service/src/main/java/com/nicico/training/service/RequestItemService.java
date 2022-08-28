@@ -357,10 +357,19 @@ public class RequestItemService implements IRequestItemService {
             }
 
             List<RequestItemProcessDetail> requestItemProcessDetailList = requestItemProcessDetailService.findAllByRequestItemId(requestItem.getId());
+            List<Long> expertsOpinionId = requestItemProcessDetailList.stream().map(RequestItemProcessDetail::getExpertsOpinionId).collect(Collectors.toList());
             Object assigneeObject = bpmsReqItemCoursesDto.getReviewTaskRequest().getVariables().get("assigneeList");
             if (assigneeObject != null) {
+
                 List<String> assigneeList = (List<String>) assigneeObject;
                 if (assigneeList.size() == requestItemProcessDetailList.size()) {
+                    RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
+                    requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
+                    requestItemProcessDetailDTO.setExpertsOpinionId(expertsOpinionId.contains(parameterValueService.getId("needToPassCourse")) ?
+                            parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
+                    requestItemProcessDetailDTO.setExpertNationalCode(getPlanningChiefNationalCode());
+                    requestItemProcessDetailService.create(requestItemProcessDetailDTO);
+
                     requestItem.setProcessStatusId(parameterValueService.getId("waitingReviewByPlanningChiefToDetermineStatus"));
                     requestItemDAO.saveAndFlush(requestItem);
                 }
@@ -389,25 +398,18 @@ public class RequestItemService implements IRequestItemService {
 
     @Override
     @Transactional
-    public BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, String userNationalCode) {
+    public BaseResponse reviewRequestItemTaskToDetermineStatus(ReviewTaskRequest reviewTaskRequest, Long chiefOpinionId, String userNationalCode) {
 
         BaseResponse response = new BaseResponse();
         Optional<RequestItem> optionalRequestItem = requestItemDAO.findByProcessInstanceId(reviewTaskRequest.getProcessInstanceId());
 
         if (optionalRequestItem.isPresent()) {
-
             RequestItem requestItem = optionalRequestItem.get();
-            List<Long> expertsOpinionId = requestItemProcessDetailService.findAllByRequestItemId(requestItem.getId()).stream().map(RequestItemProcessDetail::getExpertsOpinionId).collect(Collectors.toList());
             RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItem.getId(), userNationalCode);
             List<RequestItemCoursesDetailDTO.Info> courses = requestItemCoursesDetailService.findAllByRequestItem(requestItem.getId());
 
-            if (requestItemProcessDetail == null) {
-                RequestItemProcessDetailDTO.Create requestItemProcessDetailDTO = new RequestItemProcessDetailDTO.Create();
-                requestItemProcessDetailDTO.setRequestItemId(requestItem.getId());
-                requestItemProcessDetailDTO.setExpertsOpinionId(expertsOpinionId.contains(parameterValueService.getId("needToPassCourse")) ?
-                        parameterValueService.getId("needToPassCourse") : parameterValueService.getId("noObjection"));
-                requestItemProcessDetailDTO.setExpertNationalCode(userNationalCode);
-                requestItemProcessDetail = requestItemProcessDetailService.create(requestItemProcessDetailDTO);
+            if (chiefOpinionId != null) {
+                requestItemProcessDetailService.updateOpinion(requestItemProcessDetail.getId(), chiefOpinionId);
             }
 
             if (courses.size() != 0) {
