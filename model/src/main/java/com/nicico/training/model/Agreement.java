@@ -79,4 +79,10 @@ public class Agreement extends Auditable {
 
     @Column(name = "c_key")
     private String key;
+
+    @Column(name = "complex_id")
+    private Long complexId;
+
+    @Column(name = "complex_title")
+    private String complexTitle;
 }

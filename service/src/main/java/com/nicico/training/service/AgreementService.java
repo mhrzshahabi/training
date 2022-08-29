@@ -7,6 +7,7 @@ import com.nicico.training.dto.AgreementDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.AgreementDAO;
+import com.nicico.training.repository.ComplexDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -24,6 +25,7 @@ public class AgreementService implements IAgreementService {
     private final ModelMapper modelMapper;
     private final AgreementDAO agreementDAO;
     private final IAgreementClassCostService agreementClassCostService;
+    private final ComplexDAO complexDAO;
 
 
     @Override
@@ -37,7 +39,12 @@ public class AgreementService implements IAgreementService {
 
         final Agreement agreement = modelMapper.map(request, Agreement.class);
         try {
-            AgreementDTO.Info info = modelMapper.map(agreementDAO.saveAndFlush(agreement), AgreementDTO.Info.class);
+            Long complexId = request.getComplexId();
+            String complexTitle = complexDAO.getComplexTitleByComplexId(complexId);
+            agreement.setComplexId(complexId);
+            agreement.setComplexTitle(complexTitle);
+            Agreement savedAgreement = agreementDAO.saveAndFlush(agreement);
+            AgreementDTO.Info info = modelMapper.map(savedAgreement, AgreementDTO.Info.class);
             return info;
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
@@ -50,6 +57,10 @@ public class AgreementService implements IAgreementService {
 
         Optional<Agreement> agreementOptional = agreementDAO.findById(id);
         Agreement agreement = agreementOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        Long complexId = update.getComplexId();
+        String complexTitle = complexDAO.getComplexTitleByComplexId(complexId);
+        update.setComplexTitle(complexTitle);
 
         Agreement updating = new Agreement();
         modelMapper.map(agreement, updating);
