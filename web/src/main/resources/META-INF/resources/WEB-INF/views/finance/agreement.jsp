@@ -282,6 +282,7 @@
         canEdit: true,
         autoFetchData: true,
         validateByCell: true,
+        selectCellTextOnClick: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         fields: [
