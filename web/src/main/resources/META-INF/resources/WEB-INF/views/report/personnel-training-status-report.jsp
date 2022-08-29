@@ -49,7 +49,7 @@
             {name: "courseCode", title: "<spring:message code='course.code'/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "courseTitleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "naIsInNa", title: "<spring:message code='needsAssessment.type'/>", filterOperator: "equals", autoFitWidth: true, valueMap:Na_status},
-            {name: "personnelPostGradeCode", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelPostGradeCode", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth: true, hidden: true},
             {name: "personnelPostGradeTitle", title: "<spring:message code='post.grade'/>", filterOperator: "equals", autoFitWidth: true, autoFitWidthApproach: "both"},
             {name: "classStudentScore", title: "<spring:message code='score'/>", filterOperator: "equals", autoFitWidth: true},
             {name: "classStudentScoresStateId", title: "<spring:message code='acceptanceState.state'/>", filterOperator: "equals", autoFitWidth: true},
@@ -119,7 +119,8 @@
                 name: "code",
                 title: "<spring:message code="post.grade.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                hidden: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
         ],
@@ -166,7 +167,8 @@
                 name: "code",
                 title: "<spring:message code="post.grade.code"/>",
                 filterOperator: "iContains",
-                autoFitWidth: true
+                autoFitWidth: true,
+                hidden: true
             },
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
         ],

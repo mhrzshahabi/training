@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.DepartmentDTO;
 import com.nicico.training.iservice.IDepartmentService;
 import com.nicico.training.model.*;
@@ -172,6 +173,29 @@ public class DepartmentService extends GenericService<Department, Long, Departme
                 nullResp.setTotalCount(0L);
                 return nullResp;
         }
+    }
+
+    @Override
+    @Transactional
+    public SearchDTO.SearchRs<DepartmentDTO.OrganSegment> getAllComplexList(SearchDTO.SearchRq request) {
+        BaseService.combineRoleToCriteriaComplex(request);
+        SearchDTO.SearchRs<DepartmentDTO.OrganSegment> list= SearchUtil.search(complexDAO, request, d -> modelMapper.map(d, DepartmentDTO.OrganSegment.class));
+        Set<String> authorities = SecurityUtil.getAuthorities();
+        if (authorities.contains("allComplexAccess")){
+            DepartmentDTO.OrganSegment departmentDTO=new DepartmentDTO.OrganSegment();
+            departmentDTO.setTitle("همه ی کلاس ها بدون در نظر گرفتن مجتمع");
+            departmentDTO.setCode("allComplexAccess");
+            departmentDTO.setId(-1L);
+            list.getList().add(departmentDTO);
+        }
+        if (authorities.contains("withoutComplexAccess")){
+            DepartmentDTO.OrganSegment departmentDTO=new DepartmentDTO.OrganSegment();
+            departmentDTO.setTitle("کلاس های بدون مجتمع");
+            departmentDTO.setCode("withoutComplexAccess");
+            departmentDTO.setId(-2L);
+            list.getList().add(departmentDTO);
+        }
+        return list;
     }
 
     @Override
