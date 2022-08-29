@@ -208,7 +208,7 @@
                 confirmGroupParallelRequestItemProcess(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی رئیس برنامه ریزی جهت تعیین وضعیت") {
                 confirmGroupRequestItemProcessToDetermineStatus(records);
-            } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی / تایید رئیس برنامه ریزی") {
+            } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name.includes("بررسی / تایید رئیس برنامه ریزی")) {
                 confirmGroupRequestItemProcessByPlanningChiefForApproval(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی کارشناس انتصاب سمت") {
                 showGroupRequestItemProcessToAppointmentExpert(records);
@@ -285,7 +285,10 @@
                 } else
                     ToolStripButton_Excel_Processes_UserPortfolio.hide();
             } else {
-                ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(true);
+                if (new Set(recordsName).size === 2 && recordsName.includes("بررسی / تایید رئیس برنامه ریزی") && recordsName.includes("بررسی / تایید رئیس برنامه ریزی - ضمن خدمت") )
+                    ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(false);
+                else
+                    ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(true);
                 ToolStripButton_Excel_Processes_UserPortfolio.hide();
             }
 

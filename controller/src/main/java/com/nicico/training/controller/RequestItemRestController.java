@@ -232,11 +232,13 @@ public class RequestItemRestController {
 
     @GetMapping(value = "/planning-chief-opinion/{requestItemId}")
     public ResponseEntity<RequestItemCoursesDetailDTO.OpinionInfo> getPlanningChiefOpinion(@PathVariable Long requestItemId) {
-
+        RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = new RequestItemCoursesDetailDTO.OpinionInfo();
         String planningChiefNationalCode = requestItemService.getPlanningChiefNationalCode();
         RequestItemProcessDetail requestItemProcessDetail = requestItemProcessDetailService.findByRequestItemIdAndExpertNationalCode(requestItemId, planningChiefNationalCode);
-        RequestItemCoursesDetailDTO.OpinionInfo opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(),
-                parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle());
+        if (requestItemProcessDetail != null) {
+            opinionInfo = requestItemCoursesDetailService.findAllOpinionByRequestItemProcessDetailId(requestItemProcessDetail.getId(),
+                    parameterValueService.getInfo(requestItemProcessDetail.getExpertsOpinionId()).getTitle());
+        }
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
 
