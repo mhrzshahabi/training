@@ -770,6 +770,12 @@
                     addChildDecision(DynamicForm_Decision_history,Window_history_Decision)
                 }.bind(this)
             }),
+            isc.ToolStripButtonEdit.create({
+                title: "ویرایش",
+                click: function () {
+                    editChildDecision(DynamicForm_Decision_history,Window_history_Decision,ListGrid_Decision_Educational_history,"ویرایش ضریب سابقه آموزشی")
+                }.bind(this)
+            }),
             isc.ToolStripButtonRemove.create({
                 title: "حذف",
                 click: function () {
@@ -786,6 +792,12 @@
                 title: "افزودن",
                 click: function () {
                     addChildDecision(DynamicForm_teaching_method,Window_teaching_method)
+                }.bind(this)
+            }),
+            isc.ToolStripButtonEdit.create({
+                title: "ویرایش",
+                click: function () {
+                    editChildDecision(DynamicForm_teaching_method,Window_teaching_method,ListGrid_Decision_teaching_method,"ویرایش ضریب روش تدریس")
                 }.bind(this)
             }),
             isc.ToolStripButtonRemove.create({
@@ -806,6 +818,12 @@
                     addChildDecision(DynamicForm_course_type,Window_course_type)
                 }.bind(this)
             }),
+            isc.ToolStripButtonEdit.create({
+                title: "ویرایش",
+                click: function () {
+                    editChildDecision(DynamicForm_course_type,Window_course_type,ListGrid_Decision_course_type,"ویرایش ضریب نوع دوره")
+                }.bind(this)
+            }),
             isc.ToolStripButtonRemove.create({
                 title: "حذف",
                 click: function () {
@@ -824,6 +842,12 @@
                     addChildDecision(DynamicForm_distance,Window_distance)
                 }.bind(this)
             }),
+            isc.ToolStripButtonEdit.create({
+                title: "ویرایش",
+                click: function () {
+                    editChildDecision(DynamicForm_distance,Window_distance,ListGrid_Decision_distance,"ویرایش ضریب مسافت")
+                }.bind(this)
+            }),
             isc.ToolStripButtonRemove.create({
                 title: "حذف",
                 click: function () {
@@ -840,6 +864,12 @@
                 title: "افزودن",
                 click: function () {
                     addChildDecision(DynamicForm_Decision_base,Window_base_Decision)
+                }.bind(this)
+            }),
+            isc.ToolStripButtonEdit.create({
+                title: "ویرایش",
+                click: function () {
+                   editChildDecision(DynamicForm_Decision_base,Window_base_Decision,ListGrid_Basic_Tuition,"ویرایش مبلغ پایه حق التدریس")
                 }.bind(this)
             }),
             isc.ToolStripButtonRemove.create({
@@ -1191,6 +1221,20 @@
         }
     });
 
+    ToolStripButton_Edit_Decision = isc.ToolStripButtonEdit.create({
+        title: "ویرایش هدر تصمیم گیری",
+        click: function () {
+            let record = ListGrid_Decision_Header.getSelectedRecord();
+            if (record!==undefined && record !== null){
+                editHeaderDecision(record)
+            }else {
+                createDialog("info", "رکوردی را انتخاب نکرده اید", "<spring:message code="error"/>");
+            }
+
+            // addHeaderDecision();
+        }
+    });
+
     ToolStripButton_Delete_Decision = isc.ToolStripButtonRemove.create({
         click: function () {
             deleteDecisionHeader();
@@ -1462,6 +1506,7 @@
         membersMargin: 5,
         members: [
             ToolStripButton_Add_Decision,
+            ToolStripButton_Edit_Decision,
             ToolStripButton_Delete_Decision,
             isc.ToolStrip.create({
                 align: "left",
@@ -1504,6 +1549,13 @@
         Window_header_Decision.show();
     }
 
+    function editHeaderDecision(record) {
+        DynamicForm_Decision.clearErrors();
+        Window_header_Decision.title='ویرایش هدر تصمیم گیری'
+        DynamicForm_Decision.editRecord(record);
+        Window_header_Decision.show();
+    }
+
 
 
     function saveDecisionHeader() {
@@ -1537,6 +1589,21 @@
         dynamicForm.clearErrors();
         window.show();
     }
+
+
+    function editChildDecision(dynamicForm,window,listGrid,title) {
+        let record = listGrid.getSelectedRecord();
+        if (record!==undefined && record !== null){
+            dynamicForm.clearErrors();
+            window.title=title
+            dynamicForm.editRecord(record);
+            window.show();
+        }else {
+            createDialog("info", "رکوردی را انتخاب نکرده اید", "<spring:message code="error"/>");
+        }
+    }
+
+
     function saveChildDecision(listGrid,dynamicForm,window,ref) {
         let record = ListGrid_Decision_Header.getSelectedRecord();
         if (record == null) {
