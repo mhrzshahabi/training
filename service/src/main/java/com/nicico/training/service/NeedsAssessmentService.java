@@ -161,18 +161,22 @@ public class NeedsAssessmentService extends BaseService<NeedsAssessment, Long, N
         for (NeedsAssessmentDTO.CourseDetail courseDetail : courseDetailList) {
             if (!courseDetailDistinctList.stream().map(NeedsAssessmentDTO.CourseDetail::getCourseCode).collect(Collectors.toList()).contains(courseDetail.getCourseCode()))
                 courseDetailDistinctList.add(courseDetail);
+            else if (courseDetail.getPriority().contains("انتصاب"))
+                courseDetailDistinctList.stream().filter(item -> item.getCourseCode().equals(courseDetail.getCourseCode())).findFirst().get().setPriority(courseDetail.getPriority());
         }
         return courseDetailDistinctList;
     }
 
     @Override
-    public List<NeedsAssessmentDTO.PlanningExpertsExcel>  findCoursesForPlanningExpertsByTrainingPostCode(RequestItem requestItem) {
+    public List<NeedsAssessmentDTO.PlanningExpertsExcel> findCoursesForPlanningExpertsByTrainingPostCode(RequestItem requestItem) {
         List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesDistinctList = new ArrayList<>();
         List<NeedsAssessment> needsAssessmentList = needsAssessmentDAO.findAllByObjectTypeAndObjectCodeAndDeleted("TrainingPost", requestItem.getPost(), null);
         List<NeedsAssessmentDTO.PlanningExpertsExcel> coursesList = needAssessmentBeanMapper.toNeedsAssessmentPlanningExpertsExcelDTOList(needsAssessmentList);
         for (NeedsAssessmentDTO.PlanningExpertsExcel course : coursesList) {
             if (!coursesDistinctList.stream().map(NeedsAssessmentDTO.PlanningExpertsExcel::getCourseCode).collect(Collectors.toList()).contains(course.getCourseCode()))
                 coursesDistinctList.add(course);
+            else if (course.getPriority().contains("انتصاب"))
+                coursesDistinctList.stream().filter(item -> item.getCourseCode().equals(course.getCourseCode())).findFirst().get().setPriority(course.getPriority());
         }
         coursesDistinctList.replaceAll(item -> {
             item.setName(requestItem.getName());
