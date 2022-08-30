@@ -110,20 +110,21 @@ public class AgreementClassCostService implements IAgreementClassCostService {
     @Override
     public void calculateTeachingCost(AgreementClassCostDTO.CalcTeachingCostList calcInfoList) {
         String fromDate = calcInfoList.getFromDate();
+        String complex = calcInfoList.getComplex();
         try {
-            calcInfoList.getCalcTeachingCost().forEach(item -> updateTeachingCostPerHourAuto(item.getId(), calculateTeachingCostAuto(item, fromDate)));
+            calcInfoList.getCalcTeachingCost().forEach(item -> updateTeachingCostPerHourAuto(item.getId(), calculateTeachingCostAuto(item, fromDate,complex)));
         } catch (TrainingException ex) {
             throw new TrainingException(TrainingException.ErrorType.NotFound, ex.getField(), ex.getMsg());
         }
     }
 
-    private String getTeacherBasicTuitionFee(Long teacherId, String fromDate) {
+    private String getTeacherBasicTuitionFee(Long teacherId, String fromDate,String complex) {
         String tuitionFee;
         TeacherExperienceInfo teacherExperienceInfo = teacherExperienceInfoService.getLastTeacherExperienceInfoByTeacherId(teacherId);
         if (teacherExperienceInfo != null) {
             Long salaryBase = teacherExperienceInfo.getSalaryBase();
             String teacherRankLiteral = teacherExperienceInfo.getTeacherRank().getLiteral();
-            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "base");
+            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "base", complex);
             if (educationalDecisionList.size() != 0) {
                 List<EducationalDecision> educationalDecisionSalaryBaseFiltered = educationalDecisionList.stream().filter(item -> item.getBaseTuitionFee().equals(String.valueOf(salaryBase))).collect(Collectors.toList());
                 if (educationalDecisionSalaryBaseFiltered.size() != 0) {
@@ -148,17 +149,20 @@ public class AgreementClassCostService implements IAgreementClassCostService {
                             throw new TrainingException(TrainingException.ErrorType.NotFound);
                     }
                     return tuitionFee;
-                } else throw new TrainingException(TrainingException.ErrorType.NotFound, "TeacherBasicTuitionFee", "مبلغ پایه حق التدریس برای استاد یافت نشد");
-            } else throw new TrainingException(TrainingException.ErrorType.NotFound, "TeacherBasicTuitionFee", "مبلغ پایه حق التدریس برای استاد یافت نشد");
-        } else throw new TrainingException(TrainingException.ErrorType.NotFound, "TeacherBasicTuitionFee", "مبلغ پایه حق التدریس برای استاد یافت نشد");
+                } else
+                    throw new TrainingException(TrainingException.ErrorType.NotFound, "TeacherBasicTuitionFee", "مبلغ پایه حق التدریس برای استاد یافت نشد");
+            } else
+                throw new TrainingException(TrainingException.ErrorType.NotFound, "TeacherBasicTuitionFee", "مبلغ پایه حق التدریس برای استاد یافت نشد");
+        } else
+            throw new TrainingException(TrainingException.ErrorType.NotFound, "TeacherBasicTuitionFee", "مبلغ پایه حق التدریس برای استاد یافت نشد");
     }
 
-    private Double getTeacherEducationalHistoryFactor(Long teacherId, String fromDate) {
+    private Double getTeacherEducationalHistoryFactor(Long teacherId, String fromDate, String complex) {
         List<EducationalDecision> educationalDecisionFiltered = new ArrayList<>();
         TeacherExperienceInfo teacherExperienceInfo = teacherExperienceInfoService.getLastTeacherExperienceInfoByTeacherId(teacherId);
         if (teacherExperienceInfo != null) {
             Double teachingExperienceYear = teacherExperienceInfo.getTeachingExperience().doubleValue() / 12;
-            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "history");
+            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "history", complex);
             if (educationalDecisionList.size() != 0) {
 
                 educationalDecisionList.forEach(item -> {
@@ -172,12 +176,12 @@ public class AgreementClassCostService implements IAgreementClassCostService {
         } else throw new TrainingException(TrainingException.ErrorType.NotFound, "TeacherEducationalHistoryFactor", "ضریب سابقه آموزشی یافت نشد");
     }
 
-    private String getTeachingMethodFactor(Long classId, String fromDate) {
+    private String getTeachingMethodFactor(Long classId, String fromDate, String complex) {
         try {
             String classTeachingMethod = tClassService.getClassTeachingMethod(classId);
             String classCourseType = courseService.getClassCourseType(classId);
 
-            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "teaching-method");
+            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "teaching-method", complex);
             if (educationalDecisionList.size() != 0) {
 
                 List<EducationalDecision> educationalDecisionCourseTypeFiltered = educationalDecisionList.stream().filter(item ->
@@ -199,13 +203,13 @@ public class AgreementClassCostService implements IAgreementClassCostService {
         }
     }
 
-    private String getCourseTypeFactor(Long classId, String fromDate) {
+    private String getCourseTypeFactor(Long classId, String fromDate, String complex) {
         try {
             String typeOfSpecializationCourseType = courseService.getClassCourseTechnicalType(classId);
             String courseLevelCourseType = courseService.getClassCourseLevelType(classId);
             String courseForCourseType = tClassService.getClassTargetPopulation(classId);
 
-            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "course-type");
+            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "course-type", complex);
             if (educationalDecisionList.size() != 0) {
 
                 List<EducationalDecision> educationalDecisionCourseForFiltered = educationalDecisionList.stream().filter(item -> item.getTypeOfSpecializationCourseType().equals(typeOfSpecializationCourseType) &&
@@ -235,10 +239,10 @@ public class AgreementClassCostService implements IAgreementClassCostService {
         }
     }
 
-    private String getDistanceFactor(Long teacherId, String fromDate) {
+    private String getDistanceFactor(Long teacherId, String fromDate, String complex) {
         String residence = teacherService.getTeacherResidence(teacherId);
         if (residence != null) {
-            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "distance");
+            List<EducationalDecision> educationalDecisionList = educationalDecisionService.findAllByDateAndRef(fromDate, "distance", complex);
             if (educationalDecisionList.size() != 0) {
                 return educationalDecisionList.stream().filter(item -> item.getResidence().equals(residence)).max(Comparator.comparing(EducationalDecision::getId)).
                         orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound, "DistanceFactor", "ضریب مسافت یافت نشد")).getDistance();
@@ -247,13 +251,13 @@ public class AgreementClassCostService implements IAgreementClassCostService {
             throw new TrainingException(TrainingException.ErrorType.NotFound, "DistanceFactor", "ضریب مسافت یافت نشد");
     }
 
-    private Double calculateTeachingCostAuto(AgreementClassCostDTO.Info calcTeachingCostData, String fromDate) {
+    private Double calculateTeachingCostAuto(AgreementClassCostDTO.Info calcTeachingCostData, String fromDate, String complex) {
         try {
-            String basicTuitionFee = getTeacherBasicTuitionFee(calcTeachingCostData.getTeacherId(), fromDate);
-            Double educationalHistoryFactor = getTeacherEducationalHistoryFactor(calcTeachingCostData.getTeacherId(), fromDate);
-            String teachingMethodFactor = getTeachingMethodFactor(calcTeachingCostData.getClassId(), fromDate);
-            String courseTypeFactor = getCourseTypeFactor(calcTeachingCostData.getClassId(), fromDate);
-            String distanceFactor = getDistanceFactor(calcTeachingCostData.getTeacherId(), fromDate);
+            String basicTuitionFee = getTeacherBasicTuitionFee(calcTeachingCostData.getTeacherId(), fromDate, complex);
+            Double educationalHistoryFactor = getTeacherEducationalHistoryFactor(calcTeachingCostData.getTeacherId(), fromDate, complex);
+            String teachingMethodFactor = getTeachingMethodFactor(calcTeachingCostData.getClassId(), fromDate, complex);
+            String courseTypeFactor = getCourseTypeFactor(calcTeachingCostData.getClassId(), fromDate, complex);
+            String distanceFactor = getDistanceFactor(calcTeachingCostData.getTeacherId(), fromDate, complex);
             return Double.parseDouble(basicTuitionFee) * educationalHistoryFactor * Double.parseDouble(teachingMethodFactor) *
                     Double.parseDouble(courseTypeFactor) * Double.parseDouble(distanceFactor);
         } catch (TrainingException ex) {

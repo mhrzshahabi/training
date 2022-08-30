@@ -54,7 +54,7 @@ public class EducationalDecisionHeaderService implements IEducationalDecisionHea
     }
 
     @Override
-    public EducationalDecisionHeader findAllByFromDate(String fromDate) {
-        return educationalDecisionHeaderDao.findAllByFromDate(fromDate).stream().max(Comparator.comparing(EducationalDecisionHeader::getId)).orElse(null);
+    public EducationalDecisionHeader findAllByFromDate(String fromDate,String complex) {
+        return educationalDecisionHeaderDao.findAllByFromDate(fromDate, complex).stream().max(Comparator.comparing(EducationalDecisionHeader::getId)).orElse(null);
     }
 }

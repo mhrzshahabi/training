@@ -1097,6 +1097,7 @@
 
             let agreementRecord = ListGrid_Agreement.getSelectedRecord();
             let fromDate = agreementRecord.fromDate;
+            let complex = agreementRecord.complexTitle;
             if (fromDate === null) {
                 createDialog("info", "از تاریخ برای تفاهم نامه مشخص نشده است");
                 return;
@@ -1132,6 +1133,7 @@
 
                 let calcTeachingCostList = {
                     fromDate: fromDate,
+                    complex: complex,
                     calcTeachingCost: records
                 };
                 wait.show();

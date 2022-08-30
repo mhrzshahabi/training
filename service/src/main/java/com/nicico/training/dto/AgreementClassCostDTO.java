@@ -53,6 +53,7 @@ public class AgreementClassCostDTO implements Serializable {
     @ApiModel("AgreementClassCost - CalcTeachingCostList")
     public static class CalcTeachingCostList {
         private String fromDate;
+        private String complex;
         private List<AgreementClassCostDTO.Info> calcTeachingCost;
     }
 

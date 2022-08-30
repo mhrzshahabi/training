@@ -57,8 +57,8 @@ public class EducationalDecisionService implements IEducationalDecisionService {
     }
 
     @Override
-    public List<EducationalDecision> findAllByDateAndRef(String fromDate, String ref) {
-        EducationalDecisionHeader educationalDecisionHeader = educationalDecisionHeaderService.findAllByFromDate(fromDate);
+    public List<EducationalDecision> findAllByDateAndRef(String fromDate, String ref, String complex) {
+        EducationalDecisionHeader educationalDecisionHeader = educationalDecisionHeaderService.findAllByFromDate(fromDate,complex);
         if (educationalDecisionHeader != null) {
             return educationalDecisionDao.findAllByHeaderIdAndFromDateAndRef(educationalDecisionHeader.getId(), fromDate, ref);
         } else
