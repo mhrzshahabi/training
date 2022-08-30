@@ -5496,6 +5496,13 @@ FROM
         </addColumn>
     </changeSet>
 
+    <changeSet author="Montazeri" id="1661671341217">
+        <addColumn tableName="tbl_agreement">
+            <column name="complex_id" type="NUMBER(19, 0)"/>
+            <column name="complex_title" type="VARCHAR2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
 
 

@@ -103,7 +103,11 @@
         ],
         fetchDataURL: teacherUrl + "fullName-list"
     });
-
+    let RestDataSource_Agreement_Department_Filter = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "code"}, {name: "title"}, {name: "enabled"}],
+        cacheAllData: true,
+        fetchDataURL: departmentUrl + "/organ-segment-iscList/mojtame"
+    });
     //----------------------------------- layOut -----------------------------------------------------------------------
     ToolStripButton_Add_Agreement = isc.ToolStripButtonCreate.create({
         click: function () {
@@ -282,6 +286,7 @@
         canEdit: true,
         autoFetchData: true,
         validateByCell: true,
+        selectCellTextOnClick: true,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         fields: [
@@ -468,6 +473,26 @@
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         fields: [
             {name: "id", hidden: true},
+            {
+                name: "complexId",
+                editorType: "ComboBoxItem",
+                title: "<spring:message code="complex"/>:",
+                optionDataSource: RestDataSource_Agreement_Department_Filter,
+                displayField: "title",
+                autoFetchData: true,
+                valueField: "id",
+                textAlign: "center",
+                required: true,
+                colSpan: 4,
+                textMatchStyle: "substring",
+                pickListFields: [
+                    {name: "title", autoFitWidth: true, autoFitWidthApproach: true},
+                ],
+                pickListProperties: {
+                    sortField: 0,
+                    showFilterEditor: false
+                },
+            },
             {
                 name: "agreementNumber",
                 title: "شماره تفاهم نامه",
@@ -812,8 +837,8 @@
     });
     Window_Agreement = isc.Window.create({
         title: "<spring:message code='agreement'/>",
-        width: "60%",
-        height: "60%",
+        width: "50%",
+        height: "70%",
         autoSize: false,
         align: "center",
         items: [
@@ -866,10 +891,12 @@
 
             if (record.secondPartyTeacherId !== undefined && record.secondPartyTeacherId !== null) {
                 DynamicForm_Agreement.setValue("secondParty", "1");
-                DynamicForm_Agreement.getItem("secondParty").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("secondParty"), "1");
+                DynamicForm_Agreement.setValue("secondPartyTeacherId", record.secondPartyTeacherId);
+                // DynamicForm_Agreement.getItem("secondParty").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("secondParty"), "1");
             } else {
                 DynamicForm_Agreement.setValue("secondParty", "2");
-                DynamicForm_Agreement.getItem("secondParty").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("secondParty"), "2");
+                DynamicForm_Agreement.setValue("secondPartyInstituteId", record.secondPartyInstituteId);
+                // DynamicForm_Agreement.getItem("secondParty").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("secondParty"), "2");
             }
             // DynamicForm_Agreement.getItem("currencyId").change(DynamicForm_Agreement, DynamicForm_Agreement.getItem("currencyId"), record.currencyId);
             Window_Agreement.setTitle("ویرایش تفاهم نامه/ قرارداد");

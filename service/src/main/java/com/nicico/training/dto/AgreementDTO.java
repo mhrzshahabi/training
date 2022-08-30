@@ -27,7 +27,8 @@ public class AgreementDTO implements Serializable {
     private Boolean teacherEvaluation;
     private Long finalCost;
     private Long maxPaymentHours;
-
+    private Long complexId;
+    private String complexTitle;
 
     @Getter
     @Setter

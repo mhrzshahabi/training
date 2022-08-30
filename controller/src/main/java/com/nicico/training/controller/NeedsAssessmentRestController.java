@@ -274,7 +274,7 @@ public class NeedsAssessmentRestController {
     }
 
     @Loggable
-    @GetMapping(value = "by-training-post-code/spec-list/{requestItemId}")
+    @GetMapping(value = "/by-training-post-code/spec-list/{requestItemId}")
     public ResponseEntity<ISC<NeedsAssessmentDTO.CourseDetail>> byTrainingPostCodeList(
             @RequestParam(value = "_startRow", required = false) Integer startRow,
             @RequestParam(value = "_endRow", required = false) Integer endRow,
