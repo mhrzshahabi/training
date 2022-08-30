@@ -4441,6 +4441,14 @@
                             ]
                         };
                     }
+                    if(value === -1){
+                        criteria = {
+                            _constructor: "AdvancedCriteria",
+                            operator: "and",
+                            criteria: [
+                            ]
+                        };
+                    }
 
 
                     if (ListGrid_Class_JspClass.implicitCriteria) {
