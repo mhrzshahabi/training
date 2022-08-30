@@ -1,7 +1,7 @@
 create PROCEDURE PRC_MERGE_TBL_DEPARTMENT_MDMS AS
 BEGIN
     ------------UPDATE-------------------------------------------------------
-    MERGE INTO TBL_DEPARTMENT T
+MERGE INTO TBL_DEPARTMENT T
     USING
         (SELECT MDMS_DEPARTMENT.C_CODE               AS MDMS_C_CODE,
                 MDMS_DEPARTMENT.C_PEOPLE_TYPE        AS MDMS_C_PEOPLE_TYPE,
@@ -80,11 +80,11 @@ BEGIN
                           ELSE
                               75
                           END AS E_DELETED
-               FROM MDMS_TBL_MD_DEPARTMENT DP) MDMS_DEPARTMENT
+               FROM vw_department DP) MDMS_DEPARTMENT
                   INNER JOIN TBL_DEPARTMENT TR_DEPARTMENT
                              ON (MDMS_DEPARTMENT.C_CODE = TR_DEPARTMENT.C_CODE AND
                                  MDMS_DEPARTMENT.C_PEOPLE_TYPE = TR_DEPARTMENT.C_PEOPLE_TYPE)
-                  LEFT JOIN MDMS_TBL_MD_DEPARTMENT mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
+                  LEFT JOIN vw_department mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
                   LEFT JOIN TBL_DEPARTMENT TR_PARENT
                             ON (mdms_parent_.C_CODE = TR_PARENT.C_CODE AND
                                 mdms_parent_.C_PEOPLE_TYPE = TR_PARENT.C_PEOPLE_TYPE)
@@ -240,42 +240,42 @@ BEGIN
     ON (CHANGES_.MDMS_C_CODE = T.C_CODE AND CHANGES_.MDMS_C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
     WHEN MATCHED THEN
         UPDATE
-        SET T.N_VERSION            = T.N_VERSION + 1,
-            T.C_ALIGNMENT          = CHANGES_.MDMS_C_ALIGNMENT,
-            T.C_CORRECTION         = CHANGES_.MDMS_C_CORRECTION,
-            T.C_END_DATE           = MDMS_C_END_DATE,
-            T.C_GHESMAT_CODE       = MDMS_C_GHESMAT_CODE,
-            T.C_GHESMAT_TITLE      = MDMS_C_GHESMAT_TITLE,
-            T.C_HOZE_CODE          = MDMS_C_HOZE_CODE,
-            T.C_HOZE_TITLE         = MDMS_C_HOZE_TITLE,
-            T.C_ISSUABLE           = MDMS_C_ISSUABLE,
-            T.C_LAST_MODIFIED_BY   = 'CHARGOON',
-            T.C_LEGACY_CHANGE_DATE = MDMS_C_LEGACY_CHANGE_DATE,
-            T.C_LEGACY_CREATE_DATE = MDMS_C_LEGACY_CREATE_DATE,
-            T.C_MOAVENAT_CODE      = MDMS_C_MOAVENAT_CODE,
-            T.C_MOAVENAT_TITLE     = MDMS_C_MOAVENAT_TITLE,
-            T.C_NATURE             = MDMS_C_NATURE,
-            T.C_NEW_CODE           = MDMS_C_NEW_CODE,
-            T.C_OLD_CODE           = MDMS_C_OLD_CODE,
-            T.C_OMOR_CODE          = MDMS_C_OMOR_CODE,
-            T.C_OMOR_TITLE         = MDMS_C_OMOR_TITLE,
-            T.C_PARENT_CODE        = MDMS_C_PARENT_CODE,
-            T.C_START_DATE         = MDMS_C_START_DATE,
-            T.C_TITLE              = MDMS_C_TITLE,
-            T.C_TITLE_L            = MDMS_C_TITLE_L,
-            T.C_TYPE               = MDMS_C_TYPE,
-            T.C_USER               = MDMS_C_USER,
-            T.C_VAHED_CODE         = MDMS_C_VAHED_CODE,
-            T.C_VAHED_TITLE        = MDMS_C_VAHED_TITLE,
-            T.D_LAST_MODIFIED_DATE = SYSDATE,
-            T.E_DELETED            = MDMS_E_DELETED,
-            T.E_ENABLED            = MDMS_E_ENABLED,
-            T.F_PARENT             = MDMS_C_PARENT,
-            T.C_MOJTAME_CODE       = MDMS_C_MOJTAME_CODE,
-            T.C_MOJTAME_TITLE      = MDMS_C_MOJTAME_TITLE;
+            SET T.N_VERSION            = T.N_VERSION + 1,
+                T.C_ALIGNMENT          = CHANGES_.MDMS_C_ALIGNMENT,
+                T.C_CORRECTION         = CHANGES_.MDMS_C_CORRECTION,
+                T.C_END_DATE           = MDMS_C_END_DATE,
+                T.C_GHESMAT_CODE       = MDMS_C_GHESMAT_CODE,
+                T.C_GHESMAT_TITLE      = MDMS_C_GHESMAT_TITLE,
+                T.C_HOZE_CODE          = MDMS_C_HOZE_CODE,
+                T.C_HOZE_TITLE         = MDMS_C_HOZE_TITLE,
+                T.C_ISSUABLE           = MDMS_C_ISSUABLE,
+                T.C_LAST_MODIFIED_BY   = 'HR',
+                T.C_LEGACY_CHANGE_DATE = MDMS_C_LEGACY_CHANGE_DATE,
+                T.C_LEGACY_CREATE_DATE = MDMS_C_LEGACY_CREATE_DATE,
+                T.C_MOAVENAT_CODE      = MDMS_C_MOAVENAT_CODE,
+                T.C_MOAVENAT_TITLE     = MDMS_C_MOAVENAT_TITLE,
+                T.C_NATURE             = MDMS_C_NATURE,
+                T.C_NEW_CODE           = MDMS_C_NEW_CODE,
+                T.C_OLD_CODE           = MDMS_C_OLD_CODE,
+                T.C_OMOR_CODE          = MDMS_C_OMOR_CODE,
+                T.C_OMOR_TITLE         = MDMS_C_OMOR_TITLE,
+                T.C_PARENT_CODE        = MDMS_C_PARENT_CODE,
+                T.C_START_DATE         = MDMS_C_START_DATE,
+                T.C_TITLE              = MDMS_C_TITLE,
+                T.C_TITLE_L            = MDMS_C_TITLE_L,
+                T.C_TYPE               = MDMS_C_TYPE,
+                T.C_USER               = MDMS_C_USER,
+                T.C_VAHED_CODE         = MDMS_C_VAHED_CODE,
+                T.C_VAHED_TITLE        = MDMS_C_VAHED_TITLE,
+                T.D_LAST_MODIFIED_DATE = SYSDATE,
+                T.E_DELETED            = MDMS_E_DELETED,
+                T.E_ENABLED            = MDMS_E_ENABLED,
+                T.F_PARENT             = MDMS_C_PARENT,
+                T.C_MOJTAME_CODE       = MDMS_C_MOJTAME_CODE,
+                T.C_MOJTAME_TITLE      = MDMS_C_MOJTAME_TITLE;
 
-    --------------INSERT-----------------------------------------------------
-    MERGE INTO TBL_DEPARTMENT T
+--------------INSERT-----------------------------------------------------
+MERGE INTO TBL_DEPARTMENT T
     USING (
         SELECT MDMS_DEPARTMENT.C_CODE               AS MDMS_C_CODE,
                MDMS_DEPARTMENT.C_PEOPLE_TYPE        AS MDMS_C_PEOPLE_TYPE,
@@ -325,11 +325,11 @@ BEGIN
                             ELSE
                                 75
                             END AS E_DELETED
-                 FROM MDMS_TBL_MD_DEPARTMENT DP) MDMS_DEPARTMENT
+                 FROM vw_department DP) MDMS_DEPARTMENT
                  LEFT JOIN TBL_DEPARTMENT TR_DEP
                            ON (MDMS_DEPARTMENT.C_CODE = TR_DEP.C_CODE AND
                                MDMS_DEPARTMENT.C_PEOPLE_TYPE = TR_DEP.C_PEOPLE_TYPE)
-                 LEFT JOIN MDMS_TBL_MD_DEPARTMENT mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
+                 LEFT JOIN vw_department mdms_parent_ on MDMS_DEPARTMENT.c_parent = mdms_parent_.c_id
                  LEFT JOIN TBL_DEPARTMENT TR_PARENT
                            ON (mdms_parent_.C_CODE = TR_PARENT.C_CODE AND
                                mdms_parent_.C_PEOPLE_TYPE = TR_PARENT.C_PEOPLE_TYPE)
@@ -375,44 +375,45 @@ BEGIN
                 F_PARENT,
                 C_MOJTAME_CODE,
                 C_MOJTAME_TITLE)
-        VALUES (SEQ_DEPARTMENT_ID.NEXTVAL,
-                NEW_.MDMS_C_CODE,
-                0,
-                NEW_.MDMS_C_ALIGNMENT,
-                NEW_.MDMS_C_CORRECTION,
-                'CHARGOON',
-                NEW_.MDMS_C_END_DATE,
-                NEW_.MDMS_C_GHESMAT_CODE,
-                NEW_.MDMS_C_GHESMAT_TITLE,
-                NEW_.MDMS_C_HOZE_CODE,
-                NEW_.MDMS_C_HOZE_TITLE,
-                NEW_.MDMS_C_ISSUABLE,
-                NULL,
-                NEW_.MDMS_C_LEGACY_CHANGE_DATE,
-                NEW_.MDMS_C_LEGACY_CREATE_DATE,
-                NEW_.MDMS_C_MOAVENAT_CODE,
-                NEW_.MDMS_C_MOAVENAT_TITLE,
-                NEW_.MDMS_C_NATURE,
-                NEW_.MDMS_C_NEW_CODE,
-                NEW_.MDMS_C_OLD_CODE,
-                NEW_.MDMS_C_OMOR_CODE,
-                NEW_.MDMS_C_OMOR_TITLE,
-                NEW_.MDMS_C_PARENT_CODE,
-                NEW_.MDMS_C_PEOPLE_TYPE,
-                NEW_.MDMS_C_START_DATE,
-                NEW_.MDMS_C_TITLE,
-                NEW_.MDMS_C_TITLE_L,
-                NEW_.MDMS_C_TYPE,
-                NEW_.MDMS_C_USER,
-                NEW_.MDMS_C_VAHED_CODE,
-                NEW_.MDMS_C_VAHED_TITLE,
-                SYSDATE,
-                NULL,
-                NEW_.MDMS_E_DELETED,
-                NEW_.MDMS_E_ENABLED,
-                NEW_.MDMS_C_PARENT,
-                NEW_.MDMS_C_MOJTAME_CODE,
-                NEW_.MDMS_C_MOJTAME_TITLE);
+            VALUES (SEQ_DEPARTMENT_ID.NEXTVAL,
+                    NEW_.MDMS_C_CODE,
+                    0,
+                    NEW_.MDMS_C_ALIGNMENT,
+                    NEW_.MDMS_C_CORRECTION,
+                    'HR',
+                    NEW_.MDMS_C_END_DATE,
+                    NEW_.MDMS_C_GHESMAT_CODE,
+                    NEW_.MDMS_C_GHESMAT_TITLE,
+                    NEW_.MDMS_C_HOZE_CODE,
+                    NEW_.MDMS_C_HOZE_TITLE,
+                    NEW_.MDMS_C_ISSUABLE,
+                    NULL,
+                    NEW_.MDMS_C_LEGACY_CHANGE_DATE,
+                    NEW_.MDMS_C_LEGACY_CREATE_DATE,
+                    NEW_.MDMS_C_MOAVENAT_CODE,
+                    NEW_.MDMS_C_MOAVENAT_TITLE,
+                    NEW_.MDMS_C_NATURE,
+                    NEW_.MDMS_C_NEW_CODE,
+                    NEW_.MDMS_C_OLD_CODE,
+                    NEW_.MDMS_C_OMOR_CODE,
+                    NEW_.MDMS_C_OMOR_TITLE,
+                    NEW_.MDMS_C_PARENT_CODE,
+                    NEW_.MDMS_C_PEOPLE_TYPE,
+                    NEW_.MDMS_C_START_DATE,
+                    NEW_.MDMS_C_TITLE,
+                    NEW_.MDMS_C_TITLE_L,
+                    NEW_.MDMS_C_TYPE,
+                    NEW_.MDMS_C_USER,
+                    NEW_.MDMS_C_VAHED_CODE,
+                    NEW_.MDMS_C_VAHED_TITLE,
+                    SYSDATE,
+                    NULL,
+                    NEW_.MDMS_E_DELETED,
+                    NEW_.MDMS_E_ENABLED,
+                    NEW_.MDMS_C_PARENT,
+                    NEW_.MDMS_C_MOJTAME_CODE,
+                    NEW_.MDMS_C_MOJTAME_TITLE);
+
 
 END;
 /
