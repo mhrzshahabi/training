@@ -1354,21 +1354,25 @@
                 width: "140",
                 click: function () {
 
-                    isc.Dialog.create({
-                        message: "آیا اطمینان دارید؟",
-                        icon: "[SKIN]ask.png",
-                        buttons: [
-                            isc.Button.create({title: "<spring:message code="yes"/>"}),
-                            isc.Button.create({title: "<spring:message code="global.no"/>"})
-                        ],
-                        buttonClick: function (button, index) {
+                    if (ListGrid_RequestItem_Show_Courses.getData().some(item => item.passed === false) === true) {
+                        createDialog("info", "دوره های قبول نشده توسط پرسنل مورد نظر وجود دارد");
+                    } else {
+                        isc.Dialog.create({
+                            message: "آیا اطمینان دارید؟",
+                            icon: "[SKIN]ask.png",
+                            buttons: [
+                                isc.Button.create({title: "<spring:message code="yes"/>"}),
+                                isc.Button.create({title: "<spring:message code="global.no"/>"})
+                            ],
+                            buttonClick: function (button, index) {
 
-                            if (index === 0) {
-                                confirmRequestItemProcessByRunExperts(record, Window_RequestItem_Show_Status_Completion);
+                                if (index === 0) {
+                                    confirmRequestItemProcessByRunExperts(record, Window_RequestItem_Show_Status_Completion);
+                                }
+                                this.hide();
                             }
-                            this.hide();
-                        }
-                    });
+                        });
+                    }
                 }
             });
             let Button_RequestItem_Show_Status_Close = isc.IButton.create({
