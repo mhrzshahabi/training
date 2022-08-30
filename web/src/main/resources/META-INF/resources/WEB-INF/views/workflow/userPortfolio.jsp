@@ -125,7 +125,8 @@
             {name: "categoryTitle", title: "<spring:message code="category"/>"},
             {name: "subCategoryTitle", title: "<spring:message code="subcategory"/>"},
             {name: "priority", title: "<spring:message code="priority"/>"},
-            {name: "requestItemProcessDetailId", hidden: true}
+            {name: "requestItemProcessDetailId", hidden: true},
+            {name: "isPassed", hidden: true}
         ]
     });
     let RestDataSource_Expert_Opinion_Courses = isc.TrDS.create({
@@ -208,7 +209,7 @@
                 confirmGroupParallelRequestItemProcess(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی رئیس برنامه ریزی جهت تعیین وضعیت") {
                 confirmGroupRequestItemProcessToDetermineStatus(records);
-            } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی / تایید رئیس برنامه ریزی") {
+            } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name.includes("بررسی / تایید رئیس برنامه ریزی")) {
                 confirmGroupRequestItemProcessByPlanningChiefForApproval(records);
             } else if (records[0].title.includes("صلاحیت علمی و فنی") && records[0].name === "بررسی کارشناس انتصاب سمت") {
                 showGroupRequestItemProcessToAppointmentExpert(records);
@@ -285,7 +286,10 @@
                 } else
                     ToolStripButton_Excel_Processes_UserPortfolio.hide();
             } else {
-                ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(true);
+                if (new Set(recordsName).size === 2 && recordsName.includes("بررسی / تایید رئیس برنامه ریزی") && recordsName.includes("بررسی / تایید رئیس برنامه ریزی - ضمن خدمت") )
+                    ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(false);
+                else
+                    ToolStripButton_Group_Confirm_UserPortfolio.setDisabled(true);
                 ToolStripButton_Excel_Processes_UserPortfolio.hide();
             }
 
@@ -718,6 +722,7 @@
                 height: "75%",
                 autoFetchData: true,
                 selectionType: "simple",
+                selectCellTextOnClick: true,
                 selectionAppearance: "checkbox",
                 dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
@@ -1013,8 +1018,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
@@ -1161,8 +1167,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
@@ -1254,7 +1261,7 @@
             DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
-            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId + "/" + false;
             wait.show();
             ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
                 wait.close();
@@ -1310,15 +1317,17 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
                     {name: "categoryTitle", showHover: true},
                     {name: "subCategoryTitle", showHover: true},
                     {name: "priority"},
-                    {name: "requestItemProcessDetailId", hidden: true}
+                    {name: "requestItemProcessDetailId", hidden: true},
+                    {name: "isPassed", hidden: true}
                 ],
                 showHoverComponents: true,
                 showFilterEditor: true,
@@ -1403,7 +1412,7 @@
             DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
-            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId + "/" + true;
             wait.show();
             ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
                 wait.close();
@@ -1459,8 +1468,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
@@ -1552,7 +1562,7 @@
             DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
-            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId + "/" + false;
             wait.show();
             ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
                 wait.close();
@@ -1608,8 +1618,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
@@ -1757,8 +1768,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},

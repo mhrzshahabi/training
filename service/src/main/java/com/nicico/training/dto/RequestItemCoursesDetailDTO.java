@@ -19,6 +19,7 @@ public class RequestItemCoursesDetailDTO {
     private String subCategoryTitle;
     private String priority;
     private Long requestItemProcessDetailId;
+    private boolean isPassed = false;
 
     @Getter
     @Setter
