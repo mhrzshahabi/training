@@ -125,7 +125,8 @@
             {name: "categoryTitle", title: "<spring:message code="category"/>"},
             {name: "subCategoryTitle", title: "<spring:message code="subcategory"/>"},
             {name: "priority", title: "<spring:message code="priority"/>"},
-            {name: "requestItemProcessDetailId", hidden: true}
+            {name: "requestItemProcessDetailId", hidden: true},
+            {name: "isPassed", hidden: true}
         ]
     });
     let RestDataSource_Expert_Opinion_Courses = isc.TrDS.create({
@@ -721,6 +722,7 @@
                 height: "75%",
                 autoFetchData: true,
                 selectionType: "simple",
+                selectCellTextOnClick: true,
                 selectionAppearance: "checkbox",
                 dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
@@ -1016,8 +1018,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
@@ -1164,8 +1167,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
@@ -1257,7 +1261,7 @@
             DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
-            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId + "/" + false;
             wait.show();
             ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
                 wait.close();
@@ -1313,15 +1317,17 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
                     {name: "categoryTitle", showHover: true},
                     {name: "subCategoryTitle", showHover: true},
                     {name: "priority"},
-                    {name: "requestItemProcessDetailId", hidden: true}
+                    {name: "requestItemProcessDetailId", hidden: true},
+                    {name: "isPassed", hidden: true}
                 ],
                 showHoverComponents: true,
                 showFilterEditor: true,
@@ -1348,21 +1354,25 @@
                 width: "140",
                 click: function () {
 
-                    isc.Dialog.create({
-                        message: "آیا اطمینان دارید؟",
-                        icon: "[SKIN]ask.png",
-                        buttons: [
-                            isc.Button.create({title: "<spring:message code="yes"/>"}),
-                            isc.Button.create({title: "<spring:message code="global.no"/>"})
-                        ],
-                        buttonClick: function (button, index) {
+                    if (ListGrid_RequestItem_Show_Courses.getData().some(item => item.passed === false) === true) {
+                        createDialog("info", "دوره های نگذرانده دارد");
+                    } else {
+                        isc.Dialog.create({
+                            message: "آیا اطمینان دارید؟",
+                            icon: "[SKIN]ask.png",
+                            buttons: [
+                                isc.Button.create({title: "<spring:message code="yes"/>"}),
+                                isc.Button.create({title: "<spring:message code="global.no"/>"})
+                            ],
+                            buttonClick: function (button, index) {
 
-                            if (index === 0) {
-                                confirmRequestItemProcessByRunExperts(record, Window_RequestItem_Show_Status_Completion);
+                                if (index === 0) {
+                                    confirmRequestItemProcessByRunExperts(record, Window_RequestItem_Show_Status_Completion);
+                                }
+                                this.hide();
                             }
-                            this.hide();
-                        }
-                    });
+                        });
+                    }
                 }
             });
             let Button_RequestItem_Show_Status_Close = isc.IButton.create({
@@ -1406,7 +1416,7 @@
             DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
-            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId + "/" + true;
             wait.show();
             ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
                 wait.close();
@@ -1462,8 +1472,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
@@ -1555,7 +1566,7 @@
             DynamicForm_RequestItem_Show_Status.setValue("description", "درخواست با شماره " + record.requestNo);
 
 
-            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId;
+            RestDataSource_Parallel_RequestItem_Courses.fetchDataURL = requestItemUrl + "/related-courses-to-run/" + record.requestItemId + "/" + false;
             wait.show();
             ListGrid_RequestItem_Show_Courses.fetchData(null, function (dsResponse, data, dsRequest) {
                 wait.close();
@@ -1611,8 +1622,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},
@@ -1760,8 +1772,9 @@
             let ListGrid_RequestItem_Show_Courses = isc.ListGrid.create({
                 width: "100%",
                 height: "70%",
-                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 sortDirection: "descending",
+                selectCellTextOnClick: true,
+                dataSource: RestDataSource_Parallel_RequestItem_Courses,
                 fields: [
                     {name: "courseCode"},
                     {name: "courseTitle", showHover: true},

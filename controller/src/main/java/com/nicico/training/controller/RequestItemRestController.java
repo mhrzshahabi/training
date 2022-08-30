@@ -10,6 +10,7 @@ import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.RequestItemCoursesDetailDTO;
 import com.nicico.training.dto.RequestItemDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.model.RequestItem;
@@ -44,6 +45,7 @@ public class RequestItemRestController {
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final CriteriaUtil criteriaUtil;
+    private final ITclassService classService;
     private final ICourseService courseService;
     private final IRequestItemService requestItemService;
     private final RequestItemBeanMapper requestItemBeanMapper;
@@ -242,8 +244,8 @@ public class RequestItemRestController {
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/related-courses-to-run/{requestItemId}")
-    public ResponseEntity<RequestItemCoursesDetailDTO.OpinionInfo> getCoursesRelatedToRunSupervisor(@PathVariable Long requestItemId) {
+    @GetMapping(value = "/related-courses-to-run/{requestItemId}/{hasPassedStatus}")
+    public ResponseEntity<RequestItemCoursesDetailDTO.OpinionInfo> getCoursesRelatedToRun(@PathVariable Long requestItemId, @PathVariable boolean hasPassedStatus) {
 
         List<RequestItemCoursesDetailDTO.Info> userCourses = new ArrayList<>();
 
@@ -269,6 +271,32 @@ public class RequestItemRestController {
             if (userAccessCourses.contains(requestItemCoursesDetailDTO.getCourseCode()))
                 userCourses.add(requestItemCoursesDetailDTO);
         }
+
+        if (hasPassedStatus) {
+            SynonymPersonnel synonymPersonnel;
+            SynonymPersonnel synonymPersonnelByNationalCode = null;
+            SynonymPersonnel synonymPersonnelByPersonnelNo2 = null;
+            RequestItem requestItem = requestItemService.get(requestItemId);
+
+            if (requestItem.getNationalCode() != null)
+                synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+            if (requestItem.getPersonnelNo2() != null)
+                synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+
+            if (synonymPersonnelByNationalCode != null)
+                synonymPersonnel = synonymPersonnelByNationalCode;
+            else
+                synonymPersonnel = synonymPersonnelByPersonnelNo2;
+
+            List<String> list = classService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
+                    .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
+
+            for (RequestItemCoursesDetailDTO.Info userCourse : userCourses) {
+                if (list.contains(userCourse.getCourseCode()))
+                    userCourse.setPassed(true);
+            }
+        }
+
         opinionInfo.setCourses(userCourses);
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
