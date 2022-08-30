@@ -17,4 +17,5 @@ public interface IEducationalDecisionHeaderService {
     void delete(Long id);
 
     EducationalDecisionHeader findAllByFromDate(String fromDate,String complex);
+    BaseResponse update(EducationalDecisionHeader request,Long id);
 }

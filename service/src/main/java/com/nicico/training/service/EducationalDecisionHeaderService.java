@@ -57,4 +57,23 @@ public class EducationalDecisionHeaderService implements IEducationalDecisionHea
     public EducationalDecisionHeader findAllByFromDate(String fromDate,String complex) {
         return educationalDecisionHeaderDao.findAllByFromDate(fromDate, complex).stream().max(Comparator.comparing(EducationalDecisionHeader::getId)).orElse(null);
     }
+
+    @Override
+    public BaseResponse update(EducationalDecisionHeader request,Long id) {
+        BaseResponse response=new BaseResponse();
+        final Optional<EducationalDecisionHeader> cById = educationalDecisionHeaderDao.findById(id);
+        final EducationalDecisionHeader educationalDecisionHeader = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+
+        try {
+            educationalDecisionHeader.setId(id);
+            educationalDecisionHeader.setComplex(request.getComplex());
+            educationalDecisionHeader.setItemToDate(request.getItemToDate());
+            educationalDecisionHeader.setItemFromDate(request.getItemFromDate());
+            educationalDecisionHeaderDao.save(educationalDecisionHeader);
+            response.setStatus(200);
+        }catch (Exception e){
+            response.setStatus(406);
+        }
+        return response;
+    }
 }
