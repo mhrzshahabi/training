@@ -4,8 +4,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EducationalDecisionHeaderDTO;
 import com.nicico.training.iservice.IEducationalDecisionHeaderService;
 import com.nicico.training.mapper.EducationalDecisionHeaderMapper.EducationalDecisionHeaderMapper;
-import com.nicico.training.mapper.EducationalDecisionMapper.EducationalDecisionMapper;
-import com.nicico.training.model.EducationalDecision;
 import com.nicico.training.model.EducationalDecisionHeader;
 
 import com.nicico.training.repository.EducationalDecisionHeaderDao;
@@ -22,7 +20,6 @@ import java.util.*;
 public class EducationalDecisionHeaderService implements IEducationalDecisionHeaderService {
 
     private final EducationalDecisionHeaderDao educationalDecisionHeaderDao;
-    private final EducationalDecisionHeaderMapper mapper;
 
     @Override
     public EducationalDecisionHeaderDTO.Info get(Long id) {
