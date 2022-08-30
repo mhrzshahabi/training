@@ -271,6 +271,7 @@ public class RequestItemRestController {
             if (userAccessCourses.contains(requestItemCoursesDetailDTO.getCourseCode()))
                 userCourses.add(requestItemCoursesDetailDTO);
         }
+
         opinionInfo.setCourses(userCourses);
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
