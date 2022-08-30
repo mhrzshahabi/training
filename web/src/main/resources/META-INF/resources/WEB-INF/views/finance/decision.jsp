@@ -8,7 +8,7 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-
+    var methoddecision =" ";
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
@@ -1551,7 +1551,8 @@
 
     function editHeaderDecision(record) {
         DynamicForm_Decision.clearErrors();
-        Window_header_Decision.title='ویرایش هدر تصمیم گیری'
+        Window_header_Decision.title='ویرایش هدر تصمیم گیری';
+        methoddecision = "UPDATE";
         DynamicForm_Decision.editRecord(record);
         Window_header_Decision.show();
     }
@@ -1568,8 +1569,30 @@
         }
         let data = DynamicForm_Decision.getValues();
 
+        if (methoddecision === "UPDATE") {
+           let url= educationalDecisionHeaderRequestUrl+"/update/"+data.id;
+
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionHeaderRequestUrl, "POST", JSON.stringify(data), function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(url, "PUT", JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+
+                    wait.close();
+                    methoddecision = "";
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    Window_header_Decision.close();
+                    ListGrid_Decision_Header.invalidateCache();
+                } else {
+                    wait.close();
+                    methoddecision = "";
+                    createDialog("info", "خطایی رخ داده است");
+                }
+            }));
+            methoddecision = "";
+            return;
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionHeaderRequestUrl, "POST", JSON.stringify(data), function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     wait.close();
                     createDialog("info", "<spring:message code="global.form.request.successful"/>");

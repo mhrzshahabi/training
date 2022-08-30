@@ -5,6 +5,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EducationalDecisionHeaderDTO;
 import com.nicico.training.iservice.IEducationalDecisionHeaderService;
 import com.nicico.training.mapper.EducationalDecisionHeaderMapper.EducationalDecisionHeaderMapper;
+import com.nicico.training.model.EducationalDecisionHeader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -62,5 +63,19 @@ public class EducationalDecisionHeaderController {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    @Loggable
+    @PutMapping(value="/update/{id}")
+    public ResponseEntity<BaseResponse> update(@RequestBody EducationalDecisionHeaderDTO request,@PathVariable Long id){
+        BaseResponse res = new BaseResponse();
+        try {
+            EducationalDecisionHeader model = mapper.toModel(request);
+            res = iEducationalDecisionHeaderService.update(model,id);
+        }catch (TrainingException ex){
+            res.setStatus(406);
+        }
+        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+
     }
 }
