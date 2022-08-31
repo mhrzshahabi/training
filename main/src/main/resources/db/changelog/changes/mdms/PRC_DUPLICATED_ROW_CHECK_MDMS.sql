@@ -6,38 +6,38 @@ create PROCEDURE PRC_DUPLICATED_ROW_CHECK_MDMS AS
         SELECT CASE
                    WHEN EXISTS(
                            SELECT C_CODE, C_PEOPLE_TYPE
-                           FROM (SELECT * FROM MDMS_TBL_MD_JOB)
+                           FROM (SELECT * FROM TBL_MD_JOB_MDMS)
                            GROUP BY C_CODE, C_PEOPLE_TYPE
                            HAVING COUNT(*) > 1
                        ) THEN 'TBL_MD_JOB'
                    WHEN EXISTS(
                            SELECT C_CODE, C_PEOPLE_TYPE
-                           FROM (SELECT * FROM MDMS_TBL_MD_POST_GRADE)
+                           FROM (SELECT * FROM TBL_MD_POST_GRADE_MDMS)
                            GROUP BY C_CODE, C_PEOPLE_TYPE
                            HAVING COUNT(*) > 1
                        ) THEN 'TBL_MD_POST_GRADE'
                    WHEN EXISTS(
                            SELECT C_CODE, C_PEOPLE_TYPE
-                           FROM (SELECT * FROM MDMS_TBL_MD_GEO_WORK)
+                           FROM (SELECT * FROM TBL_MD_GEO_WORK_MDMS)
                            GROUP BY C_CODE, C_PEOPLE_TYPE
                            HAVING COUNT(*) > 1
                        ) THEN 'TBL_MD_GEO_WORK'
                    WHEN EXISTS(
                            SELECT C_CODE
-                           FROM (SELECT * FROM MDMS_TBL_MD_DEPARTMENT)
+                           FROM (SELECT * FROM VW_DEPARTMENT)
                            GROUP BY C_CODE
                            HAVING COUNT(*) > 1
                        ) THEN 'TBL_MD_DEPARTMENT'
                    WHEN EXISTS(
                            SELECT C_CODE
-                           FROM (SELECT * FROM MDMS_TBL_MD_POST)
+                           FROM (SELECT * FROM TBL_MD_POST_MDMS)
                            GROUP BY C_CODE , C_PEOPLE_TYPE
                            HAVING COUNT(*) > 1
                        ) THEN 'TBL_MD_POST'
                    WHEN EXISTS(
                            SELECT C_NATIONAL_CODE FROM (
                                SELECT * FROM (
-                                   SELECT E.*, ROW_NUMBER() OVER (PARTITION BY E.C_PEOPLE_ID ORDER BY C_ID DESC) AS INX FROM MDMS_TBL_MD_EMPLOYEE E
+                                   SELECT E.*, ROW_NUMBER() OVER (PARTITION BY E.C_PEOPLE_ID ORDER BY C_ID DESC) AS INX FROM TBL_MD_EMPLOYEE_MDMS E
                                 )    WHERE INX = 1
                            ) GROUP BY C_NATIONAL_CODE HAVING COUNT(*) > 1
                        ) THEN 'VIW_EMPLOYEE'
