@@ -77,29 +77,68 @@ public class EducationalDecisionService implements IEducationalDecisionService {
         Optional<EducationalDecision> cById = educationalDecisionDao.findById(id);
         EducationalDecision educationalDecision = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
 
-        BaseResponse response = new BaseResponse();
+        final String ref = educationalDecision.getRef();
+        switch (ref) {
+            case "base" -> {
+                educationalDecision.setItemFromDate(request.getItemFromDate());
+                educationalDecision.setItemToDate(request.getItemToDate());
+                educationalDecision.setBaseTuitionFee(request.getBaseTuitionFee());
+                educationalDecision.setProfessorTuitionFee(request.getProfessorTuitionFee());
+                educationalDecision.setKnowledgeAssistantTuitionFee(request.getKnowledgeAssistantTuitionFee());
+                educationalDecision.setTeacherAssistantTuitionFee(request.getTeacherAssistantTuitionFee());
+                educationalDecision.setInstructorTuitionFee(request.getInstructorTuitionFee());
+                educationalDecision.setEducationalAssistantTuitionFee(request.getEducationalAssistantTuitionFee());
 
-        /*
-                Agreement updating = new Agreement();
-        modelMapper.map(agreement, updating);
-        modelMapper.map(update, updating);
-         */
+            }
+            case "history" -> {
+                educationalDecision.setItemFromDate(request.getItemFromDate());
+                educationalDecision.setItemToDate(request.getItemToDate());
+                educationalDecision.setEducationalHistoryFrom(request.getEducationalHistoryFrom());
+                educationalDecision.setEducationalHistoryTo(request.getEducationalHistoryTo());
 
+            }
+            case "teaching-method" -> {
+                educationalDecision.setItemFromDate(request.getItemFromDate());
+                educationalDecision.setItemToDate(request.getItemToDate());
+                educationalDecision.setTeachingMethod(request.getTeachingMethod());
+                educationalDecision.setCourseTypeTeachingMethod(request.getCourseTypeTeachingMethod());
+                educationalDecision.setCoefficientOfTeachingMethod(request.getCoefficientOfTeachingMethod());
+
+            }
+            case "course-type" -> {
+                educationalDecision.setItemFromDate(request.getItemFromDate());
+                educationalDecision.setItemToDate(request.getItemToDate());
+                educationalDecision.setTypeOfSpecializationCourseType(request.getTypeOfSpecializationCourseType());
+                educationalDecision.setCourseLevelCourseType(request.getCourseLevelCourseType());
+                educationalDecision.setCourseForCourseType(request.getCourseForCourseType());
+                educationalDecision.setCoefficientOfCourseType(request.getCoefficientOfCourseType());
+
+            }
+            case "distance" -> {
+                educationalDecision.setItemFromDate(request.getItemFromDate());
+                educationalDecision.setItemToDate(request.getItemToDate());
+                educationalDecision.setDistance(request.getDistance());
+                educationalDecision.setResidence(request.getResidence());
+
+            }
+        }
+
+/*
         modelMapper.map(request, educationalDecision);
         educationalDecision.setId(id);
         educationalDecisionDao.saveAndFlush(educationalDecision);
+//////////////////
+        EducationalDecision toUpdate = mapper.toUpdate(educationalDecision,request);
+            toUpdate.setId(id);
+            EducationalDecision save = educationalDecisionDao.save(toUpdate);
+*/
 
-        response.setStatus(200);
-
-//        try {
-//
-//            EducationalDecision toUpdate = mapper.toUpdate(educationalDecision,request);
-//            toUpdate.setId(id);
-//            EducationalDecision save = educationalDecisionDao.save(toUpdate);
-//            response.setStatus(200);
-//        }catch (Exception e){
-//            response.setStatus(406);
-//        }
+        BaseResponse response = new BaseResponse();
+        try {
+             response.setStatus(200);
+        }catch (Exception e){
+            response.setStatus(406);
+        }
         return response;
     }
 }

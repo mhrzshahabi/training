@@ -1407,7 +1407,7 @@
         ]
     });
     Window_header_Decision = isc.Window.create({
-        title: "افزودن هدر تصمیم گیری",
+        // title: "افزودن هدر تصمیم گیری",
         width: 450,
         autoSize: true,
         autoCenter: true,
@@ -1543,15 +1543,15 @@
 
     //------------------------------------------------- Functions ------------------------------------------------------
     function addHeaderDecision() {
-
+        Window_header_Decision.setTitle("افزودن هدر تصمیم گیری");
         DynamicForm_Decision.clearValues();
         DynamicForm_Decision.clearErrors();
         Window_header_Decision.show();
     }
 
     function editHeaderDecision(record) {
+        Window_header_Decision.setTitle("ویرایش هدر تصمیم گیری");
         DynamicForm_Decision.clearErrors();
-        Window_header_Decision.title='ویرایش هدر تصمیم گیری';
         methodDecision = "UPDATE";
         DynamicForm_Decision.editRecord(record);
         Window_header_Decision.show();
