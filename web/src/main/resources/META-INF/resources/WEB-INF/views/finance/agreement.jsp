@@ -343,12 +343,14 @@
                 name: "teachingCostPerHourAuto",
                 title: "نرخ محاسباتی",
                 required: true,
-                canEdit: false
+                canEdit: false,
+                format: "0,",
             },
             {
                 name: "teachingCostPerHour",
                 title: "نرخ توافقی",
                 required: true,
+                format: "0,",
             },
             {
                 name: "agreementId",
