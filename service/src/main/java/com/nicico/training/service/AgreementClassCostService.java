@@ -63,10 +63,15 @@ public class AgreementClassCostService implements IAgreementClassCostService {
     @Override
     public void updateTeachingCostPerHourAuto(Long id, Double teachingCostPerHourAuto) {
 
-        Optional<AgreementClassCost> agreementClassCostOptional = agreementClassCostDAO.findById(id);
-        AgreementClassCost agreementClassCost = agreementClassCostOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        agreementClassCost.setTeachingCostPerHourAuto((double) Math.round(teachingCostPerHourAuto));
-        agreementClassCostDAO.saveAndFlush(agreementClassCost);
+        if (id!=null){
+            Optional<AgreementClassCost> agreementClassCostOptional = agreementClassCostDAO.findById(id);
+            AgreementClassCost agreementClassCost = agreementClassCostOptional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+            agreementClassCost.setTeachingCostPerHourAuto((double) Math.round(teachingCostPerHourAuto));
+            agreementClassCostDAO.saveAndFlush(agreementClassCost);
+        }else {
+            throw new TrainingException(TrainingException.ErrorType.NotFound, "TeacherBasicTuitionFee", "ابتدا ذخیره تغییرات را انجام دهید");
+        }
+
     }
 
     @Transactional
