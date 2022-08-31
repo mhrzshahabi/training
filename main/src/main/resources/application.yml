@@ -38,7 +38,11 @@ spring:
     multipart:
       max-file-size: 30MB
       max-request-size: 30MB
-
+copper:
+ security:
+  policy:
+      json:
+       filePath: classpath://abac-config/default-policy.json
 
 
 server:
@@ -119,6 +123,8 @@ spring:
             user-info-uri: http://apps.icico.net.ir/user/info
             user-name-attribute: username
 nicico:
+  server:
+    url: http://devapp01.icico.net.ir/hrm-backend
   upload:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
@@ -173,6 +179,8 @@ spring:
             user-info-uri: http://staging.icico.net.ir/user/info
             user-name-attribute: username
 nicico:
+  server:
+    url: http://devapp01.icico.net.ir/hrm-backend
   security:
   #    sys-password: password
   upload:
@@ -235,6 +243,8 @@ spring:
     activate:
       on-profile: Development
 nicico:
+  server:
+    url: http://devapp01.icico.net.ir/hrm-backend
   security:
 #    sys-password: password
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
@@ -319,6 +329,8 @@ spring:
     activate:
       on-profile: Local
 nicico:
+  server:
+    url: http://devapp01.icico.net.ir/hrm-backend
   security:
 #    sys-password: password
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'

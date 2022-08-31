@@ -1,0 +1,22 @@
+[
+	{
+		"name": "Karimi",
+		"description": "Users only access to own data",
+		"target": "subject.user == 'nafise'",
+		"condition": "true",
+		"restrictions": "unitCode, unitName"
+	},
+	{
+		"name": "kasra",
+		"description": "Users only access to own data",
+		"target": "subject.user == 'kasra' && subject.department == 'TEHRAN'",
+		"condition": "true"
+	},
+	{
+		"name": "tehran",
+		"description": "Users only access to own data",
+		"target": "subject.user == 'kasra' && subject.department == 'KERMAN' && action == 'TRANSFER_READ'",
+		"condition": "true",
+		"restrictions": "cmcId,unitCode,cmcName,cmcCarrierName"
+	}
+]
