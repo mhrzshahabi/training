@@ -1,7 +1,7 @@
 create PROCEDURE PRC_MERGE_TBL_POST_MDMS AS
 BEGIN
     ------------UPDATE-------------------------------------------------------
-    MERGE INTO TBL_POST T
+MERGE INTO TBL_POST T
     USING (
         SELECT MDMS_POST.C_CODE                 AS MDMS_C_CODE,
                MDMS_POST.C_TITLE_FA             AS MDMS_C_TITLE_FA,
@@ -16,8 +16,6 @@ BEGIN
                MDMS_POST.c_section              AS MDMS_c_section,
                MDMS_POST.c_cost_center_code     AS MDMS_c_cost_center_code,
                MDMS_POST.c_cost_center_title_fa AS MDMS_c_cost_center_title_fa,
-               MDMS_POST.e_enabled              AS MDMS_e_enabled,
-               MDMS_POST.e_deleted              AS MDMS_e_deleted,
                MDMS_POST.f_post_grade_id        AS MDMS_f_post_grade_id,
                MDMS_POST.C_PEOPLE_TYPE          AS C_PEOPLE_TYPE,
                TR_POST.C_CODE                   AS TR_C_CODE,
@@ -50,31 +48,19 @@ BEGIN
                         dep.c_vahed_title                         AS c_unit,
                         dep.c_ghesmat_title                       AS c_section,
                         dep.c_code                                AS c_cost_center_code,
-                        dep.c_title                               AS c_cost_center_title_fa,
-                        CASE
-                            WHEN post.c_active = 1 THEN
-                                NULL
-                            WHEN post.c_active = 0 THEN
-                                74
-                            END                                   AS e_enabled,
-                        CASE
-                            WHEN post.c_deleted = 1 THEN
-                                75
-                            WHEN post.c_deleted = 0 THEN
-                                NULL
-                            END                                   AS e_deleted
-                 FROM MDMS_TBL_MD_POST post
-                          left join MDMS_tbl_md_department mdms_dep on post.c_dep_id = mdms_dep.c_id
+                        dep.c_title                               AS c_cost_center_title_fa
+                 FROM TBL_MD_POST_MDMS post
+                          left join vw_department mdms_dep on post.c_dep_id = mdms_dep.c_id
                           left join TBL_DEPARTMENT dep on dep.C_CODE = mdms_dep.c_code
-                          left join MDMS_TBL_MD_POST_grade mdms_post_grade
+                          left join TBL_MD_POST_grade_MDMS mdms_post_grade
                                     on (post.c_grade_id = mdms_post_grade.c_id)
                           left join TBL_POST_GRADE post_grade
                                     on (post_grade.c_code = mdms_post_grade.c_code and
                                         post_grade.C_PEOPLE_TYPE = mdms_post_grade.C_PEOPLE_TYPE)
-                          left join MDMS_TBL_md_job MDMS_POST on MDMS_POST.c_id = post.c_job_id
+                          left join TBL_md_job_MDMS MDMS_POST on MDMS_POST.c_id = post.c_job_id
                           left join TBL_JOB job_ on (job_.c_code = MDMS_POST.c_code and
-                                                      job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
-                          left join MDMS_TBL_MD_POST mdms_parent on mdms_parent.c_id = post.n_parent_id
+                                                     job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
+                          left join TBL_MD_POST_MDMS mdms_parent on mdms_parent.c_id = post.n_parent_id
                           left join TBL_POST parent_ on (parent_.c_code = mdms_parent.c_code and
                                                          parent_.C_PEOPLE_TYPE = mdms_parent.C_PEOPLE_TYPE)
              ) MDMS_POST
@@ -131,16 +117,7 @@ BEGIN
             AND MDMS_POST.f_post_grade_id IS NOT NULL)
            OR (TR_POST.f_post_grade_id IS NOT NULL
             AND MDMS_POST.f_post_grade_id IS NULL)
-           OR TR_POST.e_enabled <> MDMS_POST.e_enabled
-           OR TR_POST.e_deleted <> MDMS_POST.e_deleted
-           OR (TR_POST.e_enabled IS NULL
-            AND MDMS_POST.e_enabled = 0)
-           OR (TR_POST.e_deleted IS NULL
-            AND MDMS_POST.e_deleted = 1)
-           OR (TR_POST.e_enabled IS NOT NULL
-            AND MDMS_POST.e_enabled IS NULL)
-           OR (TR_POST.e_deleted IS NOT NULL
-            AND MDMS_POST.e_deleted IS NULL)
+
            OR TR_POST.f_department_id <> MDMS_POST.f_department_id
            OR (TR_POST.f_department_id IS NULL
             AND MDMS_POST.f_department_id IS NOT NULL)
@@ -155,26 +132,26 @@ BEGIN
     ON (CHANGES_.MDMS_C_CODE = T.C_CODE and CHANGES_.C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
     WHEN MATCHED THEN
         UPDATE
-        SET t.c_title_fa             = CHANGES_.MDMS_c_title_fa,
-            t.c_affairs              = CHANGES_.MDMS_c_affairs,
-            t.c_area                 = CHANGES_.MDMS_c_area,
-            t.c_mojtame_title        = CHANGES_.MDMS_c_mojtame_title,
-            t.c_assistance           = CHANGES_.MDMS_c_assistance,
-            t.c_cost_center_code     = CHANGES_.MDMS_c_cost_center_code,
-            t.c_cost_center_title_fa = CHANGES_.MDMS_c_cost_center_title_fa,
-            t.c_section              = CHANGES_.MDMS_c_section,
-            t.c_unit                 = CHANGES_.MDMS_c_unit,
-            t.f_job_id               = CHANGES_.MDMS_f_job_id,
-            t.f_post_grade_id        = CHANGES_.MDMS_f_post_grade_id,
-            t.e_enabled              = CHANGES_.MDMS_e_enabled,
-            t.e_deleted              = CHANGES_.MDMS_e_deleted,
-            c_last_modified_by       = 'chargoon',
-            d_last_modified_date     = sysdate,
-            n_version                = t.n_version + 1,
-            t.f_department_id        = CHANGES_.MDMS_f_department_id,
-            t.n_parent_id            = CHANGES_.MDMS_n_parent_id;
+            SET t.c_title_fa             = CHANGES_.MDMS_c_title_fa,
+                t.c_affairs              = CHANGES_.MDMS_c_affairs,
+                t.c_area                 = CHANGES_.MDMS_c_area,
+                t.c_mojtame_title        = CHANGES_.MDMS_c_mojtame_title,
+                t.c_assistance           = CHANGES_.MDMS_c_assistance,
+                t.c_cost_center_code     = CHANGES_.MDMS_c_cost_center_code,
+                t.c_cost_center_title_fa = CHANGES_.MDMS_c_cost_center_title_fa,
+                t.c_section              = CHANGES_.MDMS_c_section,
+                t.c_unit                 = CHANGES_.MDMS_c_unit,
+                t.f_job_id               = CHANGES_.MDMS_f_job_id,
+                t.f_post_grade_id        = CHANGES_.MDMS_f_post_grade_id,
+                t.e_enabled              = NULL,
+                t.e_deleted              = NULL,
+                c_last_modified_by       = 'HR',
+                d_last_modified_date     = sysdate,
+                n_version                = t.n_version + 1,
+                t.f_department_id        = CHANGES_.MDMS_f_department_id,
+                t.n_parent_id            = CHANGES_.MDMS_n_parent_id;
     ------------INSERT-------------------------------------------------------
-    MERGE INTO TBL_POST T
+MERGE INTO TBL_POST T
     USING (
         SELECT MDMS_POST.*
         FROM (
@@ -192,36 +169,24 @@ BEGIN
                         dep.c_vahed_title                         AS c_unit,
                         dep.c_ghesmat_title                       AS c_section,
                         dep.c_code                                AS c_cost_center_code,
-                        dep.c_title                               AS c_cost_center_title_fa,
-                        CASE
-                            WHEN post.c_active = 1 THEN
-                                NULL
-                            WHEN post.c_active = 0 THEN
-                                74
-                            END                                   AS e_enabled,
-                        CASE
-                            WHEN post.c_deleted = 1 THEN
-                                75
-                            WHEN post.c_deleted = 0 THEN
-                                NULL
-                            END                                   AS e_deleted
-                 FROM MDMS_TBL_MD_POST post
+                        dep.c_title                               AS c_cost_center_title_fa
+                 FROM TBL_MD_POST_MDMS post
                           left join MDMS_tbl_md_department mdms_dep on post.c_dep_id = mdms_dep.c_id
                           left join TBL_DEPARTMENT dep on dep.C_CODE = mdms_dep.c_code
-                          left join MDMS_TBL_MD_POST_grade mdms_post_grade
+                          left join TBL_MD_POST_grade_MDMS mdms_post_grade
                                     on (post.c_grade_id = mdms_post_grade.c_id)
                           left join TBL_POST_GRADE post_grade
                                     on (post_grade.c_code = mdms_post_grade.c_code and
                                         post_grade.C_PEOPLE_TYPE = mdms_post_grade.C_PEOPLE_TYPE)
-                          left join MDMS_TBL_md_job MDMS_POST on MDMS_POST.c_id = post.c_job_id
+                          left join TBL_md_job_MDMS MDMS_POST on MDMS_POST.c_id = post.c_job_id
                           left join TBL_JOB job_ on (job_.c_code = MDMS_POST.c_code and
-                                                      job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
-                          left join MDMS_TBL_MD_POST mdms_parent on mdms_parent.c_id = post.n_parent_id
+                                                     job_.C_PEOPLE_TYPE = MDMS_POST.C_PEOPLE_TYPE)
+                          left join TBL_MD_POST_MDMS mdms_parent on mdms_parent.c_id = post.n_parent_id
                           left join TBL_POST parent_ on (parent_.c_code = mdms_parent.c_code and
                                                          parent_.C_PEOPLE_TYPE = mdms_parent.C_PEOPLE_TYPE)
              ) MDMS_POST
                  LEFT JOIN TBL_POST TR_POST
-                            ON (MDMS_POST.C_CODE = TR_POST.C_CODE and MDMS_POST.C_PEOPLE_TYPE = TR_POST.C_PEOPLE_TYPE)
+                           ON (MDMS_POST.C_CODE = TR_POST.C_CODE and MDMS_POST.C_PEOPLE_TYPE = TR_POST.C_PEOPLE_TYPE)
         WHERE TR_POST.ID IS NULL
     ) NEW_
     ON (NEW_.C_CODE = T.C_CODE AND NEW_.C_PEOPLE_TYPE = T.C_PEOPLE_TYPE)
@@ -229,10 +194,10 @@ BEGIN
         INSERT (id, c_created_by, d_created_date, e_enabled, e_deleted, n_version, c_code, c_title_fa, c_affairs,
                 c_area, c_mojtame_title, c_assistance, c_cost_center_title_fa, c_cost_center_code, c_section, c_unit,
                 f_job_id, f_post_grade_id, c_people_type, f_department_id, n_parent_id)
-        VALUES (SEQ_POST_ID.nextval, 'chargoon', sysdate, NEW_.e_enabled, NEW_.e_deleted, 0, NEW_.c_code,
-                NEW_.c_title_fa, NEW_.c_affairs, NEW_.c_area, NEW_.c_mojtame_title, NEW_.c_assistance, NEW_.c_cost_center_title_fa,
-                NEW_.c_cost_center_code, NEW_.c_section, NEW_.c_unit,
-                NEW_.f_job_id, NEW_.f_post_grade_id, NEW_.c_people_type, NEW_.f_department_id, NEW_.n_parent_id);
+            VALUES (SEQ_POST_ID.nextval, 'HR', sysdate, NULL, NULL, 0, NEW_.c_code,
+                    NEW_.c_title_fa, NEW_.c_affairs, NEW_.c_area, NEW_.c_mojtame_title, NEW_.c_assistance, NEW_.c_cost_center_title_fa,
+                    NEW_.c_cost_center_code, NEW_.c_section, NEW_.c_unit,
+                    NEW_.f_job_id, NEW_.f_post_grade_id, NEW_.c_people_type, NEW_.f_department_id, NEW_.n_parent_id);
 END;
 /
 
