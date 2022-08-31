@@ -3,6 +3,7 @@ package com.nicico.training.mapper.EducationalDecisionMapper;
 import com.nicico.training.dto.EducationalDecisionDTO;
 import com.nicico.training.model.EducationalDecision;
 import org.mapstruct.Mapper;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.ReportingPolicy;
 
 import java.util.List;
@@ -15,5 +16,9 @@ public interface EducationalDecisionMapper {
 
     EducationalDecision toModel(EducationalDecisionDTO educationalDecisionDto);
     List<EducationalDecision> toModels(List<EducationalDecisionDTO> educationalDecisionDtos);
+
+    EducationalDecision toUpdate(@MappingTarget EducationalDecision educationalDecision,EducationalDecision update);
+
+//    EducationalDecision toUpdate(EducationalDecision update);
 
 }

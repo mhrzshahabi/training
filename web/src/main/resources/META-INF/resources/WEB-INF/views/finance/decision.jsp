@@ -8,8 +8,8 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-    var methoddecision =" ";
-
+    var methodDecision =" ";
+    var methodChildDecision =" ";
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
     RestDataSource_Decision_Header = isc.TrDS.create({
@@ -1552,7 +1552,7 @@
     function editHeaderDecision(record) {
         DynamicForm_Decision.clearErrors();
         Window_header_Decision.title='ویرایش هدر تصمیم گیری';
-        methoddecision = "UPDATE";
+        methodDecision = "UPDATE";
         DynamicForm_Decision.editRecord(record);
         Window_header_Decision.show();
     }
@@ -1569,7 +1569,7 @@
         }
         let data = DynamicForm_Decision.getValues();
 
-        if (methoddecision === "UPDATE") {
+        if (methodDecision === "UPDATE") {
            let url= educationalDecisionHeaderRequestUrl+"/update/"+data.id;
 
             wait.show();
@@ -1577,17 +1577,17 @@
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                     wait.close();
-                    methoddecision = "";
+                    methodDecision = "";
                     createDialog("info", "<spring:message code="global.form.request.successful"/>");
                     Window_header_Decision.close();
                     ListGrid_Decision_Header.invalidateCache();
                 } else {
                     wait.close();
-                    methoddecision = "";
+                    methodDecision = "";
                     createDialog("info", "خطایی رخ داده است");
                 }
             }));
-            methoddecision = "";
+            methodDecision = "";
             return;
         }
 
@@ -1618,7 +1618,8 @@
         let record = listGrid.getSelectedRecord();
         if (record!==undefined && record !== null){
             dynamicForm.clearErrors();
-            window.title=title
+            window.title=title;
+            methodChildDecision = "UPDATE";
             dynamicForm.editRecord(record);
             window.show();
         }else {
@@ -1642,6 +1643,32 @@
         let data = dynamicForm.getValues();
         data.ref =ref
         data.educationalDecisionHeaderId =record.id
+
+        if( methodChildDecision === "UPDATE"){
+
+            let url= educationalDecisionRequestUrl+"/update/"+data.id;
+
+            wait.show();
+            debugger
+            isc.RPCManager.sendRequest(TrDSRequest(url, "PUT", JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    wait.close();
+                    methodChildDecision="";
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    window.close();
+                    listGrid.invalidateCache();
+                    return;
+                } else {
+                    wait.close();
+                    methodChildDecision="";
+                    createDialog("info", "خطایی رخ داده است");
+                    return;
+                }
+            }));
+            methodChildDecision="";
+            return;
+        } else {
+            debugger
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionRequestUrl, "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -1654,6 +1681,7 @@
                 createDialog("info", "خطایی رخ داده است");
             }
         }));
+        }
 
 
     }
