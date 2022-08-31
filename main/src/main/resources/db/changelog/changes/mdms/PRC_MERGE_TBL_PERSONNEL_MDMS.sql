@@ -616,9 +616,11 @@ WHEN NOT MATCHED THEN
 ----------- UPDATE DELETED PERSONALS ----------------------
 
 UPDATE TBL_PERSONNEL SET DELETED = 1 WHERE ID IN (SELECT PRS_EXIST_TR.ID
-      FROM TBL_PERSONNEL PRS_EXIST_TR
-               LEFT JOIN   MDMS_tbl_md_employee PRS_MDMS ON PRS_MDMS.C_NATIONAL_CODE = PRS_EXIST_TR.NATIONAL_CODE
-      WHERE PRS_EXIST_TR.DELETED = 0 AND PRS_MDMS.C_ID IS NULL);
+                                                  FROM TBL_PERSONNEL PRS_EXIST_TR
+                                                           LEFT JOIN   tbl_md_employee_mdms PRS_MDMS ON PRS_MDMS.C_NATIONAL_CODE = PRS_EXIST_TR.NATIONAL_CODE
+                                                  WHERE PRS_EXIST_TR.DELETED = 0 AND PRS_MDMS.C_ID IS NULL);
+
+
 
 
 end;
