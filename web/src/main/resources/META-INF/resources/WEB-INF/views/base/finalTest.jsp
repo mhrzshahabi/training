@@ -97,7 +97,8 @@
             {
                 title: "<spring:message code="create"/>",
                 click: function () {
-                    showNewForm_finalTest();
+                    selectExamTypeWindow.show();
+                    // showNewForm_finalTest();
                 }
             },
             </sec:authorize>
@@ -126,7 +127,7 @@
             <sec:authorize access="hasAuthority('FinalTest_C')">
             isc.ToolStripButtonAdd.create({
                 click: function () {
-                    showNewForm_finalTest();
+                    selectExamTypeWindow.show();
                 }
             }),
             </sec:authorize>
@@ -1667,6 +1668,47 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         ]
     });
 
+    let examTypeDF = isc.DynamicForm.create({
+        titleAlign: "right",
+        fields: [
+            {
+                name: "examType",
+                title: "<spring:message code="test.question.type"/>",
+                type: "SelectItem",
+                operator: "inSet",
+                required: true,
+                multiple: false,
+                valueMap: {
+                    "1": "<spring:message code="evaluation.final.test"/>",
+                    "2": "<spring:message code="class.preCourseTest"/>"
+                },
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                defaultValue: ["1"]
+            }
+        ]
+    });
+
+    let HLayout_Select_Exam_Type_buttons = isc.TrHLayoutButtons.create({
+        alignLayout: "bottom",
+        height: "5%",
+        membersMargin: 10,
+        members: [
+            isc.IButtonSave.create({
+                title: "<spring:message code="verify"/>",
+                click: function () {
+                    showCreateExamConfirmationDialog();
+                }
+            }),
+            isc.IButtonCancel.create({
+                click: function () {
+                    selectExamTypeWindow.close();
+                }
+            })
+        ]
+    })
+
     let FinalTestWin_finalTest = isc.Window.create({
         width: 500,
         height: 400,
@@ -1690,6 +1732,18 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             ]
         })]
     });
+
+    let selectExamTypeWindow = isc.Window.create({
+        title: "<spring:message code="select.test.question.type"/>",
+        width: "20%",
+        height: "20%",
+        align: "center",
+        autoSize: false,
+        showMaximizeButton: false,
+        dismissOnEscape: true,
+        items: [examTypeDF, HLayout_Select_Exam_Type_buttons]
+    });
+
     // ------------------------------------------- TabSet -------------------------------------------
     var TabSet_finalTest = isc.TabSet.create({
         enabled: false,
@@ -1897,7 +1951,7 @@ let inValidStudents = [];
 
                 FinalTestDF_finalTest.clearValues();
 
-                FinalTestWin_finalTest.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="evaluation.final.test"/>" + '&nbsp;\'' + record.tclass.course.titleFa + '\'');
+                FinalTestWin_finalTest.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="exam"/>" + '&nbsp;\'' + record.tclass.course.titleFa + '\'');
                 FinalTestDF_finalTest.editRecord(record);
                 isCopyForm = false;
                 FinalTestWin_finalTest.show();
@@ -1979,7 +2033,7 @@ if (data.tclassId !== undefined && data.tclassId !== null){
 
     function showRemoveForm_finalTest() {
         let record = FinalTestLG_finalTest.getSelectedRecord();
-        let entityType = '<spring:message code="evaluation.final.test"/>';
+        let entityType = '<spring:message code="exam"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
 
             let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
@@ -2354,4 +2408,37 @@ if (data.tclassId !== undefined && data.tclassId !== null){
         }
         return value;
     }
+
+    function showCreateExamConfirmationDialog() {
+        let examTypeTitle;
+        let examTypeValue = examTypeDF.getField("examType").getValue()[0];
+
+        if (examTypeValue === "1")
+            examTypeTitle = "<spring:message code="evaluation.final.test"/>"
+        else if (examTypeValue === "2")
+            examTypeTitle = "<spring:message code="class.preCourseTest"/>"
+
+        let dialog_Accept = createDialog(
+            "ask",
+            "شما یک ".concat("<b>").concat(examTypeTitle).concat("</b>").concat(" ایجاد می کنید. آیا مطمئن هستید؟"),
+            "اخطار"
+        );
+        dialog_Accept.addProperties({
+            buttonClick: function (button, index) {
+                examTypeDF.clearValues();
+                this.close();
+                selectExamTypeWindow.close();
+                if (index === 0) {
+                    if (examTypeValue === "1") {
+                        // final test
+                        showNewForm_finalTest();
+                    } else if (examTypeValue === "2") {
+                        // pre test
+
+                    }
+                }
+            }
+        });
+    }
+
     //</script>

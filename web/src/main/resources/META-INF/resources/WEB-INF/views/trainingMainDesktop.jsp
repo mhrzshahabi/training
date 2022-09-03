@@ -2182,7 +2182,7 @@
 
                 <sec:authorize access="hasAuthority('Menu_Evaluation_FinalTest')">
                 {
-                    title: "<spring:message code="evaluation.final.test"/>",
+                    title: "<spring:message code="exam"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluation-final-test/show-form"/>");
                     }
