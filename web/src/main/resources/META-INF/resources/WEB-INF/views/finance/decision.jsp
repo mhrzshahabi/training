@@ -1231,7 +1231,6 @@
                 createDialog("info", "رکوردی را انتخاب نکرده اید", "<spring:message code="error"/>");
             }
 
-            // addHeaderDecision();
         }
     });
 
@@ -1619,7 +1618,6 @@
         let record = listGrid.getSelectedRecord();
         if (record!==undefined && record !== null){
             dynamicForm.clearErrors();
-            // window.title=title;
             window.setTitle(title);
             methodChildDecision = "UPDATE";
             dynamicForm.editRecord(record);
