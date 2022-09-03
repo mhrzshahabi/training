@@ -36,4 +36,6 @@ public interface IParameterValueService {
     void editCodeDescription(Long id, String code);
 
     Optional<ParameterValue> findById(Long ParameterValueId);
+
+    int getZone(String code);
 }

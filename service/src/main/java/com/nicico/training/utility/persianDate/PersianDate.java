@@ -673,23 +673,23 @@ public final class PersianDate implements ChronoLocalDate {
         return String.format("%s - %s:%s:%s", persianDate.toString().replaceAll("-", "/"), time.getHours(), time.getMinutes(), time.getSeconds());
     }
 
-    public static String convertToTimeZone(String dateString) {
+    public static String convertToTimeZone(String dateString,int zone) {
 
 // parse the string
         DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
         DateTime dateTime = formatter.parseDateTime(dateString);
-        int hours = (int) (-4); //since both are ints, you get an int
+        int hours = (int) (-zone); //since both are ints, you get an int
         int minutes = (int) (-30);
         dateTime = dateTime.plusMinutes(minutes);
         dateTime = dateTime.plusHours(hours);
         return dateTime.getHourOfDay() + ":" + dateTime.getMinuteOfHour();
     }
-    public static String convertFtomTimeZone(String dateString) {
+    public static String convertFtomTimeZone(String dateString,int zone) {
 
 // parse the string
         DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
         DateTime dateTime = formatter.parseDateTime(dateString);
-        int hours = (int) (4); //since both are ints, you get an int
+        int hours = (int) (zone); //since both are ints, you get an int
         int minutes = (int) (30);
         dateTime = dateTime.plusMinutes(minutes);
         dateTime = dateTime.plusHours(hours);

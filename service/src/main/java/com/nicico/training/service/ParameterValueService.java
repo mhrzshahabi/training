@@ -76,14 +76,15 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
     }
 
     @Transactional
-    public String getParameterValueCodeById (Long id) {
+    public String getParameterValueCodeById(Long id) {
         Optional<ParameterValue> byId = dao.findById(id);
         ParameterValue parameterValue = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return parameterValue.getCode();
 
     }
+
     @Transactional
-    public String getParameterTitleCodeById (Long id) {
+    public String getParameterTitleCodeById(Long id) {
         Optional<ParameterValue> byId = dao.findById(id);
         ParameterValue parameterValue = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return parameterValue.getTitle();
@@ -91,40 +92,41 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
     }
 
     public TotalResponse<ParameterValueDTO> getMessages(String type, String target) {
-        List<ParameterValue> list = dao.findMessagesByCode("%"+type+"%","%"+target+"%");
-         List<ParameterValueDTO> infos = modelMapper.map(list, new TypeToken<List<ParameterValueDTO.Info>>() {
+        List<ParameterValue> list = dao.findMessagesByCode("%" + type + "%", "%" + target + "%");
+        List<ParameterValueDTO> infos = modelMapper.map(list, new TypeToken<List<ParameterValueDTO.Info>>() {
         }.getType());
-             GridResponse grid=new GridResponse<>(infos);
-             grid.setTotalRows(infos.size());
-             return new TotalResponse<>(grid);
-     }
-
-    public ParameterValue getIdByDescription(String message) {
-      return   dao.findFirstByDescription(message);
+        GridResponse grid = new GridResponse<>(infos);
+        grid.setTotalRows(infos.size());
+        return new TotalResponse<>(grid);
     }
 
-    public void editParameterValue(String value,String title,String des,String code, Long id) {
-        ParameterValue parameterValue=dao.findFirstById(id);
+    public ParameterValue getIdByDescription(String message) {
+        return dao.findFirstByDescription(message);
+    }
+
+    public void editParameterValue(String value, String title, String des, String code, Long id) {
+        ParameterValue parameterValue = dao.findFirstById(id);
         parameterValue.setCode(code);
         parameterValue.setDescription(des);
         parameterValue.setValue(value);
         parameterValue.setTitle(title);
         dao.save(parameterValue);
     }
+
     public void editDescription(Long id) {
-        ParameterValue parameterValue=dao.findFirstById(id);
-        parameterValue.setDescription(parameterValue.getDescription().replace("<br />"," ").replace("<br/>"," "));
+        ParameterValue parameterValue = dao.findFirstById(id);
+        parameterValue.setDescription(parameterValue.getDescription().replace("<br />", " ").replace("<br/>", " "));
         dao.save(parameterValue);
     }
 
     public void editDesDescription(Long id, String des) {
-        ParameterValue parameterValue=dao.findFirstById(id);
+        ParameterValue parameterValue = dao.findFirstById(id);
         parameterValue.setDescription(des);
         dao.save(parameterValue);
     }
 
     public void editCodeDescription(Long id, String code) {
-        ParameterValue parameterValue=dao.findFirstById(id);
+        ParameterValue parameterValue = dao.findFirstById(id);
         parameterValue.setCode(code);
         dao.save(parameterValue);
     }
@@ -134,8 +136,14 @@ public class ParameterValueService extends BaseService<ParameterValue, Long, Par
         return dao.findById(ParameterValueId);
     }
 
-    public void editParameterValue(String des,String code, Long id) {
-        ParameterValue parameterValue=dao.findFirstById(id);
+    @Override
+    public int getZone(String code) {
+        ParameterValue zone = dao.findByCode("gmtTime");
+        return Integer.parseInt(zone.getValue());
+    }
+
+    public void editParameterValue(String des, String code, Long id) {
+        ParameterValue parameterValue = dao.findFirstById(id);
         parameterValue.setCode(code);
         parameterValue.setDescription(des);
         dao.save(parameterValue);

@@ -17,7 +17,9 @@ import com.nicico.training.mapper.tclass.TclassStudentMapper;
 import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.ClassStudentHistory;
 import com.nicico.training.model.ContactInfo;
+import com.nicico.training.model.ParameterValue;
 import com.nicico.training.repository.ClassStudentDAO;
+import com.nicico.training.repository.ParameterValueDAO;
 import com.nicico.training.service.*;
 import com.nicico.training.utility.persianDate.CalendarTool;
 import lombok.RequiredArgsConstructor;
@@ -63,6 +65,7 @@ public class ClassStudentRestController {
     private final IClassStudentService iClassStudentService;
     private final ModelMapper modelMapper;
     private final IParameterService parameterService;
+    private final ParameterValueDAO parameterValueDAO;
     private final IViewCoursesPassedPersonnelReportService iViewCoursesPassedPersonnelReportService;
     private final IViewPersonnelCourseNaReportService viewPersonnelCourseNaReportService;
     private final IContinuousStatusReportViewService continuousStatusReportViewService;
@@ -479,7 +482,8 @@ public class ClassStudentRestController {
                             Calendar cal = Calendar.getInstance();
                             cal.setTimeInMillis(data.getStartDate());
                             cal.setTimeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
-                            String newTime = convertFtomTimeZone(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE));
+                            ParameterValue zone=parameterValueDAO.findByCode("gmtTime");
+                            String newTime = convertFtomTimeZone(cal.get(Calendar.HOUR_OF_DAY) + ":" + cal.get(Calendar.MINUTE), Integer.parseInt(zone.getValue()));
                             classStudentInfo.setExtendTime(" ( " + newTime + " ) " + " --- " + calendarTool.getIranianDate());
                         }
 

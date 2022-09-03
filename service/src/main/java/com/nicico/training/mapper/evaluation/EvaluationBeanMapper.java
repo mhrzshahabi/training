@@ -511,8 +511,9 @@ public abstract class EvaluationBeanMapper {
         ElsExtendedExamRequest request = new ElsExtendedExamRequest();
         ElsResendExamRequestResponse elsResendExamRequestResponse = new ElsResendExamRequestResponse();
         int time = Math.toIntExact(object.getDuration());
+        int zone=iParameterValueService.getZone("gmtTime");
 
-        String newTime = convertToTimeZone(object.getTime());
+        String newTime = convertToTimeZone(object.getTime(),zone);
 
         Date startDate = getEpochDate(object.getStartDate(), newTime);
         Date endDate = getEndDateFromDuration(getStringGeoDate(object.getStartDate(), newTime)
@@ -967,9 +968,10 @@ public abstract class EvaluationBeanMapper {
 
     private ExamCreateDTO getExamData(ExamImportedRequest object, Tclass tClass) {
         int time = Math.toIntExact(object.getExamItem().getDuration());
+        int zone=iParameterValueService.getZone("gmtTime");
 
-        String newTime = convertToTimeZone(object.getExamItem().getTime());
-        String newEndTime = convertToTimeZone(object.getExamItem().getEndTime());
+        String newTime = convertToTimeZone(object.getExamItem().getTime(),zone);
+        String newEndTime = convertToTimeZone(object.getExamItem().getEndTime(),zone);
 //        String newTime = object.getExamItem().getTime();
 
         Date startDate = getEpochDate(object.getExamItem().getDate(), newTime);
@@ -1040,9 +1042,10 @@ public abstract class EvaluationBeanMapper {
     private ExamCreateDTO getExamData2(TestQuestion exam, Tclass tClass, Long examId) {
         Set<QuestionBankDTO.Exam> testQuestionBanks = iTestQuestionService.getAllQuestionsByTestQuestionId(examId);
         int time = Math.toIntExact(exam.getDuration());
+        int zone=iParameterValueService.getZone("gmtTime");
 
-        String newTime = convertToTimeZone(exam.getTime());
-        String newEndTime = convertToTimeZone(exam.getEndTime());
+        String newTime = convertToTimeZone(exam.getTime(),zone);
+        String newEndTime = convertToTimeZone(exam.getEndTime(),zone);
 //        String newTime = exam.getTime();
 
         Date startDate = getEpochDate(exam.getDate(), newTime);
