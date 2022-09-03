@@ -4,15 +4,18 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN); %>
 
-
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-    let excelData = [];
-    let ids = "";
-    let classIdList= "";
-    var isCriteriaCategoriesChanged_Answered_Questions_Details = false;
+    let isCriteriaCategoriesChanged_Answered_Questions_Details = false;
     let reportCriteria_Answered_Questions_Details = null;
+
+    let startDateCheck_Order_EAQ = true;
+    let startDate1Check_EAQ = true;
+    let startDate2Check_EAQ = true;
+    let endDateCheck_Order_EAQ = true;
+    let endDate1Check_EAQ = true;
+    let endDate2Check_EAQ = true;
 
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
@@ -20,6 +23,8 @@
         fields: [
             {name: "classCode", title: "<spring:message code="class.code"/>", filterOperator: "iContains"},
             {name: "classTitle", title: "<spring:message code="class.title"/>", filterOperator: "iContains"},
+            {name: "classStartDate", title: "<spring:message code="class.start.date"/>", filterOperator: "iContains"},
+            {name: "classEndDate", title: "<spring:message code="class.end.date"/>", filterOperator: "iContains"},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains"},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains"},
@@ -33,7 +38,7 @@
             {name: "organizer", title: "<spring:message code="organizer"/>", filterOperator: "iContains"}
 
         ],
-        fetchDataURL: evaluationUrl + "/getAnsweredEvalQuestionsDetails/"+ids.toString(),
+        fetchDataURL: evaluationUrl + "/getAnsweredEvalQuestionsDetails",
     });
 
     let RestDataSource_Class_evalAnsweredQuestions = isc.TrDS.create({
@@ -42,7 +47,6 @@
             {name: "id", primaryKey: true,hidden : true},
             {name: "titleClass",title :"<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "code",title: "<spring:message code="code"/>", filterOperator: "iContains"}
-
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -184,7 +188,6 @@
                     filterOperator: "iContains"
                 },
             },
-
             {
                 name: "class",
                 title: "<spring:message code="class"/>",
@@ -237,9 +240,189 @@
                     //DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                 }
             },
+            {
+                name: "startDate1",
+                ID: "startDate1_EAQ",
+                title: "تاریخ شروع کلاس: از",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                colSpan: 2,
+                titleColSpan: 1,
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('startDate1_EAQ', this, 'ymd', '/');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if(value === undefined || value === null) {
+                        form.clearFieldErrors("startDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("startDate1", true);
+                        startDateCheck_Order_EAQ = true;
+                        startDate1Check_EAQ = true;
+                        return;
+                    }
+                    let dateCheck;
+                    let endDate = form.getValue("startDate2");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        startDate1Check_EAQ = false;
+                        startDateCheck_Order_EAQ = true;
+                        form.clearFieldErrors("startDate1", true);
+                        form.addFieldErrors("startDate1", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        startDateCheck_Order_EAQ = false;
+                        startDate1Check_EAQ = true;
+                        form.clearFieldErrors("startDate1", true);
+                        form.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    }
+                    else {
+                        startDate1Check_EAQ = true;
+                        startDateCheck_Order_EAQ = true;
+                        form.clearFieldErrors("startDate1", true);
+                    }
+                }
+            },
+            {
+                name: "startDate2",
+                ID: "startDate2_EAQ",
+                title: "تا",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                length: 10,
+                colSpan: 2,
+                titleColSpan: 1,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('startDate2_EAQ', this, 'ymd', '/', 'right');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if(value === undefined || value === null){
+                        form.clearFieldErrors("startDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("startDate2", true);
+                        startDateCheck_Order_EAQ = true;
+                        startDate2Check_EAQ = true;
+                        return;
+                    }
+                    let dateCheck;
+                    let startDate = form.getValue("startDate1");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        startDate2Check_EAQ = false;
+                        startDateCheck_Order_EAQ = true;
+                        form.clearFieldErrors("startDate2", true);
+                        form.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (startDate !== undefined && value < startDate) {
+                        form.clearFieldErrors("startDate2", true);
+                        form.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        startDate2Check_EAQ = true;
+                        startDateCheck_Order_EAQ = false;
+                    } else {
+                        form.clearFieldErrors("startDate2", true);
+                        startDate2Check_EAQ = true;
+                        startDateCheck_Order_EAQ = true;
+                    }
+                }
+            },
+            {
+                name: "endDate1",
+                ID: "endDate1_EAQ",
+                title: "تاریخ پایان کلاس: از",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                length: 10,
+                colSpan: 2,
+                titleColSpan: 1,
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate1_EAQ', this, 'ymd', '/');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if(value === undefined || value === null) {
+                        form.clearFieldErrors("endDate2","تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد" ,true);
+                        form.clearFieldErrors("endDate1", true);
+                        endDateCheck_Order_EAQ = true;
+                        endDate1Check_EAQ = true;
+                        return;
+                    }
+                    let dateCheck;
+                    let endDate = form.getValue("endDate2");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        endDate1Check_EAQ = false;
+                        endDateCheck_Order_EAQ = true;
+                        form.clearFieldErrors("endDate1", true);
+                        form.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (endDate < value) {
+                        endDateCheck_Order_EAQ = false;
+                        endDate1Check_EAQ = true;
+                        form.clearFieldErrors("endDate1", true);
+                        form.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else {
+                        endDate1Check_EAQ = true;
+                        endDateCheck_Order_EAQ = true;
+                        form.clearFieldErrors("endDate1", true);
+                    }
+                }
+            },
+            {
+                name: "endDate2",
+                ID: "endDate2_EAQ",
+                title: "تا",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                length: 10,
+                colSpan: 2,
+                titleColSpan: 1,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function (form) {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate2_EAQ', this, 'ymd', '/', 'right');
+                    }
+                }],
+                editorExit: function (form, item, value) {
+                    if(value === undefined || value === null) {
+                        form.clearFieldErrors("endDate1","تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد" ,true);
+                        form.clearFieldErrors("endDate2", true);
+                        endDateCheck_Order_EAQ = true;
+                        endDate2Check_EAQ = true;
+                        return;
+                    }
+                    let dateCheck;
+                    let startDate = form.getValue("endDate1");
+                    dateCheck = checkDate(value);
+                    if (dateCheck === false) {
+                        endDate2Check_EAQ = false;
+                        endDateCheck_Order_EAQ = true;
+                        form.clearFieldErrors("endDate2", true);
+                        form.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                    } else if (startDate !== undefined && value < startDate) {
+                        form.clearFieldErrors("endDate2", true);
+                        form.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        endDate2Check_EAQ = true;
+                        endDateCheck_Order_EAQ = false;
+                    } else {
+                        form.clearFieldErrors("endDate2", true);
+                        endDate2Check_EAQ = true;
+                        endDateCheck_Order_EAQ = true;
+                    }
+                }
+            }
         ]
     });
-
 
     IButton_Report_Answered_Questions_Details = isc.IButtonSave.create({
         top: 260,
@@ -247,19 +430,53 @@
         width: 300,
         click: function () {
 
-            data_values = DynamicForm_CriteriaForm_Answered_Questions_Details.getValuesAsAdvancedCriteria();
+            let questionIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("question").getValue();
+            let data_values = DynamicForm_CriteriaForm_Answered_Questions_Details.getValuesAsAdvancedCriteria();
             reportCriteria_Answered_Questions_Details = data_values;
-            RestDataSource_Answered_Questions_Details.fetchDataURL = evaluationUrl + "/getAnsweredEvalQuestionsDetails/";
 
+            if (DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== undefined && DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== null) {
 
-            let url = evaluationUrl + "/getAnsweredEvalQuestionsDetails/";
-            let questionIds = [];
-            let classIds= [];
-            if (DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== undefined && DynamicForm_CriteriaForm_Answered_Questions_Details.getField("questionnaire").getValue() !== null  ) {
-                questionIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("question").getValue();
-              classIds = DynamicForm_CriteriaForm_Answered_Questions_Details.getField("class").getValue();
-                if(DynamicForm_CriteriaForm_Answered_Questions_Details.getField("class").getValue()=== undefined)
-                    classIds=null;
+                if (startDateCheck_Order_EAQ === false ||
+                    startDate2Check_EAQ === false ||
+                    startDate1Check_EAQ === false ||
+                    endDateCheck_Order_EAQ === false ||
+                    endDate2Check_EAQ === false ||
+                    endDate1Check_EAQ === false) {
+
+                    if (startDateCheck_Order_EAQ === false) {
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.clearFieldErrors("startDate2", true);
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.addFieldErrors("startDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                    }
+                    if (startDateCheck_Order_EAQ === false) {
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.clearFieldErrors("startDate1", true);
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.addFieldErrors("startDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    }
+                    if (startDate2Check_EAQ === false) {
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.clearFieldErrors("startDate2", true);
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.addFieldErrors("startDate2", "<spring:message code='msg.correct.date'/>", true);
+                    }
+                    if (startDate1Check_EAQ === false) {
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.clearFieldErrors("startDate1", true);
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.addFieldErrors("startDate1", "<spring:message code='msg.correct.date'/>", true);
+                    }
+                    if (endDateCheck_Order_EAQ === false) {
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.clearFieldErrors("endDate2", true);
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.addFieldErrors("endDate2", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                    }
+                    if (endDateCheck_Order_EAQ === false) {
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.clearFieldErrors("endDate1", true);
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.addFieldErrors("endDate1", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    }
+                    if (endDate2Check_EAQ === false) {
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.clearFieldErrors("endDate2", true);
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.addFieldErrors("endDate2", "<spring:message code='msg.correct.date'/>", true);
+                    }
+                    if (endDate1Check_EAQ === false) {
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.clearFieldErrors("endDate1", true);
+                        DynamicForm_CriteriaForm_Answered_Questions_Details.addFieldErrors("endDate1", "<spring:message code='msg.correct.date'/>", true);
+                    }
+                    return;
+                }
 
             } else {
                 createDialog("info", "لطفا پرسشنامه - سوال و کلاس را انتخاب کنید", "<spring:message code="message"/>")
@@ -270,24 +487,9 @@
                 return;
             }
 
-            wait.show();
-            ids= JSON.stringify(questionIds).toString().replace("]", "").replace("[","");
-            classIdList= JSON.stringify(classIds).toString().replace("]", "").replace("[","");
-                isc.RPCManager.sendRequest(TrDSRequest(url+ids+"/"+classIdList,"GET",null, function (resp) {
-
-                wait.close();
-                if (resp.httpResponseCode === 200) {
-
-                    ListGrid_Answered_Questions_Details.invalidateCache();
-                    let data = (JSON.parse(resp.data)).response.data;
-
-                    ListGrid_Answered_Questions_Details.setData(data);
-                } else {
-                    wait.close();
-                    ListGrid_Answered_Questions_Details.setData([]);
-                    createDialog("info", "هیچ رکوردی برای نمایش وجود ندارد", "<spring:message code="message"/>")
-                }
-            }));
+            RestDataSource_Answered_Questions_Details.fetchDataURL = evaluationUrl + "/getAnsweredEvalQuestionsDetails";
+            ListGrid_Answered_Questions_Details.invalidateCache();
+            ListGrid_Answered_Questions_Details.fetchData(data_values);
         }
     });
 
@@ -296,7 +498,6 @@
         title: "پاک کردن",
         width: 300,
         click: function () {
-
             ListGrid_Answered_Questions_Details.setData([]);
             DynamicForm_CriteriaForm_Answered_Questions_Details.clearValues();
             DynamicForm_CriteriaForm_Answered_Questions_Details.clearErrors();
@@ -321,13 +522,14 @@
 
     var ListGrid_Answered_Questions_Details = isc.TrLG.create({
         height: "70%",
-        // dataPageSize: 1000,
         filterOnKeypress: false,
         showFilterEditor: false,
         dataSource: RestDataSource_Answered_Questions_Details,
         fields: [
             {name: "classCode"},
             {name: "classTitle"},
+            {name: "classStartDate"},
+            {name: "classEndDate"},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
@@ -356,11 +558,11 @@
     //------------------------------------------------- Functions ------------------------------------------------------
 
     function makeExcelAnsweredQuestions() {
-        if (ListGrid_Answered_Questions_Details.getOriginalData().length === 0)
+        debugger;
+        if (ListGrid_Answered_Questions_Details.getOriginalData().localData.size() === 0)
             createDialog("info", "جدول نتایج خالیست");
         else
-            ExportToFile.downloadExcelRestUrl(null, ListGrid_Answered_Questions_Details, evaluationUrl + "/getAnsweredEvalQuestionsDetails/"+ids, 0, null, '',"گزارش سوالات ارزیابی"  , reportCriteria_Answered_Questions_Details, null);
-
+            ExportToFile.downloadExcelRestUrl(null, ListGrid_Answered_Questions_Details, evaluationUrl + "/getAnsweredEvalQuestionsDetails", 0, null, '',"گزارش سوالات ارزیابی"  , reportCriteria_Answered_Questions_Details, null);
     }
 
     // </script>

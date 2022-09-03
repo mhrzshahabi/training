@@ -106,6 +106,8 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
     @Query(value = """
             SELECT TCLASS.C_CODE            AS class_code,
                                 TCLASS.C_TITLE_CLASS     AS class_title,
+                                TCLASS.c_start_date     AS class_start_date,
+                                TCLASS.c_end_date       AS class_end_date, 
                                 ANSWER_TITLE.C_TITLE     AS answer_title,
                                 STUDENT.FIRST_NAME       AS first_name,
                                STUDENT.LAST_NAME        AS last_name,
@@ -143,11 +145,15 @@ public interface EvaluationDAO extends JpaRepository<Evaluation, Long>, JpaSpeci
                                  LEFT JOIN tbl_parameter_value ON eval_question.f_domain_id = tbl_parameter_value.id
                             
                         WHERE EVALUATORPARAMVALUE.C_CODE = '32'
-                          AND (EVAL_QUESTION.ID IN (:questionIds)) AND (:classIds is null or EVAL.F_CLASS_ID IN (:classIds))
+                          AND (EVAL_QUESTION.ID IN (:questionIds)) 
+                          AND (:classIds is null or EVAL.F_CLASS_ID IN (:classIds))
+                          AND (:startDate1 is null or TCLASS.c_start_date>=:startDate1)
+                          AND (:startDate2 is null or TCLASS.c_start_date<=:startDate2)
+                          AND (:endDate1 is null or TCLASS.c_end_date>=:endDate1)
+                          AND (:endDate2 is null or TCLASS.c_end_date<=:endDate2)
                         ORDER BY EVAL_QUESTION.ID, nationalCode
             """, nativeQuery = true)
-    List<Object> getAnsweredQuestionsDetails(@Param("questionIds") List<Long> questionIds,@Param("classIds") List<Long> classIds);
-
-
-
+    List<Object> getAnsweredQuestionsDetails(List<Object> questionIds, List<Object> classIds,
+                                             String startDate1, String startDate2,
+                                             String endDate1, String endDate2);
 }

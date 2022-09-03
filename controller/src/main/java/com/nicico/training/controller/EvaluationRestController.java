@@ -34,7 +34,6 @@ import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.Calendar;
-import java.util.stream.Collectors;
 
 import static com.nicico.training.service.BaseService.makeNewCriteria;
 
@@ -997,26 +996,43 @@ public class EvaluationRestController {
 
     }
 
-    /**
-     * it returns list of answered evaluation questions with the details like
-     * information of the student who answered to that and other infos with giving the question Ids
-     *
-     * @param Ids
-     * @return
-     */
-    @GetMapping(value = "/getAnsweredEvalQuestionsDetails/{Ids}/{classIdList}")
-    public ResponseEntity<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs> getAnsweredQuestionsDetails(@PathVariable String Ids,@PathVariable String classIdList) {
-        List<Long> questionIds = Arrays.stream(Ids.split(",")).map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
-        List<Long> classIds=new ArrayList<>();
-        if(!classIdList.equals("null")){
-            classIds = Arrays.stream(classIdList.split(",")).map(s -> Long.parseLong(s.trim())).collect(Collectors.toList());
+    @GetMapping(value = "/getAnsweredEvalQuestionsDetails")
+    public ResponseEntity<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs> getAnsweredQuestionsDetails(HttpServletRequest iscRq) throws IOException {
+
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        List<Object> questionIds = new ArrayList<>();
+        List<Object> classIds = new ArrayList<>();
+        String startDate1 = null;
+        String startDate2 = null;
+        String endDate1 = null;
+        String endDate2 = null;
+
+        if (searchRq.getCriteria() != null && searchRq.getCriteria().getCriteria() != null) {
+            for (SearchDTO.CriteriaRq criterion : searchRq.getCriteria().getCriteria()) {
+                if (criterion.getFieldName().equals("question")) {
+                    questionIds = criterion.getValue();
+                }
+                if (criterion.getFieldName().equals("class")) {
+                    if (criterion.getValue() != null)
+                        classIds = criterion.getValue();
+                }
+                if (criterion.getFieldName().equals("startDate1")) {
+                    startDate1 = criterion.getValue().get(0).toString();
+                }
+                if (criterion.getFieldName().equals("startDate2")) {
+                    startDate2 = criterion.getValue().get(0).toString();
+                }
+                if (criterion.getFieldName().equals("endDate1")) {
+                    endDate1 = criterion.getValue().get(0).toString();
+                }
+                if (criterion.getFieldName().equals("endDate2")) {
+                    endDate2 = criterion.getValue().get(0).toString();
+                }
+            }
         }
-        EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs dtos = evaluationService.getAnsweredQuestionsDetails(questionIds,classIds);
-        if (dtos.getResponse().getTotalRows() > 0) {
-            return new ResponseEntity<>(dtos, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
-        }
+
+        EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs detailsDTOSpecRs = evaluationService.getAnsweredQuestionsDetails(questionIds, classIds, startDate1, startDate2, endDate1, endDate2);
+        return new ResponseEntity<>(detailsDTOSpecRs, HttpStatus.OK);
     }
 
 

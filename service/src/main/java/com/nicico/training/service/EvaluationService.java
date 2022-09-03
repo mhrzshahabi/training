@@ -333,27 +333,34 @@ public class EvaluationService implements IEvaluationService {
     }
 
     @Override
-    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Long> questionIds,List<Long> classIds) {
-        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds,classIds);
+    public EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsDTOSpecRs getAnsweredQuestionsDetails(List<Object> questionIds,List<Object> classIds,
+                                                                                                                         String startDate1, String startDate2,
+                                                                                                                         String endDate1, String endDate2) {
+
+        List<Object> list = evaluationDAO.getAnsweredQuestionsDetails(questionIds, classIds, startDate1, startDate2, endDate1, endDate2);
         List<EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList> dtoList = new ArrayList<>();
         for (Object o : list){
             EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList dto = new EvaluationAnsweredQuestionsDetailsDTO.EvaluationAnsweredQuestionsDetailsList();
             Object[] arr = (Object[]) o;
             dto.setClassCode(arr[0] == null ? null : arr[0].toString());
             dto.setClassTitle(arr[1] == null ? null : arr[1].toString());
-            dto.setAnswerTitle(arr[2] == null ? null : arr[2].toString());
-            dto.setFirstName(arr[3] == null ? null : arr[3].toString());
-            dto.setLastName(arr[4] == null ? null : arr[4].toString());
-            dto.setNationalCode(arr[5] == null ? null : arr[5].toString());
-            dto.setComplexTitle(arr[6] == null ? null : arr[6].toString());
-            dto.setQuestionTitle(arr[7] == null ? null : arr[7].toString());
-            String first=(arr[8]== null ? "" : arr[8].toString());
-            String last=(arr[9]== null ? "" : arr[9].toString());
+            dto.setClassStartDate(arr[2] == null ? null : arr[2].toString());
+            dto.setClassEndDate(arr[3] == null ? null : arr[3].toString());
+
+
+            dto.setAnswerTitle(arr[4] == null ? null : arr[4].toString());
+            dto.setFirstName(arr[5] == null ? null : arr[5].toString());
+            dto.setLastName(arr[6] == null ? null : arr[6].toString());
+            dto.setNationalCode(arr[7] == null ? null : arr[7].toString());
+            dto.setComplexTitle(arr[8] == null ? null : arr[8].toString());
+            dto.setQuestionTitle(arr[9] == null ? null : arr[9].toString());
+            String first=(arr[10]== null ? "" : arr[10].toString());
+            String last=(arr[11]== null ? "" : arr[11].toString());
             dto.setTeacherName(first+ " "+last);
-            dto.setTeacherMobileNo(arr[10]== null ? null : arr[10].toString());
-            dto.setStudentMobileNo(arr[11]== null ? null : arr[11].toString());
-            dto.setOrganizer(arr[12]== null ? null : arr[12].toString());
-            dto.setDomain(arr[15]== null ? null : arr[15].toString());
+            dto.setTeacherMobileNo(arr[12]== null ? null : arr[12].toString());
+            dto.setStudentMobileNo(arr[13]== null ? null : arr[13].toString());
+            dto.setOrganizer(arr[14]== null ? null : arr[14].toString());
+            dto.setDomain(arr[17]== null ? null : arr[17].toString());
             dtoList.add(dto);
         }
         final EvaluationAnsweredQuestionsDetailsDTO.SpecRs specResponse = new EvaluationAnsweredQuestionsDetailsDTO.SpecRs();

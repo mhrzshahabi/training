@@ -190,7 +190,6 @@
 
     //----------------------------------------------------Criteria Form------------------------------------------------
     ToolStripButton_Excel_REFR = isc.ToolStripButtonExcel.create({
-
         click: function () {
             makeExcelOutput();
         }
