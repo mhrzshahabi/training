@@ -14,6 +14,8 @@ public class EvaluationAnsweredQuestionsDetailsDTO {
 
     private String classCode;
     private String classTitle;
+    private String classStartDate;
+    private String classEndDate;
     private String answerTitle;
     private String firstName;
     private String lastName;
