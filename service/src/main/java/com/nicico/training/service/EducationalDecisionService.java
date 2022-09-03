@@ -4,14 +4,11 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EducationalDecisionDTO;
 import com.nicico.training.iservice.IEducationalDecisionHeaderService;
 import com.nicico.training.iservice.IEducationalDecisionService;
-import com.nicico.training.mapper.EducationalDecisionMapper.EducationalDecisionMapper;
-import com.nicico.training.model.Agreement;
 import com.nicico.training.model.EducationalDecision;
 import com.nicico.training.model.EducationalDecisionHeader;
 import com.nicico.training.repository.EducationalDecisionDao;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
-import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import response.BaseResponse;
@@ -26,8 +23,6 @@ public class EducationalDecisionService implements IEducationalDecisionService {
 
     private final EducationalDecisionDao educationalDecisionDao;
     private final IEducationalDecisionHeaderService educationalDecisionHeaderService;
-    private final EducationalDecisionMapper mapper;
-    private final ModelMapper modelMapper;
 
     @Override
     public EducationalDecisionDTO.Info get(Long id) {
@@ -72,71 +67,64 @@ public class EducationalDecisionService implements IEducationalDecisionService {
     }
 
     @Override
-    public BaseResponse update(EducationalDecision request,Long id) {
+    public BaseResponse update(EducationalDecision request, Long id) {
 
         Optional<EducationalDecision> cById = educationalDecisionDao.findById(id);
         EducationalDecision educationalDecision = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        BaseResponse response = new BaseResponse();
 
         final String ref = educationalDecision.getRef();
-        switch (ref) {
-            case "base" -> {
-                educationalDecision.setItemFromDate(request.getItemFromDate());
-                educationalDecision.setItemToDate(request.getItemToDate());
-                educationalDecision.setBaseTuitionFee(request.getBaseTuitionFee());
-                educationalDecision.setProfessorTuitionFee(request.getProfessorTuitionFee());
-                educationalDecision.setKnowledgeAssistantTuitionFee(request.getKnowledgeAssistantTuitionFee());
-                educationalDecision.setTeacherAssistantTuitionFee(request.getTeacherAssistantTuitionFee());
-                educationalDecision.setInstructorTuitionFee(request.getInstructorTuitionFee());
-                educationalDecision.setEducationalAssistantTuitionFee(request.getEducationalAssistantTuitionFee());
-
-            }
-            case "history" -> {
-                educationalDecision.setItemFromDate(request.getItemFromDate());
-                educationalDecision.setItemToDate(request.getItemToDate());
-                educationalDecision.setEducationalHistoryFrom(request.getEducationalHistoryFrom());
-                educationalDecision.setEducationalHistoryTo(request.getEducationalHistoryTo());
-
-            }
-            case "teaching-method" -> {
-                educationalDecision.setItemFromDate(request.getItemFromDate());
-                educationalDecision.setItemToDate(request.getItemToDate());
-                educationalDecision.setTeachingMethod(request.getTeachingMethod());
-                educationalDecision.setCourseTypeTeachingMethod(request.getCourseTypeTeachingMethod());
-                educationalDecision.setCoefficientOfTeachingMethod(request.getCoefficientOfTeachingMethod());
-
-            }
-            case "course-type" -> {
-                educationalDecision.setItemFromDate(request.getItemFromDate());
-                educationalDecision.setItemToDate(request.getItemToDate());
-                educationalDecision.setTypeOfSpecializationCourseType(request.getTypeOfSpecializationCourseType());
-                educationalDecision.setCourseLevelCourseType(request.getCourseLevelCourseType());
-                educationalDecision.setCourseForCourseType(request.getCourseForCourseType());
-                educationalDecision.setCoefficientOfCourseType(request.getCoefficientOfCourseType());
-
-            }
-            case "distance" -> {
-                educationalDecision.setItemFromDate(request.getItemFromDate());
-                educationalDecision.setItemToDate(request.getItemToDate());
-                educationalDecision.setDistance(request.getDistance());
-                educationalDecision.setResidence(request.getResidence());
-
-            }
-        }
-
-/*
-        modelMapper.map(request, educationalDecision);
-        educationalDecision.setId(id);
-        educationalDecisionDao.saveAndFlush(educationalDecision);
-//////////////////
-        EducationalDecision toUpdate = mapper.toUpdate(educationalDecision,request);
-            toUpdate.setId(id);
-            EducationalDecision save = educationalDecisionDao.save(toUpdate);
-*/
-
-        BaseResponse response = new BaseResponse();
         try {
-             response.setStatus(200);
-        }catch (Exception e){
+            switch (ref) {
+                case "base" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setBaseTuitionFee(request.getBaseTuitionFee());
+                    educationalDecision.setProfessorTuitionFee(request.getProfessorTuitionFee());
+                    educationalDecision.setKnowledgeAssistantTuitionFee(request.getKnowledgeAssistantTuitionFee());
+                    educationalDecision.setTeacherAssistantTuitionFee(request.getTeacherAssistantTuitionFee());
+                    educationalDecision.setInstructorTuitionFee(request.getInstructorTuitionFee());
+                    educationalDecision.setEducationalAssistantTuitionFee(request.getEducationalAssistantTuitionFee());
+
+                }
+                case "history" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setEducationalHistoryCoefficient(request.getEducationalHistoryCoefficient());
+                    educationalDecision.setEducationalHistoryFrom(request.getEducationalHistoryFrom());
+                    educationalDecision.setEducationalHistoryTo(request.getEducationalHistoryTo());
+
+                }
+                case "teaching-method" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setTeachingMethod(request.getTeachingMethod());
+                    educationalDecision.setCourseTypeTeachingMethod(request.getCourseTypeTeachingMethod());
+                    educationalDecision.setCoefficientOfTeachingMethod(request.getCoefficientOfTeachingMethod());
+
+                }
+                case "course-type" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setTypeOfSpecializationCourseType(request.getTypeOfSpecializationCourseType());
+                    educationalDecision.setCourseLevelCourseType(request.getCourseLevelCourseType());
+                    educationalDecision.setCourseForCourseType(request.getCourseForCourseType());
+                    educationalDecision.setCoefficientOfCourseType(request.getCoefficientOfCourseType());
+
+                }
+                case "distance" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setDistance(request.getDistance());
+                    educationalDecision.setResidence(request.getResidence());
+
+                }
+            }
+
+            educationalDecisionDao.save(educationalDecision);
+
+            response.setStatus(200);
+        } catch (Exception e) {
             response.setStatus(406);
         }
         return response;

@@ -19,6 +19,4 @@ public interface EducationalDecisionMapper {
 
     EducationalDecision toUpdate(@MappingTarget EducationalDecision educationalDecision,EducationalDecision update);
 
-//    EducationalDecision toUpdate(EducationalDecision update);
-
 }

@@ -1590,9 +1590,9 @@
             methodDecision = "";
             return;
         }
-
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionHeaderRequestUrl, "POST", JSON.stringify(data), function (resp) {
+        else {
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionHeaderRequestUrl, "POST", JSON.stringify(data), function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     wait.close();
                     createDialog("info", "<spring:message code="global.form.request.successful"/>");
@@ -1604,7 +1604,7 @@
                 }
             }));
 
-
+        }
     }
 
     function addChildDecision(dynamicForm,window,title) {
@@ -1651,7 +1651,6 @@
             let url= educationalDecisionRequestUrl+"/update/"+data.id;
 
             wait.show();
-            debugger
             isc.RPCManager.sendRequest(TrDSRequest(url, "PUT", JSON.stringify(data), function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     wait.close();
@@ -1670,7 +1669,6 @@
             methodChildDecision="";
             return;
         } else {
-            debugger
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionRequestUrl, "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
