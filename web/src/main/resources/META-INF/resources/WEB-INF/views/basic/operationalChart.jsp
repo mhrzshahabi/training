@@ -268,22 +268,26 @@
                 name: "complex",
                 title: "مجتمع",
                 filterOperator: "iContains"
+                ,canFilter: false
             },
             {
                 name: "userName",
                 title: "نام کاربری",
                 filterOperator: "iContains"
+                ,canFilter: false
             },
             {
                 name: "nationalCode",
                 title: "کد ملی",
                 filterOperator: "iContains"
+                ,canFilter: false
             },
 
             {
                 name: "title",
                 title: "عنوان",
                 filterOperator: "iContains"
+                ,canFilter: false
             },
             {
                 name: "parentId",
@@ -296,6 +300,7 @@
                 required: false,
                 validateOnExit: true,
                 length: 255,
+               canFilter: false
             },
             {
                 name: "roleId",
@@ -308,6 +313,7 @@
                 required: false,
                 validateOnExit: true,
                 length: 255,
+                canFilter: false
             },
 
         ],
@@ -501,11 +507,12 @@
 
                 }
             }
-
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
-                methodOperationalChart,
-                JSON.stringify(data),
-                OperationalChart_save_result));
+            else {
+                isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlOperationalChart,
+                    methodOperationalChart,
+                    JSON.stringify(data),
+                    OperationalChart_save_result));
+            }
         }
     });
 
