@@ -62,4 +62,17 @@ public class EducationalDecisionController {
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
+
+    @Loggable
+    @PutMapping(value="/update/{id}")
+    public ResponseEntity<BaseResponse> update(@RequestBody EducationalDecisionDTO request,@PathVariable Long id){
+        BaseResponse res = new BaseResponse();
+        try {
+            res = iEducationalDecisionService.update(mapper.toModel(request),id);
+        }catch (TrainingException ex){
+            res.setStatus(406);
+        }
+        return new ResponseEntity<>(res, HttpStatus.valueOf(res.getStatus()));
+
+    }
 }

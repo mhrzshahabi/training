@@ -15,6 +15,7 @@ import response.BaseResponse;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -63,5 +64,69 @@ public class EducationalDecisionService implements IEducationalDecisionService {
             return educationalDecisionDao.findAllByHeaderIdAndFromDateAndRef(educationalDecisionHeader.getId(), fromDate, ref);
         } else
             return new ArrayList<>();
+    }
+
+    @Override
+    public BaseResponse update(EducationalDecision request, Long id) {
+
+        Optional<EducationalDecision> cById = educationalDecisionDao.findById(id);
+        EducationalDecision educationalDecision = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        BaseResponse response = new BaseResponse();
+
+        final String ref = educationalDecision.getRef();
+        try {
+            switch (ref) {
+                case "base" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setBaseTuitionFee(request.getBaseTuitionFee());
+                    educationalDecision.setProfessorTuitionFee(request.getProfessorTuitionFee());
+                    educationalDecision.setKnowledgeAssistantTuitionFee(request.getKnowledgeAssistantTuitionFee());
+                    educationalDecision.setTeacherAssistantTuitionFee(request.getTeacherAssistantTuitionFee());
+                    educationalDecision.setInstructorTuitionFee(request.getInstructorTuitionFee());
+                    educationalDecision.setEducationalAssistantTuitionFee(request.getEducationalAssistantTuitionFee());
+
+                }
+                case "history" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setEducationalHistoryCoefficient(request.getEducationalHistoryCoefficient());
+                    educationalDecision.setEducationalHistoryFrom(request.getEducationalHistoryFrom());
+                    educationalDecision.setEducationalHistoryTo(request.getEducationalHistoryTo());
+
+                }
+                case "teaching-method" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setTeachingMethod(request.getTeachingMethod());
+                    educationalDecision.setCourseTypeTeachingMethod(request.getCourseTypeTeachingMethod());
+                    educationalDecision.setCoefficientOfTeachingMethod(request.getCoefficientOfTeachingMethod());
+
+                }
+                case "course-type" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setTypeOfSpecializationCourseType(request.getTypeOfSpecializationCourseType());
+                    educationalDecision.setCourseLevelCourseType(request.getCourseLevelCourseType());
+                    educationalDecision.setCourseForCourseType(request.getCourseForCourseType());
+                    educationalDecision.setCoefficientOfCourseType(request.getCoefficientOfCourseType());
+
+                }
+                case "distance" -> {
+                    educationalDecision.setItemFromDate(request.getItemFromDate());
+                    educationalDecision.setItemToDate(request.getItemToDate());
+                    educationalDecision.setDistance(request.getDistance());
+                    educationalDecision.setResidence(request.getResidence());
+
+                }
+            }
+
+            educationalDecisionDao.save(educationalDecision);
+
+            response.setStatus(200);
+        } catch (Exception e) {
+            response.setStatus(406);
+        }
+        return response;
     }
 }

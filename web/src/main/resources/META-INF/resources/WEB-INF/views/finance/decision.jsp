@@ -8,8 +8,8 @@
 // <script>
 
     //----------------------------------------------------Variables-----------------------------------------------------
-    var methoddecision =" ";
-
+    var methodDecision =" ";
+    var methodChildDecision =" ";
     //----------------------------------------------------Rest DataSource-----------------------------------------------
 
     RestDataSource_Decision_Header = isc.TrDS.create({
@@ -767,7 +767,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_Decision_history,Window_history_Decision)
+                    addChildDecision(DynamicForm_Decision_history,Window_history_Decision,"افزودن ضریب سابقه آموزشی")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -791,7 +791,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_teaching_method,Window_teaching_method)
+                    addChildDecision(DynamicForm_teaching_method,Window_teaching_method,"افزودن ضریب روش تدریس")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -815,7 +815,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_course_type,Window_course_type)
+                    addChildDecision(DynamicForm_course_type,Window_course_type,"افزودن ضریب نوع دوره")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -839,7 +839,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_distance,Window_distance)
+                    addChildDecision(DynamicForm_distance,Window_distance,"افزودن ضریب مسافت")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -863,7 +863,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_Decision_base,Window_base_Decision)
+                    addChildDecision(DynamicForm_Decision_base,Window_base_Decision,"افزودن مبلغ پایه حق التدریس")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -1231,7 +1231,6 @@
                 createDialog("info", "رکوردی را انتخاب نکرده اید", "<spring:message code="error"/>");
             }
 
-            // addHeaderDecision();
         }
     });
 
@@ -1552,7 +1551,7 @@
     function editHeaderDecision(record) {
         Window_header_Decision.setTitle("ویرایش هدر تصمیم گیری");
         DynamicForm_Decision.clearErrors();
-        methoddecision = "UPDATE";
+        methodDecision = "UPDATE";
         DynamicForm_Decision.editRecord(record);
         Window_header_Decision.show();
     }
@@ -1569,7 +1568,7 @@
         }
         let data = DynamicForm_Decision.getValues();
 
-        if (methoddecision === "UPDATE") {
+        if (methodDecision === "UPDATE") {
            let url= educationalDecisionHeaderRequestUrl+"/update/"+data.id;
 
             wait.show();
@@ -1577,22 +1576,22 @@
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
                     wait.close();
-                    methoddecision = "";
+                    methodDecision = "";
                     createDialog("info", "<spring:message code="global.form.request.successful"/>");
                     Window_header_Decision.close();
                     ListGrid_Decision_Header.invalidateCache();
                 } else {
                     wait.close();
-                    methoddecision = "";
+                    methodDecision = "";
                     createDialog("info", "خطایی رخ داده است");
                 }
             }));
-            methoddecision = "";
+            methodDecision = "";
             return;
         }
-
-        wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionHeaderRequestUrl, "POST", JSON.stringify(data), function (resp) {
+        else {
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionHeaderRequestUrl, "POST", JSON.stringify(data), function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     wait.close();
                     createDialog("info", "<spring:message code="global.form.request.successful"/>");
@@ -1604,12 +1603,13 @@
                 }
             }));
 
-
+        }
     }
 
-    function addChildDecision(dynamicForm,window) {
+    function addChildDecision(dynamicForm,window,title) {
         dynamicForm.clearValues();
         dynamicForm.clearErrors();
+        window.setTitle(title);
         window.show();
     }
 
@@ -1618,7 +1618,8 @@
         let record = listGrid.getSelectedRecord();
         if (record!==undefined && record !== null){
             dynamicForm.clearErrors();
-            window.title=title
+            window.setTitle(title);
+            methodChildDecision = "UPDATE";
             dynamicForm.editRecord(record);
             window.show();
         }else {
@@ -1642,6 +1643,30 @@
         let data = dynamicForm.getValues();
         data.ref =ref
         data.educationalDecisionHeaderId =record.id
+
+        if( methodChildDecision === "UPDATE"){
+
+            let url= educationalDecisionRequestUrl+"/update/"+data.id;
+
+            wait.show();
+            isc.RPCManager.sendRequest(TrDSRequest(url, "PUT", JSON.stringify(data), function (resp) {
+                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                    wait.close();
+                    methodChildDecision="";
+                    createDialog("info", "<spring:message code="global.form.request.successful"/>");
+                    window.close();
+                    listGrid.invalidateCache();
+                    return;
+                } else {
+                    wait.close();
+                    methodChildDecision="";
+                    createDialog("info", "خطایی رخ داده است");
+                    return;
+                }
+            }));
+            methodChildDecision="";
+            return;
+        } else {
         wait.show();
         isc.RPCManager.sendRequest(TrDSRequest(educationalDecisionRequestUrl, "POST", JSON.stringify(data), function (resp) {
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
@@ -1654,6 +1679,7 @@
                 createDialog("info", "خطایی رخ داده است");
             }
         }));
+        }
 
 
     }
