@@ -271,6 +271,31 @@ public class RequestItemRestController {
             if (userAccessCourses.contains(requestItemCoursesDetailDTO.getCourseCode()))
                 userCourses.add(requestItemCoursesDetailDTO);
         }
+
+        if (hasPassedStatus) {
+            SynonymPersonnel synonymPersonnel;
+            SynonymPersonnel synonymPersonnelByNationalCode = null;
+            SynonymPersonnel synonymPersonnelByPersonnelNo2 = null;
+            RequestItem requestItem = requestItemService.get(requestItemId);
+
+            if (requestItem.getNationalCode() != null)
+                synonymPersonnelByNationalCode = synonymPersonnelService.getByNationalCode(requestItem.getNationalCode());
+            if (requestItem.getPersonnelNo2() != null)
+                synonymPersonnelByPersonnelNo2 = synonymPersonnelService.getByPersonnelNo2(requestItem.getPersonnelNo2());
+
+            if (synonymPersonnelByNationalCode != null)
+                synonymPersonnel = synonymPersonnelByNationalCode;
+            else
+                synonymPersonnel = synonymPersonnelByPersonnelNo2;
+
+            List<String> list = classService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
+                    .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());
+
+            for (RequestItemCoursesDetailDTO.Info userCourse : userCourses) {
+                if (list.contains(userCourse.getCourseCode()))
+                    userCourse.setPassed(true);
+            }
+        }
         opinionInfo.setCourses(userCourses);
         return new ResponseEntity<>(opinionInfo, HttpStatus.OK);
     }
