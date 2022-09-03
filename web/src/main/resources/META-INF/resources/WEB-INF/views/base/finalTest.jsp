@@ -97,6 +97,7 @@
             {
                 title: "<spring:message code="create"/>",
                 click: function () {
+                    examTypeDF.clearValues();
                     selectExamTypeWindow.show();
                     // showNewForm_finalTest();
                 }
@@ -279,9 +280,7 @@
             {name: "workflowStatusCode"},
             {name: "hasGoal"},
             {name: "hasSkill"},
-            {
-                name: "evaluation",
-            },
+            {name: "evaluation"},
             {
                 name: "behavioralLevel",
             }
@@ -320,7 +319,8 @@
             {name: "preCourseTest", type: "boolean"},
             {name: "course.code"},
             {name: "course.theoryDuration"},
-            {name: "scoringMethod"}
+            {name: "scoringMethod"},
+            {name: "evaluation"}
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -1402,7 +1402,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 name: "tclassId",
                 title: "<spring:message code="class"/>",
                 required: true,
-                prompt: "<spring:message code="first.select.course"/>",
+                <%--prompt: "<spring:message code="first.select.course"/>",--%>
                 textAlign: "center",
                 autoFetchData: false,
                 width: "*",
@@ -1426,6 +1426,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         title: "<spring:message code='course.title'/>",
                         align: "center",
                         filterOperator: "iContains",
+                        autoFitWidth: true,
                         sortNormalizer: function (record) {
                             return record.course.titleFa;
                         }
@@ -1668,6 +1669,148 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         ]
     });
 
+    let preTestDF = isc.DynamicForm.create({
+        // ID: "FinalTestDF_finalTest",
+        //width: 780,
+        overflow: "hidden",
+        //autoSize: false,
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "tclassId",
+                title: "<spring:message code="class"/>",
+                required: true,
+                <%--prompt: "<spring:message code="first.select.course"/>",--%>
+                textAlign: "center",
+                autoFetchData: false,
+                width: "*",
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: ClassDS_finalTest,
+                sortField: ["id"],
+                filterFields: ["id"],
+                //type: "ComboBoxItem",
+                pickListFields: [
+                    {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                    {
+                        name: "code",
+                        title: "<spring:message code='class.code'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "course.titleFa",
+                        title: "<spring:message code='course.title'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        sortNormalizer: function (record) {
+                            return record.course.titleFa;
+                        }
+                    },
+                    {
+                        name: "term.titleFa",
+                        title: "term",
+                        align: "center",
+                        filterOperator: "iContains",
+                        hidden: true
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        },
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        align: "center",
+                        filterOperator: "iContains",
+                        filterEditorProperties: {
+                            keyPressFilter: "[0-9/]"
+                        },
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "teacher",
+                        title: "<spring:message code='teacher'/>",
+                        displayField: "teacher.personality.lastNameFa",
+                        displayValueFromRecord: false,
+                        type: "TextItem",
+                        sortNormalizer(record) {
+                            return record.teacher.personality.lastNameFa;
+                        },
+
+                        align: "center",
+                        filterOperator: "iContains",
+                        autoFitWidth: true,
+                        // sortNormalizer(record) {
+                        //     return record.teacher.personality.lastNameFa;
+                        // }
+                    },
+                    {
+                        name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
+                        valueMap: {
+                            "1": "برنامه ریزی",
+                            "2": "در حال اجرا",
+                            "3": "پایان یافته",
+                        },
+                        filterEditorProperties: {
+                            pickListProperties: {
+                                showFilterEditor: false
+                            },
+                        },
+                        filterOnKeypress: true,
+                        autoFitWidth: true,
+                    },
+                    {
+                        name: "evaluation",
+                        title: "evaluation",
+                        align: "center",
+                        autoFitWidth: true,
+                        hidden: true
+                    },
+                ],
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListWidth: 800,
+                icons: [
+                    {
+                        name: "clear",
+                        src: "[SKIN]actions/remove.png",
+                        width: 15,
+                        height: 15,
+                        inline: true,
+                        prompt: "پاک کردن",
+                        click: function (form, item, icon) {
+                            item.clearValue();
+                            item.focusInItem();
+
+                        }
+                    }
+                ],
+                endRow: true,
+                startRow: false,
+                click(form, item) {
+                    debugger
+                    let criteria = {
+                        _constructor: "AdvancedCriteria",
+                        operator: "and",
+                        criteria: [
+                            {fieldName: "evaluation", operator: "inSet", value: ["2", "3", "4"]}]
+                    };
+                    item.pickListCriteria = criteria;
+                    item.fetchData();
+                }
+            }
+        ]
+    });
+
     let examTypeDF = isc.DynamicForm.create({
         titleAlign: "right",
         fields: [
@@ -1703,6 +1846,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
             }),
             isc.IButtonCancel.create({
                 click: function () {
+                    examTypeDF.clearValues();
                     selectExamTypeWindow.close();
                 }
             })
@@ -1727,6 +1871,31 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 isc.TrCancelBtn.create({
                     click: function () {
                         FinalTestWin_finalTest.close();
+                    }
+                })
+            ]
+        })]
+    });
+
+    let preTestWindow = isc.Window.create({
+        title: "<spring:message code="select.pre.test.question.type"/>",
+        width: "20%",
+        height: "15%",
+        //autoCenter: true,
+        overflow: "hidden",
+        showMaximizeButton: false,
+        autoSize: false,
+        canDragResize: false,
+        items: [preTestDF, isc.TrHLayoutButtons.create({
+            members: [
+                isc.TrSaveBtn.create({
+                    click: function () {
+
+                    }
+                }),
+                isc.TrCancelBtn.create({
+                    click: function () {
+                        preTestWindow.close();
                     }
                 })
             ]
@@ -2434,7 +2603,7 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                         showNewForm_finalTest();
                     } else if (examTypeValue === "2") {
                         // pre test
-
+                        preTestWindow.show();
                     }
                 }
             }

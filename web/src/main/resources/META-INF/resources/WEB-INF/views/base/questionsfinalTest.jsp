@@ -834,7 +834,7 @@
 
     var ToolStripButton_PrintJasper = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ pdf سوالات آزمون نهایی",
+        title: "چاپ pdf سوالات آزمون",
         click: function () {
             let params = {};
             let data = ListGrid_FinalTest.getData().localData.get(0).testQuestionId;
@@ -845,7 +845,7 @@
     });
     var ToolStripButton_PrintJasperWord = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ word سوالات آزمون نهایی",
+        title: "چاپ word سوالات آزمون",
         click: function () {
             let params = {};
             let data = ListGrid_FinalTest.getData().localData.get(0).testQuestionId;
