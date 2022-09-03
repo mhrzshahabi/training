@@ -361,7 +361,7 @@
         wait_Permission.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>");
-            refreshLG(ListGrid_JspOperationalChart);
+            DynamicForm_departmentFilter_Filter.clearValues();
             Window_JspOperationalChart.close();
             setTimeout(function () {
                 OK.close();
