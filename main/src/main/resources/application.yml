@@ -244,7 +244,7 @@ spring:
       on-profile: Development
 nicico:
   server:
-    url: http://devapp01.icico.net.ir/hrm-backend
+    url: http://devapp01.icico.net.ir/training
   security:
 #    sys-password: password
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
@@ -330,7 +330,7 @@ spring:
       on-profile: Local
 nicico:
   server:
-    url: http://devapp01.icico.net.ir/hrm-backend
+    url: http://devapp01.icico.net.ir/training
   security:
 #    sys-password: password
   minioQuestionsGroup: '608fa5263cee3d76470c3d30'
