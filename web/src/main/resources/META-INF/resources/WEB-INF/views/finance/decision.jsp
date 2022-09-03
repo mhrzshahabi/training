@@ -767,7 +767,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_Decision_history,Window_history_Decision)
+                    addChildDecision(DynamicForm_Decision_history,Window_history_Decision,"افزودن ضریب سابقه آموزشی")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -791,7 +791,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_teaching_method,Window_teaching_method)
+                    addChildDecision(DynamicForm_teaching_method,Window_teaching_method,"افزودن ضریب روش تدریس")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -815,7 +815,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_course_type,Window_course_type)
+                    addChildDecision(DynamicForm_course_type,Window_course_type,"افزودن ضریب نوع دوره")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -839,7 +839,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_distance,Window_distance)
+                    addChildDecision(DynamicForm_distance,Window_distance,"افزودن ضریب مسافت")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -863,7 +863,7 @@
             isc.ToolStripButtonCreate.create({
                 title: "افزودن",
                 click: function () {
-                    addChildDecision(DynamicForm_Decision_base,Window_base_Decision)
+                    addChildDecision(DynamicForm_Decision_base,Window_base_Decision,"افزودن مبلغ پایه حق التدریس")
                 }.bind(this)
             }),
             isc.ToolStripButtonEdit.create({
@@ -1607,9 +1607,10 @@
 
     }
 
-    function addChildDecision(dynamicForm,window) {
+    function addChildDecision(dynamicForm,window,title) {
         dynamicForm.clearValues();
         dynamicForm.clearErrors();
+        window.setTitle(title);
         window.show();
     }
 
@@ -1618,7 +1619,8 @@
         let record = listGrid.getSelectedRecord();
         if (record!==undefined && record !== null){
             dynamicForm.clearErrors();
-            window.title=title;
+            // window.title=title;
+            window.setTitle(title);
             methodChildDecision = "UPDATE";
             dynamicForm.editRecord(record);
             window.show();
