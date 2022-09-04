@@ -70,7 +70,45 @@ var DynamicForm_TimeInterference = isc.DynamicForm.create({
                 }
             }
         },
+        {
+            name: "runReportBtn",
+            ID: "searchBtnJspTimeInterference",
+            title: "تهیه گزارش",
+            type: "ButtonItem",
+            width: "150",
+            startRow: false,
+            endRow: false,
+            click(form) {
+                form.validate();
+                if (form.hasErrors()) {
+                    return
+                }
+                var timeInterference_Report_wait = createDialog("wait");
+                setTimeout(function () {
+                    let url = timeInterferenceComprehensiveClassesReportUrl + form.getValue("startDate") + "&endDate=" + form.getValue("endDate");
 
+                    RestDataSource_TimeInterference.fetchDataURL = url;
+
+                    ListGrid_TimeInterference.invalidateCache();
+                    ListGrid_TimeInterference.fetchData();
+                    timeInterference_Report_wait.close();
+
+                }, 100);
+            }
+        },
+        {
+            name: "clearBtn",
+            title: "<spring:message code="clear"/>",
+            type: "ButtonItem",
+            width: "150",
+            startRow: false,
+            endRow: false,
+            click(form, item) {
+                form.clearValues();
+                form.clearErrors();
+                ListGrid_TimeInterference.setData([]);
+            }
+        },
     ],
 
 });
