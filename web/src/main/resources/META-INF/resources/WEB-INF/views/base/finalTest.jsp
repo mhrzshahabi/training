@@ -245,13 +245,14 @@
             },
             { name: "onlineExamDeadLineStatus", hidden: true},
             { name: "classScore", title: "نمره کلاسی"},
+            { name: "testQuestionType", title: "نوع آزمون", autoFitWidth: true},
             { name: "practicalScore",title: "نمره عملی"}
         ],
         fetchDataURL: testQuestionUrl + "/spec-list",
         implicitCriteria: {
             _constructor: "AdvancedCriteria",
             operator: "and",
-            criteria: [{fieldName: "testQuestionType", operator: "iContains", value: "FinalTest"}]
+            criteria: [{fieldName: "testQuestionType", operator: "inSet", value: ["FinalTest", "PreTest"]}]
         },
     });
 
@@ -364,6 +365,14 @@
             {name: "duration"},
             {name: "practicalScore"},
             {name: "classScore"},
+            {
+                name: "testQuestionType",
+                valueMap: {
+                    "PreTest": "پیش آزمون",
+                    "FinalTest": "آزمون پایانی",
+                    "Preparation": "آزمون آمادگی"
+                }
+            },
             { name: "onlineFinalExamStatus",canFilter: false, valueMap: {"false": "ارسال نشده", "true": "ارسال شده"}},
             { name: "sendBtn",canFilter: false, title: "بارم بندی ", width: "145"},
             { name: "showBtn",canFilter: false, title: "نتایج ", width: "130"},
@@ -375,7 +384,7 @@
         contextMenu: FinalTestMenu_finalTest,
         sortField: 1,
         filterOperator: "iContains",
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         showRecordComponents: true,
@@ -1670,17 +1679,13 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
     });
 
     let preTestDF = isc.DynamicForm.create({
-        // ID: "FinalTestDF_finalTest",
-        //width: 780,
         overflow: "hidden",
-        //autoSize: false,
         fields: [
             {name: "id", hidden: true},
             {
                 name: "tclassId",
                 title: "<spring:message code="class"/>",
                 required: true,
-                <%--prompt: "<spring:message code="first.select.course"/>",--%>
                 textAlign: "center",
                 autoFetchData: false,
                 width: "*",
@@ -1689,7 +1694,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 optionDataSource: ClassDS_finalTest,
                 sortField: ["id"],
                 filterFields: ["id"],
-                //type: "ComboBoxItem",
                 pickListFields: [
                     {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                     {
@@ -1797,7 +1801,6 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                 endRow: true,
                 startRow: false,
                 click(form, item) {
-                    debugger
                     let criteria = {
                         _constructor: "AdvancedCriteria",
                         operator: "and",
@@ -1886,20 +1889,27 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         showMaximizeButton: false,
         autoSize: false,
         canDragResize: false,
-        items: [preTestDF, isc.TrHLayoutButtons.create({
-            members: [
-                isc.TrSaveBtn.create({
-                    click: function () {
+        items: [
+            preTestDF,
+            isc.TrHLayoutButtons.create({
+                members: [
+                    isc.TrSaveBtn.create({
+                        click: function () {
+                            if (!preTestDF.validate()) {
+                                return;
+                            }
 
-                    }
-                }),
-                isc.TrCancelBtn.create({
-                    click: function () {
-                        preTestWindow.close();
-                    }
-                })
-            ]
-        })]
+                            let classId = preTestDF.getField("tclassId").getValue();
+                            createPreTest(classId);
+                        }
+                    }),
+                    isc.TrCancelBtn.create({
+                        click: function () {
+                            preTestWindow.close();
+                        }
+                    })
+                ]
+            })]
     });
 
     let selectExamTypeWindow = isc.Window.create({
@@ -2608,6 +2618,21 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                 }
             }
         });
+    }
+
+    function createPreTest(classId) {
+        let url = testQuestionUrl + "/pre-test/"
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest(url + classId, "POST", null, function (resp) {
+            wait.close();
+            if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+                createDialog("info", "<spring:message code="global.form.request.successful"/>", "<spring:message code="global.form.new"/>");
+            } else {
+                createDialog("info", "<spring:message code="exception.duplicate.information"/>", "<spring:message code="error"/>");
+            }
+        }));
+        preTestDF.clearValues();
+        preTestWindow.close();
     }
 
     //</script>
