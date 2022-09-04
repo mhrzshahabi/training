@@ -484,7 +484,7 @@ public class PersonnelService implements IPersonnelService {
 
         if (personnels.size()==0 && personnel ==null){
             synonymPersonnels = synonymPersonnelDAO.findAllByPersonnelNoOrderByIdDesc(personnelNo);
-            synonymPersonnel = synonymPersonnels.stream().findFirst().orElse(null);
+            synonymPersonnel = synonymPersonnels.stream().filter(p -> p.getDeleted() == 0).findFirst().orElse(null);
 
             if (synonymPersonnel == null) {
                 if (synonymPersonnels.size() > 0) {

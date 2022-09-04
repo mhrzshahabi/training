@@ -33,6 +33,7 @@ public class ViewActivePersonnelDTO implements Serializable {
         private Integer age;
         private String nationalCode;
         private Integer active;
+        private Integer deleted;
         private String employmentDate;
         private String postTitle;
         private String postCode;

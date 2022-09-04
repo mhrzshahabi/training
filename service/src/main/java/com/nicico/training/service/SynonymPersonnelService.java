@@ -169,7 +169,7 @@ public class SynonymPersonnelService implements ISynonymPersonnelService {
 
     @Transactional
     public ViewActivePersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode) {
-        Optional<SynonymPersonnel> optPersonnel = dao.findByPersonnelNo(personnelCode);
+        Optional<SynonymPersonnel> optPersonnel = dao.findByPersonnelNoAndDeleted(personnelCode,0);
         final SynonymPersonnel personnel = optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return modelMapper.map(personnel, ViewActivePersonnelDTO.PersonalityInfo.class);
     }

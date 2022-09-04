@@ -18137,6 +18137,7 @@ SELECT
                 tbl_md_people_mdms.c_mobile                     AS phone,
                 tbl_md_post_mdms.c_title                        AS post_title,
                 tbl_md_post_mdms.c_code                         AS post_code,
+                0 AS deleted,
                 CASE
                     WHEN tbl_md_people_mdms.c_gender = 'MALE'   THEN
                         'مرد'
