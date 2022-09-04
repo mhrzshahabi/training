@@ -18117,5 +18117,13 @@ pb as (
         </createView>
     </changeSet>
 
+    <changeSet author="kasehpour" id=" -01">
+        <createView viewName="view_timeInterference_Comprehensive_Classes_report" replaceIfExists="true">
+
+            <![CDATA[
+
+      ]]>
+        </createView>
+    </changeSet>
 
 </databaseChangeLog>
