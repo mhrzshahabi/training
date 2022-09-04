@@ -390,7 +390,17 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
-             loadTab(TabSet_finalTest.getSelectedTab().ID);
+            let testQuestionType = FinalTestLG_finalTest.getSelectedRecord().testQuestionType;
+
+            if (testQuestionType === "PreTest") {
+                TabSet_finalTest.disableTab(TabSet_finalTest.getTab("resendFinalTest"));
+                TabSet_finalTest.disableTab(TabSet_finalTest.getTab("monitoringFinalTest"));
+            } else {
+                TabSet_finalTest.enableTab(TabSet_finalTest.getTab("resendFinalTest"));
+                TabSet_finalTest.enableTab(TabSet_finalTest.getTab("monitoringFinalTest"));
+            }
+
+            loadTab(TabSet_finalTest.getSelectedTab().ID);
             if (TabSet_finalTest.getSelectedTab() === undefined || TabSet_finalTest.getSelectedTab() === null){
                 refreshSelectedTab_class_final(0);
             } else {
@@ -2392,13 +2402,6 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                 case "finalTestQuestionBank": {
                         classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
                         let testQuestionType = FinalTestLG_finalTest.getSelectedRecord().testQuestionType;
-
-                        if (testQuestionType === "PreTest") {
-                            TabSet_finalTest.disableTab(TabSet_finalTest.getTab("resendFinalTest"));
-                        } else {
-                            TabSet_finalTest.enableTab(TabSet_finalTest.getTab("resendFinalTest"));
-                        }
-
                         RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl + "/" + testQuestionType + "/" + FinalTestLG_finalTest.getSelectedRecord().tclass.id + "/spec-list";
                         ListGrid_FinalTest.invalidateCache();
                         ListGrid_FinalTest.fetchData(null,(res) => {
