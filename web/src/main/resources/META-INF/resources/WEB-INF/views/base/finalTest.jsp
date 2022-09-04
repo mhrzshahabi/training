@@ -2391,7 +2391,13 @@ if (data.tclassId !== undefined && data.tclassId !== null){
                 }
                 case "finalTestQuestionBank": {
                         classId_finalTest = FinalTestLG_finalTest.getSelectedRecord().id;
-                        RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+FinalTestLG_finalTest.getSelectedRecord().tclass.id+ "/spec-list";
+                        let testQuestionType = FinalTestLG_finalTest.getSelectedRecord().testQuestionType;
+
+                        if (testQuestionType === "PreTest") {
+                            TabSet_finalTest.disableTab(TabSet_finalTest.getTab("resendFinalTest"));
+                        }
+
+                        RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl + "/" + testQuestionType + "/" + FinalTestLG_finalTest.getSelectedRecord().tclass.id + "/spec-list";
                         ListGrid_FinalTest.invalidateCache();
                         ListGrid_FinalTest.fetchData(null,(res) => {
                         checkHaveQuestion(res);
