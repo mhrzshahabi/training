@@ -14,15 +14,15 @@ public interface EducationalDecisionHeaderDao extends JpaRepository<EducationalD
 
     @Query(value = """
             SELECT
-                *
-            FROM
-                tbl_educational_decision_header edh
-            WHERE
-                ( ( edh.item_from_date <= :fromdate
-                    AND edh.item_to_date >= :fromdate ) )
-                OR ( ( edh.item_to_date IS NULL )
-                     AND edh.item_from_date <= :fromdate )
-                AND ( edh.complex = :complex )
+                            *
+                        FROM
+                            tbl_educational_decision_header edh
+                        WHERE
+                         (   ( ( edh.item_from_date <= :fromdate
+                                AND edh.item_to_date >= :fromdate ) )
+                            OR ( ( edh.item_to_date IS NULL )
+                                 AND edh.item_from_date <= :fromdate ))
+                            AND ( edh.complex = :complex )
                                                 """, nativeQuery = true)
     List<EducationalDecisionHeader> findAllByFromDate(@Param("fromdate") String fromDate, @Param("complex") String complex);
 
