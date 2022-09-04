@@ -5,38 +5,28 @@
 // <script>
 
 
-    // timeInterference_actions = isc.ToolStrip.create({
-    //     width: "100%",
-    //     membersMargin: 5,
-    //     members: [
-    //         isc.ToolStripButtonExcel.create({
-    //
-    //             click: function () {
-    //                 makeExcelOutputOfTimeInterference();
-    //             }
-    //
-    //         })
-    //     ]
-    // });
 
-    var RestDataSource_TimeInterference_ReportOf_Comprehensive_Classes = isc.TrDS.create({
+
+    var RestDataSource_TimeInterference = isc.TrDS.create({
         fields:
             [
                 {name: "id", primaryKey: true},
-                {name: "studentName"},
-                {name: "studentFamily"},
+                {name: "studentFullName"},
                 {name: "nationalCode"},
-                {name: "classCode"},
-                {name: "sessionDay"},
-                {name: "sessionHour"}
+                {name: "studentWorkCode"},
+                {name: "studentAffairs"},
+                {name: "concurrentCourses"},
+                {name: "dateAdded"},
+                {name: "addingUser"},
+                {name: "sessionDate"}
             ],
 
     });
 
-    ListGrid_TimeInterference_ReportOf_Comprehensive_Classes = isc.ListGrid.create({
+    ListGrid_TimeInterference = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_TimeInterference_ReportOf_Comprehensive_Classes,
+        dataSource: RestDataSource_TimeInterference,
         autoFetchData: true,
         sortDirection: "descending",
         initialSort: [
@@ -55,15 +45,8 @@
                 align: "center"
             },
             {
-                name: "studentName",
-                title: "نام فراگیر",
-                width: "10%",
-                align: "center",
-                filterOperator: "iContains"
-            },
-            {
-                name: "studentFamily",
-                title: "نام خانوادگی فراگیر",
+                name: "studentFullName",
+                title: "نام و نام خانوادگی فراگیر",
                 width: "10%",
                 align: "center",
                 filterOperator: "iContains"
@@ -76,22 +59,43 @@
                 filterOperator: "iContains"
             },
             {
-                name: "classCode",
-                title: "کد کلاس",
+                name: "studentWorkCode",
+                title: "کد کار فراگیر",
                 width: "10%",
                 align: "center",
                 filterOperator: "iContains"
             },
             {
-                name: "sessionDay",
-                title: "روز جلسه",
+                name: "studentAffairs",
+                title: "امور فراگیر",
+                width: "10%",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "concurrentCourses",
+                title: "دوره های همزمان",
                 width: "10%",
                 align: "center",
                 canFilter: false
             },
             {
-                name: "sessionHour",
-                title: "ساعت جلسه",
+                name: "dateAdded",
+                title: "تاریخ اضافه شدن",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "addingUser",
+                title: "کاربر اضافه کننده",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "sessionDate",
+                title: "تاریخ جلسه",
                 width: "10%",
                 align: "center",
                 canFilter: false
@@ -100,13 +104,63 @@
 
     });
 
+    timeInterference_actions = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        align: "left",
+        members: [
+            isc.ToolStripButtonExcel.create({
 
+                click: function () {
+                    makeExcelOutputOfTimeInterference();
+                }
 
+            })
+        ]
+    });
+
+    ToolStripButton_Refresh_TimeInterference = isc.ToolStripButtonRefresh.create({
+        click: function () {
+            ListGrid_TimeInterference.invalidateCache();
+        }
+    });
+
+    ToolStrip_Actions_TimeInterference = isc.ToolStrip.create({
+        width: "100%",
+        border: '0px',
+        membersMargin: 5,
+        members: [
+            timeInterference_actions,
+            isc.ToolStrip.create({
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_TimeInterference
+                ]
+            })
+        ]
+    });
+
+    VLayout_Body_TimeInterference = isc.TrVLayout.create({
+        members: [
+            ToolStrip_Actions_TimeInterference,
+            ListGrid_TimeInterference
+        ]
+    });
+
+    VLayout_Body_TimeInterference_Jsp = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [
+            VLayout_Body_TimeInterference,
+            ]
+    });
+//--------------------------------------------functions ---------------------------------------------------------------------
     function makeExcelOutputOfTimeInterference() {
         if (ListGrid_TimeInterference_ReportOf_Comprehensive_Classes.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else
-            ExportToFile.downloadExcelRestUrl(null,ListGrid_TimeInterference_ReportOf_Comprehensive_Classes, timeInterferenceComprehensiveClassesReportUrl , 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"  , mainCriteria, null);
+            ExportToFile.downloadExcelRestUrl(null,ListGrid_TimeInterference , timeInterferenceComprehensiveClassesReportUrl , 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"  , mainCriteria, null);
     }
 
 // </script>
