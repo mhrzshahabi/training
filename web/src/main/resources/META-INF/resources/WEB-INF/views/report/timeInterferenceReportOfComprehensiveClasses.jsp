@@ -6,8 +6,75 @@
 
 
 
+//-----------------------------------------------------------------------------------------------------------------------
 
-    var RestDataSource_TimeInterference = isc.TrDS.create({
+var DynamicForm_TimeInterference = isc.DynamicForm.create({
+    numCols: 8,
+    padding: 10,
+    titleAlign: "left",
+    colWidths: [70, 200, 70, 200,70,200, 100, 100],
+    fields: [
+        {
+            name: "startDate",
+            titleColSpan: 1,
+            title: "<spring:message code='start.date'/>",
+            ID: "startDate_jspTimeInterference",
+            required: true,
+            hint: "--/--/----",
+            keyPressFilter: "[0-9/]",
+            showHintInField: true,
+            icons: [{
+                src: "<spring:url value="calendar.png"/>",
+                click: function (form) {
+                    closeCalendarWindow();
+                    displayDatePicker('startDate_jspTimeInterference', this, 'ymd', '/');
+                }
+            }],
+            textAlign: "center",
+            changed: function (form, item, value) {
+                var dateCheck;
+                dateCheck = checkDate(value);
+                if (dateCheck === false) {
+                    form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                } else {
+                    form.clearFieldErrors("startDate", true);
+                }
+            }
+        },
+        {
+            name: "endDate",
+            titleColSpan: 1,
+            title: "<spring:message code='end.date'/>",
+            ID: "endDate_jspTimeInterference",
+            type: 'text', required: true,
+            hint: "--/--/----",
+            keyPressFilter: "[0-9/]",
+            showHintInField: true,
+            icons: [{
+                src: "<spring:url value="calendar.png"/>",
+                click: function (form) {
+                    closeCalendarWindow();
+                    displayDatePicker('endDate_jspTimeInterference', this, 'ymd', '/');
+                }
+            }],
+            textAlign: "center",
+            // colSpan: 2,
+            changed: function (form, item, value) {
+                let dateCheck;
+                dateCheck = checkDate(value);
+                if (dateCheck === false) {
+                    form.clearFieldErrors("endDate", true);
+                    form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                } else {
+                    form.clearFieldErrors("endDate", true);
+                }
+            }
+        },
+
+    ],
+
+});
+var RestDataSource_TimeInterference = isc.TrDS.create({
         fields:
             [
                 {name: "id", primaryKey: true},
@@ -27,12 +94,28 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_TimeInterference,
+        gridComponents: [DynamicForm_TimeInterference,
+        //     isc.ToolStripButtonExcel.create({
+        //         margin:5,
+        //         align: "left",
+        //         click:function() {
+        //             let title="گزارش تداخل زمانی کلاسهای فراگیر "+DynamicForm_TimeInterference.getItem("startDate").getValue()+ " الی "+DynamicForm_TimeInterference.getItem("endDate").getValue();
+        //             ExportToFile.downloadExcel(null, ListGrid_TimeInterference , 'TimeInterferenceReport', 0, null, '',title  , DynamicForm_TimeInterference.getValuesAsAdvancedCriteria(), null,2);
+        //         }
+        //     })
+        //     ,isc.ToolStripButtonRefresh.create({
+        //         align: "left",
+        //         click: function () {
+        //             ListGrid_TimeInterference.invalidateCache();
+        //         }
+        //     })
+            , "header", "filterEditor", "body"],
         autoFetchData: true,
+        showFilterEditor:true,
         sortDirection: "descending",
         initialSort: [
             {property: "id", direction: "descending"}
         ],
-        // gridComponents: [timeInterference_actions],
         recordClick: function () {
 
         },
@@ -103,7 +186,7 @@
          ],
 
     });
-
+//----------------------------------------------------------------------------------------------------------------
     timeInterference_actions = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -140,7 +223,7 @@
             })
         ]
     });
-
+//----------------------------------------------------------------------------------
     VLayout_Body_TimeInterference = isc.TrVLayout.create({
         members: [
             ToolStrip_Actions_TimeInterference,
@@ -157,9 +240,11 @@
     });
 //--------------------------------------------functions ---------------------------------------------------------------------
     function makeExcelOutputOfTimeInterference() {
-        if (ListGrid_TimeInterference_ReportOf_Comprehensive_Classes.getOriginalData().localData === undefined)
+        if (ListGrid_TimeInterference.getOriginalData().localData === undefined)
             createDialog("info", "ابتدا چاپ گزارش را انتخاب کنید");
         else
+            // let title="گزارش تداخل زمانی کلاسهای فراگیر "+DynamicForm_TimeInterference.getItem("startDate").getValue()+ " الی "+DynamicForm_TimeInterference.getItem("endDate").getValue();
+            // ExportToFile.downloadExcelRestUrl(null,ListGrid_TimeInterference , timeInterferenceComprehensiveClassesReportUrl , 0, null, '',title  , mainCriteria, null);
             ExportToFile.downloadExcelRestUrl(null,ListGrid_TimeInterference , timeInterferenceComprehensiveClassesReportUrl , 0, null, '',"گزارش تداخل زمانی کلاسهای فراگیر"  , mainCriteria, null);
     }
 
