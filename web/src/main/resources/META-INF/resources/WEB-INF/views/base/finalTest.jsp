@@ -2395,6 +2395,8 @@ if (data.tclassId !== undefined && data.tclassId !== null){
 
                         if (testQuestionType === "PreTest") {
                             TabSet_finalTest.disableTab(TabSet_finalTest.getTab("resendFinalTest"));
+                        } else {
+                            TabSet_finalTest.enableTab(TabSet_finalTest.getTab("resendFinalTest"));
                         }
 
                         RestDataSource_FinalTest.fetchDataURL = questionBankTestQuestionUrl + "/" + testQuestionType + "/" + FinalTestLG_finalTest.getSelectedRecord().tclass.id + "/spec-list";
