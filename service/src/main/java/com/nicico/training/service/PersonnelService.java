@@ -418,7 +418,7 @@ public class PersonnelService implements IPersonnelService {
             }
 
             if (personnel.getEmploymentDate() != null) {
-                result.setEmploymentDate(DateUtil.convertMiToKh(formatter.format(personnel.getEmploymentDate())));
+                result.setEmploymentDate(personnel.getEmploymentDate());
             }
 
             if (personnel.getPostAssignmentDate() != null) {
@@ -438,7 +438,7 @@ public class PersonnelService implements IPersonnelService {
             }
 
             if (synonymPersonnel.getEmploymentDate() != null) {
-                result.setEmploymentDate(DateUtil.convertMiToKh(formatter.format(synonymPersonnel.getEmploymentDate())));
+                result.setEmploymentDate(synonymPersonnel.getEmploymentDate()) ;
             }
 
         }

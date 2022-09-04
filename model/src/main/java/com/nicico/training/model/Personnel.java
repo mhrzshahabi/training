@@ -51,7 +51,7 @@ public class Personnel {
     private Integer deleted;
 
     @Column(name = "employment_date")
-    private Date employmentDate;
+    private String employmentDate;
 
     @Column(name = "post_title")
     private String postTitle;
