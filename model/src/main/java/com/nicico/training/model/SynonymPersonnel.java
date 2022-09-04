@@ -47,9 +47,6 @@ public class SynonymPersonnel implements Serializable {
     @Column(name = "national_code")
     private String nationalCode;
 
-    @Column(name = "deleted")
-    private Integer deleted;
-
     @Column(name = "employment_date")
     private Date employmentDate;
 
