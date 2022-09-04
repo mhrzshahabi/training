@@ -1345,8 +1345,6 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "    affairs_id,\n" +
             "    SUM(sum_presence_hour)\n" +
             "    OVER(PARTITION BY affairs)   AS n_base_on_affairs,\n" +
-            "    c_start_date,\n" +
-            "    c_end_date\n" +
             "FROM\n" +
             "         (\n" +
             "        SELECT DISTINCT\n" +
