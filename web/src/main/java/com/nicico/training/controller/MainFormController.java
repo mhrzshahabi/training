@@ -600,4 +600,9 @@ public class MainFormController {
     @RequestMapping("/educational/decision")
     public String showDecisionForm(HttpServletRequest request) {return "finance/decision";}
 
+    @RequestMapping("/timeInterferenceComprehensiveClassesReport")
+    public String timeInterferenceReportOfComprehensiveClasses() {
+        return "report/timeInterferenceReportOfComprehensiveClasses";
+    }
+
 }
