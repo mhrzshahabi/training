@@ -44,7 +44,6 @@ copper:
       json:
        filePath: classpath://abac-config/default-policy.json
 
-
 server:
   port: 8080
   servlet:
