@@ -217,11 +217,11 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
 
         String testQuestionType;
 
-        if (type.equals("preTest")) {
+        if (type.equalsIgnoreCase("preTest")) {
             testQuestionType = "PreTest";
-        } else if (type.equals("test")) {
+        } else if (type.equalsIgnoreCase("test") || type.equalsIgnoreCase("FinalTest")) {
             testQuestionType = "FinalTest";
-        } else if (type.equals("preparation")) {
+        } else if (type.equalsIgnoreCase("preparation")) {
             testQuestionType = "Preparation";
         } else {
             throw new TrainingException(TrainingException.ErrorType.TestQuestionBadRequest);
