@@ -3888,4 +3888,44 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="namdari (generated)" id="1662357723-1">
+        <createTable tableName="tbl_needs_assessment_with_gap">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_needs_assessment_with_gapPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(19, 0)"/>
+            <column name="e_enabled" type="NUMBER(19, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_competence" type="NUMBER(19, 0)"/>
+            <column name="limit_sufficiency" type="NUMBER(19, 0)"/>
+            <column name="c_main_workflow_status" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_main_workflow_status_code" type="NUMBER(10, 0)"/>
+            <column name="f_parameter_value_needs_assessment_domain" type="NUMBER(19, 0)"/>
+            <column name="f_parameter_value_needs_assessment_priority" type="NUMBER(19, 0)"/>
+            <column name="c_object_type" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_object" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_object_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_object_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="return_detail" type="VARCHAR2(255 CHAR)"/>
+            <column name="process_instance_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_skill" type="NUMBER(19, 0)"/>
+
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>

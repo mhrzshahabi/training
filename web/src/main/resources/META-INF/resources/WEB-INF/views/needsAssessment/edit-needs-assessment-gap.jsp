@@ -222,71 +222,23 @@
     <%--    ],--%>
     <%--    fetchDataURL: subCategoryUrl + "spec-list",--%>
     <%--});--%>
-    var DataSource_Competence_JspNeedsAssessmentGap = isc.DataSource.create({
+    let DataSource_Competence_JspNeedsAssessmentGap = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+            {name: "title", title: "عنوان"},
         ],
-         fetchDataURL: competenceUrl + "/iscList",
-        fetchDataURL: parameterValueUrl + "/listByCode/gapCompetenceType/iscList",
+        fetchDataURL: parameterValueUrl + "/listByCode/v2/gapCompetenceType/iscList",
     });
-    <%--var DataSource_Skill_JspNeedsAssessment = isc.DataSource.create({--%>
-    <%--    ID: "DataSource_Skill_JspNeedsAssessment",--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", hidden:true},--%>
-    <%--        {name: "titleFa", title: "<spring:message code="skill.title"/>", filterOperator: "iContains",--%>
-    <%--            showHover:true,--%>
-    <%--            canEdit: false,--%>
-    <%--            hoverWidth: 250,--%>
-    <%--            hoverHTML(record) {--%>
-    <%--                return (record.mainWorkflowStatus !== undefined ? record.mainWorkflowStatus : getFormulaMessage("به گردش کار ارسال نشده است", "2", "orange", "b")) + "<br>" +--%>
-    <%--                    (record.course ?--%>
-    <%--                        "نام مهارت: " + record.titleFa + "<br>" + "نام دوره: " + record.course.titleFa + "<br>" + "مدت دوره: " + record.course.theoryDuration + "<br>" + "کد دوره: " + record.course.code :--%>
-    <%--                        "نام مهارت: " + record.titleFa);--%>
-    <%--            },--%>
-    <%--        },--%>
-    <%--        {name: "needsAssessmentPriorityId", title: "<spring:message code="priority"/>", filterOperator: "iContains", autoFitWidth:true},--%>
-    <%--        {name: "needsAssessmentDomainId", filterOperator: "iContains", hidden:true},--%>
-    <%--        {name: "skillId", primaryKey: true, filterOperator: "iContains", hidden:true},--%>
-    <%--        {name: "competenceId", filterOperator: "iContains", hidden:true},--%>
-    <%--        {name: "limitSufficiency", filterOperator: "iContains", hidden:true},--%>
-    <%--        {name: "objectId", filterOperator: "iContains", hidden:true},--%>
-    <%--        {name: "objectType", title: "<spring:message code="reference"/>", primaryKey: true, filterOperator: "iContains", valueMap: priorityList, autoFitWidth:true,--%>
-    <%--            showHover:true,--%>
-    <%--            canEdit: false,--%>
-    <%--            hoverWidth: 150,--%>
-    <%--            hoverHTML(record) {--%>
-    <%--                return "نام: " + record.objectName + "<br>" + "کد:" + record.objectCode;--%>
-    <%--            },--%>
-    <%--            sortNormalizer(record){--%>
-    <%--                if(record.objectType === DynamicForm_JspEditNeedsAssessment.getValue("objectType")){--%>
-    <%--                    return 0;--%>
-    <%--                }--%>
-    <%--                return 1;--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {name: "objectName"},--%>
-    <%--        {name: "objectCode"},--%>
-    <%--        {name: "course"},--%>
-    <%--        {name: "course.code", title: "کد دوره", filterOperator: "iContains"},--%>
-    <%--        {name: "course.titleFa", title: "عنوان دوره", filterOperator: "iContains"},--%>
-    <%--        {name: "course.theoryDuration", title: "مدت دوره", filterOperator: "iContains"},--%>
-    <%--        {name: "skill"},--%>
-    <%--        {name: "skill.code", title: "کد مهارت", filterOperator: "iContains"},--%>
-    <%--        {name: "mainWorkflowStatus"},--%>
-    <%--        {name: "hasWarning", title: "", type: "image", imageURLPrefix: "", imageURLSuffix: ".gif", showTitle:false, autoFitWidth:true,--%>
-    <%--            showHover:true,--%>
-    <%--            hoverWidth: 200,--%>
-    <%--            hoverHTML(record) {--%>
-    <%--                if(record.hasWarning == "alarm"){--%>
-    <%--                    return "دوره ای به مهارت اختصاص نیافته است";--%>
-    <%--                }--%>
-    <%--            },--%>
-    <%--        },--%>
-    <%--    ],--%>
-    <%--    testData: skillData,--%>
-    <%--    clientOnly: true,--%>
-    <%--});--%>
+    let DataSource_Skill_JspNeedsAssessmentGap = isc.TrDS.create({
+        ID: "DataSource_Skill_JspNeedsAssessmentGap",
+        fields: [
+            {name: "id", hidden:true},
+            {name: "code", title: "کد شایستگی"},
+            {name: "name", title: "نام شایستگی"}
+        ],
+        fetchDataURL: parameterValueUrl + "/listByCode/v2/gapCompetenceType/iscList",
+
+    });
 
     <%--var RestDataSource_TrainingPost_By_Skill_Jsp = isc.TrDS.create({--%>
     <%--    fields: [--%>
@@ -1158,21 +1110,24 @@
     let ListGrid_Competence_JspNeedsAssessmentGap = isc.TrLG.create({
         ID: "ListGrid_Competence_JspNeedsAssessmentGap",
         dataSource: DataSource_Competence_JspNeedsAssessmentGap,
-        autoFetchData: true,
-        selectionType:"single",
-        showHeaderContextMenu: false,
-        showRowNumbers: false,
+
 
         gridComponents: [
             isc.LgLabel.create({contents: "<span><b>" + "<spring:message code="competence.list"/>" + "</b></span>", customEdges: ["B"]}),
             CompetenceTS_needsAssessmentGap, "header", "body"
         ],
-        canRemoveRecords:true,
-        canDragRecordsOut: true,
-        dragDataAction: "none",
-        canHover: true,
-        showHoverComponents: true,
-        hoverMode: "details",
+        fields: [
+            {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
+            {name: "title", title: "عنوان", align: "center"},
+        ],
+        autoFetchData: true,
+        showFilterEditor: false,
+        allowAdvancedCriteria: false,
+        allowFilterExpressions: false,
+        filterOnKeypress: false,
+        selectionType: "single",
+        autoFithWidth: true,
+        showResizeBar: false,
 
         <%--removeRecordClick(rowNum){--%>
         <%--    wait.show();--%>
@@ -1318,7 +1273,7 @@
     let ListGrid_Knowledge_JspNeedsAssessmentGap = isc.ListGrid.create({
         ID: "ListGrid_Knowledge_JspNeedsAssessmentGap",
         autoFetchData:false,
-        // dataSource: DataSource_Skill_JspNeedsAssessment,
+        dataSource: DataSource_Skill_JspNeedsAssessmentGap,
         showRowNumbers: false,
         selectionType:"multiple",
         autoSaveEdits:false,

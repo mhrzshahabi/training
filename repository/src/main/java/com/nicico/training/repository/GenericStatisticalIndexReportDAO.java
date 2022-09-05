@@ -7080,7 +7080,7 @@ public interface GenericStatisticalIndexReportDAO extends JpaRepository<GenericS
             "    tbl_needs_assessment\n" +
             "    LEFT JOIN tbl_training_post ON tbl_needs_assessment.f_object = tbl_training_post.id\n" +
             "                                   AND tbl_needs_assessment.c_object_type = 'TrainingPost'\n" +
-            "    LEFT JOIN tbl_post ON tbl_needs_assessment.f_object = devtraining.tbl_post.id AND tbl_needs_assessment.c_object_type = 'Post'\n" +
+            "    LEFT JOIN tbl_post ON tbl_needs_assessment.f_object = tbl_post.id AND tbl_needs_assessment.c_object_type = 'Post'\n" +
             "WHERE\n" +
             "    tbl_needs_assessment.e_deleted IS NULL\n" +
             "    and\n" +

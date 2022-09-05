@@ -52,8 +52,8 @@ public class ParameterValueRestController {
         return new ResponseEntity<>(iParameterService.getByCode(parameterCode), HttpStatus.OK);
     }
     @Loggable
-    @GetMapping("/listByCode/gapCompetenceType/iscList")
-    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> gapCompetenceType(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String parameterCode) {
+    @GetMapping("/listByCode/v2/gapCompetenceType/iscList")
+    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> gapCompetenceType(@RequestParam MultiValueMap<String, String> criteria) {
 
         Long parameterId = iParameterService.findByCode("gapCompetenceType");
         if (parameterId!=null)
