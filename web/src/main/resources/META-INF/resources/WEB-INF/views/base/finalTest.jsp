@@ -390,16 +390,7 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         selectionUpdated: function (record) {
-            let testQuestionType = FinalTestLG_finalTest.getSelectedRecord().testQuestionType;
-
-            if (testQuestionType === "PreTest") {
-                TabSet_finalTest.disableTab(TabSet_finalTest.getTab("resendFinalTest"));
-                TabSet_finalTest.disableTab(TabSet_finalTest.getTab("monitoringFinalTest"));
-            } else {
-                TabSet_finalTest.enableTab(TabSet_finalTest.getTab("resendFinalTest"));
-                TabSet_finalTest.enableTab(TabSet_finalTest.getTab("monitoringFinalTest"));
-            }
-
+            disableResendFinalTestTab();
             loadTab(TabSet_finalTest.getSelectedTab().ID);
             if (TabSet_finalTest.getSelectedTab() === undefined || TabSet_finalTest.getSelectedTab() === null){
                 refreshSelectedTab_class_final(0);
@@ -2644,6 +2635,18 @@ if (data.tclassId !== undefined && data.tclassId !== null){
         }));
         preTestDF.clearValues();
         preTestWindow.close();
+    }
+
+    function disableResendFinalTestTab() {
+        let testQuestionType = FinalTestLG_finalTest.getSelectedRecord().testQuestionType;
+
+        if (testQuestionType === "PreTest") {
+            TabSet_finalTest.disableTab(TabSet_finalTest.getTab("resendFinalTest"));
+            TabSet_finalTest.disableTab(TabSet_finalTest.getTab("monitoringFinalTest"));
+        } else {
+            TabSet_finalTest.enableTab(TabSet_finalTest.getTab("resendFinalTest"));
+            TabSet_finalTest.enableTab(TabSet_finalTest.getTab("monitoringFinalTest"));
+        }
     }
 
     //</script>
