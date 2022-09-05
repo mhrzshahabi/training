@@ -266,7 +266,7 @@ public class ElsRestController {
             ElsExamRequest request;
             PersonalInfo teacherInfo = personalInfoService.getPersonalInfo(teacherService.getTeacher(object.getExamItem().getTclass().getTeacherId()).getPersonalityId());
 
-            if (type.equalsIgnoreCase("test"))
+            if (type.equalsIgnoreCase("test") || type.equalsIgnoreCase("FinalTest"))
                 elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()));
             else
                 elsExamRequestResponse = evaluationBeanMapper.toGetPreExamRequest(tclassService.getTClass(object.getExamItem().getTclassId()), teacherInfo, object, classStudentService.getClassStudents(object.getExamItem().getTclassId()), type);

@@ -94,7 +94,7 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
 
         if (type.equalsIgnoreCase("PreTest")) {
             testQuestionType = "PreTest";
-        } else if (type.equalsIgnoreCase("test")) {
+        } else if (type.equalsIgnoreCase("test") || type.equalsIgnoreCase("FinalTest")) {
             testQuestionType = "FinalTest";
         } else if (type.equalsIgnoreCase("preparation")) {
             testQuestionType = "Preparation";
@@ -158,7 +158,7 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
         object.setQuestions(questions);
         final ElsExamRequestResponse elsExamRequestResponse;
 
-        if (type.equals("test")) {
+        if (type.equalsIgnoreCase("test") || type.equalsIgnoreCase("FinalTest")) {
             elsExamRequestResponse = evaluationBeanMapper.toGetExamRequest(tclass, personalInfo, object,
                     classStudentService.getClassStudents(questionBankTestQuestionFinalTest.getTestQuestion().getTclassId()));
         } else {

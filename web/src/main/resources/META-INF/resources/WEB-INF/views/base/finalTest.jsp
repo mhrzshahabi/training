@@ -834,7 +834,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                                             item.score = '0';
                                                         return item;
                                                         });
-                                                    let isValid = await hasEvaluation(record.tclass.id);
+                                                    let isValid = await hasEvaluation(record.tclass.id, record.testQuestionType);
                                                     if (!isValid) {
                                                         createDialog("info", '<spring:message code="class.has.no.evaluation"/>', "<spring:message code="error"/>");
                                                         return;
@@ -1291,7 +1291,7 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
     function loadExamQuestions(record,questionData,dialog, questionsList) {
 
             wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list-final-test", "GET",null, function (resp) {
+            isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/" + record.testQuestionType + "/"+record.tclass.id+ "/spec-list-final-test", "GET",null, function (resp) {
                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let result = JSON.parse(resp.httpResponseText);
                     var examData = {
@@ -2539,7 +2539,10 @@ if (data.tclassId !== undefined && data.tclassId !== null){
 
     }
 
-    async function hasEvaluation(classId) {
+    async function hasEvaluation(classId, testQuestionType) {
+        if (testQuestionType === "PreTest") {
+            return true;
+        }
         let criteria = {fieldName: "id", operator: "equals", value: classId};
         let resp = await
             fetch(viewClassDetailUrl + "/iscList?operator=and&_constructor=AdvancedCriteria&criteria=" + JSON.stringify(criteria),
@@ -2567,7 +2570,9 @@ if (data.tclassId !== undefined && data.tclassId !== null){
     return parts.join('\n');
 }
     function callApiForSendExam(data,dialog){
-           isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/test", "POST", JSON.stringify(data), function (resp) {
+        let testQuestionType = data.examItem.testQuestionType;
+           // isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/test", "POST", JSON.stringify(data), function (resp) {
+           isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examToEls/" + testQuestionType, "POST", JSON.stringify(data), function (resp) {
                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                    refresh_finalTest();
 
