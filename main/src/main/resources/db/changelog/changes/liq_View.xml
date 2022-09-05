@@ -18117,10 +18117,32 @@ pb as (
         </createView>
     </changeSet>
 
-    <changeSet author="kasehpour" id=" -01">
+    <changeSet author="kasehpour" id="1662356954-01">
         <createView viewName="view_timeInterference_Comprehensive_Classes_report" replaceIfExists="true">
 
             <![CDATA[
+
+                SELECT
+                    tbl_student.national_code                              as national_code,
+                    count( nvl(tbl_student.national_code,tbl_student.id))  as count_timeInterference,
+                    tbl_session.c_session_end_hour                         as c_session_end_hour,
+                    tbl_session.c_session_start_hour                       as c_session_start_hour,
+                    tbl_session.c_session_date                             as c_session_date
+
+                FROM
+                         tbl_session
+                    INNER JOIN tbl_class_student
+                         ON tbl_session.f_class_id = tbl_class_student.class_id
+                    INNER JOIN tbl_student
+                         ON tbl_class_student.student_id = tbl_student.id
+                WHERE 1=1
+                group by
+                    tbl_session.c_session_end_hour,
+                    tbl_session.c_session_start_hour,
+                    tbl_session.c_session_date,
+                    tbl_student.national_code
+                having
+                     count(nvl(tbl_student.national_code,tbl_student.id))>1
 
       ]]>
         </createView>
