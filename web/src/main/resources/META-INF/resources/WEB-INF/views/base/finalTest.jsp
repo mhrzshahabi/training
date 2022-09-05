@@ -762,7 +762,8 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
         });
 
             wait.show();
-           isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list", "GET",null, function (resp) {
+        let testQuestionType = record.testQuestionType;
+        isc.RPCManager.sendRequest(TrDSRequest(questionBankTestQuestionUrl + "/" + testQuestionType + "/" + record.tclass.id + "/spec-list", "GET", null, function (resp) {
                         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                             let result = JSON.parse(resp.httpResponseText).response.data;
                               wait.close();
@@ -771,8 +772,14 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                                   examItem : record,
                                   questions: result
                                 };
-                                isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/examQuestions", "POST", JSON.stringify(examData), function (resp) {
-                                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            let questionTypeParam;
+                            if (testQuestionType === "PreTest") {
+                                questionTypeParam = "preExamQuestions"
+                            } else if (testQuestionType === "FinalTest") {
+                                questionTypeParam = "examQuestions"
+                            }
+                            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/" + questionTypeParam, "POST", JSON.stringify(examData), function (resp) {
+                                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                     let results = JSON.parse(resp.data).data;
                     var OK = isc.Dialog.create({
                         message: "<spring:message code="msg.operation.successful"/>",
@@ -925,11 +932,19 @@ scoreLabel.setContents("مجموع بارم وارد شده : "+totalScore)
                         ],
                         minWidth: 1024
                     });
-                    totalScore=0;
-                    scoreLabel.setContents("مجموع بارم وارد شده :")
-                   totalTime=0;
-                    timeLabel.setContents("مجموع زمان وارد شده :")
-                    Window_result_Finaltest.show();
+
+                                        if (testQuestionType === "PreTest") {
+                                            ListGrid_Questions_finalTest.getField("time").hidden = true
+                                            timeLabel.setVisibility(false);
+                                        } else if (testQuestionType === "FinalTest") {
+                                            timeLabel.setVisibility(true);
+                                            totalScore = 0;
+                                            scoreLabel.setContents("مجموع بارم وارد شده :")
+                                            totalTime = 0;
+                                            timeLabel.setContents("مجموع زمان وارد شده :")
+                                        }
+
+                                        Window_result_Finaltest.show();
                 } else {
                    let errorResponseMessage = resp.httpResponseText;
                     var ERROR = isc.Dialog.create({
