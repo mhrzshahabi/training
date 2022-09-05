@@ -167,7 +167,7 @@
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            actionURL:  questionBankTestQuestionUrl + "/delete-questions/test/" + activeClassId + "/" + activeId,
+                            actionURL:  questionBankTestQuestionUrl + "/delete-questions/" + activeClass.testQuestionType + "/" + activeClassId + "/" + activeId,
                             httpMethod: "DELETE",
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -285,7 +285,7 @@
                                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                 useSimpleHttp: true,
                                 contentType: "application/json; charset=utf-8",
-                                actionURL: questionBankTestQuestionUrl + "/add-questions/test/" + classId + "/" + ids,
+                                actionURL: questionBankTestQuestionUrl + "/add-questions/" + classRecord.testQuestionType + "/" + classId + "/" + ids,
                                 httpMethod: "POST",
                                 data: JSON.stringify(JSONObj),
                                 serverOutputAsString: false,
@@ -380,7 +380,7 @@
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            actionURL:  questionBankTestQuestionUrl + "/delete-questions/test/" + activeClassId + "/" + activeId,
+                            actionURL: questionBankTestQuestionUrl + "/delete-questions/" + activeClass.testQuestionType + "/" + activeClassId + "/" + activeId,
                             httpMethod: "DELETE",
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -641,8 +641,7 @@
                     },
                     {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
                 ]);
-
-                RestDataSource_ForThisClass_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list";
+                RestDataSource_ForThisClass_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/" + record.testQuestionType + "/"+record.tclass.id+ "/spec-list";
 
                 ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
                 ListGrid_ForQuestions_FinalTestJSP.fetchData();
@@ -684,8 +683,7 @@
                     {name: "testQuestion.tclass.endDate",},
                     {name: "testQuestion.tclass.course.titleFa",}
                 ];
-
-                RestDataSource_All_FinalTest.fetchDataURL=questionBankTestQuestionUrl + "/byCourse/test/"+record.tclass.id+"/spec-list";
+                RestDataSource_All_FinalTest.fetchDataURL=questionBankTestQuestionUrl + "/byCourse/" + record.testQuestionType + "/"+record.tclass.id+"/spec-list";
                 ListGrid_AllQuestions_FinalTestJSP.dataSource=RestDataSource_All_FinalTest;
 
                 ListGrid_AllQuestions_FinalTestJSP.setFields([
@@ -795,8 +793,7 @@
                     {name: "OnAdd", title: " ",canSort:false,canFilter:false, width:30}
                 ]);
 
-
-                RestDataSource_ForThisClass_FinalTest.fetchDataURL = questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list";
+                RestDataSource_ForThisClass_FinalTest.fetchDataURL = questionBankTestQuestionUrl + "/" + record.testQuestionType + "/" + record.tclass.id + "/spec-list";
 
                 //ListGrid_ForQuestions_FinalTestJSP.implicitCriteria=criteria;
                 ListGrid_ForQuestions_FinalTestJSP.invalidateCache();
@@ -857,7 +854,7 @@
     var ToolStripButton_Export2EXcel = isc.ToolStripButtonExcel.create({
         click: function () {
             let record = FinalTestLG_finalTest.getSelectedRecord();
-            let restUrl = questionBankTestQuestionUrl +"/test/"+record.tclass.id+ "/spec-list";
+            let restUrl = questionBankTestQuestionUrl + "/" + record.testQuestionType + "/" + record.tclass.id + "/spec-list";
             let pageName = "آزمون پایانی- لیست سوالات(کلاس با کد "+ record.tclass.code+")";
             ExportToFile.downloadExcelRestUrl(null, ListGrid_FinalTest, restUrl , 0,FinalTestLG_finalTest , '',pageName, ListGrid_FinalTest.getCriteria(), null);
         }
@@ -928,7 +925,7 @@
                                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                     useSimpleHttp: true,
                                     contentType: "application/json; charset=utf-8",
-                                    actionURL: questionBankTestQuestionUrl + "/add-questions/test/" + activeClassId + "/" + ids,
+                                    actionURL: questionBankTestQuestionUrl + "/add-questions/" + activeClass.testQuestionType + "/" + activeClassId + "/" + ids,
                                     httpMethod: "POST",
                                     data: JSON.stringify(JSONObj),
                                     serverOutputAsString: false,
@@ -986,7 +983,7 @@
                                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                     useSimpleHttp: true,
                                     contentType: "application/json; charset=utf-8",
-                                    actionURL: questionBankTestQuestionUrl + "/delete-questions/test/" + activeClassId + "/" + ids,
+                                    actionURL: questionBankTestQuestionUrl + "/delete-questions/" + activeClass.testQuestionType + "/" + activeClassId + "/" + ids,
                                     httpMethod: "DELETE",
                                     data: JSON.stringify(JSONObj),
                                     serverOutputAsString: false,

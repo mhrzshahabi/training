@@ -180,7 +180,7 @@ public class QuestionBankTestQuestionService implements IQuestionBankTestQuestio
 
         if (type.equalsIgnoreCase("preTest")) {
             testQuestionType = "PreTest";
-        } else if (type.equalsIgnoreCase("test")) {
+        } else if (type.equalsIgnoreCase("test") || type.equalsIgnoreCase("FinalTest")) {
             testQuestionType = "FinalTest";
         } else if (type.equalsIgnoreCase("preparation")) {
             testQuestionType = "Preparation";

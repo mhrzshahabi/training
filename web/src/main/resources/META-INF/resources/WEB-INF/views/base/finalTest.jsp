@@ -2623,9 +2623,9 @@ if (data.tclassId !== undefined && data.tclassId !== null){
     }
 
     function createPreTest(classId) {
-        let url = testQuestionUrl + "/pre-test/"
+        let url = testQuestionUrl + "/pre-test/" + classId
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest(url + classId, "POST", null, function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest(url, "POST", null, function (resp) {
             wait.close();
             if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                 createDialog("info", "<spring:message code="global.form.request.successful"/>", "<spring:message code="global.form.new"/>");
