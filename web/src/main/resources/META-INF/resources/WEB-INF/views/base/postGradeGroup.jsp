@@ -183,6 +183,7 @@
     });
 
     defineWindowsEditNeedsAssessment(ListGrid_Post_Grade_Group_Jsp);
+    defineWindowsEditNeedsAssessmentForGap(ListGrid_Post_Grade_Group_Jsp);
     defineWindowTreeNeedsAssessment();
 
     let DynamicForm_thisPostGradeGroupHeader_Jsp = isc.DynamicForm.create({
@@ -712,7 +713,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup",true);
+            Window_NeedsAssessment_Edit_Gap.showUs(ListGrid_Post_Grade_Group_Jsp.getSelectedRecord(), "PostGradeGroup",true);
         }
     });
 

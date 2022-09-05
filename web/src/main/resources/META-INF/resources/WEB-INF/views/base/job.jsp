@@ -65,7 +65,7 @@
                     createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                     return;
                 }
-                Window_NeedsAssessment_Edit.showUs(JobLG_job.getSelectedRecord(), "Job",true);
+                Window_NeedsAssessment_Edit_Gap.showUs(JobLG_job.getSelectedRecord(), "Job",true);
             }
         });
         ToolStripButton_TreeNA_JspJob = isc.ToolStripButton.create({
@@ -250,6 +250,7 @@
         });
 
         defineWindowsEditNeedsAssessment(JobLG_job);
+        defineWindowsEditNeedsAssessmentForGap(JobLG_job);
         defineWindowTreeNeedsAssessment();
 
         ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////

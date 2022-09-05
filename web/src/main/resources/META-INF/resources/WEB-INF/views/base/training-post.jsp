@@ -1216,7 +1216,7 @@
                 return;
             }
             if (postAdmin==="true"  || (ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==undefined && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission!==null && ListGrid_TrainingPost_Jsp.getSelectedRecord().hasPermission===true)){
-                Window_NeedsAssessment_Edit.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",true);
+                Window_NeedsAssessment_Edit_Gap.showUs(ListGrid_TrainingPost_Jsp.getSelectedRecord(), "TrainingPost",true);
             }else {
                 simpleDialog("پیغام", "شما دسترسی ویرایش نیازسنجی ندارید . در صورت نیاز , دسترسی به پست مربوطه را در نقش عملیاتی داده شود", 0, "say");
             }
@@ -1264,6 +1264,7 @@
     });
 
     defineWindowsEditNeedsAssessment(ListGrid_TrainingPost_Jsp);
+    defineWindowsEditNeedsAssessmentForGap(ListGrid_TrainingPost_Jsp);
     defineWindowTreeNeedsAssessment();
 
     <sec:authorize access="hasAuthority('Training_Post_U')">

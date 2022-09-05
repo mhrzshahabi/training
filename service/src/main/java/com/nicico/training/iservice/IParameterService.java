@@ -31,4 +31,5 @@ public interface IParameterService {
 
     List<ParameterValueDTO.TupleInfo> getValueListByCode(String code);
 
+    Long findByCode(String gapCompetenceType);
 }

@@ -73,5 +73,17 @@ public class ParameterService extends BaseService<Parameter, Long, ParameterDTO.
         }.getType());
     }
 
+    @Override
+    public Long findByCode(String gapCompetenceType) {
+        Optional<Parameter> pByCode = dao.findByCode(gapCompetenceType);
+        if (pByCode.isPresent())
+            return pByCode.get().getId();
+        else
+            return null;
+
+
+
+    }
+
 
 }

@@ -286,6 +286,7 @@
     });
 
     defineWindowsEditNeedsAssessment(ListGrid_Post_Group_Jsp);
+    defineWindowsEditNeedsAssessmentForGap(ListGrid_Post_Group_Jsp);
     defineWindowTreeNeedsAssessment();
 
     var method = "POST";
@@ -1600,7 +1601,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup",true);
+            Window_NeedsAssessment_Edit_Gap.showUs(ListGrid_Post_Group_Jsp.getSelectedRecord(), "PostGroup",true);
         }
     });
 

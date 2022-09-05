@@ -7,6 +7,7 @@ import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.iservice.IParameterService;
 import com.nicico.training.iservice.IParameterValueService;
+import com.nicico.training.model.Parameter;
 import com.nicico.training.model.ParameterValue;
 import com.nicico.training.service.ParameterService;
 import com.nicico.training.service.ParameterValueService;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -48,6 +50,16 @@ public class ParameterValueRestController {
     @GetMapping("/listByCode/{parameterCode}")
     public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getParametersValueListByCode(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String parameterCode) {
         return new ResponseEntity<>(iParameterService.getByCode(parameterCode), HttpStatus.OK);
+    }
+    @Loggable
+    @GetMapping("/listByCode/gapCompetenceType/iscList")
+    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> gapCompetenceType(@RequestParam MultiValueMap<String, String> criteria, @PathVariable String parameterCode) {
+
+        Long parameterId = iParameterService.findByCode("gapCompetenceType");
+        if (parameterId!=null)
+        return iscList(CriteriaUtil.addCriteria(criteria, "parameterId", "equals", String.valueOf(parameterId)));
+        else
+            return null;
     }
 
     @Loggable

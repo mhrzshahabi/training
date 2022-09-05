@@ -850,6 +850,7 @@
     });
 
     defineWindowsEditNeedsAssessment(ListGrid_Job_Group_Jsp);
+    defineWindowsEditNeedsAssessmentForGap(ListGrid_Job_Group_Jsp);
     defineWindowTreeNeedsAssessment();
     
     var IButton_Job_Group_Exit_Jsp = isc.IButtonCancel.create({
@@ -961,7 +962,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup",true);
+            Window_NeedsAssessment_Edit_Gap.showUs(ListGrid_Job_Group_Jsp.getSelectedRecord(), "JobGroup",true);
         }
     });
 

@@ -50,7 +50,7 @@
                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                 return;
             }
-            Window_NeedsAssessment_Edit.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade",true);
+            Window_NeedsAssessment_Edit_Gap.showUs(PostGradeLG_postGrade.getSelectedRecord(), "PostGrade",true);
         }
     });
     ToolStripButton_TreeNA_PostGrade = isc.ToolStripButton.create({
@@ -209,6 +209,7 @@
     });
 
     defineWindowsEditNeedsAssessment(PostGradeLG_postGrade);
+    defineWindowsEditNeedsAssessmentForGap(PostGradeLG_postGrade);
     defineWindowTreeNeedsAssessment();
 
     ////////////////////////////////////////////////////////////personnel///////////////////////////////////////////////
