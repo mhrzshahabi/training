@@ -629,7 +629,7 @@
                                             isc.IButtonSave.create({
                     title: "<spring:message code="sendScoreToOnlineExam"/>", width: 300,
                     click: function () {
-                      sendFinalScoreToOnlineExam(Window_result_Finaltest);
+                      sendFinalScoreToOnlineExam(Window_result_Finaltest, recordList);
                     }
                 })
                                             ,
@@ -2420,9 +2420,15 @@ if (data.tclassId !== undefined && data.tclassId !== null){
         }
     }
 
-    function sendFinalScoreToOnlineExam(form) {
-               wait.show();
-            isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/final/test/" +sourceExamId, "POST", JSON.stringify(allResultScores), function (resp) {
+    function sendFinalScoreToOnlineExam(form, record) {
+        let testQuestionType = record.testQuestionType;
+
+        if (testQuestionType === "PreTest") {
+            sourceExamId = record.tclassId
+        }
+
+        wait.show();
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/" + testQuestionType + "/test/" + sourceExamId, "POST", JSON.stringify(allResultScores), function (resp) {
                               let respText = JSON.parse(resp.httpResponseText);
                 if (respText.status === 200 || respText.status === 201) {
                     form.close();

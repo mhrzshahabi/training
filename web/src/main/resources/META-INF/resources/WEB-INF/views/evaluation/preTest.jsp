@@ -1463,7 +1463,7 @@
     }
     function sendFinalScoreToOnlineExam2(form) {
         wait.show();
-        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/pre/test/" +sourceExamId, "POST", JSON.stringify(allResultScores), function (resp) {
+        isc.RPCManager.sendRequest(TrDSRequest("/training/anonymous/els/PreTest/test/" + sourceExamId, "POST", JSON.stringify(allResultScores), function (resp) {
             let respText = JSON.parse(resp.httpResponseText);
             if (respText.status === 200 || respText.status === 201) {
                 form.close();

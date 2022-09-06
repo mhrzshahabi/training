@@ -661,7 +661,7 @@ public class ElsRestController {
 
     }
 
-    @PostMapping("/final/test/{id}")
+    @PostMapping("/FinalTest/test/{id}")
     public BaseResponse setFinalScores(@PathVariable long id, @RequestBody List<ExamResult> examResult) {
         BaseResponse baseResponse = new BaseResponse();
         BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
@@ -722,7 +722,7 @@ public class ElsRestController {
         return baseResponse;
     }
 
-    @PostMapping("/pre/test/{id}")
+    @PostMapping("/PreTest/test/{id}")
     public BaseResponse setPreTestScores(@PathVariable long id, @RequestBody List<ExamResult> examResult) {
         BaseResponse baseResponse = new BaseResponse();
         BaseResponse checkValidScores = evaluationBeanMapper.checkValidScores(examResult);
