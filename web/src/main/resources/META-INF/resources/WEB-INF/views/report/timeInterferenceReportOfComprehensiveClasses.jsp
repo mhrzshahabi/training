@@ -121,9 +121,11 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
                 {name: "studentWorkCode"},
                 {name: "studentAffairs"},
                 {name: "concurrentCourses"},
-                {name: "dateAdded"},
                 {name: "addingUser"},
-                {name: "sessionDate"}
+                {name: "lastModifiedBy"},
+                {name: "sessionDate"},
+                {name: "sessionStartHour"},
+                {name: "sessionEndHour"},
             ],
 
     });
@@ -201,13 +203,6 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
                 canFilter: false
             },
             {
-                name: "dateAdded",
-                title: "تاریخ اضافه شدن",
-                width: "10%",
-                align: "center",
-                canFilter: false
-            },
-            {
                 name: "addingUser",
                 title: "کاربر اضافه کننده",
                 width: "10%",
@@ -215,8 +210,29 @@ var RestDataSource_TimeInterference = isc.TrDS.create({
                 canFilter: false
             },
             {
+                name: "lastModifiedBy",
+                title: "کاربر تغییر دهنده",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
                 name: "sessionDate",
                 title: "تاریخ جلسه",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "sessionStartHour",
+                title: "ساعت شروع جلسه",
+                width: "10%",
+                align: "center",
+                canFilter: false
+            },
+            {
+                name: "sessionEndHour",
+                title: "ساعت پایان جلسه",
                 width: "10%",
                 align: "center",
                 canFilter: false

@@ -18117,32 +18117,50 @@ pb as (
         </createView>
     </changeSet>
 
-    <changeSet author="kasehpour" id="1662356954-01">
+    <changeSet author="kasehpour" id="1662356954-02">
         <createView viewName="view_timeInterference_Comprehensive_Classes_report" replaceIfExists="true">
 
             <![CDATA[
 
-                SELECT
-                    tbl_student.national_code                              as national_code,
-                    count( nvl(tbl_student.national_code,tbl_student.id))  as count_timeInterference,
-                    tbl_session.c_session_end_hour                         as c_session_end_hour,
-                    tbl_session.c_session_start_hour                       as c_session_start_hour,
-                    tbl_session.c_session_date                             as c_session_date
+                SELECT  distinct
+                     tbl_student.FIRST_NAME || tbl_student.LAST_NAME      as studentFullName,
+                     tbl_student.national_code                            as nationalCode,
+                     tbl_student.EMP_NO                                   as studentWorkCode,
+                     tbl_student.CCP_AFFAIRS                              as studentAffairs,
+                     tbl_class.C_TITLE_CLASS                              as concurrentCourses,
+                     tbl_class_student.C_CREATED_BY                       as addingUser,
+                     tbl_class_student.C_LAST_MODIFIED_BY                 as lastModifiedBy,
+                     tbl_session.c_session_date                           as sessionDate,
+                     tbl_session.c_session_start_hour                     as sessionStartHour,
+                     tbl_session.c_session_end_hour                       as sessionEndHour
+
+                 ,count( nvl(tbl_student.national_code,tbl_student.id)) over (partition by tbl_session.c_session_date, tbl_session.c_session_start_hour ,tbl_session.c_session_end_hour)  as count_timeInterference
 
                 FROM
                          tbl_session
+                    INNER JOIN tbl_class
+                         on tbl_session.F_CLASS_ID = tbl_class.id
                     INNER JOIN tbl_class_student
                          ON tbl_session.f_class_id = tbl_class_student.class_id
                     INNER JOIN tbl_student
                          ON tbl_class_student.student_id = tbl_student.id
                 WHERE 1=1
+
                 group by
-                    tbl_session.c_session_end_hour,
-                    tbl_session.c_session_start_hour,
-                    tbl_session.c_session_date,
-                    tbl_student.national_code
-                having
-                     count(nvl(tbl_student.national_code,tbl_student.id))>1
+
+                     tbl_student.FIRST_NAME,
+                     tbl_student.LAST_NAME,
+                     tbl_student.national_code,
+                     tbl_student.EMP_NO,
+                     tbl_student.CCP_AFFAIRS,
+                     tbl_class.C_TITLE_CLASS,
+                     tbl_class_student.C_CREATED_BY,
+                     tbl_class_student.C_LAST_MODIFIED_BY ,
+                     tbl_session.c_session_date
+                     ,tbl_session.c_session_start_hour ,tbl_session.c_session_end_hour
+                     ,tbl_student.id
+
+                having   count(nvl(tbl_student.national_code,tbl_student.id))>1
 
       ]]>
         </createView>
