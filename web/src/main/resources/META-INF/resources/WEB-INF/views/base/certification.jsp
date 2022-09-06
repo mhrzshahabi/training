@@ -78,7 +78,7 @@
             {name: "affairs", title: "امور", filterOperator: "iContains"},
             {name: "post", title: "کدپست پیشنهادی", filterOperator: "iContains"},
             {name: "competenceReqId", hidden: true}
-        ],
+        ]
     });
     RestDataSource_Competence_Request_Category = isc.TrDS.create({
         fields: [

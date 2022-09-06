@@ -88,11 +88,11 @@ public class CompetenceRequestRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<CompetenceRequestDTO.CompetenceRequestSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
-                                                   @RequestParam(value = "_endRow",defaultValue = "50") Integer endRow,
-                                                   @RequestParam(value = "_constructor", required = false) String constructor,
-                                                   @RequestParam(value = "operator", required = false) String operator,
-                                                   @RequestParam(value = "criteria", required = false) String criteria,
-                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                             @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;

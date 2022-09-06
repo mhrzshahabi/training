@@ -167,8 +167,7 @@ public class ReportsToExcelFormController {
                 else
                     synonymPersonnel = synonymPersonnelByPersonnelNo2;
 
-                List<NeedsAssessmentDTO.PlanningExpertsExcel> needsAssessmentDTOList = needsAssessmentService.findCoursesForPlanningExpertsByTrainingPostCode(requestItem).stream()
-                        .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
+                List<NeedsAssessmentDTO.PlanningExpertsExcel> needsAssessmentDTOList = needsAssessmentService.findCoursesForPlanningExpertsByTrainingPostCode(requestItem);
 
                 List<String> list = iTclassService.findAllPersonnelClass(synonymPersonnel.getNationalCode(), synonymPersonnel.getPersonnelNo()).stream()
                         .filter(course -> course.getScoreStateId() == 400 || course.getScoreStateId() == 401).map(TclassDTO.PersonnelClassInfo::getCourseCode).collect(Collectors.toList());

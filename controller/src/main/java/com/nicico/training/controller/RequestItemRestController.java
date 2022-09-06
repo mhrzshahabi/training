@@ -7,10 +7,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.controller.util.CriteriaUtil;
-import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.RequestItemCoursesDetailDTO;
-import com.nicico.training.dto.RequestItemDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.mapper.requestItem.RequestItemBeanMapper;
 import com.nicico.training.model.RequestItem;
@@ -34,6 +31,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.nicico.training.controller.util.CriteriaUtil.createCriteria;
 
 
 @Slf4j
@@ -59,7 +58,7 @@ public class RequestItemRestController {
     @PostMapping
     public ResponseEntity<RequestItemDTO.Info> create(@RequestBody RequestItemDTO.Create request) {
         RequestItem requestItem = requestItemBeanMapper.toRequestItem(request);
-        RequestItem saved = requestItemService.create(requestItem,requestItem.getCompetenceReqId());
+        RequestItem saved = requestItemService.create(requestItem, requestItem.getCompetenceReqId());
         RequestItemDTO.Info res = requestItemBeanMapper.toRequestItemDto(saved);
         return new ResponseEntity<>(res, HttpStatus.CREATED);
     }
@@ -175,6 +174,47 @@ public class RequestItemRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/report-list")
+    public ResponseEntity<ISC<RequestItemDTO.ReportInfo>> reportList(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                                     @RequestParam(value = "_endRow",defaultValue = "50") Integer endRow,
+                                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            searchRq.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            searchRq.setSortBy(sortBy);
+        }
+
+        searchRq.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        searchRq.setCriteria(createCriteria(EOperator.notNull, "processInstanceId", null));
+        List<RequestItem> resultList = requestItemService.search(searchRq);
+        List<RequestItemDTO.ReportInfo> result = requestItemBeanMapper.toRequestItemReportInfoDtoList(resultList);
+
+        ISC.Response<RequestItemDTO.ReportInfo> response = new ISC.Response<>();
+        response.setStartRow(startRow);
+        response.setEndRow(startRow + result.size());
+        response.setTotalRows(requestItemService.getTotalStartedProcessCount());
+        response.setData(result);
+        ISC<RequestItemDTO.ReportInfo> infoISC = new ISC<>(response);
+        return new ResponseEntity<>(infoISC, HttpStatus.OK);
     }
 
     @Loggable

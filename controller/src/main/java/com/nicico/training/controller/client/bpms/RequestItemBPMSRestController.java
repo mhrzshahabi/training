@@ -5,10 +5,7 @@ import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.controller.util.AppUtils;
 import com.nicico.training.iservice.IRequestItemService;
-import dto.bpms.BPMSReqItemCoursesDto;
-import dto.bpms.BPMSReqItemSentLetterDto;
-import dto.bpms.BpmsCancelTaskDto;
-import dto.bpms.BpmsStartParamsDto;
+import dto.bpms.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -196,6 +193,12 @@ public class RequestItemBPMSRestController {
                 hasException = true;
         }
         return new ResponseEntity<>(hasException, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping({"/processes/request-item/process-instance-history/{processInstanceId}"})
+    public ResponseEntity<List<BPMSReqItemProcessHistoryDto>> getProcessInstanceHistoryById(@PathVariable String processInstanceId) {
+        return new ResponseEntity<>(requestItemService.getProcessInstanceHistoryById(processInstanceId), HttpStatus.OK);
     }
 
 }

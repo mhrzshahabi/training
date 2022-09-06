@@ -21,4 +21,6 @@ public interface RequestItemDAO extends JpaRepository<RequestItem, Long>, JpaSpe
 
     Optional<RequestItem> findFirstByProcessInstanceId(String processInstanceId);
 
+    @Query(value = "SELECT count(*) FROM tbl_request_item WHERE process_instance_id IS NOT NULL", nativeQuery = true)
+    Integer getTotalStartedProcessCount();
 }

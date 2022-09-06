@@ -1,11 +1,13 @@
 package com.nicico.training.service;
 
 import com.nicico.bpmsclient.model.flowable.process.ProcessInstance;
+import com.nicico.bpmsclient.model.flowable.process.ProcessInstanceHistory;
 import com.nicico.bpmsclient.model.flowable.process.StartProcessWithDataDTO;
 import com.nicico.bpmsclient.model.request.ReviewTaskRequest;
 import com.nicico.bpmsclient.service.BpmsClientService;
 import com.nicico.copper.common.domain.criteria.NICICOPageable;
 import com.nicico.copper.common.domain.criteria.NICICOSpecification;
+import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
@@ -20,10 +22,7 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.RequestItemState;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.RequestItemDAO;
-import dto.bpms.BPMSReqItemCoursesDetailDto;
-import dto.bpms.BPMSReqItemCoursesDto;
-import dto.bpms.BPMSReqItemSentLetterDto;
-import dto.bpms.BpmsStartParamsDto;
+import dto.bpms.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -118,6 +117,11 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
+    public Integer getTotalStartedProcessCount() {
+        return Math.toIntExact(requestItemDAO.getTotalStartedProcessCount());
+    }
+
+    @Override
     public Integer getTotalCountForOneCompetenceReqId(Long id) {
         return requestItemDAO.findAllByCompetenceReqId(id).size();
     }
@@ -134,6 +138,12 @@ public class RequestItemService implements IRequestItemService {
         }
         return list;
 
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<RequestItem> search(SearchDTO.SearchRq request) {
+        return SearchUtil.search(requestItemDAO, request, educationLevel -> modelMapper.map(educationLevel, RequestItem.class)).getList();
     }
 
     @Override
@@ -761,6 +771,12 @@ public class RequestItemService implements IRequestItemService {
     }
 
     @Override
+    public List<BPMSReqItemProcessHistoryDto> getProcessInstanceHistoryById(String processInstanceId) {
+        ProcessInstanceHistory processInstanceHistory = bpmsClientService.getProcessInstanceHistoryById(processInstanceId);
+        return requestItemBeanMapper.toBPMSReqItemProcessHistoryDtoList(processInstanceHistory.getTaskHistoryDetailList());
+    }
+
+    @Override
     public String getPlanningChiefNationalCode() {
         String complexTitle = personnelDAO.getComplexTitleByNationalCode(SecurityUtil.getNationalCode());
 //        String mainConfirmBoss = "ahmadi_z";
@@ -876,8 +892,7 @@ public class RequestItemService implements IRequestItemService {
             else
                 synonymPersonnel = synonymPersonnelByPersonnelNo2;
 
-            List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = needsAssessmentService.findCoursesByTrainingPostCode(requestItem.getPost()).stream()
-                    .filter(item -> item.getCourseCode() != null).collect(Collectors.toList());
+            List<NeedsAssessmentDTO.CourseDetail> needsAssessmentDTOList = needsAssessmentService.findCoursesByTrainingPostCode(requestItem.getPost());
             List<BPMSReqItemCoursesDetailDto> courseList = modelMapper.map(needsAssessmentDTOList, new TypeToken<List<BPMSReqItemCoursesDetailDto>>() {
             }.getType());
 

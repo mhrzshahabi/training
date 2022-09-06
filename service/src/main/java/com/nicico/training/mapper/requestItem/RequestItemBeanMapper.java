@@ -1,11 +1,13 @@
 package com.nicico.training.mapper.requestItem;
 
+import com.nicico.bpmsclient.model.flowable.task.TaskHistory;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.RequestItemDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.RequestItem;
 import com.nicico.training.model.RequestItemProcessDetail;
 import com.nicico.training.repository.PersonnelDAO;
+import dto.bpms.BPMSReqItemProcessHistoryDto;
 import org.mapstruct.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import response.requestItem.RequestItemWithDiff;
@@ -18,13 +20,17 @@ import java.util.List;
 public abstract class RequestItemBeanMapper {
 
     @Autowired
-    protected IParameterValueService parameterValueService;
-    @Autowired
     protected PersonnelDAO personnelDAO;
+    @Autowired
+    protected ISynonymOAUserService synonymOAUserService;
+    @Autowired
+    protected IParameterValueService parameterValueService;
     @Autowired
     protected IOperationalRoleService operationalRoleService;
     @Autowired
     protected ISynonymPersonnelService synonymPersonnelService;
+    @Autowired
+    protected ICompetenceRequestService competenceRequestService;
     @Autowired
     protected IRequestItemProcessDetailService requestItemProcessDetailService;
 
@@ -38,6 +44,21 @@ public abstract class RequestItemBeanMapper {
             @Mapping(source = "operationalRoleIds", target = "operationalRoleUsers", qualifiedByName = "operationalRoleIdsToUserIds")
     })
     public abstract RequestItemDTO.Info toRequestItemDto(RequestItem requestItem);
+
+    @Mappings({
+            @Mapping(source = "competenceReqId", target = "requestNo", qualifiedByName = "toRequestNo"),
+            @Mapping(source = "competenceReqId", target = "applicant", qualifiedByName = "toApplicant"),
+            @Mapping(source = "competenceReqId", target = "requestType", qualifiedByName = "toRequestType"),
+            @Mapping(source = "competenceReqId", target = "letterNumber", qualifiedByName = "toLetterNumber")
+    })
+    public abstract RequestItemDTO.ReportInfo toRequestItemReportInfoDto(RequestItem requestItem);
+    public abstract List<RequestItemDTO.ReportInfo> toRequestItemReportInfoDtoList(List<RequestItem> requestItemList);
+
+    @Mappings({
+            @Mapping(source = "assignee", target = "assignee", qualifiedByName = "toAssigneeName"),
+    })
+    public abstract BPMSReqItemProcessHistoryDto toBPMSReqItemProcessHistoryDto(TaskHistory taskHistory);
+    public abstract List<BPMSReqItemProcessHistoryDto> toBPMSReqItemProcessHistoryDtoList(List<TaskHistory> taskHistoryList);
 
     @Mapping(source = "id", target = "planningChiefOpinion", qualifiedByName = "idToPlanningChiefOpinion")
     public abstract RequestItemDTO.ExcelOutputInfo toRequestItemExcelOutputDto(RequestItem requestItem);
@@ -86,6 +107,41 @@ public abstract class RequestItemBeanMapper {
         if (processStatusId != null)
             return parameterValueService.getInfo(processStatusId).getTitle();
         else return "";
+    }
+
+    @Named("toRequestNo")
+    protected Long toRequestNo(Long competenceReqId) {
+        if (competenceReqId != null)
+            return competenceRequestService.get(competenceReqId).getId();
+        else return null;
+    }
+
+    @Named("toApplicant")
+    protected String toApplicant(Long competenceReqId) {
+        if (competenceReqId != null)
+            return competenceRequestService.get(competenceReqId).getApplicant();
+        else return null;
+    }
+
+    @Named("toRequestType")
+    protected String toRequestType(Long competenceReqId) {
+        if (competenceReqId != null)
+            return competenceRequestService.get(competenceReqId).getRequestType().getTitleFa();
+        else return null;
+    }
+
+    @Named("toLetterNumber")
+    protected String toLetterNumber(Long competenceReqId) {
+        if (competenceReqId != null)
+            return competenceRequestService.get(competenceReqId).getLetterNumber();
+        else return null;
+    }
+
+    @Named("toAssigneeName")
+    protected String toAssigneeName(String assignee) {
+        if (assignee != null)
+            return synonymOAUserService.getFullNameByNationalCode(assignee);
+        else return null;
     }
 
     public abstract List<RequestItemDTO.Info> toRequestItemDTODtos(List<RequestItem> requestItemList);
