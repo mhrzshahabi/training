@@ -342,7 +342,7 @@
                 title: "فعال",
                 type: "checkbox",
                 width: "2",
-                defaultValue: true,
+                // defaultValue: true,
 
                 changed: function (form, item, value) {
 
@@ -532,6 +532,7 @@
                 competenceMethod_competence = "PUT";
                 CompetenceDF_competenceV2.clearValues();
                 CompetenceDF_competenceV2.editRecord(record);
+                CompetenceDF_competenceV2.setValue("active", record.active);
                 CompetenceWin_competenceV2.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="competence"/>");
                 let inter = setInterval(function () {
                     if (CompetenceDF_competenceV2.getItem("competenceTypeId").getSelectedRecord() !== undefined) {

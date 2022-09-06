@@ -12,6 +12,7 @@ import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.NeedsAssessmentDTO;
 import com.nicico.training.iservice.ICompetenceService;
+import com.nicico.training.iservice.IParameterValueService;
 import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Competence;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ import java.util.Locale;
 public class CompetenceRestController {
 
     private final ICompetenceService competenceService;
+    private final IParameterValueService parameterValueService;
     private final ModelMapper modelMapper;
     private final ObjectMapper objectMapper;
     private final MessageSource messageSource;
@@ -93,6 +95,20 @@ public class CompetenceRestController {
                 .setCount(endRow - startRow);
         SearchDTO.SearchRs<CompetenceDTO.Info> response = competenceService.search(request);
         for (CompetenceDTO.Info  row:response.getList()){
+            if (row.getCompetencePriorityId()!=null){
+                String priority=parameterValueService.getInfo(row.getCompetencePriorityId()).getTitle();
+                row.setCompetencePriority(priority);
+
+            }else {
+                row.setCompetencePriority("");
+            }
+            if (row.getCompetenceLevelId()!=null){
+                String level=parameterValueService.getInfo(row.getCompetenceLevelId()).getTitle();
+                row.setCompetenceLevel(level);
+
+            }else {
+                row.setCompetenceLevel("");
+            }
             Boolean used=competenceService.checkUsed(row.getId());
             row.setIsUsed(used);
         }

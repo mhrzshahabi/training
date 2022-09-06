@@ -1236,6 +1236,7 @@
     const downloadFiles = baseUrl + "/anonymous/els/download/";
     const parameterUrl = rootUrl + "/parameter";
     const parameterValueUrl = rootUrl + "/parameter-value";
+    const needAssessmentWithGap = rootUrl + "/needsAssessmentWithGap/";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
